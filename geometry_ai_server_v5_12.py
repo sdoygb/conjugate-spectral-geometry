@@ -74,8 +74,9 @@ KIMI_BASE_URL = os.getenv('KIMI_BASE_URL', 'https://api.moonshot.cn/v1')
 KIMI_MODEL = os.getenv('KIMI_MODEL', 'kimi-k2.7-code')
 KIMI_EMBEDDING_MODEL = os.getenv('KIMI_EMBEDDING_MODEL', 'moonshot-embedding-v1')
 
-# Embedding 模式：'default' 使用 ChromaDB 内置模型，'kimi' 使用 KIMI API
-EMBEDDING_MODE = os.getenv('GT_EMBEDDING_MODE', 'default')
+# Embedding 模式：'local' 使用本地中文模型（推荐），'kimi' 使用 KIMI API，'default' 使用 ChromaDB 内置模型
+EMBEDDING_MODE = os.getenv('GT_EMBEDDING_MODE', 'local')
+LOCAL_EMBEDDING_MODEL = os.getenv('GT_LOCAL_EMBEDDING_MODEL', 'BAAI/bge-small-zh-v1.5')
 
 UPLOAD_FOLDER = os.getenv('UPLOAD_FOLDER', os.path.expanduser("~/AI/articles"))
 
@@ -218,10 +219,40 @@ class KimiEmbeddingFunction:
                 all_embeddings.extend([d.embedding for d in resp.data])
             except Exception as e:
                 logger.error(f"[EMBEDDING] KIMI embedding 批次 {i//32} 失败: {e}")
-                # 返回零向量作为降级方案
                 for _ in batch:
                     all_embeddings.append([0.0] * 1536)
         return all_embeddings
+
+
+class LocalEmbeddingFunction:
+    """使用 fastembed + bge-small-zh-v1.5 的 ChromaDB Embedding Function（中文优化，纯ONNX，无需torch）"""
+
+    def __init__(self, model_name: str = LOCAL_EMBEDDING_MODEL):
+        self.model_name = model_name
+        self._model = None
+
+    def _get_model(self):
+        if self._model is None:
+            try:
+                from fastembed import TextEmbedding
+                logger.info(f"[EMBEDDING] 加载本地中文模型: {self.model_name}（首次运行会自动下载，约100MB）")
+                self._model = TextEmbedding(model_name=self.model_name)
+                logger.info("[EMBEDDING] 中文 embedding 模型加载成功")
+            except ImportError:
+                logger.error("[EMBEDDING] fastembed 未安装，请运行: pip install fastembed")
+                raise
+            except Exception as e:
+                logger.error(f"[EMBEDDING] 模型加载失败: {e}")
+                raise
+        return self._model
+
+    def name(self) -> str:
+        return f"local-{self.model_name}"
+
+    def __call__(self, input: Documents) -> Embeddings:
+        model = self._get_model()
+        embeddings = list(model.embed(input))
+        return [e.tolist() for e in embeddings]
 
 
 # ==================== VectorKnowledgeBase（含教学集合） ====================
@@ -244,6 +275,9 @@ class VectorKnowledgeBase:
         if EMBEDDING_MODE == 'kimi':
             self.embedding_fn = KimiEmbeddingFunction()
             self._embedding_name = f"kimi({KIMI_EMBEDDING_MODEL})"
+        elif EMBEDDING_MODE == 'local':
+            self.embedding_fn = LocalEmbeddingFunction(LOCAL_EMBEDDING_MODEL)
+            self._embedding_name = f"local({LOCAL_EMBEDDING_MODEL})"
         else:
             self.embedding_fn = None  # 使用 ChromaDB 默认 embedding
             self._embedding_name = "chromadb-default"
@@ -3012,6 +3046,7 @@ if __name__ == '__main__':
     # 初始化 VectorKnowledgeBase 替代 GeometrySemanticField
     vector_kb = VectorKnowledgeBase(CHROMA_DB_DIR)
     if vector_kb.initialize():
+        logger.info(f"[STARTUP] DEBUG: articles_count={vector_kb.articles_count}, UPLOAD_FOLDER={UPLOAD_FOLDER}, exists={os.path.exists(UPLOAD_FOLDER)}")
         # 如果 articles 集合为空，自动构建索引
         if vector_kb.articles_count == 0:
             diag = vector_kb.build_index(UPLOAD_FOLDER)
