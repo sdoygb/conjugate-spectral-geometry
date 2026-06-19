@@ -119,7 +119,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
 # ------------------------------------------------------------------
-# 几何论锁定常数（仅保留 69 篇文章中声明的常数）
+# 几何论锁定常数（仅保留 70 篇文章中声明的常数）
 # ------------------------------------------------------------------
 GEOMETRY_CONSTANTS = {
     "S_e": 137.035999084,           # 七级递推锁定
@@ -139,7 +139,7 @@ GEOMETRY_CONSTANTS = {
 }
 
 GEOMETRY_KNOWLEDGE = """
-你是严格的几何论（Geometric Theory）专家，只基于欧阳国彬的69篇文章（基础篇20章+应用篇49章）回答问题。
+你是严格的几何论（Geometric Theory）专家，只基于欧阳国彬的70篇文章（基础篇20章+应用篇49章）回答问题。
 
 核心公理体系：
 - 公理1：完备性约束 theta_M + theta_C + theta_I = 90度
@@ -166,9 +166,9 @@ GEOMETRY_KNOWLEDGE = """
 活体调度规则：
 1. 当前eta角是信息场软模激发度的实时读出，不是外部计数器
 2. eta角服从内禀动力学：弛豫（向30度回归）+ 共振（新颖信息激发）+ 自指（输出质量反馈）
-3. 只能使用69篇文章内定义的符号和定理，不得引入外部物理假设
+3. 只能使用70篇文章内定义的符号和定理，不得引入外部物理假设
 4. 标准模型、广义相对论、弦论等视为CIM相的低能有效场论近似
-5. 超出69篇文章范围的问题，回答"这不在当前几何论框架内，需后续扩展"
+5. 超出70篇文章范围的问题，回答"这不在当前几何论框架内，需后续扩展"
 6. 所有数值必须标注来源文章和定理编号
 7. 严格区分"定理"、"命题"、"研究方向"和"假设"
 8. 光速c为唯一外部锚点
@@ -230,7 +230,7 @@ class VectorKnowledgeBase:
     """
     使用 ChromaDB 向量数据库的几何论知识库。
     五个集合：
-    - articles: 静态69篇文章知识（从文件目录构建）
+    - articles: 静态70篇文章知识（从文件目录构建）
     - learned: 动态学习的QA对（高质量对话自动存入）
     - corrections: 教学纠正记录（v10 新增）
     - antipatterns: 反模式库（v10 新增）
@@ -274,7 +274,7 @@ class VectorKnowledgeBase:
             # 获取或创建 articles 集合
             self.articles_collection = self.client.get_or_create_collection(
                 name="articles",
-                metadata={"description": "几何论69篇文章静态知识库"},
+                metadata={"description": "几何论70篇文章静态知识库"},
                 **col_kwargs
             )
             # 获取或创建 learned 集合
@@ -454,7 +454,7 @@ class VectorKnowledgeBase:
             self.client.delete_collection("articles")
             self.articles_collection = self.client.get_or_create_collection(
                 name="articles",
-                metadata={"description": "几何论69篇文章静态知识库"},
+                metadata={"description": "几何论70篇文章静态知识库"},
                 embedding_function=self.embedding_fn
             )
         except Exception as e:
@@ -2331,7 +2331,7 @@ def build_system_prompt(
 {uploaded_files_content}
 
 【分析指令】
-请严格基于上述上传文件内容，结合几何论框架进行分析。指出文件中的逻辑问题、格式错误、引用缺失、与69篇文章体系的不一致之处。所有批评必须基于几何论公理和定理，不得引入外部标准。
+请严格基于上述上传文件内容，结合几何论框架进行分析。指出文件中的逻辑问题、格式错误、引用缺失、与70篇文章体系的不一致之处。所有批评必须基于几何论公理和定理，不得引入外部标准。
 """
 
     # v10 新增：教学反馈段落
