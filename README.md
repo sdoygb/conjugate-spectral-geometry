@@ -34,6 +34,7 @@
 - Python 3.11+
 - KIMI API Key（[申请地址](https://platform.moonshot.cn/)）
 - macOS 用户如需语音输入功能，需安装 ffmpeg：`brew install ffmpeg`
+- **已知问题**：macOS 上 Open WebUI 的语音输入功能可能触发 segmentation fault 崩溃，这是 Open WebUI 与 macOS Python 3.11 multiprocessing 的兼容性问题，与本中间层无关。建议暂时使用文字输入，或尝试 `export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES` 后启动 Open WebUI
 
 ### 安装
 
