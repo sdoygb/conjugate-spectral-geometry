@@ -2033,6 +2033,20 @@ def extract_files_from_request(data: Dict[str, Any]) -> Tuple[str, str]:
                     if isinstance(info, dict):
                         fname = info.get('name', info.get('filename', info.get('title', 'uploaded')))
                         fcontent = info.get('content', info.get('text', info.get('document', '')))
+                        # Open WebUI 格式：内容在 file_url.url 中（可能是 base64）
+                        if not fcontent:
+                            file_url_obj = info.get('url', {})
+                            if isinstance(file_url_obj, dict):
+                                fcontent = file_url_obj.get('content', '')
+                            elif isinstance(file_url_obj, str) and file_url_obj.startswith('data:'):
+                                # data:text/plain;base64,xxxx 或 data:application/pdf;base64,xxxx
+                                import base64
+                                try:
+                                    parts = file_url_obj.split(',', 1)
+                                    if len(parts) == 2:
+                                        fcontent = base64.b64decode(parts[1]).decode('utf-8', errors='replace')
+                                except Exception:
+                                    pass
                         if isinstance(fcontent, str) and fcontent:
                             files_content.append(
                                 f"--- 文件: {fname} ---\n{fcontent[:50000]}\n--- 文件结束 ---"
