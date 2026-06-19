@@ -254,6 +254,14 @@ class LocalEmbeddingFunction:
         embeddings = list(model.embed(input))
         return [e.tolist() for e in embeddings]
 
+    def embed_query(self, input: list[str]) -> list[list[float]]:
+        """ChromaDB 查询时调用的方法"""
+        return self(input)
+
+    def embed_documents(self, input: list[str]) -> list[list[float]]:
+        """ChromaDB 插入文档时调用的方法"""
+        return self(input)
+
 
 # ==================== VectorKnowledgeBase（含教学集合） ====================
 
