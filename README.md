@@ -2,6 +2,12 @@
 
 几何论 AI 中间层服务 -- 基于 KIMI 大模型的几何论知识问答系统。
 
+## 项目说明
+
+这是一个帮助学习几何论的 AI 系统。它通过中间层服务连接 Open WebUI 和 KIMI 大模型，在对话中注入几何论知识库、活体信息场动力学和教学反馈机制，让 AI 能够基于几何论框架回答问题。
+
+**知识库已内置**：`chroma_db/` 目录包含预构建的向量索引（72篇几何论文章），克隆后即可使用，无需额外准备文章。
+
 ## 架构
 
 ```
@@ -27,10 +33,13 @@
 
 - Python 3.11+
 - KIMI API Key（[申请地址](https://platform.moonshot.cn/)）
+- macOS 用户如需语音输入功能，需安装 ffmpeg：`brew install ffmpeg`
 
 ### 安装
 
 ```bash
+git clone https://github.com/sdoygb/geometry-ai-server.git
+cd geometry-ai-server
 pip install flask openai chromadb
 ```
 
@@ -50,7 +59,7 @@ python3 geometry_ai_server_v5_12.py
 
 ### 首次启动
 
-首次启动时会自动从 `articles/` 目录构建向量索引（约 1-2 分钟）。索引持久化在 `chroma_db/` 目录中，后续启动直接加载。
+如果 `chroma_db/` 目录为空，会自动从 `articles/` 目录构建向量索引（约 1-2 分钟）。如果 `chroma_db/` 已存在，直接加载，跳过构建。
 
 ## Open WebUI 接入
 
@@ -60,7 +69,7 @@ python3 geometry_ai_server_v5_12.py
 - **API Key**: 任意非空字符串
 - **模型名称**: `kimi-k2.7-code`
 
-注意：关闭 Open WebUI 的"联网搜索"和"引用"功能，避免干扰。
+**重要设置**：关闭 Open WebUI 的"联网搜索"和"引用"功能，否则会干扰正常对话。
 
 ## API 文档
 
@@ -74,6 +83,8 @@ python3 geometry_ai_server_v5_12.py
 
 ### 教学系统
 
+通过教学 API 可以纠正 AI 的错误、标记禁止模式、补充知识，让系统逐步学习。
+
 | 方法 | 路径 | 说明 |
 |------|------|------|
 | POST | `/v1/teach/correct` | 纠正 KIMI 的错误回答 |
@@ -82,7 +93,7 @@ python3 geometry_ai_server_v5_12.py
 | GET | `/v1/teach/stats` | 查看教学统计 |
 | GET | `/v1/teach/history` | 查看教学历史 |
 
-### 纠正示例
+#### 纠正示例
 
 ```bash
 curl -X POST http://localhost:5000/v1/teach/correct \
@@ -94,11 +105,37 @@ curl -X POST http://localhost:5000/v1/teach/correct \
   }'
 ```
 
+纠正后，系统会在后续对话中自动注入这条纠正，避免重复犯错。随着纠正被成功应用，信任等级自动提升。
+
+#### 反模式示例
+
+```bash
+curl -X POST http://localhost:5000/v1/teach/antipattern \
+  -H "Content-Type: application/json" \
+  -d '{
+    "pattern": "未找到任何引用来源",
+    "description": "禁止说找不到引用，必须基于核心公理回答",
+    "severity": "high"
+  }'
+```
+
+#### 知识补丁示例
+
+```bash
+curl -X POST http://localhost:5000/v1/teach/patch \
+  -H "Content-Type: application/json" \
+  -d '{
+    "topic": "eta角的几何含义",
+    "content": "eta角是信息场软模激发度的度量，取值范围[30度, 72.53度]",
+    "source": "文章33 §3.1"
+  }'
+```
+
 ### 向量知识库
 
 | 方法 | 路径 | 说明 |
 |------|------|------|
-| GET | `/v1/vector/status` | 向量库状态 |
+| GET | `/v1/vector/status` | 向量库状态（文章数、学习记忆数） |
 | POST | `/v1/vector/rebuild` | 重建文章索引 |
 | POST | `/v1/vector/learned/clear` | 清空学习记忆 |
 
@@ -130,12 +167,8 @@ geometry-ai-server/
 ├── geometry_ai_server_v5_12.py   # 主程序
 ├── .gitignore
 ├── README.md
-├── articles/                     # 几何论文章（知识库源文件）
-│   ├── 0.0.5_乘积球面类的谱刚性_CN.md
-│   ├── 0.4_信息场动力学_CN.md
-│   ├── ...
-│   └── 49_七级以后是自由的起源_CN.md
-└── chroma_db/                    # 向量数据库（自动生成，可重建）
+├── articles/                     # 几何论文章源文件（可选，用于重建索引）
+└── chroma_db/                    # 向量数据库（预构建，开箱即用）
 ```
 
 ## License
