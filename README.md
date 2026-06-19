@@ -41,7 +41,7 @@
 ```bash
 git clone https://github.com/sdoygb/geometry-ai-server.git
 cd geometry-ai-server
-pip install flask openai chromadb
+pip install flask openai chromadb fastembed
 ```
 
 ### 配置
@@ -60,7 +60,7 @@ python3 geometry_ai_server_v5_12.py
 
 ### 首次启动
 
-如果 `chroma_db/` 目录为空，会自动从 `articles/` 目录构建向量索引（约 1-2 分钟）。如果 `chroma_db/` 已存在，直接加载，跳过构建。
+首次启动时会自动下载中文 Embedding 模型（约100MB，只需一次），并构建向量索引（约 2-3 分钟）。后续启动直接加载，跳过下载和构建。
 
 ## Open WebUI 接入
 
