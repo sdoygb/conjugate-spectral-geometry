@@ -95,7 +95,7 @@ if not OPENWEBUI_UPLOAD_DIR or not os.path.exists(OPENWEBUI_UPLOAD_DIR):
             OPENWEBUI_UPLOAD_DIR = p
             break
 
-MAX_INJECT_CHARS = int(os.getenv('MAX_INJECT_CHARS', '30000'))
+MAX_INJECT_CHARS = int(os.getenv('MAX_INJECT_CHARS', '8000'))
 CHUNK_SIZE = int(os.getenv('CHUNK_SIZE', '1000'))
 CHUNK_OVERLAP = int(os.getenv('CHUNK_OVERLAP', '200'))
 MAX_CHUNKS_PER_QUERY = int(os.getenv('MAX_CHUNKS_PER_QUERY', '15'))
@@ -106,6 +106,9 @@ QUALITY_GATE_ENABLED = os.getenv('QUALITY_GATE_ENABLED', 'true').lower() == 'tru
 MAX_QUALITY_RETRIES = int(os.getenv('MAX_QUALITY_RETRIES', '2'))
 # Open WebUI uploads 自动发现时间窗口（秒）
 UPLOAD_SCAN_WINDOW = int(os.getenv('UPLOAD_SCAN_WINDOW', '600'))
+
+# 记录已注入的文件路径，避免重复注入
+_injected_files: Dict[str, str] = {}  # {filepath: mtime}
 
 # 学习闭环阈值
 LEARN_COHERENCE_THRESHOLD = float(os.getenv('LEARN_COHERENCE_THRESHOLD', '0.3'))
@@ -1917,13 +1920,13 @@ def allowed_file(filename: str) -> bool:
 
 # ==================== Open WebUI uploads 自动发现 ====================
 
-def scan_openwebui_recent_uploads(max_files: int = 5) -> str:
+def scan_openwebui_recent_uploads(max_files: int = 5) -> Tuple[str, List[Tuple[str, str]]]:
     """
     扫描 Open WebUI uploads 目录，找到最近上传的文件并提取内容。
-    当 Open WebUI 不把文件内容嵌入到 chat completions 请求时，这是唯一的补救方案。
+    返回 (文件内容字符串, [(filepath, mtime_str), ...]) 用于后续标记已注入。
     """
     if not os.path.exists(OPENWEBUI_UPLOAD_DIR):
-        return ""
+        return "", []
 
     now = time.time()
     recent_files = []
@@ -1938,18 +1941,32 @@ def scan_openwebui_recent_uploads(max_files: int = 5) -> str:
                 recent_files.append((fpath, fname, mtime, age_seconds))
     except Exception as e:
         logger.error(f"[OPENWEBUI] 扫描 uploads 目录失败: {e}")
-        return ""
+        return "", []
 
     if not recent_files:
-        return ""
+        return "", []
 
     recent_files.sort(key=lambda x: x[2], reverse=True)
-    logger.info(f"[OPENWEBUI] 发现 {len(recent_files)} 个最近上传的文件（{UPLOAD_SCAN_WINDOW}秒内）")
+
+    # 只处理新文件（未注入过的）
+    new_files = []
+    for fpath, fname, mtime, age in recent_files:
+        mtime_str = str(mtime)
+        if _injected_files.get(fpath) == mtime_str:
+            continue  # 已注入过，跳过
+        new_files.append((fpath, fname, mtime, age))
+
+    if not new_files:
+        return "", []
+
+    logger.info(f"[OPENWEBUI] 发现 {len(new_files)} 个新上传的文件（{UPLOAD_SCAN_WINDOW}秒内）")
 
     contents = []
-    for fpath, fname, mtime, age in recent_files[:max_files]:
+    injected_info = []
+    for fpath, fname, mtime, age in new_files[:max_files]:
         text, ok = extract_text_from_file(fpath)
         if ok and text and len(text.strip()) > 10:
+            injected_info.append((fpath, str(mtime)))
             # 大文件自动拆分（每段不超过40000字符），避免KIMI忽略后半部分
             if len(text) > 40000:
                 lines = text.split('\n')
@@ -1973,7 +1990,7 @@ def scan_openwebui_recent_uploads(max_files: int = 5) -> str:
                 contents.append(f"--- 文件: {fname} (上传于{age:.0f}秒前) ---\n{text}\n--- 文件结束 ---")
                 logger.info(f"[OPENWEBUI] 读取: {fname} ({len(text)} 字符, {age:.0f}秒前)")
 
-    return "\n\n".join(contents)
+    return "\n\n".join(contents), injected_info
 
 
 # ==================== 输出质量门控（v10 增强：反模式检测） ====================
@@ -2062,13 +2079,17 @@ def extract_files_from_request(data: Dict[str, Any]) -> Tuple[str, str]:
     all_text_parts: List[str] = []
     messages = data.get('messages', []) if isinstance(data, dict) else []
 
-    # 收集所有 user 消息文本（保持对话连续性）
+    # 收集所有 user 消息文本（保持对话连续性，跳过中间层注入的文件消息）
+    _FILE_INJECT_MARKER = "【新文件 ·"
     for m in messages:
         if not isinstance(m, dict):
             continue
         if m.get('role') != 'user':
             continue
         content = m.get('content', '')
+        # 跳过中间层之前注入的文件消息
+        if isinstance(content, str) and content.startswith(_FILE_INJECT_MARKER):
+            continue
         if isinstance(content, str) and content.strip():
             all_text_parts.append(content.strip())
         elif isinstance(content, list):
@@ -2190,7 +2211,7 @@ def extract_files_from_request(data: Dict[str, Any]) -> Tuple[str, str]:
                     )
                 break
 
-    return "\n\n".join(files_content), clean
+    return "\n\n".join(files_content), clean, is_auto
 
 # ==================== 内存状态存储（替代 MySQL） ====================
 # 对话记录内存列表（服务重启后丢失，learned 集合在 ChromaDB 中持久化）
@@ -2972,7 +2993,7 @@ def chat_completions():
                 logger.info(f"[DEBUG] 最后user消息: None")
             break
 
-    files_content, clean_query = extract_files_from_request(data)
+    files_content, clean_query, is_auto_request = extract_files_from_request(data)
 
     logger.info(f"[DEBUG] extract_files结果: files_content={len(files_content)}字符, clean_query='{clean_query[:100]}'")
 
@@ -3000,10 +3021,14 @@ def chat_completions():
                                 break
 
     # 始终检查 uploads 目录，如果有新上传文件则覆盖历史消息中的旧文件
-    ow_content = scan_openwebui_recent_uploads()
-    if ow_content:
-        files_content = ow_content
-        logger.info(f"[OPENWEBUI] 从uploads目录补充了 {len(ow_content)} 字符的文件内容")
+    # 但自动请求（标题生成、搜索查询）不注入文件，避免浪费和重复标记
+    ow_content = ""
+    ow_injected_info = []
+    if not is_auto_request:
+        ow_content, ow_injected_info = scan_openwebui_recent_uploads()
+        if ow_content:
+            files_content = ow_content
+            logger.info(f"[OPENWEBUI] 从uploads目录补充了 {len(ow_content)} 字符的文件内容")
 
     if not clean_query:
         clean_query = "请继续"
@@ -3070,13 +3095,17 @@ def chat_completions():
         index_empty, "", teaching_section  # files_content 传空
     )
 
-    # 过滤掉空消息（Open WebUI 历史中可能残留空 user 消息，KIMI API 会拒绝）
+    # 过滤掉空消息和中间层注入的文件消息（避免历史中残留的文件内容被重复处理）
+    _FILE_INJECT_MARKER = "【新文件 ·"
     raw_messages = data.get('messages', [])
     clean_messages = []
     for m in raw_messages:
         if not isinstance(m, dict):
             continue
         content = m.get('content', '')
+        # 跳过中间层之前注入的文件消息
+        if isinstance(content, str) and content.startswith(_FILE_INJECT_MARKER):
+            continue
         if isinstance(content, str) and not content.strip():
             continue
         if isinstance(content, list) and not any(
@@ -3099,6 +3128,9 @@ def chat_completions():
         }
         # 插入到倒数第二条位置（最后一条是用户的实际问题）
         clean_messages.insert(len(clean_messages), file_user_msg)
+        # 标记这些文件为已注入（只在真正发送给KIMI时才标记）
+        for fpath, mtime_str in ow_injected_info:
+            _injected_files[fpath] = mtime_str
 
     final_messages = [{"role": "system", "content": system_prompt}] + clean_messages
     api_params = {"model": KIMI_MODEL, "messages": final_messages}
