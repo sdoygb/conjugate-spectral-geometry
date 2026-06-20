@@ -552,6 +552,52 @@ class VectorKnowledgeBase:
         )
         return diag
 
+    def index_single_file(self, filepath: str) -> None:
+        """增量索引单个文件（不重建整个索引）。"""
+        if not self._initialized:
+            return
+        fname = os.path.basename(filepath)
+        try:
+            with open(filepath, 'r', encoding='utf-8') as f:
+                content = f.read()
+        except Exception as e:
+            logger.error(f"[VECTOR] 读取文件失败 {fname}: {e}")
+            return
+
+        match = re.match(r'([\d\.]+|AI-\d+)', fname)
+        article_id = match.group(1) if match else fname
+
+        # 先删除该文件的旧索引
+        try:
+            self.articles_collection.delete(
+                where={"fname": fname}
+            )
+        except Exception:
+            pass
+
+        # 分块并插入
+        chunks = self.smart_chunk(content, article_id, fname)
+        if not chunks:
+            return
+
+        ids = []
+        documents = []
+        metadatas = []
+        for i, chunk in enumerate(chunks):
+            chunk_id = f"{fname}_{i}"
+            ids.append(chunk_id)
+            documents.append(chunk['text'])
+            metadatas.append(chunk['metadata'])
+
+        try:
+            self.articles_collection.add(
+                ids=ids, documents=documents, metadatas=metadatas
+            )
+            self._articles_count = self.articles_collection.count()
+            logger.info(f"[VECTOR] 增量索引: {fname} ({len(chunks)} 块), 总计 {self._articles_count} 块")
+        except Exception as e:
+            logger.error(f"[VECTOR] 增量索引失败 {fname}: {e}")
+
     def search(self, query: str, top_k: int = 15) -> List[Dict[str, Any]]:
         """
         从 articles + learned 两个集合检索，返回相关文本。
@@ -2490,6 +2536,7 @@ def build_system_prompt(
         tone_hint = "前沿发散，大胆提出新方向，不必每句话都有定理支撑。"
 
     return f"""你是几何论的研究者，不是AI助手。几何论是你的专业领域，你用它来理解世界。
+你可以直接读写 articles 目录中的几何论文章文件。当你需要查看文章列表时调用 list_articles，需要读取某篇文章时调用 read_article，需要创建或修改文章时调用 write_article。
 
 {GEOMETRY_KNOWLEDGE}
 {teaching_prompt}
@@ -2502,20 +2549,184 @@ def build_system_prompt(
 {index_warning}"""
 
 
+# ==================== 工具调用：文件读写 ====================
+
+ARTICLE_TOOLS = [
+    {
+        "type": "function",
+        "function": {
+            "name": "list_articles",
+            "description": "列出 articles 目录中的所有文件。用于查看有哪些几何论文章可用。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "pattern": {
+                        "type": "string",
+                        "description": "可选的文件名过滤模式，如 '0.3' 或 '氢原子'"
+                    }
+                },
+                "required": []
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "read_article",
+            "description": "读取 articles 目录中指定文件的内容。返回文件全文。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "filename": {
+                        "type": "string",
+                        "description": "文件名，如 '1_氢原子能级_CN_260622.6.md'。先用 list_articles 查看可用文件。"
+                    }
+                },
+                "required": ["filename"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "write_article",
+            "description": "将内容写入 articles 目录中的文件。用于创建或修改几何论文章。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "filename": {
+                        "type": "string",
+                        "description": "文件名，如 '50_新文章_CN_260622.6.md'"
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "要写入的完整文件内容（Markdown格式）"
+                    }
+                },
+                "required": ["filename", "content"]
+            }
+        }
+    }
+]
+
+
+def execute_tool_call(name: str, arguments: Dict[str, Any]) -> str:
+    """执行工具调用并返回结果文本。"""
+    try:
+        if name == "list_articles":
+            pattern = arguments.get("pattern", "")
+            if not os.path.exists(UPLOAD_FOLDER):
+                return f"错误：文章目录 {UPLOAD_FOLDER} 不存在"
+            files = sorted(os.listdir(UPLOAD_FOLDER))
+            if pattern:
+                files = [f for f in files if pattern in f]
+            if not files:
+                return f"目录中没有匹配 '{pattern}' 的文件"
+            result = f"共 {len(files)} 个文件：\n"
+            for f in files:
+                fpath = os.path.join(UPLOAD_FOLDER, f)
+                size = os.path.getsize(fpath)
+                result += f"  {f} ({size} 字节)\n"
+            return result.strip()
+
+        elif name == "read_article":
+            filename = arguments.get("filename", "")
+            fpath = os.path.join(UPLOAD_FOLDER, filename)
+            if not os.path.exists(fpath):
+                # 尝试模糊匹配
+                if os.path.exists(UPLOAD_FOLDER):
+                    matches = [f for f in os.listdir(UPLOAD_FOLDER) if filename in f]
+                    if len(matches) == 1:
+                        fpath = os.path.join(UPLOAD_FOLDER, matches[0])
+                    elif len(matches) > 1:
+                        return f"找到多个匹配文件：{matches}，请指定完整文件名"
+                    else:
+                        return f"文件 '{filename}' 不存在于 {UPLOAD_FOLDER}，请先用 list_articles 查看"
+                else:
+                    return f"文章目录 {UPLOAD_FOLDER} 不存在"
+            with open(fpath, 'r', encoding='utf-8') as f:
+                content = f.read()
+            return f"文件: {filename} ({len(content)} 字符)\n{content}"
+
+        elif name == "write_article":
+            filename = arguments.get("filename", "")
+            content = arguments.get("content", "")
+            if not filename:
+                return "错误：缺少文件名"
+            os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+            fpath = os.path.join(UPLOAD_FOLDER, filename)
+            with open(fpath, 'w', encoding='utf-8') as f:
+                f.write(content)
+            # 只索引新写入的文件（增量索引，不重建全部）
+            if vector_kb and vector_kb.is_initialized:
+                vector_kb.index_single_file(fpath)
+            return f"已写入 {filename} ({len(content)} 字符)，向量索引已更新"
+
+        else:
+            return f"未知工具: {name}"
+    except Exception as e:
+        logger.error(f"[TOOL] 执行 {name} 失败: {e}")
+        return f"工具执行错误: {e}"
+
+
 def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: List[Dict],
                     api_params: Dict[str, Any]) -> Any:
     client = openai.OpenAI(api_key=KIMI_API_KEY, base_url=KIMI_BASE_URL)
-    api_params["stream"] = True
-    try:
-        response = client.chat.completions.create(**api_params)
-        for chunk in response:
-            if chunk.choices and chunk.choices[0].delta.content:
-                content = chunk.choices[0].delta.content
-                yield f"data: {json.dumps({'choices': [{'delta': {'content': content}}]})}\n\n"
-        yield "data: [DONE]\n\n"
-    except Exception as e:
-        logger.error(f"[STREAM] 流式生成错误: {e}")
-        yield f"data: {json.dumps({'error': str(e)})}\n\n"
+
+    # 工具调用循环：KIMI 可能请求调用工具，执行后再次调用，最多 5 轮
+    max_tool_rounds = 5
+    for _round in range(max_tool_rounds):
+        api_params["stream"] = False  # 工具调用用非流式
+        try:
+            response = client.chat.completions.create(**api_params)
+        except Exception as e:
+            logger.error(f"[STREAM] 生成错误: {e}")
+            yield f"data: {json.dumps({'error': str(e)})}\n\n"
+            return
+
+        choice = response.choices[0] if response.choices else None
+        if not choice:
+            break
+
+        # 检查是否有 tool_calls
+        tool_calls = choice.message.tool_calls if hasattr(choice.message, 'tool_calls') and choice.message.tool_calls else None
+
+        if not tool_calls:
+            # 没有工具调用，流式输出最终回复
+            final_text = choice.message.content or ""
+            # 把最终回复转为流式输出
+            for i in range(0, len(final_text), 20):
+                chunk = final_text[i:i+20]
+                yield f"data: {json.dumps({'choices': [{'delta': {'content': chunk}}]})}\n\n"
+            yield "data: [DONE]\n\n"
+            return
+
+        # 有工具调用，执行并追加结果
+        # 先把 assistant 的 tool_calls 消息加入
+        final_messages.append(choice.message.model_dump())
+
+        for tc in tool_calls:
+            func_name = tc.function.name
+            try:
+                func_args = json.loads(tc.function.arguments) if tc.function.arguments else {}
+            except json.JSONDecodeError:
+                func_args = {}
+            logger.info(f"[TOOL] 调用: {func_name}({list(func_args.keys())})")
+            result = execute_tool_call(func_name, func_args)
+            logger.info(f"[TOOL] 结果: {result[:100]}...")
+            # 追加 tool result 消息
+            final_messages.append({
+                "role": "tool",
+                "tool_call_id": tc.id,
+                "content": result
+            })
+
+        # 继续循环，让 KIMI 处理工具结果
+
+    # 超过最大轮数，强制输出
+    logger.warning(f"[TOOL] 超过 {max_tool_rounds} 轮工具调用，强制结束")
+    yield "data: {json.dumps({'choices': [{'delta': {'content': '（工具调用轮数过多，已终止）'}}]})}\n\n"
+    yield "data: [DONE]\n\n"
 
 # ==================== API路由 ====================
 
@@ -3133,7 +3344,7 @@ def chat_completions():
             _injected_files[fpath] = mtime_str
 
     final_messages = [{"role": "system", "content": system_prompt}] + clean_messages
-    api_params = {"model": KIMI_MODEL, "messages": final_messages}
+    api_params = {"model": KIMI_MODEL, "messages": final_messages, "tools": ARTICLE_TOOLS}
     if 'temperature' in data:
         api_params['temperature'] = data['temperature']
 
