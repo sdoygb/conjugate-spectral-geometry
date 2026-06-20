@@ -162,4 +162,4 @@ Geometry AI Server 的设计理念是：**先学懂，再用好**。
 
 Geometry AI Server -- 开源几何论 AI 学习平台
 
-[GitHub](https://github.com/sdoygb/geometry-ai-server) | MIT License
+[GitHub](https://github.com/sdoygb/geometry-ai-server) | CC BY-NC-SA 4.0（禁止商用）

@@ -194,4 +194,4 @@ md5 -c CHECKSUMS.md
 
 ## License
 
-MIT
+CC BY-NC-SA 4.0 -- 禁止商业用途，修改后必须以相同协议共享，需署名原作者。
