@@ -1950,8 +1950,28 @@ def scan_openwebui_recent_uploads(max_files: int = 5) -> str:
     for fpath, fname, mtime, age in recent_files[:max_files]:
         text, ok = extract_text_from_file(fpath)
         if ok and text and len(text.strip()) > 10:
-            contents.append(f"--- 文件: {fname} (上传于{age:.0f}秒前) ---\n{text[:50000]}\n--- 文件结束 ---")
-            logger.info(f"[OPENWEBUI] 读取: {fname} ({len(text)} 字符, {age:.0f}秒前)")
+            # 大文件自动拆分（每段不超过40000字符），避免KIMI忽略后半部分
+            if len(text) > 40000:
+                lines = text.split('\n')
+                chunks = []
+                current_chunk = []
+                current_len = 0
+                for line in lines:
+                    current_chunk.append(line)
+                    current_len += len(line) + 1
+                    if current_len >= 40000:
+                        chunks.append('\n'.join(current_chunk))
+                        current_chunk = []
+                        current_len = 0
+                if current_chunk:
+                    chunks.append('\n'.join(current_chunk))
+                for i, chunk in enumerate(chunks):
+                    part_label = f"（第{i+1}/{len(chunks)}部分）" if len(chunks) > 1 else ""
+                    contents.append(f"--- 文件: {fname} {part_label} ---\n{chunk}\n--- 部分结束 ---")
+                logger.info(f"[OPENWEBUI] 读取: {fname} ({len(text)} 字符, 拆分为{len(chunks)}段, {age:.0f}秒前)")
+            else:
+                contents.append(f"--- 文件: {fname} (上传于{age:.0f}秒前) ---\n{text}\n--- 文件结束 ---")
+                logger.info(f"[OPENWEBUI] 读取: {fname} ({len(text)} 字符, {age:.0f}秒前)")
 
     return "\n\n".join(contents)
 
@@ -2042,6 +2062,7 @@ def extract_files_from_request(data: Dict[str, Any]) -> Tuple[str, str]:
     all_text_parts: List[str] = []
     messages = data.get('messages', []) if isinstance(data, dict) else []
 
+    # 收集所有 user 消息文本（保持对话连续性）
     for m in messages:
         if not isinstance(m, dict):
             continue
@@ -2054,23 +2075,35 @@ def extract_files_from_request(data: Dict[str, Any]) -> Tuple[str, str]:
             for item in content:
                 if not isinstance(item, dict):
                     continue
-                itype = item.get('type', '')
-                if itype == 'text':
+                if item.get('type') == 'text':
                     txt = item.get('text', '').strip()
                     if txt:
                         all_text_parts.append(txt)
-                elif itype in ('file', 'file_url', 'document', 'document_url', 'image_url'):
+
+    # 只从最后一条 user 消息中提取文件内容（避免历史中的旧文件被重复提取）
+    last_user_msg = None
+    for m in reversed(messages):
+        if isinstance(m, dict) and m.get('role') == 'user':
+            last_user_msg = m
+            break
+
+    if last_user_msg:
+        content = last_user_msg.get('content', '')
+        if isinstance(content, list):
+            for item in content:
+                if not isinstance(item, dict):
+                    continue
+                itype = item.get('type', '')
+                if itype in ('file', 'file_url', 'document', 'document_url', 'image_url'):
                     info = item.get(itype, item)
                     if isinstance(info, dict):
                         fname = info.get('name', info.get('filename', info.get('title', 'uploaded')))
                         fcontent = info.get('content', info.get('text', info.get('document', '')))
-                        # Open WebUI 格式：内容在 file_url.url 中（可能是 base64）
                         if not fcontent:
                             file_url_obj = info.get('url', {})
                             if isinstance(file_url_obj, dict):
                                 fcontent = file_url_obj.get('content', '')
                             elif isinstance(file_url_obj, str) and file_url_obj.startswith('data:'):
-                                # data:text/plain;base64,xxxx 或 data:application/pdf;base64,xxxx
                                 import base64
                                 try:
                                     parts = file_url_obj.split(',', 1)
@@ -2414,11 +2447,10 @@ def build_system_prompt(
 
     uploaded_section = ""
     if uploaded_files_content:
-        uploaded_section = f"""\n\n【用户上传文件内容（本次对话直接注入）】
+        uploaded_section = f"""\n\n【用户上传文件内容（已直接注入到上下文中，你可以直接阅读）】
 {uploaded_files_content}
 
-【分析指令】
-请严格基于上述上传文件内容，结合几何论框架进行分析。指出文件中的逻辑问题、格式错误、引用缺失、与70篇文章体系的不一致之处。所有批评必须基于几何论公理和定理，不得引入外部标准。
+【重要】上方【用户上传文件内容】已经完整提供在上下文中，你可以直接看到并引用其中的具体内容。不要说"未找到引用来源"或"请粘贴文件"——文件已经在你的上下文里了。
 """
 
     # v10 新增：教学反馈段落
@@ -2944,12 +2976,34 @@ def chat_completions():
 
     logger.info(f"[DEBUG] extract_files结果: files_content={len(files_content)}字符, clean_query='{clean_query[:100]}'")
 
-    # 如果请求中没有文件内容，尝试从 Open WebUI uploads 目录自动发现
-    if not files_content:
-        ow_content = scan_openwebui_recent_uploads()
-        if ow_content:
-            files_content = ow_content
-            logger.info(f"[OPENWEBUI] 从uploads目录补充了 {len(ow_content)} 字符的文件内容")
+    # 如果 clean_query 太长（被文件内容污染），用最后一条 user 消息的短文本替代
+    if len(clean_query) > 300:
+        for m in reversed(data.get('messages', [])):
+            if isinstance(m, dict) and m.get('role') == 'user':
+                c = m.get('content', '')
+                if isinstance(c, str):
+                    # 取最后一行或最后200字符
+                    lines = [l.strip() for l in c.split('\n') if l.strip()]
+                    short = lines[-1] if lines else c
+                    if len(short) > 200:
+                        short = short[:200]
+                    # 排除明显是文件内容的长文本
+                    if len(short) < 300 and not short.startswith('#') and not short.startswith('>'):
+                        clean_query = short
+                        break
+                elif isinstance(c, list):
+                    for item in c:
+                        if isinstance(item, dict) and item.get('type') == 'text':
+                            txt = item.get('text', '').strip()
+                            if txt and len(txt) < 300:
+                                clean_query = txt
+                                break
+
+    # 始终检查 uploads 目录，如果有新上传文件则覆盖历史消息中的旧文件
+    ow_content = scan_openwebui_recent_uploads()
+    if ow_content:
+        files_content = ow_content
+        logger.info(f"[OPENWEBUI] 从uploads目录补充了 {len(ow_content)} 字符的文件内容")
 
     if not clean_query:
         clean_query = "请继续"
@@ -3008,10 +3062,12 @@ def chat_completions():
         "noise": 0.0,
     }
 
+    # 把文件内容从 system prompt 移到 user 消息中（KIMI 对 user 消息注意力更强）
+    # system prompt 中只保留提示，不包含实际文件内容
     system_prompt = build_system_prompt(
         eta_before, stage, strategy, max_eta, markers,
         loaded_chunks, articles_content, pre_metrics,
-        index_empty, files_content, teaching_section
+        index_empty, "", teaching_section  # files_content 传空
     )
 
     # 过滤掉空消息（Open WebUI 历史中可能残留空 user 消息，KIMI API 会拒绝）
@@ -3029,6 +3085,20 @@ def chat_completions():
         ):
             continue
         clean_messages.append(m)
+
+    # 如果有上传文件，在最后一条 user 消息前插入文件内容（带时间戳标记新旧）
+    if files_content:
+        now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        file_user_msg = {
+            "role": "user",
+            "content": (
+                f"【新文件 · {now_str}】以下是用户刚刚上传的文件，请仔细阅读并基于它回答问题。\n"
+                f"注意：对话历史中可能包含之前的旧文件内容，那些已经过时，请以本条消息中的文件为准。\n\n"
+                f"{files_content}"
+            )
+        }
+        # 插入到倒数第二条位置（最后一条是用户的实际问题）
+        clean_messages.insert(len(clean_messages), file_user_msg)
 
     final_messages = [{"role": "system", "content": system_prompt}] + clean_messages
     api_params = {"model": KIMI_MODEL, "messages": final_messages}
