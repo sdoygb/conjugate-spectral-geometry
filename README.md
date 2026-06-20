@@ -64,7 +64,17 @@ python3 geometry_ai_server_v5_12.py
 
 ## Open WebUI 接入
 
-在 Open WebUI 中添加自定义模型：
+### 安装 Open WebUI（聊天界面）
+
+```bash
+pip install open-webui
+open-webui serve
+# 浏览器打开 http://localhost:3000 完成初始设置
+```
+
+### 添加自定义模型
+
+在 Open WebUI 网页 → 设置 → 模型 中添加：
 
 - **API Base URL**: `http://localhost:5000/v1`
 - **API Key**: 任意非空字符串
@@ -171,6 +181,16 @@ geometry-ai-server/
 ├── articles/                     # 几何论文章源文件（可选，用于重建索引）
 └── chroma_db/                    # 向量数据库（预构建，开箱即用）
 ```
+
+## 文件校验
+
+下载后请验证文件完整性：
+
+```bash
+md5 -c CHECKSUMS.md
+```
+
+整体项目校验和：`0843c8ca46028d9cbd0af2a3ca172e13`
 
 ## License
 

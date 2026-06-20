@@ -95,7 +95,7 @@ if not OPENWEBUI_UPLOAD_DIR or not os.path.exists(OPENWEBUI_UPLOAD_DIR):
             OPENWEBUI_UPLOAD_DIR = p
             break
 
-MAX_INJECT_CHARS = int(os.getenv('MAX_INJECT_CHARS', '100000'))
+MAX_INJECT_CHARS = int(os.getenv('MAX_INJECT_CHARS', '30000'))
 CHUNK_SIZE = int(os.getenv('CHUNK_SIZE', '1000'))
 CHUNK_OVERLAP = int(os.getenv('CHUNK_OVERLAP', '200'))
 MAX_CHUNKS_PER_QUERY = int(os.getenv('MAX_CHUNKS_PER_QUERY', '15'))
@@ -804,6 +804,46 @@ class VectorKnowledgeBase:
             logger.error(f"[VECTOR-LEARN] 存入论断失败: {e}")
             return False
 
+    def learn_propositions_batch(self, propositions: list, score: float) -> int:
+        """
+        批量存入论断到 learned 集合（一次性 embedding + 写入，避免逐条卡顿）。
+        返回成功存入的数量。
+        """
+        if not self._initialized or not propositions:
+            return 0
+
+        valid_props = [p for p in propositions if p and len(p.strip()) >= 10]
+        if not valid_props:
+            return 0
+
+        now = datetime.now().isoformat()
+        ids = []
+        docs = []
+        metas = []
+        for i, prop in enumerate(valid_props):
+            doc_id = f"prop_{hashlib.md5(prop.encode()).hexdigest()[:16]}_{int(time.time())}_{i}"
+            ids.append(doc_id)
+            docs.append(prop)
+            metas.append({
+                "type": "proposition",
+                "quality_score": round(score, 4),
+                "source": "learned",
+                "created_at": now,
+                "answer_length": len(prop)
+            })
+
+        try:
+            self.learned_collection.add(ids=ids, documents=docs, metadatas=metas)
+            self._learned_count = self.learned_collection.count()
+            logger.info(
+                f"[VECTOR-LEARN] 批量存入 {len(valid_props)} 个论断 | "
+                f"score={score:.3f} | learned总数={self._learned_count}"
+            )
+            return len(valid_props)
+        except Exception as e:
+            logger.error(f"[VECTOR-LEARN] 批量存入论断失败: {e}")
+            return 0
+
     def clear_learned(self) -> Dict[str, Any]:
         """清空学习库"""
         result = {"success": False, "cleared": 0}
@@ -1205,60 +1245,51 @@ class VectorKnowledgeBase:
 
     def novelty_score(self, query: str, history_queries: List[str]) -> float:
         """
-        用向量余弦相似度检测新颖度。
+        用轻量文本匹配检测新颖度（避免 embedding 调用）。
         返回 0~1，越高表示越新颖（与历史差异越大）。
         """
-        if not self._initialized or not history_queries:
+        if not history_queries:
             return 1.0
 
         try:
-            query_embedding = self._get_embeddings([query])
-            if not query_embedding or not query_embedding[0]:
-                return 0.5
-
-            q_vec = query_embedding[0]
-
+            query_lower = query.lower()
             history_texts = history_queries[-20:]
-            history_embeddings = self._get_embeddings(history_texts)
-
-            max_cos = 0.0
-            for h_vec in history_embeddings:
-                if not h_vec:
+            max_overlap = 0.0
+            for h in history_texts:
+                h_lower = h.lower()
+                # 用字符级 n-gram 重叠率代替 embedding 余弦相似度
+                q_chars = set(query_lower)
+                h_chars = set(h_lower)
+                if not q_chars or not h_chars:
                     continue
-                cos = self._cosine_similarity(q_vec, h_vec)
-                if cos > max_cos:
-                    max_cos = cos
-
-            return max(0.0, 1.0 - max_cos)
+                overlap = len(q_chars & h_chars) / len(q_chars | h_chars)
+                if overlap > max_overlap:
+                    max_overlap = overlap
+            return max(0.0, 1.0 - max_overlap)
         except Exception as e:
             logger.error(f"[VECTOR] novelty_score 计算失败: {e}")
             return 0.5
 
     def coherence_score(self, response: str, query: str) -> float:
         """
-        用向量余弦相似度检测一致性。
+        用轻量文本匹配检测一致性（避免 embedding 调用）。
         返回 0~1，越高表示回复与问题越一致。
         """
         if not response or not query:
             return 0.0
 
-        if not self._initialized:
-            return 0.0
-
         try:
-            embeddings = self._get_embeddings([response, query])
-            if not embeddings or len(embeddings) < 2:
+            # 用字符级重叠率代替 embedding 余弦相似度
+            r_chars = set(response.lower())
+            q_chars = set(query.lower())
+            if not r_chars or not q_chars:
                 return 0.0
+            overlap = len(r_chars & q_chars) / len(r_chars | q_chars)
 
-            r_vec = embeddings[0]
-            q_vec = embeddings[1]
-
-            vector_cos = self._cosine_similarity(r_vec, q_vec)
-
-            # 保留部分符号层面的一致性代理
+            # 保留符号层面的一致性代理
             symbolic = estimate_coherence(response)
 
-            return 0.7 * vector_cos + 0.3 * symbolic
+            return 0.7 * overlap + 0.3 * symbolic
         except Exception as e:
             logger.error(f"[VECTOR] coherence_score 计算失败: {e}")
             return 0.0
@@ -1435,15 +1466,15 @@ class TeachingSystem:
                 anti_lines.append(f"- [{sev}] 禁止回复\"{pattern}\"")
             sections.append("\n".join(anti_lines))
 
-        # 3. 教学知识补丁（检索与当前查询相关的补丁）
-        patches = self.vector_kb.search_patches(query, top_k=5)
+        # 3. 教学知识补丁（检索与当前查询相关的补丁，top_k=10 平衡覆盖率和速度）
+        patches = self.vector_kb.search_patches(query, top_k=10)
         if patches:
             patch_lines = ["【教学知识补丁】"]
             for p in patches:
                 meta = p['metadata']
                 source = meta.get('source', '未知来源')
                 topic = meta.get('topic', '')
-                content = meta.get('content', '')[:300]
+                content = meta.get('content', '')[:150]
                 patch_lines.append(f"- [来源:{source}] {topic}: {content}")
             sections.append("\n".join(patch_lines))
 
@@ -2845,12 +2876,10 @@ def _finalize_turn(
             f"coherence={coherence:.3f} | length={len(response_text)}"
         )
 
-    # 自指反馈环 - 提取关键论断并存入向量库
+    # 自指反馈环 - 批量提取关键论断并存入向量库（一次性写入，避免逐条卡顿）
     propositions = extract_key_propositions(response_text)
     if propositions and vector_kb and vector_kb.is_initialized:
-        for prop in propositions:
-            prop_score = min(coherence * (1.0 + geo_density), 1.0)
-            vector_kb.learn_proposition(prop, prop_score)
+        vector_kb.learn_propositions_batch(propositions, min(coherence * (1.0 + geo_density), 1.0))
         logger.info(
             f"[SELF-REF] 提取 {len(propositions)} 个关键论断 | "
             f"geo_density={geo_density:.4f}"
@@ -3006,7 +3035,10 @@ def chat_completions():
                 except Exception:
                     pass
             response_text = ''.join(collected)
-            _finalize_turn(session_id, clean_query, response_text, eta_before, articles_content, loaded_chunks)
+            # 在后台线程执行 finalize，不阻塞 SSE 响应
+            import threading
+            _ctx = (session_id, clean_query, response_text, eta_before, articles_content, loaded_chunks)
+            threading.Thread(target=_finalize_turn, args=_ctx, daemon=True).start()
         return Response(gen(), mimetype='text/event-stream')
     else:
         client = openai.OpenAI(api_key=KIMI_API_KEY, base_url=KIMI_BASE_URL)

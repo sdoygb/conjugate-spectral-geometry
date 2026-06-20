@@ -360,18 +360,81 @@ mark.key { background: none; color: var(--accent); font-weight: 600; }
 <!-- Quick Start -->
 <section>
   <h2>快速开始</h2>
-  <p>只需三步，即可拥有自己的几何论 AI 学习助手。</p>
+  <p>只需四步，即可拥有自己的几何论 AI 学习助手。</p>
 
+  <h3>系统要求</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>组件</th>
+          <th>角色</th>
+          <th>说明</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Open WebUI</strong></td>
+          <td>聊天网页界面</td>
+          <td>类似 ChatGPT 的对话界面，开源免费</td>
+        </tr>
+        <tr>
+          <td><strong>geometry_ai_server</strong></td>
+          <td>中间层服务</td>
+          <td>注入知识库和教学系统（本项目）</td>
+        </tr>
+        <tr>
+          <td><strong>KIMI API</strong></td>
+          <td>大模型</td>
+          <td>负责生成回答，免费注册</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>安装步骤</h3>
   <div class="code-block">
-    <span class="comment"># 1. 克隆项目（知识库已内置，开箱即用）</span><br>
+    <span class="comment"># 1. 安装 Open WebUI（聊天界面）</span><br>
+    <span class="cmd">pip install</span> open-webui<br>
+    <span class="cmd">open-webui</span> serve<br>
+    <span class="comment"># 浏览器打开 http://localhost:3000 完成初始设置</span><br><br>
+    <span class="comment"># 2. 克隆本项目（知识库已内置，开箱即用）</span><br>
     <span class="cmd">git clone</span> https://github.com/sdoygb/geometry-ai-server.git<br>
     <span class="cmd">cd</span> geometry-ai-server<br><br>
-    <span class="comment"># 2. 安装依赖</span><br>
-    <span class="cmd">pip install</span> flask openai chromadb<br><br>
-    <span class="comment"># 3. 配置 KIMI API Key 并启动</span><br>
+    <span class="comment"># 3. 安装依赖</span><br>
+    <span class="cmd">pip install</span> flask openai chromadb fastembed<br><br>
+    <span class="comment"># 4. 配置 KIMI API Key 并启动中间层</span><br>
     <span class="cmd">export</span> KIMI_API_KEY="你的API Key"<br>
     <span class="cmd">python3</span> geometry_ai_server_v5_12.py
   </div>
+
+  <h3>在 Open WebUI 中接入</h3>
+  <p>打开 Open WebUI 网页 → 设置 → 模型，添加自定义模型：</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>设置项</th>
+          <th>值</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>API Base URL</td>
+          <td><code style="color:var(--accent)">http://localhost:5000/v1</code></td>
+        </tr>
+        <tr>
+          <td>API Key</td>
+          <td>任意非空字符串</td>
+        </tr>
+        <tr>
+          <td>模型名称</td>
+          <td><code style="color:var(--accent)">kimi-k2.7-code</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:0.75rem;color:var(--muted);font-size:0.9rem">关闭"联网搜索"和"引用"功能，避免干扰。</p>
 
   <div class="callout">
     <p>需要 KIMI API Key？前往 <a href="https://platform.moonshot.cn/" target="_blank" style="color:var(--accent)">platform.moonshot.cn</a> 免费注册，新用户有赠送额度。</p>
@@ -476,12 +539,16 @@ mark.key { background: none; color: var(--accent); font-weight: 600; }
           <td>源代码 + 预构建向量知识库</td>
         </tr>
         <tr>
+          <td><a href="https://github.com/open-webui/open-webui" target="_blank" style="color:var(--accent)">Open WebUI</a></td>
+          <td>聊天网页界面（<code style="color:var(--muted)">pip install open-webui &amp;&amp; open-webui serve</code>）</td>
+        </tr>
+        <tr>
           <td>Python 3.11+</td>
           <td>运行环境</td>
         </tr>
         <tr>
-          <td>flask + openai + chromadb</td>
-          <td>三个依赖包</td>
+          <td>flask + openai + chromadb + fastembed</td>
+          <td>依赖包（openai 是 API 客户端库，连接 KIMI）</td>
         </tr>
         <tr>
           <td>KIMI API Key</td>

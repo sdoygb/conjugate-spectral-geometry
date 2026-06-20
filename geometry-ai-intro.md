@@ -150,6 +150,7 @@ Geometry AI Server 的设计理念是：**先学懂，再用好**。
 | 项目 | 说明 |
 |------|------|
 | [GitHub 仓库](https://github.com/sdoygb/geometry-ai-server) | 源代码 + 预构建向量知识库 |
+| [Open WebUI](https://github.com/open-webui/open-webui) | 聊天网页界面（`pip install open-webui && open-webui serve`） |
 | Python 3.11+ | 运行环境 |
 | flask + openai + chromadb + fastembed | 依赖包（openai 是 API 客户端库，连接 KIMI） |
 | KIMI API Key | 免费注册，新用户有赠送额度 |
