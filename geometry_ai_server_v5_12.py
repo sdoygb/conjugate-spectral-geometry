@@ -3014,7 +3014,23 @@ def chat_completions():
         index_empty, files_content, teaching_section
     )
 
-    final_messages = [{"role": "system", "content": system_prompt}] + data.get('messages', [])
+    # 过滤掉空消息（Open WebUI 历史中可能残留空 user 消息，KIMI API 会拒绝）
+    raw_messages = data.get('messages', [])
+    clean_messages = []
+    for m in raw_messages:
+        if not isinstance(m, dict):
+            continue
+        content = m.get('content', '')
+        if isinstance(content, str) and not content.strip():
+            continue
+        if isinstance(content, list) and not any(
+            item.get('text', '').strip() or item.get('image_url', {}) or item.get('file_url', {})
+            for item in content if isinstance(item, dict)
+        ):
+            continue
+        clean_messages.append(m)
+
+    final_messages = [{"role": "system", "content": system_prompt}] + clean_messages
     api_params = {"model": KIMI_MODEL, "messages": final_messages}
     if 'temperature' in data:
         api_params['temperature'] = data['temperature']
