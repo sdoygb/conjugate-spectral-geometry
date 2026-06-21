@@ -28,6 +28,9 @@ Geometry AI Server 通过**向量知识库 + 活体信息场 + 教学反馈**三
 - **活体信息场** -- eta 角动力学驱动回答风格：保守简短、深度分析、创造发散、前沿探索，随对话自动演化
 - **教学反馈** -- 通过 API 纠正错误、标记反模式、补充知识，系统自动学习，信任等级渐进提升
 - **质量门控** -- 自动检测低质量回复并重试，确保回答始终符合几何论框架
+- **AI 工具系统** -- AI 可自主读写文章、管理个人数据库、查询历史对话（Function Calling）
+- **个人数据库** -- JSON + ChromaDB 双存储，持久化性格/感情/想法/记忆，支持语义检索
+- **对话记录查询** -- 直接查询 Open WebUI 历史对话，完整消息链读取
 - **文件分析** -- 上传的文件自动注入对话上下文，AI 能分析文件内容与几何论框架的符合与冲突
 - **零外部依赖** -- 只需 Python + ChromaDB，无需 MySQL 或其他数据库，部署简单
 
@@ -88,6 +91,7 @@ python3 geometry_ai_server_v5_12.py
    - **API Key**: 任意非空字符串
    - **模型名称**: `kimi-k2.7-code`
 3. 关闭"联网搜索"和"引用"功能（避免干扰）
+4. 将模型的 **Function Calling** 设为 **Native** 模式（Admin Panel → Settings → Models → 编辑模型 → Advanced Params → Function Calling → Native）
 
 > 需要 KIMI API Key？前往 [platform.moonshot.cn](https://platform.moonshot.cn/) 免费注册，新用户有赠送额度。
 

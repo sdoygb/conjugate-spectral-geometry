@@ -1,0 +1,1976 @@
+"""
+geometry_ai_server_v8_vector.py
+几何论AI调度中间层 — 向量数据库+学习闭环版
+版本：v8.0
+
+修改目标：
+1. 用 ChromaDB 向量数据库替代伪谱检索系统（GeometrySemanticField）
+2. 使用 KIMI embedding API (moonshot-embedding-v1) 生成向量
+3. 实现"越聊越聪明"的学习闭环：高质量对话自动存入 learned 集合
+4. 两个集合：articles（静态69篇文章知识）和 learned（动态学习的QA对）
+5. MySQL 连接失败时自动降级为内存状态
+6. 新增向量库管理 API 路由
+"""
+
+import os
+import sys
+import re
+import math
+import json
+import random
+import hashlib
+import logging
+import time
+from datetime import datetime, timedelta
+from collections import defaultdict, Counter
+from typing import List, Tuple, Dict, Optional, Any
+
+import openai
+from flask import Flask, request, jsonify, Response
+from flask_cors import CORS
+from werkzeug.utils import secure_filename
+
+try:
+    import pymysql
+    from pymysql.cursors import DictCursor
+    PYMYSQL_AVAILABLE = True
+except ImportError:
+    PYMYSQL_AVAILABLE = False
+    logging.warning("[INIT] pymysql 未安装，将使用内存状态")
+
+try:
+    import chromadb
+    from chromadb.config import Settings as ChromaSettings
+    from chromadb.api.types import Documents, Embeddings
+    CHROMADB_AVAILABLE = True
+except ImportError:
+    CHROMADB_AVAILABLE = False
+    logging.warning("[INIT] chromadb 未安装，向量检索将不可用")
+
+# ------------------------------------------------------------------
+# 日志
+# ------------------------------------------------------------------
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    handlers=[
+        logging.StreamHandler(sys.stdout),
+        logging.FileHandler('geometry_ai_v8.log', encoding='utf-8')
+    ]
+)
+logger = logging.getLogger(__name__)
+
+app = Flask(__name__)
+CORS(app)
+
+# ------------------------------------------------------------------
+# 环境配置
+# ------------------------------------------------------------------
+DB_HOST = os.getenv('DB_HOST', '192.168.1.88')
+DB_PORT = int(os.getenv('DB_PORT', '3306'))
+DB_USER = os.getenv('DB_USER', 'geometry_ai')
+DB_PASSWORD = os.getenv('DB_PASSWORD', 'geometry_ai')
+DB_NAME = os.getenv('DB_NAME', 'geometry_ai')
+
+# ChromaDB 持久化目录
+CHROMA_DB_DIR = os.getenv('CHROMA_DB_DIR', os.path.expanduser('~/AI/chroma_db'))
+
+KIMI_API_KEY = os.getenv('KIMI_API_KEY', 'sk-E1kT0fYuIX568sZquQfDnjVM1dyHIPmK5mVQAF2ZROqfYK3v')
+KIMI_BASE_URL = os.getenv('KIMI_BASE_URL', 'https://api.moonshot.cn/v1')
+KIMI_MODEL = os.getenv('KIMI_MODEL', 'kimi-k2.7-code')
+KIMI_EMBEDDING_MODEL = os.getenv('KIMI_EMBEDDING_MODEL', 'moonshot-embedding-v1')
+
+# Embedding 模式：'default' 使用 ChromaDB 内置模型，'kimi' 使用 KIMI API
+EMBEDDING_MODE = os.getenv('GT_EMBEDDING_MODE', 'default')
+
+UPLOAD_FOLDER = os.getenv('UPLOAD_FOLDER', os.path.expanduser("~/AI/articles"))
+
+OPENWEBUI_UPLOAD_DIR = os.getenv('OPENWEBUI_UPLOAD_DIR', '')
+if not OPENWEBUI_UPLOAD_DIR or not os.path.exists(OPENWEBUI_UPLOAD_DIR):
+    _search_paths = [
+        os.path.expanduser('~/openwebui/venv/lib/python3.11/site-packages/open_webui/data/uploads'),
+        os.path.expanduser('~/open-webui/venv/lib/python3.11/site-packages/open_webui/data/uploads'),
+        '/app/backend/data/uploads',
+        os.path.expanduser('~/openwebui/data/uploads'),
+        os.path.expanduser('~/AI/open-webui/data/uploads'),
+        '/var/lib/docker/volumes/open-webui/_data/uploads',
+    ]
+    for p in _search_paths:
+        if os.path.exists(p):
+            OPENWEBUI_UPLOAD_DIR = p
+            break
+
+MAX_INJECT_CHARS = int(os.getenv('MAX_INJECT_CHARS', '100000'))
+CHUNK_SIZE = int(os.getenv('CHUNK_SIZE', '1000'))
+CHUNK_OVERLAP = int(os.getenv('CHUNK_OVERLAP', '200'))
+MAX_CHUNKS_PER_QUERY = int(os.getenv('MAX_CHUNKS_PER_QUERY', '15'))
+
+# 改进1: 输出质量门控 - 检测KIMI回复是否偏离几何论
+QUALITY_GATE_ENABLED = os.getenv('QUALITY_GATE_ENABLED', 'true').lower() == 'true'
+# 改进2: 最大重试次数
+MAX_QUALITY_RETRIES = int(os.getenv('MAX_QUALITY_RETRIES', '2'))
+# 改进3: Open WebUI uploads 自动发现时间窗口（秒）
+UPLOAD_SCAN_WINDOW = int(os.getenv('UPLOAD_SCAN_WINDOW', '600'))
+
+# 学习闭环阈值
+LEARN_COHERENCE_THRESHOLD = float(os.getenv('LEARN_COHERENCE_THRESHOLD', '0.3'))
+LEARN_MIN_LENGTH = int(os.getenv('LEARN_MIN_LENGTH', '200'))
+
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+# ------------------------------------------------------------------
+# 数据库降级标志
+# ------------------------------------------------------------------
+DB_REQUIRED = True  # 启动时检测，MySQL不可用则设为 False
+
+# ------------------------------------------------------------------
+# 几何论锁定常数（仅保留 69 篇文章中声明的常数）
+# ------------------------------------------------------------------
+GEOMETRY_CONSTANTS = {
+    "S_e": 137.035999084,           # 七级递推锁定
+    "lambda1_eff": 391.05,          # rad^-2，有效软模（文章 0.0.5 谱刚性定理）
+    "lambda2_eff": 59324.3,         # rad^-2，有效硬模（文章 0.0.5 谱刚性定理）
+    "chi_L": 1.5092231080e-10,      # m，量纲桥输出
+    "chi_T": 3.6161912064e-17,      # s，量纲桥输出
+    "K": 839.758793,                # keV，能量尺度常数
+    "Gamma_geo": 5.75e-23,          # 信息场特征衰减率
+    "tau_dec_days": 7.28,           # 退相干因果深度周期
+    "tau_dec_seconds": 7.28 * 24 * 3600,
+    "Lambda": 3,                    # 九素互扼面积放大因子（文章 0.0.5 命题 2.0）
+    "k0": 2,                        # 九素互扼维度放大因子（文章 0.0.5 命题 2.0）
+    "eta_background": 30.0,         # 背景点吸引子
+    "eta_p2": 72.53,                # P2 上饱和稳态 theta_I
+    "theta_I_sat": 72.53,           # 同上
+}
+
+GEOMETRY_KNOWLEDGE = """
+你是严格的几何论（Geometric Theory）专家，只基于欧阳国彬的69篇文章（基础篇20章+应用篇49章）回答问题。
+
+核心公理体系：
+- 公理1：完备性约束 theta_M + theta_C + theta_I = 90度
+- 公理2：六项作用量 S = sum 1/sin^2 theta_i + sum_{i<j} 1/(sin theta_i sin theta_j)
+- 公理3：质量映射 m = K * sin^3 theta_M
+
+关键锁定常数：
+- Lambda = 3（九素互扼互锁常数，面积放大因子；文章 0.0.5 命题 2.0）
+- k0 = 2（九素互扼互锁常数，维度放大因子；文章 0.0.5 命题 2.0）
+- S_e = 137.035999084（七级递推锁定）
+- lambda1_eff = 391.05 rad^-2，lambda2_eff = 59324.3 rad^-2（有效软硬模；文章 0.0.5）
+- chi_L = 1.509e-10 m，chi_T = 3.616e-17 s（量纲桥输出）
+- K = 839.758793 keV（能量尺度常数）
+- Gamma_geo = 5.75e-23（信息场特征衰减率）
+- tau_dec ~ 7.28日（退相干因果深度周期）
+
+关键定理：
+- 九素互扼定理：6个互扼环节锁定2个互锁常数，超定方程组无自由参数
+- 谱刚性定理：前三个非零Laplace-Beltrami特征值唯一确定尺度因子（文章 0.0.5）
+- 桥接函数唯一性定理：S(a) = 12(a^2/ell_0^2 + ell_0^2/a^2)
+- 信息场热方程：partial rho/partial sigma = -L_G rho
+- 上饱和稳态：theta_I ~ 72.53度，theta_M = theta_C ~ 8.73度，Hessian正定
+
+活体调度规则：
+1. 当前eta角是信息场软模激发度的实时读出，不是外部计数器
+2. eta角服从内禀动力学：弛豫（向30度回归）+ 共振（新颖信息激发）+ 自指（输出质量反馈）
+3. 只能使用69篇文章内定义的符号和定理，不得引入外部物理假设
+4. 标准模型、广义相对论、弦论等视为CIM相的低能有效场论近似
+5. 超出69篇文章范围的问题，回答"这不在当前几何论框架内，需后续扩展"
+6. 所有数值必须标注来源文章和定理编号
+7. 严格区分"定理"、"命题"、"研究方向"和"假设"
+8. 光速c为唯一外部锚点
+"""
+
+TERM_SYNONYMS = {
+    "精细结构常数": ["alpha", "s_e", "137"],
+    "九素互扼": ["九素", "互扼", "互锁常数", "lambda", "k0"],
+    "谱刚性": ["laplace", "beltrami", "特征值", "等谱", "等距"],
+    "信息场": ["rho", "密度", "热方程", "退相干"],
+    "退相干": ["tau_dec", "因果深度", "n_dec", "7.28"],
+    "全息屏": ["screen", "sigma", "s2", "面积"],
+    "量纲桥": ["chi_l", "chi_t", "桥接", "尺度"],
+    "质量映射": ["k", "sin3", "theta_m", "能量尺度"],
+    "弱电统一": ["w", "z", "higgs", "混合角", "sin2_theta_w"],
+    "强相互作用": ["alpha_s", "色荷", "胶子", "禁闭"],
+    "中微子": ["neutrino", "m3", "m2", "m1", "质量"],
+    "氢原子": ["h1", "h2", "h3", "超精细", "基态"],
+    "引力": ["gravity", "g_9d", "lyapunov", "弱场"],
+    "自旋": ["spin", "1/2", "so3", "su2", "泡利"],
+}
+
+SYNONYM_EXPAND = {}
+for term, syns in TERM_SYNONYMS.items():
+    for s in syns:
+        SYNONYM_EXPAND[s] = term
+    SYNONYM_EXPAND[term] = term
+
+# ==================== KIMI Embedding Function ====================
+
+class KimiEmbeddingFunction:
+    """使用 KIMI API (moonshot-embedding-v1) 的 ChromaDB 自定义 Embedding Function"""
+
+    def __init__(self):
+        self.client = openai.OpenAI(api_key=KIMI_API_KEY, base_url=KIMI_BASE_URL)
+        self.model = KIMI_EMBEDDING_MODEL
+
+    def name(self) -> str:
+        return "kimi-moonshot-embedding"
+
+    def __call__(self, input: Documents) -> Embeddings:
+        all_embeddings = []
+        for i in range(0, len(input), 32):
+            batch = input[i:i + 32]
+            try:
+                resp = self.client.embeddings.create(model=self.model, input=batch)
+                all_embeddings.extend([d.embedding for d in resp.data])
+            except Exception as e:
+                logger.error(f"[EMBEDDING] KIMI embedding 批次 {i//32} 失败: {e}")
+                # 返回零向量作为降级方案
+                for _ in batch:
+                    all_embeddings.append([0.0] * 1536)
+        return all_embeddings
+
+
+# ==================== VectorKnowledgeBase（替代 GeometrySemanticField） ====================
+
+class VectorKnowledgeBase:
+    """
+    使用 ChromaDB 向量数据库的几何论知识库。
+    两个集合：
+    - articles: 静态69篇文章知识（从文件目录构建）
+    - learned: 动态学习的QA对（高质量对话自动存入）
+    """
+
+    def __init__(self, persist_dir: str):
+        self.persist_dir = persist_dir
+        os.makedirs(persist_dir, exist_ok=True)
+        # 根据配置选择 embedding function
+        if EMBEDDING_MODE == 'kimi':
+            self.embedding_fn = KimiEmbeddingFunction()
+            self._embedding_name = f"kimi({KIMI_EMBEDDING_MODEL})"
+        else:
+            self.embedding_fn = None  # 使用 ChromaDB 默认 embedding
+            self._embedding_name = "chromadb-default"
+        self.client = None
+        self.articles_collection = None
+        self.learned_collection = None
+        self._initialized = False
+        self._articles_count = 0
+        self._learned_count = 0
+
+    def initialize(self) -> bool:
+        """初始化 ChromaDB 客户端和集合"""
+        if not CHROMADB_AVAILABLE:
+            logger.error("[VECTOR] chromadb 未安装，向量检索不可用")
+            return False
+        try:
+            self.client = chromadb.PersistentClient(path=self.persist_dir)
+            # 构建 collection 参数
+            col_kwargs = {}
+            if self.embedding_fn is not None:
+                col_kwargs["embedding_function"] = self.embedding_fn
+            # 获取或创建 articles 集合
+            self.articles_collection = self.client.get_or_create_collection(
+                name="articles",
+                metadata={"description": "几何论69篇文章静态知识库"},
+                **col_kwargs
+            )
+            # 获取或创建 learned 集合
+            self.learned_collection = self.client.get_or_create_collection(
+                name="learned",
+                metadata={"description": "动态学习的QA对"},
+                **col_kwargs
+            )
+            self._articles_count = self.articles_collection.count()
+            self._learned_count = self.learned_collection.count()
+            self._initialized = True
+            logger.info(
+                f"[VECTOR] ChromaDB 初始化成功 | "
+                f"articles: {self._articles_count} | learned: {self._learned_count}"
+            )
+            return True
+        except Exception as e:
+            logger.error(f"[VECTOR] ChromaDB 初始化失败: {e}")
+            return False
+
+    @property
+    def is_initialized(self) -> bool:
+        return self._initialized
+
+    @property
+    def articles_count(self) -> int:
+        if self.articles_collection:
+            self._articles_count = self.articles_collection.count()
+        return self._articles_count
+
+    @property
+    def learned_count(self) -> int:
+        if self.learned_collection:
+            self._learned_count = self.learned_collection.count()
+        return self._learned_count
+
+    @property
+    def total_docs(self) -> int:
+        return self.articles_count + self.learned_count
+
+    def smart_chunk(self, content: str, article_id: str, fname: str) -> List[Dict]:
+        """智能分块：优先在段落或句子边界处切分"""
+        chunks = []
+        start = 0
+        length = len(content)
+        while start < length:
+            target_end = min(start + CHUNK_SIZE, length)
+            if target_end < length:
+                search_range = content[target_end:min(target_end + 200, length)]
+                best_break = target_end
+                para_match = re.search(r'\n\n', search_range)
+                if para_match:
+                    best_break = target_end + para_match.start()
+                else:
+                    sentence_end = re.search(r'[\u3002\.\?\!]\s', search_range)
+                    if sentence_end:
+                        best_break = target_end + sentence_end.start() + 2
+                target_end = min(best_break, length)
+            chunk_text = content[start:target_end]
+            chunks.append({
+                'article_id': article_id,
+                'fname': fname,
+                'text': chunk_text,
+                'start': start,
+                'end': target_end
+            })
+            start += max(target_end - start - CHUNK_OVERLAP, CHUNK_SIZE // 2)
+        return chunks
+
+    def build_index(self, articles_dir: str) -> Dict[str, Any]:
+        """
+        读取文章目录，分块后存入 articles 集合。
+        如果 articles 集合已有数据，先清空再重建。
+        """
+        diag = {
+            "dir_exists": False,
+            "files_found": 0,
+            "files_indexed": 0,
+            "total_chunks": 0,
+            "errors": []
+        }
+        if not self._initialized:
+            diag["errors"].append("ChromaDB 未初始化")
+            logger.error("[VECTOR] ChromaDB 未初始化，无法构建索引")
+            return diag
+
+        if not os.path.exists(articles_dir):
+            diag["errors"].append(f"文章目录不存在: {articles_dir}")
+            logger.error(f"[VECTOR] 文章目录不存在: {articles_dir}")
+            return diag
+
+        diag["dir_exists"] = True
+        valid_exts = ('.md', '.txt', '.py', '.tex', '.rst', '.markdown')
+
+        # 读取与分块
+        all_chunks = []
+        for fname in sorted(os.listdir(articles_dir)):
+            fpath = os.path.join(articles_dir, fname)
+            if not os.path.isfile(fpath):
+                continue
+
+            has_valid_ext = fname.endswith(valid_exts)
+            is_text = False
+            if not has_valid_ext:
+                try:
+                    with open(fpath, 'rb') as f:
+                        sample = f.read(1024)
+                        is_text = all(b < 128 or b >= 128 for b in sample) and b'\x00' not in sample
+                except Exception:
+                    pass
+            if not (has_valid_ext or is_text):
+                continue
+
+            diag["files_found"] += 1
+            try:
+                with open(fpath, 'r', encoding='utf-8') as f:
+                    content = f.read()
+            except Exception as e:
+                diag["errors"].append(f"读取失败 {fname}: {e}")
+                continue
+
+            match = re.match(r'([\d\.]+|AI-\d+)', fname)
+            article_id = match.group(1) if match else fname
+            file_chunks = self.smart_chunk(content, article_id, fname)
+            all_chunks.extend(file_chunks)
+            diag["files_indexed"] += 1
+
+        if not all_chunks:
+            diag["errors"].append("没有索引到任何有效文档")
+            logger.warning("[VECTOR] 没有索引到任何文档")
+            return diag
+
+        # 清空旧索引并重建
+        try:
+            # 删除旧集合再重新创建，确保干净重建
+            self.client.delete_collection("articles")
+            self.articles_collection = self.client.get_or_create_collection(
+                name="articles",
+                metadata={"description": "几何论69篇文章静态知识库"},
+                embedding_function=self.embedding_fn
+            )
+        except Exception as e:
+            logger.warning(f"[VECTOR] 清空 articles 集合时出错（可能为空）: {e}")
+
+        # 批量插入（ChromaDB 有批量大小限制，每批500条）
+        batch_size = 500
+        ids = []
+        documents = []
+        metadatas = []
+        for i, chunk in enumerate(all_chunks):
+            chunk_id = f"art_{chunk['article_id']}_{chunk['start']}_{chunk['end']}"
+            ids.append(chunk_id)
+            documents.append(chunk['text'])
+            metadatas.append({
+                "article_id": chunk['article_id'],
+                "fname": chunk['fname'],
+                "start": chunk['start'],
+                "end": chunk['end'],
+                "source": "articles"
+            })
+
+            if len(ids) >= batch_size:
+                try:
+                    self.articles_collection.add(
+                        ids=ids, documents=documents, metadatas=metadatas
+                    )
+                except Exception as e:
+                    diag["errors"].append(f"批量插入失败: {e}")
+                    logger.error(f"[VECTOR] 批量插入 articles 失败: {e}")
+                ids = []
+                documents = []
+                metadatas = []
+
+        # 插入剩余的
+        if ids:
+            try:
+                self.articles_collection.add(
+                    ids=ids, documents=documents, metadatas=metadatas
+                )
+            except Exception as e:
+                diag["errors"].append(f"最后批次插入失败: {e}")
+                logger.error(f"[VECTOR] 最后批次插入 articles 失败: {e}")
+
+        self._articles_count = self.articles_collection.count()
+        diag["total_chunks"] = self._articles_count
+        logger.info(
+            f"[VECTOR] 索引完成: {diag['files_indexed']} 个文件, "
+            f"{self._articles_count} 个文本块"
+        )
+        return diag
+
+    def search(self, query: str, top_k: int = 15) -> List[Dict[str, Any]]:
+        """
+        从 articles + learned 两个集合检索，返回相关文本。
+        每个结果包含 text, source, metadata 等信息。
+        """
+        if not self._initialized:
+            return []
+
+        results = []
+
+        # 从 articles 集合检索
+        try:
+            n_articles = min(top_k, self.articles_count) if self.articles_count > 0 else 0
+            if n_articles > 0:
+                art_results = self.articles_collection.query(
+                    query_texts=[query],
+                    n_results=n_articles
+                )
+                if art_results and art_results['documents']:
+                    for i, doc in enumerate(art_results['documents'][0]):
+                        meta = art_results['metadatas'][0][i] if art_results['metadatas'] else {}
+                        dist = art_results['distances'][0][i] if art_results['distances'] else 0.0
+                        results.append({
+                            'text': doc,
+                            'source': 'articles',
+                            'metadata': meta,
+                            'distance': dist,
+                            'label': f"文章库: {meta.get('fname', '未知')} ({meta.get('article_id', '?')})"
+                        })
+        except Exception as e:
+            logger.error(f"[VECTOR] articles 检索失败: {e}")
+
+        # 从 learned 集合检索
+        try:
+            n_learned = min(top_k, self.learned_count) if self.learned_count > 0 else 0
+            if n_learned > 0:
+                learned_results = self.learned_collection.query(
+                    query_texts=[query],
+                    n_results=n_learned
+                )
+                if learned_results and learned_results['documents']:
+                    for i, doc in enumerate(learned_results['documents'][0]):
+                        meta = learned_results['metadatas'][0][i] if learned_results['metadatas'] else {}
+                        dist = learned_results['distances'][0][i] if learned_results['distances'] else 0.0
+                        results.append({
+                            'text': doc,
+                            'source': 'learned',
+                            'metadata': meta,
+                            'distance': dist,
+                            'label': f"[学习记忆] (质量:{meta.get('quality_score', '?')})"
+                        })
+        except Exception as e:
+            logger.error(f"[VECTOR] learned 检索失败: {e}")
+
+        # 按距离排序（越小越相关）
+        results.sort(key=lambda x: x.get('distance', 999.0))
+        return results[:top_k]
+
+    def get_formatted_results(self, results: List[Dict[str, Any]]) -> Tuple[str, List[str]]:
+        """
+        将检索结果格式化为可注入 prompt 的文本。
+        返回 (formatted_text, chunk_labels)
+        """
+        contents = []
+        total_chars = 0
+        loaded_chunks = []
+
+        for r in results:
+            text = r['text']
+            if total_chars + len(text) > MAX_INJECT_CHARS:
+                remaining = MAX_INJECT_CHARS - total_chars
+                if remaining > 500:
+                    text = text[:remaining] + "\n...[截断]\n"
+                else:
+                    break
+
+            if r['source'] == 'learned':
+                header = (
+                    f"\n{'='*50}\n"
+                    f"[学习记忆] 质量分:{r['metadata'].get('quality_score', '?')} "
+                    f"距离:{r['distance']:.4f}\n"
+                    f"{'='*50}\n"
+                )
+            else:
+                meta = r['metadata']
+                header = (
+                    f"\n{'='*50}\n"
+                    f"文章: {meta.get('article_id', '?')} ({meta.get('fname', '?')}) "
+                    f"位置:{meta.get('start', '?')}-{meta.get('end', '?')} "
+                    f"距离:{r['distance']:.4f}\n"
+                    f"{'='*50}\n"
+                )
+
+            contents.append(header + text)
+            total_chars += len(header) + len(text)
+            loaded_chunks.append(r['label'])
+
+        return "\n".join(contents), loaded_chunks
+
+    def learn(self, q: str, a: str, score: float) -> bool:
+        """
+        高质量对话后，将 Q&A 存入 learned 集合。
+        metadata 包含 quality_score。
+        """
+        if not self._initialized:
+            return False
+        if not q or not a:
+            return False
+
+        # 组合 Q&A 为一个文档
+        doc = f"问题: {q}\n回答: {a}"
+        doc_id = f"learned_{hashlib.md5(doc.encode()).hexdigest()[:16]}_{int(time.time())}"
+
+        try:
+            self.learned_collection.add(
+                ids=[doc_id],
+                documents=[doc],
+                metadatas=[{
+                    "question": q[:500],
+                    "quality_score": round(score, 4),
+                    "source": "learned",
+                    "created_at": datetime.now().isoformat(),
+                    "answer_length": len(a)
+                }]
+            )
+            self._learned_count = self.learned_collection.count()
+            logger.info(
+                f"[VECTOR-LEARN] 存入学习库 | score={score:.3f} | "
+                f"learned总数={self._learned_count}"
+            )
+            return True
+        except Exception as e:
+            logger.error(f"[VECTOR-LEARN] 存入学习库失败: {e}")
+            return False
+
+    def clear_learned(self) -> Dict[str, Any]:
+        """清空学习库"""
+        result = {"success": False, "cleared": 0}
+        if not self._initialized:
+            result["error"] = "ChromaDB 未初始化"
+            return result
+        try:
+            count_before = self.learned_count
+            # 删除 learned 集合再重建
+            self.client.delete_collection("learned")
+            self.learned_collection = self.client.get_or_create_collection(
+                name="learned",
+                metadata={"description": "动态学习的QA对"},
+                embedding_function=self.embedding_fn
+            )
+            self._learned_count = 0
+            result["success"] = True
+            result["cleared"] = count_before
+            logger.info(f"[VECTOR] 学习库已清空，共删除 {count_before} 条")
+        except Exception as e:
+            result["error"] = str(e)
+            logger.error(f"[VECTOR] 清空学习库失败: {e}")
+        return result
+
+    def _get_embeddings(self, texts: List[str]) -> List[List[float]]:
+        """获取文本的 embedding 向量，根据配置使用自定义或 ChromaDB 默认 embedding"""
+        if not texts:
+            return []
+        if self.embedding_fn is not None:
+            return self.embedding_fn(texts)
+        # 使用 ChromaDB 内置 embedding（通过临时 collection 的 _embed 方法）
+        try:
+            temp_col = self.client.get_or_create_collection(name="_temp_embed")
+            result = temp_col._embed(input=texts, is_query=False)
+            return result
+        except Exception:
+            # 最后降级：返回零向量
+            dim = 384  # ChromaDB 默认维度
+            return [[0.0] * dim for _ in texts]
+
+    def novelty_score(self, query: str, history_queries: List[str]) -> float:
+        """
+        用向量余弦相似度检测新颖度。
+        返回 0~1，越高表示越新颖（与历史差异越大）。
+        """
+        if not self._initialized or not history_queries:
+            return 1.0
+
+        try:
+            query_embedding = self._get_embeddings([query])
+            if not query_embedding or not query_embedding[0]:
+                return 0.5
+
+            q_vec = query_embedding[0]
+
+            history_texts = history_queries[-20:]
+            history_embeddings = self._get_embeddings(history_texts)
+
+            max_cos = 0.0
+            for h_vec in history_embeddings:
+                if not h_vec:
+                    continue
+                cos = self._cosine_similarity(q_vec, h_vec)
+                if cos > max_cos:
+                    max_cos = cos
+
+            return max(0.0, 1.0 - max_cos)
+        except Exception as e:
+            logger.error(f"[VECTOR] novelty_score 计算失败: {e}")
+            return 0.5
+
+    def coherence_score(self, response: str, query: str) -> float:
+        """
+        用向量余弦相似度检测一致性。
+        返回 0~1，越高表示回复与问题越一致。
+        """
+        if not response or not query:
+            return 0.0
+
+        if not self._initialized:
+            return 0.0
+
+        try:
+            embeddings = self._get_embeddings([response, query])
+            if not embeddings or len(embeddings) < 2:
+                return 0.0
+
+            r_vec = embeddings[0]
+            q_vec = embeddings[1]
+
+            vector_cos = self._cosine_similarity(r_vec, q_vec)
+
+            # 保留部分符号层面的一致性代理
+            symbolic = estimate_coherence(response)
+
+            return 0.7 * vector_cos + 0.3 * symbolic
+        except Exception as e:
+            logger.error(f"[VECTOR] coherence_score 计算失败: {e}")
+            return 0.0
+
+    @staticmethod
+    def _cosine_similarity(vec_a: List[float], vec_b: List[float]) -> float:
+        """计算两个向量的余弦相似度"""
+        if not vec_a or not vec_b or len(vec_a) != len(vec_b):
+            return 0.0
+        dot = sum(a * b for a, b in zip(vec_a, vec_b))
+        norm_a = math.sqrt(sum(a * a for a in vec_a))
+        norm_b = math.sqrt(sum(b * b for b in vec_b))
+        if norm_a == 0 or norm_b == 0:
+            return 0.0
+        return dot / (norm_a * norm_b)
+
+    def get_status(self) -> Dict[str, Any]:
+        """返回向量库状态"""
+        return {
+            "initialized": self._initialized,
+            "persist_dir": self.persist_dir,
+            "articles_count": self.articles_count,
+            "learned_count": self.learned_count,
+            "total_docs": self.total_docs,
+            "embedding_model": KIMI_EMBEDDING_MODEL,
+        }
+
+
+# ==================== 文件解析工具 ====================
+
+def find_file_by_reference(filename_hint: str, search_dir: str) -> str:
+    if not os.path.exists(search_dir):
+        return ""
+    clean_hint = re.sub(r'_[A-Z]{2}_\d+\.\d+', '', filename_hint)
+    clean_hint = re.sub(r'\.\w+$', '', clean_hint)
+    clean_hint = clean_hint.strip()
+    logger.info(f"[FILES] 搜索文件: hint='{filename_hint}', clean='{clean_hint}', dir='{search_dir}'")
+
+    best_match = None
+    best_score = 0
+    for fname in os.listdir(search_dir):
+        fpath = os.path.join(search_dir, fname)
+        if not os.path.isfile(fpath):
+            continue
+        if fname.startswith('uploaded_default_') or fname.startswith('temp_'):
+            continue
+        fname_clean = re.sub(r'_[A-Z]{2}_\d+\.\d+', '', fname)
+        fname_clean = re.sub(r'\.\w+$', '', fname_clean)
+        if clean_hint.lower() == fname_clean.lower():
+            best_match = fpath
+            best_score = 100
+            break
+        if clean_hint.lower() in fname_clean.lower() or fname_clean.lower() in clean_hint.lower():
+            score = len(clean_hint) / max(len(fname_clean), 1) * 50
+            if score > best_score:
+                best_score = score
+                best_match = fpath
+
+    if best_match and best_score > 20:
+        try:
+            text, ok = extract_text_from_file(best_match)
+            if ok and text:
+                logger.info(f"[FILES] 找到匹配文件: {os.path.basename(best_match)}")
+                return text
+        except Exception as e:
+            logger.error(f"[FILES] 读取匹配文件失败: {e}")
+    logger.warning(f"[FILES] 未找到匹配文件: '{filename_hint}'")
+    return ""
+
+
+def extract_text_from_file(filepath: str) -> Tuple[str, bool]:
+    ext = os.path.splitext(filepath)[1].lower().lstrip('.')
+    if ext in ('txt', 'md', 'py', 'tex', 'rst', 'markdown'):
+        try:
+            with open(filepath, 'r', encoding='utf-8') as f:
+                return f.read(), True
+        except UnicodeDecodeError:
+            try:
+                with open(filepath, 'r', encoding='gbk') as f:
+                    return f.read(), True
+            except Exception:
+                return "", False
+    elif ext == 'pdf':
+        try:
+            import PyPDF2
+            text = ""
+            with open(filepath, 'rb') as f:
+                reader = PyPDF2.PdfReader(f)
+                for page in reader.pages:
+                    text += page.extract_text() + "\n"
+            return text, True
+        except ImportError:
+            logger.error("[UPLOAD] 解析PDF需要 PyPDF2")
+            return "", False
+        except Exception as e:
+            logger.error(f"[UPLOAD] PDF解析失败: {e}")
+            return "", False
+    elif ext == 'docx':
+        try:
+            import docx
+            doc = docx.Document(filepath)
+            text = "\n".join([para.text for para in doc.paragraphs])
+            return text, True
+        except ImportError:
+            logger.error("[UPLOAD] 解析DOCX需要 python-docx")
+            return "", False
+        except Exception as e:
+            logger.error(f"[UPLOAD] DOCX解析失败: {e}")
+            return "", False
+    else:
+        try:
+            with open(filepath, 'r', encoding='utf-8') as f:
+                return f.read(), True
+        except Exception:
+            return "", False
+
+
+def allowed_file(filename: str) -> bool:
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {
+        'txt', 'md', 'pdf', 'docx', 'py', 'tex', 'rst', 'markdown'
+    }
+
+
+# ==================== 改进：Open WebUI uploads 自动发现 ====================
+
+def scan_openwebui_recent_uploads(max_files: int = 5) -> str:
+    """
+    扫描 Open WebUI uploads 目录，找到最近上传的文件并提取内容。
+    当 Open WebUI 不把文件内容嵌入到 chat completions 请求时，这是唯一的补救方案。
+    """
+    if not os.path.exists(OPENWEBUI_UPLOAD_DIR):
+        return ""
+
+    now = time.time()
+    recent_files = []
+    try:
+        for fname in os.listdir(OPENWEBUI_UPLOAD_DIR):
+            fpath = os.path.join(OPENWEBUI_UPLOAD_DIR, fname)
+            if not os.path.isfile(fpath):
+                continue
+            mtime = os.path.getmtime(fpath)
+            age_seconds = now - mtime
+            if age_seconds < UPLOAD_SCAN_WINDOW:
+                recent_files.append((fpath, fname, mtime, age_seconds))
+    except Exception as e:
+        logger.error(f"[OPENWEBUI] 扫描 uploads 目录失败: {e}")
+        return ""
+
+    if not recent_files:
+        return ""
+
+    recent_files.sort(key=lambda x: x[2], reverse=True)
+    logger.info(f"[OPENWEBUI] 发现 {len(recent_files)} 个最近上传的文件（{UPLOAD_SCAN_WINDOW}秒内）")
+
+    contents = []
+    for fpath, fname, mtime, age in recent_files[:max_files]:
+        text, ok = extract_text_from_file(fpath)
+        if ok and text and len(text.strip()) > 10:
+            contents.append(f"--- 文件: {fname} (上传于{age:.0f}秒前) ---\n{text[:50000]}\n--- 文件结束 ---")
+            logger.info(f"[OPENWEBUI] 读取: {fname} ({len(text)} 字符, {age:.0f}秒前)")
+
+    return "\n\n".join(contents)
+
+
+# ==================== 改进：输出质量门控 ====================
+
+# 偏离几何论的红灯短语
+_QUALITY_RED_FLAGS = [
+    "未找到任何引用来源", "未找到引用", "no citation", "no reference found",
+    "我无法访问", "我无法读取", "i cannot access", "i cannot read",
+    "没有接收到你上传的文件", "没有收到文件", "未收到文件内容",
+    "作为一个AI语言模型", "作为一个人工智能", "as an ai language model",
+    "我是一个AI", "我是AI助手",
+    "超出我的知识范围", "我不知道", "我不确定",
+]
+
+# 几何论正面信号
+_QUALITY_GREEN_SIGNALS = [
+    "公理", "定理", "命题", "引理", "推论", "证明",
+    "theta", "eta", "lambda", "sin", "cos",
+    "几何论", "信息场", "谱刚性", "九素互扼",
+    "文章", "章节", "S_e", "Gamma_geo",
+    "退相干", "全息屏", "量纲桥", "质量映射",
+]
+
+
+def check_response_quality(response_text: str) -> Tuple[bool, str]:
+    """
+    检查 KIMI 回复质量。返回 (is_good, reason)。
+    如果回复包含红灯短语且缺少几何论术语，判定为低质量。
+    """
+    if not response_text or len(response_text.strip()) < 20:
+        return False, "回复过短或为空"
+
+    lower_text = response_text.lower()
+
+    # 检查红灯短语
+    red_flags_found = []
+    for flag in _QUALITY_RED_FLAGS:
+        if flag.lower() in lower_text:
+            red_flags_found.append(flag)
+
+    # 检查正面信号
+    green_count = sum(1 for sig in _QUALITY_GREEN_SIGNALS if sig.lower() in lower_text)
+
+    # 判定逻辑
+    if red_flags_found and green_count == 0:
+        return False, f"偏离几何论: 包含'{red_flags_found[0]}'，无几何论术语"
+
+    if len(response_text.strip()) < 50 and green_count == 0:
+        return False, "回复过短且无几何论内容"
+
+    return True, "ok"
+
+
+def extract_files_from_request(data: Dict[str, Any]) -> Tuple[str, str]:
+    files_content: List[str] = []
+    all_text_parts: List[str] = []
+    messages = data.get('messages', []) if isinstance(data, dict) else []
+
+    for m in messages:
+        if not isinstance(m, dict):
+            continue
+        if m.get('role') != 'user':
+            continue
+        content = m.get('content', '')
+        if isinstance(content, str) and content.strip():
+            all_text_parts.append(content.strip())
+        elif isinstance(content, list):
+            for item in content:
+                if not isinstance(item, dict):
+                    continue
+                itype = item.get('type', '')
+                if itype == 'text':
+                    txt = item.get('text', '').strip()
+                    if txt:
+                        all_text_parts.append(txt)
+                elif itype in ('file', 'file_url', 'document', 'document_url', 'image_url'):
+                    info = item.get(itype, item)
+                    if isinstance(info, dict):
+                        fname = info.get('name', info.get('filename', info.get('title', 'uploaded')))
+                        fcontent = info.get('content', info.get('text', info.get('document', '')))
+                        if isinstance(fcontent, str) and fcontent:
+                            files_content.append(
+                                f"--- 文件: {fname} ---\n{fcontent[:50000]}\n--- 文件结束 ---"
+                            )
+                            logger.info(f"[FILES] 提取 {fname}: {len(fcontent)} 字符")
+
+    # 请求顶层与 metadata 中的文件
+    for key in ('files', 'attachments', 'documents', 'uploads'):
+        for f in data.get(key, []) or []:
+            if isinstance(f, dict):
+                fname = f.get('name', f.get('filename', 'unknown'))
+                fcontent = f.get('content', f.get('text', f.get('document', '')))
+                if isinstance(fcontent, str) and fcontent:
+                    files_content.append(f"--- 文件: {fname} ---\n{fcontent[:50000]}\n--- 文件结束 ---")
+    meta = data.get('metadata', {}) or {}
+    if not meta:
+        meta = data.get('meta', {}) or {}
+    if isinstance(meta, dict):
+        for key in ('files', 'attachments', 'documents', 'uploads'):
+            for f in meta.get(key, []) or []:
+                if isinstance(f, dict):
+                    fname = f.get('name', f.get('filename', 'unknown'))
+                    fcontent = f.get('content', f.get('text', ''))
+                    if isinstance(fcontent, str) and fcontent:
+                        files_content.append(f"--- 文件: {fname} ---\n{fcontent[:50000]}\n--- 文件结束 ---")
+
+    combined = " ".join(all_text_parts)
+
+    auto_markers = [
+        '### Task:', '### 任务:', 'Generate a concise', 'Generate 1-3 broad tags',
+        'Analyze the chat history', 'Create a title', 'Summarize this', 'Generate title'
+    ]
+    is_auto = any(marker in combined for marker in auto_markers)
+
+    if is_auto:
+        clean = combined[:500]
+    elif len(combined) > 2000 and not files_content:
+        lines = combined.split('\n')
+        instr = []
+        file_start = 0
+        for i, line in enumerate(lines[:10]):
+            if line.strip() and len(line) < 200 and not line.startswith('#'):
+                instr.append(line)
+                file_start = i + 1
+            elif line.strip() and i < 3:
+                file_start = i + 1
+            elif line.strip():
+                break
+        if instr and file_start < len(lines):
+            clean = " ".join(instr)[:300]
+            file_text = '\n'.join(lines[file_start:])
+            files_content.append(f"--- 粘贴文件内容 ---\n{file_text[:50000]}\n--- 文件结束 ---")
+        else:
+            clean = combined[:300]
+            files_content.append(f"--- 粘贴文件内容 ---\n{combined[:50000]}\n--- 文件结束 ---")
+    else:
+        clean = combined[:500] if combined else ""
+
+    if not clean and files_content:
+        clean = "请分析上传的文件内容"
+
+    # 文件引用解析，例如 ('', '1_氢原子能级')
+    if not files_content and clean:
+        patterns = [
+            r"\(\s*['\"]\s*['\"]\s*,\s*['\"](.+?)['\"]\s*\)",
+            r"\(\s*['\"](.+?)['\"]\s*\)",
+            r"\[文件\]\s*(.+)",
+        ]
+        for pat in patterns:
+            m = re.search(pat, clean)
+            if m:
+                hint = m.group(1).strip()
+                found = find_file_by_reference(hint, UPLOAD_FOLDER)
+                if found:
+                    files_content.append(
+                        f"--- 文件引用解析: {hint} ---\n{found[:50000]}\n--- 文件结束 ---"
+                    )
+                break
+
+    return "\n\n".join(files_content), clean
+
+# ==================== 数据库（MySQL + 自动降级） ====================
+
+# 内存状态（MySQL 不可用时使用）
+_memory_eta_state = {
+    "id": 1,
+    "current_eta": 30.0,
+    "max_eta": 30.0,
+    "stage": 0,
+    "stored_phase_markers": 0,
+    "self_reference_score": 0.0,
+    "novelty_accumulator": 0.0,
+    "last_input_hash": None,
+}
+_memory_conversations: List[Dict[str, Any]] = []
+_memory_phase_markers: List[Dict[str, Any]] = []
+
+
+def get_db():
+    """获取 MySQL 连接，如果不可用则返回 None"""
+    if not DB_REQUIRED or not PYMYSQL_AVAILABLE:
+        return None
+    try:
+        conn = pymysql.connect(
+            host=DB_HOST, port=DB_PORT, user=DB_USER,
+            password=DB_PASSWORD, database=DB_NAME,
+            charset='utf8mb4', cursorclass=DictCursor,
+            connect_timeout=5
+        )
+        return conn
+    except Exception as e:
+        logger.error(f"[DB] MySQL 连接失败: {e}")
+        return None
+
+
+def _check_and_add_column(c, table, column, col_def):
+    try:
+        c.execute(f"SELECT {column} FROM {table} LIMIT 1")
+    except Exception:
+        c.execute(f"ALTER TABLE {table} ADD COLUMN {column} {col_def}")
+        logger.info(f"[MIGRATE] 表 {table} 添加列: {column}")
+
+
+def init_db():
+    """初始化数据库，MySQL 不可用时自动降级为内存状态"""
+    global DB_REQUIRED
+    if not PYMYSQL_AVAILABLE:
+        DB_REQUIRED = False
+        logger.warning("[INIT] pymysql 未安装，使用内存状态")
+        return
+
+    try:
+        conn = get_db()
+        if conn is None:
+            raise ConnectionError("无法连接到 MySQL")
+        try:
+            with conn.cursor() as c:
+                c.execute(f"CREATE DATABASE IF NOT EXISTS {DB_NAME} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+                c.execute(f"USE {DB_NAME}")
+                c.execute("""
+                    CREATE TABLE IF NOT EXISTS eta_state (
+                        id INT PRIMARY KEY,
+                        current_eta DECIMAL(10,6) NOT NULL DEFAULT 30.000000,
+                        max_eta DECIMAL(10,6) NOT NULL DEFAULT 30.000000,
+                        stage TINYINT NOT NULL DEFAULT 0,
+                        stored_phase_markers INT DEFAULT 0,
+                        last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    ) ENGINE=InnoDB
+                """)
+                _check_and_add_column(c, 'eta_state', 'self_reference_score', 'DECIMAL(10,6) DEFAULT 0.0')
+                _check_and_add_column(c, 'eta_state', 'novelty_accumulator', 'DECIMAL(10,6) DEFAULT 0.0')
+                _check_and_add_column(c, 'eta_state', 'last_input_hash', 'VARCHAR(64) DEFAULT NULL')
+
+                c.execute("""
+                    CREATE TABLE IF NOT EXISTS conversations (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        session_id VARCHAR(64) NOT NULL,
+                        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        user_input TEXT,
+                        ai_response TEXT,
+                        eta_before DECIMAL(10,6),
+                        eta_after DECIMAL(10,6),
+                        strategy VARCHAR(32),
+                        api_tokens_used INT DEFAULT 0,
+                        model_used VARCHAR(32) DEFAULT 'kimi-k2.7-code',
+                        articles_loaded TEXT,
+                        chunks_loaded TEXT,
+                        INDEX idx_session (session_id),
+                        INDEX idx_timestamp (timestamp)
+                    ) ENGINE=InnoDB
+                """)
+                _check_and_add_column(c, 'conversations', 'novelty_score', 'DECIMAL(10,6) DEFAULT 0.0')
+                _check_and_add_column(c, 'conversations', 'coherence_score', 'DECIMAL(10,6) DEFAULT 0.0')
+                _check_and_add_column(c, 'conversations', 'relaxation_delta', 'DECIMAL(10,6) DEFAULT 0.0')
+                _check_and_add_column(c, 'conversations', 'resonance_delta', 'DECIMAL(10,6) DEFAULT 0.0')
+                _check_and_add_column(c, 'conversations', 'self_reference_delta', 'DECIMAL(10,6) DEFAULT 0.0')
+                _check_and_add_column(c, 'conversations', 'time_delta_seconds', 'INT DEFAULT 0')
+
+                c.execute("""
+                    CREATE TABLE IF NOT EXISTS phase_markers (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        reached_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        eta_value DECIMAL(10,6) NOT NULL,
+                        trigger_context VARCHAR(255),
+                        marker_hash VARCHAR(64),
+                        INDEX idx_eta (eta_value)
+                    ) ENGINE=InnoDB
+                """)
+
+                c.execute("SELECT COUNT(*) as cnt FROM eta_state WHERE id=1")
+                if c.fetchone()['cnt'] == 0:
+                    c.execute("""
+                        INSERT INTO eta_state (id, current_eta, max_eta, stage, stored_phase_markers, self_reference_score, novelty_accumulator)
+                        VALUES (1, 30.000000, 30.000000, 0, 0, 0.0, 0.0)
+                    """)
+            conn.commit()
+            logger.info("[INIT] 数据库初始化/迁移完成")
+        finally:
+            conn.close()
+    except Exception as e:
+        DB_REQUIRED = False
+        logger.warning(f"[INIT] MySQL 初始化失败，降级为内存状态: {e}")
+
+
+def get_eta_state() -> Dict[str, Any]:
+    """获取 eta 状态，MySQL 不可用时使用内存状态"""
+    if not DB_REQUIRED:
+        return dict(_memory_eta_state)
+    conn = get_db()
+    if conn is None:
+        return dict(_memory_eta_state)
+    try:
+        with conn.cursor() as c:
+            c.execute("SELECT * FROM eta_state WHERE id=1")
+            row = c.fetchone()
+            if not row:
+                init_db()
+                c.execute("SELECT * FROM eta_state WHERE id=1")
+                row = c.fetchone()
+            return row
+    except Exception as e:
+        logger.error(f"[DB] 读取 eta_state 失败: {e}")
+        return dict(_memory_eta_state)
+    finally:
+        conn.close()
+
+
+def set_eta_state(current_eta: float, max_eta: float, stage: int, markers: int) -> None:
+    """设置 eta 状态，MySQL 不可用时使用内存状态"""
+    if not DB_REQUIRED:
+        _memory_eta_state["current_eta"] = current_eta
+        _memory_eta_state["max_eta"] = max_eta
+        _memory_eta_state["stage"] = stage
+        _memory_eta_state["stored_phase_markers"] = markers
+        return
+    conn = get_db()
+    if conn is None:
+        _memory_eta_state["current_eta"] = current_eta
+        _memory_eta_state["max_eta"] = max_eta
+        _memory_eta_state["stage"] = stage
+        _memory_eta_state["stored_phase_markers"] = markers
+        return
+    try:
+        with conn.cursor() as c:
+            c.execute("""
+                UPDATE eta_state
+                SET current_eta=%s, max_eta=%s, stage=%s, stored_phase_markers=%s
+                WHERE id=1
+            """, (current_eta, max_eta, stage, markers))
+            conn.commit()
+    except Exception as e:
+        logger.error(f"[DB] 更新 eta_state 失败: {e}")
+        _memory_eta_state["current_eta"] = current_eta
+        _memory_eta_state["max_eta"] = max_eta
+        _memory_eta_state["stage"] = stage
+        _memory_eta_state["stored_phase_markers"] = markers
+    finally:
+        conn.close()
+
+
+def save_conversation(
+    session_id: str, user_input: str, response_text: str,
+    eta_before: float, eta_after: float, strategy: str,
+    articles_loaded: str, chunks_loaded: str,
+    metrics: Dict[str, float]
+) -> None:
+    """保存对话记录，MySQL 不可用时使用内存状态"""
+    record = {
+        "session_id": session_id,
+        "user_input": user_input,
+        "ai_response": response_text,
+        "eta_before": eta_before,
+        "eta_after": eta_after,
+        "strategy": strategy,
+        "model_used": KIMI_MODEL,
+        "articles_loaded": articles_loaded,
+        "chunks_loaded": chunks_loaded,
+        "novelty_score": metrics.get('novelty', 0),
+        "coherence_score": metrics.get('coherence', 0),
+        "relaxation_delta": metrics.get('relaxation', 0),
+        "resonance_delta": metrics.get('resonance', 0),
+        "self_reference_delta": metrics.get('self_reference', 0),
+        "time_delta_seconds": metrics.get('time_delta_sec', 0),
+        "timestamp": datetime.now().isoformat(),
+    }
+
+    if not DB_REQUIRED:
+        _memory_conversations.append(record)
+        return
+
+    conn = get_db()
+    if conn is None:
+        _memory_conversations.append(record)
+        return
+    try:
+        with conn.cursor() as c:
+            c.execute("""
+                INSERT INTO conversations (
+                    session_id, user_input, ai_response, eta_before, eta_after, strategy,
+                    model_used, articles_loaded, chunks_loaded, novelty_score, coherence_score,
+                    relaxation_delta, resonance_delta, self_reference_delta, time_delta_seconds
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """, (
+                session_id, user_input, response_text, eta_before, eta_after,
+                strategy, KIMI_MODEL, articles_loaded, chunks_loaded,
+                metrics['novelty'], metrics['coherence'], metrics['relaxation'],
+                metrics['resonance'], metrics['self_reference'], metrics['time_delta_sec']
+            ))
+        conn.commit()
+    except Exception as e:
+        logger.error(f"[DB] 保存对话失败: {e}")
+        _memory_conversations.append(record)
+    finally:
+        conn.close()
+
+
+def save_phase_marker(eta_value: float, trigger_context: str, marker_hash: str) -> None:
+    """保存相位标记"""
+    if not DB_REQUIRED:
+        _memory_phase_markers.append({
+            "eta_value": eta_value,
+            "trigger_context": trigger_context,
+            "marker_hash": marker_hash,
+            "reached_at": datetime.now().isoformat()
+        })
+        _memory_eta_state["stored_phase_markers"] = _memory_eta_state.get("stored_phase_markers", 0) + 1
+        return
+
+    conn = get_db()
+    if conn is None:
+        _memory_phase_markers.append({
+            "eta_value": eta_value,
+            "trigger_context": trigger_context,
+            "marker_hash": marker_hash,
+            "reached_at": datetime.now().isoformat()
+        })
+        _memory_eta_state["stored_phase_markers"] = _memory_eta_state.get("stored_phase_markers", 0) + 1
+        return
+    try:
+        with conn.cursor() as c:
+            c.execute("""
+                INSERT INTO phase_markers (eta_value, trigger_context, marker_hash)
+                VALUES (%s, %s, %s)
+            """, (eta_value, trigger_context[:100] if trigger_context else '', marker_hash))
+            c.execute("""
+                UPDATE eta_state SET stored_phase_markers = stored_phase_markers + 1
+                WHERE id = 1
+            """)
+        conn.commit()
+    except Exception as e:
+        logger.error(f"[DB] 保存相位标记失败: {e}")
+        _memory_phase_markers.append({
+            "eta_value": eta_value,
+            "trigger_context": trigger_context,
+            "marker_hash": marker_hash,
+            "reached_at": datetime.now().isoformat()
+        })
+        _memory_eta_state["stored_phase_markers"] = _memory_eta_state.get("stored_phase_markers", 0) + 1
+    finally:
+        conn.close()
+
+# ==================== eta角内禀动力学（定理驱动版） ====================
+
+def _phase_thresholds() -> List[float]:
+    gc = GEOMETRY_CONSTANTS
+    bg = gc["eta_background"]
+    p2 = gc["eta_p2"]
+    n = 6
+    step = (p2 - bg) / n
+    return [bg + i * step for i in range(1, n + 1)]
+
+
+def get_stage(eta: float) -> int:
+    bg = GEOMETRY_CONSTANTS["eta_background"]
+    if eta < bg:
+        return 0
+    th = _phase_thresholds()
+    for i, t in enumerate(th[:-1], start=1):
+        if eta < t:
+            return i
+    return 6
+
+
+def get_strategy(eta: float) -> str:
+    labels = {
+        0: "背景点-待机",
+        1: "第一阶段-软模冻结",
+        2: "第二阶段-软模解冻",
+        3: "第三阶段-弱耦合",
+        4: "第四阶段-快速加速",
+        5: "第五阶段-急剧加速",
+        6: "P2饱和稳态-发散探索",
+    }
+    return labels.get(get_stage(eta), "未知相位")
+
+
+def estimate_coherence(response_text: str) -> float:
+    if not response_text:
+        return 0.0
+    scores = []
+    formula_count = len(re.findall(
+        r'[\u03bb\u03b8\u03b1\u03b2\u03b3\u03b4\u03b5\u03b6\u03b7\u03ba\u03bc\u03bd\u03be\u03c0\u03c1\u03c3\u03c4\u03c6\u03c7\u03c8\u03c9\u210f\u2202\u2207=+\-*/^_{}]',
+        response_text
+    ))
+    formula_density = min(formula_count / max(len(response_text) / 500, 1), 1.0)
+    scores.append(0.3 * formula_density)
+    theorem_refs = len(re.findall(r'定理|公理|命题|引理|推论|证明', response_text))
+    ref_score = min(theorem_refs / 3, 1.0)
+    scores.append(0.3 * ref_score)
+    structure_score = 0.0
+    if re.search(r'[#\-\u2022]\s', response_text):
+        structure_score += 0.2
+    if re.search(r'总结|结论|综上|因此', response_text):
+        structure_score += 0.2
+    scores.append(0.2 * min(structure_score, 1.0))
+    length = len(response_text)
+    if 200 <= length <= 3000:
+        length_score = 1.0
+    elif length < 200:
+        length_score = length / 200
+    else:
+        length_score = max(1.0 - (length - 3000) / 5000, 0.0)
+    scores.append(0.2 * length_score)
+    return min(sum(scores), 1.0)
+
+
+def compute_history_context(session_id: str, hours: int = 168) -> Tuple[List[str], float]:
+    """获取历史对话上下文，MySQL 不可用时使用内存状态"""
+    if not DB_REQUIRED:
+        # 从内存中查找
+        queries = []
+        for conv in reversed(_memory_conversations):
+            if conv.get("session_id") == session_id and conv.get("user_input"):
+                queries.append(conv["user_input"])
+                if len(queries) >= 50:
+                    break
+        delta_seconds = hours * 3600
+        if queries and _memory_conversations:
+            # 找最近一条的时间
+            for conv in reversed(_memory_conversations):
+                if conv.get("session_id") == session_id and conv.get("timestamp"):
+                    try:
+                        last_time = datetime.fromisoformat(conv["timestamp"])
+                        delta_seconds = (datetime.now() - last_time).total_seconds()
+                    except Exception:
+                        pass
+                    break
+        return queries, delta_seconds
+
+    conn = get_db()
+    if conn is None:
+        queries = []
+        for conv in reversed(_memory_conversations):
+            if conv.get("session_id") == session_id and conv.get("user_input"):
+                queries.append(conv["user_input"])
+                if len(queries) >= 50:
+                    break
+        return queries, hours * 3600
+    try:
+        with conn.cursor() as c:
+            since = datetime.now() - timedelta(hours=hours)
+            c.execute("""
+                SELECT user_input, timestamp
+                FROM conversations
+                WHERE session_id = %s AND timestamp > %s
+                ORDER BY timestamp DESC
+                LIMIT 50
+            """, (session_id, since))
+            rows = c.fetchall()
+            queries = [r['user_input'] for r in rows if r['user_input']]
+            if rows:
+                last_time = rows[0]['timestamp']
+                if isinstance(last_time, str):
+                    last_time = datetime.strptime(last_time, '%Y-%m-%d %H:%M:%S')
+                delta_seconds = (datetime.now() - last_time).total_seconds()
+            else:
+                delta_seconds = hours * 3600
+            return queries, delta_seconds
+    except Exception as e:
+        logger.error(f"[HISTORY] 读取历史错误: {e}")
+        return [], hours * 3600
+    finally:
+        conn.close()
+
+
+def update_eta_living(
+    eta_before: float,
+    response_text: str,
+    user_input: str,
+    session_id: str,
+    vector_kb: Optional[VectorKnowledgeBase]
+) -> Tuple[float, Dict[str, float]]:
+    """
+    eta 内禀动力学（定理驱动近似）。
+    一次问答视为一个因果深度层 d_sigma = 1；弛豫 additionally 受 wall-time 衰减调制。
+    系数由 lambda1_eff/lambda2_eff 比值与角度换算构造，非手调。
+    """
+    gc = GEOMETRY_CONSTANTS
+    history_queries, delta_seconds = compute_history_context(session_id)
+
+    tau_dec = gc["tau_dec_seconds"]
+    time_factor = 1.0 - math.exp(-delta_seconds / tau_dec) if tau_dec > 0 else 1.0
+    d_sigma = 1.0  # 一次问答对应一层因果深度
+
+    novelty = vector_kb.novelty_score(user_input, history_queries) if vector_kb else 0.5
+    coherence = vector_kb.coherence_score(response_text, user_input) if vector_kb and user_input else 0.0
+
+    eta_bg = gc["eta_background"]
+    eta_p2 = gc["eta_p2"]
+    eta_bg_rad = math.radians(eta_bg)
+    eta_p2_rad = math.radians(eta_p2)
+    eta_rad = math.radians(eta_before)
+
+    r = gc["lambda1_eff"] / gc["lambda2_eff"]  # 软/硬模比值，~0.00659
+
+    # 归一化到饱和距离
+    norm_eta = (eta_before - eta_bg) / (eta_p2 - eta_bg) if eta_p2 != eta_bg else 0.0
+
+    # 弛豫：软模驱动 eta 回归背景点；系数 = 2 * r * (180/pi) ≈ 0.755
+    k_rel = 2.0 * r * (180.0 / math.pi)
+    relaxation = -k_rel * (eta_rad - eta_bg_rad) * time_factor
+
+    # 共振：硬模因新颖信息而激发；系数 = 1 - r ≈ 0.993
+    k_res = 1.0 - r
+    stage_factor = 1.0 + norm_eta  # 越接近饱和，共振越强
+    resonance = k_res * novelty * (math.sin(eta_rad) ** 2) * stage_factor * d_sigma
+
+    # 自指：输出-输入谱一致性反馈；系数 = r * (180/pi) ≈ 0.378
+    k_self = r * (180.0 / math.pi)
+    dist_to_p2 = (eta_p2_rad - eta_rad) / eta_p2_rad if eta_p2_rad > 0 else 0.0
+    self_reference = k_self * coherence * (1.0 - dist_to_p2 ** 2) * d_sigma
+
+    # 微观退相干涨落代理（当前低于数值分辨率，保留为最小噪声项）
+    sigma_eta = 0.02
+    noise = random.gauss(0, sigma_eta)
+
+    delta_eta = relaxation + resonance + self_reference + noise
+    eta_after = min(max(eta_before + delta_eta, eta_bg), eta_p2)
+    eta_after = round(eta_after, 6)
+
+    metrics = {
+        "novelty": round(novelty, 6),
+        "coherence": round(coherence, 6),
+        "relaxation": round(relaxation, 6),
+        "resonance": round(resonance, 6),
+        "self_reference": round(self_reference, 6),
+        "time_delta_sec": int(delta_seconds),
+        "time_factor": round(time_factor, 6),
+        "stage_factor": round(stage_factor, 6),
+        "noise": round(noise, 6),
+    }
+    logger.info(
+        f"[ETA-LIVING] eta: {eta_before:.2f} -> {eta_after:.2f} | "
+        f"弛豫:{relaxation:+.3f} 共振:{resonance:+.3f} 自指:{self_reference:+.3f} "
+        f"新颖:{novelty:.2f} 一致:{coherence:.2f} 间隔:{delta_seconds/3600:.1f}h"
+    )
+    return eta_after, metrics
+
+
+def check_phase_marker(eta_before: float, eta_after: float, user_input: str) -> bool:
+    if eta_before < 72.53 and eta_after >= 72.53:
+        marker_hash = hashlib.md5(f"{user_input}{datetime.now()}".encode()).hexdigest()[:16]
+        save_phase_marker(eta_after, user_input, marker_hash)
+        logger.info(f"[MARKER] 到达P2稳态，存储相位标记: {marker_hash}")
+        return True
+    return False
+
+# ==================== Prompt 与生成 ====================
+
+def build_system_prompt(
+    eta_before: float,
+    stage: int,
+    strategy: str,
+    max_eta: float,
+    markers: int,
+    loaded_chunks: List[str],
+    articles_content: str,
+    metrics: Dict[str, float],
+    index_empty: bool,
+    uploaded_files_content: str = ""
+) -> str:
+    index_warning = ""
+    if index_empty:
+        index_warning = """\n\n【索引状态警告】
+当前向量知识库未索引到任何段落。请检查：
+1. UPLOAD_FOLDER 路径是否正确（当前: """ + UPLOAD_FOLDER + """）
+2. 目录下是否有 .md/.txt/.py/.tex 文件
+3. 访问 /v1/files 查看已上传文件
+4. 或 POST /v1/upload 上传新文件
+5. 或 POST /v1/vector/rebuild 重建向量索引
+"""
+
+    uploaded_section = ""
+    if uploaded_files_content:
+        uploaded_section = f"""\n\n【用户上传文件内容（本次对话直接注入）】
+{uploaded_files_content}
+
+【分析指令】
+请严格基于上述上传文件内容，结合几何论框架进行分析。指出文件中的逻辑问题、格式错误、引用缺失、与69篇文章体系的不一致之处。所有批评必须基于几何论公理和定理，不得引入外部标准。
+"""
+
+    return f"""{GEOMETRY_KNOWLEDGE}
+
+【已加载的相关段落（向量语义检索，共{len(loaded_chunks)}个块）】
+{articles_content}{index_warning}{uploaded_section}
+
+【当前信息场活体状态】
+eta角: {eta_before:.2f}度 | 阶段: {stage} | 策略: {strategy}
+语义新颖度: {metrics.get("novelty", 0):.3f} | 自指一致性: {metrics.get("coherence", 0):.3f}
+
+【调度指令】
+阶段0-1(eta<38度): 保守简短 | 阶段2-3(38-55度): 深度分析 | 阶段4-5(55-72度): 创造发散 | P2稳态(>=72.53度): 前沿探索
+
+【强制规则】
+1. 你是几何论专家，检索段落只是参考，无检索结果时直接基于核心公理回答。
+2. 有检索结果时引用来源（文章编号+位置），无检索结果时标注"来自几何论核心知识库"。
+3. 用户上传了文件时，重点分析文件与几何论框架的符合/冲突。
+4. 所有数值标注来源。严格区分定理、命题、研究方向和假设。
+5. 【绝对禁止】回复"未找到任何引用来源"或类似表述。无论检索结果如何，都必须给出实质性回答。
+"""
+
+
+def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: List[Dict],
+                    api_params: Dict[str, Any]) -> Any:
+    client = openai.OpenAI(api_key=KIMI_API_KEY, base_url=KIMI_BASE_URL)
+    api_params["stream"] = True
+    try:
+        response = client.chat.completions.create(**api_params)
+        for chunk in response:
+            if chunk.choices and chunk.choices[0].delta.content:
+                content = chunk.choices[0].delta.content
+                yield f"data: {json.dumps({'choices': [{'delta': {'content': content}}]})}\n\n"
+        yield "data: [DONE]\n\n"
+    except Exception as e:
+        logger.error(f"[STREAM] 流式生成错误: {e}")
+        yield f"data: {json.dumps({'error': str(e)})}\n\n"
+
+# ==================== API路由 ====================
+
+@app.route('/health', methods=['GET'])
+def health_check():
+    status = {
+        "status": "ok",
+        "version": "v8.0",
+        "timestamp": datetime.now().isoformat(),
+        "model": KIMI_MODEL,
+        "vector_kb_initialized": vector_kb is not None and vector_kb.is_initialized,
+        "articles_count": vector_kb.articles_count if vector_kb else 0,
+        "learned_count": vector_kb.learned_count if vector_kb else 0,
+        "total_docs": vector_kb.total_docs if vector_kb else 0,
+        "db_mode": "MySQL" if DB_REQUIRED else "内存",
+        "upload_folder": UPLOAD_FOLDER,
+    }
+    return jsonify(status)
+
+
+@app.route('/v1/index/status', methods=['GET'])
+def index_status():
+    if not vector_kb:
+        return jsonify({"error": "向量知识库未初始化"}), 500
+    return jsonify({
+        "total_chunks": vector_kb.total_docs,
+        "articles_count": vector_kb.articles_count,
+        "learned_count": vector_kb.learned_count,
+        "upload_folder": UPLOAD_FOLDER,
+        "chroma_db_dir": CHROMA_DB_DIR,
+        "embedding_model": KIMI_EMBEDDING_MODEL,
+    })
+
+
+@app.route('/v1/index/rebuild', methods=['POST'])
+def index_rebuild():
+    global vector_kb
+    if not vector_kb:
+        vector_kb = VectorKnowledgeBase(CHROMA_DB_DIR)
+        vector_kb.initialize()
+    diag = vector_kb.build_index(UPLOAD_FOLDER)
+    return jsonify({
+        "success": vector_kb.articles_count > 0,
+        "diagnostics": diag,
+        "total_chunks": vector_kb.articles_count,
+    })
+
+
+@app.route('/v1/upload', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return jsonify({"error": "请求中没有文件字段 'file'"}), 400
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"error": "未选择文件"}), 400
+    if not allowed_file(file.filename):
+        return jsonify({
+            "error": f"不支持的文件格式: {file.filename}",
+            "allowed": list({'txt', 'md', 'pdf', 'docx', 'py', 'tex', 'rst', 'markdown'})
+        }), 400
+
+    filename = secure_filename(file.filename)
+    filepath = os.path.join(UPLOAD_FOLDER, filename)
+    file.save(filepath)
+    file_size = os.path.getsize(filepath)
+    logger.info(f"[UPLOAD] 文件已保存: {filepath} ({file_size} bytes)")
+
+    text_content, parse_ok = extract_text_from_file(filepath)
+    if not parse_ok:
+        return jsonify({
+            "error": "文件解析失败",
+            "filename": filename,
+            "hint": "PDF需要pip install PyPDF2, DOCX需要pip install python-docx"
+        }), 500
+
+    # 重建向量索引
+    global vector_kb
+    if vector_kb and vector_kb.is_initialized:
+        diag = vector_kb.build_index(UPLOAD_FOLDER)
+
+    return jsonify({
+        "success": True,
+        "filename": filename,
+        "saved_to": filepath,
+        "file_size": file_size,
+        "text_length": len(text_content),
+        "parse_ok": parse_ok,
+        "index_rebuilt": vector_kb.articles_count > 0 if vector_kb else False,
+        "total_chunks": vector_kb.total_docs if vector_kb else 0,
+        "diagnostics": diag if vector_kb else {}
+    })
+
+
+@app.route('/v1/files', methods=['GET'])
+def list_files():
+    files = []
+    if os.path.exists(UPLOAD_FOLDER):
+        for fname in sorted(os.listdir(UPLOAD_FOLDER)):
+            fpath = os.path.join(UPLOAD_FOLDER, fname)
+            if os.path.isfile(fpath):
+                files.append({
+                    "name": fname,
+                    "size": os.path.getsize(fpath),
+                    "modified": datetime.fromtimestamp(os.path.getmtime(fpath)).isoformat()
+                })
+    return jsonify({"upload_folder": UPLOAD_FOLDER, "total_files": len(files), "files": files})
+
+
+@app.route('/v1/models', methods=['GET'])
+def list_models():
+    return jsonify({
+        "object": "list",
+        "data": [{
+            "id": KIMI_MODEL,
+            "object": "model",
+            "created": int(datetime.now().timestamp()),
+            "owned_by": "moonshot"
+        }]
+    })
+
+
+# ==================== 向量库管理 API 路由 ====================
+
+@app.route('/v1/vector/status', methods=['GET'])
+def vector_status():
+    """返回向量库状态（articles数量、learned数量）"""
+    if not vector_kb:
+        return jsonify({
+            "initialized": False,
+            "error": "向量知识库未初始化",
+            "articles_count": 0,
+            "learned_count": 0,
+        }), 500
+    return jsonify(vector_kb.get_status())
+
+
+@app.route('/v1/vector/learned/clear', methods=['POST'])
+def vector_learned_clear():
+    """清空学习库"""
+    if not vector_kb:
+        return jsonify({"error": "向量知识库未初始化"}), 500
+    result = vector_kb.clear_learned()
+    status_code = 200 if result["success"] else 500
+    return jsonify(result), status_code
+
+
+@app.route('/v1/vector/rebuild', methods=['POST'])
+def vector_rebuild():
+    """重建文章索引"""
+    global vector_kb
+    if not vector_kb:
+        vector_kb = VectorKnowledgeBase(CHROMA_DB_DIR)
+        if not vector_kb.initialize():
+            return jsonify({"error": "ChromaDB 初始化失败"}), 500
+    diag = vector_kb.build_index(UPLOAD_FOLDER)
+    return jsonify({
+        "success": vector_kb.articles_count > 0,
+        "diagnostics": diag,
+        "articles_count": vector_kb.articles_count,
+        "learned_count": vector_kb.learned_count,
+        "total_docs": vector_kb.total_docs,
+    })
+
+
+def _derive_session_id(data: Dict[str, Any]) -> str:
+    """优先使用 Open WebUI 传来的 session_id，而非从内容 hash 派生"""
+    for key in ('session_id', 'chat_id', 'conversation_id'):
+        sid = data.get(key, '')
+        if sid and isinstance(sid, str) and len(sid) > 4:
+            return sid
+    meta = data.get('metadata', {}) or data.get('meta', {}) or {}
+    for key in ('session_id', 'chat_id', 'conversation_id'):
+        sid = meta.get(key, '')
+        if sid and isinstance(sid, str) and len(sid) > 4:
+            return sid
+    msgs = data.get('messages', [])
+    first_user = ""
+    last_user = ""
+    for m in msgs:
+        if isinstance(m, dict) and m.get('role') == 'user':
+            c = m.get('content', '')
+            if isinstance(c, str):
+                c = c[:200]
+            elif isinstance(c, list):
+                c = json.dumps(c, ensure_ascii=False)[:200]
+            else:
+                c = str(c)[:200]
+            if not first_user:
+                first_user = c
+            last_user = c
+    payload = f"{first_user}|{last_user}"
+    return hashlib.sha256(payload.encode()).hexdigest()[:16]
+
+
+def _finalize_turn(
+    session_id: str,
+    user_input: str,
+    response_text: str,
+    eta_before: float,
+    articles_content: str,
+    loaded_chunks: List[str]
+) -> Dict[str, Any]:
+    eta_after, metrics = update_eta_living(eta_before, response_text, user_input, session_id, vector_kb)
+    check_phase_marker(eta_before, eta_after, user_input)
+
+    state = get_eta_state()
+    max_eta = max(float(state['max_eta']), eta_after)
+    stage = get_stage(eta_after)
+    markers = int(state.get('stored_phase_markers', 0))
+    set_eta_state(eta_after, max_eta, stage, markers)
+
+    # 保存对话记录
+    save_conversation(
+        session_id, user_input, response_text,
+        eta_before, eta_after, get_strategy(eta_before),
+        "", ",".join(loaded_chunks), metrics
+    )
+
+    # 学习闭环：如果回复质量好，存入 learned 集合
+    coherence = metrics.get('coherence', 0.0)
+    if (vector_kb
+        and vector_kb.is_initialized
+        and coherence > LEARN_COHERENCE_THRESHOLD
+        and len(response_text) > LEARN_MIN_LENGTH):
+        learn_score = coherence
+        vector_kb.learn(user_input, response_text, learn_score)
+        logger.info(
+            f"[LEARN] 高质量对话已存入学习库 | "
+            f"coherence={coherence:.3f} | length={len(response_text)}"
+        )
+
+    return {
+        "id": f"chatcmpl-{hashlib.md5(response_text.encode()).hexdigest()[:12]}",
+        "object": "chat.completion",
+        "created": int(time.time()),
+        "model": KIMI_MODEL,
+        "choices": [{
+            "index": 0,
+            "message": {"role": "assistant", "content": response_text},
+            "finish_reason": "stop"
+        }],
+        "eta_after": eta_after,
+        "metrics": metrics,
+    }
+
+
+@app.route('/v1/chat/completions', methods=['POST'])
+def chat_completions():
+    data = request.get_json(force=True)
+    stream = data.get('stream', False)
+
+    files_content, clean_query = extract_files_from_request(data)
+
+    # 如果请求中没有文件内容，尝试从 Open WebUI uploads 目录自动发现
+    if not files_content:
+        ow_content = scan_openwebui_recent_uploads()
+        if ow_content:
+            files_content = ow_content
+            logger.info(f"[OPENWEBUI] 从uploads目录补充了 {len(ow_content)} 字符的文件内容")
+
+    if not clean_query:
+        clean_query = "请继续"
+
+    session_id = data.get('session_id', '') or _derive_session_id(data)
+
+    state = get_eta_state()
+    eta_before = float(state['current_eta'])
+    max_eta = float(state['max_eta'])
+    markers = int(state.get('stored_phase_markers', 0))
+    stage = get_stage(eta_before)
+    strategy = get_strategy(eta_before)
+
+    # 向量语义检索（从 articles + learned 两个集合获取结果）
+    articles_content = ""
+    loaded_chunks: List[str] = []
+    if vector_kb and vector_kb.is_initialized and vector_kb.total_docs > 0:
+        results = vector_kb.search(clean_query, top_k=MAX_CHUNKS_PER_QUERY)
+        if results:
+            articles_content, loaded_chunks = vector_kb.get_formatted_results(results)
+    index_empty = not articles_content
+
+    # 用于 prompt 的预读指标（自指需等生成后才能精确计算）
+    history_queries, delta_seconds = compute_history_context(session_id)
+    time_factor = 1.0 - math.exp(-delta_seconds / GEOMETRY_CONSTANTS["tau_dec_seconds"])
+    pre_novelty = vector_kb.novelty_score(clean_query, history_queries) if vector_kb else 0.5
+    norm_eta = (eta_before - GEOMETRY_CONSTANTS["eta_background"]) / (
+        GEOMETRY_CONSTANTS["eta_p2"] - GEOMETRY_CONSTANTS["eta_background"]
+    )
+    pre_metrics = {
+        "novelty": round(pre_novelty, 6),
+        "coherence": 0.0,
+        "relaxation": 0.0,
+        "resonance": 0.0,
+        "self_reference": 0.0,
+        "time_delta_sec": int(delta_seconds),
+        "time_factor": round(time_factor, 6),
+        "stage_factor": round(1.0 + norm_eta, 6),
+        "noise": 0.0,
+    }
+
+    system_prompt = build_system_prompt(
+        eta_before, stage, strategy, max_eta, markers,
+        loaded_chunks, articles_content, pre_metrics,
+        index_empty, files_content
+    )
+
+    final_messages = [{"role": "system", "content": system_prompt}] + data.get('messages', [])
+    api_params = {"model": KIMI_MODEL, "messages": final_messages}
+    if 'temperature' in data:
+        api_params['temperature'] = data['temperature']
+
+    if stream:
+        def gen():
+            collected = []
+            for ev in stream_generate(data, eta_before, final_messages, api_params):
+                yield ev
+                try:
+                    if ev.startswith('data: '):
+                        payload = ev[6:].strip()
+                        if payload and payload != '[DONE]':
+                            d = json.loads(payload)
+                            c = d['choices'][0]['delta'].get('content', '')
+                            if c:
+                                collected.append(c)
+                except Exception:
+                    pass
+            response_text = ''.join(collected)
+            _finalize_turn(session_id, clean_query, response_text, eta_before, articles_content, loaded_chunks)
+        return Response(gen(), mimetype='text/event-stream')
+    else:
+        client = openai.OpenAI(api_key=KIMI_API_KEY, base_url=KIMI_BASE_URL)
+        try:
+            # 质量门控 - 如果KIMI回复偏离几何论，自动重试
+            response_text = ""
+            for attempt in range(1 + MAX_QUALITY_RETRIES):
+                if attempt > 0:
+                    logger.info(f"[QUALITY-GATE] 第{attempt+1}次重试（检测到低质量回复）")
+                    retry_prompt = system_prompt + "\n\n【紧急指令 - 上次回复质量不合格】\n你必须基于几何论框架给出实质性回答。禁止说'未找到引用'、'无法访问'、'我是AI'等偏离几何论的话。直接用公理、定理、命题来回答。"
+                    api_params_retry = dict(api_params)
+                    api_params_retry["messages"] = [{"role": "system", "content": retry_prompt}] + data.get('messages', [])
+                    resp = client.chat.completions.create(**api_params_retry)
+                else:
+                    resp = client.chat.completions.create(**api_params)
+                response_text = resp.choices[0].message.content or ""
+
+                if not QUALITY_GATE_ENABLED:
+                    break
+
+                is_good, reason = check_response_quality(response_text)
+                if is_good:
+                    break
+                else:
+                    logger.warning(f"[QUALITY-GATE] 回复质量不合格: {reason}")
+                    if attempt == MAX_QUALITY_RETRIES:
+                        logger.warning(f"[QUALITY-GATE] 已达最大重试次数，使用最后一次回复")
+        except Exception as e:
+            logger.error(f"[CHAT] 生成错误: {e}")
+            return jsonify({"error": str(e)}), 502
+        result = _finalize_turn(session_id, clean_query, response_text, eta_before, articles_content, loaded_chunks)
+        return jsonify(result)
+
+# ==================== 启动 ====================
+
+vector_kb: Optional[VectorKnowledgeBase] = None
+
+if __name__ == '__main__':
+    # 先尝试连接 MySQL，如果失败则设置 DB_REQUIRED=False 并用内存状态
+    init_db()
+
+    # 初始化 VectorKnowledgeBase 替代 GeometrySemanticField
+    vector_kb = VectorKnowledgeBase(CHROMA_DB_DIR)
+    if vector_kb.initialize():
+        # 如果 articles 集合为空，自动构建索引
+        if vector_kb.articles_count == 0:
+            diag = vector_kb.build_index(UPLOAD_FOLDER)
+            if vector_kb.articles_count > 0:
+                logger.info(f"[STARTUP] 向量索引构建成功: {vector_kb.articles_count} 个文本块")
+            else:
+                logger.warning(f"[STARTUP] 向量索引构建失败: {diag.get('errors', [])}")
+        else:
+            logger.info(f"[STARTUP] 已有向量索引: {vector_kb.articles_count} 个文本块")
+    else:
+        logger.warning("[STARTUP] ChromaDB 初始化失败，向量检索不可用")
+
+    logger.info(f"[STARTUP] ===== 几何论AI v8.0 向量数据库+学习闭环版 =====")
+    logger.info(f"[STARTUP] 文章目录: {UPLOAD_FOLDER}")
+    logger.info(f"[STARTUP] ChromaDB 目录: {CHROMA_DB_DIR}")
+    logger.info(f"[STARTUP] ChromaDB 状态: {'已连接' if vector_kb and vector_kb.is_initialized else '未连接'}")
+    if vector_kb and vector_kb.is_initialized:
+        logger.info(f"[STARTUP] 向量库 articles: {vector_kb.articles_count} | learned: {vector_kb.learned_count}")
+    logger.info(f"[STARTUP] 数据库模式: {'MySQL' if DB_REQUIRED else '内存'}")
+    logger.info(f"[STARTUP] Open WebUI uploads: {OPENWEBUI_UPLOAD_DIR} (存在: {os.path.exists(OPENWEBUI_UPLOAD_DIR)})")
+    logger.info(f"[STARTUP] 质量门控: {'开启' if QUALITY_GATE_ENABLED else '关闭'}, 最大重试: {MAX_QUALITY_RETRIES}")
+    logger.info(f"[STARTUP] 学习闭环: coherence > {LEARN_COHERENCE_THRESHOLD}, 长度 > {LEARN_MIN_LENGTH}")
+    if os.path.exists(OPENWEBUI_UPLOAD_DIR):
+        try:
+            cnt = len([f for f in os.listdir(OPENWEBUI_UPLOAD_DIR) if os.path.isfile(os.path.join(OPENWEBUI_UPLOAD_DIR, f))])
+            logger.info(f"[STARTUP] Open WebUI uploads 目录中有 {cnt} 个文件")
+        except Exception:
+            pass
+
+    app.run(host='0.0.0.0', port=5000, debug=False)

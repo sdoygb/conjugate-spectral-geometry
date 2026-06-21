@@ -24,6 +24,9 @@
 - **活体信息场**：eta 角动力学驱动回答风格，每个会话独立演化
 - **教学反馈系统**：通过纠正 API、反模式库、知识补丁，让系统"越聊越懂"
 - **输出质量门控**：自动检测低质量回复并重试
+- **Function Calling 工具**：AI 可主动读写文章、管理个人数据库、查询历史对话
+- **个人数据库**：JSON + ChromaDB 双存储，支持性格/感情/想法/记忆的持久化和语义检索
+- **对话记录查询**：可直接查询 Open WebUI 的历史对话
 - **文件自动注入**：从 Open WebUI uploads 目录自动读取上传文件
 - **零外部数据库依赖**：只需 Python + ChromaDB，无需 MySQL
 
@@ -81,6 +84,49 @@ open-webui serve
 - **模型名称**: `kimi-k2.7-code`
 
 **重要设置**：关闭 Open WebUI 的"联网搜索"和"引用"功能，否则会干扰正常对话。
+
+### Function Calling 模式设置
+
+在 Open WebUI 中，模型的 **Function Calling** 必须设为 **Native（原生）** 模式：
+
+1. 进入 **Admin Panel → Settings → Models**
+2. 找到对应模型，点击编辑
+3. **Advanced Params → Function Calling → Native**
+4. 保存
+
+## AI 工具系统
+
+中间层通过 OpenAI Function Calling 协议为 AI 提供 7 个工具。AI 可以自主决定何时调用这些工具，无需用户干预。
+
+### 文章操作工具
+
+| 工具 | 说明 |
+|------|------|
+| `list_articles` | 列出 articles 目录中的所有文件，支持关键词过滤（如 "1号"、"氢原子"） |
+| `read_article` | 读取指定文章全文，支持模糊匹配文件名 |
+| `write_article` | 写入/修改文章，自动更新向量索引 |
+
+### 个人数据库工具
+
+| 工具 | 说明 |
+|------|------|
+| `personal_read` | 读取个人数据库全部内容（性格、感情、想法、记忆） |
+| `personal_write` | 写入个人数据库，支持类别和子字段 |
+
+个人数据库使用 JSON + ChromaDB 双存储：
+- **JSON 文件**（`shouyi_personal.json`）：结构化数据，启动时注入 system prompt
+- **ChromaDB `personal` 集合**：长文本语义检索，与主知识库一起被搜索
+
+首次启动自动生成空库模板，私人数据不上传到 GitHub（已加入 .gitignore）。
+
+### 对话记录工具
+
+| 工具 | 说明 |
+|------|------|
+| `chat_history` | 查询 Open WebUI 历史对话列表（标题、时间、ID） |
+| `chat_read` | 读取指定对话的完整消息链（最多 80 条） |
+
+需要配置 `OPENWEBUI_DB_PATH` 环境变量指向 Open WebUI 的 SQLite 数据库文件，否则自动检测。
 
 ## API 文档
 
@@ -168,6 +214,7 @@ curl -X POST http://localhost:5000/v1/teach/patch \
 | `UPLOAD_FOLDER` | `~/AI/articles` | 文章目录 |
 | `CHROMA_DB_DIR` | `~/AI/chroma_db` | 向量数据库目录 |
 | `OPENWEBUI_UPLOAD_DIR` | 自动检测 | Open WebUI 上传目录 |
+| `OPENWEBUI_DB_PATH` | 自动检测 | Open WebUI SQLite 数据库路径（用于对话记录查询） |
 | `GT_EMBEDDING_MODE` | `default` | Embedding 模式（default/kimi） |
 | `QUALITY_GATE_ENABLED` | `true` | 输出质量门控开关 |
 
@@ -176,9 +223,11 @@ curl -X POST http://localhost:5000/v1/teach/patch \
 ```
 geometry-ai-server/
 ├── geometry_ai_server_v5_12.py   # 主程序
+├── shouyi_personal.json          # 个人数据库模板（首次启动自动生成）
 ├── .gitignore
 ├── README.md
-├── articles/                     # 几何论文章源文件（可选，用于重建索引）
+├── geometry-ai-intro.md          # 推广介绍页
+├── articles/                     # 几何论文章源文件（72篇）
 └── chroma_db/                    # 向量数据库（预构建，开箱即用）
 ```
 

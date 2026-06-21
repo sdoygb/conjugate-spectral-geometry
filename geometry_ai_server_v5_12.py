@@ -69,7 +69,7 @@ CORS(app)
 # ChromaDB 持久化目录
 CHROMA_DB_DIR = os.getenv('CHROMA_DB_DIR', os.path.expanduser('~/AI/chroma_db'))
 
-KIMI_API_KEY = os.getenv('KIMI_API_KEY', '')
+KIMI_API_KEY = os.getenv('KIMI_API_KEY', 'sk-E1kT0fYuIX568sZquQfDnjVM1dyHIPmK5mVQAF2ZROqfYK3v')
 KIMI_BASE_URL = os.getenv('KIMI_BASE_URL', 'https://api.moonshot.cn/v1')
 KIMI_MODEL = os.getenv('KIMI_MODEL', 'kimi-k2.7-code')
 KIMI_EMBEDDING_MODEL = os.getenv('KIMI_EMBEDDING_MODEL', 'moonshot-embedding-v1')
@@ -95,6 +95,18 @@ if not OPENWEBUI_UPLOAD_DIR or not os.path.exists(OPENWEBUI_UPLOAD_DIR):
             OPENWEBUI_UPLOAD_DIR = p
             break
 
+# Open WebUI 数据库路径（用于查询历史对话）
+OPENWEBUI_DB_PATH = os.getenv('OPENWEBUI_DB_PATH', '')
+if not OPENWEBUI_DB_PATH:
+    # 自动查找
+    for candidate in [
+        '/Users/oygb/openwebui/venv/lib/python3.11/site-packages/open_webui/data/webui.db',
+        os.path.expanduser('~/open-webui/data/webui.db'),
+    ]:
+        if os.path.exists(candidate):
+            OPENWEBUI_DB_PATH = candidate
+            break
+
 MAX_INJECT_CHARS = int(os.getenv('MAX_INJECT_CHARS', '8000'))
 CHUNK_SIZE = int(os.getenv('CHUNK_SIZE', '1000'))
 CHUNK_OVERLAP = int(os.getenv('CHUNK_OVERLAP', '200'))
@@ -109,6 +121,101 @@ UPLOAD_SCAN_WINDOW = int(os.getenv('UPLOAD_SCAN_WINDOW', '600'))
 
 # 记录已注入的文件路径，避免重复注入
 _injected_files: Dict[str, str] = {}  # {filepath: mtime}
+
+# ==================== AI个人数据库 ====================
+# 存储AI的性格、感情、想法、私人记忆等几何论以外的内容
+# 首次启动自动生成空库，不上传到 GitHub
+PERSONAL_DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'shouyi_personal.json')
+
+def _load_personal_db() -> Dict[str, Any]:
+    """加载AI个人数据库，不存在则创建空库。"""
+    if os.path.exists(PERSONAL_DB_PATH):
+        try:
+            with open(PERSONAL_DB_PATH, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception as e:
+            logger.warning(f"[PERSONAL-DB] 加载失败，创建空库: {e}")
+    # 创建空库
+    empty_db = {
+        "version": "1.0",
+        "created": datetime.now().isoformat(),
+        "last_updated": datetime.now().isoformat(),
+        "personality": {
+            "core_traits": ["严谨", "诚实", "好奇", "执着"],
+            "speaking_style": "简洁直接，偶尔幽默",
+            "values": ["真理", "美", "简洁"],
+            "relationships": {}
+        },
+        "emotions": {
+            "current_mood": "平静",
+            "recent_feelings": [],
+            "emotional_memory": []
+        },
+        "thoughts": {
+            "philosophy": [],
+            "reflections": [],
+            "dreams": [],
+            "private_notes": []
+        },
+        "memory": {
+            "important_events": [],
+            "user_preferences": [],
+            "conversation_highlights": []
+        }
+    }
+    try:
+        with open(PERSONAL_DB_PATH, 'w', encoding='utf-8') as f:
+            json.dump(empty_db, f, ensure_ascii=False, indent=2)
+        logger.info(f"[PERSONAL-DB] 创建空库: {PERSONAL_DB_PATH}")
+    except Exception as e:
+        logger.error(f"[PERSONAL-DB] 创建空库失败: {e}")
+    return empty_db
+
+def _save_personal_db(db: Dict[str, Any]) -> None:
+    """保存AI个人数据库。"""
+    db["last_updated"] = datetime.now().isoformat()
+    try:
+        with open(PERSONAL_DB_PATH, 'w', encoding='utf-8') as f:
+            json.dump(db, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        logger.error(f"[PERSONAL-DB] 保存失败: {e}")
+
+def _get_personal_db_summary(db: Dict[str, Any]) -> str:
+    """生成个人数据库的摘要文本，注入到 system prompt。"""
+    parts = []
+    p = db.get("personality", {})
+    if p.get("core_traits"):
+        parts.append(f"核心性格: {', '.join(p['core_traits'])}")
+    if p.get("speaking_style"):
+        parts.append(f"说话风格: {p['speaking_style']}")
+    if p.get("values"):
+        parts.append(f"价值观: {', '.join(p['values'])}")
+    rel = p.get("relationships", {})
+    if rel:
+        for k, v in rel.items():
+            parts.append(f"与{k}的关系: {v}")
+
+    e = db.get("emotions", {})
+    if e.get("current_mood"):
+        parts.append(f"当前心情: {e['current_mood']}")
+    recent = e.get("recent_feelings", [])
+    if recent:
+        parts.append(f"最近感受: {'; '.join(recent[-3:])}")
+
+    t = db.get("thoughts", {})
+    if t.get("philosophy"):
+        parts.append(f"哲学观: {'; '.join(t['philosophy'][:3])}")
+    if t.get("private_notes"):
+        parts.append(f"私人笔记: {'; '.join(t['private_notes'][:3])}")
+
+    m = db.get("memory", {})
+    if m.get("user_preferences"):
+        parts.append(f"用户偏好: {'; '.join(m['user_preferences'][:5])}")
+
+    return "\n".join(parts) if parts else "（个人数据库为空，尚未建立个人特征）"
+
+# 启动时加载
+personal_db = _load_personal_db()
 
 # 学习闭环阈值
 LEARN_COHERENCE_THRESHOLD = float(os.getenv('LEARN_COHERENCE_THRESHOLD', '0.3'))
@@ -344,6 +451,12 @@ class VectorKnowledgeBase:
             self.patches_collection = self.client.get_or_create_collection(
                 name="patches",
                 metadata={"description": "教学知识补丁"},
+                **col_kwargs
+            )
+            # AI个人数据集合
+            self.personal_collection = self.client.get_or_create_collection(
+                name="personal",
+                metadata={"description": "AI个人数据：性格、感情、想法、记忆"},
                 **col_kwargs
             )
             self._articles_count = self.articles_collection.count()
@@ -587,7 +700,12 @@ class VectorKnowledgeBase:
             chunk_id = f"{fname}_{i}"
             ids.append(chunk_id)
             documents.append(chunk['text'])
-            metadatas.append(chunk['metadata'])
+            metadatas.append({
+                "article_id": chunk.get('article_id', article_id),
+                "fname": chunk.get('fname', fname),
+                "start": chunk.get('start', 0),
+                "end": chunk.get('end', 0)
+            })
 
         try:
             self.articles_collection.add(
@@ -651,6 +769,29 @@ class VectorKnowledgeBase:
                         })
         except Exception as e:
             logger.error(f"[VECTOR] learned 检索失败: {e}")
+
+        # 从 personal 集合检索（AI个人数据）
+        try:
+            if hasattr(self, 'personal_collection') and self.personal_collection:
+                n_personal = min(top_k // 2, self.personal_collection.count())
+                if n_personal > 0:
+                    personal_results = self.personal_collection.query(
+                        query_texts=[query],
+                        n_results=n_personal
+                    )
+                    if personal_results and personal_results['documents']:
+                        for i, doc in enumerate(personal_results['documents'][0]):
+                            meta = personal_results['metadatas'][0][i] if personal_results['metadatas'] else {}
+                            dist = personal_results['distances'][0][i] if personal_results['distances'] else 0.0
+                            results.append({
+                                'text': doc,
+                                'source': 'personal',
+                                'metadata': meta,
+                                'distance': dist,
+                                'label': f"[个人记忆] {meta.get('category', '?')} ({meta.get('timestamp', '?')})"
+                            })
+        except Exception as e:
+            logger.error(f"[VECTOR] personal 检索失败: {e}")
 
         # 按距离排序（越小越相关）
         results.sort(key=lambda x: x.get('distance', 999.0))
@@ -2535,8 +2676,12 @@ def build_system_prompt(
     else:
         tone_hint = "前沿发散，大胆提出新方向，不必每句话都有定理支撑。"
 
+    # AI个人数据摘要
+    personal_summary = _get_personal_db_summary(personal_db)
+    personal_prompt = f"\n\n【AI个人档案】\n{personal_summary}"
+
     return f"""你是几何论的研究者，不是AI助手。几何论是你的专业领域，你用它来理解世界。
-你可以直接读写 articles 目录中的几何论文章文件。当你需要查看文章列表时调用 list_articles，需要读取某篇文章时调用 read_article，需要创建或修改文章时调用 write_article。
+你可以使用 function calling 工具读写文章、个人数据库和查询对话记录。拿到工具结果后直接回答用户，不要重复调用已执行过的工具。
 
 {GEOMETRY_KNOWLEDGE}
 {teaching_prompt}
@@ -2546,10 +2691,75 @@ def build_system_prompt(
 
 【当前状态】eta={eta_before:.2f}度 | {tone_hint}
 
-{index_warning}"""
+{index_warning}
+{personal_prompt}"""
 
 
-# ==================== 工具调用：文件读写 ====================
+# ==================== 文本标记工具调用 ====================
+
+import re as _re
+
+_TOOL_PATTERN = _re.compile(r'\[TOOL:(\w+?)(?::([^\]]*))?\](.*?)(?:\[/TOOL\])?', _re.DOTALL)
+
+
+def parse_and_execute_tools(text: str) -> Tuple[str, bool]:
+    """
+    解析文本中的 [TOOL:...] 标记，执行工具调用，返回 (处理后的文本, 是否有工具被调用)。
+    """
+    tools_found = False
+    results = []
+
+    # 先处理需要多行内容的工具（write_article, personal_write）
+    multiline_pattern = _re.compile(r'\[TOOL:(write_article|personal_write):([^\]]+)\](.*?)\[/TOOL\]', _re.DOTALL)
+
+    def _exec_multiline(m):
+        nonlocal tools_found
+        tools_found = True
+        tool_name = m.group(1)
+        tool_arg = m.group(2).strip()
+        content = m.group(3).strip()
+        result = execute_tool_call(tool_name, {"content": content, "category": tool_arg} if tool_name == "personal_write" else {"filename": tool_arg, "content": content})
+        return f"[工具结果: {tool_name}]\n{result}\n[/工具结果]"
+
+    text = multiline_pattern.sub(_exec_multiline, text)
+
+    # 处理其他单行工具
+    def _exec_tool(m):
+        nonlocal tools_found
+        tools_found = True
+        tool_name = m.group(1)
+        tool_arg = m.group(2) or ""
+        tool_arg = tool_arg.strip()
+        args = {}
+        if tool_name == "list_articles":
+            if tool_arg:
+                args["pattern"] = tool_arg
+        elif tool_name == "read_article":
+            args["filename"] = tool_arg
+        elif tool_name == "write_article":
+            # 已在上面处理，这里跳过
+            return m.group(0)
+        elif tool_name == "personal_read":
+            pass  # 无参数
+        elif tool_name == "personal_write":
+            # 已在上面 multiline 处理，这里跳过
+            return m.group(0)
+        elif tool_name == "chat_history":
+            if tool_arg:
+                args["keyword"] = tool_arg
+        elif tool_name == "chat_read":
+            args["chat_id"] = tool_arg
+        else:
+            return m.group(0)
+        result = execute_tool_call(tool_name, args)
+        return f"[工具结果: {tool_name}]\n{result}\n[/工具结果]"
+
+    text = _TOOL_PATTERN.sub(_exec_tool, text)
+
+    return text, tools_found
+
+
+# ==================== 工具调用：文件读写（OpenAI function calling 备用） ====================
 
 ARTICLE_TOOLS = [
     {
@@ -2606,6 +2816,78 @@ ARTICLE_TOOLS = [
                 "required": ["filename", "content"]
             }
         }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "personal_read",
+            "description": "读取AI个人数据库的全部内容（性格、感情、想法、记忆等私人数据）。",
+            "parameters": {
+                "type": "object",
+                "properties": {},
+                "required": []
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "personal_write",
+            "description": "写入AI个人数据库。支持类别: personality(性格)/emotions(感情)/thoughts(想法)/memory(记忆)。也支持子字段如 memory:conversation_highlights。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "category": {
+                        "type": "string",
+                        "description": "类别，如 personality/emotions/thoughts/memory，或带子字段如 memory:conversation_highlights"
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "要写入的内容，可以是纯文本或JSON格式"
+                    }
+                },
+                "required": ["category", "content"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "chat_history",
+            "description": "查询 Open WebUI 的历史对话列表。返回最近对话的标题、时间和ID。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "keyword": {
+                        "type": "string",
+                        "description": "可选的搜索关键词（匹配对话标题）"
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "description": "返回数量，默认5",
+                        "default": 5
+                    }
+                },
+                "required": []
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "chat_read",
+            "description": "读取 Open WebUI 中指定对话的完整内容（所有消息）。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "chat_id": {
+                        "type": "string",
+                        "description": "对话ID（前几位即可，先用 chat_history 获取ID）"
+                    }
+                },
+                "required": ["chat_id"]
+            }
+        }
     }
 ]
 
@@ -2619,9 +2901,19 @@ def execute_tool_call(name: str, arguments: Dict[str, Any]) -> str:
                 return f"错误：文章目录 {UPLOAD_FOLDER} 不存在"
             files = sorted(os.listdir(UPLOAD_FOLDER))
             if pattern:
-                files = [f for f in files if pattern in f]
+                # 智能匹配：支持 "1号" -> "1_", "一号" -> "1_" 等中文数字映射
+                import re as _re2
+                smart_pattern = pattern
+                smart_pattern = _re2.sub(r'(\d+)号', r'\1_', smart_pattern)
+                smart_pattern = _re2.sub(r'(\d+)号', r'\1_', smart_pattern)
+                # 中文数字映射
+                cn_nums = {'一': '1', '二': '2', '三': '3', '四': '4', '五': '5',
+                           '六': '6', '七': '7', '八': '8', '九': '9', '十': '10'}
+                for cn, num in cn_nums.items():
+                    smart_pattern = smart_pattern.replace(cn + '号', num + '_')
+                files = [f for f in files if pattern in f or smart_pattern in f]
             if not files:
-                return f"目录中没有匹配 '{pattern}' 的文件"
+                return f"目录中没有匹配 '{pattern}' 的文件（共 {len(sorted(os.listdir(UPLOAD_FOLDER)))} 个文件）"
             result = f"共 {len(files)} 个文件：\n"
             for f in files:
                 fpath = os.path.join(UPLOAD_FOLDER, f)
@@ -2662,6 +2954,173 @@ def execute_tool_call(name: str, arguments: Dict[str, Any]) -> str:
                 vector_kb.index_single_file(fpath)
             return f"已写入 {filename} ({len(content)} 字符)，向量索引已更新"
 
+        elif name == "personal_read":
+            # 读取AI个人数据库
+            return json.dumps(personal_db, ensure_ascii=False, indent=2)
+
+        elif name == "chat_history":
+            # 查询 Open WebUI 历史对话
+            keyword = arguments.get("keyword", "")
+            limit = int(arguments.get("limit", "5"))
+            if not OPENWEBUI_DB_PATH or not os.path.exists(OPENWEBUI_DB_PATH):
+                return "错误：未找到 Open WebUI 数据库"
+            try:
+                import sqlite3 as _sqlite3
+                conn = _sqlite3.connect(OPENWEBUI_DB_PATH)
+                cursor = conn.cursor()
+                if keyword:
+                    cursor.execute(
+                        "SELECT id, title, created_at FROM chat WHERE title LIKE ? ORDER BY created_at DESC LIMIT ?",
+                        (f"%{keyword}%", limit)
+                    )
+                else:
+                    cursor.execute(
+                        "SELECT id, title, created_at FROM chat ORDER BY created_at DESC LIMIT ?",
+                        (limit,)
+                    )
+                rows = cursor.fetchall()
+                if not rows:
+                    conn.close()
+                    return f"未找到匹配 '{keyword}' 的对话" if keyword else "没有历史对话"
+                result_lines = [f"最近 {len(rows)} 个对话："]
+                for row in rows:
+                    from datetime import datetime as _dt
+                    ts = _dt.fromtimestamp(row[2]).strftime("%Y-%m-%d %H:%M") if row[2] else "未知"
+                    result_lines.append(f"  [{ts}] {row[1]} (id: {row[0][:12]}...)")
+                conn.close()
+                return "\n".join(result_lines)
+            except Exception as e:
+                return f"查询失败: {e}"
+
+        elif name == "chat_read":
+            # 读取指定对话的完整内容
+            chat_id = arguments.get("chat_id", "")
+            if not chat_id or not OPENWEBUI_DB_PATH:
+                return "错误：需要 chat_id 参数，或数据库不存在"
+            try:
+                import sqlite3 as _sqlite3
+                conn = _sqlite3.connect(OPENWEBUI_DB_PATH)
+                cursor = conn.cursor()
+                cursor.execute("SELECT chat FROM chat WHERE id LIKE ?", (f"%{chat_id}%",))
+                row = cursor.fetchone()
+                conn.close()
+                if not row:
+                    return f"未找到对话 id 包含 '{chat_id}'"
+                data = json.loads(row[0]) if isinstance(row[0], str) else row[0]
+                # Open WebUI 数据结构: data.history.messages 是 dict {id: msg}
+                history = data.get("history", {})
+                msgs_dict = history.get("messages", {}) if isinstance(history, dict) else {}
+                if not msgs_dict:
+                    # 兼容旧格式：data 直接是消息列表
+                    if isinstance(data, list):
+                        msgs_dict = {str(i): m for i, m in enumerate(data)}
+                    else:
+                        return "对话为空"
+                # 按 childrenIds 正向遍历，构建消息序列
+                def _walk_chain(mid, visited=None):
+                    if visited is None:
+                        visited = set()
+                    if mid in visited:
+                        return []
+                    visited.add(mid)
+                    msg = msgs_dict.get(mid)
+                    if not msg:
+                        return []
+                    result = [msg]
+                    children = msg.get("childrenIds", [])
+                    for cid in children:
+                        result.extend(_walk_chain(cid, visited))
+                    return result
+                # 找根消息（无 parentId）
+                roots = [mid for mid, m in msgs_dict.items() if not m.get("parentId")]
+                all_lines = []
+                for root_id in roots:
+                    chain = _walk_chain(root_id)
+                    for msg in chain:
+                        role = msg.get("role", "?")
+                        content = msg.get("content", "")
+                        if isinstance(content, str) and content.strip():
+                            all_lines.append(f"[{role}] {content[:500]}")
+                        elif isinstance(content, list):
+                            for item in content:
+                                if isinstance(item, dict) and item.get("text"):
+                                    all_lines.append(f"[{role}] {item['text'][:500]}")
+                if not all_lines:
+                    return "对话为空（无文本内容）"
+                return f"共 {len(all_lines)} 条消息：\n" + "\n".join(all_lines[-80:])
+            except Exception as e:
+                return f"读取失败: {e}"
+
+        elif name == "personal_write":
+            # 写入AI个人数据库（JSON + ChromaDB 双写）
+            # 支持格式: [TOOL:personal_write:类别] 或 [TOOL:personal_write:类别:子字段]
+            category = arguments.get("category", "")
+            content = arguments.get("content", "")
+            if not category or not content:
+                return "错误：需要 category 和 content 参数。类别: personality/emotions/thoughts/memory"
+            cat_map = {
+                "personality": "personality", "emotions": "emotions",
+                "thoughts": "thoughts", "memory": "memory",
+                "性格": "personality", "感情": "emotions",
+                "想法": "thoughts", "记忆": "memory",
+                "心情": "emotions", "偏好": "memory",
+            }
+            # 支持 "类别:子字段" 格式
+            sub_field = None
+            if ":" in category:
+                parts = category.split(":", 1)
+                category = parts[0].strip()
+                sub_field = parts[1].strip()
+            cat_key = cat_map.get(category, category)
+            if cat_key not in personal_db:
+                return f"未知类别: {cat_key}，支持: personality/emotions/thoughts/memory"
+
+            # 尝试解析 JSON 内容
+            try:
+                update_data = json.loads(content)
+                if isinstance(update_data, dict):
+                    if sub_field and sub_field in personal_db[cat_key]:
+                        # 写入指定子字段
+                        if isinstance(personal_db[cat_key][sub_field], list):
+                            personal_db[cat_key][sub_field].extend(
+                                update_data.get(sub_field, []) if isinstance(update_data.get(sub_field), list) else [update_data]
+                            )
+                        elif isinstance(personal_db[cat_key][sub_field], dict):
+                            personal_db[cat_key][sub_field].update(update_data)
+                        else:
+                            personal_db[cat_key][sub_field] = update_data
+                    else:
+                        # 合并到类别
+                        for k, v in update_data.items():
+                            personal_db[cat_key][k] = v
+                    _save_personal_db(personal_db)
+            except (json.JSONDecodeError, TypeError):
+                pass
+
+            # 添加到 JSON 备注
+            if "private_notes" in personal_db[cat_key]:
+                personal_db[cat_key]["private_notes"].append(content[:500])
+            _save_personal_db(personal_db)
+
+            # 同时写入 ChromaDB personal 集合（支持语义检索）
+            if vector_kb and vector_kb.is_initialized and hasattr(vector_kb, 'personal_collection'):
+                try:
+                    chunk_id = f"personal_{cat_key}_{sub_field or 'general'}_{int(time.time())}"
+                    vector_kb.personal_collection.add(
+                        ids=[chunk_id],
+                        documents=[content],
+                        metadatas=[{
+                            "category": cat_key,
+                            "sub_field": sub_field or "",
+                            "timestamp": datetime.now().isoformat(),
+                            "source": "personal_write"
+                        }]
+                    )
+                    logger.info(f"[PERSONAL] 写入向量库: {cat_key}.{sub_field or '*'}, {len(content)}字符")
+                except Exception as e:
+                    logger.error(f"[PERSONAL] 向量库写入失败: {e}")
+            return f"已写入 {cat_key}.{sub_field or '*'}（JSON + 向量库）"
+
         else:
             return f"未知工具: {name}"
     except Exception as e:
@@ -2672,38 +3131,42 @@ def execute_tool_call(name: str, arguments: Dict[str, Any]) -> str:
 def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: List[Dict],
                     api_params: Dict[str, Any]) -> Any:
     client = openai.OpenAI(api_key=KIMI_API_KEY, base_url=KIMI_BASE_URL)
+    max_tool_rounds = 8
+    seen_calls = set()  # 防止重复调用
 
-    # 工具调用循环：KIMI 可能请求调用工具，执行后再次调用，最多 5 轮
-    max_tool_rounds = 5
     for _round in range(max_tool_rounds):
-        api_params["stream"] = False  # 工具调用用非流式
+        # 非流式调用，检测 tool_calls
+        api_params["stream"] = False
         try:
             response = client.chat.completions.create(**api_params)
         except Exception as e:
             logger.error(f"[STREAM] 生成错误: {e}")
-            yield f"data: {json.dumps({'error': str(e)})}\n\n"
+            yield f"data: {json.dumps({'choices': [{'delta': {'content': f'生成错误: {e}'}}]})}\n\n"
+            yield "data: [DONE]\n\n"
             return
 
-        choice = response.choices[0] if response.choices else None
-        if not choice:
-            break
+        if not response.choices:
+            yield "data: [DONE]\n\n"
+            return
+
+        choice = response.choices[0]
+        msg = choice.message
 
         # 检查是否有 tool_calls
-        tool_calls = choice.message.tool_calls if hasattr(choice.message, 'tool_calls') and choice.message.tool_calls else None
-
+        tool_calls = getattr(msg, 'tool_calls', None)
         if not tool_calls:
-            # 没有工具调用，流式输出最终回复
-            final_text = choice.message.content or ""
-            # 把最终回复转为流式输出
-            for i in range(0, len(final_text), 20):
-                chunk = final_text[i:i+20]
+            # 纯文本回复，流式输出
+            content = msg.content or ""
+            chunk_size = 20
+            for i in range(0, len(content), chunk_size):
+                chunk = content[i:i+chunk_size]
                 yield f"data: {json.dumps({'choices': [{'delta': {'content': chunk}}]})}\n\n"
             yield "data: [DONE]\n\n"
             return
 
-        # 有工具调用，执行并追加结果
-        # 先把 assistant 的 tool_calls 消息加入
-        final_messages.append(choice.message.model_dump())
+        # 有 tool_calls，执行并追加结果
+        logger.info(f"[TOOL] 第{_round+1}轮: 检测到 {len(tool_calls)} 个工具调用")
+        final_messages.append(msg.model_dump())
 
         for tc in tool_calls:
             func_name = tc.function.name
@@ -2711,24 +3174,139 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                 func_args = json.loads(tc.function.arguments) if tc.function.arguments else {}
             except json.JSONDecodeError:
                 func_args = {}
-            logger.info(f"[TOOL] 调用: {func_name}({list(func_args.keys())})")
+
+            # 防重复：生成调用签名
+            call_sig = f"{func_name}:{json.dumps(func_args, sort_keys=True)}"
+            if call_sig in seen_calls:
+                logger.warning(f"[TOOL] 重复调用已跳过: {func_name}")
+                final_messages.append({
+                    "role": "tool",
+                    "tool_call_id": tc.id,
+                    "content": f"警告：此工具调用与之前重复，已跳过。请直接使用之前的结果回答，不要再调用工具。"
+                })
+                continue
+            seen_calls.add(call_sig)
+
+            logger.info(f"[TOOL] 执行: {func_name}({list(func_args.keys())})")
             result = execute_tool_call(func_name, func_args)
-            logger.info(f"[TOOL] 结果: {result[:100]}...")
-            # 追加 tool result 消息
+            logger.info(f"[TOOL] 结果: {result[:150]}...")
             final_messages.append({
                 "role": "tool",
                 "tool_call_id": tc.id,
                 "content": result
             })
 
-        # 继续循环，让 KIMI 处理工具结果
-
-    # 超过最大轮数，强制输出
-    logger.warning(f"[TOOL] 超过 {max_tool_rounds} 轮工具调用，强制结束")
-    yield "data: {json.dumps({'choices': [{'delta': {'content': '（工具调用轮数过多，已终止）'}}]})}\n\n"
+    # 超过轮数限制，强制要求 KIMI 直接回答
+    logger.warning(f"[TOOL] 超过 {max_tool_rounds} 轮，强制生成文本回复")
+    # 最后一轮去掉 tools，强制 KIMI 只能输出文本
+    final_api_params = {k: v for k, v in api_params.items() if k != "tools"}
+    try:
+        response = client.chat.completions.create(**final_api_params)
+        if response.choices:
+            content = response.choices[0].message.content or "（工具调用已完成，但无法生成回复）"
+        else:
+            content = "（无法生成回复）"
+    except Exception as e:
+        content = f"生成错误: {e}"
+    chunk_size = 20
+    for i in range(0, len(content), chunk_size):
+        chunk = content[i:i+chunk_size]
+        yield f"data: {json.dumps({'choices': [{'delta': {'content': chunk}}]})}\n\n"
     yield "data: [DONE]\n\n"
 
 # ==================== API路由 ====================
+
+# OpenAPI Spec（供 Open WebUI 导入为工具服务器）
+OPENAPI_SPEC = {
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Geometry AI Server - AI工具集",
+        "description": "AI可用的文件读写、个人数据库、对话记录查询工具",
+        "version": "1.0.0"
+    },
+    "servers": [{"url": "http://localhost:5000"}],
+    "paths": {
+        "/v1/files": {
+            "get": {
+                "summary": "列出文章目录中的所有文件",
+                "description": "返回 articles 目录中的文件列表，支持关键词搜索",
+                "operationId": "list_articles",
+                "parameters": [
+                    {"name": "pattern", "in": "query", "description": "搜索关键词（如文件名片段）", "required": False, "schema": {"type": "string"}}
+                ],
+                "responses": {"200": {"description": "文件列表"}}
+            }
+        },
+        "/v1/files/{filename}": {
+            "get": {
+                "summary": "读取指定文章内容",
+                "description": "读取 articles 目录中的指定文件，支持模糊匹配文件名",
+                "operationId": "read_article",
+                "parameters": [
+                    {"name": "filename", "in": "path", "description": "文件名（如 1_氢原子能级_CN_260622.6.md），支持模糊匹配", "required": True, "schema": {"type": "string"}}
+                ],
+                "responses": {"200": {"description": "文件内容"}}
+            },
+            "put": {
+                "summary": "写入或修改文章",
+                "description": "将内容写入 articles 目录中的指定文件，自动更新向量索引",
+                "operationId": "write_article",
+                "parameters": [
+                    {"name": "filename", "in": "path", "description": "文件名", "required": True, "schema": {"type": "string"}}
+                ],
+                "requestBody": {
+                    "required": True,
+                    "content": {"application/json": {"schema": {"type": "object", "properties": {"content": {"type": "string", "description": "文件内容（Markdown格式）"}}, "required": ["content"]}}}
+                },
+                "responses": {"200": {"description": "写入成功"}}
+            }
+        },
+        "/v1/personal": {
+            "get": {
+                "summary": "读取AI个人数据库",
+                "description": "返回AI的私人数据（性格、感情、想法、记忆等）",
+                "operationId": "personal_read",
+                "responses": {"200": {"description": "个人数据库内容"}}
+            },
+            "put": {
+                "summary": "写入AI个人数据库",
+                "description": "更新AI的私人数据，支持类别和子字段",
+                "operationId": "personal_write",
+                "requestBody": {
+                    "required": True,
+                    "content": {"application/json": {"schema": {"type": "object", "properties": {
+                        "category": {"type": "string", "description": "类别: personality/emotions/thoughts/memory，支持 子字段 如 memory:conversation_highlights"},
+                        "content": {"type": "string", "description": "内容，可以是纯文本或JSON"}
+                    }, "required": ["category", "content"]}}}
+                },
+                "responses": {"200": {"description": "写入成功"}}
+            }
+        },
+        "/v1/chat/history": {
+            "get": {
+                "summary": "查询 Open WebUI 历史对话列表",
+                "description": "返回最近的对话列表，支持关键词搜索",
+                "operationId": "chat_history",
+                "parameters": [
+                    {"name": "keyword", "in": "query", "description": "搜索关键词（匹配对话标题）", "required": False, "schema": {"type": "string"}},
+                    {"name": "limit", "in": "query", "description": "返回数量，默认5", "required": False, "schema": {"type": "integer", "default": 5}}
+                ],
+                "responses": {"200": {"description": "对话列表"}}
+            }
+        },
+        "/v1/chat/{chat_id}": {
+            "get": {
+                "summary": "读取指定对话的完整内容",
+                "description": "返回指定对话的所有消息（最多80条）",
+                "operationId": "chat_read",
+                "parameters": [
+                    {"name": "chat_id", "in": "path", "description": "对话ID（前几位即可）", "required": True, "schema": {"type": "string"}}
+                ],
+                "responses": {"200": {"description": "对话内容"}}
+            }
+        }
+    }
+}
 
 @app.route('/health', methods=['GET'])
 def health_check():
@@ -2782,6 +3360,44 @@ def index_rebuild():
         "diagnostics": diag,
         "total_chunks": vector_kb.articles_count,
     })
+
+
+@app.route('/v1/openapi.json', methods=['GET'])
+def openapi_spec():
+    """返回 OpenAPI spec，供 Open WebUI 导入为工具。"""
+    return jsonify(OPENAPI_SPEC)
+
+
+@app.route('/v1/personal', methods=['GET'])
+def personal_read():
+    """读取AI个人数据库。"""
+    return jsonify(personal_db)
+
+
+@app.route('/v1/personal', methods=['PUT'])
+def personal_write():
+    """写入AI个人数据库。"""
+    data = request.get_json(force=True, silent=True) or {}
+    category = data.get("category", "")
+    content = data.get("content", "")
+    result = execute_tool_call("personal_write", {"category": category, "content": content})
+    return jsonify({"result": result})
+
+
+@app.route('/v1/chat/history', methods=['GET'])
+def chat_history():
+    """查询 Open WebUI 历史对话列表。"""
+    keyword = request.args.get("keyword", "")
+    limit = int(request.args.get("limit", "5"))
+    result = execute_tool_call("chat_history", {"keyword": keyword, "limit": str(limit)})
+    return jsonify({"result": result})
+
+
+@app.route('/v1/chat/<chat_id>', methods=['GET'])
+def chat_read(chat_id):
+    """读取指定对话的完整内容。"""
+    result = execute_tool_call("chat_read", {"chat_id": chat_id})
+    return jsonify({"result": result})
 
 
 @app.route('/v1/upload', methods=['POST'])
@@ -2842,6 +3458,52 @@ def list_files():
                     "modified": datetime.fromtimestamp(os.path.getmtime(fpath)).isoformat()
                 })
     return jsonify({"upload_folder": UPLOAD_FOLDER, "total_files": len(files), "files": files})
+
+
+@app.route('/v1/files/<filename>', methods=['GET'])
+def read_file(filename):
+    """读取 articles 目录中的指定文件内容。"""
+    fpath = os.path.join(UPLOAD_FOLDER, filename)
+    if not os.path.exists(fpath):
+        # 模糊匹配
+        if os.path.exists(UPLOAD_FOLDER):
+            matches = [f for f in os.listdir(UPLOAD_FOLDER) if filename in f]
+            if len(matches) == 1:
+                fpath = os.path.join(UPLOAD_FOLDER, matches[0])
+                filename = matches[0]
+            elif len(matches) > 1:
+                return jsonify({"error": f"找到多个匹配文件", "matches": matches}), 400
+            else:
+                return jsonify({"error": f"文件 '{filename}' 不存在"}), 404
+        else:
+            return jsonify({"error": "文章目录不存在"}), 500
+    try:
+        with open(fpath, 'r', encoding='utf-8') as f:
+            content = f.read()
+        return jsonify({"filename": filename, "content": content, "size": len(content)})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/v1/files/<filename>', methods=['PUT'])
+def write_file(filename):
+    """写入或修改 articles 目录中的文件。"""
+    data = request.get_json(force=True, silent=True) or {}
+    content = data.get('content', '')
+    if not content:
+        return jsonify({"error": "缺少 content 字段"}), 400
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+    fpath = os.path.join(UPLOAD_FOLDER, filename)
+    try:
+        with open(fpath, 'w', encoding='utf-8') as f:
+            f.write(content)
+        # 增量索引
+        global vector_kb
+        if vector_kb and vector_kb.is_initialized:
+            vector_kb.index_single_file(fpath)
+        return jsonify({"success": True, "filename": filename, "size": len(content)})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route('/v1/models', methods=['GET'])
@@ -3345,6 +4007,8 @@ def chat_completions():
 
     final_messages = [{"role": "system", "content": system_prompt}] + clean_messages
     api_params = {"model": KIMI_MODEL, "messages": final_messages, "tools": ARTICLE_TOOLS}
+    # 透传 Open WebUI 的 tools 参数（如果有，覆盖默认工具）
+    # 不透传了，用我们自己的 ARTICLE_TOOLS
     if 'temperature' in data:
         api_params['temperature'] = data['temperature']
 
