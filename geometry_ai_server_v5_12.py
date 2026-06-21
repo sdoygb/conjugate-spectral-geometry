@@ -1559,6 +1559,9 @@ class TeachingSystem:
             wrong=wrong, correct=correct, reason=reason,
             context=context, session_id=session_id
         )
+        result["success"] = chroma_ok
+        if not chroma_ok:
+            result["error"] = "ChromaDB 写入失败"
 
         return result
 
@@ -1585,7 +1588,9 @@ class TeachingSystem:
         chroma_ok = self.vector_kb.add_antipattern(
             pattern=pattern, description=description, severity=severity
         )
-
+        result["success"] = chroma_ok
+        if not chroma_ok:
+            result["error"] = "ChromaDB 写入失败"
 
         return result
 
@@ -1607,7 +1612,9 @@ class TeachingSystem:
         chroma_ok = self.vector_kb.add_patch(
             topic=topic, content=content, source=source
         )
-
+        result["success"] = chroma_ok
+        if not chroma_ok:
+            result["error"] = "ChromaDB 写入失败"
 
         return result
 
@@ -2637,11 +2644,18 @@ def build_system_prompt(
     metrics: Dict[str, float],
     index_empty: bool,
     uploaded_files_content: str = "",
-    teaching_section: str = ""
+    teaching_section: str = "",
+    msg_count: int = 0
 ) -> str:
     """
     v10 增强：新增 teaching_section 参数，注入教学反馈内容。
     """
+    # 新对话提醒
+    new_chat_hint = ""
+    if msg_count >= 20:
+        new_chat_hint = f"\n\n【重要提醒】当前对话已有 {msg_count} 条用户消息，上下文很长，容易出现幻觉和记忆混乱。请在回复末尾提醒用户：\"建议开一个新对话，当前对话太长了。\"\n"
+    elif msg_count >= 15:
+        new_chat_hint = f"\n\n【提醒】当前对话已有 {msg_count} 条消息，如果感觉回答质量下降，建议开新对话。\n"
     index_warning = ""
     if index_empty:
         index_warning = """\n\n【索引状态警告】
@@ -2686,13 +2700,14 @@ def build_system_prompt(
 {GEOMETRY_KNOWLEDGE}
 {teaching_prompt}
 
-【参考资料（向量检索）】
+【参考资料（系统自动检索，不是用户上传的）】
 {articles_content if articles_content else "（本次无直接相关的参考资料，基于你的几何论知识回答）"}{uploaded_section}
 
 【当前状态】eta={eta_before:.2f}度 | {tone_hint}
 
 {index_warning}
-{personal_prompt}"""
+{personal_prompt}
+{new_chat_hint}"""
 
 
 # ==================== 文本标记工具调用 ====================
@@ -3966,10 +3981,12 @@ def chat_completions():
 
     # 把文件内容从 system prompt 移到 user 消息中（KIMI 对 user 消息注意力更强）
     # system prompt 中只保留提示，不包含实际文件内容
+    raw_messages = data.get('messages', [])
+    msg_count = len([m for m in raw_messages if isinstance(m, dict) and m.get('role') == 'user'])
     system_prompt = build_system_prompt(
         eta_before, stage, strategy, max_eta, markers,
         loaded_chunks, articles_content, pre_metrics,
-        index_empty, "", teaching_section  # files_content 传空
+        index_empty, "", teaching_section, msg_count  # files_content 传空
     )
 
     # 过滤掉空消息和中间层注入的文件消息（避免历史中残留的文件内容被重复处理）
