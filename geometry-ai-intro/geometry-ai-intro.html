@@ -317,6 +317,16 @@ mark.key { background: none; color: var(--accent); font-weight: 600; }
       <p>上传的文件自动注入对话上下文，AI 能分析文件内容与几何论框架的符合与冲突。</p>
     </div>
     <div class="feature-card">
+      <div class="icon">&#x1F527;</div>
+      <h3>Function Calling</h3>
+      <p>AI 可自主调用 7 个工具：读写文章、管理个人数据库、查询历史对话，无需用户干预。</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">&#x1F4BE;</div>
+      <h3>个人数据库</h3>
+      <p>JSON + ChromaDB 双存储，持久化性格/感情/想法/记忆，支持语义检索和跨会话记忆。</p>
+    </div>
+    <div class="feature-card">
       <div class="icon">&#x1F6E1;</div>
       <h3>零外部依赖</h3>
       <p>只需 Python + ChromaDB，无需 MySQL 或其他数据库，部署简单。</p>
@@ -435,6 +445,66 @@ mark.key { background: none; color: var(--accent); font-weight: 600; }
     </table>
   </div>
   <p style="margin-top:0.75rem;color:var(--muted);font-size:0.9rem">关闭"联网搜索"和"引用"功能，避免干扰。</p>
+
+  <h3>Function Calling 模式（必需）</h3>
+  <p>为了让 AI 能够使用工具（读写文章、管理个人数据库等），需要启用 Native 模式：</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-content">
+        <h3>设置 Function Calling</h3>
+        <p>Admin Panel &rarr; Settings &rarr; Models &rarr; 编辑模型 &rarr; Advanced Params &rarr; Function Calling &rarr; 选择 <strong>Native</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <h3>AI 工具列表</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>工具</th>
+          <th>说明</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code style="color:var(--accent)">list_articles</code></td>
+          <td>列出文章目录中的所有文件，支持关键词过滤</td>
+        </tr>
+        <tr>
+          <td><code style="color:var(--accent)">read_article</code></td>
+          <td>读取指定文章全文，支持模糊匹配文件名</td>
+        </tr>
+        <tr>
+          <td><code style="color:var(--accent)">write_article</code></td>
+          <td>写入/修改文章，自动更新向量索引</td>
+        </tr>
+        <tr>
+          <td><code style="color:var(--accent)">personal_read</code></td>
+          <td>读取个人数据库全部内容</td>
+        </tr>
+        <tr>
+          <td><code style="color:var(--accent)">personal_write</code></td>
+          <td>写入个人数据库（性格/感情/想法/记忆）</td>
+        </tr>
+        <tr>
+          <td><code style="color:var(--accent)">chat_history</code></td>
+          <td>查询 Open WebUI 历史对话列表</td>
+        </tr>
+        <tr>
+          <td><code style="color:var(--accent)">chat_read</code></td>
+          <td>读取指定对话的完整消息链</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>OpenAPI 接口</h3>
+  <p>中间层提供标准 OpenAPI 3.1 规范，可被外部工具平台自动发现：</p>
+  <div class="code-block">
+    <span class="cmd">GET</span> http://localhost:5000/v1/openapi.json
+  </div>
+  <p>所有工具同时提供 REST API 端点，支持外部集成调用。</p>
 
   <div class="callout">
     <p>需要 KIMI API Key？前往 <a href="https://platform.moonshot.cn/" target="_blank" style="color:var(--accent)">platform.moonshot.cn</a> 免费注册，新用户有赠送额度。</p>
