@@ -69,7 +69,7 @@ CORS(app)
 # ChromaDB 持久化目录
 CHROMA_DB_DIR = os.getenv('CHROMA_DB_DIR', os.path.expanduser('~/AI/chroma_db'))
 
-KIMI_API_KEY = os.getenv('KIMI_API_KEY', 'sk-E1kT0fYuIX568sZquQfDnjVM1dyHIPmK5mVQAF2ZROqfYK3v')
+KIMI_API_KEY = os.getenv('KIMI_API_KEY', '')
 KIMI_BASE_URL = os.getenv('KIMI_BASE_URL', 'https://api.moonshot.cn/v1')
 KIMI_MODEL = os.getenv('KIMI_MODEL', 'kimi-k2.7-code')
 KIMI_EMBEDDING_MODEL = os.getenv('KIMI_EMBEDDING_MODEL', 'moonshot-embedding-v1')
@@ -3166,7 +3166,11 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
 
         # 有 tool_calls，执行并追加结果
         logger.info(f"[TOOL] 第{_round+1}轮: 检测到 {len(tool_calls)} 个工具调用")
-        final_messages.append(msg.model_dump())
+        msg_dict = msg.model_dump()
+        # KIMI API 要求 content 不能为空字符串，tool_calls 时 content 可为 null
+        if not msg_dict.get("content"):
+            msg_dict["content"] = None
+        final_messages.append(msg_dict)
 
         for tc in tool_calls:
             func_name = tc.function.name
@@ -3981,11 +3985,22 @@ def chat_completions():
             continue
         if isinstance(content, str) and not content.strip():
             continue
-        if isinstance(content, list) and not any(
-            item.get('text', '').strip() or item.get('image_url', {}) or item.get('file_url', {})
-            for item in content if isinstance(item, dict)
-        ):
-            continue
+        # 处理 list 格式的 content（Open WebUI 多模态消息）
+        if isinstance(content, list):
+            has_text = any(
+                isinstance(item, dict) and item.get('type') == 'text' and item.get('text', '').strip()
+                for item in content
+            )
+            has_image = any(
+                isinstance(item, dict) and item.get('type') == 'image_url'
+                for item in content
+            )
+            if not has_text and not has_image:
+                continue  # 空消息
+            # 纯图片无文字时，保留原样（KIMI API 支持纯图片数组）
+            if has_image and not has_text:
+                pass  # content 数组不为空，直接保留
+            m = {**m, 'content': content}
         clean_messages.append(m)
 
     # 如果有上传文件，在最后一条 user 消息前插入文件内容（带时间戳标记新旧）
