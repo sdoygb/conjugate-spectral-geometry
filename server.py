@@ -41,6 +41,31 @@ from stream import stream_generate
 app = Flask(__name__)
 CORS(app)
 
+# 简单 rate limiting：每分钟最多 60 次请求（per IP）
+_rate_limit_store = {}  # {ip: [(timestamp, count), ...]}
+_RATE_LIMIT_PER_MIN = 60
+
+@app.before_request
+def _rate_limit():
+    """简单的 IP 级别频率限制"""
+    # 跳过健康检查和静态请求
+    if request.path in ('/health', '/favicon.ico'):
+        return None
+    ip = request.remote_addr or 'unknown'
+    now = time.time()
+    minute_ago = now - 60
+    # 清理过期记录
+    if ip in _rate_limit_store:
+        _rate_limit_store[ip] = [(t, c) for t, c in _rate_limit_store[ip] if t > minute_ago]
+    else:
+        _rate_limit_store[ip] = []
+    # 计算最近一分钟请求数
+    total = sum(c for _, c in _rate_limit_store[ip])
+    if total >= _RATE_LIMIT_PER_MIN:
+        logger.warning(f"[RATE-LIMIT] {ip} 超过频率限制 ({total}/min)")
+        return openai_error("请求过于频繁，请稍后再试", err_type="rate_limit_error", status=429)
+    _rate_limit_store[ip].append((now, 1))
+
 # 全局单例
 vector_kb: Optional[VectorKnowledgeBase] = None
 teaching_system: Optional[TeachingSystem] = None
@@ -573,21 +598,38 @@ def list_models():
     })
 
 
+# ==================== Embeddings 端点（带缓存） ====================
+
+_embedding_cache = {}  # {hash(input+model): response_data}
+_EMBEDDING_CACHE_MAX = 500  # 最多缓存500条
+
+
 @app.route('/v1/embeddings', methods=['POST'])
 def embeddings():
-    """OpenAI 兼容的 embeddings 端点，透传给 KIMI API"""
+    """OpenAI 兼容的 embeddings 端点，带内存缓存"""
     data = request.get_json(force=True, silent=True)
     if not data or not isinstance(data, dict):
         return openai_error("Invalid request body", err_type="invalid_request_error", status=400)
     if not data.get('input'):
         return openai_error("Missing required parameter: input", err_type="invalid_request_error", status=400)
+    # 缓存检查
+    model = data.get('model', KIMI_EMBEDDING_MODEL)
+    input_data = data['input']
+    cache_key = hashlib.md5((json.dumps(input_data, sort_keys=True) + model).encode()).hexdigest()
+    if cache_key in _embedding_cache:
+        return jsonify(_embedding_cache[cache_key])
     try:
         client = openai.OpenAI(api_key=KIMI_API_KEY, base_url=KIMI_BASE_URL)
-        resp = client.embeddings.create(
-            model=data.get('model', KIMI_EMBEDDING_MODEL),
-            input=data['input']
-        )
-        return jsonify(resp.model_dump())
+        resp = client.embeddings.create(model=model, input=input_data)
+        result = resp.model_dump()
+        # 写入缓存
+        if len(_embedding_cache) >= _EMBEDDING_CACHE_MAX:
+            # 简单清理：删除最早的 100 条
+            keys_to_remove = list(_embedding_cache.keys())[:100]
+            for k in keys_to_remove:
+                del _embedding_cache[k]
+        _embedding_cache[cache_key] = result
+        return jsonify(result)
     except Exception as e:
         return openai_error(f"Embedding error: {e}", status=500)
 

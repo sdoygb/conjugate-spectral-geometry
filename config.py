@@ -11,6 +11,7 @@ import json
 import random
 import hashlib
 import logging
+import logging.handlers
 import time
 import threading
 from datetime import datetime, timedelta
@@ -31,12 +32,20 @@ except ImportError:
 # ------------------------------------------------------------------
 # 日志
 # ------------------------------------------------------------------
+_LOG_DIR = os.path.join(os.path.expanduser("~"), "AI", "logs")
+os.makedirs(_LOG_DIR, exist_ok=True)
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s',
     handlers=[
         logging.StreamHandler(sys.stdout),
-        logging.FileHandler('geometry_ai_v10.log', encoding='utf-8')
+        logging.FileHandler(os.path.join(_LOG_DIR, 'geometry_ai.log'), encoding='utf-8'),
+        # 按天轮转，保留最近 7 天
+        logging.handlers.TimedRotatingFileHandler(
+            os.path.join(_LOG_DIR, 'geometry_ai.log'),
+            when='midnight', backupCount=7, encoding='utf-8'
+        )
     ]
 )
 logger = logging.getLogger(__name__)

@@ -176,10 +176,72 @@ def start_server():
     print(f"{BOLD}      健康检查: http://localhost:5000/health{RESET}")
     print(f"")
     print(f"      按 Ctrl+C 停止服务器")
+    print(f"      文件变化时自动重启（watchdog 模式）")
     print(f"{CYAN}      ─────────────────────────────────────{RESET}")
 
-    # 启动服务器
-    os.execv(sys.executable, [sys.executable, server_script])
+    # watchdog 模式：检测源文件变化，自动同步并重启
+    import time as _time
+    py_files_to_watch = [os.path.join(source_dir, f) for f in os.listdir(source_dir) if f.endswith('.py') and f != 'auto_teach.py']
+    # 记录每个文件的最后修改时间
+    file_mtimes = {f: os.path.getmtime(f) for f in py_files_to_watch if os.path.exists(f)}
+
+    while True:
+        # 同步文件
+        changed = False
+        for f in py_files_to_watch:
+            if not os.path.exists(f):
+                continue
+            dst = os.path.join(run_dir, os.path.basename(f))
+            if os.path.realpath(f) == os.path.realpath(dst):
+                continue
+            current_mtime = os.path.getmtime(f)
+            if current_mtime != file_mtimes.get(f):
+                file_mtimes[f] = current_mtime
+                try:
+                    shutil.copy2(f, dst)
+                    changed = True
+                    print(f"{YELLOW}[WATCHDOG] 已同步: {os.path.basename(f)}{RESET}")
+                except Exception as e:
+                    print(f"{RED}[WATCHDOG] 同步失败: {e}{RESET}")
+
+        # 启动服务器子进程
+        proc = subprocess.Popen(
+            [sys.executable, server_script],
+            cwd=run_dir
+        )
+        try:
+            # 每 3 秒检查一次文件变化
+            while proc.poll() is None:
+                _time.sleep(3)
+                for f in py_files_to_watch:
+                    if not os.path.exists(f):
+                        continue
+                    if os.path.getmtime(f) != file_mtimes.get(f):
+                        file_mtimes[f] = os.path.getmtime(f)
+                        dst = os.path.join(run_dir, os.path.basename(f))
+                        if os.path.realpath(f) != os.path.realpath(dst):
+                            try:
+                                shutil.copy2(f, dst)
+                                print(f"{YELLOW}[WATCHDOG] 文件变化，同步: {os.path.basename(f)}{RESET}")
+                            except Exception as e:
+                                print(f"{RED}[WATCHDOG] 同步失败: {e}{RESET}")
+                        # 杀掉旧进程，重启
+                        print(f"{YELLOW}[WATCHDOG] 检测到变化，重启服务器...{RESET}")
+                        proc.terminate()
+                        try:
+                            proc.wait(timeout=5)
+                        except subprocess.TimeoutExpired:
+                            proc.kill()
+                        changed = True
+                        break
+        except KeyboardInterrupt:
+            proc.terminate()
+            try:
+                proc.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+            print(f"\n{CYAN}服务器已停止{RESET}")
+            break
 
 def main():
     print_banner()
