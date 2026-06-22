@@ -563,7 +563,9 @@ def execute_tool_call(name: str, arguments: Dict[str, Any]) -> str:
                 do_push = arguments.get("push", False)
                 custom_msg = arguments.get("message", "")
                 # git add 所有文章
-                _sp.run(["git", "-C", repo, "add", "articles/"], capture_output=True, timeout=10)
+                rel_dir = os.path.relpath(UPLOAD_FOLDER, repo)
+                add_path = rel_dir if rel_dir != '.' else "."
+                _sp.run(["git", "-C", repo, "add", add_path], capture_output=True, timeout=10)
                 # commit
                 if custom_msg:
                     msg = custom_msg
@@ -598,17 +600,29 @@ def execute_tool_call(name: str, arguments: Dict[str, Any]) -> str:
                 filename = arguments.get("filename", "")
                 limit = min(int(arguments.get("limit", "10")), 30)
                 if filename:
-                    # 查找匹配的文件路径
+                    # 构建文件相对路径
                     rel_dir = os.path.relpath(UPLOAD_FOLDER, repo)
+                    if rel_dir == '.':
+                        file_path = filename
+                    else:
+                        file_path = os.path.join(rel_dir, filename)
                     r = _sp.run(
-                        ["git", "-C", repo, "log", "--oneline", f"-{limit}", "--", f"{rel_dir}/{filename}"],
+                        ["git", "-C", repo, "log", "--oneline", f"-{limit}", "--", file_path],
                         capture_output=True, timeout=10
                     )
                 else:
-                    r = _sp.run(
-                        ["git", "-C", repo, "log", "--oneline", f"-{limit}", "--", "articles/"],
-                        capture_output=True, timeout=10
-                    )
+                    # 显示所有文章的提交记录
+                    rel_dir = os.path.relpath(UPLOAD_FOLDER, repo)
+                    if rel_dir == '.':
+                        r = _sp.run(
+                            ["git", "-C", repo, "log", "--oneline", f"-{limit}"],
+                            capture_output=True, timeout=10
+                        )
+                    else:
+                        r = _sp.run(
+                            ["git", "-C", repo, "log", "--oneline", f"-{limit}", "--", rel_dir],
+                            capture_output=True, timeout=10
+                        )
                 if r.returncode == 0 and r.stdout:
                     lines = r.stdout.decode().strip().split('\n')
                     return f"最近 {len(lines)} 条提交记录:\n" + "\n".join(f"  {l}" for l in lines)
