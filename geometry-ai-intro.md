@@ -66,20 +66,14 @@ Geometry AI Server 通过**向量知识库 + 活体信息场 + 教学反馈**三
 ### 安装步骤
 
 ```bash
-# 1. 安装 Open WebUI（聊天界面）
-pip install open-webui
-open-webui serve
-# 浏览器打开 http://localhost:3000 完成初始设置
-
-# 2. 克隆本项目（知识库已内置，开箱即用）
+# 一键启动（推荐，自动检测环境、安装依赖）
 git clone https://github.com/sdoygb/geometry-ai-server.git
 cd geometry-ai-server
+export KIMI_API_KEY="你的密钥"
+python3 start.py
 
-# 3. 安装依赖
-pip install flask openai chromadb fastembed
-
-# 4. 配置 KIMI API Key 并启动中间层
-export KIMI_API_KEY="你的API Key"
+# 手动安装
+pip3 install openai flask flask-cors chromadb
 python3 geometry_ai_server_v5_12.py
 ```
 
@@ -155,8 +149,8 @@ Geometry AI Server 的设计理念是：**先学懂，再用好**。
 |------|------|
 | [GitHub 仓库](https://github.com/sdoygb/geometry-ai-server) | 源代码 + 预构建向量知识库 |
 | [Open WebUI](https://github.com/open-webui/open-webui) | 聊天网页界面（`pip install open-webui && open-webui serve`） |
-| Python 3.11+ | 运行环境 |
-| flask + openai + chromadb + fastembed | 依赖包（openai 是 API 客户端库，连接 KIMI） |
+| Python 3.9+ | 运行环境（macOS / Linux / Windows） |
+| openai + flask + flask-cors + chromadb | 依赖包 |
 | KIMI API Key | 免费注册，新用户有赠送额度 |
 
 > **项目地址：** https://github.com/sdoygb/geometry-ai-server

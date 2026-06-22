@@ -404,17 +404,13 @@ mark.key { background: none; color: var(--accent); font-weight: 600; }
 
   <h3>安装步骤</h3>
   <div class="code-block">
-    <span class="comment"># 1. 安装 Open WebUI（聊天界面）</span><br>
-    <span class="cmd">pip install</span> open-webui<br>
-    <span class="cmd">open-webui</span> serve<br>
-    <span class="comment"># 浏览器打开 http://localhost:3000 完成初始设置</span><br><br>
-    <span class="comment"># 2. 克隆本项目（知识库已内置，开箱即用）</span><br>
+    <span class="comment"># 一键启动（推荐，自动检测环境、安装依赖）</span><br>
     <span class="cmd">git clone</span> https://github.com/sdoygb/geometry-ai-server.git<br>
-    <span class="cmd">cd</span> geometry-ai-server<br><br>
-    <span class="comment"># 3. 安装依赖</span><br>
-    <span class="cmd">pip install</span> flask openai chromadb fastembed<br><br>
-    <span class="comment"># 4. 配置 KIMI API Key 并启动中间层</span><br>
-    <span class="cmd">export</span> KIMI_API_KEY="你的API Key"<br>
+    <span class="cmd">cd</span> geometry-ai-server<br>
+    <span class="cmd">export</span> KIMI_API_KEY="你的密钥"<br>
+    <span class="cmd">python3</span> start.py<br><br>
+    <span class="comment"># 手动安装</span><br>
+    <span class="cmd">pip3 install</span> openai flask flask-cors chromadb<br>
     <span class="cmd">python3</span> geometry_ai_server_v5_12.py
   </div>
 
@@ -613,7 +609,7 @@ mark.key { background: none; color: var(--accent); font-weight: 600; }
           <td>聊天网页界面（<code style="color:var(--muted)">pip install open-webui &amp;&amp; open-webui serve</code>）</td>
         </tr>
         <tr>
-          <td>Python 3.11+</td>
+          <td>Python 3.9+</td>
           <td>运行环境</td>
         </tr>
         <tr>
