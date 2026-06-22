@@ -881,7 +881,7 @@ def chat_completions():
             conn = _sqlite3.connect(OPENWEBUI_DB_PATH)
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT title FROM chat ORDER BY createdAt DESC LIMIT 3"
+                "SELECT title FROM chat ORDER BY created_at DESC LIMIT 3"
             )
             recent_titles = [row[0] for row in cursor.fetchall() if row[0]]
             conn.close()
