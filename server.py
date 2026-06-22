@@ -962,6 +962,19 @@ def chat_completions():
 
     final_messages = [{"role": "system", "content": system_prompt}] + clean_messages
 
+    # 修复纯图片消息：KIMI API 要求 content 数组中必须有 text 元素
+    # Open WebUI 发送纯图片时 content=[{"type":"image_url",...}]，缺少 text
+    for i, msg in enumerate(final_messages):
+        content = msg.get("content")
+        if isinstance(content, list):
+            has_text = any(isinstance(item, dict) and item.get("type") == "text" and item.get("text", "").strip()
+                          for item in content)
+            if not has_text:
+                # 在数组开头插入一个默认文本
+                content.insert(0, {"type": "text", "text": "请查看这张图片并回答相关问题。"})
+                final_messages[i]["content"] = content
+                logger.info(f"[FIX] 纯图片消息补充默认文本 (index={i})")
+
     # 历史消息截断：保留 system + 最近 N 条消息，防止 token 爆炸
     MAX_HISTORY_MESSAGES = 40  # 最近 40 条消息（约 20 轮对话）
     MAX_HISTORY_CHARS = 30000  # 历史消息总字符上限
