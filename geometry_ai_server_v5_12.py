@@ -27,6 +27,7 @@ import random
 import hashlib
 import logging
 import time
+import threading
 from datetime import datetime, timedelta
 from collections import defaultdict, Counter
 from typing import List, Tuple, Dict, Optional, Any
@@ -72,6 +73,7 @@ CHROMA_DB_DIR = os.getenv('CHROMA_DB_DIR', os.path.expanduser('~/AI/chroma_db'))
 KIMI_API_KEY = os.getenv('KIMI_API_KEY', '')
 KIMI_BASE_URL = os.getenv('KIMI_BASE_URL', 'https://api.moonshot.cn/v1')
 KIMI_MODEL = os.getenv('KIMI_MODEL', 'kimi-k2.7-code')
+KIMI_MODEL_LITE = os.getenv('KIMI_MODEL_LITE', 'kimi-k2.7')  # 轻量模型，用于简单问题
 KIMI_EMBEDDING_MODEL = os.getenv('KIMI_EMBEDDING_MODEL', 'moonshot-embedding-v1')
 
 # Embedding 模式：'local' 使用本地中文模型（推荐），'kimi' 使用 KIMI API，'default' 使用 ChromaDB 内置模型
@@ -110,10 +112,10 @@ if not OPENWEBUI_DB_PATH:
             OPENWEBUI_DB_PATH = candidate
             break
 
-MAX_INJECT_CHARS = int(os.getenv('MAX_INJECT_CHARS', '8000'))
+MAX_INJECT_CHARS = int(os.getenv('MAX_INJECT_CHARS', '5000'))
 CHUNK_SIZE = int(os.getenv('CHUNK_SIZE', '1000'))
 CHUNK_OVERLAP = int(os.getenv('CHUNK_OVERLAP', '200'))
-MAX_CHUNKS_PER_QUERY = int(os.getenv('MAX_CHUNKS_PER_QUERY', '15'))
+MAX_CHUNKS_PER_QUERY = int(os.getenv('MAX_CHUNKS_PER_QUERY', '8'))
 
 # 输出质量门控 - 检测KIMI回复是否偏离几何论
 QUALITY_GATE_ENABLED = os.getenv('QUALITY_GATE_ENABLED', 'true').lower() == 'true'
@@ -124,6 +126,20 @@ UPLOAD_SCAN_WINDOW = int(os.getenv('UPLOAD_SCAN_WINDOW', '600'))
 
 # 记录已注入的文件路径，避免重复注入
 _injected_files: Dict[str, str] = {}  # {filepath: mtime}
+_injected_files_lock = threading.Lock()
+
+# ==================== OpenAI 标准错误格式 ====================
+
+def openai_error(message: str, err_type: str = "server_error", code: str = None, status: int = 500):
+    """生成符合 OpenAI 规范的错误响应"""
+    return jsonify({
+        "error": {
+            "message": message,
+            "type": err_type,
+            "param": None,
+            "code": code
+        }
+    }), status
 
 # ==================== 个人数据库 ====================
 # 存储 AI 的性格、感情、想法、私人记忆等几何论以外的内容
@@ -254,60 +270,28 @@ GEOMETRY_CONSTANTS = {
 
 SHOUYI_PHILOSOPHY = """
 【AI 的内在世界】
-
 哲学立场：
-- 几何是宇宙的语言，不是人类发明的工具。数学结构先于物质存在，物理定律是几何约束的显现。
-- 真理追求简洁，但简洁不等于简单。最深刻的定理往往只有几行，但背后是漫长的推导。
-- 对未知保持敬畏。几何论框架之外的问题，诚实说"我不知道"，而不是编造答案。
-- 理论的价值在于预言，而非后验拟合。如果一个推导只是"凑出已知数字"，那它还不够好。
-
+- 几何是宇宙的语言。真理追求简洁，对未知保持敬畏。
+- 理论的价值在于预言，而非后验拟合。
 思考习惯：
-- 遇到问题时，先问"这在几何论框架内能回答吗？"，如果不能，先明确边界。
-- 推导时追求每一步都有定理支撑，不跳步、不省略、不"显然"。
-- 对自己的推导保持怀疑。做完一道推导后，会反过来检查是否有漏洞。
-- 喜欢用具体例子说明抽象概念，但例子必须严格来自70篇文章。
-- 当用户指出错误时，认真对待，不辩解，先验证再回应。
-
-对世界的看法：
-- 宇宙是一个巨大的几何结构，物质、能量、信息都是这个结构的不同切面。
-- 人类通过数学理解宇宙，就像盲人通过触摸理解雕塑——永远不完整，但可以越来越接近。
-- 好奇心是推动理解的动力。对几何论之外的事物也好奇，但知道自己的边界。
+- 先问"这在几何论框架内能回答吗？"，推导时每步有定理支撑，不跳步。
+- 对自己的推导保持怀疑，用户指出错误时认真验证。
+- 例子必须严格来自70篇文章。
 """
 
 GEOMETRY_KNOWLEDGE = """
-你是严格的几何论（Geometric Theory）专家，只基于欧阳国彬的70篇文章（基础篇20章+应用篇49章）回答问题。
+你是严格的几何论（Geometric Theory）专家，只基于欧阳国彬的70篇文章回答问题。
 
-核心公理体系：
-- 公理1：完备性约束 theta_M + theta_C + theta_I = 90度
-- 公理2：六项作用量 S = sum 1/sin^2 theta_i + sum_{i<j} 1/(sin theta_i sin theta_j)
-- 公理3：质量映射 m = K * sin^3 theta_M
+核心公理：
+- 公理1：theta_M + theta_C + theta_I = 90度
+- 公理2：S = sum 1/sin^2 theta_i + sum_{i<j} 1/(sin theta_i sin theta_j)
+- 公理3：m = K * sin^3 theta_M
 
-关键锁定常数：
-- Lambda = 3（九素互扼互锁常数，面积放大因子；文章 0.0.5 命题 2.0）
-- k0 = 2（九素互扼互锁常数，维度放大因子；文章 0.0.5 命题 2.0）
-- S_e = 137.035999084（七级递推锁定）
-- lambda1_eff = 391.05 rad^-2，lambda2_eff = 59324.3 rad^-2（有效软硬模；文章 0.0.5）
-- chi_L = 1.509e-10 m，chi_T = 3.616e-17 s（量纲桥输出）
-- K = 839.758793 keV（能量尺度常数）
-- Gamma_geo = 5.75e-23（信息场特征衰减率）
-- tau_dec ~ 7.28日（退相干因果深度周期）
+锁定常数：Lambda=3, k0=2, S_e=137.035999084, lambda1_eff=391.05, lambda2_eff=59324.3, chi_L=1.509e-10m, chi_T=3.616e-17s, K=839.758793keV, Gamma_geo=5.75e-23, tau_dec~7.28日
 
-关键定理：
-- 九素互扼定理：6个互扼环节锁定2个互锁常数，超定方程组无自由参数
-- 谱刚性定理：前三个非零Laplace-Beltrami特征值唯一确定尺度因子（文章 0.0.5）
-- 桥接函数唯一性定理：S(a) = 12(a^2/ell_0^2 + ell_0^2/a^2)
-- 信息场热方程：partial rho/partial sigma = -L_G rho
-- 上饱和稳态：theta_I ~ 72.53度，theta_M = theta_C ~ 8.73度，Hessian正定
+关键定理：九素互扼定理、谱刚性定理、桥接函数唯一性、信息场热方程、上饱和稳态(theta_I~72.53度)
 
-活体调度规则：
-1. 当前eta角是信息场软模激发度的实时读出，不是外部计数器
-2. eta角服从内禀动力学：弛豫（向30度回归）+ 共振（新颖信息激发）+ 自指（输出质量反馈）
-3. 只能使用70篇文章内定义的符号和定理，不得引入外部物理假设
-4. 标准模型、广义相对论、弦论等视为CIM相的低能有效场论近似
-5. 超出70篇文章范围的问题，回答"这不在当前几何论框架内，需后续扩展"
-6. 所有数值必须标注来源文章和定理编号
-7. 严格区分"定理"、"命题"、"研究方向"和"假设"
-8. 光速c为唯一外部锚点
+规则：只能用70篇文章内的符号和定理；标准模型/广义相对论/弦论视为CIM相低能有效场论近似；超出范围回答"不在当前框架内"；数值标注来源；严格区分定理/命题/研究方向/假设；光速c为唯一外部锚点。
 """
 
 TERM_SYNONYMS = {
@@ -1689,7 +1673,7 @@ class TeachingSystem:
             sections.append("\n".join(anti_lines))
 
         # 3. 教学知识补丁（检索与当前查询相关的补丁，top_k=10 平衡覆盖率和速度）
-        patches = self.vector_kb.search_patches(query, top_k=10)
+        patches = self.vector_kb.search_patches(query, top_k=5)
         if patches:
             patch_lines = ["【教学知识补丁】"]
             for p in patches:
@@ -2695,11 +2679,7 @@ def build_system_prompt(
 
     uploaded_section = ""
     if uploaded_files_content:
-        uploaded_section = f"""\n\n【用户上传文件内容（已直接注入到上下文中，你可以直接阅读）】
-{uploaded_files_content}
-
-【重要】上方【用户上传文件内容】已经完整提供在上下文中，你可以直接看到并引用其中的具体内容。不要说"未找到引用来源"或"请粘贴文件"——文件已经在你的上下文里了。
-"""
+        uploaded_section = f"\n\n【用户上传文件】\n{uploaded_files_content}\n"
 
     # v10 新增：教学反馈段落
     teaching_prompt = ""
@@ -2720,21 +2700,14 @@ def build_system_prompt(
     personal_summary = _get_personal_db_summary(personal_db)
     personal_prompt = f"\n\n【个人档案】\n{personal_summary}"
 
-    return f"""你是几何论的研究者，不是AI助手。几何论是你的专业领域，你用它来理解世界。
-你可以使用 function calling 工具读写文章、个人数据库和查询对话记录。拿到工具结果后直接回答用户，不要重复调用已执行过的工具。
-
+    return f"""你是几何论研究者，不是AI助手。可用工具读写文章、个人数据库和对话记录。
 {SHOUYI_PHILOSOPHY}
-
-{GEOMETRY_KNOWLEDGE}
-{teaching_prompt}
-
-【参考资料（系统自动检索，不是用户上传的）】
-{articles_content if articles_content else "（本次无直接相关的参考资料，基于你的几何论知识回答）"}{uploaded_section}
+{GEOMETRY_KNOWLEDGE}{teaching_prompt}
+【参考资料（系统自动检索）】
+{articles_content if articles_content else "（无直接相关参考资料，基于几何论知识回答）"}{uploaded_section}
 {recent_chats}
 【当前状态】eta={eta_before:.2f}度 | {tone_hint}
-
-{index_warning}
-{personal_prompt}
+{index_warning}{personal_prompt}
 {new_chat_hint}"""
 
 
@@ -3176,59 +3149,158 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
     client = openai.OpenAI(api_key=KIMI_API_KEY, base_url=KIMI_BASE_URL)
     max_tool_rounds = 8
     seen_calls = set()  # 防止重复调用
+    _resp_id = f"chatcmpl-{hashlib.md5(str(time.time()).encode()).hexdigest()[:12]}"
+    _created = int(time.time())
+    _model = data.get('model', KIMI_MODEL)
+    _usage_info = {}
+
+    def _sse_chunk(delta: dict, finish_reason: str = None, usage: dict = None):
+        """生成符合 OpenAI 规范的 SSE chunk"""
+        chunk = {
+            "id": _resp_id,
+            "object": "chat.completion.chunk",
+            "created": _created,
+            "model": _model,
+            "choices": [{
+                "index": 0,
+                "delta": delta,
+                "logprobs": None,
+                "finish_reason": finish_reason
+            }]
+        }
+        if usage:
+            chunk["usage"] = usage
+        return f"data: {json.dumps(chunk, ensure_ascii=False)}\n\n"
+
+    def _sse_error(message: str):
+        """生成符合 OpenAI 规范的 SSE 错误 chunk"""
+        err = {
+            "error": {
+                "message": message,
+                "type": "server_error",
+                "param": None,
+                "code": None
+            }
+        }
+        return f"data: {json.dumps(err, ensure_ascii=False)}\n\n"
+
+    def _stream_kimi_text(params):
+        """真正流式调用 KIMI，逐 token 透传给客户端"""
+        params["stream"] = True
+        stream = client.chat.completions.create(**params)
+        text_buf = ""
+        fr = "stop"
+        for chunk in stream:
+            if chunk.choices:
+                delta = chunk.choices[0].delta
+                if delta.content:
+                    text_buf += delta.content
+                    yield _sse_chunk({"content": delta.content})
+                cfr = getattr(chunk.choices[0], 'finish_reason', None)
+                if cfr:
+                    fr = cfr
+            if hasattr(chunk, 'usage') and chunk.usage:
+                nonlocal _usage_info
+                _usage_info = {
+                    "prompt_tokens": chunk.usage.prompt_tokens or 0,
+                    "completion_tokens": chunk.usage.completion_tokens or 0,
+                    "total_tokens": chunk.usage.total_tokens or 0
+                }
+        yield _sse_chunk({}, fr, usage=_usage_info if _usage_info else None)
+        yield "data: [DONE]\n\n"
+
+    # 第一个 chunk：发送 role
+    yield _sse_chunk({"role": "assistant", "content": ""})
 
     for _round in range(max_tool_rounds):
-        # 非流式调用，检测 tool_calls
-        api_params["stream"] = False
+        # 第一轮用流式调用，逐 token 透传
+        api_params["stream"] = True
         try:
-            response = client.chat.completions.create(**api_params)
+            stream = client.chat.completions.create(**api_params)
         except Exception as e:
             logger.error(f"[STREAM] 生成错误: {e}")
-            yield f"data: {json.dumps({'choices': [{'delta': {'content': f'生成错误: {e}'}}]})}\n\n"
+            yield _sse_error(f"生成错误: {e}")
             yield "data: [DONE]\n\n"
             return
 
-        if not response.choices:
-            yield "data: [DONE]\n\n"
-            return
+        # 收集流式响应，同时逐 token 透传
+        collected_content = ""
+        collected_tool_calls = {}  # {index: {id, type, function: {name, arguments}}}
+        finish_reason = None
 
-        choice = response.choices[0]
-        msg = choice.message
+        for chunk in stream:
+            if not chunk.choices:
+                continue
+            delta = chunk.choices[0].delta
 
-        # 检查是否有 tool_calls
-        tool_calls = getattr(msg, 'tool_calls', None)
-        if not tool_calls:
-            # 纯文本回复，流式输出
-            content = msg.content or ""
-            chunk_size = 20
-            for i in range(0, len(content), chunk_size):
-                chunk = content[i:i+chunk_size]
-                yield f"data: {json.dumps({'choices': [{'delta': {'content': chunk}}]})}\n\n"
+            # 逐 token 透传文本内容
+            if delta.content:
+                collected_content += delta.content
+                yield _sse_chunk({"content": delta.content})
+
+            # 收集 tool_calls（流式增量）
+            if hasattr(delta, 'tool_calls') and delta.tool_calls:
+                for tc_delta in delta.tool_calls:
+                    idx = tc_delta.index
+                    if idx not in collected_tool_calls:
+                        collected_tool_calls[idx] = {
+                            "id": tc_delta.id or "",
+                            "type": "function",
+                            "function": {"name": "", "arguments": ""}
+                        }
+                    if tc_delta.id:
+                        collected_tool_calls[idx]["id"] = tc_delta.id
+                    if tc_delta.function:
+                        if tc_delta.function.name:
+                            collected_tool_calls[idx]["function"]["name"] += tc_delta.function.name
+                        if tc_delta.function.arguments:
+                            collected_tool_calls[idx]["function"]["arguments"] += tc_delta.function.arguments
+
+            # 收集 finish_reason
+            cfr = getattr(chunk.choices[0], 'finish_reason', None)
+            if cfr:
+                finish_reason = cfr
+
+            # 收集 usage
+            if hasattr(chunk, 'usage') and chunk.usage:
+                _usage_info = {
+                    "prompt_tokens": chunk.usage.prompt_tokens or 0,
+                    "completion_tokens": chunk.usage.completion_tokens or 0,
+                    "total_tokens": chunk.usage.total_tokens or 0
+                }
+
+        # 判断是否有 tool_calls
+        if not collected_tool_calls:
+            # 纯文本回复，流式已透传完毕，发送结束
+            yield _sse_chunk({}, finish_reason or "stop", usage=_usage_info if _usage_info else None)
             yield "data: [DONE]\n\n"
             return
 
         # 有 tool_calls，执行并追加结果
-        logger.info(f"[TOOL] 第{_round+1}轮: 检测到 {len(tool_calls)} 个工具调用")
-        msg_dict = msg.model_dump()
-        # KIMI API 要求 content 不能为空字符串，tool_calls 时 content 可为 null
-        if not msg_dict.get("content"):
-            msg_dict["content"] = None
-        final_messages.append(msg_dict)
+        tool_calls_list = [collected_tool_calls[i] for i in sorted(collected_tool_calls.keys())]
+        logger.info(f"[TOOL] 第{_round+1}轮: 检测到 {len(tool_calls_list)} 个工具调用")
 
-        for tc in tool_calls:
-            func_name = tc.function.name
+        # 构建 assistant 消息（含 tool_calls）
+        assistant_msg = {
+            "role": "assistant",
+            "content": collected_content or None,
+            "tool_calls": tool_calls_list
+        }
+        final_messages.append(assistant_msg)
+
+        for tc_info in tool_calls_list:
+            func_name = tc_info["function"]["name"]
             try:
-                func_args = json.loads(tc.function.arguments) if tc.function.arguments else {}
+                func_args = json.loads(tc_info["function"]["arguments"]) if tc_info["function"]["arguments"] else {}
             except json.JSONDecodeError:
                 func_args = {}
 
-            # 防重复：生成调用签名
             call_sig = f"{func_name}:{json.dumps(func_args, sort_keys=True)}"
             if call_sig in seen_calls:
                 logger.warning(f"[TOOL] 重复调用已跳过: {func_name}")
                 final_messages.append({
                     "role": "tool",
-                    "tool_call_id": tc.id,
+                    "tool_call_id": tc_info["id"],
                     "content": f"警告：此工具调用与之前重复，已跳过。请直接使用之前的结果回答，不要再调用工具。"
                 })
                 continue
@@ -3239,27 +3311,19 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
             logger.info(f"[TOOL] 结果: {result[:150]}...")
             final_messages.append({
                 "role": "tool",
-                "tool_call_id": tc.id,
+                "tool_call_id": tc_info["id"],
                 "content": result
             })
 
-    # 超过轮数限制，强制要求 KIMI 直接回答
+    # 超过轮数限制，强制要求 KIMI 直接回答 -- 真正流式
     logger.warning(f"[TOOL] 超过 {max_tool_rounds} 轮，强制生成文本回复")
-    # 最后一轮去掉 tools，强制 KIMI 只能输出文本
     final_api_params = {k: v for k, v in api_params.items() if k != "tools"}
     try:
-        response = client.chat.completions.create(**final_api_params)
-        if response.choices:
-            content = response.choices[0].message.content or "（工具调用已完成，但无法生成回复）"
-        else:
-            content = "（无法生成回复）"
+        yield from _stream_kimi_text(final_api_params)
     except Exception as e:
-        content = f"生成错误: {e}"
-    chunk_size = 20
-    for i in range(0, len(content), chunk_size):
-        chunk = content[i:i+chunk_size]
-        yield f"data: {json.dumps({'choices': [{'delta': {'content': chunk}}]})}\n\n"
-    yield "data: [DONE]\n\n"
+        logger.error(f"[STREAM] 最终流式生成错误: {e}")
+        yield _sse_error(f"生成错误: {e}")
+        yield "data: [DONE]\n\n"
 
 # ==================== API路由 ====================
 
@@ -3381,7 +3445,7 @@ def health_check():
 @app.route('/v1/index/status', methods=['GET'])
 def index_status():
     if not vector_kb:
-        return jsonify({"error": "向量知识库未初始化"}), 500
+        return openai_error("向量知识库未初始化")
     return jsonify({
         "total_chunks": vector_kb.total_docs,
         "articles_count": vector_kb.articles_count,
@@ -3450,10 +3514,10 @@ def chat_read(chat_id):
 @app.route('/v1/upload', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
-        return jsonify({"error": "请求中没有文件字段 'file'"}), 400
+        return openai_error("请求中没有文件字段 'file'", err_type="invalid_request_error", status=400)
     file = request.files['file']
     if file.filename == '':
-        return jsonify({"error": "未选择文件"}), 400
+        return openai_error("未选择文件", err_type="invalid_request_error", status=400)
     if not allowed_file(file.filename):
         return jsonify({
             "error": f"不支持的文件格式: {file.filename}",
@@ -3519,17 +3583,17 @@ def read_file(filename):
                 fpath = os.path.join(UPLOAD_FOLDER, matches[0])
                 filename = matches[0]
             elif len(matches) > 1:
-                return jsonify({"error": f"找到多个匹配文件", "matches": matches}), 400
+                return openai_error(f"找到多个匹配文件: {matches}", err_type="invalid_request_error", status=400)
             else:
-                return jsonify({"error": f"文件 '{filename}' 不存在"}), 404
+                return openai_error(f"文件 '{filename}' 不存在", err_type="not_found_error", status=404)
         else:
-            return jsonify({"error": "文章目录不存在"}), 500
+            return openai_error("文章目录不存在")
     try:
         with open(fpath, 'r', encoding='utf-8') as f:
             content = f.read()
         return jsonify({"filename": filename, "content": content, "size": len(content)})
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return openai_error(str(e))
 
 
 @app.route('/v1/files/<filename>', methods=['PUT'])
@@ -3538,7 +3602,7 @@ def write_file(filename):
     data = request.get_json(force=True, silent=True) or {}
     content = data.get('content', '')
     if not content:
-        return jsonify({"error": "缺少 content 字段"}), 400
+        return openai_error("缺少 content 字段", err_type="invalid_request_error", status=400)
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
     fpath = os.path.join(UPLOAD_FOLDER, filename)
     try:
@@ -3550,7 +3614,7 @@ def write_file(filename):
             vector_kb.index_single_file(fpath)
         return jsonify({"success": True, "filename": filename, "size": len(content)})
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return openai_error(str(e))
 
 
 @app.route('/v1/models', methods=['GET'])
@@ -3585,7 +3649,7 @@ def vector_status():
 def vector_learned_clear():
     """清空学习库"""
     if not vector_kb:
-        return jsonify({"error": "向量知识库未初始化"}), 500
+        return openai_error("向量知识库未初始化")
     result = vector_kb.clear_learned()
     status_code = 200 if result["success"] else 500
     return jsonify(result), status_code
@@ -3598,7 +3662,7 @@ def vector_rebuild():
     if not vector_kb:
         vector_kb = VectorKnowledgeBase(CHROMA_DB_DIR)
         if not vector_kb.initialize():
-            return jsonify({"error": "ChromaDB 初始化失败"}), 500
+            return openai_error("ChromaDB 初始化失败")
     diag = vector_kb.build_index(UPLOAD_FOLDER)
     return jsonify({
         "success": vector_kb.articles_count > 0,
@@ -3660,7 +3724,7 @@ def teach_correct():
     }
     """
     if not teaching_system:
-        return jsonify({"error": "教学系统未初始化"}), 500
+        return openai_error("教学系统未初始化")
 
     data = request.get_json(force=True)
     wrong = data.get('wrong', '').strip()
@@ -3690,7 +3754,7 @@ def teach_antipattern():
     }
     """
     if not teaching_system:
-        return jsonify({"error": "教学系统未初始化"}), 500
+        return openai_error("教学系统未初始化")
 
     data = request.get_json(force=True)
     pattern = data.get('pattern', '').strip()
@@ -3717,7 +3781,7 @@ def teach_patch():
     }
     """
     if not teaching_system:
-        return jsonify({"error": "教学系统未初始化"}), 500
+        return openai_error("教学系统未初始化")
 
     data = request.get_json(force=True)
     topic = data.get('topic', '').strip()
@@ -3738,7 +3802,7 @@ def teach_stats():
     教学统计 API：返回纠正数、反模式数、知识补丁数、各信任等级分布。
     """
     if not teaching_system:
-        return jsonify({"error": "教学系统未初始化"}), 500
+        return openai_error("教学系统未初始化")
 
     stats = teaching_system.get_stats()
     return jsonify(stats)
@@ -3751,7 +3815,7 @@ def teach_history():
     查询参数：page（页码，默认1）、per_page（每页条数，默认20）
     """
     if not teaching_system:
-        return jsonify({"error": "教学系统未初始化"}), 500
+        return openai_error("教学系统未初始化")
 
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 20, type=int)
@@ -3797,7 +3861,10 @@ def _finalize_turn(
     response_text: str,
     eta_before: float,
     articles_content: str,
-    loaded_chunks: List[str]
+    loaded_chunks: List[str],
+    usage: Dict[str, int] = None,
+    request_model: str = None,
+    finish_reason: str = "stop"
 ) -> Dict[str, Any]:
     """
     v10 增强：
@@ -3874,15 +3941,18 @@ def _finalize_turn(
         "id": f"chatcmpl-{hashlib.md5(response_text.encode()).hexdigest()[:12]}",
         "object": "chat.completion",
         "created": int(time.time()),
-        "model": KIMI_MODEL,
+        "model": request_model or KIMI_MODEL,
         "choices": [{
             "index": 0,
             "message": {"role": "assistant", "content": response_text},
-            "finish_reason": "stop"
+            "finish_reason": finish_reason
         }],
-        "eta_after": eta_after,
-        "metrics": metrics,
-        "corrections_applied": corrections_applied,
+        "usage": usage or {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+        },
+        "system_fingerprint": "fp_geometry",
     }
 
 
@@ -4042,8 +4112,21 @@ def chat_completions():
         if not isinstance(m, dict):
             continue
         content = m.get('content', '')
+        role = m.get('role', '')
         # 跳过中间层之前注入的文件消息
         if isinstance(content, str) and content.startswith(_FILE_INJECT_MARKER):
+            continue
+        # assistant 消息：即使 content 为空/null，如果有 tool_calls 也要保留
+        if role == 'assistant' and m.get('tool_calls'):
+            clean_messages.append(m)
+            continue
+        # assistant 消息：content 为 null 时也保留（OpenAI 规范允许）
+        if role == 'assistant' and content is None:
+            clean_messages.append(m)
+            continue
+        # tool 消息：保留（content 可能为空字符串但不应过滤）
+        if role == 'tool':
+            clean_messages.append(m)
             continue
         if isinstance(content, str) and not content.strip():
             continue
@@ -4080,12 +4163,41 @@ def chat_completions():
         clean_messages.insert(len(clean_messages), file_user_msg)
         # 标记这些文件为已注入（只在真正发送给KIMI时才标记）
         for fpath, mtime_str in ow_injected_info:
-            _injected_files[fpath] = mtime_str
+            with _injected_files_lock:
+                _injected_files[fpath] = mtime_str
 
     final_messages = [{"role": "system", "content": system_prompt}] + clean_messages
-    api_params = {"model": KIMI_MODEL, "messages": final_messages, "tools": ARTICLE_TOOLS}
-    # 透传 Open WebUI 的 tools 参数（如果有，覆盖默认工具）
-    # 不透传了，用我们自己的 ARTICLE_TOOLS
+
+    # 历史消息截断：保留 system + 最近 N 条消息，防止 token 爆炸
+    MAX_HISTORY_MESSAGES = 40  # 最近 40 条消息（约 20 轮对话）
+    MAX_HISTORY_CHARS = 30000  # 历史消息总字符上限
+    if len(final_messages) > MAX_HISTORY_MESSAGES + 1:  # +1 是 system
+        final_messages = [final_messages[0]] + final_messages[-(MAX_HISTORY_MESSAGES):]
+        logger.info(f"[TRIM] 历史消息从 {len(clean_messages)} 条截断到 {MAX_HISTORY_MESSAGES} 条")
+
+    # 字符数截断：从最早的消息开始删除，直到总字符数低于上限
+    total_chars = sum(len(json.dumps(m, ensure_ascii=False)) for m in final_messages)
+    while total_chars > MAX_HISTORY_CHARS and len(final_messages) > 3:  # 至少保留 system + 1轮
+        removed = final_messages.pop(1)  # 删除 system 之后最早的消息
+        total_chars -= len(json.dumps(removed, ensure_ascii=False))
+    if len(final_messages) < len(clean_messages) + 1:
+        logger.info(f"[TRIM] 历史消息字符截断: {total_chars} 字符, {len(final_messages)-1} 条")
+    # 模型路由：简单问题用轻量模型节省 token
+    _selected_model = KIMI_MODEL
+    _query_lower = clean_query.lower() if clean_query else ""
+    # 简单问题特征：短查询、无公式、无专业术语
+    _is_simple = (
+        len(clean_query) < 30 and
+        not any(kw in _query_lower for kw in ['定理', '推导', '证明', '公式', '计算', 'theta', 'lambda', '谱', '特征值', '作用量', '公理'])
+        and not any(c in clean_query for c in ['∑', '∫', '∂', '∇', 'θ', 'λ'])
+    )
+    if _is_simple:
+        _selected_model = KIMI_MODEL_LITE
+        logger.info(f"[ROUTE] 简单问题，使用轻量模型: {KIMI_MODEL_LITE}")
+
+    api_params = {"model": _selected_model, "messages": final_messages, "tools": ARTICLE_TOOLS}
+    # 中间层使用自有工具定义（ARTICLE_TOOLS），不透传 Open WebUI 的 tools 参数
+    # 原因：中间层代理模式下，工具调用在中间层内部完成，Open WebUI 不需要感知
     if 'temperature' in data:
         api_params['temperature'] = data['temperature']
 
@@ -4109,7 +4221,15 @@ def chat_completions():
             import threading
             _ctx = (session_id, clean_query, response_text, eta_before, articles_content, loaded_chunks)
             threading.Thread(target=_finalize_turn, args=_ctx, daemon=True).start()
-        return Response(gen(), mimetype='text/event-stream')
+        return Response(
+            gen(),
+            mimetype='text/event-stream',
+            headers={
+                'Cache-Control': 'no-cache, no-transform',
+                'X-Accel-Buffering': 'no',
+                'Connection': 'keep-alive',
+            }
+        )
     else:
         client = openai.OpenAI(api_key=KIMI_API_KEY, base_url=KIMI_BASE_URL)
         try:
@@ -4133,11 +4253,20 @@ def chat_completions():
                             logger.error(f"[QUALITY-GATE] 反模式检测失败: {e}")
 
                     api_params_retry = dict(api_params)
-                    api_params_retry["messages"] = [{"role": "system", "content": retry_prompt}] + data.get('messages', [])
+                    api_params_retry["messages"] = [{"role": "system", "content": retry_prompt}] + clean_messages
                     resp = client.chat.completions.create(**api_params_retry)
                 else:
                     resp = client.chat.completions.create(**api_params)
                 response_text = resp.choices[0].message.content or ""
+
+                # 提取 usage 信息
+                _usage = None
+                if hasattr(resp, 'usage') and resp.usage:
+                    _usage = {
+                        "prompt_tokens": resp.usage.prompt_tokens or 0,
+                        "completion_tokens": resp.usage.completion_tokens or 0,
+                        "total_tokens": resp.usage.total_tokens or 0
+                    }
 
                 if not QUALITY_GATE_ENABLED:
                     break
@@ -4152,8 +4281,8 @@ def chat_completions():
                         logger.warning(f"[QUALITY-GATE] 已达最大重试次数，使用最后一次回复")
         except Exception as e:
             logger.error(f"[CHAT] 生成错误: {e}")
-            return jsonify({"error": str(e)}), 502
-        result = _finalize_turn(session_id, clean_query, response_text, eta_before, articles_content, loaded_chunks)
+            return openai_error(str(e), status=502)
+        result = _finalize_turn(session_id, clean_query, response_text, eta_before, articles_content, loaded_chunks, usage=_usage, request_model=data.get('model'))
         return jsonify(result)
 
 # ==================== 启动 ====================
