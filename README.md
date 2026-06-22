@@ -34,10 +34,10 @@
 
 ### 环境要求
 
-- Python 3.11+
-- KIMI API Key（[申请地址](https://platform.moonshot.cn/)）
+- Python 3.9+（推荐 3.11）
+- KIMI API Key（[免费注册](https://platform.moonshot.cn/)，新用户有赠送额度）
+- macOS / Linux / Windows（跨平台）
 - macOS 用户如需语音输入功能，需安装 ffmpeg：`brew install ffmpeg`
-- **已知问题**：macOS 上 Open WebUI 的语音输入功能可能触发 segmentation fault 崩溃，这是 Open WebUI 与 macOS Python 3.11 multiprocessing 的兼容性问题，与本中间层无关。建议暂时使用文字输入，或尝试 `export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES` 后启动 Open WebUI
 
 ### 一键启动（推荐）
 
@@ -65,22 +65,21 @@ python3 start.py
 如果一键启动有问题，可以手动安装：
 
 ```bash
+# 1. 克隆仓库
 git clone https://github.com/sdoygb/geometry-ai-server.git
 cd geometry-ai-server
-pip install flask openai chromadb fastembed
-```
 
-### 配置
+# 2. 安装依赖
+pip3 install openai flask flask-cors chromadb
 
-```bash
-export KIMI_API_KEY="你的API Key"
-```
+# 3. 设置 API Key
+export KIMI_API_KEY="你的密钥"
 
-### 启动
-
-```bash
+# 4. 启动
 python3 geometry_ai_server_v5_12.py
 ```
+
+> **注意**：如果 `pip3 install` 报权限错误，macOS 用户加 `--break-system-packages`，Linux 用户用 `sudo` 或虚拟环境。
 
 服务启动在 `http://localhost:5000`。
 
@@ -245,8 +244,9 @@ curl -X POST http://localhost:5000/v1/teach/patch \
 
 ```
 geometry-ai-server/
+├── start.py                     # 一键启动脚本（自动检测环境、安装依赖）
 ├── geometry_ai_server_v5_12.py   # 主程序
-├── shouyi_personal.json          # 个人数据库模板（首次启动自动生成）
+├── shouyi_personal.json          # 个人数据库（首次启动自动生成，不上传GitHub）
 ├── .gitignore
 ├── README.md
 ├── geometry-ai-intro.md          # 推广介绍页
