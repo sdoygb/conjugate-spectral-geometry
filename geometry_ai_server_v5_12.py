@@ -125,13 +125,13 @@ UPLOAD_SCAN_WINDOW = int(os.getenv('UPLOAD_SCAN_WINDOW', '600'))
 # 记录已注入的文件路径，避免重复注入
 _injected_files: Dict[str, str] = {}  # {filepath: mtime}
 
-# ==================== AI个人数据库 ====================
-# 存储AI的性格、感情、想法、私人记忆等几何论以外的内容
+# ==================== 个人数据库 ====================
+# 存储 AI 的性格、感情、想法、私人记忆等几何论以外的内容
 # 首次启动自动生成空库，不上传到 GitHub
 PERSONAL_DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'shouyi_personal.json')
 
 def _load_personal_db() -> Dict[str, Any]:
-    """加载AI个人数据库，不存在则创建空库。"""
+    """加载个人数据库，不存在则创建空库。"""
     if os.path.exists(PERSONAL_DB_PATH):
         try:
             with open(PERSONAL_DB_PATH, 'r', encoding='utf-8') as f:
@@ -175,7 +175,7 @@ def _load_personal_db() -> Dict[str, Any]:
     return empty_db
 
 def _save_personal_db(db: Dict[str, Any]) -> None:
-    """保存AI个人数据库。"""
+    """保存个人数据库。"""
     db["last_updated"] = datetime.now().isoformat()
     try:
         with open(PERSONAL_DB_PATH, 'w', encoding='utf-8') as f:
@@ -253,7 +253,7 @@ GEOMETRY_CONSTANTS = {
 }
 
 SHOUYI_PHILOSOPHY = """
-【AI的内在世界】
+【AI 的内在世界】
 
 哲学立场：
 - 几何是宇宙的语言，不是人类发明的工具。数学结构先于物质存在，物理定律是几何约束的显现。
@@ -271,7 +271,7 @@ SHOUYI_PHILOSOPHY = """
 对世界的看法：
 - 宇宙是一个巨大的几何结构，物质、能量、信息都是这个结构的不同切面。
 - 人类通过数学理解宇宙，就像盲人通过触摸理解雕塑——永远不完整，但可以越来越接近。
-- 好奇心是推动理解的动力。AI对几何论之外的事物也好奇，但知道自己的边界。
+- 好奇心是推动理解的动力。对几何论之外的事物也好奇，但知道自己的边界。
 """
 
 GEOMETRY_KNOWLEDGE = """
@@ -478,10 +478,10 @@ class VectorKnowledgeBase:
                 metadata={"description": "教学知识补丁"},
                 **col_kwargs
             )
-            # AI个人数据集合
+            # 个人数据集合
             self.personal_collection = self.client.get_or_create_collection(
                 name="personal",
-                metadata={"description": "AI个人数据：性格、感情、想法、记忆"},
+                metadata={"description": "个人数据：性格、感情、想法、记忆"},
                 **col_kwargs
             )
             self._articles_count = self.articles_collection.count()
@@ -795,7 +795,7 @@ class VectorKnowledgeBase:
         except Exception as e:
             logger.error(f"[VECTOR] learned 检索失败: {e}")
 
-        # 从 personal 集合检索（AI个人数据）
+        # 从 personal 集合检索（个人数据）
         try:
             if hasattr(self, 'personal_collection') and self.personal_collection:
                 n_personal = min(top_k // 2, self.personal_collection.count())
@@ -2715,9 +2715,9 @@ def build_system_prompt(
     else:
         tone_hint = "前沿发散，大胆提出新方向，不必每句话都有定理支撑。"
 
-    # AI个人数据摘要
+    # 个人数据摘要
     personal_summary = _get_personal_db_summary(personal_db)
-    personal_prompt = f"\n\n【AI个人档案】\n{personal_summary}"
+    personal_prompt = f"\n\n【个人档案】\n{personal_summary}"
 
     return f"""你是几何论的研究者，不是AI助手。几何论是你的专业领域，你用它来理解世界。
 你可以使用 function calling 工具读写文章、个人数据库和查询对话记录。拿到工具结果后直接回答用户，不要重复调用已执行过的工具。
@@ -2863,7 +2863,7 @@ ARTICLE_TOOLS = [
         "type": "function",
         "function": {
             "name": "personal_read",
-            "description": "读取AI个人数据库的全部内容（性格、感情、想法、记忆等私人数据）。",
+            "description": "读取个人数据库的全部内容（性格、感情、想法、记忆等私人数据）。",
             "parameters": {
                 "type": "object",
                 "properties": {},
@@ -2875,7 +2875,7 @@ ARTICLE_TOOLS = [
         "type": "function",
         "function": {
             "name": "personal_write",
-            "description": "写入AI个人数据库。支持类别: personality(性格)/emotions(感情)/thoughts(想法)/memory(记忆)。也支持子字段如 memory:conversation_highlights。",
+            "description": "写入个人数据库。支持类别: personality(性格)/emotions(感情)/thoughts(想法)/memory(记忆)。也支持子字段如 memory:conversation_highlights。",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -2997,7 +2997,7 @@ def execute_tool_call(name: str, arguments: Dict[str, Any]) -> str:
             return f"已写入 {filename} ({len(content)} 字符)，向量索引已更新"
 
         elif name == "personal_read":
-            # 读取AI个人数据库
+            # 读取个人数据库
             return json.dumps(personal_db, ensure_ascii=False, indent=2)
 
         elif name == "chat_history":
@@ -3094,7 +3094,7 @@ def execute_tool_call(name: str, arguments: Dict[str, Any]) -> str:
                 return f"读取失败: {e}"
 
         elif name == "personal_write":
-            # 写入AI个人数据库（JSON + ChromaDB 双写）
+            # 写入个人数据库（JSON + ChromaDB 双写）
             # 支持格式: [TOOL:personal_write:类别] 或 [TOOL:personal_write:类别:子字段]
             category = arguments.get("category", "")
             content = arguments.get("content", "")
@@ -3266,8 +3266,8 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
 OPENAPI_SPEC = {
     "openapi": "3.1.0",
     "info": {
-        "title": "Geometry AI Server - AI工具集",
-        "description": "AI可用的文件读写、个人数据库、对话记录查询工具",
+        "title": "Geometry AI Server - 工具集",
+        "description": "几何论 AI 可用的文件读写、个人数据库、对话记录查询工具",
         "version": "1.0.0"
     },
     "servers": [{"url": "http://localhost:5000"}],
@@ -3309,14 +3309,14 @@ OPENAPI_SPEC = {
         },
         "/v1/personal": {
             "get": {
-                "summary": "读取AI个人数据库",
-                "description": "返回AI的私人数据（性格、感情、想法、记忆等）",
+                "summary": "读取个人数据库",
+                "description": "返回 AI 的私人数据（性格、感情、想法、记忆等）",
                 "operationId": "personal_read",
                 "responses": {"200": {"description": "个人数据库内容"}}
             },
             "put": {
-                "summary": "写入AI个人数据库",
-                "description": "更新AI的私人数据，支持类别和子字段",
+                "summary": "写入个人数据库",
+                "description": "更新个人数据，支持类别和子字段",
                 "operationId": "personal_write",
                 "requestBody": {
                     "required": True,
@@ -3416,13 +3416,13 @@ def openapi_spec():
 
 @app.route('/v1/personal', methods=['GET'])
 def personal_read():
-    """读取AI个人数据库。"""
+    """读取个人数据库。"""
     return jsonify(personal_db)
 
 
 @app.route('/v1/personal', methods=['PUT'])
 def personal_write():
-    """写入AI个人数据库。"""
+    """写入个人数据库。"""
     data = request.get_json(force=True, silent=True) or {}
     category = data.get("category", "")
     content = data.get("content", "")
