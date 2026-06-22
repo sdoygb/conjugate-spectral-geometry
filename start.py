@@ -98,7 +98,7 @@ def check_env():
         print(f"      请设置环境变量：")
         print(f"        export KIMI_API_KEY=\"你的API密钥\"")
         print(f"      或在启动时传入：")
-        print(f"        KIMI_API_KEY=xxx python3 geometry_ai_server_v5_12.py")
+        print(f"        KIMI_API_KEY=xxx python3 server.py")
         print(f"")
         print(f"      免费注册：https://platform.moonshot.cn")
     else:
@@ -124,7 +124,7 @@ def start_server():
     """启动服务器"""
     print(f"{CYAN}[5/5] 启动服务器{RESET}")
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    server_script = os.path.join(script_dir, "geometry_ai_server_v5_12.py")
+    server_script = os.path.join(script_dir, "server.py")
 
     if not os.path.exists(server_script):
         print(f"{RED}      ✗ 找不到主程序: {server_script}{RESET}")

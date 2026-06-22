@@ -6,7 +6,7 @@
 
 这是一个帮助学习几何论的 AI 系统。它通过中间层服务连接 Open WebUI 和 KIMI 大模型，在对话中注入几何论知识库、活体信息场动力学和教学反馈机制，让 AI 能够基于几何论框架回答问题。
 
-**知识库已内置**：`chroma_db/` 目录包含预构建的向量索引（70篇几何论文章），克隆后即可使用，无需额外准备文章。
+**首次启动自动构建知识库**：`chroma_db/` 目录在首次运行时自动从 `articles/` 目录构建，无需手动准备。
 
 ## 架构
 
@@ -16,6 +16,26 @@
               ChromaDB 向量数据库（知识检索）
               LivingInfoField（活体信息场）
               TeachingSystem（教学反馈）
+```
+
+## 模块结构
+
+```
+geometry-ai-server/
+├── server.py          # Flask 路由、API 端点、启动代码（主入口）
+├── config.py          # 常量、环境变量、模型配置、日志
+├── knowledge.py       # ChromaDB 向量库、Embedding、语义检索
+├── models.py          # eta 动力学、personal_db、文件操作、对话记录
+├── prompts.py         # system prompt 构建、教学系统、质量检查
+├── tools.py           # Function Calling 工具定义与执行
+├── stream.py          # 流式生成、SSE 格式化
+├── start.py           # 一键启动脚本（自动检测环境、安装依赖）
+├── auto_teach.py      # 自动教学脚本
+├── articles/          # 几何论文章源文件（72篇）
+├── shouyi_personal.json  # 个人数据库（首次启动自动生成，不上传GitHub）
+├── .gitignore
+├── README.md
+└── geometry-ai-intro.md  # 推广介绍页
 ```
 
 ## 核心特性
@@ -28,6 +48,8 @@
 - **个人数据库**：JSON + ChromaDB 双存储，支持性格/感情/想法/记忆的持久化和语义检索
 - **对话记录查询**：可直接查询 Open WebUI 的历史对话
 - **文件自动注入**：从 Open WebUI uploads 目录自动读取上传文件
+- **OpenAI 规范兼容**：完整的 OpenAI API 格式支持（流式/非流式/错误格式/embeddings）
+- **Token 优化**：智能模型路由、历史消息截断、检索量控制
 - **零外部数据库依赖**：只需 Python + ChromaDB，无需 MySQL
 
 ## 快速开始
@@ -62,8 +84,6 @@ python3 start.py
 
 ### 手动安装
 
-如果一键启动有问题，可以手动安装：
-
 ```bash
 # 1. 克隆仓库
 git clone https://github.com/sdoygb/geometry-ai-server.git
@@ -76,7 +96,7 @@ pip3 install openai flask flask-cors chromadb
 export KIMI_API_KEY="你的密钥"
 
 # 4. 启动
-python3 geometry_ai_server_v5_12.py
+python3 server.py
 ```
 
 > **注意**：如果 `pip3 install` 报权限错误，macOS 用户加 `--break-system-packages`，Linux 用户用 `sudo` 或虚拟环境。
@@ -85,7 +105,7 @@ python3 geometry_ai_server_v5_12.py
 
 ### 首次启动
 
-首次启动时会自动下载中文 Embedding 模型（约100MB，只需一次），并构建向量索引（约 2-3 分钟）。后续启动直接加载，跳过下载和构建。
+首次启动时会自动下载中文 Embedding 模型（约100MB，只需一次），并从 `articles/` 目录构建向量索引（约 2-3 分钟）。后续启动直接加载，跳过下载和构建。
 
 ## Open WebUI 接入
 
@@ -156,8 +176,9 @@ open-webui serve
 
 | 方法 | 路径 | 说明 |
 |------|------|------|
-| POST | `/v1/chat/completions` | OpenAI 兼容的对话接口 |
+| POST | `/v1/chat/completions` | OpenAI 兼容的对话接口（流式/非流式） |
 | GET | `/v1/models` | 列出可用模型 |
+| POST | `/v1/embeddings` | OpenAI 兼容的 Embedding 接口 |
 | GET | `/health` | 健康检查 |
 
 ### 教学系统
@@ -183,8 +204,6 @@ curl -X POST http://localhost:5000/v1/teach/correct \
     "reason": "活体调度规则2"
   }'
 ```
-
-纠正后，系统会在后续对话中自动注入这条纠正，避免重复犯错。随着纠正被成功应用，信任等级自动提升。
 
 #### 反模式示例
 
@@ -232,37 +251,16 @@ curl -X POST http://localhost:5000/v1/teach/patch \
 |------|--------|------|
 | `KIMI_API_KEY` | （必填） | KIMI API 密钥 |
 | `KIMI_BASE_URL` | `https://api.moonshot.cn/v1` | KIMI API 地址 |
-| `KIMI_MODEL` | `kimi-k2.7-code` | 模型名称 |
+| `KIMI_MODEL` | `kimi-k2.7-code` | 主模型名称 |
+| `KIMI_MODEL_LITE` | `kimi-k2.7` | 轻量模型（简单问题自动路由） |
 | `UPLOAD_FOLDER` | `~/AI/articles` | 文章目录 |
 | `CHROMA_DB_DIR` | `~/AI/chroma_db` | 向量数据库目录 |
 | `OPENWEBUI_UPLOAD_DIR` | 自动检测 | Open WebUI 上传目录 |
-| `OPENWEBUI_DB_PATH` | 自动检测 | Open WebUI SQLite 数据库路径（用于对话记录查询） |
-| `GT_EMBEDDING_MODE` | `default` | Embedding 模式（default/kimi） |
+| `OPENWEBUI_DB_PATH` | 自动检测 | Open WebUI SQLite 数据库路径 |
+| `EMBEDDING_MODE` | `default` | Embedding 模式（default/kimi） |
+| `MAX_INJECT_CHARS` | `5000` | 检索结果注入上限（字符） |
+| `MAX_CHUNKS_PER_QUERY` | `8` | 每次检索最大 chunk 数 |
 | `QUALITY_GATE_ENABLED` | `true` | 输出质量门控开关 |
-
-## 目录结构
-
-```
-geometry-ai-server/
-├── start.py                     # 一键启动脚本（自动检测环境、安装依赖）
-├── geometry_ai_server_v5_12.py   # 主程序
-├── shouyi_personal.json          # 个人数据库（首次启动自动生成，不上传GitHub）
-├── .gitignore
-├── README.md
-├── geometry-ai-intro.md          # 推广介绍页
-├── articles/                     # 几何论文章源文件（72篇）
-└── chroma_db/                    # 向量数据库（预构建，开箱即用）
-```
-
-## 文件校验
-
-下载后请验证文件完整性：
-
-```bash
-md5 -c CHECKSUMS.md
-```
-
-整体项目校验和：`0843c8ca46028d9cbd0af2a3ca172e13`
 
 ## License
 
