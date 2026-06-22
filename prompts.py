@@ -308,29 +308,20 @@ class TeachingSystem:
                 old_applied = meta.get('applied_count', 0)
                 new_applied = old_applied + 1
 
-                # 尝试找到对应的 doc_id 来更新
-                # 由于 get_recent_corrections 返回的是 get() 的结果，我们需要 doc_id
-                # 这里通过遍历 corrections 集合来找到匹配的记录
+                # 直接使用 get_recent_corrections 返回的 id 更新
                 try:
-                    corr_results = self.vector_kb.corrections_collection.get(
-                        include=["documents", "metadatas"]
-                    )
-                    if corr_results and corr_results['ids']:
-                        for j, cid in enumerate(corr_results['ids']):
-                            c_meta = corr_results['metadatas'][j] if corr_results['metadatas'] else {}
-                            c_doc = corr_results['documents'][j] if corr_results['documents'] else ''
-                            if c_doc == corr['document'] and c_meta.get('wrong', '') == meta.get('wrong', ''):
-                                self.vector_kb.update_correction_trust(
-                                    cid, new_trust, new_applied
-                                )
-                                applied.append({
-                                    "wrong": meta.get('wrong', '')[:100],
-                                    "correct": correct_text[:200],
-                                    "old_trust": old_trust,
-                                    "new_trust": new_trust,
-                                    "similarity": round(similarity, 4),
-                                })
-                                break
+                    corr_id = corr.get('id')
+                    if corr_id:
+                        self.vector_kb.update_correction_trust(
+                            corr_id, new_trust, new_applied
+                        )
+                        applied.append({
+                            "wrong": meta.get('wrong', '')[:100],
+                            "correct": correct_text[:200],
+                            "old_trust": old_trust,
+                            "new_trust": new_trust,
+                            "similarity": round(similarity, 4),
+                        })
                 except Exception as e:
                     logger.error(f"[TEACH-CORRECT] 更新纠正信任等级时出错: {e}")
 

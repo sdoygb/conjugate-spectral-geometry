@@ -922,6 +922,7 @@ class VectorKnowledgeBase:
                 for i, doc in enumerate(results['documents']):
                     meta = results['metadatas'][i] if results['metadatas'] else {}
                     corrections.append({
+                        'id': results['ids'][i] if results['ids'] else f"corr_{i}",
                         'document': doc,
                         'metadata': meta,
                     })

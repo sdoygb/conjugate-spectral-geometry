@@ -414,6 +414,44 @@ def chat_read(chat_id):
     return jsonify({"result": result})
 
 
+@app.route('/v1/chat/<chat_id>/export', methods=['GET'])
+def chat_export(chat_id):
+    """导出指定对话为 Markdown 文件。"""
+    result = execute_tool_call("chat_read", {"chat_id": chat_id})
+    # 将对话转换为 Markdown 格式
+    lines = [f"# 对话导出\n"]
+    if isinstance(result, str):
+        try:
+            data = json.loads(result)
+            title = data.get("title", chat_id)
+            messages = data.get("messages", [])
+            lines[0] = f"# {title}\n"
+            for msg in messages:
+                role = msg.get("role", "?")
+                content = msg.get("content", "")
+                if isinstance(content, list):
+                    # 多模态消息，提取文本
+                    text_parts = []
+                    for item in content:
+                        if isinstance(item, dict) and item.get("type") == "text":
+                            text_parts.append(item.get("text", ""))
+                    content = "\n".join(text_parts)
+                if not content or not content.strip():
+                    continue
+                if role == "user":
+                    lines.append(f"## 用户\n\n{content}\n")
+                elif role == "assistant":
+                    lines.append(f"## 助手\n\n{content}\n")
+                elif role == "system":
+                    lines.append(f"<!-- 系统: {content[:100]}... -->\n")
+        except (json.JSONDecodeError, TypeError):
+            lines.append(result)
+    md_content = "\n".join(lines)
+    return Response(md_content, mimetype="text/markdown", headers={
+        "Content-Disposition": f"attachment; filename=chat_{chat_id[:8]}.md"
+    })
+
+
 @app.route('/v1/upload', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
@@ -1001,8 +1039,26 @@ def chat_completions():
     MAX_HISTORY_MESSAGES = 40  # 最近 40 条消息（约 20 轮对话）
     MAX_HISTORY_CHARS = 30000  # 历史消息总字符上限
     if len(final_messages) > MAX_HISTORY_MESSAGES + 1:  # +1 是 system
-        final_messages = [final_messages[0]] + final_messages[-(MAX_HISTORY_MESSAGES):]
-        logger.info(f"[TRIM] 历史消息从 {len(clean_messages)} 条截断到 {MAX_HISTORY_MESSAGES} 条")
+        trimmed = final_messages[1:-(MAX_HISTORY_MESSAGES)]
+        # 生成本地摘要（不调 API，提取关键信息）
+        summary_parts = []
+        for msg in trimmed:
+            role = msg.get("role", "?")
+            content = msg.get("content", "")
+            if isinstance(content, str) and content.strip():
+                preview = content[:200].replace("\n", " ")
+                summary_parts.append(f"{role}: {preview}...")
+            elif isinstance(content, list):
+                # 多模态消息
+                types = [item.get("type", "?") for item in content if isinstance(item, dict)]
+                summary_parts.append(f"{role}: [{', '.join(types)}]")
+        if summary_parts:
+            summary_text = "【早期对话摘要（已被截断）】\n" + "\n".join(summary_parts[:20])  # 最多20条摘要
+            summary_msg = {"role": "system", "content": summary_text}
+            final_messages = [final_messages[0], summary_msg] + final_messages[-(MAX_HISTORY_MESSAGES):]
+        else:
+            final_messages = [final_messages[0]] + final_messages[-(MAX_HISTORY_MESSAGES):]
+        logger.info(f"[TRIM] 历史消息从 {len(clean_messages)} 条截断到 {MAX_HISTORY_MESSAGES} 条（含摘要）")
 
     # 字符数截断：从最早的消息开始删除，直到总字符数低于上限
     total_chars = sum(len(json.dumps(m, ensure_ascii=False)) for m in final_messages)
@@ -1112,9 +1168,18 @@ def chat_completions():
                 if not QUALITY_GATE_ENABLED:
                     break
 
-                # 跳过 Open WebUI 系统请求的质量门控（标题/标签生成等）
-                _is_system_request = clean_query.startswith("### Task:") or clean_query.startswith("Generate")
-                if _is_system_request:
+                # 跳过不需要质量门控的请求
+                _skip_quality = False
+                # Open WebUI 系统请求（标题/标签生成等）
+                if clean_query.startswith("### Task:") or clean_query.startswith("Generate"):
+                    _skip_quality = True
+                # 非几何论问题（短查询、无专业术语）
+                elif len(clean_query) < 20:
+                    _skip_quality = True
+                # 闲聊/日常对话
+                elif any(kw in clean_query for kw in ['你好', '谢谢', '再见', 'hello', 'thanks', 'bye']):
+                    _skip_quality = True
+                if _skip_quality:
                     break
 
                 # v10 增强：传入 teaching_system 进行反模式检测
