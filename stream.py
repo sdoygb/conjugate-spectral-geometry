@@ -173,7 +173,7 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
         # 构建 assistant 消息（含 tool_calls）
         assistant_msg = {
             "role": "assistant",
-            "content": collected_content or None,
+            "content": collected_content or "",
             "tool_calls": tool_calls_list
         }
         final_messages.append(assistant_msg)

@@ -994,12 +994,15 @@ def chat_completions():
         if role == 'assistant' and m.get('tool_calls'):
             clean_messages.append(m)
             continue
-        # assistant 消息：content 为 null 时也保留（OpenAI 规范允许）
+        # assistant 消息：content 为 null 时替换为空字符串（DeepSeek 不接受 null）
         if role == 'assistant' and content is None:
+            m['content'] = ""
             clean_messages.append(m)
             continue
         # tool 消息：保留（content 可能为空字符串但不应过滤）
         if role == 'tool':
+            if m.get('content') is None:
+                m['content'] = ""
             clean_messages.append(m)
             continue
         if isinstance(content, str) and not content.strip():
@@ -1041,6 +1044,11 @@ def chat_completions():
                 _injected_files[fpath] = mtime_str
 
     final_messages = [{"role": "system", "content": system_prompt}] + clean_messages
+
+    # 兼容性清洗：确保所有消息的 content 不为 null（DeepSeek 等严格 API 不接受 null）
+    for msg in final_messages:
+        if msg.get("content") is None:
+            msg["content"] = ""
 
     # 修复多模态消息：KIMI API 要求 content 数组中每个 text 元素都不能为空
     for i, msg in enumerate(final_messages):
