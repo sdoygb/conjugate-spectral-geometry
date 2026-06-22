@@ -39,7 +39,30 @@
 - macOS 用户如需语音输入功能，需安装 ffmpeg：`brew install ffmpeg`
 - **已知问题**：macOS 上 Open WebUI 的语音输入功能可能触发 segmentation fault 崩溃，这是 Open WebUI 与 macOS Python 3.11 multiprocessing 的兼容性问题，与本中间层无关。建议暂时使用文字输入，或尝试 `export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES` 后启动 Open WebUI
 
-### 安装
+### 一键启动（推荐）
+
+```bash
+# 克隆仓库
+git clone https://github.com/sdoygb/geometry-ai-server.git
+cd geometry-ai-server
+
+# 设置 API Key
+export KIMI_API_KEY="你的密钥"
+
+# 一键启动（自动检测环境、安装依赖、启动服务器）
+python3 start.py
+```
+
+`start.py` 会自动完成以下步骤：
+1. 检查 Python 版本（需要 >= 3.9）
+2. 检查 pip 可用性
+3. 自动安装缺失依赖（openai、flask、flask-cors、chromadb）
+4. 检查环境变量和向量数据库
+5. 启动服务器
+
+### 手动安装
+
+如果一键启动有问题，可以手动安装：
 
 ```bash
 git clone https://github.com/sdoygb/geometry-ai-server.git
