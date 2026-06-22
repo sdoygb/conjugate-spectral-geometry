@@ -112,7 +112,7 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                 collected_content += delta.content
                 yield _sse_chunk({"content": delta.content})
 
-            # 收集 tool_calls（流式增量）
+            # 收集并透传 tool_calls（流式增量）
             if hasattr(delta, 'tool_calls') and delta.tool_calls:
                 for tc_delta in delta.tool_calls:
                     idx = tc_delta.index
@@ -129,6 +129,19 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                             collected_tool_calls[idx]["function"]["name"] += tc_delta.function.name
                         if tc_delta.function.arguments:
                             collected_tool_calls[idx]["function"]["arguments"] += tc_delta.function.arguments
+                    # 透传 tool_calls 增量给客户端
+                    tc_delta_dict = {
+                        "index": idx,
+                    }
+                    if tc_delta.id:
+                        tc_delta_dict["id"] = tc_delta.id
+                    if tc_delta.function:
+                        tc_delta_dict["function"] = {}
+                        if tc_delta.function.name:
+                            tc_delta_dict["function"]["name"] = tc_delta.function.name
+                        if tc_delta.function.arguments:
+                            tc_delta_dict["function"]["arguments"] = tc_delta.function.arguments
+                    yield _sse_chunk({"tool_calls": [tc_delta_dict]})
 
             # 收集 finish_reason
             cfr = getattr(chunk.choices[0], 'finish_reason', None)
@@ -149,6 +162,9 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
             yield _sse_chunk({}, finish_reason or "stop", usage=_usage_info if _usage_info else None)
             yield "data: [DONE]\n\n"
             return
+
+        # 有 tool_calls，发送 finish_reason: tool_calls
+        yield _sse_chunk({}, "tool_calls")
 
         # 有 tool_calls，执行并追加结果
         tool_calls_list = [collected_tool_calls[i] for i in sorted(collected_tool_calls.keys())]
@@ -181,7 +197,19 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
             seen_calls.add(call_sig)
 
             logger.info(f"[TOOL] 执行: {func_name}({list(func_args.keys())})")
-            result = execute_tool_call(func_name, func_args)
+            # 工具执行失败重试（最多2次）
+            result = None
+            for _retry in range(2):
+                try:
+                    result = execute_tool_call(func_name, func_args)
+                    if result and not result.startswith("工具执行错误"):
+                        break
+                    logger.warning(f"[TOOL] 第{_retry+1}次执行失败: {result[:100]}")
+                except Exception as e:
+                    logger.warning(f"[TOOL] 第{_retry+1}次执行异常: {e}")
+                    result = None
+            if not result:
+                result = f"工具 {func_name} 执行失败，请尝试其他方式获取信息。"
             logger.info(f"[TOOL] 结果: {result[:150]}...")
             final_messages.append({
                 "role": "tool",

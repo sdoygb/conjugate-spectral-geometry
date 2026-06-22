@@ -388,10 +388,20 @@ class VectorKnowledgeBase:
         return diag
 
     def index_single_file(self, filepath: str) -> None:
-        """增量索引单个文件（不重建整个索引）。"""
+        """增量索引单个文件（不重建整个索引）。如果文件不存在则清理旧索引。"""
         if not self._initialized:
             return
         fname = os.path.basename(filepath)
+
+        # 如果文件不存在，只清理旧索引
+        if not os.path.exists(filepath):
+            logger.info(f"[VECTOR] 文件不存在，清理旧索引: {fname}")
+            try:
+                self.articles_collection.delete(where={"fname": fname})
+            except Exception:
+                pass
+            return
+
         try:
             with open(filepath, 'r', encoding='utf-8') as f:
                 content = f.read()
