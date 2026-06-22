@@ -313,7 +313,7 @@ class TeachingSystem:
                 # 这里通过遍历 corrections 集合来找到匹配的记录
                 try:
                     corr_results = self.vector_kb.corrections_collection.get(
-                        include=["documents", "metadatas", "ids"]
+                        include=["documents", "metadatas"]
                     )
                     if corr_results and corr_results['ids']:
                         for j, cid in enumerate(corr_results['ids']):

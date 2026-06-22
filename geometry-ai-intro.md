@@ -24,7 +24,7 @@ Geometry AI Server 通过**向量知识库 + 活体信息场 + 教学反馈**三
 
 ## 核心特性
 
-- **向量语义检索** -- 70篇几何论文章构建为向量知识库，语义匹配而非关键词搜索，精准召回相关知识
+- **向量语义检索** -- 72篇几何论文章构建为向量知识库，语义匹配而非关键词搜索，精准召回相关知识
 - **活体信息场** -- eta 角动力学驱动回答风格：保守简短、深度分析、创造发散、前沿探索，随对话自动演化
 - **教学反馈** -- 通过 API 纠正错误、标记反模式、补充知识，系统自动学习，信任等级渐进提升
 - **质量门控** -- 自动检测低质量回复并重试，确保回答始终符合几何论框架
@@ -32,6 +32,9 @@ Geometry AI Server 通过**向量知识库 + 活体信息场 + 教学反馈**三
 - **个人数据库** -- JSON + ChromaDB 双存储，持久化性格/感情/想法/记忆，支持语义检索
 - **对话记录查询** -- 直接查询 Open WebUI 历史对话，完整消息链读取
 - **文件分析** -- 上传的文件自动注入对话上下文，AI 能分析文件内容与几何论框架的符合与冲突
+- **OpenAI 规范兼容** -- 完整的 OpenAI API 格式支持（流式/非流式/错误格式/Embeddings）
+- **Token 优化** -- 智能模型路由、历史消息截断、检索量控制，节省 40-50% token
+- **模块化架构** -- 7 个独立模块，清晰易维护，方便二次开发
 - **零外部依赖** -- 只需 Python + ChromaDB，无需 MySQL 或其他数据库，部署简单
 
 ## 系统架构
@@ -50,6 +53,22 @@ Geometry AI Server 通过**向量知识库 + 活体信息场 + 教学反馈**三
 2. **状态计算** -- 计算当前会话的 eta 角、语义新颖度、自指一致性等信息场状态
 3. **知识注入** -- 将检索结果、教学纠正、文件内容、信息场状态注入 system prompt
 4. **质量保障** -- KIMI 回复后进行质量检测，不合格则自动重试；合格则提取关键论断存入向量库
+
+## 模块结构
+
+```
+geometry-ai-server/
+├── server.py          # Flask 路由、API 端点、启动代码（主入口）
+├── config.py          # 常量、环境变量、模型配置、日志
+├── knowledge.py       # ChromaDB 向量库、Embedding、语义检索
+├── models.py          # eta 动力学、personal_db、文件操作、对话记录
+├── prompts.py         # system prompt 构建、教学系统、质量检查
+├── tools.py           # Function Calling 工具定义与执行
+├── stream.py          # 流式生成、SSE 格式化
+├── start.py           # 一键启动脚本（自动检测环境、安装依赖）
+├── articles/          # 几何论文章源文件（72篇）
+└── .gitignore         # 私人数据不上传GitHub
+```
 
 ## 快速开始
 
@@ -74,8 +93,10 @@ python3 start.py
 
 # 手动安装
 pip3 install openai flask flask-cors chromadb
-python3 geometry_ai_server_v5_12.py
+python3 server.py
 ```
+
+首次启动自动从 `articles/` 目录构建向量索引（约 2-3 分钟），后续启动直接加载。
 
 ### 在 Open WebUI 中接入
 
@@ -147,14 +168,14 @@ Geometry AI Server 的设计理念是：**先学懂，再用好**。
 
 | 项目 | 说明 |
 |------|------|
-| [GitHub 仓库](https://github.com/sdoygb/geometry-ai-server) | 源代码 + 预构建向量知识库 |
+| [GitHub 仓库](https://github.com/sdoygb/geometry-ai-server) | 源代码，首次启动自动构建向量知识库 |
 | [Open WebUI](https://github.com/open-webui/open-webui) | 聊天网页界面（`pip install open-webui && open-webui serve`） |
 | Python 3.9+ | 运行环境（macOS / Linux / Windows） |
 | openai + flask + flask-cors + chromadb | 依赖包 |
 | KIMI API Key | 免费注册，新用户有赠送额度 |
 
 > **项目地址：** https://github.com/sdoygb/geometry-ai-server
-> 克隆后知识库已内置，配置 API Key 即可启动，无需额外准备文章。
+> 克隆后配置 API Key 即可启动，首次运行自动构建知识库。
 
 ---
 
