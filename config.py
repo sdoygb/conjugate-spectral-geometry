@@ -52,6 +52,7 @@ KIMI_API_KEY = os.getenv('KIMI_API_KEY', '')
 KIMI_BASE_URL = os.getenv('KIMI_BASE_URL', 'https://api.moonshot.cn/v1')
 KIMI_MODEL = os.getenv('KIMI_MODEL', 'kimi-k2.7-code')
 KIMI_MODEL_LITE = os.getenv('KIMI_MODEL_LITE', 'kimi-k2.7')  # 轻量模型，用于简单问题
+KIMI_MODEL_VISION = os.getenv('KIMI_MODEL_VISION', 'kimi-k2.6')  # 视觉模型，用于图片输入
 KIMI_EMBEDDING_MODEL = os.getenv('KIMI_EMBEDDING_MODEL', 'moonshot-embedding-v1')
 
 # Embedding 模式：'local' 使用本地中文模型（推荐），'kimi' 使用 KIMI API，'default' 使用 ChromaDB 内置模型

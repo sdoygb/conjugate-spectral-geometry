@@ -19,7 +19,7 @@ from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 
-from config import (logger, KIMI_API_KEY, KIMI_BASE_URL, KIMI_MODEL, KIMI_MODEL_LITE,
+from config import (logger, KIMI_API_KEY, KIMI_BASE_URL, KIMI_MODEL, KIMI_MODEL_LITE, KIMI_MODEL_VISION,
                     KIMI_EMBEDDING_MODEL, UPLOAD_FOLDER, OPENWEBUI_UPLOAD_DIR, OPENWEBUI_DB_PATH,
                     MAX_INJECT_CHARS, QUALITY_GATE_ENABLED, MAX_QUALITY_RETRIES,
                     _injected_files, _injected_files_lock, openai_error,
@@ -962,18 +962,40 @@ def chat_completions():
 
     final_messages = [{"role": "system", "content": system_prompt}] + clean_messages
 
-    # 修复纯图片消息：KIMI API 要求 content 数组中必须有 text 元素
-    # Open WebUI 发送纯图片时 content=[{"type":"image_url",...}]，缺少 text
+    # 修复多模态消息：KIMI API 要求 content 数组中每个 text 元素都不能为空
     for i, msg in enumerate(final_messages):
         content = msg.get("content")
         if isinstance(content, list):
-            has_text = any(isinstance(item, dict) and item.get("type") == "text" and item.get("text", "").strip()
-                          for item in content)
-            if not has_text:
-                # 在数组开头插入一个默认文本
+            has_valid_text = False
+            for item in content:
+                if isinstance(item, dict) and item.get("type") == "text":
+                    text_val = item.get("text", "")
+                    if not text_val or not text_val.strip():
+                        # 空 text 元素，填充默认文本
+                        item["text"] = "请查看这张图片并回答相关问题。"
+                        logger.info(f"[FIX] 空text元素已填充 (index={i}, role={msg.get('role')})")
+                    else:
+                        has_valid_text = True
+            if not has_valid_text:
+                # 没有任何有效 text，在开头插入一个
                 content.insert(0, {"type": "text", "text": "请查看这张图片并回答相关问题。"})
-                final_messages[i]["content"] = content
-                logger.info(f"[FIX] 纯图片消息补充默认文本 (index={i})")
+                logger.info(f"[FIX] 纯图片消息补充默认文本 (index={i}, role={msg.get('role')})")
+            final_messages[i]["content"] = content
+
+    # 诊断日志：打印包含图片的消息
+    for i, msg in enumerate(final_messages):
+        content = msg.get("content")
+        if isinstance(content, list):
+            types = []
+            for item in content:
+                if isinstance(item, dict):
+                    t = item.get("type", "?")
+                    if t == "text":
+                        tl = len(item.get("text", ""))
+                        types.append(f"text({tl})")
+                    else:
+                        types.append(t)
+            logger.info(f"[IMG-DEBUG] index={i}, role={msg.get('role')}, types={types}")
 
     # 历史消息截断：保留 system + 最近 N 条消息，防止 token 爆炸
     MAX_HISTORY_MESSAGES = 40  # 最近 40 条消息（约 20 轮对话）
@@ -1088,6 +1110,11 @@ def chat_completions():
                     }
 
                 if not QUALITY_GATE_ENABLED:
+                    break
+
+                # 跳过 Open WebUI 系统请求的质量门控（标题/标签生成等）
+                _is_system_request = clean_query.startswith("### Task:") or clean_query.startswith("Generate")
+                if _is_system_request:
                     break
 
                 # v10 增强：传入 teaching_system 进行反模式检测

@@ -8,6 +8,20 @@ import subprocess
 import sys
 import os
 
+# 自动加载 .env 文件（如果存在）
+_script_dir = os.path.dirname(os.path.abspath(__file__))
+_env_file = os.path.join(_script_dir, '.env')
+if os.path.exists(_env_file):
+    with open(_env_file) as _f:
+        for _line in _f:
+            _line = _line.strip()
+            if _line and not _line.startswith('#') and '=' in _line:
+                _key, _, _val = _line.partition('=')
+                _key = _key.strip()
+                _val = _val.strip().strip('"').strip("'")
+                if _key and _key not in os.environ:
+                    os.environ[_key] = _val
+
 # 颜色输出
 GREEN = "\033[92m"
 YELLOW = "\033[93m"
@@ -122,9 +136,34 @@ def check_env():
 
 def start_server():
     """启动服务器"""
-    print(f"{CYAN}[5/5] 启动服务器{RESET}")
+    print(f"{CYAN}[5/6] 同步文件到运行目录{RESET}")
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    server_script = os.path.join(script_dir, "server.py")
+    run_dir = os.path.expanduser("~/AI")
+
+    # 优先从工作目录（TRAE项目目录）同步，如果没有则从自身目录同步
+    work_dir = os.path.expanduser("~/Library/Application Support/TRAE SOLO CN/ModularData/ai-agent/work-mode-projects/6a34df456ce8883f273744f5")
+    source_dir = work_dir if os.path.exists(os.path.join(work_dir, 'server.py')) else script_dir
+
+    py_files = [f for f in os.listdir(source_dir) if f.endswith('.py') and f != 'auto_teach.py']
+    if os.path.exists(run_dir):
+        import shutil
+        synced = 0
+        for f in py_files:
+            src = os.path.join(source_dir, f)
+            dst = os.path.join(run_dir, f)
+            if os.path.realpath(src) == os.path.realpath(dst):
+                continue  # 同一个文件，跳过
+            shutil.copy2(src, dst)
+            synced += 1
+        if synced > 0:
+            print(f"{GREEN}      ✓ 已从 {os.path.basename(source_dir)} 同步 {synced} 个文件到 {run_dir}{RESET}")
+        else:
+            print(f"{GREEN}      ✓ 文件已是最新{RESET}")
+    else:
+        print(f"{YELLOW}      ⚠ 运行目录 {run_dir} 不存在，跳过同步{RESET}")
+
+    print(f"{CYAN}[6/6] 启动服务器{RESET}")
+    server_script = os.path.join(run_dir, "server.py")
 
     if not os.path.exists(server_script):
         print(f"{RED}      ✗ 找不到主程序: {server_script}{RESET}")
