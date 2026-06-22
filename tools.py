@@ -206,6 +206,48 @@ ARTICLE_TOOLS = [
                 "required": ["chat_id"]
             }
         }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "git_commit",
+            "description": "手动提交当前所有文章修改到 git 版本库并推送到远程。write_article 已自动提交，此工具用于批量提交或推送。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "push": {
+                        "type": "boolean",
+                        "description": "是否同时推送到远程仓库（默认 false）"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "提交说明（可选，默认自动生成）"
+                    }
+                },
+                "required": []
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "git_history",
+            "description": "查看文章的修改历史（git log）。可以查看某篇文章的版本演变，或查看最近的提交记录。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "filename": {
+                        "type": "string",
+                        "description": "文件名（可选，不填则显示所有文章的最近提交）"
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "description": "显示最近几条记录（默认 10）"
+                    }
+                },
+                "required": []
+            }
+        }
     }
 ]
 
@@ -214,6 +256,71 @@ ARTICLE_TOOLS = [
 vector_kb = None
 teaching_system = None
 living_field = None
+
+# Git 仓库根目录（articles 所在的 git 仓库）
+_GIT_REPO_DIR = None
+
+
+def _find_git_repo():
+    """查找 articles 目录所在的 git 仓库根目录"""
+    global _GIT_REPO_DIR
+    if _GIT_REPO_DIR:
+        return _GIT_REPO_DIR
+    # 从 UPLOAD_FOLDER 向上查找 .git 目录
+    d = os.path.abspath(UPLOAD_FOLDER)
+    for _ in range(10):
+        if os.path.exists(os.path.join(d, '.git')):
+            _GIT_REPO_DIR = d
+            return d
+        parent = os.path.dirname(d)
+        if parent == d:
+            break
+        d = parent
+    _GIT_REPO_DIR = None
+    return None
+
+
+def _auto_git_commit(filename: str, content: str) -> str:
+    """write_article 后自动 git add + commit"""
+    repo = _find_git_repo()
+    if not repo:
+        return ""
+    try:
+        import subprocess as _sp
+        rel = os.path.relpath(os.path.join(UPLOAD_FOLDER, filename), repo)
+        _sp.run(["git", "-C", repo, "add", rel], capture_output=True, timeout=10)
+        # 生成 commit message
+        line_count = content.count('\n') + 1
+        msg = f"AI修改: {filename} ({line_count}行)"
+        r = _sp.run(["git", "-C", repo, "commit", "-m", msg], capture_output=True, timeout=10)
+        if r.returncode == 0:
+            # 提取短 commit hash
+            r2 = _sp.run(["git", "-C", repo, "log", "--oneline", "-1"], capture_output=True, timeout=10)
+            short_hash = r2.stdout.decode().strip().split()[0] if r2.returncode == 0 else ""
+            return f"已自动提交: {short_hash}"
+        else:
+            err = r.stderr.decode().strip()
+            if "nothing to commit" in err or "no changes added" in err:
+                return ""
+            return f"(git commit 失败: {err[:80]})"
+    except Exception as e:
+        return f"(git commit 异常: {str(e)[:60]})"
+
+
+def _git_push() -> str:
+    """尝试 git push"""
+    repo = _find_git_repo()
+    if not repo:
+        return "错误：未找到 git 仓库"
+    try:
+        import subprocess as _sp
+        r = _sp.run(["git", "-C", repo, "push"], capture_output=True, timeout=60)
+        if r.returncode == 0:
+            return "push 成功"
+        err = r.stderr.decode().strip()
+        return f"push 失败: {err[:100]}"
+    except Exception as e:
+        return f"push 异常: {str(e)[:60]}"
 
 
 def execute_tool_call(name: str, arguments: Dict[str, Any]) -> str:
@@ -276,7 +383,9 @@ def execute_tool_call(name: str, arguments: Dict[str, Any]) -> str:
             # 只索引新写入的文件（增量索引，不重建全部）
             if vector_kb and vector_kb.is_initialized:
                 vector_kb.index_single_file(fpath)
-            return f"已写入 {filename} ({len(content)} 字符)，向量索引已更新"
+            # 自动 git commit（版本管理）
+            _git_result = _auto_git_commit(filename, content)
+            return f"已写入 {filename} ({len(content)} 字符)，向量索引已更新。{_git_result}"
 
         elif name == "personal_read":
             # 读取个人数据库
@@ -444,6 +553,68 @@ def execute_tool_call(name: str, arguments: Dict[str, Any]) -> str:
                 except Exception as e:
                     logger.error(f"[PERSONAL] 向量库写入失败: {e}")
             return f"已写入 {cat_key}.{sub_field or '*'}（JSON + 向量库）"
+
+        elif name == "git_commit":
+            import subprocess as _sp
+            repo = _find_git_repo()
+            if not repo:
+                return "错误：未找到 git 仓库，无法提交"
+            try:
+                do_push = arguments.get("push", False)
+                custom_msg = arguments.get("message", "")
+                # git add 所有文章
+                _sp.run(["git", "-C", repo, "add", "articles/"], capture_output=True, timeout=10)
+                # commit
+                if custom_msg:
+                    msg = custom_msg
+                else:
+                    # 统计修改了哪些文件
+                    r_status = _sp.run(["git", "-C", repo, "diff", "--cached", "--name-only"], capture_output=True, timeout=10)
+                    files = r_status.stdout.decode().strip().split('\n') if r_status.stdout else []
+                    msg = f"AI批量提交: {', '.join(files[:5])}" if files else "AI批量提交"
+                r = _sp.run(["git", "-C", repo, "commit", "-m", msg], capture_output=True, timeout=10)
+                if r.returncode == 0:
+                    r2 = _sp.run(["git", "-C", repo, "log", "--oneline", "-1"], capture_output=True, timeout=10)
+                    short_hash = r2.stdout.decode().strip().split()[0] if r2.returncode == 0 else ""
+                    result = f"已提交: {short_hash} ({msg})"
+                    if do_push:
+                        push_result = _git_push()
+                        result += f"\n{push_result}"
+                    return result
+                else:
+                    err = r.stderr.decode().strip()
+                    if "nothing to commit" in err:
+                        return "没有需要提交的修改"
+                    return f"提交失败: {err[:100]}"
+            except Exception as e:
+                return f"git 操作异常: {str(e)[:100]}"
+
+        elif name == "git_history":
+            import subprocess as _sp
+            repo = _find_git_repo()
+            if not repo:
+                return "错误：未找到 git 仓库"
+            try:
+                filename = arguments.get("filename", "")
+                limit = min(int(arguments.get("limit", "10")), 30)
+                if filename:
+                    # 查找匹配的文件路径
+                    rel_dir = os.path.relpath(UPLOAD_FOLDER, repo)
+                    r = _sp.run(
+                        ["git", "-C", repo, "log", "--oneline", f"-{limit}", "--", f"{rel_dir}/{filename}"],
+                        capture_output=True, timeout=10
+                    )
+                else:
+                    r = _sp.run(
+                        ["git", "-C", repo, "log", "--oneline", f"-{limit}", "--", "articles/"],
+                        capture_output=True, timeout=10
+                    )
+                if r.returncode == 0 and r.stdout:
+                    lines = r.stdout.decode().strip().split('\n')
+                    return f"最近 {len(lines)} 条提交记录:\n" + "\n".join(f"  {l}" for l in lines)
+                return "没有找到提交记录"
+            except Exception as e:
+                return f"git log 异常: {str(e)[:100]}"
 
         else:
             return f"未知工具: {name}"
