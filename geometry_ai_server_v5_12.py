@@ -2670,10 +2670,11 @@ def build_system_prompt(
     index_empty: bool,
     uploaded_files_content: str = "",
     teaching_section: str = "",
-    msg_count: int = 0
+    msg_count: int = 0,
+    recent_chats: str = ""
 ) -> str:
     """
-    v10 增强：新增 teaching_section 参数，注入教学反馈内容。
+    v10 增强：新增 teaching_section、msg_count、recent_chats 参数。
     """
     # 新对话提醒
     new_chat_hint = ""
@@ -2729,7 +2730,7 @@ def build_system_prompt(
 
 【参考资料（系统自动检索，不是用户上传的）】
 {articles_content if articles_content else "（本次无直接相关的参考资料，基于你的几何论知识回答）"}{uploaded_section}
-
+{recent_chats}
 【当前状态】eta={eta_before:.2f}度 | {tone_hint}
 
 {index_warning}
@@ -4008,12 +4009,29 @@ def chat_completions():
 
     # 把文件内容从 system prompt 移到 user 消息中（KIMI 对 user 消息注意力更强）
     # system prompt 中只保留提示，不包含实际文件内容
+    # 新 session 时获取最近对话标题作为轻量参考
+    recent_chats_summary = ""
+    if session_info['last_time'] is None and OPENWEBUI_DB_PATH and os.path.exists(OPENWEBUI_DB_PATH):
+        try:
+            import sqlite3 as _sqlite3
+            conn = _sqlite3.connect(OPENWEBUI_DB_PATH)
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT title FROM chat ORDER BY createdAt DESC LIMIT 3"
+            )
+            recent_titles = [row[0] for row in cursor.fetchall() if row[0]]
+            conn.close()
+            if recent_titles:
+                recent_chats_summary = "\n【最近对话（仅供参考，不要编造细节）】\n" + "\n".join(f"- {t}" for t in recent_titles) + "\n"
+        except Exception as e:
+            logger.warning(f"[RECENT_CHATS] 获取最近对话失败: {e}")
+
     raw_messages = data.get('messages', [])
     msg_count = len([m for m in raw_messages if isinstance(m, dict) and m.get('role') == 'user'])
     system_prompt = build_system_prompt(
         eta_before, stage, strategy, max_eta, markers,
         loaded_chunks, articles_content, pre_metrics,
-        index_empty, "", teaching_section, msg_count  # files_content 传空
+        index_empty, "", teaching_section, msg_count, recent_chats_summary
     )
 
     # 过滤掉空消息和中间层注入的文件消息（避免历史中残留的文件内容被重复处理）
