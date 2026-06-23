@@ -29,17 +29,17 @@ except ImportError:
     Embeddings = list
 
 
-# ==================== KIMI Embedding Function ====================
+# ==================== API Embedding Function ====================
 
-class KimiEmbeddingFunction:
-    """使用 KIMI API (moonshot-embedding-v1) 的 ChromaDB 自定义 Embedding Function"""
+class APIEmbeddingFunction:
+    """使用 LLM API 的 ChromaDB 自定义 Embedding Function"""
 
     def __init__(self):
         self.client = openai.OpenAI(api_key=KIMI_API_KEY, base_url=KIMI_BASE_URL)
         self.model = KIMI_EMBEDDING_MODEL
 
     def name(self) -> str:
-        return "kimi-moonshot-embedding"
+        return "api-embedding"
 
     def __call__(self, input: Documents) -> Embeddings:
         all_embeddings = []
@@ -49,7 +49,7 @@ class KimiEmbeddingFunction:
                 resp = self.client.embeddings.create(model=self.model, input=batch)
                 all_embeddings.extend([d.embedding for d in resp.data])
             except Exception as e:
-                logger.error(f"[EMBEDDING] KIMI embedding 批次 {i//32} 失败: {e}")
+                logger.error(f"[EMBEDDING] embedding 批次 {i//32} 失败: {e}")
                 for _ in batch:
                     all_embeddings.append([0.0] * 1536)
         return all_embeddings
@@ -111,9 +111,9 @@ class VectorKnowledgeBase:
         self.persist_dir = persist_dir
         os.makedirs(persist_dir, exist_ok=True)
         # 根据配置选择 embedding function
-        if EMBEDDING_MODE == 'kimi':
-            self.embedding_fn = KimiEmbeddingFunction()
-            self._embedding_name = f"kimi({KIMI_EMBEDDING_MODEL})"
+        if EMBEDDING_MODE == 'api':
+            self.embedding_fn = APIEmbeddingFunction()
+            self._embedding_name = f"api({KIMI_EMBEDDING_MODEL})"
         elif EMBEDDING_MODE == 'local':
             self.embedding_fn = LocalEmbeddingFunction(LOCAL_EMBEDDING_MODEL)
             self._embedding_name = f"local({LOCAL_EMBEDDING_MODEL})"

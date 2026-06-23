@@ -577,7 +577,7 @@ def scan_openwebui_recent_uploads(max_files: int = 5) -> Tuple[str, List[Tuple[s
         text, ok = extract_text_from_file(fpath)
         if ok and text and len(text.strip()) > 10:
             injected_info.append((fpath, str(mtime)))
-            # 大文件自动拆分（每段不超过40000字符），避免KIMI忽略后半部分
+            # 大文件自动拆分（每段不超过40000字符），避免模型忽略后半部分
             if len(text) > 40000:
                 lines = text.split('\n')
                 chunks = []

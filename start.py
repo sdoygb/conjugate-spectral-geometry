@@ -108,15 +108,15 @@ def check_env():
     print(f"{CYAN}[4/5] 环境变量检查{RESET}")
     api_key = os.environ.get("KIMI_API_KEY", "")
     if not api_key:
-        print(f"{YELLOW}      ⚠ KIMI_API_KEY 未设置{RESET}")
+        print(f"{YELLOW}      ⚠ API_KEY 未设置{RESET}")
         print(f"      请设置环境变量：")
-        print(f"        export KIMI_API_KEY=\"你的API密钥\"")
+        print(f"        export API_KEY=\"你的API密钥\"")
         print(f"      或在启动时传入：")
-        print(f"        KIMI_API_KEY=xxx python3 server.py")
+        print(f"        API_KEY=xxx python3 server.py")
         print(f"")
-        print(f"      免费注册：https://platform.moonshot.cn")
+        print(f"      免费注册：https://platform.deepseek.com")
     else:
-        print(f"{GREEN}      ✓ KIMI_API_KEY 已设置 ({api_key[:8]}...){RESET}")
+        print(f"{GREEN}      ✓ API_KEY 已设置 ({api_key[:8]}...){RESET}")
 
     # 检查 chroma_db 目录
     script_dir = os.path.dirname(os.path.abspath(__file__))

@@ -26,7 +26,7 @@ from config import (logger, KIMI_API_KEY, KIMI_BASE_URL, KIMI_MODEL, KIMI_MODEL_
                     CHROMA_DB_DIR, CHROMADB_AVAILABLE, EMBEDDING_MODE, LOCAL_EMBEDDING_MODEL,
                     CHUNK_SIZE, CHUNK_OVERLAP, MAX_CHUNKS_PER_QUERY, PERSONAL_DB_PATH,
                     LEARN_COHERENCE_THRESHOLD, LEARN_MIN_LENGTH, GEOMETRY_CONSTANTS)
-from knowledge import VectorKnowledgeBase, KimiEmbeddingFunction, LocalEmbeddingFunction
+from knowledge import VectorKnowledgeBase, APIEmbeddingFunction, LocalEmbeddingFunction
 from models import (personal_db, _save_personal_db, _get_personal_db_summary, LivingInfoField,
                     compute_geo_density, extract_key_propositions, find_file_by_reference,
                     extract_text_from_file, allowed_file, scan_openwebui_recent_uploads,
@@ -269,7 +269,7 @@ def _finalize_turn(
 ) -> Dict[str, Any]:
     """
     v10 增强：
-    - 在 finalize 阶段检查KIMI回复是否体现了某条纠正
+    - 在 finalize 阶段检查AI回复是否体现了某条纠正
     - 如果体现了，增加该纠正的 trust_level 和 applied_count
     - 更新 ChromaDB 中的纠正记录
     """
@@ -961,7 +961,7 @@ def chat_completions():
         "noise": 0.0,
     }
 
-    # 把文件内容从 system prompt 移到 user 消息中（KIMI 对 user 消息注意力更强）
+    # 把文件内容从 system prompt 移到 user 消息中（模型对 user 消息注意力更强）
     # system prompt 中只保留提示，不包含实际文件内容
     # 新 session 时获取最近对话标题作为轻量参考
     recent_chats_summary = ""
@@ -1029,7 +1029,7 @@ def chat_completions():
             )
             if not has_text and not has_image:
                 continue  # 空消息
-            # 纯图片无文字时，保留原样（KIMI API 支持纯图片数组）
+            # 纯图片无文字时，保留原样（API 支持纯图片数组）
             if has_image and not has_text:
                 pass  # content 数组不为空，直接保留
             m = {**m, 'content': content}
@@ -1048,7 +1048,7 @@ def chat_completions():
         }
         # 插入到倒数第二条位置（最后一条是用户的实际问题）
         clean_messages.insert(max(0, len(clean_messages) - 1), file_user_msg)
-        # 标记这些文件为已注入（只在真正发送给KIMI时才标记）
+        # 标记这些文件为已注入（只在真正发送给模型时才标记）
         for fpath, mtime_str in ow_injected_info:
             with _injected_files_lock:
                 _injected_files[fpath] = mtime_str
@@ -1102,7 +1102,7 @@ def chat_completions():
                 msg["content"] = "\n".join(text_parts)
                 logger.info(f"[CLEAN] 消息[{i}] 纯文本数组已合并为字符串")
 
-    # 修复多模态消息：KIMI API 要求 content 数组中每个 text 元素都不能为空
+    # 修复多模态消息：API 要求 content 数组中每个 text 元素都不能为空
     for i, msg in enumerate(final_messages):
         content = msg.get("content")
         if isinstance(content, list):
@@ -1260,7 +1260,7 @@ def chat_completions():
     else:
         client = openai.OpenAI(api_key=KIMI_API_KEY, base_url=KIMI_BASE_URL)
         try:
-            # 质量门控 - 如果KIMI回复偏离几何论，自动重试
+            # 质量门控 - 如果AI回复偏离几何论，自动重试
             # v10 增强：反模式检测触发重试时，在prompt中注入反模式警告
             response_text = ""
             for attempt in range(1 + MAX_QUALITY_RETRIES):

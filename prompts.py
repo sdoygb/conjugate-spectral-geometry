@@ -277,7 +277,7 @@ class TeachingSystem:
 
     def check_and_update_corrections(self, response_text: str) -> List[Dict[str, Any]]:
         """
-        v10 新增：检查KIMI回复是否体现了某条纠正，如果是则更新信任等级。
+        v10 新增：检查AI回复是否体现了某条纠正，如果是则更新信任等级。
         返回被成功应用的纠正列表。
         """
         applied = []
@@ -337,7 +337,7 @@ class TeachingSystem:
 
 def check_response_quality(response_text: str, teaching_system: Optional['TeachingSystem'] = None) -> Tuple[bool, str]:
     """
-    检查 KIMI 回复质量。返回 (is_good, reason)。
+    检查 AI 回复质量。返回 (is_good, reason)。
     v10 增强：增加反模式检测。
     如果回复包含红灯短语且缺少几何论术语，判定为低质量。
     如果回复匹配到高严重度的反模式，直接判定为低质量。
@@ -380,7 +380,7 @@ def check_response_quality(response_text: str, teaching_system: Optional['Teachi
 
 def check_correction_applied(response_text: str, correction: Dict, vector_kb=None) -> bool:
     """
-    v10 新增：检查KIMI回复是否体现了某条纠正。
+    v10 新增：检查AI回复是否体现了某条纠正。
     用向量相似度检查回复是否包含纠正内容的核心观点。
     """
     if not response_text or not correction:

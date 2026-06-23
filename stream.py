@@ -58,8 +58,8 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
         }
         return f"data: {json.dumps(err, ensure_ascii=False)}\n\n"
 
-    def _stream_kimi_text(params):
-        """真正流式调用 KIMI，逐 token 透传给客户端"""
+    def _stream_text(params):
+        """真正流式调用 AI模型，逐 token 透传给客户端"""
         params["stream"] = True
         stream = client.chat.completions.create(**params)
         text_buf = ""
@@ -87,6 +87,11 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
     yield _sse_chunk({"role": "assistant", "content": ""})
 
     for _round in range(max_tool_rounds):
+        # 每轮调用前彻底清洗消息：确保没有 reasoning_content（DeepSeek 兼容）
+        for msg in final_messages:
+            if "reasoning_content" in msg:
+                del msg["reasoning_content"]
+
         # 第一轮用流式调用，逐 token 透传（创建副本避免修改原始参数）
         round_params = {**api_params, "stream": True}
         try:
@@ -218,11 +223,15 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                 "content": result
             })
 
-    # 超过轮数限制，强制要求 KIMI 直接回答 -- 真正流式
+    # 超过轮数限制，强制要求模型直接回答 -- 真正流式
     logger.warning(f"[TOOL] 超过 {max_tool_rounds} 轮，强制生成文本回复")
+    # 最终回复前也清洗 reasoning_content
+    for msg in final_messages:
+        if "reasoning_content" in msg:
+            del msg["reasoning_content"]
     final_api_params = {k: v for k, v in api_params.items() if k != "tools"}
     try:
-        yield from _stream_kimi_text(final_api_params)
+        yield from _stream_text(final_api_params)
     except Exception as e:
         logger.error(f"[STREAM] 最终流式生成错误: {e}")
         yield _sse_error(f"生成错误: {e}")
