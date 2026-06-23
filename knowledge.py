@@ -55,6 +55,34 @@ class APIEmbeddingFunction:
         return all_embeddings
 
 
+class SiliconFlowEmbeddingFunction:
+    """使用 SiliconFlow 免费 API 的中文 Embedding（BAAI/bge-large-zh-v1.5, 1024维）"""
+
+    def __init__(self, api_key: str = "", model: str = "BAAI/bge-large-zh-v1.5"):
+        self.client = openai.OpenAI(
+            api_key=api_key or "not-needed",
+            base_url="https://api.siliconflow.cn/v1"
+        )
+        self.model = model
+        self._dim = 1024
+
+    def name(self) -> str:
+        return f"siliconflow({self.model})"
+
+    def __call__(self, input: Documents) -> Embeddings:
+        all_embeddings = []
+        for i in range(0, len(input), 32):
+            batch = input[i:i + 32]
+            try:
+                resp = self.client.embeddings.create(model=self.model, input=batch)
+                all_embeddings.extend([d.embedding for d in resp.data])
+            except Exception as e:
+                logger.error(f"[EMBEDDING-SF] embedding 批次 {i//32} 失败: {e}")
+                for _ in batch:
+                    all_embeddings.append([0.0] * self._dim)
+        return all_embeddings
+
+
 class LocalEmbeddingFunction:
     """使用 fastembed + bge-small-zh-v1.5 的 ChromaDB Embedding Function（中文优化，纯ONNX，无需torch）"""
 
@@ -119,9 +147,18 @@ class VectorKnowledgeBase:
                 self.embedding_fn = LocalEmbeddingFunction(LOCAL_EMBEDDING_MODEL)
                 self._embedding_name = f"local({LOCAL_EMBEDDING_MODEL})"
             except Exception as e:
-                logger.warning(f"[EMBEDDING] 本地模型加载失败({e})，回退到ChromaDB默认embedding")
-                self.embedding_fn = None
-                self._embedding_name = "chromadb-default(fallback)"
+                logger.warning(f"[EMBEDDING] 本地模型加载失败({e})，回退到SiliconFlow免费API")
+                try:
+                    sf_key = os.getenv('SILICONFLOW_API_KEY', '')
+                    self.embedding_fn = SiliconFlowEmbeddingFunction(api_key=sf_key)
+                    self._embedding_name = "siliconflow(BAAI/bge-large-zh-v1.5)"
+                    logger.info("[EMBEDDING] SiliconFlow embedding 就绪（免费API，中文优化）")
+                    # 维度可能不同，需要重建索引
+                    self._need_rebuild = True
+                except Exception as e2:
+                    logger.warning(f"[EMBEDDING] SiliconFlow也失败({e2})，回退到ChromaDB默认embedding")
+                    self.embedding_fn = None
+                    self._embedding_name = "chromadb-default(fallback)"
         else:
             self.embedding_fn = None  # 使用 ChromaDB 默认 embedding
             self._embedding_name = "chromadb-default"
@@ -132,6 +169,7 @@ class VectorKnowledgeBase:
         self.antipatterns_collection = None
         self.patches_collection = None
         self._initialized = False
+        self._need_rebuild = False
         self._articles_count = 0
         self._learned_count = 0
         self._corrections_count = 0
@@ -146,6 +184,15 @@ class VectorKnowledgeBase:
         try:
             import chromadb
             self.client = chromadb.PersistentClient(path=self.persist_dir)
+            # 如果需要重建（embedding维度变化），先删除旧集合
+            if self._need_rebuild:
+                logger.info("[VECTOR] embedding维度变化，删除旧索引准备重建...")
+                for col_name in ["articles", "learned", "corrections", "antipatterns", "patches", "personal"]:
+                    try:
+                        self.client.delete_collection(col_name)
+                    except Exception:
+                        pass
+                self._need_rebuild = False
             # 构建 collection 参数
             col_kwargs = {}
             if self.embedding_fn is not None:
