@@ -920,6 +920,7 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                     <div class="card-title" style="margin-bottom: 0;">
                         分享统计 <span id="shareStats" class="badge">0</span>
+                        <span id="mysqlStatus" style="font-size:12px;margin-left:8px;color:#888;">检测中...</span>
                     </div>
                     <div style="display: flex; gap: 8px;">
                         <button class="btn btn-primary btn-sm" onclick="loadShareStats()">刷新</button>
@@ -1730,7 +1731,11 @@
 
         function loadShareStats() {
             apiRequest('/api/admin/share/stats').then(function(data) {
-                if (!data.success) return;
+                if (!data.success) {
+                    document.getElementById('mysqlStatus').innerHTML = '<span style="color:#ef5350;">MySQL连接失败</span>';
+                    return;
+                }
+                document.getElementById('mysqlStatus').innerHTML = '<span style="color:#66bb6a;">MySQL已连接</span>';
                 var s = data.stats;
                 document.getElementById('shareStats').textContent = s.total;
                 document.getElementById('shareStatsDetail').innerHTML =
