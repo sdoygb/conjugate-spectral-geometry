@@ -183,7 +183,6 @@ class VectorKnowledgeBase:
         self.antipatterns_collection = None
         self.patches_collection = None
         self._initialized = False
-        self._need_rebuild = False  # 必须在embedding选择之前声明
         self._articles_count = 0
         self._learned_count = 0
         self._corrections_count = 0
@@ -205,8 +204,6 @@ class VectorKnowledgeBase:
                     self.embedding_fn = SiliconFlowEmbeddingFunction(api_key=sf_key)
                     self._embedding_name = "siliconflow(BAAI/bge-large-zh-v1.5)"
                     logger.info("[EMBEDDING] SiliconFlow embedding 就绪（免费API，中文优化）")
-                    # 维度可能不同，需要重建索引
-                    self._need_rebuild = True
                 except Exception as e2:
                     logger.warning(f"[EMBEDDING] SiliconFlow也失败({e2})，回退到ChromaDB默认embedding")
                     self.embedding_fn = None
@@ -223,27 +220,6 @@ class VectorKnowledgeBase:
         try:
             import chromadb
             self.client = chromadb.PersistentClient(path=self.persist_dir)
-            # 检查是否需要重建：比较已有集合的维度和当前embedding维度
-            if self._need_rebuild:
-                # 检查已有集合维度是否已经匹配
-                existing_dim = None
-                try:
-                    existing_col = self.client.get_collection("articles")
-                    existing_dim = existing_col._model_dimension
-                except Exception:
-                    pass
-                current_dim = self.embedding_fn._dim if self.embedding_fn and hasattr(self.embedding_fn, '_dim') else None
-                if existing_dim == current_dim:
-                    logger.info(f"[VECTOR] 已有集合维度={existing_dim}，与当前embedding匹配，跳过重建")
-                    self._need_rebuild = False
-                else:
-                    logger.info(f"[VECTOR] embedding维度变化({existing_dim} -> {current_dim})，删除旧索引准备重建...")
-                    for col_name in ["articles", "learned", "corrections", "antipatterns", "patches", "personal"]:
-                        try:
-                            self.client.delete_collection(col_name)
-                        except Exception:
-                            pass
-                    self._need_rebuild = False
             # 构建 collection 参数
             col_kwargs = {}
             if self.embedding_fn is not None:
