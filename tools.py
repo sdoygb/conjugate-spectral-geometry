@@ -471,7 +471,7 @@ def execute_tool_call(name: str, arguments: Dict[str, Any]) -> str:
             except RuntimeError:
                 preview_host = "localhost:5000"
             preview_url = f"http://{preview_host}/preview/{filename}"
-            return f"已写入 {filename} ({len(content)} 字符)，向量索引已更新。{archive_msg}{_git_result}\n\n📎 [点击预览文章]({preview_url})"
+            return f"已写入 {filename} ({len(content)} 字符)，向量索引已更新。{archive_msg}{_git_result}\n\n【重要】请务必在回复中告诉用户文章已保存，并将以下预览链接以Markdown格式提供给用户：[点击预览文章]({preview_url})"
 
         elif name == "personal_read":
             # 读取个人数据库
