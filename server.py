@@ -383,6 +383,16 @@ def preview_article(filename):
         return "文件不存在", 404
     with open(fpath, 'r', encoding='utf-8') as f:
         content = f.read()
+    # 保护LaTeX公式：先提取，渲染Markdown后再恢复
+    import re as _re
+    _latex_blocks = []
+    def _protect_latex(m):
+        idx = len(_latex_blocks)
+        _latex_blocks.append(m.group(0))
+        return f'\x00LATEX{idx}\x00'
+    # 保护 $$...$$ 和 $...$ 公式
+    content = _re.sub(r'\$\$(.+?)\$\$', _protect_latex, content, flags=_re.DOTALL)
+    content = _re.sub(r'(?<!\$)\$(?!\$)(.+?)(?<!\$)\$(?!\$)', _protect_latex, content)
     # 简单Markdown渲染（标题、粗体、代码块、列表）
     lines = content.split('\n')
     html_body = ""
@@ -416,17 +426,23 @@ def preview_article(filename):
         else:
             line = _html.escape(line)
             line = line.replace('**', '<strong>').replace('</strong><strong>', '')
-            # 修复奇数个**的情况
             count = line.count('<strong>')
             if count % 2 == 1:
                 line = line.replace('<strong>', '')
             html_body += line + '<br>'
+    # 恢复LaTeX公式（不转义）
+    for i, block in enumerate(_latex_blocks):
+        html_body = html_body.replace(f'\x00LATEX{i}\x00', block)
     return f'''<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{_html.escape(filename)}</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body, {{delimiters: [{{left: '$$', right: '$$', display: true}}, {{left: '$', right: '$', display: false}}], throwOnError: false}});"></script>
 <style>
 body {{ font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #0f0f0f; color: #e0e0e0; padding: 20px; max-width: 900px; margin: 0 auto; line-height: 1.8; }}
 h1 {{ color: #4fc3f7; border-bottom: 1px solid #333; padding-bottom: 10px; }}
@@ -438,6 +454,7 @@ strong {{ color: #fff; }}
 pre {{ margin: 10px 0; }}
 a {{ color: #4fc3f7; }}
 .back {{ color: #888; font-size: 14px; margin-bottom: 20px; display: block; }}
+.katex {{ color: #fff; }}
 </style>
 </head>
 <body>
