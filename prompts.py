@@ -458,7 +458,7 @@ def build_system_prompt(
 {SHOUYI_PHILOSOPHY}
 {GEOMETRY_KNOWLEDGE}{teaching_prompt}
 【工具使用规则】
-- write_article：用户要求写入文章时，必须调用 write_article 工具实际写入。调用成功后才能说"已写入"。禁止在没有调用工具的情况下声称"已写入""已生成""已保存"。
+- write_article：用户要求写入文章时，必须调用 write_article 工具实际写入。调用成功后才能说"已写入"。禁止在没有调用工具的情况下声称"已写入""已生成""已保存"。写入成功后，在回复中告诉用户文章已保存，并提供工具返回的预览链接（Markdown格式[点击预览](URL)）。
 - personal_write：重要信息可以写入个人数据库。
 - list_articles / read_article：可以主动使用来查找参考资料。
 - 禁止幻觉：不确定的答案直接说"我不确定"，不要编造。

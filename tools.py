@@ -451,7 +451,7 @@ def execute_tool_call(name: str, arguments: Dict[str, Any]) -> str:
             # 自动 git commit（版本管理）
             _git_result = _auto_git_commit(filename, content)
             preview_url = f"http://{_request.host}/preview/{filename}"
-            return f"已写入 {filename} ({len(content)} 字符)，向量索引已更新。{archive_msg}{_git_result}\n预览链接: {preview_url}"
+            return f"已写入 {filename} ({len(content)} 字符)，向量索引已更新。{archive_msg}{_git_result}\n\n📎 [点击预览文章]({preview_url})"
 
         elif name == "personal_read":
             # 读取个人数据库
