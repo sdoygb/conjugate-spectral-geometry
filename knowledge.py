@@ -54,8 +54,9 @@ class APIEmbeddingFunction:
                     all_embeddings.append([0.0] * 1536)
         return all_embeddings
 
-    def embed_query(self, text: str) -> Embeddings:
+    def embed_query(self, input: str) -> Embeddings:
         """ChromaDB查询时调用"""
+        text = input if isinstance(input, str) else str(input)
         try:
             resp = self.client.embeddings.create(model=self.model, input=[text])
             return [d.embedding for d in resp.data]
@@ -102,8 +103,9 @@ class SiliconFlowEmbeddingFunction:
                 all_embeddings.append([0.0] * self._dim)
         return all_embeddings
 
-    def embed_query(self, text: str) -> Embeddings:
+    def embed_query(self, input: str) -> Embeddings:
         """ChromaDB查询时调用（单条文本embedding）"""
+        text = input if isinstance(input, str) else str(input)
         text = text.replace('\x00', '').replace('\r', '')
         import re as _re
         text = _re.sub(r'\s+', ' ', text).strip()
