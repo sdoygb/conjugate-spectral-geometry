@@ -37,8 +37,10 @@ from tools import (ARTICLE_TOOLS, execute_tool_call, parse_and_execute_tools, OP
                    vector_kb as _tools_vector_kb, teaching_system as _tools_teaching,
                    living_field as _tools_living)
 from stream import stream_generate
+from admin_routes import admin_bp
 
 app = Flask(__name__)
+app.register_blueprint(admin_bp)
 CORS(app)
 
 # 全局错误处理器：确保所有错误返回 JSON 格式
