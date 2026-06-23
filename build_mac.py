@@ -18,7 +18,7 @@ MAC_DIR = PROJECT_ROOT / "mac"
 PY_FILES = [
     "server.py", "config.py", "knowledge.py", "models.py",
     "prompts.py", "tools.py", "stream.py", "admin_routes.py",
-    "auto_teach.py", "start.py",
+    "share_routes.py", "auto_teach.py", "start.py",
 ]
 
 # 数据目录
@@ -26,7 +26,7 @@ DATA_DIRS = ["articles", "chroma_db", "templates"]
 
 # Python 依赖
 REQUIREMENTS = [
-    "openai", "flask", "flask-cors", "chromadb", "python-dotenv",
+    "openai", "flask", "flask-cors", "chromadb", "python-dotenv", "pymysql",
 ]
 
 

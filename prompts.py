@@ -416,9 +416,9 @@ def build_system_prompt(
     """
     # 新对话提醒
     new_chat_hint = ""
-    if msg_count >= 20:
-        new_chat_hint = f"\n\n【重要提醒】当前对话已有 {msg_count} 条用户消息，上下文很长，容易出现幻觉和记忆混乱。请在回复末尾提醒用户：\"建议开一个新对话，当前对话太长了。\"\n"
-    elif msg_count >= 15:
+    if msg_count >= 10:
+        new_chat_hint = f"\n\n【重要提醒】当前对话已有 {msg_count} 条用户消息，上下文较长，容易出现幻觉和记忆混乱。请在回复末尾提醒用户：\"建议开一个新对话，当前对话太长了。\"\n"
+    elif msg_count >= 6:
         new_chat_hint = f"\n\n【提醒】当前对话已有 {msg_count} 条消息，如果感觉回答质量下降，建议开新对话。\n"
     index_warning = ""
     if index_empty:
@@ -462,6 +462,7 @@ def build_system_prompt(
 - personal_write：只在对话中产生了值得长期记住的重要信息时才写入，不要每轮都写。
 - list_articles / read_article：可以主动使用来查找参考资料。
 - 禁止幻觉：如果不确定答案，直接说"我不确定"，不要编造内容。
+- 事实核查：声称已做过某事（如"已写入文件""已修改文章"）之前，必须先用 read_article 或 list_articles 验证。不要把"计划做的事"说成"已做的事"。
 【参考资料（系统自动检索）】
 {articles_content if articles_content else "（无直接相关参考资料，基于几何论知识回答）"}{uploaded_section}
 {recent_chats}
