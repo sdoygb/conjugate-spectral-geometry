@@ -125,8 +125,23 @@ Geometry AI Server - macOS 安装说明
 【管理界面】
   http://localhost:5000/admin
 
+【聊天界面】
+  http://localhost:8080
+
+  首次打开需要：
+  1. 创建管理员账号（注册）
+  2. 登录后，点击左下角头像 → Settings（设置）
+  3. 左侧选 Connections（连接）
+  4. 确认 OpenAI API 连接：
+     - URL: http://localhost:5000/v1
+     - Key: 随便填（如 sk-123）
+  5. 回到聊天页面，点左上角模型下拉框
+  6. 选择 deepseek-v4-pro（主力模型）或 deepseek-v4-flash（快速模型）
+  7. 开始聊天！
+
 【停止服务】
   launchctl unload ~/Library/LaunchAgents/com.geometryai.server.plist
+  launchctl unload ~/Library/LaunchAgents/com.geometryai.webui.plist
 
 【卸载】
   1. launchctl unload ~/Library/LaunchAgents/com.geometryai.server.plist
