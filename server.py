@@ -1008,6 +1008,7 @@ def chat_completions():
     # 向量语义检索（从 articles + learned 两个集合获取结果）
     articles_content = ""
     loaded_chunks: List[str] = []
+    logger.info(f"[VECTOR-DEBUG] vector_kb={vector_kb is not None}, initialized={vector_kb.is_initialized if vector_kb else 'N/A'}, total_docs={vector_kb.total_docs if vector_kb else 'N/A'}")
     if vector_kb and vector_kb.is_initialized and vector_kb.total_docs > 0:
         # 智能提取检索关键词：如果clean_query太长，提取核心术语
         search_query = clean_query
