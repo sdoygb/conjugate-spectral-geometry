@@ -245,8 +245,10 @@ if "$PYTHON" -c "import open_webui" 2>/dev/null; then
     echo -e "${GREEN}[√] Open WebUI 已安装${NC}"
 else
     echo "  正在安装 Open WebUI（需要几分钟，首次会下载模型）..."
-    echo "  使用国内镜像加速下载..."
-    "$PYTHON" -m pip install --quiet --disable-pip-version-check open-webui 2>/dev/null
+    echo "  使用国内镜像加速..."
+    "$PYTHON" -m pip install --quiet --disable-pip-version-check \
+        -i https://pypi.tuna.tsinghua.edu.cn/simple \
+        open-webui 2>/dev/null
     if "$PYTHON" -c "import open_webui" 2>/dev/null; then
         echo -e "${GREEN}[√] Open WebUI 安装完成${NC}"
     else
