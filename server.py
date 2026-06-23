@@ -367,14 +367,24 @@ def _finalize_turn(
 
 # ==================== 文章预览页 ====================
 
+def _inline(text):
+    """行内Markdown渲染：粗体、斜体、行内代码、链接"""
+    import html as _html
+    text = _html.escape(text)
+    text = _re.sub(r'`([^`]+)`', r'<code>\1</code>', text)
+    text = _re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
+    text = _re.sub(r'\*(.+?)\*', r'<em>\1</em>', text)
+    text = _re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2">\1</a>', text)
+    return text
+
+
 @app.route('/preview/<path:filename>')
 def preview_article(filename):
     """文章预览页（Markdown渲染为HTML + KaTeX公式）"""
     import html as _html
-    import markdown as _md
+    import re as _re
     fpath = os.path.join(UPLOAD_FOLDER, filename)
     if not os.path.exists(fpath):
-        # 模糊匹配
         if os.path.exists(UPLOAD_FOLDER):
             matches = [f for f in os.listdir(UPLOAD_FOLDER) if filename in f]
             if len(matches) == 1:
@@ -384,22 +394,104 @@ def preview_article(filename):
         return "文件不存在", 404
     with open(fpath, 'r', encoding='utf-8') as f:
         content = f.read()
-    # 保护LaTeX公式：先提取，渲染Markdown后再恢复
-    import re as _re
+    # 保护LaTeX公式
     _latex_blocks = []
     def _protect(m):
         idx = len(_latex_blocks)
         _latex_blocks.append(m.group(0))
-        return f'LATEXPLACEHOLDER{idx}ENDPLACEHOLDER'
-    # 保护 $$...$$ (行间) 和 $...$ (行内)
+        return f'\x00L{idx}\x00'
     content = _re.sub(r'\$\$(.+?)\$\$', _protect, content, flags=_re.DOTALL)
     content = _re.sub(r'(?<!\$)\$(?!\$)(.+?)(?<!\$)\$(?!\$)', _protect, content)
-    # 用markdown库渲染（支持表格、列表、代码块等）
-    html_body = _md.markdown(content, extensions=['tables', 'fenced_code'])
-    # 恢复LaTeX公式
+    # Markdown渲染
+    lines = content.split('\n')
+    html_parts = []
+    in_code = False
+    in_table = False
+    in_ul = False
+    in_ol = False
+    for line in lines:
+        # 代码块
+        if line.startswith('```'):
+            if in_code:
+                html_parts.append('</code></pre>')
+                in_code = False
+            else:
+                if in_ul: html_parts.append('</ul>'); in_ul = False
+                if in_ol: html_parts.append('</ol>'); in_ol = False
+                html_parts.append('<pre style="background:#1a1a1a;padding:12px;border-radius:8px;overflow-x:auto;font-size:13px;border:1px solid #333;"><code>')
+                in_code = True
+            continue
+        if in_code:
+            html_parts.append(_html.escape(line))
+            continue
+        stripped = line.strip()
+        # 空行
+        if not stripped:
+            if in_ul: html_parts.append('</ul>'); in_ul = False
+            if in_ol: html_parts.append('</ol>'); in_ol = False
+            if in_table: html_parts.append('</table>'); in_table = False
+            continue
+        # 标题
+        if stripped.startswith('######'):
+            if in_ul: html_parts.append('</ul>'); in_ul = False
+            html_parts.append(f'<h6>{_inline(stripped[6:].strip())}</h6>')
+        elif stripped.startswith('#####'):
+            if in_ul: html_parts.append('</ul>'); in_ul = False
+            html_parts.append(f'<h5>{_inline(stripped[5:].strip())}</h5>')
+        elif stripped.startswith('####'):
+            if in_ul: html_parts.append('</ul>'); in_ul = False
+            html_parts.append(f'<h4>{_inline(stripped[4:].strip())}</h4>')
+        elif stripped.startswith('###'):
+            if in_ul: html_parts.append('</ul>'); in_ul = False
+            html_parts.append(f'<h3>{_inline(stripped[3:].strip())}</h3>')
+        elif stripped.startswith('##'):
+            if in_ul: html_parts.append('</ul>'); in_ul = False
+            html_parts.append(f'<h2>{_inline(stripped[2:].strip())}</h2>')
+        elif stripped.startswith('# '):
+            if in_ul: html_parts.append('</ul>'); in_ul = False
+            html_parts.append(f'<h1>{_inline(stripped[2:].strip())}</h1>')
+        # 表格
+        elif '|' in stripped and stripped.startswith('|'):
+            if in_ul: html_parts.append('</ul>'); in_ul = False
+            cells = [c.strip() for c in stripped.strip('|').split('|')]
+            if all(set(c) <= set('-: ') for c in cells):
+                continue  # 分隔行跳过
+            if not in_table:
+                html_parts.append('<table>')
+                in_table = True
+            tag = 'th' if not in_table or (html_parts[-1] == '<table>') else 'td'
+            # 简单判断是否第一行（表头）
+            if '<table>' in html_parts[-1] if html_parts else False:
+                tag = 'th'
+            row = ''.join(f'<{tag}>{_inline(c)}</{tag}>' for c in cells)
+            html_parts.append(f'<tr>{row}</tr>')
+        else:
+            if in_table: html_parts.append('</table>'); in_table = False
+            # 无序列表
+            if stripped.startswith(('- ', '* ', '• ')):
+                if not in_ul:
+                    html_parts.append('<ul>')
+                    in_ul = True
+                html_parts.append(f'<li>{_inline(stripped[2:])}</li>')
+            # 有序列表
+            elif _re.match(r'^\d+[\.\)]\s', stripped):
+                if not in_ol:
+                    html_parts.append('<ol>')
+                    in_ol = True
+                text = _re.sub(r'^\d+[\.\)]\s+', '', stripped)
+                html_parts.append(f'<li>{_inline(text)}</li>')
+            else:
+                if in_ul: html_parts.append('</ul>'); in_ul = False
+                if in_ol: html_parts.append('</ol>'); in_ol = False
+                html_parts.append(f'<p>{_inline(stripped)}</p>')
+    if in_code: html_parts.append('</code></pre>')
+    if in_ul: html_parts.append('</ul>')
+    if in_ol: html_parts.append('</ol>')
+    if in_table: html_parts.append('</table>')
+    # 恢复LaTeX
+    html_body = '\n'.join(html_parts)
     for i, block in enumerate(_latex_blocks):
-        html_body = html_body.replace(f'<p>LATEXPLACEHOLDER{i}ENDPLACEHOLDER</p>', block)
-        html_body = html_body.replace(f'LATEXPLACEHOLDER{i}ENDPLACEHOLDER', block)
+        html_body = html_body.replace(f'\x00L{i}\x00', block)
     return f'''<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -425,6 +517,8 @@ a {{ color: #4fc3f7; }}
 table {{ border-collapse: collapse; width: 100%; margin: 10px 0; }}
 th, td {{ border: 1px solid #333; padding: 8px 12px; text-align: left; }}
 th {{ background: #1a1a1a; color: #4fc3f7; }}
+ul, ol {{ padding-left: 20px; }}
+li {{ margin: 4px 0; }}
 .katex {{ color: #fff; }}
 </style>
 </head>
