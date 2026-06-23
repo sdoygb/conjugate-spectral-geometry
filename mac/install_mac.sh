@@ -254,32 +254,6 @@ else
     else
         echo -e "${YELLOW}[!] Open WebUI 安装失败，聊天功能暂不可用${NC}"
         echo "  可稍后手动运行: $PYTHON -m pip install open-webui"
-    fi
-fi
-
-# ============================================================
-# Step 5: 安装并启动 Open WebUI
-# ============================================================
-echo ""
-echo -e "${CYAN}[5/6] 安装 Open WebUI（聊天界面）...${NC}"
-
-# 设置 HuggingFace 镜像（国内网络加速）
-export HF_ENDPOINT="https://hf-mirror.com"
-export SENTENCE_TRANSFORMERS_HOME="$INSTALL_DIR/models_cache"
-
-if "$PYTHON" -c "import open_webui" 2>/dev/null; then
-    echo -e "${GREEN}[√] Open WebUI 已安装${NC}"
-else
-    echo "  正在安装 Open WebUI（需要几分钟，首次会下载模型）..."
-    echo "  使用国内镜像加速..."
-    "$PYTHON" -m pip install --quiet --disable-pip-version-check \
-        -i https://pypi.tuna.tsinghua.edu.cn/simple \
-        open-webui 2>/dev/null
-    if "$PYTHON" -c "import open_webui" 2>/dev/null; then
-        echo -e "${GREEN}[√] Open WebUI 安装完成${NC}"
-    else
-        echo -e "${YELLOW}[!] Open WebUI 安装失败，聊天功能暂不可用${NC}"
-        echo "  可稍后手动运行: $PYTHON -m pip install open-webui"
         # 跳过启动
         WEBUI_SKIP=1
     fi
