@@ -89,6 +89,8 @@ class LocalEmbeddingFunction:
     def __init__(self, model_name: str = LOCAL_EMBEDDING_MODEL):
         self.model_name = model_name
         self._model = None
+        # 启动时立即尝试加载，失败则抛异常让上层fallback
+        self._get_model()
 
     def _get_model(self):
         if self._model is None:
