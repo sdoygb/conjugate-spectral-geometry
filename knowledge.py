@@ -115,8 +115,13 @@ class VectorKnowledgeBase:
             self.embedding_fn = APIEmbeddingFunction()
             self._embedding_name = f"api({KIMI_EMBEDDING_MODEL})"
         elif EMBEDDING_MODE == 'local':
-            self.embedding_fn = LocalEmbeddingFunction(LOCAL_EMBEDDING_MODEL)
-            self._embedding_name = f"local({LOCAL_EMBEDDING_MODEL})"
+            try:
+                self.embedding_fn = LocalEmbeddingFunction(LOCAL_EMBEDDING_MODEL)
+                self._embedding_name = f"local({LOCAL_EMBEDDING_MODEL})"
+            except Exception as e:
+                logger.warning(f"[EMBEDDING] 本地模型加载失败({e})，回退到ChromaDB默认embedding")
+                self.embedding_fn = None
+                self._embedding_name = "chromadb-default(fallback)"
         else:
             self.embedding_fn = None  # 使用 ChromaDB 默认 embedding
             self._embedding_name = "chromadb-default"
