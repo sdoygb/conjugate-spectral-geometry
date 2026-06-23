@@ -370,6 +370,7 @@ def _finalize_turn(
 def _inline(text):
     """行内Markdown渲染：粗体、斜体、行内代码、链接"""
     import html as _html
+    import re as _re
     text = _html.escape(text)
     text = _re.sub(r'`([^`]+)`', r'<code>\1</code>', text)
     text = _re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
