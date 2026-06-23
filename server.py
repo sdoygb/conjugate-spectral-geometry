@@ -369,8 +369,9 @@ def _finalize_turn(
 
 @app.route('/preview/<path:filename>')
 def preview_article(filename):
-    """文章预览页（Markdown渲染为HTML）"""
+    """文章预览页（Markdown渲染为HTML + KaTeX公式）"""
     import html as _html
+    import markdown as _md
     fpath = os.path.join(UPLOAD_FOLDER, filename)
     if not os.path.exists(fpath):
         # 模糊匹配
@@ -386,53 +387,19 @@ def preview_article(filename):
     # 保护LaTeX公式：先提取，渲染Markdown后再恢复
     import re as _re
     _latex_blocks = []
-    def _protect_latex(m):
+    def _protect(m):
         idx = len(_latex_blocks)
         _latex_blocks.append(m.group(0))
-        return f'\x00LATEX{idx}\x00'
-    # 保护 $$...$$ 和 $...$ 公式
-    content = _re.sub(r'\$\$(.+?)\$\$', _protect_latex, content, flags=_re.DOTALL)
-    content = _re.sub(r'(?<!\$)\$(?!\$)(.+?)(?<!\$)\$(?!\$)', _protect_latex, content)
-    # 简单Markdown渲染（标题、粗体、代码块、列表）
-    lines = content.split('\n')
-    html_body = ""
-    in_code = False
-    in_table = False
-    for line in lines:
-        if line.startswith('```'):
-            in_code = not in_code
-            if in_code:
-                html_body += '<pre style="background:#1a1a1a;padding:12px;border-radius:8px;overflow-x:auto;font-size:13px;border:1px solid #333;">'
-            else:
-                html_body += '</pre>'
-            continue
-        if in_code:
-            html_body += _html.escape(line) + '\n'
-            continue
-        # 标题
-        if line.startswith('######'):
-            html_body += f'<h6>{line[6:].strip()}</h6>'
-        elif line.startswith('#####'):
-            html_body += f'<h5>{line[5:].strip()}</h5>'
-        elif line.startswith('####'):
-            html_body += f'<h4>{line[4:].strip()}</h4>'
-        elif line.startswith('###'):
-            html_body += f'<h3>{line[3:].strip()}</h3>'
-        elif line.startswith('##'):
-            html_body += f'<h2>{line[2:].strip()}</h2>'
-        elif line.startswith('# '):
-            html_body += f'<h1>{line[2:].strip()}</h1>'
-        # 粗体/斜体
-        else:
-            line = _html.escape(line)
-            line = line.replace('**', '<strong>').replace('</strong><strong>', '')
-            count = line.count('<strong>')
-            if count % 2 == 1:
-                line = line.replace('<strong>', '')
-            html_body += line + '<br>'
-    # 恢复LaTeX公式（不转义）
+        return f'LATEXPLACEHOLDER{idx}ENDPLACEHOLDER'
+    # 保护 $$...$$ (行间) 和 $...$ (行内)
+    content = _re.sub(r'\$\$(.+?)\$\$', _protect, content, flags=_re.DOTALL)
+    content = _re.sub(r'(?<!\$)\$(?!\$)(.+?)(?<!\$)\$(?!\$)', _protect, content)
+    # 用markdown库渲染（支持表格、列表、代码块等）
+    html_body = _md.markdown(content, extensions=['tables', 'fenced_code'])
+    # 恢复LaTeX公式
     for i, block in enumerate(_latex_blocks):
-        html_body = html_body.replace(f'\x00LATEX{i}\x00', block)
+        html_body = html_body.replace(f'<p>LATEXPLACEHOLDER{i}ENDPLACEHOLDER</p>', block)
+        html_body = html_body.replace(f'LATEXPLACEHOLDER{i}ENDPLACEHOLDER', block)
     return f'''<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -452,14 +419,17 @@ h4 {{ color: #e1f5fe; }}
 h5,h6 {{ color: #ccc; }}
 strong {{ color: #fff; }}
 pre {{ margin: 10px 0; }}
+code {{ background: #1a1a1a; padding: 2px 6px; border-radius: 4px; font-size: 13px; }}
 a {{ color: #4fc3f7; }}
 .back {{ color: #888; font-size: 14px; margin-bottom: 20px; display: block; }}
+table {{ border-collapse: collapse; width: 100%; margin: 10px 0; }}
+th, td {{ border: 1px solid #333; padding: 8px 12px; text-align: left; }}
+th {{ background: #1a1a1a; color: #4fc3f7; }}
 .katex {{ color: #fff; }}
 </style>
 </head>
 <body>
 <a class="back" href="javascript:history.back()">← 返回</a>
-<h1>{_html.escape(filename)}</h1>
 {html_body}
 </body>
 </html>'''
