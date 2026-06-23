@@ -94,7 +94,12 @@ ARTICLE_TOOLS = [
                     },
                     "limit": {
                         "type": "integer",
-                        "description": "可选，只读取前N个字符（默认0=全部）。大文章建议设5000避免token浪费。",
+                        "description": "可选，读取的字符数（默认0=全部）。大文章建议设5000避免token浪费。",
+                        "default": 0
+                    },
+                    "offset": {
+                        "type": "integer",
+                        "description": "可选，从第N个字符开始读取（默认0=从头开始）。用于查看文章末尾部分，如offset=20000表示从第2万字开始读。",
                         "default": 0
                     }
                 },
@@ -350,6 +355,7 @@ def execute_tool_call(name: str, arguments: Dict[str, Any]) -> str:
         if name == "view_article":
             filename = arguments.get("filename", "")
             limit = arguments.get("limit", 0)
+            offset = arguments.get("offset", 0)
             try:
                 fpath = _safe_path(filename)
             except ValueError as e:
@@ -377,9 +383,14 @@ def execute_tool_call(name: str, arguments: Dict[str, Any]) -> str:
                     return "文章目录不存在"
             with open(fpath, 'r', encoding='utf-8') as f:
                 content = f.read()
+            total = len(content)
+            # 应用offset和limit
+            if offset and offset > 0:
+                content = content[offset:]
             if limit and limit > 0 and len(content) > limit:
-                content = content[:limit] + f"\n...[截断，共{len(content)}字符，已显示前{limit}字符]"
-            return f"文件: {filename} ({len(content)} 字符)\n{content}"
+                content = content[:limit] + f"\n...[截断]"
+            pos_info = f"位置: {offset}-{min(offset + (limit or total), total)}"
+            return f"文件: {filename} (共{total}字符, {pos_info})\n{content}"
 
         elif name == "write_article":
             filename = arguments.get("filename", "")
