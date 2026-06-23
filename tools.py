@@ -54,12 +54,7 @@ def parse_and_execute_tools(text: str) -> Tuple[str, bool]:
         tool_arg = m.group(2) or ""
         tool_arg = tool_arg.strip()
         args = {}
-        if tool_name == "list_articles":
-            if tool_arg:
-                args["pattern"] = tool_arg
-        elif tool_name == "read_article":
-            args["filename"] = tool_arg
-        elif tool_name == "write_article":
+        if tool_name == "write_article":
             # 已在上面处理，这里跳过
             return m.group(0)
         elif tool_name == "personal_read":
@@ -85,44 +80,6 @@ def parse_and_execute_tools(text: str) -> Tuple[str, bool]:
 # ==================== 工具调用：文件读写（OpenAI function calling 备用） ====================
 
 ARTICLE_TOOLS = [
-    {
-        "type": "function",
-        "function": {
-            "name": "list_articles",
-            "description": "列出 articles 目录中的所有文件。支持子目录。默认只列出主目录（不含 archive），可指定 subdir 查看子目录。",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "pattern": {
-                        "type": "string",
-                        "description": "可选的文件名过滤模式，如 '0.3' 或 '氢原子'"
-                    },
-                    "subdir": {
-                        "type": "string",
-                        "description": "子目录名，如 'archive'。不填则只列出主目录文件。"
-                    }
-                },
-                "required": []
-            }
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "read_article",
-            "description": "读取 articles 目录中指定文件的内容。返回文件全文。",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "filename": {
-                        "type": "string",
-                        "description": "文件名，如 '1_氢原子能级_CN_260622.6.md'。先用 list_articles 查看可用文件。"
-                    }
-                },
-                "required": ["filename"]
-            }
-        }
-    },
     {
         "type": "function",
         "function": {
@@ -368,73 +325,7 @@ def _git_push() -> str:
 def execute_tool_call(name: str, arguments: Dict[str, Any]) -> str:
     """执行工具调用并返回结果文本。"""
     try:
-        if name == "list_articles":
-            pattern = arguments.get("pattern", "")
-            subdir = arguments.get("subdir", "")
-            if subdir:
-                list_dir = os.path.join(UPLOAD_FOLDER, subdir)
-            else:
-                list_dir = UPLOAD_FOLDER
-            if not os.path.exists(list_dir):
-                return f"目录 {list_dir} 不存在"
-            # 列出文件（不含子目录）
-            files = sorted([f for f in os.listdir(list_dir) if os.path.isfile(os.path.join(list_dir, f))])
-            if pattern:
-                # 智能匹配：支持 "1号" -> "1_", "一号" -> "1_" 等中文数字映射
-                import re as _re2
-                smart_pattern = pattern
-                smart_pattern = _re2.sub(r'(\d+)号', r'\1_', smart_pattern)
-                smart_pattern = _re2.sub(r'(\d+)号', r'\1_', smart_pattern)
-                # 中文数字映射
-                cn_nums = {'一': '1', '二': '2', '三': '3', '四': '4', '五': '5',
-                           '六': '6', '七': '7', '八': '8', '九': '9', '十': '10'}
-                for cn, num in cn_nums.items():
-                    smart_pattern = smart_pattern.replace(cn + '号', num + '_')
-                files = [f for f in files if pattern in f or smart_pattern in f]
-            if not files:
-                return f"目录中没有匹配 '{pattern}' 的文件（共 {len(sorted(os.listdir(UPLOAD_FOLDER)))} 个文件）"
-            result = f"共 {len(files)} 个文件：\n"
-            for f in files:
-                fpath = os.path.join(UPLOAD_FOLDER, f)
-                size = os.path.getsize(fpath)
-                result += f"  {f} ({size} 字节)\n"
-            return result.strip()
-
-        elif name == "read_article":
-            filename = arguments.get("filename", "")
-            try:
-                fpath = _safe_path(filename)
-            except ValueError as e:
-                return f"错误：{e}"
-            if not os.path.exists(fpath):
-                # 尝试模糊匹配
-                if os.path.exists(UPLOAD_FOLDER):
-                    matches = [f for f in os.listdir(UPLOAD_FOLDER) if filename in f]
-                    if len(matches) == 1:
-                        fpath = os.path.join(UPLOAD_FOLDER, matches[0])
-                    elif len(matches) > 1:
-                        return f"找到多个匹配文件：{matches}，请指定完整文件名"
-                    else:
-                        return f"文件 '{filename}' 不存在于 {UPLOAD_FOLDER}，请先用 list_articles 查看"
-                else:
-                    return f"文章目录 {UPLOAD_FOLDER} 不存在"
-            # 缓存检查
-            cache_key = fpath
-            now = time.time()
-            if cache_key in _read_cache:
-                cached_content, cached_time = _read_cache[cache_key]
-                if now - cached_time < _READ_CACHE_TTL:
-                    return f"文件: {filename} ({len(cached_content)} 字符) [缓存]\n{cached_content}"
-            with open(fpath, 'r', encoding='utf-8') as f:
-                content = f.read()
-            _read_cache[cache_key] = (content, now)
-            # 清理过期缓存
-            expired = [k for k, (_, t) in _read_cache.items() if now - t > _READ_CACHE_TTL]
-            for k in expired:
-                del _read_cache[k]
-            return f"文件: {filename} ({len(content)} 字符)\n{content}"
-
-        elif name == "write_article":
+        if name == "write_article":
             filename = arguments.get("filename", "")
             content = arguments.get("content", "")
             if not filename:
@@ -810,27 +701,7 @@ OPENAPI_SPEC = {
     },
     "servers": [{"url": "http://localhost:5000"}],
     "paths": {
-        "/v1/files": {
-            "get": {
-                "summary": "列出文章目录中的所有文件",
-                "description": "返回 articles 目录中的文件列表，支持关键词搜索",
-                "operationId": "list_articles",
-                "parameters": [
-                    {"name": "pattern", "in": "query", "description": "搜索关键词（如文件名片段）", "required": False, "schema": {"type": "string"}}
-                ],
-                "responses": {"200": {"description": "文件列表"}}
-            }
-        },
         "/v1/files/{filename}": {
-            "get": {
-                "summary": "读取指定文章内容",
-                "description": "读取 articles 目录中的指定文件，支持模糊匹配文件名",
-                "operationId": "read_article",
-                "parameters": [
-                    {"name": "filename", "in": "path", "description": "文件名（如 1_氢原子能级_CN_260622.6.md），支持模糊匹配", "required": True, "schema": {"type": "string"}}
-                ],
-                "responses": {"200": {"description": "文件内容"}}
-            },
             "put": {
                 "summary": "写入或修改文章",
                 "description": "将内容写入 articles 目录中的指定文件，自动更新向量索引",
