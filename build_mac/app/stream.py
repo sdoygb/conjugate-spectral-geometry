@@ -98,6 +98,9 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
             if _content is None:
                 _content = ""
             _clean["content"] = _content
+            # reasoning_content: DeepSeek 思考模式必须传回
+            if "reasoning_content" in msg:
+                _clean["reasoning_content"] = msg["reasoning_content"]
             # tool_calls: 只保留标准字段
             if "tool_calls" in msg:
                 _clean_tcs = []
@@ -138,6 +141,7 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
 
         # 收集流式响应
         collected_content = ""
+        collected_reasoning = ""  # DeepSeek 思考模式
         collected_tool_calls = {}  # {index: {id, type, function: {name, arguments}}}
         finish_reason = None
 
@@ -149,6 +153,10 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
             # 收集文本内容（不立即透传，等确认无 tool_calls 后再透传）
             if delta.content:
                 collected_content += delta.content
+
+            # 收集 reasoning_content（DeepSeek 思考模式）
+            if hasattr(delta, 'reasoning_content') and delta.reasoning_content:
+                collected_reasoning += delta.reasoning_content
 
             # 收集 tool_calls（流式增量）
             if hasattr(delta, 'tool_calls') and delta.tool_calls:
@@ -196,12 +204,15 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
         # 构建 tool_calls 列表
         tool_calls_list = [collected_tool_calls[i] for i in sorted(collected_tool_calls.keys())]
 
-        # 构建 assistant 消息（含 tool_calls）
+        # 构建 assistant 消息（含 tool_calls + reasoning_content）
         assistant_msg = {
             "role": "assistant",
             "content": collected_content or "",
             "tool_calls": tool_calls_list
         }
+        # DeepSeek 思考模式：必须传回 reasoning_content
+        if collected_reasoning:
+            assistant_msg["reasoning_content"] = collected_reasoning
         final_messages.append(assistant_msg)
 
         for tc_info in tool_calls_list:
