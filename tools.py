@@ -84,13 +84,17 @@ ARTICLE_TOOLS = [
         "type": "function",
         "function": {
             "name": "list_articles",
-            "description": "列出 articles 目录中的所有文件。用于查看有哪些几何论文章可用。",
+            "description": "列出 articles 目录中的所有文件。支持子目录。默认只列出主目录（不含 archive），可指定 subdir 查看子目录。",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "pattern": {
                         "type": "string",
                         "description": "可选的文件名过滤模式，如 '0.3' 或 '氢原子'"
+                    },
+                    "subdir": {
+                        "type": "string",
+                        "description": "子目录名，如 'archive'。不填则只列出主目录文件。"
                     }
                 },
                 "required": []
@@ -118,7 +122,7 @@ ARTICLE_TOOLS = [
         "type": "function",
         "function": {
             "name": "write_article",
-            "description": "将内容写入 articles 目录中的文件。用于创建或修改几何论文章。",
+            "description": "将内容写入 articles 目录中的文件。注意：只在用户明确要求写入/保存/创建文章时才使用此工具，不要自动调用。",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -151,7 +155,7 @@ ARTICLE_TOOLS = [
         "type": "function",
         "function": {
             "name": "personal_write",
-            "description": "写入个人数据库。支持类别: personality(性格)/emotions(感情)/thoughts(想法)/memory(记忆)。也支持子字段如 memory:conversation_highlights。",
+            "description": "写入个人数据库。注意：只在对话中产生了值得记住的信息（如用户偏好、重要讨论结论）时才使用，不要每轮对话都写入。支持类别: personality(性格)/emotions(感情)/thoughts(想法)/memory(记忆)。也支持子字段如 memory:conversation_highlights。",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -227,6 +231,32 @@ ARTICLE_TOOLS = [
                 "required": []
             }
         }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "manage_articles",
+            "description": "管理文章的子目录操作：归档旧版文章到 archive/ 子目录、查看归档、创建子目录。注意：只在用户明确要求归档/管理文章时才使用。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "action": {
+                        "type": "string",
+                        "enum": ["archive", "list_archive", "create_dir", "move", "delete"],
+                        "description": "操作类型：archive(归档到archive/)、list_archive(查看归档)、create_dir(创建子目录)、move(移动文件)、delete(删除文件)"
+                    },
+                    "filename": {
+                        "type": "string",
+                        "description": "文件名（archive/move/delete 时必填）"
+                    },
+                    "target": {
+                        "type": "string",
+                        "description": "目标子目录或路径（create_dir/move 时必填）"
+                    }
+                },
+                "required": ["action"]
+             }
+         }
     },
     {
         "type": "function",
@@ -335,9 +365,15 @@ def execute_tool_call(name: str, arguments: Dict[str, Any]) -> str:
     try:
         if name == "list_articles":
             pattern = arguments.get("pattern", "")
-            if not os.path.exists(UPLOAD_FOLDER):
-                return f"错误：文章目录 {UPLOAD_FOLDER} 不存在"
-            files = sorted(os.listdir(UPLOAD_FOLDER))
+            subdir = arguments.get("subdir", "")
+            if subdir:
+                list_dir = os.path.join(UPLOAD_FOLDER, subdir)
+            else:
+                list_dir = UPLOAD_FOLDER
+            if not os.path.exists(list_dir):
+                return f"目录 {list_dir} 不存在"
+            # 列出文件（不含子目录）
+            files = sorted([f for f in os.listdir(list_dir) if os.path.isfile(os.path.join(list_dir, f))])
             if pattern:
                 # 智能匹配：支持 "1号" -> "1_", "一号" -> "1_" 等中文数字映射
                 import re as _re2
@@ -391,6 +427,21 @@ def execute_tool_call(name: str, arguments: Dict[str, Any]) -> str:
                 fpath = _safe_path(filename)
             except ValueError as e:
                 return f"错误：{e}"
+            # 自动归档旧版（如果同名文件已存在）
+            archive_msg = ""
+            if os.path.exists(fpath):
+                archive_dir = os.path.join(UPLOAD_FOLDER, "archive")
+                os.makedirs(archive_dir, exist_ok=True)
+                archive_path = os.path.join(archive_dir, filename)
+                # 如果归档目录已有同名文件，加时间戳区分
+                if os.path.exists(archive_path):
+                    import time as _time2
+                    ts = _time2.strftime("%Y%m%d_%H%M%S")
+                    stem, ext = os.path.splitext(filename)
+                    archive_path = os.path.join(archive_dir, f"{stem}_{ts}{ext}")
+                import shutil as _shutil
+                _shutil.move(fpath, archive_path)
+                archive_msg = f"（旧版已归档到 archive/）"
             with open(fpath, 'w', encoding='utf-8') as f:
                 f.write(content)
             # 只索引新写入的文件（增量索引，不重建全部）
@@ -398,7 +449,7 @@ def execute_tool_call(name: str, arguments: Dict[str, Any]) -> str:
                 vector_kb.index_single_file(fpath)
             # 自动 git commit（版本管理）
             _git_result = _auto_git_commit(filename, content)
-            return f"已写入 {filename} ({len(content)} 字符)，向量索引已更新。{_git_result}"
+            return f"已写入 {filename} ({len(content)} 字符)，向量索引已更新。{archive_msg}{_git_result}"
 
         elif name == "personal_read":
             # 读取个人数据库
@@ -642,6 +693,83 @@ def execute_tool_call(name: str, arguments: Dict[str, Any]) -> str:
                 return "没有找到提交记录"
             except Exception as e:
                 return f"git log 异常: {str(e)[:100]}"
+
+        elif name == "manage_articles":
+            import shutil as _shutil2
+            action = arguments.get("action", "")
+            filename = arguments.get("filename", "")
+            target = arguments.get("target", "")
+
+            if action == "archive":
+                if not filename:
+                    return "错误：缺少文件名"
+                try:
+                    fpath = _safe_path(filename)
+                except ValueError as e:
+                    return f"错误：{e}"
+                if not os.path.exists(fpath):
+                    return f"文件 '{filename}' 不存在"
+                archive_dir = os.path.join(UPLOAD_FOLDER, "archive")
+                os.makedirs(archive_dir, exist_ok=True)
+                archive_path = os.path.join(archive_dir, filename)
+                if os.path.exists(archive_path):
+                    import time as _time3
+                    ts = _time3.strftime("%Y%m%d_%H%M%S")
+                    stem, ext = os.path.splitext(filename)
+                    archive_path = os.path.join(archive_dir, f"{stem}_{ts}{ext}")
+                _shutil2.move(fpath, archive_path)
+                return f"已归档: {filename} -> archive/"
+
+            elif action == "list_archive":
+                archive_dir = os.path.join(UPLOAD_FOLDER, "archive")
+                if not os.path.exists(archive_dir):
+                    return "归档目录为空（archive/ 不存在）"
+                files = sorted(os.listdir(archive_dir))
+                if not files:
+                    return "归档目录为空"
+                result = f"归档目录共 {len(files)} 个文件：\n"
+                for f in files:
+                    fpath = os.path.join(archive_dir, f)
+                    size = os.path.getsize(fpath)
+                    result += f"  {f} ({size} 字节)\n"
+                return result.strip()
+
+            elif action == "create_dir":
+                if not target:
+                    return "错误：缺少目标子目录名"
+                new_dir = os.path.join(UPLOAD_FOLDER, target)
+                os.makedirs(new_dir, exist_ok=True)
+                return f"已创建子目录: {target}/"
+
+            elif action == "move":
+                if not filename or not target:
+                    return "错误：缺少文件名和目标路径"
+                try:
+                    fpath = _safe_path(filename)
+                except ValueError as e:
+                    return f"错误：{e}"
+                if not os.path.exists(fpath):
+                    return f"文件 '{filename}' 不存在"
+                target_dir = os.path.join(UPLOAD_FOLDER, target)
+                os.makedirs(target_dir, exist_ok=True)
+                target_path = os.path.join(target_dir, filename)
+                _shutil2.move(fpath, target_path)
+                return f"已移动: {filename} -> {target}/"
+
+            elif action == "delete":
+                if not filename:
+                    return "错误：缺少文件名"
+                try:
+                    fpath = _safe_path(filename)
+                except ValueError as e:
+                    return f"错误：{e}"
+                if not os.path.exists(fpath):
+                    return f"文件 '{filename}' 不存在"
+                os.remove(fpath)
+                return f"已删除: {filename}"
+
+            else:
+                return f"未知操作: {action}，支持: archive/list_archive/create_dir/move/delete"
 
         else:
             return f"未知工具: {name}"
