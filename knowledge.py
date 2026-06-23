@@ -71,13 +71,15 @@ class SiliconFlowEmbeddingFunction:
 
     def __call__(self, input: Documents) -> Embeddings:
         all_embeddings = []
-        for i in range(0, len(input), 32):
-            batch = input[i:i + 32]
+        # SiliconFlow bge-large-zh-v1.5 最大512 token，截断到约800字符安全
+        truncated = [t[:800] if len(t) > 800 else t for t in input]
+        for i in range(0, len(truncated), 16):
+            batch = truncated[i:i + 16]
             try:
                 resp = self.client.embeddings.create(model=self.model, input=batch)
                 all_embeddings.extend([d.embedding for d in resp.data])
             except Exception as e:
-                logger.error(f"[EMBEDDING-SF] embedding 批次 {i//32} 失败: {e}")
+                logger.error(f"[EMBEDDING-SF] embedding 批次 {i//16} 失败: {e}")
                 for _ in batch:
                     all_embeddings.append([0.0] * self._dim)
         return all_embeddings
