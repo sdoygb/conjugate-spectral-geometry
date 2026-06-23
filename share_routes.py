@@ -15,20 +15,32 @@ share_bp = Blueprint('share', __name__)
 # MySQL 配置（从环境变量或默认值）
 MYSQL_HOST = os.getenv('MYSQL_HOST', 'sd517.cc')
 MYSQL_PORT = int(os.getenv('MYSQL_PORT', '3306'))
-MYSQL_USER = os.getenv('MYSQL_USER', 'geometric_AI')
-MYSQL_PASS = os.getenv('MYSQL_PASS', 'JcMJbG3SrjZtdk4A')
 MYSQL_DB = os.getenv('MYSQL_DB', 'geometric_ai')
 
+# 公开接口用的只写用户（SELECT + INSERT）
+MYSQL_PUBLIC_USER = os.getenv('MYSQL_PUBLIC_USER', 'share_writer')
+MYSQL_PUBLIC_PASS = os.getenv('MYSQL_PUBLIC_PASS', 'Share2026!OnlyWrite')
 
-def _get_conn():
+# 管理接口用的管理员用户
+MYSQL_ADMIN_USER = os.getenv('MYSQL_ADMIN_USER', 'geometric_AI')
+MYSQL_ADMIN_PASS = os.getenv('MYSQL_ADMIN_PASS', 'JcMJbG3SrjZtdk4A')
+
+
+def _get_conn(user=None, password=None):
     """获取 MySQL 连接"""
     import pymysql
     return pymysql.connect(
         host=MYSQL_HOST, port=MYSQL_PORT,
-        user=MYSQL_USER, password=MYSQL_PASS,
+        user=user or MYSQL_ADMIN_USER,
+        password=password or MYSQL_ADMIN_PASS,
         database=MYSQL_DB, charset='utf8mb4',
         cursorclass=pymysql.cursors.DictCursor
     )
+
+
+def _get_public_conn():
+    """获取公开接口连接（只写用户）"""
+    return _get_conn(MYSQL_PUBLIC_USER, MYSQL_PUBLIC_PASS)
 
 
 # ==================== 分享展示页 ====================
@@ -56,7 +68,7 @@ def api_share_list():
         category = request.args.get('category', '')
         keyword = request.args.get('keyword', '')
 
-        conn = _get_conn()
+        conn = _get_public_conn()
         cur = conn.cursor()
 
         where = "WHERE status='approved'"
@@ -96,18 +108,24 @@ def api_share_list():
 def api_share_detail(share_id):
     """获取成果详情（公开）"""
     try:
-        conn = _get_conn()
+        conn = _get_public_conn()
         cur = conn.cursor()
         cur.execute("SELECT * FROM shares WHERE id=%s AND status='approved'", (share_id,))
         item = cur.fetchone()
         if not item:
             conn.close()
             return jsonify({"success": False, "error": "不存在或未通过审批"}), 404
-
-        # 增加浏览量
-        cur.execute("UPDATE shares SET views=views+1 WHERE id=%s", (share_id,))
-        conn.commit()
         conn.close()
+
+        # 增加浏览量（用管理员连接）
+        try:
+            conn2 = _get_conn()
+            cur2 = conn2.cursor()
+            cur2.execute("UPDATE shares SET views=views+1 WHERE id=%s", (share_id,))
+            conn2.commit()
+            conn2.close()
+        except Exception:
+            pass
 
         item['created_at'] = item['created_at'].strftime('%Y-%m-%d %H:%M') if item['created_at'] else ''
         item['content'] = item['content'] or ''
@@ -133,7 +151,7 @@ def api_share_submit():
         if len(title) > 200:
             return jsonify({"success": False, "error": "标题不能超过200字"}), 400
 
-        conn = _get_conn()
+        conn = _get_public_conn()
         cur = conn.cursor()
         cur.execute(
             "INSERT INTO shares (title, content, author, category) VALUES (%s, %s, %s, %s)",
