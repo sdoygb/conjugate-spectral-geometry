@@ -87,10 +87,44 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
     yield _sse_chunk({"role": "assistant", "content": ""})
 
     for _round in range(max_tool_rounds):
-        # 每轮调用前彻底清洗消息：确保没有 reasoning_content（DeepSeek 兼容）
+        # 每轮调用前彻底清洗消息（DeepSeek 兼容）
+        # 策略：JSON 序列化/反序列化，只保留 OpenAI 标准字段
+        _clean_msgs = []
         for msg in final_messages:
-            if "reasoning_content" in msg:
-                del msg["reasoning_content"]
+            _clean = {}
+            _clean["role"] = msg.get("role", "user")
+            # content: 确保不为 null
+            _content = msg.get("content", "")
+            if _content is None:
+                _content = ""
+            _clean["content"] = _content
+            # tool_calls: 只保留标准字段
+            if "tool_calls" in msg:
+                _clean_tcs = []
+                for tc in msg["tool_calls"]:
+                    _tc = {"type": tc.get("type", "function")}
+                    if "id" in tc:
+                        _tc["id"] = tc["id"]
+                    if "function" in tc:
+                        _fn = {}
+                        if "name" in tc["function"]:
+                            _fn["name"] = tc["function"]["name"]
+                        if "arguments" in tc["function"]:
+                            _fn["arguments"] = tc["function"]["arguments"]
+                        _tc["function"] = _fn
+                    _clean_tcs.append(_tc)
+                _clean["tool_calls"] = _clean_tcs
+            # tool 消息
+            if msg.get("role") == "tool":
+                if "tool_call_id" in msg:
+                    _clean["tool_call_id"] = msg["tool_call_id"]
+            # name 字段（可选）
+            if "name" in msg:
+                _clean["name"] = msg["name"]
+            _clean_msgs.append(_clean)
+        # 替换 final_messages（通过 api_params 的引用）
+        final_messages.clear()
+        final_messages.extend(_clean_msgs)
 
         # 第一轮用流式调用，逐 token 透传（创建副本避免修改原始参数）
         round_params = {**api_params, "stream": True}
