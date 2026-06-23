@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 share_bp = Blueprint('share', __name__)
 
 # MySQL 配置（从环境变量或默认值）
-MYSQL_HOST = os.getenv('MYSQL_HOST', '192.168.1.88')
+MYSQL_HOST = os.getenv('MYSQL_HOST', 'www.sd517.cc')
 MYSQL_PORT = int(os.getenv('MYSQL_PORT', '3306'))
 MYSQL_DB = os.getenv('MYSQL_DB', 'geometric_ai')
 
