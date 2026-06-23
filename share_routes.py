@@ -13,7 +13,6 @@ logger = logging.getLogger(__name__)
 share_bp = Blueprint('share', __name__)
 
 # MySQL 配置（从环境变量或默认值）
-MYSQL_HOST = os.getenv('MYSQL_HOST', 'www.sd517.cc')
 MYSQL_PORT = int(os.getenv('MYSQL_PORT', '3306'))
 MYSQL_DB = os.getenv('MYSQL_DB', 'geometric_ai')
 
@@ -24,6 +23,25 @@ MYSQL_PUBLIC_PASS = os.getenv('MYSQL_PUBLIC_PASS', 'Share2026!OnlyWrite')
 # 管理接口用的管理员用户
 MYSQL_ADMIN_USER = os.getenv('MYSQL_ADMIN_USER', 'geometric_AI')
 MYSQL_ADMIN_PASS = os.getenv('MYSQL_ADMIN_PASS', 'JcMJbG3SrjZtdk4A')
+
+# 自动选择 MySQL 地址：内网优先，公网备选
+_MYSQL_HOST_OVERRIDE = os.getenv('MYSQL_HOST', '')  # 环境变量可强制指定
+
+def _detect_mysql_host():
+    """自动检测 MySQL 地址：内网优先"""
+    if _MYSQL_HOST_OVERRIDE:
+        return _MYSQL_HOST_OVERRIDE
+    import socket
+    for host in ['192.168.1.88', 'www.sd517.cc']:
+        try:
+            sock = socket.create_connection((host, MYSQL_PORT), timeout=2)
+            sock.close()
+            return host
+        except Exception:
+            continue
+    return 'www.sd517.cc'  # 默认公网
+
+MYSQL_HOST = _detect_mysql_host()
 
 
 def _get_conn(user=None, password=None):
