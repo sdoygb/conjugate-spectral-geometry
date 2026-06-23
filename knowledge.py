@@ -71,17 +71,26 @@ class SiliconFlowEmbeddingFunction:
 
     def __call__(self, input: Documents) -> Embeddings:
         all_embeddings = []
-        # SiliconFlow bge-large-zh-v1.5 最大512 token，截断到约800字符安全
-        truncated = [t[:800] if len(t) > 800 else t for t in input]
-        for i in range(0, len(truncated), 16):
-            batch = truncated[i:i + 16]
+        # 清理文本：去除null字节和特殊字符
+        cleaned = []
+        for t in input:
+            t = t.replace('\x00', '').replace('\r', '')
+            import re as _re
+            t = _re.sub(r'\s+', ' ', t).strip()
+            if len(t) > 500:
+                t = t[:500]
+            cleaned.append(t)
+        # 逐条发送（最稳定，避免批次中某条有问题导致整批失败）
+        for i, text in enumerate(cleaned):
+            if not text:
+                all_embeddings.append([0.0] * self._dim)
+                continue
             try:
-                resp = self.client.embeddings.create(model=self.model, input=batch)
+                resp = self.client.embeddings.create(model=self.model, input=[text])
                 all_embeddings.extend([d.embedding for d in resp.data])
             except Exception as e:
-                logger.error(f"[EMBEDDING-SF] embedding 批次 {i//16} 失败: {e}")
-                for _ in batch:
-                    all_embeddings.append([0.0] * self._dim)
+                logger.warning(f"[EMBEDDING-SF] 第{i}条失败(len={len(text)}): {e}")
+                all_embeddings.append([0.0] * self._dim)
         return all_embeddings
 
 
