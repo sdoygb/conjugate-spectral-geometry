@@ -635,7 +635,6 @@
             <button class="navbar-tab" data-panel="knowledge">知识库</button>
             <button class="navbar-tab" data-panel="files">文章管理</button>
             <button class="navbar-tab" data-panel="teach">教学系统</button>
-            <button class="navbar-tab" data-panel="share">成果分享</button>
             <button class="navbar-tab" data-panel="logs">日志</button>
         </div>
     </nav>
@@ -912,50 +911,7 @@
             </div>
         </div>
 
-        <!-- ==================== 成果分享面板 ==================== -->
-        <div class="panel" id="panel-share">
-            <div class="panel-title">成果分享</div>
 
-            <div class="card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                    <div class="card-title" style="margin-bottom: 0;">
-                        分享统计 <span id="shareStats" class="badge">0</span>
-                        <span id="mysqlStatus" style="font-size:12px;margin-left:8px;color:#888;">检测中...</span>
-                    </div>
-                    <div style="display: flex; gap: 8px;">
-                        <button class="btn btn-primary btn-sm" onclick="loadShareStats()">刷新</button>
-                        <a href="/share" target="_blank" class="btn btn-secondary btn-sm">打开分享页</a>
-                    </div>
-                </div>
-                <div id="shareStatsDetail" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:15px;"></div>
-                <div id="pendingList"></div>
-            </div>
-
-            <!-- 审批详情弹窗 -->
-            <div id="shareDetailModal" class="modal" style="display:none;">
-                <div class="modal-overlay" onclick="closeShareDetail()"></div>
-                <div class="modal-content" style="max-width: 700px;">
-                    <div class="modal-header">
-                        <h3 id="shareDetailTitle">审批详情</h3>
-                        <span class="modal-close" onclick="closeShareDetail()">&times;</span>
-                    </div>
-                    <div class="modal-body">
-                        <div style="margin-bottom: 12px; font-size: 13px; color: #aaa;">
-                            <span id="shareDetailMeta"></span>
-                        </div>
-                        <div id="shareDetailContent" style="background: #111; border: 1px solid #333; border-radius: 8px; padding: 15px; max-height: 400px; overflow-y: auto; white-space: pre-wrap; font-size: 14px; line-height: 1.6;"></div>
-                        <div style="margin-top: 12px;">
-                            <label style="font-size: 13px; color: #aaa;">拒绝原因（可选）</label>
-                            <input type="text" id="rejectReason" style="width: 100%; padding: 8px 12px; background: #1a1a1a; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 13px; margin-top: 4px;">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-danger" onclick="rejectShare()">拒绝</button>
-                        <button class="btn btn-primary" onclick="approveShare()">通过</button>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- ==================== 日志面板 ==================== -->
         <div class="panel" id="panel-logs">
@@ -1725,103 +1681,10 @@
             }
         });
 
-        /* ==================== 成果分享面板 ==================== */
-
-        var _currentShareId = null;
-
-        function loadShareStats() {
-            apiRequest('/api/admin/share/stats').then(function(data) {
-                if (!data.success) {
-                    document.getElementById('mysqlStatus').innerHTML = '<span style="color:#ef5350;">MySQL连接失败</span>';
-                    return;
-                }
-                document.getElementById('mysqlStatus').innerHTML = '<span style="color:#66bb6a;">MySQL已连接</span>';
-                var s = data.stats;
-                document.getElementById('shareStats').textContent = s.total;
-                document.getElementById('shareStatsDetail').innerHTML =
-                    '<div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:12px;text-align:center;"><div style="font-size:24px;color:#4fc3f7;font-weight:bold;">' + s.total + '</div><div style="font-size:12px;color:#888;">总提交</div></div>' +
-                    '<div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:12px;text-align:center;"><div style="font-size:24px;color:#ffa726;font-weight:bold;">' + s.pending + '</div><div style="font-size:12px;color:#888;">待审批</div></div>' +
-                    '<div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:12px;text-align:center;"><div style="font-size:24px;color:#66bb6a;font-weight:bold;">' + s.approved + '</div><div style="font-size:12px;color:#888;">已通过</div></div>' +
-                    '<div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:12px;text-align:center;"><div style="font-size:24px;color:#ef5350;font-weight:bold;">' + s.rejected + '</div><div style="font-size:12px;color:#888;">已拒绝</div></div>';
-            });
-            // 同时加载待审批列表
-            loadPendingShares();
-        }
-
-        function loadPendingShares() {
-            apiRequest('/api/admin/share/pending').then(function(data) {
-                if (!data.success) return showToast(data.error, 'error');
-                document.getElementById('pendingCount') && (document.getElementById('pendingCount').textContent = data.items.length);
-                var html = '';
-                if (data.items.length === 0) {
-                    html = '<div style="text-align:center;color:#666;padding:30px;">暂无待审批成果</div>';
-                } else {
-                    data.items.forEach(function(item) {
-                        html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;border:1px solid #2a2a2a;border-radius:8px;margin-bottom:8px;cursor:pointer;" onclick="viewShareDetail(' + item.id + ')">';
-                        html += '<div><strong style="color:#fff;">' + escHtml(item.title) + '</strong>';
-                        html += '<div style="font-size:12px;color:#888;margin-top:4px;">' + escHtml(item.author) + ' · ' + item.category + ' · ' + item.created_at + '</div></div>';
-                        html += '<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();viewShareDetail(' + item.id + ')">审批</button>';
-                        html += '</div>';
-                    });
-                }
-                document.getElementById('pendingList').innerHTML = html;
-            });
-        }
-
-        function viewShareDetail(id) {
-            _currentShareId = id;
-            apiRequest('/api/admin/share/' + id + '/detail').then(function(data) {
-                if (!data.success) return showToast(data.error, 'error');
-                var item = data.item;
-                document.getElementById('shareDetailTitle').textContent = item.title;
-                document.getElementById('shareDetailMeta').textContent = '作者: ' + item.author + ' | 分类: ' + item.category + ' | 提交时间: ' + item.created_at;
-                document.getElementById('shareDetailContent').textContent = item.content || '';
-                document.getElementById('rejectReason').value = '';
-                document.getElementById('shareDetailModal').style.display = 'flex';
-            });
-        }
-
-        function closeShareDetail() {
-            document.getElementById('shareDetailModal').style.display = 'none';
-            _currentShareId = null;
-        }
-
-        function approveShare() {
-            if (!_currentShareId) return;
-            apiRequest('/api/admin/share/' + _currentShareId + '/approve', { method: 'POST' }).then(function(data) {
-                if (data.success) {
-                    showToast('已通过审批', 'success');
-                    closeShareDetail();
-                    loadPendingShares();
-                } else {
-                    showToast(data.error, 'error');
-                }
-            });
-        }
-
-        function rejectShare() {
-            if (!_currentShareId) return;
-            var reason = document.getElementById('rejectReason').value;
-            apiRequest('/api/admin/share/' + _currentShareId + '/reject', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ reason: reason })
-            }).then(function(data) {
-                if (data.success) {
-                    showToast('已拒绝', 'info');
-                    closeShareDetail();
-                    loadPendingShares();
-                } else {
-                    showToast(data.error, 'error');
-                }
-            });
-        }
-
         /* ==================== 页面初始化 ==================== */
 
         // 页面加载时刷新服务状态
         refreshHealth();
-        loadShareStats();
     </script>
 </body>
 </html>
