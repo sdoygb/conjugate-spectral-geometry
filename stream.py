@@ -87,8 +87,8 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
     yield _sse_chunk({"role": "assistant", "content": ""})
 
     for _round in range(max_tool_rounds):
-        # 每轮调用前清洗消息（DeepSeek 兼容）
-        # 策略：只保留 OpenAI 标准字段 + reasoning_content（DeepSeek 要求回传）
+        # 每轮调用前彻底清洗消息（DeepSeek 兼容）
+        # 策略：JSON 序列化/反序列化，只保留 OpenAI 标准字段
         _clean_msgs = []
         for msg in final_messages:
             _clean = {}
@@ -98,9 +98,6 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
             if _content is None:
                 _content = ""
             _clean["content"] = _content
-            # DeepSeek Pro: assistant 消息必须带 reasoning_content
-            if msg.get("role") == "assistant":
-                _clean["reasoning_content"] = msg.get("reasoning_content", "")
             # tool_calls: 只保留标准字段
             if "tool_calls" in msg:
                 _clean_tcs = []
@@ -141,7 +138,6 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
 
         # 收集流式响应，同时逐 token 透传
         collected_content = ""
-        collected_reasoning = ""  # DeepSeek Pro 思考内容
         collected_tool_calls = {}  # {index: {id, type, function: {name, arguments}}}
         finish_reason = None
 
@@ -149,10 +145,6 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
             if not chunk.choices:
                 continue
             delta = chunk.choices[0].delta
-
-            # 收集 reasoning_content（DeepSeek Pro 思考模式）
-            if hasattr(delta, 'reasoning_content') and delta.reasoning_content:
-                collected_reasoning += delta.reasoning_content
 
             # 逐 token 透传文本内容
             if delta.content:
@@ -218,15 +210,12 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
         tool_calls_list = [collected_tool_calls[i] for i in sorted(collected_tool_calls.keys())]
         logger.info(f"[TOOL] 第{_round+1}轮: 检测到 {len(tool_calls_list)} 个工具调用")
 
-        # 构建 assistant 消息（含 tool_calls 和 reasoning_content）
+        # 构建 assistant 消息（含 tool_calls）
         assistant_msg = {
             "role": "assistant",
             "content": collected_content or "",
             "tool_calls": tool_calls_list
         }
-        # DeepSeek Pro: 如果有思考内容，必须回传
-        if collected_reasoning:
-            assistant_msg["reasoning_content"] = collected_reasoning
         final_messages.append(assistant_msg)
 
         for tc_info in tool_calls_list:
