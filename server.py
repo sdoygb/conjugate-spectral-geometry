@@ -21,13 +21,13 @@ from werkzeug.utils import secure_filename
 
 from config import (logger, KIMI_API_KEY, KIMI_BASE_URL, KIMI_MODEL, KIMI_MODEL_LITE, KIMI_MODEL_VISION,
                     KIMI_EMBEDDING_MODEL, UPLOAD_FOLDER, OPENWEBUI_UPLOAD_DIR, OPENWEBUI_DB_PATH,
-from version import VERSION, BUILD_DATE
                     MAX_INJECT_CHARS, QUALITY_GATE_ENABLED, MAX_QUALITY_RETRIES,
                     _injected_files, _injected_files_lock, openai_error,
                     CHROMA_DB_DIR, CHROMADB_AVAILABLE, EMBEDDING_MODE, LOCAL_EMBEDDING_MODEL,
                     CHUNK_SIZE, CHUNK_OVERLAP, MAX_CHUNKS_PER_QUERY, PERSONAL_DB_PATH,
                     LEARN_COHERENCE_THRESHOLD, LEARN_MIN_LENGTH, GEOMETRY_CONSTANTS,
                     EXTRA_MODELS)
+from version import VERSION, BUILD_DATE
 from knowledge import VectorKnowledgeBase, APIEmbeddingFunction, LocalEmbeddingFunction
 from models import (personal_db, _save_personal_db, _get_personal_db_summary, LivingInfoField,
                     compute_geo_density, extract_key_propositions, find_file_by_reference,
