@@ -1,9 +1,8 @@
 @echo off
-chcp 65001 >nul
 cd /d "%~dp0app"
-echo æ­£åœ¨å¯åŠ¨ Geometry AI Server...
-echo ç®¡ç†ç•Œé¢: http://localhost:5000/admin
-echo æŒ‰ Ctrl+C åœæ­¢
+echo ÕıÔÚÆô¶¯ Geometry AI Server...
+echo ¹ÜÀí½çÃæ: http://localhost:5000/admin
+echo °´ Ctrl+C Í£Ö¹
 echo.
 "%~dp0python\python.exe" server.py
 pause
