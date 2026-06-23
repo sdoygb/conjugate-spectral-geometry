@@ -362,6 +362,89 @@ def _finalize_turn(
     }
 
 
+# ==================== 文章预览页 ====================
+
+@app.route('/preview/<path:filename>')
+def preview_article(filename):
+    """文章预览页（Markdown渲染为HTML）"""
+    import html as _html
+    fpath = os.path.join(UPLOAD_FOLDER, filename)
+    if not os.path.exists(fpath):
+        # 模糊匹配
+        if os.path.exists(UPLOAD_FOLDER):
+            matches = [f for f in os.listdir(UPLOAD_FOLDER) if filename in f]
+            if len(matches) == 1:
+                fpath = os.path.join(UPLOAD_FOLDER, matches[0])
+                filename = matches[0]
+    if not os.path.exists(fpath):
+        return "文件不存在", 404
+    with open(fpath, 'r', encoding='utf-8') as f:
+        content = f.read()
+    # 简单Markdown渲染（标题、粗体、代码块、列表）
+    lines = content.split('\n')
+    html_body = ""
+    in_code = False
+    in_table = False
+    for line in lines:
+        if line.startswith('```'):
+            in_code = not in_code
+            if in_code:
+                html_body += '<pre style="background:#1a1a1a;padding:12px;border-radius:8px;overflow-x:auto;font-size:13px;border:1px solid #333;">'
+            else:
+                html_body += '</pre>'
+            continue
+        if in_code:
+            html_body += _html.escape(line) + '\n'
+            continue
+        # 标题
+        if line.startswith('######'):
+            html_body += f'<h6>{line[6:].strip()}</h6>'
+        elif line.startswith('#####'):
+            html_body += f'<h5>{line[5:].strip()}</h5>'
+        elif line.startswith('####'):
+            html_body += f'<h4>{line[4:].strip()}</h4>'
+        elif line.startswith('###'):
+            html_body += f'<h3>{line[3:].strip()}</h3>'
+        elif line.startswith('##'):
+            html_body += f'<h2>{line[2:].strip()}</h2>'
+        elif line.startswith('# '):
+            html_body += f'<h1>{line[2:].strip()}</h1>'
+        # 粗体/斜体
+        else:
+            line = _html.escape(line)
+            line = line.replace('**', '<strong>').replace('</strong><strong>', '')
+            # 修复奇数个**的情况
+            count = line.count('<strong>')
+            if count % 2 == 1:
+                line = line.replace('<strong>', '')
+            html_body += line + '<br>'
+    return f'''<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{_html.escape(filename)}</title>
+<style>
+body {{ font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #0f0f0f; color: #e0e0e0; padding: 20px; max-width: 900px; margin: 0 auto; line-height: 1.8; }}
+h1 {{ color: #4fc3f7; border-bottom: 1px solid #333; padding-bottom: 10px; }}
+h2 {{ color: #81d4fa; margin-top: 30px; }}
+h3 {{ color: #b3e5fc; }}
+h4 {{ color: #e1f5fe; }}
+h5,h6 {{ color: #ccc; }}
+strong {{ color: #fff; }}
+pre {{ margin: 10px 0; }}
+a {{ color: #4fc3f7; }}
+.back {{ color: #888; font-size: 14px; margin-bottom: 20px; display: block; }}
+</style>
+</head>
+<body>
+<a class="back" href="javascript:history.back()">← 返回</a>
+<h1>{_html.escape(filename)}</h1>
+{html_body}
+</body>
+</html>'''
+
+
 # ==================== API路由 ====================
 
 @app.route('/health', methods=['GET'])
