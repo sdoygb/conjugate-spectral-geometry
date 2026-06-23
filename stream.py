@@ -136,7 +136,7 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
             yield "data: [DONE]\n\n"
             return
 
-        # 收集流式响应，同时逐 token 透传
+        # 收集流式响应
         collected_content = ""
         collected_tool_calls = {}  # {index: {id, type, function: {name, arguments}}}
         finish_reason = None
@@ -146,12 +146,11 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                 continue
             delta = chunk.choices[0].delta
 
-            # 逐 token 透传文本内容
+            # 收集文本内容（不立即透传，等确认无 tool_calls 后再透传）
             if delta.content:
                 collected_content += delta.content
-                yield _sse_chunk({"content": delta.content})
 
-            # 收集并透传 tool_calls（流式增量）
+            # 收集 tool_calls（流式增量）
             if hasattr(delta, 'tool_calls') and delta.tool_calls:
                 for tc_delta in delta.tool_calls:
                     idx = tc_delta.index
@@ -168,20 +167,6 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                             collected_tool_calls[idx]["function"]["name"] += tc_delta.function.name
                         if tc_delta.function.arguments:
                             collected_tool_calls[idx]["function"]["arguments"] += tc_delta.function.arguments
-                    # 透传 tool_calls 增量给客户端
-                    tc_delta_dict = {
-                        "index": idx,
-                        "type": "function",
-                    }
-                    if tc_delta.id:
-                        tc_delta_dict["id"] = tc_delta.id
-                    if tc_delta.function:
-                        tc_delta_dict["function"] = {}
-                        if tc_delta.function.name:
-                            tc_delta_dict["function"]["name"] = tc_delta.function.name
-                        if tc_delta.function.arguments:
-                            tc_delta_dict["function"]["arguments"] = tc_delta.function.arguments
-                    yield _sse_chunk({"tool_calls": [tc_delta_dict]})
 
             # 收集 finish_reason
             cfr = getattr(chunk.choices[0], 'finish_reason', None)
@@ -198,17 +183,18 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
 
         # 判断是否有 tool_calls
         if not collected_tool_calls:
-            # 纯文本回复，流式已透传完毕，发送结束
+            # 纯文本回复，现在一次性透传所有内容
+            if collected_content:
+                yield _sse_chunk({"content": collected_content})
             yield _sse_chunk({}, finish_reason or "stop", usage=_usage_info if _usage_info else None)
             yield "data: [DONE]\n\n"
             return
 
-        # 有 tool_calls，发送 finish_reason: tool_calls（附带 usage）
-        yield _sse_chunk({}, "tool_calls", usage=_usage_info if _usage_info else None)
+        # 有 tool_calls，不透传文本（工具调用过程对用户透明）
+        logger.info(f"[TOOL] 第{_round+1}轮: 检测到 {len(collected_tool_calls)} 个工具调用，文本不透传")
 
-        # 有 tool_calls，执行并追加结果
+        # 构建 tool_calls 列表
         tool_calls_list = [collected_tool_calls[i] for i in sorted(collected_tool_calls.keys())]
-        logger.info(f"[TOOL] 第{_round+1}轮: 检测到 {len(tool_calls_list)} 个工具调用")
 
         # 构建 assistant 消息（含 tool_calls）
         assistant_msg = {
