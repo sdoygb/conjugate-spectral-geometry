@@ -1191,20 +1191,14 @@ def chat_completions():
     api_params = {"model": _selected_model, "messages": final_messages, "tools": ARTICLE_TOOLS}
 
     # DeepSeek 兼容：处理 reasoning_content
-    # 策略：将 reasoning_content 合并到 content 中，然后删除该字段
-    # 这样既不会触发"必须回传"的错误，也不会丢失思考内容
+    # 策略：保留 reasoning_content（DeepSeek Pro 有 tool call 时要求回传）
+    # 如果 Open WebUI 发来的 assistant 消息没有 reasoning_content，补空字符串
     for msg in final_messages:
-        if msg.get("role") == "assistant" and "reasoning_content" in msg:
-            rc = msg.get("reasoning_content", "")
-            if rc and str(rc).strip():
-                # 将思考内容作为引用合并到 content 前面
-                original = msg.get("content", "")
-                if original and str(original).strip():
-                    msg["content"] = f"[思考过程]\n{rc}\n[/思考过程]\n\n{original}"
-                else:
-                    msg["content"] = f"[思考过程]\n{rc}\n[/思考过程]"
-            # 无论是否有效，都删除 reasoning_content 字段
-            del msg["reasoning_content"]
+        if msg.get("role") == "assistant":
+            if "reasoning_content" not in msg:
+                msg["reasoning_content"] = ""
+            elif msg["reasoning_content"] is None:
+                msg["reasoning_content"] = ""
 
     # 诊断：打印每条消息的结构（用于排查 DeepSeek 格式问题）
     for i, msg in enumerate(final_messages):

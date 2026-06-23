@@ -273,7 +273,7 @@ def _find_git_repo():
     global _GIT_REPO_DIR
     if _GIT_REPO_DIR:
         return _GIT_REPO_DIR
-    # 从 UPLOAD_FOLDER 向上查找 .git 目录
+    # 策略1: 从 UPLOAD_FOLDER 向上查找 .git 目录
     d = os.path.abspath(UPLOAD_FOLDER)
     for _ in range(10):
         if os.path.exists(os.path.join(d, '.git')):
@@ -283,26 +283,54 @@ def _find_git_repo():
         if parent == d:
             break
         d = parent
+    # 策略2: 检查 GEOMETRY_AI_GIT_REPO 环境变量
+    env_repo = os.getenv('GEOMETRY_AI_GIT_REPO', '')
+    if env_repo and os.path.exists(os.path.join(env_repo, '.git')):
+        _GIT_REPO_DIR = env_repo
+        return env_repo
+    # 策略3: 检查常见的工作目录路径
+    import glob
+    for pattern in [
+        os.path.expanduser('~/Library/Application Support/TRAE SOLO CN/ModularData/ai-agent/work-mode-projects/*/articles'),
+    ]:
+        for articles_dir in glob.glob(pattern):
+            repo = os.path.dirname(articles_dir)
+            if os.path.exists(os.path.join(repo, '.git')):
+                _GIT_REPO_DIR = repo
+                return repo
     _GIT_REPO_DIR = None
     return None
 
 
 def _auto_git_commit(filename: str, content: str) -> str:
-    """write_article 后自动 git add + commit"""
+    """write_article 后自动同步到 Git 仓库并 commit"""
     repo = _find_git_repo()
     if not repo:
         return ""
     try:
-        import subprocess as _sp
-        rel = os.path.relpath(os.path.join(UPLOAD_FOLDER, filename), repo)
-        _sp.run(["git", "-C", repo, "add", rel], capture_output=True, timeout=10)
+        import subprocess as _sp, shutil
+        upload_abs = os.path.abspath(UPLOAD_FOLDER)
+        repo_abs = os.path.abspath(repo)
+        repo_articles = os.path.join(repo_abs, 'articles')
+
+        # 如果 UPLOAD_FOLDER 不在 repo 内，先同步文件到 repo/articles/
+        if not upload_abs.startswith(repo_abs):
+            if os.path.exists(repo_articles):
+                dst = os.path.join(repo_articles, filename)
+                shutil.copy2(os.path.join(upload_abs, filename), dst)
+                rel = os.path.relpath(dst, repo_abs)
+            else:
+                return ""
+        else:
+            rel = os.path.relpath(os.path.join(upload_abs, filename), repo_abs)
+
+        _sp.run(["git", "-C", repo_abs, "add", rel], capture_output=True, timeout=10)
         # 生成 commit message
         line_count = content.count('\n') + 1
-        msg = f"AI修改: {filename} ({line_count}行)"
-        r = _sp.run(["git", "-C", repo, "commit", "-m", msg], capture_output=True, timeout=10)
+        msg = f"守一修改: {filename} ({line_count}行)"
+        r = _sp.run(["git", "-C", repo_abs, "commit", "-m", msg], capture_output=True, timeout=10)
         if r.returncode == 0:
-            # 提取短 commit hash
-            r2 = _sp.run(["git", "-C", repo, "log", "--oneline", "-1"], capture_output=True, timeout=10)
+            r2 = _sp.run(["git", "-C", repo_abs, "log", "--oneline", "-1"], capture_output=True, timeout=10)
             short_hash = r2.stdout.decode().strip().split()[0] if r2.returncode == 0 else ""
             return f"已自动提交: {short_hash}"
         else:
