@@ -53,17 +53,17 @@ if [ -f "$PYTHON_DIR/bin/python3" ]; then
 else
     # 查找系统 Python
     if command -v python3 &>/dev/null; then
-        PYTHON=$(command -v python3)
-        PY_VERSION=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+        PYTHON="$(command -v python3)"
+        PY_VERSION="$("$PYTHON" -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")"
         echo -e "${GREEN}[√] 使用系统 Python $PY_VERSION: $PYTHON${NC}"
     else
         echo -e "${YELLOW}[!] 未找到 Python，正在安装...${NC}"
         # 尝试用 Homebrew 安装
         if command -v brew &>/dev/null; then
             brew install python@3.11
-            PYTHON=$(command -v python3)
+            PYTHON="$(command -v python3)"
         else
-            # 下载内嵌 Python
+            # 下载 Python pkg
             echo "正在下载 Python 3.11..."
             PYTHON_VERSION="3.11.9"
             if [ "$PYTHON_ARCH" = "arm64" ]; then
@@ -73,7 +73,7 @@ else
             fi
             curl -L -o /tmp/python.pkg "$PYTHON_URL"
             sudo installer -pkg /tmp/python.pkg -target /
-            rm /tmp/python.pkg
+            rm -f /tmp/python.pkg
             PYTHON="/usr/local/bin/python3"
         fi
         echo -e "${GREEN}[√] Python 安装完成: $PYTHON${NC}"
@@ -88,24 +88,24 @@ echo -e "${CYAN}[2/5] 安装 Python 依赖（可能需要几分钟）...${NC}"
 
 # 检查是否需要安装
 NEED_INSTALL=0
-if ! $PYTHON -c "import flask" 2>/dev/null; then
+if ! "$PYTHON" -c "import flask" 2>/dev/null; then
     NEED_INSTALL=1
 fi
 
-if [ $NEED_INSTALL -eq 1 ]; then
+if [ "$NEED_INSTALL" -eq 1 ]; then
     # 确保 pip 可用
-    if ! $PYTHON -m pip --version &>/dev/null; then
+    if ! "$PYTHON" -m pip --version &>/dev/null; then
         echo "正在安装 pip..."
-        curl -sS https://bootstrap.pypa.io/get-pip.py | $PYTHON
+        curl -sS https://bootstrap.pypa.io/get-pip.py | "$PYTHON"
     fi
 
     # 安装依赖
-    $PYTHON -m pip install --quiet --disable-pip-version-check \
+    "$PYTHON" -m pip install --quiet --disable-pip-version-check \
         -r "$APP_DIR/requirements.txt" 2>/dev/null || {
         echo -e "${YELLOW}[!] 批量安装失败，逐个安装...${NC}"
         for pkg in openai flask flask-cors chromadb; do
             echo -n "  安装 $pkg ... "
-            $PYTHON -m pip install --quiet --disable-pip-version-check $pkg 2>/dev/null && echo "OK" || echo "跳过"
+            "$PYTHON" -m pip install --quiet --disable-pip-version-check "$pkg" 2>/dev/null && echo "OK" || echo "跳过"
         done
     }
     echo -e "${GREEN}[√] Python 依赖安装完成${NC}"
@@ -124,36 +124,11 @@ if [ -f "$ENV_FILE" ]; then
     if grep -q "KIMI_API_KEY=" "$ENV_FILE" && ! grep -q "KIMI_API_KEY=在此" "$ENV_FILE" && ! grep -q 'KIMI_API_KEY=$' "$ENV_FILE"; then
         echo -e "${GREEN}[√] 配置已存在，跳过（如需修改请编辑 $ENV_FILE）${NC}"
     else
-        _configure
+        _do_configure
     fi
 else
-    _configure
+    _do_configure
 fi
-
-_configure() {
-    echo ""
-    echo "  请输入你的 DeepSeek API Key"
-    echo "  获取地址: https://platform.deepseek.com"
-    echo ""
-    read -p "  API Key: " API_KEY
-
-    if [ -z "$API_KEY" ]; then
-        echo -e "${RED}[!] API Key 不能为空${NC}"
-        read -p "按回车退出..."
-        exit 1
-    fi
-
-    cat > "$ENV_FILE" << EOF
-# Geometry AI Server 配置
-KIMI_API_KEY=$API_KEY
-KIMI_BASE_URL=https://api.deepseek.com/v1
-KIMI_MODEL=deepseek-v4-pro
-KIMI_MODEL_LITE=deepseek-v4-flash
-KIMI_MODEL_VISION=deepseek-v4-flash
-KIMI_EMBEDDING_MODEL=deepseek-v4-flash
-EOF
-    echo -e "${GREEN}[√] 配置已保存${NC}"
-}
 
 # ============================================================
 # Step 5: 创建日志目录
@@ -173,7 +148,7 @@ PLIST_PATH="$HOME/Library/LaunchAgents/$PLIST_NAME.plist"
 launchctl unload "$PLIST_PATH" 2>/dev/null || true
 
 # 创建 plist
-cat > "$PLIST_PATH" << EOF
+cat > "$PLIST_PATH" << PLISTEOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -202,7 +177,7 @@ cat > "$PLIST_PATH" << EOF
     </dict>
 </dict>
 </plist>
-EOF
+PLISTEOF
 
 launchctl load "$PLIST_PATH" 2>/dev/null
 echo -e "${GREEN}[√] 开机自启动已配置${NC}"
@@ -241,9 +216,39 @@ echo "  ║                                                  ║"
 echo "  ║     管理界面: http://localhost:5000/admin        ║"
 echo "  ║     聊天界面: http://localhost:3000               ║"
 echo "  ║                                                  ║"
-echo "  ║     停止服务: launchctl unload $PLIST_PATH  ║"
-echo "  ║     启动服务: launchctl load $PLIST_PATH    ║"
+echo "  ║     停止服务: launchctl unload ~/Library/LaunchAgents/com.geometryai.server.plist ║"
+echo "  ║     启动服务: launchctl load ~/Library/LaunchAgents/com.geometryai.server.plist   ║"
 echo "  ║     查看日志: $LOG_DIR/                  ║"
 echo "  ║     修改配置: 编辑 $ENV_FILE              ║"
 echo "  ╚══════════════════════════════════════════════════╝"
 echo ""
+
+exit 0
+
+# ============================================================
+# 函数定义（放在 exit 之后避免被 set -e 中断）
+# ============================================================
+_do_configure() {
+    echo ""
+    echo "  请输入你的 DeepSeek API Key"
+    echo "  获取地址: https://platform.deepseek.com"
+    echo ""
+    read -p "  API Key: " API_KEY
+
+    if [ -z "$API_KEY" ]; then
+        echo -e "${RED}[!] API Key 不能为空${NC}"
+        read -p "按回车退出..."
+        exit 1
+    fi
+
+    cat > "$ENV_FILE" << EOF
+# Geometry AI Server 配置
+KIMI_API_KEY=$API_KEY
+KIMI_BASE_URL=https://api.deepseek.com/v1
+KIMI_MODEL=deepseek-v4-pro
+KIMI_MODEL_LITE=deepseek-v4-flash
+KIMI_MODEL_VISION=deepseek-v4-flash
+KIMI_EMBEDDING_MODEL=deepseek-v4-flash
+EOF
+    echo -e "${GREEN}[√] 配置已保存${NC}"
+}
