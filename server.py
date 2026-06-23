@@ -25,7 +25,8 @@ from config import (logger, KIMI_API_KEY, KIMI_BASE_URL, KIMI_MODEL, KIMI_MODEL_
                     _injected_files, _injected_files_lock, openai_error,
                     CHROMA_DB_DIR, CHROMADB_AVAILABLE, EMBEDDING_MODE, LOCAL_EMBEDDING_MODEL,
                     CHUNK_SIZE, CHUNK_OVERLAP, MAX_CHUNKS_PER_QUERY, PERSONAL_DB_PATH,
-                    LEARN_COHERENCE_THRESHOLD, LEARN_MIN_LENGTH, GEOMETRY_CONSTANTS)
+                    LEARN_COHERENCE_THRESHOLD, LEARN_MIN_LENGTH, GEOMETRY_CONSTANTS,
+                    EXTRA_MODELS)
 from knowledge import VectorKnowledgeBase, APIEmbeddingFunction, LocalEmbeddingFunction
 from models import (personal_db, _save_personal_db, _get_personal_db_summary, LivingInfoField,
                     compute_geo_density, extract_key_propositions, find_file_by_reference,
@@ -600,6 +601,9 @@ def list_models():
         {"id": KIMI_MODEL_VISION, "object": "model", "created": _created, "owned_by": "provider"},
         {"id": KIMI_EMBEDDING_MODEL, "object": "model", "created": _created, "owned_by": "provider"},
     ]
+    # 添加额外模型
+    for m_id in EXTRA_MODELS:
+        _models.append({"id": m_id, "object": "model", "created": _created, "owned_by": "provider"})
     # 去重（如果多个配置指向同一模型）
     _seen = set()
     _unique = []

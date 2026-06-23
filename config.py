@@ -6,6 +6,15 @@ from flask import jsonify
 
 import os
 import sys
+
+# 加载 .env 文件到环境变量
+try:
+    from dotenv import load_dotenv
+    _env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env')
+    if os.path.exists(_env_path):
+        load_dotenv(_env_path, override=True)
+except ImportError:
+    pass  # python-dotenv 未安装，跳过
 import re
 import math
 import json
@@ -67,6 +76,10 @@ KIMI_MODEL = os.getenv('KIMI_MODEL', 'kimi-k2.7-code')
 KIMI_MODEL_LITE = os.getenv('KIMI_MODEL_LITE', 'kimi-k2.7')  # 轻量模型，用于简单问题
 KIMI_MODEL_VISION = os.getenv('KIMI_MODEL_VISION', 'kimi-k2.6')  # 视觉模型，用于图片输入
 KIMI_EMBEDDING_MODEL = os.getenv('KIMI_EMBEDDING_MODEL', 'moonshot-embedding-v1')
+
+# 额外模型（逗号分隔，会暴露给 Open WebUI）
+# 例如: EXTRA_MODELS=deepseek-v4-lite,deepseek-coder,claude-3-haiku
+EXTRA_MODELS = [m.strip() for m in os.getenv('EXTRA_MODELS', '').split(',') if m.strip()]
 
 # Embedding 模式：'local' 使用本地中文模型（推荐），'api' 使用 LLM API，'default' 使用 ChromaDB 内置模型
 EMBEDDING_MODE = os.getenv('GT_EMBEDDING_MODE', 'local')

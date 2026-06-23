@@ -26,7 +26,7 @@ DATA_DIRS = ["articles", "chroma_db", "templates"]
 
 # Python 依赖
 REQUIREMENTS = [
-    "openai", "flask", "flask-cors", "chromadb",
+    "openai", "flask", "flask-cors", "chromadb", "python-dotenv",
 ]
 
 
@@ -153,15 +153,16 @@ Geometry AI Server - macOS 安装说明
 
 
 def create_zip():
-    """打包为 zip"""
+    """打包为 zip（内部带 GeometryAI-Mac-Build/ 目录前缀）"""
     zip_name = f"GeometryAI-Mac-Build.zip"
     zip_path = PROJECT_ROOT / zip_name
+    folder_name = "GeometryAI-Mac-Build"
 
     print(f"\n[打包] 创建 {zip_name} ...")
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
         for file_path in BUILD_DIR.rglob("*"):
             if file_path.is_file():
-                arcname = file_path.relative_to(BUILD_DIR)
+                arcname = Path(folder_name) / file_path.relative_to(BUILD_DIR)
                 zf.write(file_path, arcname)
 
     size_mb = zip_path.stat().st_size / (1024 * 1024)

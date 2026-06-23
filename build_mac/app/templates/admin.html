@@ -701,6 +701,7 @@
                 <div class="btn-group">
                     <button class="btn btn-primary" onclick="refreshHealth()">刷新状态</button>
                     <a href="http://localhost:8080" target="_blank" class="btn btn-secondary">打开聊天</a>
+                    <button class="btn btn-danger" onclick="restartService()">重启服务</button>
                 </div>
             </div>
 
@@ -804,6 +805,28 @@
                         <button class="btn btn-primary" onclick="saveConfig()">保存配置</button>
                         <button class="btn btn-secondary" onclick="loadConfig()">重新加载</button>
                     </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">模型管理</div>
+                <p style="color:#999;font-size:13px;margin-bottom:12px;">添加额外模型后，Open WebUI 聊天界面会自动识别。用逗号分隔多个模型名。</p>
+                <div class="form-group">
+                    <label class="form-label">额外模型（逗号分隔）</label>
+                    <input type="text" class="form-input" id="cfgExtraModels" placeholder="例如: deepseek-v4-lite,deepseek-coder-v2">
+                </div>
+                <div style="margin-bottom:12px;">
+                    <label class="form-label">快速添加</label>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                        <button class="btn btn-secondary" style="font-size:12px;" onclick="addExtraModel('deepseek-v4-lite')">+ deepseek-v4-lite</button>
+                        <button class="btn btn-secondary" style="font-size:12px;" onclick="addExtraModel('deepseek-coder-v2')">+ deepseek-coder-v2</button>
+                        <button class="btn btn-secondary" style="font-size:12px;" onclick="addExtraModel('deepseek-reasoner')">+ deepseek-reasoner</button>
+                        <button class="btn btn-secondary" style="font-size:12px;" onclick="addExtraModel('claude-3-haiku')">+ claude-3-haiku</button>
+                        <button class="btn btn-secondary" style="font-size:12px;" onclick="addExtraModel('gpt-4o-mini')">+ gpt-4o-mini</button>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="saveExtraModels()">保存模型列表</button>
                 </div>
             </div>
         </div>
@@ -1083,6 +1106,40 @@
         /* ==================== 服务状态面板 ==================== */
 
         /**
+         * 重启中间层服务
+         */
+        async function restartService() {
+            showConfirm('重启服务', '确定要重启中间层服务吗？重启期间聊天将暂时不可用。', async function() {
+                try {
+                    showLoading();
+                    await apiRequest('/admin/restart', { method: 'POST' });
+                    showToast('服务正在重启，请等待约5秒...', 'warning', 5000);
+                    // 轮询等待服务恢复
+                    var retry = 0;
+                    var timer = setInterval(async function() {
+                        retry++;
+                        try {
+                            await fetch('/health');
+                            clearInterval(timer);
+                            hideLoading();
+                            showToast('服务已重启成功', 'success');
+                            refreshHealth();
+                        } catch (e) {
+                            if (retry > 15) {
+                                clearInterval(timer);
+                                hideLoading();
+                                showToast('重启超时，请手动检查', 'error');
+                            }
+                        }
+                    }, 1000);
+                } catch (e) {
+                    hideLoading();
+                    showToast('重启失败: ' + e.message, 'error');
+                }
+            });
+        }
+
+        /**
          * 刷新服务健康状态
          */
         async function refreshHealth() {
@@ -1173,6 +1230,7 @@
                 document.getElementById('cfgModel').value = data.KIMI_MODEL || '';
                 document.getElementById('cfgModelLite').value = data.KIMI_MODEL_LITE || '';
                 document.getElementById('cfgEmbeddingMode').value = data.GT_EMBEDDING_MODE || 'local';
+                document.getElementById('cfgExtraModels').value = data.EXTRA_MODELS || '';
 
                 showToast('配置已加载', 'success');
             } catch (e) {
@@ -1222,6 +1280,46 @@
                 showToast('配置已保存，请重启服务使配置生效', 'warning', 5000);
             } catch (e) {
                 showToast('保存配置失败: ' + e.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        /* ==================== 模型管理 ==================== */
+
+        /**
+         * 快速添加一个模型到额外模型列表
+         */
+        function addExtraModel(modelName) {
+            var input = document.getElementById('cfgExtraModels');
+            var current = input.value.trim();
+            var models = current ? current.split(',').map(function(m) { return m.trim(); }).filter(function(m) { return m; }) : [];
+            if (models.indexOf(modelName) === -1) {
+                models.push(modelName);
+                input.value = models.join(', ');
+                showToast('已添加: ' + modelName, 'success');
+            } else {
+                showToast('模型已存在: ' + modelName, 'warning');
+            }
+        }
+
+        /**
+         * 保存额外模型列表
+         */
+        async function saveExtraModels() {
+            var extraModels = document.getElementById('cfgExtraModels').value.trim();
+            try {
+                showLoading();
+                await apiRequest('/admin/config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        EXTRA_MODELS: extraModels
+                    })
+                });
+                showToast('模型列表已保存，Open WebUI 刷新后会自动识别新模型', 'success', 5000);
+            } catch (e) {
+                showToast('保存失败: ' + e.message, 'error');
             } finally {
                 hideLoading();
             }

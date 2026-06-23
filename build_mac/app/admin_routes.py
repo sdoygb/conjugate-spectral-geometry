@@ -8,9 +8,14 @@ import json
 import logging
 from flask import Blueprint, render_template, request, jsonify, Response
 
-from config import PROJECT_ROOT, _LOG_DIR, logger
+import config as _config_module
 
 admin_bp = Blueprint('admin', __name__)
+
+# 快捷引用
+PROJECT_ROOT = _config_module.PROJECT_ROOT
+_LOG_DIR = _config_module._LOG_DIR
+logger = _config_module.logger
 
 
 def _find_env_file():
@@ -62,7 +67,7 @@ def _write_env_file(filepath, config):
     known_keys = {
         'KIMI_API_KEY', 'KIMI_BASE_URL', 'KIMI_MODEL', 'KIMI_MODEL_LITE',
         'KIMI_MODEL_VISION', 'KIMI_EMBEDDING_MODEL', 'GT_EMBEDDING_MODE',
-        'GT_LOCAL_EMBEDDING_MODEL',
+        'GT_LOCAL_EMBEDDING_MODEL', 'EXTRA_MODELS',
     }
 
     # 如果文件不存在，直接写入
@@ -188,6 +193,10 @@ def admin_save_config():
 
     try:
         _write_env_file(env_path, data)
+        # 实时重载 EXTRA_MODELS（无需重启）
+        if 'EXTRA_MODELS' in data:
+            new_models = [m.strip() for m in data['EXTRA_MODELS'].split(',') if m.strip()]
+            _config_module.EXTRA_MODELS[:] = new_models
         logger.info(f"[ADMIN] 配置已保存到 {env_path}")
         return jsonify({
             "success": True,
@@ -227,3 +236,34 @@ def admin_logs():
     except Exception as e:
         logger.error(f"[ADMIN] 读取日志失败: {e}")
         return Response("读取日志失败: " + str(e), mimetype='text/plain')
+
+
+@admin_bp.route('/admin/restart', methods=['POST'])
+def admin_restart():
+    """
+    重启中间层服务。
+    通过 launchctl 或直接 kill 进程实现。
+    """
+    import subprocess
+    try:
+        # 找到当前进程 PID
+        my_pid = os.getpid()
+        # 用 launchctl 重启（如果是 launchd 管理的）
+        plist_path = os.path.expanduser('~/Library/LaunchAgents/com.geometryai.server.plist')
+        if os.path.exists(plist_path):
+            subprocess.Popen(['launchctl', 'kickstart', '-k', 'gui/$(id -u)/com.geometryai.server'],
+                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            return jsonify({"success": True, "message": "服务正在重启..."})
+        else:
+            # 非 launchd 管理，用 os.execv 重启自身
+            import sys
+            python = sys.executable
+            # 延迟重启，先返回响应
+            subprocess.Popen([
+                'bash', '-c',
+                f'sleep 1 && kill {my_pid} && cd {_config_module.PROJECT_ROOT} && {python} server.py'
+            ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            return jsonify({"success": True, "message": "服务正在重启..."})
+    except Exception as e:
+        logger.error(f"[ADMIN] 重启失败: {e}")
+        return jsonify({"success": False, "error": str(e)}), 500
