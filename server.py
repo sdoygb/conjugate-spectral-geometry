@@ -205,7 +205,9 @@ def extract_files_from_request(data: Dict[str, Any]):
             clean = combined[:300]
             files_content.append(f"--- 粘贴文件内容 ---\n{combined[:50000]}\n--- 文件结束 ---")
     else:
-        clean = combined[:500] if combined else ""
+        # 优先用最后一条用户消息（最相关），fallback到combined
+        last_msg = all_text_parts[-1] if all_text_parts else ""
+        clean = last_msg[:500] if last_msg else (combined[:500] if combined else "")
 
     if not clean and files_content:
         clean = "请分析上传的文件内容"
