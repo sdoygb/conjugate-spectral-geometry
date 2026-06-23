@@ -54,6 +54,15 @@ class APIEmbeddingFunction:
                     all_embeddings.append([0.0] * 1536)
         return all_embeddings
 
+    def embed_query(self, text: str) -> Embeddings:
+        """ChromaDB查询时调用"""
+        try:
+            resp = self.client.embeddings.create(model=self.model, input=[text])
+            return [d.embedding for d in resp.data]
+        except Exception as e:
+            logger.error(f"[EMBEDDING] embed_query失败: {e}")
+            return [[0.0] * 1536]
+
 
 class SiliconFlowEmbeddingFunction:
     """使用 SiliconFlow 免费 API 的中文 Embedding（BAAI/bge-large-zh-v1.5, 1024维）"""
@@ -92,6 +101,20 @@ class SiliconFlowEmbeddingFunction:
                 logger.warning(f"[EMBEDDING-SF] 第{i}条失败(len={len(text)}): {e}")
                 all_embeddings.append([0.0] * self._dim)
         return all_embeddings
+
+    def embed_query(self, text: str) -> Embeddings:
+        """ChromaDB查询时调用（单条文本embedding）"""
+        text = text.replace('\x00', '').replace('\r', '')
+        import re as _re
+        text = _re.sub(r'\s+', ' ', text).strip()
+        if len(text) > 500:
+            text = text[:500]
+        try:
+            resp = self.client.embeddings.create(model=self.model, input=[text])
+            return [d.embedding for d in resp.data]
+        except Exception as e:
+            logger.error(f"[EMBEDDING-SF] embed_query失败: {e}")
+            return [[0.0] * self._dim]
 
 
 class LocalEmbeddingFunction:
