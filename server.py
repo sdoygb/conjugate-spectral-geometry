@@ -21,6 +21,7 @@ from werkzeug.utils import secure_filename
 
 from config import (logger, KIMI_API_KEY, KIMI_BASE_URL, KIMI_MODEL, KIMI_MODEL_LITE, KIMI_MODEL_VISION,
                     KIMI_EMBEDDING_MODEL, UPLOAD_FOLDER, OPENWEBUI_UPLOAD_DIR, OPENWEBUI_DB_PATH,
+from version import VERSION, BUILD_DATE
                     MAX_INJECT_CHARS, QUALITY_GATE_ENABLED, MAX_QUALITY_RETRIES,
                     _injected_files, _injected_files_lock, openai_error,
                     CHROMA_DB_DIR, CHROMADB_AVAILABLE, EMBEDDING_MODE, LOCAL_EMBEDDING_MODEL,
@@ -453,7 +454,8 @@ a {{ color: #4fc3f7; }}
 def health_check():
     status = {
         "status": "ok",
-        "version": "v10.0-no-mysql",
+        "version": VERSION,
+        "build_date": BUILD_DATE,
         "description": "教学反馈版（无MySQL依赖）",
         "timestamp": datetime.now().isoformat(),
         "model": KIMI_MODEL,
@@ -1466,7 +1468,7 @@ if __name__ == '__main__':
     else:
         logger.warning("[STARTUP] 教学系统初始化失败（向量库不可用）")
 
-    logger.info(f"[STARTUP] ===== 几何论AI v10.0 教学反馈版（无MySQL依赖） =====")
+    logger.info(f"[STARTUP] ===== 几何论AI {VERSION} (build {BUILD_DATE}) =====")
     logger.info(f"[STARTUP] 文章目录: {UPLOAD_FOLDER}")
     logger.info(f"[STARTUP] ChromaDB 目录: {CHROMA_DB_DIR}")
     logger.info(f"[STARTUP] ChromaDB 状态: {'已连接' if vector_kb and vector_kb.is_initialized else '未连接'}")

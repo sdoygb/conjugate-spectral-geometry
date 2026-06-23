@@ -18,7 +18,7 @@ WIN_DIR = PROJECT_ROOT / "windows"
 PY_FILES = [
     "server.py", "config.py", "knowledge.py", "models.py",
     "prompts.py", "tools.py", "stream.py", "admin_routes.py",
-    "share_routes.py", "auto_teach.py", "start.py",
+    "share_routes.py", "auto_teach.py", "start.py", "version.py",
 ]
 
 # 数据目录
