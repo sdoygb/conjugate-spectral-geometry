@@ -7,8 +7,8 @@ services:
     container_name: geometry-ai-server
     restart: unless-stopped
     ports:
-      - "5000:5000"   # Geometry AI Server（管理界面 + API）
-      - "8080:8080"   # Open WebUI（聊天界面）
+      - "127.0.0.1:5000:5000"   # Geometry AI Server（仅本机/内网访问）
+      - "8080:8080"   # Open WebUI（聊天界面，对外开放）
     environment:
       # 必填：你的 DeepSeek API Key
       - KIMI_API_KEY=${KIMI_API_KEY:-sk-your-api-key-here}
