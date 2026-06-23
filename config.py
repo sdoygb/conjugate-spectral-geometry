@@ -2,6 +2,7 @@
 config.py — 几何论AI调度中间层配置模块
 从 geometry_ai_server_v5_12.py 提取的配置、常量、日志和工具函数。
 """
+from flask import jsonify
 
 import os
 import sys

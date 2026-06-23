@@ -257,8 +257,55 @@ else
     fi
 fi
 
-# 启动 Open WebUI
+# ============================================================
+# Step 5: 安装并启动 Open WebUI
+# ============================================================
+echo ""
+echo -e "${CYAN}[5/6] 安装 Open WebUI（聊天界面）...${NC}"
+
+# 设置 HuggingFace 镜像（国内网络加速）
+export HF_ENDPOINT="https://hf-mirror.com"
+export SENTENCE_TRANSFORMERS_HOME="$INSTALL_DIR/models_cache"
+
 if "$PYTHON" -c "import open_webui" 2>/dev/null; then
+    echo -e "${GREEN}[√] Open WebUI 已安装${NC}"
+else
+    echo "  正在安装 Open WebUI（需要几分钟，首次会下载模型）..."
+    echo "  使用国内镜像加速..."
+    "$PYTHON" -m pip install --quiet --disable-pip-version-check \
+        -i https://pypi.tuna.tsinghua.edu.cn/simple \
+        open-webui 2>/dev/null
+    if "$PYTHON" -c "import open_webui" 2>/dev/null; then
+        echo -e "${GREEN}[√] Open WebUI 安装完成${NC}"
+    else
+        echo -e "${YELLOW}[!] Open WebUI 安装失败，聊天功能暂不可用${NC}"
+        echo "  可稍后手动运行: $PYTHON -m pip install open-webui"
+        # 跳过启动
+        WEBUI_SKIP=1
+    fi
+fi
+
+if [ "$WEBUI_SKIP" != "1" ]; then
+    # 查找 open-webui 命令路径
+    WEBUI_BIN=""
+    for bin_path in \
+        "/usr/local/bin/open-webui" \
+        "/opt/homebrew/bin/open-webui" \
+        "/Library/Frameworks/Python.framework/Versions/3.11/bin/open-webui" \
+        "$("$PYTHON" -c 'import sys; print(sys.exec_prefix)')/bin/open-webui"; do
+        if [ -x "$bin_path" ]; then
+            WEBUI_BIN="$bin_path"
+            break
+        fi
+    done
+
+    if [ -z "$WEBUI_BIN" ]; then
+        WEBUI_BIN="$PYTHON"
+        WEBUI_ARGS_ARRAY=("-m" "open_webui.main")
+    else
+        WEBUI_ARGS_ARRAY=("serve")
+    fi
+
     echo ""
     echo -e "${CYAN}  正在启动 Open WebUI（首次启动需下载模型，请耐心等待）...${NC}"
 
@@ -267,7 +314,9 @@ if "$PYTHON" -c "import open_webui" 2>/dev/null; then
     lsof -ti :8080 2>/dev/null | xargs kill -9 2>/dev/null || true
     sleep 1
 
-    cat > "$WEBUI_PLIST" << PLISTEOF
+    # 生成 plist
+    {
+        cat << PLISTEOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -276,9 +325,12 @@ if "$PYTHON" -c "import open_webui" 2>/dev/null; then
     <string>com.geometryai.webui</string>
     <key>ProgramArguments</key>
     <array>
-        <string>$PYTHON</string>
-        <string>-m</string>
-        <string>open_webui.main</string>
+        <string>$WEBUI_BIN</string>
+PLISTEOF
+        for arg in "${WEBUI_ARGS_ARRAY[@]}"; do
+            echo "        <string>$arg</string>"
+        done
+        cat << PLISTEOF2
     </array>
     <key>WorkingDirectory</key>
     <string>$INSTALL_DIR</string>
@@ -307,11 +359,11 @@ if "$PYTHON" -c "import open_webui" 2>/dev/null; then
     </dict>
 </dict>
 </plist>
-PLISTEOF
+PLISTEOF2
+    } > "$WEBUI_PLIST"
 
     launchctl load "$WEBUI_PLIST" 2>/dev/null
 
-    # 等待启动（首次可能需要 2-5 分钟下载模型）
     echo -e "${YELLOW}  首次启动需要下载嵌入模型（约 90MB），请耐心等待...${NC}"
     echo -e "${YELLOW}  如果网络较慢，可能需要 5-10 分钟${NC}"
 
