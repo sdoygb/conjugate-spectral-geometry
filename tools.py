@@ -83,6 +83,28 @@ ARTICLE_TOOLS = [
     {
         "type": "function",
         "function": {
+            "name": "view_article",
+            "description": "查看文章完整内容。仅在向量检索提供的片段不够、需要阅读完整文章时使用。向量检索已自动注入相关片段到【参考资料】区域，大多数情况下无需调用此工具。文件名可从参考资料中的文章标签获取。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "filename": {
+                        "type": "string",
+                        "description": "文件名，如 '10_中微子集群效应_CN_260626.6.md'。从向量检索结果的文章标签中获取。"
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "description": "可选，只读取前N个字符（默认0=全部）。大文章建议设5000避免token浪费。",
+                        "default": 0
+                    }
+                },
+                "required": ["filename"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
             "name": "write_article",
             "description": "将内容写入 articles 目录中的文件，用于创建或修改几何论文章。写入时旧版自动归档到 archive/。",
             "parameters": {
@@ -325,7 +347,32 @@ def _git_push() -> str:
 def execute_tool_call(name: str, arguments: Dict[str, Any]) -> str:
     """执行工具调用并返回结果文本。"""
     try:
-        if name == "write_article":
+        if name == "view_article":
+            filename = arguments.get("filename", "")
+            limit = arguments.get("limit", 0)
+            try:
+                fpath = _safe_path(filename)
+            except ValueError as e:
+                return f"错误：{e}"
+            if not os.path.exists(fpath):
+                # 模糊匹配
+                if os.path.exists(UPLOAD_FOLDER):
+                    matches = [f for f in os.listdir(UPLOAD_FOLDER) if filename in f]
+                    if len(matches) == 1:
+                        fpath = os.path.join(UPLOAD_FOLDER, matches[0])
+                    elif len(matches) > 1:
+                        return f"找到多个匹配文件：{matches}，请指定完整文件名"
+                    else:
+                        return f"文件 '{filename}' 不存在"
+                else:
+                    return "文章目录不存在"
+            with open(fpath, 'r', encoding='utf-8') as f:
+                content = f.read()
+            if limit and limit > 0 and len(content) > limit:
+                content = content[:limit] + f"\n...[截断，共{len(content)}字符，已显示前{limit}字符]"
+            return f"文件: {filename} ({len(content)} 字符)\n{content}"
+
+        elif name == "write_article":
             filename = arguments.get("filename", "")
             content = arguments.get("content", "")
             if not filename:
