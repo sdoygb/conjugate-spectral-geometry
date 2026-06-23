@@ -90,6 +90,22 @@ for py in "/usr/local/bin/python3.11" "/opt/homebrew/bin/python3.11" "/usr/local
 done
 
 if [ -z "$PYTHON" ]; then
+    # 尝试使用安装包自带的 Python 3.11
+    PKG_PATH="$INSTALL_DIR/python3.11.pkg"
+    if [ -f "$PKG_PATH" ]; then
+        echo "  正在安装 Python 3.11（需要输入电脑密码）..."
+        sudo installer -pkg "$PKG_PATH" -target / 2>/dev/null
+        # 刷新链接
+        for py in "/usr/local/bin/python3.11" "/Library/Frameworks/Python.framework/Versions/3.11/bin/python3.11"; do
+            if [ -x "$py" ]; then
+                PYTHON="$py"
+                break
+            fi
+        done
+    fi
+fi
+
+if [ -z "$PYTHON" ]; then
     # 尝试 brew 安装
     if command -v brew &>/dev/null; then
         echo "  正在通过 Homebrew 安装 Python 3.11..."
