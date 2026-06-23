@@ -4,6 +4,34 @@
 
 set -e
 
+# ============================================================
+# 函数定义
+# ============================================================
+_do_configure() {
+    echo ""
+    echo "  请输入你的 DeepSeek API Key"
+    echo "  获取地址: https://platform.deepseek.com"
+    echo ""
+    read -p "  API Key: " API_KEY
+
+    if [ -z "$API_KEY" ]; then
+        echo -e "${RED}[!] API Key 不能为空${NC}"
+        read -p "按回车退出..."
+        exit 1
+    fi
+
+    cat > "$ENV_FILE" << EOF
+# Geometry AI Server 配置
+KIMI_API_KEY=$API_KEY
+KIMI_BASE_URL=https://api.deepseek.com/v1
+KIMI_MODEL=deepseek-v4-pro
+KIMI_MODEL_LITE=deepseek-v4-flash
+KIMI_MODEL_VISION=deepseek-v4-flash
+KIMI_EMBEDDING_MODEL=deepseek-v4-flash
+EOF
+    echo -e "${GREEN}[√] 配置已保存${NC}"
+}
+
 # 颜色
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -209,6 +237,118 @@ fi
 sleep 1
 open http://localhost:5000/admin
 
+# ============================================================
+# Step 8: 安装 Open WebUI（聊天界面）
+# ============================================================
+echo ""
+echo -e "${CYAN}[额外] 检查 Open WebUI（聊天界面）...${NC}"
+
+WEBUI_PYTHON_DIR="$INSTALL_DIR/webui_python"
+WEBUI_PLIST="$HOME/Library/LaunchAgents/com.geometryai.webui.plist"
+
+if [ -f "$WEBUI_PYTHON_DIR/bin/python3" ]; then
+    WEBUI_PYTHON="$WEBUI_PYTHON_DIR/bin/python3"
+else
+    # 下载 Python 3.11 嵌入式版本给 Open WebUI 用
+    if [ ! -f "$WEBUI_PYTHON_DIR/python3" ]; then
+        echo -e "${YELLOW}[!] Open WebUI 需要 Python 3.11，正在下载...${NC}"
+        mkdir -p "$WEBUI_PYTHON_DIR"
+        PYTHON_VERSION="3.11.9"
+        if [ "$PYTHON_ARCH" = "arm64" ]; then
+            PYTHON_URL="https://www.python.org/ftp/python/${PYTHON_VERSION}/python-${PYTHON_VERSION}-embed-arm64.zip"
+        else
+            PYTHON_URL="https://www.python.org/ftp/python/${PYTHON_VERSION}/python-${PYTHON_VERSION}-embed-amd64.zip"
+        fi
+        curl -L -o /tmp/python311.zip "$PYTHON_URL" 2>/dev/null
+        unzip -o /tmp/python311.zip -d "$WEBUI_PYTHON_DIR" 2>/dev/null
+        rm -f /tmp/python311.zip
+
+        # 配置 pip
+        curl -sS https://bootstrap.pypa.io/get-pip.py -o "$WEBUI_PYTHON_DIR/get-pip.py" 2>/dev/null
+        "$WEBUI_PYTHON_DIR/python3" "$WEBUI_PYTHON_DIR/get-pip.py" --no-warn-script-location 2>/dev/null
+        rm -f "$WEBUI_PYTHON_DIR/get-pip.py"
+
+        # 修改 ._pth 启用 site-packages
+        PTH_FILE="$WEBUI_PYTHON_DIR/python311._pth"
+        if [ -f "$PTH_FILE" ]; then
+            echo "python311.zip" > "$PTH_FILE"
+            echo "." >> "$PTH_FILE"
+            echo "Lib" >> "$PTH_FILE"
+            echo "Lib/site-packages" >> "$PTH_FILE"
+            echo "import site" >> "$PTH_FILE"
+        fi
+    fi
+    WEBUI_PYTHON="$WEBUI_PYTHON_DIR/python3"
+fi
+
+# 检查 Open WebUI 是否已安装
+if ! "$WEBUI_PYTHON" -c "import open_webui" 2>/dev/null; then
+    echo -e "${YELLOW}[!] 正在安装 Open WebUI（需要几分钟）...${NC}"
+    "$WEBUI_PYTHON" -m pip install --quiet --disable-pip-version-check open-webui 2>/dev/null
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}[√] Open WebUI 安装完成${NC}"
+    else
+        echo -e "${YELLOW}[!] Open WebUI 安装失败，可稍后手动安装${NC}"
+    fi
+else
+    echo -e "${GREEN}[√] Open WebUI 已安装${NC}"
+fi
+
+# 检查 Open WebUI 是否在运行
+if ! curl -s http://localhost:3000 >/dev/null 2>&1; then
+    echo -e "${YELLOW}[!] 正在启动 Open WebUI...${NC}"
+
+    # 注册 launchd 服务
+    cat > "$WEBUI_PLIST" << PLISTEOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.geometryai.webui</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>$WEBUI_PYTHON</string>
+        <string>-m</string>
+        <string>open_webui.main</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>$INSTALL_DIR</string>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>$LOG_DIR/webui-stdout.log</string>
+    <key>StandardErrorPath</key>
+    <string>$LOG_DIR/webui-stderr.log</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>OPENAI_API_BASE_URLS</key>
+        <string>http://localhost:5000/v1</string>
+        <key>OPENAI_API_KEYS</key>
+        <string>not-needed</string>
+    </dict>
+</dict>
+</plist>
+PLISTEOF
+    launchctl unload "$WEBUI_PLIST" 2>/dev/null || true
+    launchctl load "$WEBUI_PLIST" 2>/dev/null
+
+    # 等待启动
+    for i in $(seq 1 20); do
+        if curl -s http://localhost:3000 >/dev/null 2>&1; then
+            echo -e "${GREEN}[√] Open WebUI 已启动！${NC}"
+            sleep 1
+            open http://localhost:3000
+            break
+        fi
+        sleep 2
+    done
+else
+    echo -e "${GREEN}[√] Open WebUI 已在运行${NC}"
+fi
+
 echo ""
 echo "  ╔══════════════════════════════════════════════════╗"
 echo "  ║     安装完成！                                   ║"
@@ -224,31 +364,3 @@ echo "  ╚═══════════════════════
 echo ""
 
 exit 0
-
-# ============================================================
-# 函数定义（放在 exit 之后避免被 set -e 中断）
-# ============================================================
-_do_configure() {
-    echo ""
-    echo "  请输入你的 DeepSeek API Key"
-    echo "  获取地址: https://platform.deepseek.com"
-    echo ""
-    read -p "  API Key: " API_KEY
-
-    if [ -z "$API_KEY" ]; then
-        echo -e "${RED}[!] API Key 不能为空${NC}"
-        read -p "按回车退出..."
-        exit 1
-    fi
-
-    cat > "$ENV_FILE" << EOF
-# Geometry AI Server 配置
-KIMI_API_KEY=$API_KEY
-KIMI_BASE_URL=https://api.deepseek.com/v1
-KIMI_MODEL=deepseek-v4-pro
-KIMI_MODEL_LITE=deepseek-v4-flash
-KIMI_MODEL_VISION=deepseek-v4-flash
-KIMI_EMBEDDING_MODEL=deepseek-v4-flash
-EOF
-    echo -e "${GREEN}[√] 配置已保存${NC}"
-}
