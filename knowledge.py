@@ -223,15 +223,27 @@ class VectorKnowledgeBase:
         try:
             import chromadb
             self.client = chromadb.PersistentClient(path=self.persist_dir)
-            # 如果需要重建（embedding维度变化），先删除旧集合
+            # 检查是否需要重建：比较已有集合的维度和当前embedding维度
             if self._need_rebuild:
-                logger.info("[VECTOR] embedding维度变化，删除旧索引准备重建...")
-                for col_name in ["articles", "learned", "corrections", "antipatterns", "patches", "personal"]:
-                    try:
-                        self.client.delete_collection(col_name)
-                    except Exception:
-                        pass
-                self._need_rebuild = False
+                # 检查已有集合维度是否已经匹配
+                existing_dim = None
+                try:
+                    existing_col = self.client.get_collection("articles")
+                    existing_dim = existing_col._model_dimension
+                except Exception:
+                    pass
+                current_dim = self.embedding_fn._dim if self.embedding_fn and hasattr(self.embedding_fn, '_dim') else None
+                if existing_dim == current_dim:
+                    logger.info(f"[VECTOR] 已有集合维度={existing_dim}，与当前embedding匹配，跳过重建")
+                    self._need_rebuild = False
+                else:
+                    logger.info(f"[VECTOR] embedding维度变化({existing_dim} -> {current_dim})，删除旧索引准备重建...")
+                    for col_name in ["articles", "learned", "corrections", "antipatterns", "patches", "personal"]:
+                        try:
+                            self.client.delete_collection(col_name)
+                        except Exception:
+                            pass
+                    self._need_rebuild = False
             # 构建 collection 参数
             col_kwargs = {}
             if self.embedding_fn is not None:
