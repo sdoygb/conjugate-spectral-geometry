@@ -355,15 +355,24 @@ def execute_tool_call(name: str, arguments: Dict[str, Any]) -> str:
             except ValueError as e:
                 return f"错误：{e}"
             if not os.path.exists(fpath):
-                # 模糊匹配
+                # 智能模糊匹配：支持编号匹配（如"0.1"匹配"0.1_几何动力学_CN_260626.6.md"）
                 if os.path.exists(UPLOAD_FOLDER):
                     matches = [f for f in os.listdir(UPLOAD_FOLDER) if filename in f]
+                    # 如果没命中，尝试按编号前缀匹配（如"0.1"开头的文件）
+                    if not matches:
+                        for f in os.listdir(UPLOAD_FOLDER):
+                            if f.startswith(filename + "_"):
+                                matches.append(f)
                     if len(matches) == 1:
                         fpath = os.path.join(UPLOAD_FOLDER, matches[0])
                     elif len(matches) > 1:
-                        return f"找到多个匹配文件：{matches}，请指定完整文件名"
+                        # 多个匹配，优先选最新版本
+                        matches.sort(reverse=True)
+                        fpath = os.path.join(UPLOAD_FOLDER, matches[0])
                     else:
-                        return f"文件 '{filename}' 不存在"
+                        # 列出所有文件帮助AI选择
+                        all_files = sorted(os.listdir(UPLOAD_FOLDER))
+                        return f"文件 '{filename}' 不存在。可用文件：\n" + "\n".join(all_files[:30])
                 else:
                     return "文章目录不存在"
             with open(fpath, 'r', encoding='utf-8') as f:
