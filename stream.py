@@ -87,10 +87,10 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
     yield _sse_chunk({"role": "assistant", "content": ""})
 
     for _round in range(max_tool_rounds):
-        # 第一轮用流式调用，逐 token 透传
-        api_params["stream"] = True
+        # 第一轮用流式调用，逐 token 透传（创建副本避免修改原始参数）
+        round_params = {**api_params, "stream": True}
         try:
-            stream = client.chat.completions.create(**api_params)
+            stream = client.chat.completions.create(**round_params)
         except Exception as e:
             logger.error(f"[STREAM] 生成错误: {e}")
             yield _sse_error(f"生成错误: {e}")
@@ -132,6 +132,7 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                     # 透传 tool_calls 增量给客户端
                     tc_delta_dict = {
                         "index": idx,
+                        "type": "function",
                     }
                     if tc_delta.id:
                         tc_delta_dict["id"] = tc_delta.id
@@ -163,8 +164,8 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
             yield "data: [DONE]\n\n"
             return
 
-        # 有 tool_calls，发送 finish_reason: tool_calls
-        yield _sse_chunk({}, "tool_calls")
+        # 有 tool_calls，发送 finish_reason: tool_calls（附带 usage）
+        yield _sse_chunk({}, "tool_calls", usage=_usage_info if _usage_info else None)
 
         # 有 tool_calls，执行并追加结果
         tool_calls_list = [collected_tool_calls[i] for i in sorted(collected_tool_calls.keys())]

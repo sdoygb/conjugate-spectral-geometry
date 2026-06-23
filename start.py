@@ -136,31 +136,32 @@ def check_env():
 
 def start_server():
     """启动服务器"""
-    print(f"{CYAN}[5/6] 同步文件到运行目录{RESET}")
+    print(f"{CYAN}[5/6] 准备运行目录{RESET}")
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    run_dir = os.path.expanduser("~/AI")
+    # 运行目录：优先使用环境变量，否则使用项目目录
+    run_dir = os.getenv('GEOMETRY_AI_HOME', script_dir)
 
-    # 优先从工作目录（TRAE项目目录）同步，如果没有则从自身目录同步
-    work_dir = os.path.expanduser("~/Library/Application Support/TRAE SOLO CN/ModularData/ai-agent/work-mode-projects/6a34df456ce8883f273744f5")
-    source_dir = work_dir if os.path.exists(os.path.join(work_dir, 'server.py')) else script_dir
-
-    py_files = [f for f in os.listdir(source_dir) if f.endswith('.py') and f != 'auto_teach.py']
-    if os.path.exists(run_dir):
-        import shutil
-        synced = 0
-        for f in py_files:
-            src = os.path.join(source_dir, f)
-            dst = os.path.join(run_dir, f)
-            if os.path.realpath(src) == os.path.realpath(dst):
-                continue  # 同一个文件，跳过
-            shutil.copy2(src, dst)
-            synced += 1
-        if synced > 0:
-            print(f"{GREEN}      ✓ 已从 {os.path.basename(source_dir)} 同步 {synced} 个文件到 {run_dir}{RESET}")
-        else:
-            print(f"{GREEN}      ✓ 文件已是最新{RESET}")
+    # 如果运行目录和源目录不同，需要同步文件
+    source_dir = script_dir
+    if os.path.realpath(run_dir) != os.path.realpath(source_dir):
+        # 运行目录和源目录不同，需要同步文件
+        py_files = [f for f in os.listdir(source_dir) if f.endswith('.py') and f != 'auto_teach.py']
+        if os.path.exists(run_dir):
+            import shutil
+            synced = 0
+            for f in py_files:
+                src = os.path.join(source_dir, f)
+                dst = os.path.join(run_dir, f)
+                if os.path.realpath(src) == os.path.realpath(dst):
+                    continue
+                shutil.copy2(src, dst)
+                synced += 1
+            if synced > 0:
+                print(f"{GREEN}      ✓ 已同步 {synced} 个文件到 {run_dir}{RESET}")
+            else:
+                print(f"{GREEN}      ✓ 文件已是最新{RESET}")
     else:
-        print(f"{YELLOW}      ⚠ 运行目录 {run_dir} 不存在，跳过同步{RESET}")
+        print(f"{GREEN}      ✓ 运行目录与源目录相同，无需同步{RESET}")
 
     print(f"{CYAN}[6/6] 启动服务器{RESET}")
     server_script = os.path.join(run_dir, "server.py")

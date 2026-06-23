@@ -261,6 +261,13 @@ living_field = None
 _GIT_REPO_DIR = None
 
 
+def _safe_path(filename: str) -> str:
+    """安全路径检查：防止路径遍历攻击"""
+    fpath = os.path.abspath(os.path.join(UPLOAD_FOLDER, filename))
+    if not fpath.startswith(os.path.abspath(UPLOAD_FOLDER)):
+        raise ValueError(f"非法文件路径: {filename}")
+    return fpath
+
 def _find_git_repo():
     """查找 articles 目录所在的 git 仓库根目录"""
     global _GIT_REPO_DIR
@@ -354,7 +361,10 @@ def execute_tool_call(name: str, arguments: Dict[str, Any]) -> str:
 
         elif name == "read_article":
             filename = arguments.get("filename", "")
-            fpath = os.path.join(UPLOAD_FOLDER, filename)
+            try:
+                fpath = _safe_path(filename)
+            except ValueError as e:
+                return f"错误：{e}"
             if not os.path.exists(fpath):
                 # 尝试模糊匹配
                 if os.path.exists(UPLOAD_FOLDER):
@@ -377,7 +387,10 @@ def execute_tool_call(name: str, arguments: Dict[str, Any]) -> str:
             if not filename:
                 return "错误：缺少文件名"
             os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-            fpath = os.path.join(UPLOAD_FOLDER, filename)
+            try:
+                fpath = _safe_path(filename)
+            except ValueError as e:
+                return f"错误：{e}"
             with open(fpath, 'w', encoding='utf-8') as f:
                 f.write(content)
             # 只索引新写入的文件（增量索引，不重建全部）

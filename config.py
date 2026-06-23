@@ -16,6 +16,9 @@ import time
 import threading
 from datetime import datetime, timedelta
 from collections import defaultdict, Counter
+
+# 项目根目录（所有相对路径基于此）
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 from typing import List, Tuple, Dict, Optional, Any
 
 import openai
@@ -32,7 +35,7 @@ except ImportError:
 # ------------------------------------------------------------------
 # 日志
 # ------------------------------------------------------------------
-_LOG_DIR = os.path.join(os.path.expanduser("~"), "AI", "logs")
+_LOG_DIR = os.getenv('LOG_DIR', os.path.join(PROJECT_ROOT, 'logs'))
 os.makedirs(_LOG_DIR, exist_ok=True)
 
 logging.basicConfig(
@@ -55,7 +58,7 @@ logger = logging.getLogger(__name__)
 # ------------------------------------------------------------------
 
 # ChromaDB 持久化目录
-CHROMA_DB_DIR = os.getenv('CHROMA_DB_DIR', os.path.expanduser('~/AI/chroma_db'))
+CHROMA_DB_DIR = os.getenv('CHROMA_DB_DIR', os.path.join(PROJECT_ROOT, 'chroma_db'))
 
 KIMI_API_KEY = os.getenv('KIMI_API_KEY', '')
 KIMI_BASE_URL = os.getenv('KIMI_BASE_URL', 'https://api.moonshot.cn/v1')
@@ -68,16 +71,14 @@ KIMI_EMBEDDING_MODEL = os.getenv('KIMI_EMBEDDING_MODEL', 'moonshot-embedding-v1'
 EMBEDDING_MODE = os.getenv('GT_EMBEDDING_MODE', 'local')
 LOCAL_EMBEDDING_MODEL = os.getenv('GT_LOCAL_EMBEDDING_MODEL', 'BAAI/bge-small-zh-v1.5')
 
-UPLOAD_FOLDER = os.getenv('UPLOAD_FOLDER', os.path.expanduser("~/AI/articles"))
+UPLOAD_FOLDER = os.getenv('UPLOAD_FOLDER', os.path.join(PROJECT_ROOT, 'articles'))
 
 OPENWEBUI_UPLOAD_DIR = os.getenv('OPENWEBUI_UPLOAD_DIR', '')
 if not OPENWEBUI_UPLOAD_DIR or not os.path.exists(OPENWEBUI_UPLOAD_DIR):
     _search_paths = [
-        os.path.expanduser('~/openwebui/venv/lib/python3.11/site-packages/open_webui/data/uploads'),
-        os.path.expanduser('~/open-webui/venv/lib/python3.11/site-packages/open_webui/data/uploads'),
-        '/app/backend/data/uploads',
         os.path.expanduser('~/openwebui/data/uploads'),
-        os.path.expanduser('~/AI/open-webui/data/uploads'),
+        os.path.expanduser('~/open-webui/data/uploads'),
+        '/app/backend/data/uploads',
         '/var/lib/docker/volumes/open-webui/_data/uploads',
     ]
     for p in _search_paths:
@@ -90,8 +91,6 @@ OPENWEBUI_DB_PATH = os.getenv('OPENWEBUI_DB_PATH', '')
 if not OPENWEBUI_DB_PATH:
     # 自动查找
     for candidate in [
-        '/Users/oygb/openwebui/venv/lib/python3.11/site-packages/open_webui/data/webui.db',
-        os.path.expanduser('~/open-webui/data/webui.db'),
         os.path.expanduser('~/openwebui/data/webui.db'),
         '/app/backend/data/webui.db',
         '/var/lib/docker/volumes/open-webui/_data/webui.db',

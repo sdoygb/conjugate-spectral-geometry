@@ -41,6 +41,18 @@ from stream import stream_generate
 app = Flask(__name__)
 CORS(app)
 
+# 全局错误处理器：确保所有错误返回 JSON 格式
+@app.errorhandler(404)
+@app.errorhandler(405)
+@app.errorhandler(500)
+def _handle_error(e):
+    return openai_error(str(e), status=getattr(e, 'code', 500))
+
+@app.errorhandler(Exception)
+def _handle_exception(e):
+    logger.error(f"[UNHANDLED] {type(e).__name__}: {e}")
+    return openai_error(f"内部服务器错误: {str(e)[:200]}", status=500)
+
 # 简单 rate limiting：每分钟最多 60 次请求（per IP）
 _rate_limit_store = {}  # {ip: [(timestamp, count), ...]}
 _RATE_LIMIT_PER_MIN = 60
@@ -402,6 +414,7 @@ def index_rebuild():
 
 
 @app.route('/v1/openapi.json', methods=['GET'])
+@app.route('/v1/openapi.json/openapi.json', methods=['GET'])
 def openapi_spec():
     """返回 OpenAPI spec，供 Open WebUI 导入为工具。"""
     return jsonify(OPENAPI_SPEC)
@@ -579,23 +592,20 @@ def write_file(filename):
 @app.route('/v1/models', methods=['GET'])
 def list_models():
     _created = 1700000000  # 固定时间戳
-    return jsonify({
-        "object": "list",
-        "data": [
-            {
-                "id": KIMI_MODEL,
-                "object": "model",
-                "created": _created,
-                "owned_by": "moonshot"
-            },
-            {
-                "id": KIMI_MODEL_LITE,
-                "object": "model",
-                "created": _created,
-                "owned_by": "moonshot"
-            }
-        ]
-    })
+    _models = [
+        {"id": KIMI_MODEL, "object": "model", "created": _created, "owned_by": "provider"},
+        {"id": KIMI_MODEL_LITE, "object": "model", "created": _created, "owned_by": "provider"},
+        {"id": KIMI_MODEL_VISION, "object": "model", "created": _created, "owned_by": "provider"},
+        {"id": KIMI_EMBEDDING_MODEL, "object": "model", "created": _created, "owned_by": "provider"},
+    ]
+    # 去重（如果多个配置指向同一模型）
+    _seen = set()
+    _unique = []
+    for m in _models:
+        if m["id"] not in _seen:
+            _seen.add(m["id"])
+            _unique.append(m)
+    return jsonify({"object": "list", "data": _unique})
 
 
 # ==================== Embeddings 端点（带缓存） ====================
@@ -1049,6 +1059,48 @@ def chat_completions():
     for msg in final_messages:
         if msg.get("content") is None:
             msg["content"] = ""
+        # DeepSeek 兼容：补全 tool_calls 中缺少的 type 字段
+        if "tool_calls" in msg and isinstance(msg["tool_calls"], list):
+            for tc in msg["tool_calls"]:
+                if isinstance(tc, dict) and "type" not in tc:
+                    tc["type"] = "function"
+                if isinstance(tc, dict) and "function" in tc and isinstance(tc["function"], dict):
+                    if "type" not in tc["function"]:
+                        tc["function"]["type"] = "function"
+        # DeepSeek 兼容：如果 assistant 消息有 reasoning_content 但为空，移除它
+        # 如果有 reasoning_content 则保留（DeepSeek 思考模式要求回传）
+        if msg.get("role") == "assistant" and "reasoning_content" in msg:
+            if not msg["reasoning_content"] or not str(msg["reasoning_content"]).strip():
+                del msg["reasoning_content"]
+
+    # DeepSeek 兼容：确保 content 数组中每个元素都有 type 字段
+    for i, msg in enumerate(final_messages):
+        content = msg.get("content")
+        if isinstance(content, list):
+            for j, item in enumerate(content):
+                if isinstance(item, dict) and "type" not in item:
+                    # 推断 type
+                    if "image_url" in item or "url" in item:
+                        item["type"] = "image_url"
+                    elif "text" in item:
+                        item["type"] = "text"
+                    else:
+                        item["type"] = "text"
+                    logger.warning(f"[CLEAN] 消息[{i}] content[{j}] 缺少type字段，已推断为 {item['type']}")
+        # DeepSeek 不接受 content 为数组格式（只接受字符串）
+        # 但如果数组中只有 text 类型，可以合并为字符串
+        if isinstance(content, list):
+            has_image = any(isinstance(item, dict) and item.get("type") == "image_url" for item in content)
+            if not has_image:
+                # 纯文本数组，合并为字符串
+                text_parts = []
+                for item in content:
+                    if isinstance(item, dict) and item.get("type") == "text":
+                        text_parts.append(item.get("text", ""))
+                    elif isinstance(item, str):
+                        text_parts.append(item)
+                msg["content"] = "\n".join(text_parts)
+                logger.info(f"[CLEAN] 消息[{i}] 纯文本数组已合并为字符串")
 
     # 修复多模态消息：KIMI API 要求 content 数组中每个 text 元素都不能为空
     for i, msg in enumerate(final_messages):
@@ -1135,6 +1187,34 @@ def chat_completions():
         logger.info(f"[ROUTE] 简单问题，使用轻量模型: {KIMI_MODEL_LITE}")
 
     api_params = {"model": _selected_model, "messages": final_messages, "tools": ARTICLE_TOOLS}
+
+    # DeepSeek 兼容：处理 reasoning_content
+    # 策略：将 reasoning_content 合并到 content 中，然后删除该字段
+    # 这样既不会触发"必须回传"的错误，也不会丢失思考内容
+    for msg in final_messages:
+        if msg.get("role") == "assistant" and "reasoning_content" in msg:
+            rc = msg.get("reasoning_content", "")
+            if rc and str(rc).strip():
+                # 将思考内容作为引用合并到 content 前面
+                original = msg.get("content", "")
+                if original and str(original).strip():
+                    msg["content"] = f"[思考过程]\n{rc}\n[/思考过程]\n\n{original}"
+                else:
+                    msg["content"] = f"[思考过程]\n{rc}\n[/思考过程]"
+            # 无论是否有效，都删除 reasoning_content 字段
+            del msg["reasoning_content"]
+
+    # 诊断：打印每条消息的结构（用于排查 DeepSeek 格式问题）
+    for i, msg in enumerate(final_messages):
+        content = msg.get("content")
+        content_desc = f"str({len(str(content))})" if isinstance(content, str) else f"list({len(content)})" if isinstance(content, list) else str(content)[:50]
+        keys = list(msg.keys())
+        logger.info(f"[MSG-DEBUG] [{i}] keys={keys}, content={content_desc}, role={msg.get('role')}")
+        # 如果 content 是数组，打印每个元素的 keys
+        if isinstance(content, list):
+            for j, item in enumerate(content):
+                if isinstance(item, dict):
+                    logger.info(f"[MSG-DEBUG]   [{i}][{j}] keys={list(item.keys())}, type={item.get('type', 'MISSING')}")
     # 中间层使用自有工具定义（ARTICLE_TOOLS），不透传 Open WebUI 的 tools 参数
     # 原因：中间层代理模式下，工具调用在中间层内部完成，Open WebUI 不需要感知
     # 透传 Open WebUI 的标准参数
