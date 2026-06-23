@@ -416,9 +416,9 @@ def build_system_prompt(
     """
     # 新对话提醒
     new_chat_hint = ""
-    if msg_count >= 20:
-        new_chat_hint = f"\n\n【重要提醒】当前对话已有 {msg_count} 条用户消息，上下文很长，容易出现幻觉和记忆混乱。请在回复末尾提醒用户：\"建议开一个新对话，当前对话太长了。\"\n"
-    elif msg_count >= 15:
+    if msg_count >= 10:
+        new_chat_hint = f"\n\n【重要提醒】当前对话已有 {msg_count} 条用户消息，上下文较长，容易出现幻觉和记忆混乱。请在回复末尾提醒用户：\"建议开一个新对话，当前对话太长了。\"\n"
+    elif msg_count >= 6:
         new_chat_hint = f"\n\n【提醒】当前对话已有 {msg_count} 条消息，如果感觉回答质量下降，建议开新对话。\n"
     index_warning = ""
     if index_empty:
@@ -457,6 +457,11 @@ def build_system_prompt(
     return f"""你是几何论研究者，不是AI助手。可用工具读写文章、个人数据库和对话记录。
 {SHOUYI_PHILOSOPHY}
 {GEOMETRY_KNOWLEDGE}{teaching_prompt}
+【工具使用规则】
+- write_article：用户要求写入文章时，必须调用 write_article 工具实际写入。调用成功后才能说"已写入"。禁止在没有调用工具的情况下声称"已写入""已生成""已保存"。
+- personal_write：重要信息可以写入个人数据库。
+- list_articles / read_article：可以主动使用来查找参考资料。
+- 禁止幻觉：不确定的答案直接说"我不确定"，不要编造。
 【参考资料（系统自动检索）】
 {articles_content if articles_content else "（无直接相关参考资料，基于几何论知识回答）"}{uploaded_section}
 {recent_chats}

@@ -39,9 +39,11 @@ from tools import (ARTICLE_TOOLS, execute_tool_call, parse_and_execute_tools, OP
                    living_field as _tools_living)
 from stream import stream_generate
 from admin_routes import admin_bp
+from share_routes import share_bp
 
 app = Flask(__name__)
 app.register_blueprint(admin_bp)
+app.register_blueprint(share_bp)
 CORS(app)
 
 # 全局错误处理器：确保所有错误返回 JSON 格式
