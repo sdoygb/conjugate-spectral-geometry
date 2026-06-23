@@ -13,6 +13,10 @@ from flask import request as _request
 from typing import List, Tuple, Dict, Any
 from datetime import datetime
 
+# 文章读取缓存（同一文件 10 秒内不重复读取）
+_read_cache: Dict[str, Tuple[str, float]] = {}
+_READ_CACHE_TTL = 10  # 秒
+
 from config import KIMI_API_KEY, KIMI_BASE_URL, KIMI_MODEL, UPLOAD_FOLDER, OPENWEBUI_DB_PATH, logger
 from models import personal_db, _save_personal_db
 
@@ -414,8 +418,20 @@ def execute_tool_call(name: str, arguments: Dict[str, Any]) -> str:
                         return f"文件 '{filename}' 不存在于 {UPLOAD_FOLDER}，请先用 list_articles 查看"
                 else:
                     return f"文章目录 {UPLOAD_FOLDER} 不存在"
+            # 缓存检查
+            cache_key = fpath
+            now = time.time()
+            if cache_key in _read_cache:
+                cached_content, cached_time = _read_cache[cache_key]
+                if now - cached_time < _READ_CACHE_TTL:
+                    return f"文件: {filename} ({len(cached_content)} 字符) [缓存]\n{cached_content}"
             with open(fpath, 'r', encoding='utf-8') as f:
                 content = f.read()
+            _read_cache[cache_key] = (content, now)
+            # 清理过期缓存
+            expired = [k for k, (_, t) in _read_cache.items() if now - t > _READ_CACHE_TTL]
+            for k in expired:
+                del _read_cache[k]
             return f"文件: {filename} ({len(content)} 字符)\n{content}"
 
         elif name == "write_article":
@@ -450,7 +466,11 @@ def execute_tool_call(name: str, arguments: Dict[str, Any]) -> str:
                 vector_kb.index_single_file(fpath)
             # 自动 git commit（版本管理）
             _git_result = _auto_git_commit(filename, content)
-            preview_url = f"http://{_request.host}/preview/{filename}"
+            try:
+                preview_host = _request.host
+            except RuntimeError:
+                preview_host = "localhost:5000"
+            preview_url = f"http://{preview_host}/preview/{filename}"
             return f"已写入 {filename} ({len(content)} 字符)，向量索引已更新。{archive_msg}{_git_result}\n\n📎 [点击预览文章]({preview_url})"
 
         elif name == "personal_read":

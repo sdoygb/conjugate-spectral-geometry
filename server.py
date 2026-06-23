@@ -1018,9 +1018,26 @@ def chat_completions():
     articles_content = ""
     loaded_chunks: List[str] = []
     if vector_kb and vector_kb.is_initialized and vector_kb.total_docs > 0:
-        results = vector_kb.search(clean_query, top_k=MAX_CHUNKS_PER_QUERY)
+        # 智能提取检索关键词：如果clean_query太长，提取核心术语
+        search_query = clean_query
+        if len(clean_query) > 100:
+            # 提取文章编号（如 0.5, 0.2.1）和中文学术术语
+            import re as _re2
+            # 提取文章编号模式
+            ids = _re2.findall(r'\b\d+(?:\.\d+)+\b', clean_query)
+            # 提取中文术语（2-6字）
+            terms = _re2.findall(r'[\u4e00-\u9fff]{2,6}', clean_query)
+            # 组合：编号优先，然后取前5个术语
+            search_parts = list(set(ids)) + list(set(terms))[:5]
+            if search_parts:
+                search_query = ' '.join(search_parts)
+            else:
+                search_query = clean_query[:100]
+        results = vector_kb.search(search_query, top_k=MAX_CHUNKS_PER_QUERY)
         if results:
             articles_content, loaded_chunks = vector_kb.get_formatted_results(results)
+        if not articles_content:
+            logger.info(f"[VECTOR] 检索无结果: query='{clean_query[:80]}...', search='{search_query[:80]}', top_k={MAX_CHUNKS_PER_QUERY}, total_docs={vector_kb.total_docs}")
     index_empty = not articles_content
 
     # v10 新增：从 corrections 和 patches 检索相关教学数据
