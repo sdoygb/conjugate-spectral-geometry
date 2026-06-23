@@ -722,13 +722,15 @@ class VectorKnowledgeBase:
                 )
             else:
                 meta = r['metadata']
+                fname = meta.get('fname', '')
                 header = (
                     f"\n{'='*50}\n"
-                    f"文章: {meta.get('article_id', '?')} ({meta.get('fname', '?')}) "
+                    f"文章: {meta.get('article_id', '?')} ({fname}) "
                     f"位置:{meta.get('start', '?')}-{meta.get('end', '?')} "
-                    f"距离:{r['distance']:.4f}\n"
-                    f"{'='*50}\n"
+                    f"距离:{r['distance']:.4f}"
                 )
+                if fname:
+                    header += f"\n完整文章: [点击预览](http://localhost:5000/preview/{fname})"
 
             contents.append(header + text)
             total_chars += len(header) + len(text)
