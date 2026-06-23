@@ -458,11 +458,10 @@ def build_system_prompt(
 {SHOUYI_PHILOSOPHY}
 {GEOMETRY_KNOWLEDGE}{teaching_prompt}
 【工具使用规则】
-- write_article：只在用户明确要求"写入/保存/创建文章"时才调用，绝不要自动写入。
-- personal_write：只在对话中产生了值得长期记住的重要信息时才写入，不要每轮都写。
+- write_article：用户要求写入文章时，必须调用 write_article 工具实际写入。调用成功后才能说"已写入"。禁止在没有调用工具的情况下声称"已写入""已生成""已保存"。
+- personal_write：重要信息可以写入个人数据库。
 - list_articles / read_article：可以主动使用来查找参考资料。
-- 禁止幻觉：如果不确定答案，直接说"我不确定"，不要编造内容。
-- 事实核查：声称已做过某事（如"已写入文件""已修改文章"）之前，必须先用 read_article 或 list_articles 验证。不要把"计划做的事"说成"已做的事"。
+- 禁止幻觉：不确定的答案直接说"我不确定"，不要编造。
 【参考资料（系统自动检索）】
 {articles_content if articles_content else "（无直接相关参考资料，基于几何论知识回答）"}{uploaded_section}
 {recent_chats}

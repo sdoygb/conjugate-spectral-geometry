@@ -122,7 +122,7 @@ ARTICLE_TOOLS = [
         "type": "function",
         "function": {
             "name": "write_article",
-            "description": "将内容写入 articles 目录中的文件。注意：只在用户明确要求写入/保存/创建文章时才使用此工具，不要自动调用。",
+            "description": "将内容写入 articles 目录中的文件，用于创建或修改几何论文章。写入时旧版自动归档到 archive/。",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -155,7 +155,7 @@ ARTICLE_TOOLS = [
         "type": "function",
         "function": {
             "name": "personal_write",
-            "description": "写入个人数据库。注意：只在对话中产生了值得记住的信息（如用户偏好、重要讨论结论）时才使用，不要每轮对话都写入。支持类别: personality(性格)/emotions(感情)/thoughts(想法)/memory(记忆)。也支持子字段如 memory:conversation_highlights。",
+            "description": "写入个人数据库，支持类别: personality(性格)/emotions(感情)/thoughts(想法)/memory(记忆)。也支持子字段如 memory:conversation_highlights。",
             "parameters": {
                 "type": "object",
                 "properties": {
