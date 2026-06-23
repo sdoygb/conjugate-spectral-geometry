@@ -186,20 +186,28 @@ def generate_readme():
     print("[生成] README.txt")
     content = """\
 ============================================================
-Geometry AI Server - Windows 安装包构建说明
+Geometry AI Server - Windows 安装说明
 ============================================================
+
+【全自动安装】
+  双击 install.bat，等待安装完成即可。
+  脚本会自动：下载 Python、安装依赖、下载 NSSM、配置服务。
+  首次运行需要输入 API Key（在 https://platform.deepseek.com 获取）。
+
+【手动安装】
+  如果全自动安装失败，请按以下步骤操作：
 
 一、前置准备
 ------------
 1. 准备 Windows 嵌入式 Python (Embedded Python)
    - 下载地址: https://www.python.org/downloads/windows/
    - 选择 "Windows embeddable package (64-bit)"
-   - 解压后将全部内容放入 build/python/ 目录
+   - 解压后将全部内容放入 python/ 目录
 
 2. 安装 Python 依赖
    - 在 Windows 上打开命令提示符
-   - cd build/python
-   - .\\python.exe -m pip install --target=. -r ..\\app\\requirements.txt
+   - cd python
+   - python.exe -m pip install --target=. -r ..\\app\\requirements.txt
 
 3. 下载 NSSM (Non-Sucking Service Manager)
    - 下载地址: https://nssm.cc/download
