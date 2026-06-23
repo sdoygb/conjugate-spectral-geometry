@@ -1,6 +1,9 @@
 #!/bin/bash
 # Geometry AI Server - macOS 全自动安装脚本
 # 双击运行或在终端执行: bash install_mac.sh
+#
+# 功能：自动安装 Geometry AI Server + Open WebUI + 开机自启
+# 要求：macOS 12+，需要网络连接
 
 set -e
 
@@ -32,6 +35,21 @@ EOF
     echo -e "${GREEN}[√] 配置已保存${NC}"
 }
 
+_wait_for_url() {
+    # 等待 URL 可访问，最多 $1 秒
+    local url="$1"
+    local max_wait="$2"
+    local waited=0
+    while [ "$waited" -lt "$max_wait" ]; do
+        if curl -s "$url" >/dev/null 2>&1; then
+            return 0
+        fi
+        sleep 2
+        waited=$((waited + 2))
+    done
+    return 1
+}
+
 # 颜色
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -50,107 +68,86 @@ echo ""
 INSTALL_DIR="$(cd "$(dirname "$0")" && pwd)"
 APP_DIR="$INSTALL_DIR/app"
 LOG_DIR="$INSTALL_DIR/logs"
-PYTHON_DIR="$INSTALL_DIR/python"
+
+mkdir -p "$LOG_DIR"
 
 # ============================================================
-# Step 1: 检查系统架构
+# Step 1: 准备 Python 环境
 # ============================================================
-ARCH=$(uname -m)
-if [ "$ARCH" = "arm64" ]; then
-    PYTHON_ARCH="arm64"
-    echo -e "${CYAN}[系统] Apple Silicon (M1/M2/M3/M4) 检测到${NC}"
-elif [ "$ARCH" = "x86_64" ]; then
-    PYTHON_ARCH="x86_64"
-    echo -e "${CYAN}[系统] Intel Mac 检测到${NC}"
-else
-    echo -e "${RED}[错误] 不支持的架构: $ARCH${NC}"
+echo -e "${CYAN}[1/6] 准备 Python 环境...${NC}"
+
+# 清除可能干扰的 Python 环境变量
+unset PYTHONHOME
+unset PYTHONPATH
+
+# 查找可用的 Python 3.11+
+PYTHON=""
+for py in "/usr/local/bin/python3.11" "/opt/homebrew/bin/python3.11" "/usr/local/bin/python3.12" "/opt/homebrew/bin/python3.12"; do
+    if [ -x "$py" ]; then
+        PYTHON="$py"
+        break
+    fi
+done
+
+if [ -z "$PYTHON" ]; then
+    # 尝试 brew 安装
+    if command -v brew &>/dev/null; then
+        echo "  正在通过 Homebrew 安装 Python 3.11..."
+        brew install python@3.11 2>/dev/null || true
+        brew link python@3.11 --overwrite 2>/dev/null || true
+        for py in "/usr/local/bin/python3.11" "/opt/homebrew/bin/python3.11"; do
+            if [ -x "$py" ]; then
+                PYTHON="$py"
+                break
+            fi
+        done
+    fi
+fi
+
+if [ -z "$PYTHON" ]; then
+    echo -e "${RED}[!] 未找到合适的 Python（需要 3.11+）${NC}"
+    echo "  请先安装 Python 3.11: https://www.python.org/downloads/"
     read -p "按回车退出..."
     exit 1
 fi
 
+PY_VERSION="$("$PYTHON" --version 2>&1 | awk '{print $2}')"
+echo -e "${GREEN}[√] Python $PY_VERSION: $PYTHON${NC}"
+
 # ============================================================
-# Step 2: 检查 Python
+# Step 2: 安装 Geometry AI Server 依赖
 # ============================================================
 echo ""
-echo -e "${CYAN}[1/5] 检查 Python 环境...${NC}"
+echo -e "${CYAN}[2/6] 安装 Geometry AI Server 依赖...${NC}"
 
-# 优先使用内嵌 Python
-if [ -f "$PYTHON_DIR/bin/python3" ]; then
-    PYTHON="$PYTHON_DIR/bin/python3"
-    echo -e "${GREEN}[√] 使用内嵌 Python: $PYTHON${NC}"
+if "$PYTHON" -c "import flask" 2>/dev/null; then
+    echo -e "${GREEN}[√] 依赖已安装，跳过${NC}"
 else
-    # 查找系统 Python
-    if command -v python3 &>/dev/null; then
-        PYTHON="$(command -v python3)"
-        PY_VERSION="$("$PYTHON" -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")"
-        echo -e "${GREEN}[√] 使用系统 Python $PY_VERSION: $PYTHON${NC}"
-    else
-        echo -e "${YELLOW}[!] 未找到 Python，正在安装...${NC}"
-        # 尝试用 Homebrew 安装
-        if command -v brew &>/dev/null; then
-            brew install python@3.11
-            PYTHON="$(command -v python3)"
-        else
-            # 下载 Python pkg
-            echo "正在下载 Python 3.11..."
-            PYTHON_VERSION="3.11.9"
-            if [ "$PYTHON_ARCH" = "arm64" ]; then
-                PYTHON_URL="https://www.python.org/ftp/python/${PYTHON_VERSION}/python-${PYTHON_VERSION}-macos11.arm64.pkg"
-            else
-                PYTHON_URL="https://www.python.org/ftp/python/${PYTHON_VERSION}/python-${PYTHON_VERSION}-macos11.pkg"
-            fi
-            curl -L -o /tmp/python.pkg "$PYTHON_URL"
-            sudo installer -pkg /tmp/python.pkg -target /
-            rm -f /tmp/python.pkg
-            PYTHON="/usr/local/bin/python3"
-        fi
-        echo -e "${GREEN}[√] Python 安装完成: $PYTHON${NC}"
-    fi
-fi
-
-# ============================================================
-# Step 3: 安装 pip 依赖
-# ============================================================
-echo ""
-echo -e "${CYAN}[2/5] 安装 Python 依赖（可能需要几分钟）...${NC}"
-
-# 检查是否需要安装
-NEED_INSTALL=0
-if ! "$PYTHON" -c "import flask" 2>/dev/null; then
-    NEED_INSTALL=1
-fi
-
-if [ "$NEED_INSTALL" -eq 1 ]; then
-    # 确保 pip 可用
     if ! "$PYTHON" -m pip --version &>/dev/null; then
-        echo "正在安装 pip..."
-        curl -sS https://bootstrap.pypa.io/get-pip.py | "$PYTHON"
+        echo "  正在安装 pip..."
+        curl -sS https://bootstrap.pypa.io/get-pip.py | "$PYTHON" 2>/dev/null
     fi
-
-    # 安装依赖
+    echo "  正在安装依赖（可能需要几分钟）..."
     "$PYTHON" -m pip install --quiet --disable-pip-version-check \
         -r "$APP_DIR/requirements.txt" 2>/dev/null || {
         echo -e "${YELLOW}[!] 批量安装失败，逐个安装...${NC}"
         for pkg in openai flask flask-cors chromadb; do
-            echo -n "  安装 $pkg ... "
-            "$PYTHON" -m pip install --quiet --disable-pip-version-check "$pkg" 2>/dev/null && echo "OK" || echo "跳过"
+            "$PYTHON" -m pip install --quiet --disable-pip-version-check "$pkg" 2>/dev/null
         done
     }
-    echo -e "${GREEN}[√] Python 依赖安装完成${NC}"
-else
-    echo -e "${GREEN}[√] Python 依赖已安装，跳过${NC}"
+    echo -e "${GREEN}[√] 依赖安装完成${NC}"
 fi
 
 # ============================================================
-# Step 4: 配置
+# Step 3: 配置 API Key
 # ============================================================
 echo ""
-echo -e "${CYAN}[3/5] 配置 API Key...${NC}"
+echo -e "${CYAN}[3/6] 配置 API Key...${NC}"
 
 ENV_FILE="$APP_DIR/.env"
 if [ -f "$ENV_FILE" ]; then
-    if grep -q "KIMI_API_KEY=" "$ENV_FILE" && ! grep -q "KIMI_API_KEY=在此" "$ENV_FILE" && ! grep -q 'KIMI_API_KEY=$' "$ENV_FILE"; then
-        echo -e "${GREEN}[√] 配置已存在，跳过（如需修改请编辑 $ENV_FILE）${NC}"
+    if grep -q "KIMI_API_KEY=" "$ENV_FILE" && ! grep -q 'KIMI_API_KEY=$' "$ENV_FILE" && ! grep -q "KIMI_API_KEY=在此" "$ENV_FILE"; then
+        echo -e "${GREEN}[√] 配置已存在，跳过${NC}"
     else
         _do_configure
     fi
@@ -159,23 +156,21 @@ else
 fi
 
 # ============================================================
-# Step 5: 创建日志目录
-# ============================================================
-mkdir -p "$LOG_DIR"
-
-# ============================================================
-# Step 6: 注册 launchd 服务（开机自启）
+# Step 4: 启动 Geometry AI Server
 # ============================================================
 echo ""
-echo -e "${CYAN}[4/5] 配置开机自启动...${NC}"
+echo -e "${CYAN}[4/6] 启动 Geometry AI Server...${NC}"
 
 PLIST_NAME="com.geometryai.server"
 PLIST_PATH="$HOME/Library/LaunchAgents/$PLIST_NAME.plist"
 
-# 停止旧服务（如果存在）
+# 停止旧服务
 launchctl unload "$PLIST_PATH" 2>/dev/null || true
+# 也杀掉可能残留的进程
+lsof -ti :5000 2>/dev/null | xargs kill -9 2>/dev/null || true
+sleep 1
 
-# 创建 plist
+# 创建 plist（清除 PYTHONHOME 避免干扰）
 cat > "$PLIST_PATH" << PLISTEOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -195,110 +190,65 @@ cat > "$PLIST_PATH" << PLISTEOF
     <key>KeepAlive</key>
     <true/>
     <key>StandardOutPath</key>
-    <string>$LOG_DIR/service-stdout.log</string>
+    <string>$LOG_DIR/server-stdout.log</string>
     <key>StandardErrorPath</key>
-    <string>$LOG_DIR/service-stderr.log</string>
+    <string>$LOG_DIR/server-stderr.log</string>
     <key>EnvironmentVariables</key>
     <dict>
         <key>GEOMETRY_AI_HOME</key>
         <string>$INSTALL_DIR</string>
+        <key>PYTHONHOME</key>
+        <string></string>
+        <key>PYTHONPATH</key>
+        <string></string>
     </dict>
 </dict>
 </plist>
 PLISTEOF
 
 launchctl load "$PLIST_PATH" 2>/dev/null
-echo -e "${GREEN}[√] 开机自启动已配置${NC}"
 
-# ============================================================
-# Step 7: 启动服务
-# ============================================================
-echo ""
-echo -e "${CYAN}[5/5] 启动服务...${NC}"
-
-# 等待服务启动
-sleep 2
-
-# 检查服务状态
-for i in $(seq 1 15); do
-    if curl -s http://localhost:5000/health >/dev/null 2>&1; then
-        echo -e "${GREEN}[√] 服务已启动！${NC}"
-        break
-    fi
-    sleep 1
-done
-
-if ! curl -s http://localhost:5000/health >/dev/null 2>&1; then
-    echo -e "${YELLOW}[!] 服务启动中，请稍候...${NC}"
-    echo -e "${YELLOW}    如果 30 秒后仍无法访问，请检查日志: $LOG_DIR/${NC}"
-fi
-
-# 打开浏览器
-sleep 1
-open http://localhost:5000/admin
-
-# ============================================================
-# Step 8: 安装 Open WebUI（聊天界面）
-# ============================================================
-echo ""
-echo -e "${CYAN}[额外] 检查 Open WebUI（聊天界面）...${NC}"
-
-WEBUI_PYTHON_DIR="$INSTALL_DIR/webui_python"
-WEBUI_PLIST="$HOME/Library/LaunchAgents/com.geometryai.webui.plist"
-
-if [ -f "$WEBUI_PYTHON_DIR/bin/python3" ]; then
-    WEBUI_PYTHON="$WEBUI_PYTHON_DIR/bin/python3"
+# 等待启动
+if _wait_for_url "http://localhost:5000/health" 30; then
+    echo -e "${GREEN}[√] Geometry AI Server 已启动（端口 5000）${NC}"
 else
-    # 下载 Python 3.11 嵌入式版本给 Open WebUI 用
-    if [ ! -f "$WEBUI_PYTHON_DIR/python3" ]; then
-        echo -e "${YELLOW}[!] Open WebUI 需要 Python 3.11，正在下载...${NC}"
-        mkdir -p "$WEBUI_PYTHON_DIR"
-        PYTHON_VERSION="3.11.9"
-        if [ "$PYTHON_ARCH" = "arm64" ]; then
-            PYTHON_URL="https://www.python.org/ftp/python/${PYTHON_VERSION}/python-${PYTHON_VERSION}-embed-arm64.zip"
-        else
-            PYTHON_URL="https://www.python.org/ftp/python/${PYTHON_VERSION}/python-${PYTHON_VERSION}-embed-amd64.zip"
-        fi
-        curl -L -o /tmp/python311.zip "$PYTHON_URL" 2>/dev/null
-        unzip -o /tmp/python311.zip -d "$WEBUI_PYTHON_DIR" 2>/dev/null
-        rm -f /tmp/python311.zip
-
-        # 配置 pip
-        curl -sS https://bootstrap.pypa.io/get-pip.py -o "$WEBUI_PYTHON_DIR/get-pip.py" 2>/dev/null
-        "$WEBUI_PYTHON_DIR/python3" "$WEBUI_PYTHON_DIR/get-pip.py" --no-warn-script-location 2>/dev/null
-        rm -f "$WEBUI_PYTHON_DIR/get-pip.py"
-
-        # 修改 ._pth 启用 site-packages
-        PTH_FILE="$WEBUI_PYTHON_DIR/python311._pth"
-        if [ -f "$PTH_FILE" ]; then
-            echo "python311.zip" > "$PTH_FILE"
-            echo "." >> "$PTH_FILE"
-            echo "Lib" >> "$PTH_FILE"
-            echo "Lib/site-packages" >> "$PTH_FILE"
-            echo "import site" >> "$PTH_FILE"
-        fi
-    fi
-    WEBUI_PYTHON="$WEBUI_PYTHON_DIR/python3"
+    echo -e "${YELLOW}[!] Geometry AI Server 启动较慢，请稍候...${NC}"
 fi
 
-# 检查 Open WebUI 是否已安装
-if ! "$WEBUI_PYTHON" -c "import open_webui" 2>/dev/null; then
-    echo -e "${YELLOW}[!] 正在安装 Open WebUI（需要几分钟）...${NC}"
-    "$WEBUI_PYTHON" -m pip install --quiet --disable-pip-version-check open-webui 2>/dev/null
-    if [ $? -eq 0 ]; then
+# ============================================================
+# Step 5: 安装并启动 Open WebUI
+# ============================================================
+echo ""
+echo -e "${CYAN}[5/6] 安装 Open WebUI（聊天界面）...${NC}"
+
+# 设置 HuggingFace 镜像（国内网络加速）
+export HF_ENDPOINT="https://hf-mirror.com"
+export SENTENCE_TRANSFORMERS_HOME="$INSTALL_DIR/models_cache"
+
+if "$PYTHON" -c "import open_webui" 2>/dev/null; then
+    echo -e "${GREEN}[√] Open WebUI 已安装${NC}"
+else
+    echo "  正在安装 Open WebUI（需要几分钟，首次会下载模型）..."
+    echo "  使用国内镜像加速下载..."
+    "$PYTHON" -m pip install --quiet --disable-pip-version-check open-webui 2>/dev/null
+    if "$PYTHON" -c "import open_webui" 2>/dev/null; then
         echo -e "${GREEN}[√] Open WebUI 安装完成${NC}"
     else
-        echo -e "${YELLOW}[!] Open WebUI 安装失败，可稍后手动安装${NC}"
+        echo -e "${YELLOW}[!] Open WebUI 安装失败，聊天功能暂不可用${NC}"
+        echo "  可稍后手动运行: $PYTHON -m pip install open-webui"
     fi
-else
-    echo -e "${GREEN}[√] Open WebUI 已安装${NC}"
 fi
 
-# 检查 Open WebUI 是否在运行
-if ! curl -s http://localhost:3000 >/dev/null 2>&1; then
-    echo -e "${YELLOW}[!] 正在启动 Open WebUI...${NC}"
+# 启动 Open WebUI
+if "$PYTHON" -c "import open_webui" 2>/dev/null; then
+    echo ""
+    echo -e "${CYAN}  正在启动 Open WebUI（首次启动需下载模型，请耐心等待）...${NC}"
 
-    # 注册 launchd 服务
+    WEBUI_PLIST="$HOME/Library/LaunchAgents/com.geometryai.webui.plist"
+    launchctl unload "$WEBUI_PLIST" 2>/dev/null || true
+    lsof -ti :8080 2>/dev/null | xargs kill -9 2>/dev/null || true
+    sleep 1
+
     cat > "$WEBUI_PLIST" << PLISTEOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -308,7 +258,7 @@ if ! curl -s http://localhost:3000 >/dev/null 2>&1; then
     <string>com.geometryai.webui</string>
     <key>ProgramArguments</key>
     <array>
-        <string>$WEBUI_PYTHON</string>
+        <string>$PYTHON</string>
         <string>-m</string>
         <string>open_webui.main</string>
     </array>
@@ -328,25 +278,48 @@ if ! curl -s http://localhost:3000 >/dev/null 2>&1; then
         <string>http://localhost:5000/v1</string>
         <key>OPENAI_API_KEYS</key>
         <string>not-needed</string>
+        <key>HF_ENDPOINT</key>
+        <string>https://hf-mirror.com</string>
+        <key>SENTENCE_TRANSFORMERS_HOME</key>
+        <string>$INSTALL_DIR/models_cache</string>
+        <key>PYTHONHOME</key>
+        <string></string>
+        <key>PYTHONPATH</key>
+        <string></string>
     </dict>
 </dict>
 </plist>
 PLISTEOF
-    launchctl unload "$WEBUI_PLIST" 2>/dev/null || true
+
     launchctl load "$WEBUI_PLIST" 2>/dev/null
 
-    # 等待启动
-    for i in $(seq 1 20); do
-        if curl -s http://localhost:3000 >/dev/null 2>&1; then
-            echo -e "${GREEN}[√] Open WebUI 已启动！${NC}"
-            sleep 1
-            open http://localhost:3000
-            break
-        fi
-        sleep 2
-    done
-else
-    echo -e "${GREEN}[√] Open WebUI 已在运行${NC}"
+    # 等待启动（首次可能需要 2-5 分钟下载模型）
+    echo -e "${YELLOW}  首次启动需要下载嵌入模型（约 90MB），请耐心等待...${NC}"
+    echo -e "${YELLOW}  如果网络较慢，可能需要 5-10 分钟${NC}"
+
+    if _wait_for_url "http://localhost:8080" 300; then
+        echo -e "${GREEN}[√] Open WebUI 已启动（端口 8080）${NC}"
+    else
+        echo -e "${YELLOW}[!] Open WebUI 启动超时${NC}"
+        echo "  请稍后访问 http://localhost:8080"
+        echo "  查看日志: $LOG_DIR/webui-stderr.log"
+    fi
+fi
+
+# ============================================================
+# Step 6: 打开浏览器
+# ============================================================
+echo ""
+echo -e "${CYAN}[6/6] 打开浏览器...${NC}"
+
+sleep 1
+
+# 打开管理界面
+open http://localhost:5000/admin 2>/dev/null || true
+
+# 打开聊天界面
+if curl -s http://localhost:8080 >/dev/null 2>&1; then
+    open http://localhost:8080 2>/dev/null || true
 fi
 
 echo ""
@@ -354,12 +327,13 @@ echo "  ╔═══════════════════════
 echo "  ║     安装完成！                                   ║"
 echo "  ║                                                  ║"
 echo "  ║     管理界面: http://localhost:5000/admin        ║"
-echo "  ║     聊天界面: http://localhost:3000               ║"
+echo "  ║     聊天界面: http://localhost:8080              ║"
 echo "  ║                                                  ║"
-echo "  ║     停止服务: launchctl unload ~/Library/LaunchAgents/com.geometryai.server.plist ║"
-echo "  ║     启动服务: launchctl load ~/Library/LaunchAgents/com.geometryai.server.plist   ║"
-echo "  ║     查看日志: $LOG_DIR/                  ║"
-echo "  ║     修改配置: 编辑 $ENV_FILE              ║"
+echo "  ║     首次打开聊天界面需要创建管理员账号             ║"
+echo "  ║                                                  ║"
+echo "  ║     两个服务已设置为开机自动启动                  ║"
+echo "  ║                                                  ║"
+echo "  ║     卸载: 双击 uninstall_mac.sh                  ║"
 echo "  ╚══════════════════════════════════════════════════╝"
 echo ""
 
