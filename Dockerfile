@@ -13,7 +13,7 @@ WORKDIR /app
 
 # 安装系统依赖
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
+    curl git \
     && rm -rf /var/lib/apt/lists/*
 
 # 先复制 requirements.txt（利用 Docker 缓存层）

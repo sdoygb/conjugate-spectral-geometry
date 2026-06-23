@@ -22,6 +22,17 @@ services:
       - HF_ENDPOINT=https://hf-mirror.com
       - OPENAI_API_BASE_URLS=http://localhost:5000/v1
       - OPENAI_API_KEYS=not-needed
+      # MySQL配置（Docker内连宿主机MySQL）
+      - MYSQL_HOST=${MYSQL_HOST:-host.docker.internal}
+      - MYSQL_PORT=3306
+      - MYSQL_DB=geometric_ai
+      - MYSQL_ADMIN_USER=geometric_AI
+      - MYSQL_ADMIN_PASS=JcMJbG3SrjZtdk4A
+      - MYSQL_PUBLIC_USER=share_writer
+      - MYSQL_PUBLIC_PASS=Share2026!OnlyWrite
+    extra_hosts:
+      # Linux Docker 需要这行才能解析 host.docker.internal
+      - "host.docker.internal:host-gateway"
     volumes:
       # 持久化数据（知识库、配置、模型缓存）
       - geometry-data:/app/data
