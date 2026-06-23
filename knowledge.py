@@ -176,6 +176,20 @@ class VectorKnowledgeBase:
     def __init__(self, persist_dir: str):
         self.persist_dir = persist_dir
         os.makedirs(persist_dir, exist_ok=True)
+        self.client = None
+        self.articles_collection = None
+        self.learned_collection = None
+        self.corrections_collection = None
+        self.antipatterns_collection = None
+        self.patches_collection = None
+        self._initialized = False
+        self._need_rebuild = False  # 必须在embedding选择之前声明
+        self._articles_count = 0
+        self._learned_count = 0
+        self._corrections_count = 0
+        self._antipatterns_count = 0
+        self._patches_count = 0
+
         # 根据配置选择 embedding function
         if EMBEDDING_MODE == 'api':
             self.embedding_fn = APIEmbeddingFunction()
@@ -200,19 +214,6 @@ class VectorKnowledgeBase:
         else:
             self.embedding_fn = None  # 使用 ChromaDB 默认 embedding
             self._embedding_name = "chromadb-default"
-        self.client = None
-        self.articles_collection = None
-        self.learned_collection = None
-        self.corrections_collection = None
-        self.antipatterns_collection = None
-        self.patches_collection = None
-        self._initialized = False
-        self._need_rebuild = False
-        self._articles_count = 0
-        self._learned_count = 0
-        self._corrections_count = 0
-        self._antipatterns_count = 0
-        self._patches_count = 0
 
     def initialize(self) -> bool:
         """初始化 ChromaDB 客户端和集合"""
