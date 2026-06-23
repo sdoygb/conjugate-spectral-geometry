@@ -108,6 +108,7 @@ if not OPENWEBUI_DB_PATH:
         os.path.expanduser('~/openwebui/data/webui.db'),
         '/app/backend/data/webui.db',
         '/var/lib/docker/volumes/open-webui/_data/webui.db',
+        os.path.expanduser('~/openwebui/venv/lib/python3.11/site-packages/open_webui/data/webui.db'),
     ]:
         if os.path.exists(candidate):
             OPENWEBUI_DB_PATH = candidate
