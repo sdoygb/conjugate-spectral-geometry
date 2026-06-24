@@ -55,9 +55,8 @@ models_cache/
 # WebUI 密钥
 .webui_secret_key
 
-# articles 子目录有独立的 Git 仓库，不纳入外层管理
-app/articles/
-
+# articles 是核心数据，必须纳入 Git 管理
+# (app/articles/ 不排除)
 # 运行时数据扩展匹配
 app/chroma_db/
 app/.venv/
@@ -87,3 +86,4 @@ build_mac/
 /requirements.txt
 /templates/
 /articles/
+app/articles/archive/
