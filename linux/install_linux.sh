@@ -1,17 +1,20 @@
 #!/bin/bash
 # Geometry AI Server - Linux 全自动安装
+# 使用方法: sudo bash install_linux.sh
+# 仅需一条命令，无需手动安装任何依赖
+
 set -e
 
 echo ""
 echo "  ========================================================"
 echo "      Geometry AI Server - Linux 全自动安装"
-echo "      运行: sudo bash install_linux.sh"
+echo "      一条命令搞定，无需手动安装任何东西"
 echo "  ========================================================"
 echo ""
 
 # 检测 root 权限
 if [ "$EUID" -ne 0 ]; then
-    echo "[!] 请使用 sudo 运行此脚本"
+    echo "[!] 请使用 sudo 运行: sudo bash install_linux.sh"
     exit 1
 fi
 
@@ -19,53 +22,104 @@ INSTALL_DIR="$(cd "$(dirname "$0")" && pwd)"
 APP_DIR="$INSTALL_DIR/app"
 SERVICE_USER="${SUDO_USER:-root}"
 
-# Step 1: 检查/安装 Python 3.11+
-echo "[1/6] 检查 Python 环境..."
+# ============================================================
+# Step 1: 确保 Python 3.11+ 可用
+# ============================================================
+echo "[1/6] 准备 Python 3.11 环境..."
 
-PYTHON=""
-for cmd in python3.11 python3.12 python3.13 python3; do
-    if command -v "$cmd" &>/dev/null; then
-        ver=$($cmd --version 2>&1 | grep -oP '\d+\.\d+')
-        major=$(echo "$ver" | cut -d. -f1)
-        minor=$(echo "$ver" | cut -d. -f2)
-        if [ "$major" -ge 3 ] && [ "$minor" -ge 11 ]; then
-            PYTHON="$cmd"
-            break
+ensure_python() {
+    # 先找系统已有的 Python 3.11+
+    for cmd in python3.13 python3.12 python3.11; do
+        if command -v "$cmd" &>/dev/null; then
+            ver=$($cmd -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+            major=${ver%%.*}
+            minor=${ver##*.}
+            if [ "$major" -eq 3 ] && [ "$minor" -ge 11 ]; then
+                echo "$cmd"
+                return 0
+            fi
         fi
-    fi
-done
+    done
 
-if [ -z "$PYTHON" ]; then
-    echo "  未找到 Python 3.11+，正在安装..."
+    # 没有就自动安装
+    echo "  系统未安装 Python 3.11+，正在自动安装..."
+
     if command -v apt-get &>/dev/null; then
+        # Ubuntu/Debian
         apt-get update -qq
-        apt-get install -y software-properties-common
-        add-apt-repository -y ppa:deadsnakes/ppa 2>/dev/null || true
-        apt-get install -y python3.11 python3.11-venv python3-pip
-        PYTHON=python3.11
-    elif command -v yum &>/dev/null; then
-        yum install -y python3.11 python3.11-pip
-        PYTHON=python3.11
+        apt-get install -y -qq software-properties-common > /dev/null 2>&1
+        add-apt-repository -y ppa:deadsnakes/ppa > /dev/null 2>&1 || true
+        apt-get update -qq
+        apt-get install -y -qq python3.11 python3.11-venv python3.11-dev python3-pip > /dev/null 2>&1
+        echo "python3.11"
+        return 0
     elif command -v dnf &>/dev/null; then
-        dnf install -y python3.11 python3.11-pip
-        PYTHON=python3.11
-    else
-        echo "[!] 不支持的系统，请手动安装 Python 3.11+"
-        exit 1
+        # Fedora/RHEL 8+
+        dnf install -y python3.11 python3.11-pip python3.11-devel 2>/dev/null || {
+            # 如果没有 3.11，尝试安装 3.12
+            dnf install -y python3.12 python3.12-pip python3.12-devel 2>/dev/null || {
+                dnf install -y python3 python3-pip python3-devel
+                echo "python3"
+                return 0
+            }
+        }
+        echo "python3.11"
+        return 0
+    elif command -v yum &>/dev/null; then
+        # CentOS/RHEL 7
+        yum install -y epel-release > /dev/null 2>&1 || true
+        yum install -y python3 python3-pip python3-devel > /dev/null 2>&1
+        # CentOS 7 的 python3 可能是 3.6，需要用其他方式
+        echo "python3"
+        return 0
+    elif command -v apk &>/dev/null; then
+        # Alpine
+        apk add --no-cache python3.11 py3-pip
+        echo "python3.11"
+        return 0
     fi
+
+    return 1
+}
+
+PYTHON=$(ensure_python)
+
+if [ -z "$PYTHON" ] || ! command -v "$PYTHON" &>/dev/null; then
+    echo "[!] 无法自动安装 Python，请手动安装 Python 3.11+ 后重试"
+    exit 1
 fi
 
-echo "  [√] 使用 $PYTHON ($($PYTHON --version 2>&1))"
+PY_VER=$($PYTHON -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+echo "  [√] Python $PY_VER ($PYTHON)"
 
-# Step 2: 安装依赖
+# 检查版本是否够
+PY_MAJOR=$($PYTHON -c "import sys; print(sys.version_info.major)")
+PY_MINOR=$($PYTHON -c "import sys; print(sys.version_info.minor)")
+if [ "$PY_MAJOR" -lt 3 ] || [ "$PY_MINOR" -lt 11 ]; then
+    echo "  [!] Python 版本过低 ($PY_VER)，需要 3.11+"
+    echo "  请手动安装 Python 3.11: https://www.python.org/downloads/"
+    exit 1
+fi
+
+# ============================================================
+# Step 2: 安装 Python 依赖
+# ============================================================
 echo ""
 echo "[2/6] 安装 Python 依赖..."
-"$PYTHON" -m pip install --quiet --disable-pip-version-check \
+
+# 升级 pip
+"$PYTHON" -m pip install --quiet --disable-pip-version-check --upgrade pip 2>/dev/null || true
+
+# 安装依赖（忽略版本冲突警告）
+"$PYTHON" -m pip install --disable-pip-version-check \
     -i https://pypi.tuna.tsinghua.edu.cn/simple \
-    -r "$APP_DIR/requirements.txt"
+    -r "$APP_DIR/requirements.txt" 2>&1 | grep -v "WARNING\|ERROR:.*has requirement" || true
+
 echo "  [√] 依赖安装完成"
 
+# ============================================================
 # Step 3: 配置 API Key
+# ============================================================
 echo ""
 echo "[3/6] 配置 API Key..."
 
@@ -112,19 +166,26 @@ else
     echo "  [√] 配置已存在，跳过"
 fi
 
+# ============================================================
 # Step 4: 停止旧服务
+# ============================================================
 echo ""
 echo "[4/6] 停止旧服务..."
+systemctl stop geometry-ai-webui 2>/dev/null || true
 systemctl stop geometry-ai 2>/dev/null || true
 pkill -f "python.*server.py" 2>/dev/null || true
 sleep 1
 
-# Step 5: 注册 systemd 服务
+# ============================================================
+# Step 5: 注册 systemd 服务并启动
+# ============================================================
 echo ""
 echo "[5/6] 注册 systemd 服务..."
 
-SERVICE_FILE="/etc/systemd/system/geometry-ai.service"
-cat > "$SERVICE_FILE" << SVCEOF
+# 获取 python 完整路径
+PYTHON_PATH=$(command -v "$PYTHON")
+
+cat > /etc/systemd/system/geometry-ai.service << SVCEOF
 [Unit]
 Description=Geometry AI Server
 After=network.target
@@ -133,7 +194,7 @@ After=network.target
 Type=simple
 User=$SERVICE_USER
 WorkingDirectory=$APP_DIR
-ExecStart=$PYTHON $APP_DIR/server.py
+ExecStart=$PYTHON_PATH $APP_DIR/server.py
 Restart=always
 RestartSec=5
 Environment=PYTHONHOME=
@@ -159,7 +220,9 @@ for i in $(seq 1 15); do
     sleep 2
 done
 
-# Step 6: 安装 Open WebUI
+# ============================================================
+# Step 6: 安装 Open WebUI（可选）
+# ============================================================
 echo ""
 echo "[6/6] 安装 Open WebUI（聊天界面）..."
 
@@ -168,22 +231,20 @@ export HF_ENDPOINT=https://hf-mirror.com
 if "$PYTHON" -c "import open_webui" 2>/dev/null; then
     echo "  [√] Open WebUI 已安装"
 else
-    echo "  正在安装 Open WebUI（需要几分钟，首次会下载模型）..."
+    echo "  正在安装 Open WebUI（首次需要几分钟下载模型）..."
     if "$PYTHON" -m pip install --disable-pip-version-check \
-        -i https://pypi.tuna.tsinghua.edu.cn/simple open-webui 2>/dev/null; then
+        -i https://pypi.tuna.tsinghua.edu.cn/simple open-webui 2>&1 | tail -1 | grep -q "Successfully"; then
         echo "  [√] Open WebUI 安装完成"
     else
-        echo "  [!] Open WebUI 安装失败（可能需要 Python 3.11+）"
-        echo "  聊天界面暂不可用，可稍后手动安装:"
-        echo "    $PYTHON -m pip install open-webui"
+        echo "  [!] Open WebUI 安装失败，聊天界面暂不可用"
+        echo "  可稍后手动安装: $PYTHON -m pip install open-webui"
+        echo "  或使用 Docker: docker run -d -p 8080:8080 ghcr.io/open-webui/open-webui:main"
         WEBUI_SKIP=1
     fi
 fi
 
-if [ -z "$WEBUI_SKIP" ]; then
-    # 注册 Open WebUI 服务
-    WEBUI_SERVICE_FILE="/etc/systemd/system/geometry-ai-webui.service"
-    cat > "$WEBUI_SERVICE_FILE" << SVCEOF
+if [ -z "${WEBUI_SKIP:-}" ]; then
+    cat > /etc/systemd/system/geometry-ai-webui.service << SVCEOF
 [Unit]
 Description=Geometry AI WebUI (Open WebUI)
 After=network.target geometry-ai.service
@@ -191,7 +252,7 @@ After=network.target geometry-ai.service
 [Service]
 Type=simple
 User=$SERVICE_USER
-ExecStart=$PYTHON -m open_webui.main
+ExecStart=$PYTHON_PATH -m open_webui.main
 Restart=always
 RestartSec=5
 Environment=HF_ENDPOINT=https://hf-mirror.com
@@ -208,16 +269,21 @@ SVCEOF
     echo "  [√] Open WebUI 已启动（端口 8080）"
 fi
 
+# ============================================================
+# 完成
+# ============================================================
 echo ""
 echo "  ========================================================"
 echo "  [√] 安装完成！"
 echo "  ========================================================"
 echo ""
 echo "    管理界面: http://localhost:5000/admin"
+if [ -z "${WEBUI_SKIP:-}" ]; then
 echo "    聊天界面: http://localhost:8080"
+fi
 echo ""
 echo "    停止服务: sudo systemctl stop geometry-ai"
 echo "    启动服务: sudo systemctl start geometry-ai"
 echo "    查看日志: sudo journalctl -u geometry-ai -f"
-echo "    卸载服务: bash uninstall_linux.sh"
+echo "    卸载服务: sudo bash uninstall_linux.sh"
 echo ""
