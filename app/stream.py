@@ -16,6 +16,29 @@ import openai
 from config import KIMI_API_KEY, KIMI_BASE_URL, KIMI_MODEL, logger
 from tools import execute_tool_call
 
+# API 调用重试配置
+API_MAX_RETRIES = 3
+API_RETRY_DELAY = 2  # 秒
+
+
+def _is_retryable_error(e: Exception) -> bool:
+    """判断是否为可重试的网络/API 错误"""
+    retryable_keywords = [
+        'TransferEncodingError', 'IncompleteRead', 'ConnectionResetError',
+        'ConnectionError', 'RemoteProtocolError', 'timeout', 'timed out',
+        'Not enough data', 'Connection aborted', 'BrokenPipeError',
+        'APIConnectionError', 'APIStatusError', 'InternalServerError',
+        'ServiceUnavailableError', 'RateLimitError',
+    ]
+    err_str = str(e).lower()
+    for kw in retryable_keywords:
+        if kw.lower() in err_str:
+            return True
+    # HTTP 429/500/502/503/504 都可重试
+    if hasattr(e, 'status_code') and e.status_code in (429, 500, 502, 503, 504):
+        return True
+    return False
+
 
 def parse_dsml_tool_calls(text: str) -> list:
     """
@@ -126,57 +149,74 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
         return f"data: {json.dumps(err, ensure_ascii=False)}\n\n"
 
     def _stream_text(params):
-        """真正流式调用 AI模型，逐 token 透传给客户端"""
+        """真正流式调用 AI模型，逐 token 透传给客户端（含重试）"""
         params["stream"] = True
-        stream = client.chat.completions.create(**params)
-        text_buf = ""
-        fr = "stop"
-        # DSML 过滤状态
-        dsml_depth = 0  # 嵌套深度计数
-        dsml_buffer = ""  # 缓冲区，用于检测 DSML 开始标签
-        dsml_tag_pattern = re.compile(r'<｜｜DSML｜｜')
-        for chunk in stream:
-            if chunk.choices:
-                delta = chunk.choices[0].delta
-                if delta.content:
-                    text_buf += delta.content
-                    # DSML 过滤：检测到 DSML 开始标签后，停止透传直到所有标签关闭
-                    if dsml_depth > 0:
-                        # 在 DSML 块内，不透传，只跟踪嵌套深度
-                        dsml_buffer += delta.content
-                        # 计算开启和关闭标签数量
-                        open_tags = len(dsml_tag_pattern.findall(dsml_buffer))
-                        close_tags = dsml_buffer.count('</｜｜DSML｜｜')
-                        dsml_depth = open_tags - close_tags
-                        if dsml_depth <= 0:
-                            # DSML 块结束，清空缓冲区
-                            dsml_buffer = ""
-                            dsml_depth = 0
-                        continue
-                    # 检查是否新 token 开始了 DSML 块
-                    if '<｜｜DSML｜｜' in delta.content:
-                        # 可能是 DSML 开始，先缓冲
-                        dsml_buffer = delta.content
-                        open_tags = len(dsml_tag_pattern.findall(dsml_buffer))
-                        close_tags = dsml_buffer.count('</｜｜DSML｜｜')
-                        dsml_depth = open_tags - close_tags
-                        if dsml_depth > 0:
-                            continue  # 确认在 DSML 块内，不透传
-                        # 如果开启和关闭标签数量相等（自闭合），清空缓冲区
-                        dsml_buffer = ""
-                        continue  # 即使自闭合也不透传
-                    yield _sse_chunk({"content": delta.content})
-                cfr = getattr(chunk.choices[0], 'finish_reason', None)
-                if cfr:
-                    fr = cfr
-            if hasattr(chunk, 'usage') and chunk.usage:
-                nonlocal _usage_info
-                _usage_info = {
-                    "prompt_tokens": chunk.usage.prompt_tokens or 0,
-                    "completion_tokens": chunk.usage.completion_tokens or 0,
-                    "total_tokens": chunk.usage.total_tokens or 0
-                }
-        yield _sse_chunk({}, fr, usage=_usage_info if _usage_info else None)
+        last_error = None
+        for _attempt in range(API_MAX_RETRIES):
+            try:
+                stream = client.chat.completions.create(**params)
+                text_buf = ""
+                fr = "stop"
+                # DSML 过滤状态
+                dsml_depth = 0  # 嵌套深度计数
+                dsml_buffer = ""  # 缓冲区，用于检测 DSML 开始标签
+                dsml_tag_pattern = re.compile(r'<｜｜DSML｜｜')
+                for chunk in stream:
+                    if chunk.choices:
+                        delta = chunk.choices[0].delta
+                        if delta.content:
+                            text_buf += delta.content
+                            # DSML 过滤：检测到 DSML 开始标签后，停止透传直到所有标签关闭
+                            if dsml_depth > 0:
+                                # 在 DSML 块内，不透传，只跟踪嵌套深度
+                                dsml_buffer += delta.content
+                                # 计算开启和关闭标签数量
+                                open_tags = len(dsml_tag_pattern.findall(dsml_buffer))
+                                close_tags = dsml_buffer.count('</｜｜DSML｜｜')
+                                dsml_depth = open_tags - close_tags
+                                if dsml_depth <= 0:
+                                    # DSML 块结束，清空缓冲区
+                                    dsml_buffer = ""
+                                    dsml_depth = 0
+                                continue
+                            # 检查是否新 token 开始了 DSML 块
+                            if '<｜｜DSML｜｜' in delta.content:
+                                # 可能是 DSML 开始，先缓冲
+                                dsml_buffer = delta.content
+                                open_tags = len(dsml_tag_pattern.findall(dsml_buffer))
+                                close_tags = dsml_buffer.count('</｜｜DSML｜｜')
+                                dsml_depth = open_tags - close_tags
+                                if dsml_depth > 0:
+                                    continue  # 确认在 DSML 块内，不透传
+                                # 如果开启和关闭标签数量相等（自闭合），清空缓冲区
+                                dsml_buffer = ""
+                                continue  # 即使自闭合也不透传
+                            yield _sse_chunk({"content": delta.content})
+                        cfr = getattr(chunk.choices[0], 'finish_reason', None)
+                        if cfr:
+                            fr = cfr
+                    if hasattr(chunk, 'usage') and chunk.usage:
+                        nonlocal _usage_info
+                        _usage_info = {
+                            "prompt_tokens": chunk.usage.prompt_tokens or 0,
+                            "completion_tokens": chunk.usage.completion_tokens or 0,
+                            "total_tokens": chunk.usage.total_tokens or 0
+                        }
+                yield _sse_chunk({}, fr, usage=_usage_info if _usage_info else None)
+                yield "data: [DONE]\n\n"
+                return  # 成功完成，退出重试循环
+            except Exception as e:
+                last_error = e
+                if _is_retryable_error(e) and _attempt < API_MAX_RETRIES - 1:
+                    logger.warning(f"[STREAM-RETRY] _stream_text 第{_attempt+1}次失败: {e}，{API_RETRY_DELAY}秒后重试...")
+                    yield _sse_chunk({"content": f"\n\n⏳ 连接中断，正在重试 ({_attempt+1}/{API_MAX_RETRIES})...\n"})
+                    time.sleep(API_RETRY_DELAY)
+                    continue
+                else:
+                    logger.error(f"[STREAM] _stream_text 最终失败: {e}")
+                    break
+        # 所有重试都失败
+        yield _sse_error(f"生成错误（已重试{API_MAX_RETRIES}次）: {last_error}")
         yield "data: [DONE]\n\n"
 
     # 第一个 chunk：发送 role
@@ -227,63 +267,118 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
 
         # 第一轮用流式调用，逐 token 透传（创建副本避免修改原始参数）
         round_params = {**api_params, "stream": True}
-        try:
-            stream = client.chat.completions.create(**round_params)
-        except Exception as e:
-            logger.error(f"[STREAM] 生成错误: {e}")
-            yield _sse_error(f"生成错误: {e}")
-            yield "data: [DONE]\n\n"
-            return
+        stream = None
+        for _api_attempt in range(API_MAX_RETRIES):
+            try:
+                stream = client.chat.completions.create(**round_params)
+                break  # 成功
+            except Exception as e:
+                if _is_retryable_error(e) and _api_attempt < API_MAX_RETRIES - 1:
+                    logger.warning(f"[STREAM-RETRY] 工具轮 第{_api_attempt+1}次 API 调用失败: {e}，{API_RETRY_DELAY}秒后重试...")
+                    time.sleep(API_RETRY_DELAY)
+                    continue
+                else:
+                    logger.error(f"[STREAM] 生成错误: {e}")
+                    yield _sse_error(f"生成错误: {e}")
+                    yield "data: [DONE]\n\n"
+                    return
 
-        # 收集流式响应
+        # 收集流式响应（含流式读取重试）
         collected_content = ""
         collected_reasoning = ""  # DeepSeek 思考模式
         collected_tool_calls = {}  # {index: {id, type, function: {name, arguments}}}
         finish_reason = None
 
-        for chunk in stream:
-            if not chunk.choices:
-                continue
-            delta = chunk.choices[0].delta
+        try:
+            for chunk in stream:
+                if not chunk.choices:
+                    continue
+                delta = chunk.choices[0].delta
 
-            # 收集文本内容（不立即透传，等确认无 tool_calls 后再透传）
-            if delta.content:
-                collected_content += delta.content
+                # 收集文本内容（不立即透传，等确认无 tool_calls 后再透传）
+                if delta.content:
+                    collected_content += delta.content
 
-            # 收集 reasoning_content（DeepSeek 思考模式）
-            if hasattr(delta, 'reasoning_content') and delta.reasoning_content:
-                collected_reasoning += delta.reasoning_content
+                # 收集 reasoning_content（DeepSeek 思考模式）
+                if hasattr(delta, 'reasoning_content') and delta.reasoning_content:
+                    collected_reasoning += delta.reasoning_content
 
-            # 收集 tool_calls（流式增量）
-            if hasattr(delta, 'tool_calls') and delta.tool_calls:
-                for tc_delta in delta.tool_calls:
-                    idx = tc_delta.index
-                    if idx not in collected_tool_calls:
-                        collected_tool_calls[idx] = {
-                            "id": tc_delta.id or "",
-                            "type": "function",
-                            "function": {"name": "", "arguments": ""}
-                        }
-                    if tc_delta.id:
-                        collected_tool_calls[idx]["id"] = tc_delta.id
-                    if tc_delta.function:
-                        if tc_delta.function.name:
-                            collected_tool_calls[idx]["function"]["name"] += tc_delta.function.name
-                        if tc_delta.function.arguments:
-                            collected_tool_calls[idx]["function"]["arguments"] += tc_delta.function.arguments
+                # 收集 tool_calls（流式增量）
+                if hasattr(delta, 'tool_calls') and delta.tool_calls:
+                    for tc_delta in delta.tool_calls:
+                        idx = tc_delta.index
+                        if idx not in collected_tool_calls:
+                            collected_tool_calls[idx] = {
+                                "id": tc_delta.id or "",
+                                "type": "function",
+                                "function": {"name": "", "arguments": ""}
+                            }
+                        if tc_delta.id:
+                            collected_tool_calls[idx]["id"] = tc_delta.id
+                        if tc_delta.function:
+                            if tc_delta.function.name:
+                                collected_tool_calls[idx]["function"]["name"] += tc_delta.function.name
+                            if tc_delta.function.arguments:
+                                collected_tool_calls[idx]["function"]["arguments"] += tc_delta.function.arguments
 
-            # 收集 finish_reason
-            cfr = getattr(chunk.choices[0], 'finish_reason', None)
-            if cfr:
-                finish_reason = cfr
+                # 收集 finish_reason
+                cfr = getattr(chunk.choices[0], 'finish_reason', None)
+                if cfr:
+                    finish_reason = cfr
 
-            # 收集 usage
-            if hasattr(chunk, 'usage') and chunk.usage:
-                _usage_info = {
-                    "prompt_tokens": chunk.usage.prompt_tokens or 0,
-                    "completion_tokens": chunk.usage.completion_tokens or 0,
-                    "total_tokens": chunk.usage.total_tokens or 0
-                }
+                # 收集 usage
+                if hasattr(chunk, 'usage') and chunk.usage:
+                    _usage_info = {
+                        "prompt_tokens": chunk.usage.prompt_tokens or 0,
+                        "completion_tokens": chunk.usage.completion_tokens or 0,
+                        "total_tokens": chunk.usage.total_tokens or 0
+                    }
+        except Exception as e:
+            logger.warning(f"[STREAM-RETRY] 工具轮流式读取中断: {e}")
+            # 流式读取中断时，如果已有 tool_calls 但不完整，丢弃本轮结果
+            if _is_retryable_error(e) and not collected_tool_calls:
+                # 没有 tool_calls 时可以安全重试
+                logger.warning(f"[STREAM-RETRY] 无 tool_calls，重试 API 调用...")
+                time.sleep(API_RETRY_DELAY)
+                try:
+                    stream = client.chat.completions.create(**round_params)
+                    for chunk in stream:
+                        if not chunk.choices:
+                            continue
+                        delta = chunk.choices[0].delta
+                        if delta.content:
+                            collected_content += delta.content
+                        if hasattr(delta, 'reasoning_content') and delta.reasoning_content:
+                            collected_reasoning += delta.reasoning_content
+                        if hasattr(delta, 'tool_calls') and delta.tool_calls:
+                            for tc_delta in delta.tool_calls:
+                                idx = tc_delta.index
+                                if idx not in collected_tool_calls:
+                                    collected_tool_calls[idx] = {
+                                        "id": tc_delta.id or "",
+                                        "type": "function",
+                                        "function": {"name": "", "arguments": ""}
+                                    }
+                                if tc_delta.id:
+                                    collected_tool_calls[idx]["id"] = tc_delta.id
+                                if tc_delta.function:
+                                    if tc_delta.function.name:
+                                        collected_tool_calls[idx]["function"]["name"] += tc_delta.function.name
+                                    if tc_delta.function.arguments:
+                                        collected_tool_calls[idx]["function"]["arguments"] += tc_delta.function.arguments
+                        cfr = getattr(chunk.choices[0], 'finish_reason', None)
+                        if cfr:
+                            finish_reason = cfr
+                        if hasattr(chunk, 'usage') and chunk.usage:
+                            _usage_info = {
+                                "prompt_tokens": chunk.usage.prompt_tokens or 0,
+                                "completion_tokens": chunk.usage.completion_tokens or 0,
+                                "total_tokens": chunk.usage.total_tokens or 0
+                            }
+                except Exception as e2:
+                    logger.error(f"[STREAM-RETRY] 重试也失败: {e2}")
+            else:
+                logger.error(f"[STREAM] 工具轮流式读取失败（不可重试）: {e}")
 
         # 判断是否有 tool_calls（包括 API 结构化的和 DSML 文本格式的）
         if not collected_tool_calls:
