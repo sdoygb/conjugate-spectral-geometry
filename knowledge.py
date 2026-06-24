@@ -136,10 +136,10 @@ class LocalEmbeddingFunction:
                 self._model = TextEmbedding(model_name=self.model_name)
                 logger.info("[EMBEDDING] 中文 embedding 模型加载成功")
             except ImportError:
-                logger.error("[EMBEDDING] fastembed 未安装，请运行: pip install fastembed")
+                logger.warning("[EMBEDDING] fastembed 未安装，将回退到SiliconFlow API")
                 raise
             except Exception as e:
-                logger.error(f"[EMBEDDING] 模型加载失败: {e}")
+                logger.warning(f"[EMBEDDING] 模型加载失败，将回退到SiliconFlow API: {e}")
                 raise
         return self._model
 
