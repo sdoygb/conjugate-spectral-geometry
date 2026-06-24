@@ -12,8 +12,7 @@ set -e
 # ============================================================
 _do_configure() {
     echo ""
-    echo "  请输入你的 DeepSeek API Key"
-    echo "  获取地址: https://platform.deepseek.com"
+    echo "  请输入你的 DeepSeek API Key（免费注册: https://platform.deepseek.com/）"
     echo ""
     read -p "  API Key: " API_KEY
 
@@ -33,6 +32,7 @@ GAI_MODEL_VISION=deepseek-v4-flash
 GAI_EMBEDDING_MODEL=deepseek-v4-flash
 
 # Embedding 配置：使用 SiliconFlow API (BAAI/bge-large-zh-v1.5, 1024维)
+# 免费注册: https://cloud.siliconflow.cn/
 # 这是经过调试的最佳方案，不要改为 local 或 api
 GAI_EMBEDDING_MODE=siliconflow
 SILICONFLOW_API_KEY=sk-fgdbxbqxfyztyxdoknxjcgnpdngpbqflwdwdkzqjkrxphdqd
@@ -231,32 +231,6 @@ if _wait_for_url "http://localhost:5000/health" 30; then
     echo -e "${GREEN}[√] Geometry AI Server 已启动（端口 5000）${NC}"
 else
     echo -e "${YELLOW}[!] Geometry AI Server 启动较慢，请稍候...${NC}"
-fi
-
-# ============================================================
-# Step 5: 安装并启动 Open WebUI
-# ============================================================
-echo ""
-echo -e "${CYAN}[5/6] 安装 Open WebUI（聊天界面）...${NC}"
-
-# 设置 HuggingFace 镜像（国内网络加速）
-export HF_ENDPOINT="https://hf-mirror.com"
-export SENTENCE_TRANSFORMERS_HOME="$INSTALL_DIR/models_cache"
-
-if "$PYTHON" -c "import open_webui" 2>/dev/null; then
-    echo -e "${GREEN}[√] Open WebUI 已安装${NC}"
-else
-    echo "  正在安装 Open WebUI（需要几分钟，首次会下载模型）..."
-    echo "  使用国内镜像加速..."
-    "$PYTHON" -m pip install --quiet --disable-pip-version-check \
-        -i https://pypi.tuna.tsinghua.edu.cn/simple \
-        open-webui 2>/dev/null
-    if "$PYTHON" -c "import open_webui" 2>/dev/null; then
-        echo -e "${GREEN}[√] Open WebUI 安装完成${NC}"
-    else
-        echo -e "${YELLOW}[!] Open WebUI 安装失败，聊天功能暂不可用${NC}"
-        echo "  可稍后手动运行: $PYTHON -m pip install open-webui"
-    fi
 fi
 
 # ============================================================

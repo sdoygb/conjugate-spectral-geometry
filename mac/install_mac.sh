@@ -12,8 +12,7 @@ set -e
 # ============================================================
 _do_configure() {
     echo ""
-    echo "  请输入你的 DeepSeek API Key"
-    echo "  获取地址: https://platform.deepseek.com"
+    echo "  请输入你的 DeepSeek API Key（免费注册: https://platform.deepseek.com/）"
     echo ""
     read -p "  API Key: " API_KEY
 
@@ -33,6 +32,7 @@ GAI_MODEL_VISION=deepseek-v4-flash
 GAI_EMBEDDING_MODEL=deepseek-v4-flash
 
 # Embedding 配置：使用 SiliconFlow API (BAAI/bge-large-zh-v1.5, 1024维)
+# 免费注册: https://cloud.siliconflow.cn/
 # 这是经过调试的最佳方案，不要改为 local 或 api
 GAI_EMBEDDING_MODE=siliconflow
 SILICONFLOW_API_KEY=sk-fgdbxbqxfyztyxdoknxjcgnpdngpbqflwdwdkzqjkrxphdqd
