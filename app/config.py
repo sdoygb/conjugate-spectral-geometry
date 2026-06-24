@@ -2,8 +2,6 @@
 config.py — 几何论AI调度中间层配置模块
 从 geometry_ai_server_v5_12.py 提取的配置、常量、日志和工具函数。
 """
-from flask import jsonify
-
 import os
 import sys
 
@@ -16,10 +14,6 @@ try:
 except ImportError:
     pass  # python-dotenv 未安装，跳过
 import re
-import math
-import json
-import random
-import hashlib
 import logging
 import logging.handlers
 import time
@@ -30,8 +24,6 @@ from collections import defaultdict, Counter
 # 项目根目录（所有相对路径基于此）
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 from typing import List, Tuple, Dict, Optional, Any
-
-import openai
 
 try:
     import chromadb
@@ -53,7 +45,6 @@ logging.basicConfig(
     format='%(asctime)s [%(levelname)s] %(message)s',
     handlers=[
         logging.StreamHandler(sys.stdout),
-        logging.FileHandler(os.path.join(_LOG_DIR, 'geometry_ai.log'), encoding='utf-8'),
         # 按天轮转，保留最近 7 天
         logging.handlers.TimedRotatingFileHandler(
             os.path.join(_LOG_DIR, 'geometry_ai.log'),
@@ -71,19 +62,19 @@ logger = logging.getLogger(__name__)
 CHROMA_DB_DIR = os.getenv('CHROMA_DB_DIR', os.path.join(PROJECT_ROOT, 'chroma_db'))
 
 GAI_API_KEY = os.getenv('GAI_API_KEY', '')
-GAI_BASE_URL = os.getenv('GAI_BASE_URL', 'https://api.moonshot.cn/v1')
-GAI_MODEL = os.getenv('GAI_MODEL', 'kimi-k2.7-code')
-GAI_MODEL_LITE = os.getenv('GAI_MODEL_LITE', 'kimi-k2.7')  # 轻量模型，用于简单问题
-GAI_MODEL_VISION = os.getenv('GAI_MODEL_VISION', 'kimi-k2.6')  # 视觉模型，用于图片输入
-GAI_EMBEDDING_MODEL = os.getenv('GAI_EMBEDDING_MODEL', 'moonshot-embedding-v1')
+GAI_BASE_URL = os.getenv('GAI_BASE_URL', 'https://api.deepseek.com/v1')
+GAI_MODEL = os.getenv('GAI_MODEL', 'deepseek-v4-pro')
+GAI_MODEL_LITE = os.getenv('GAI_MODEL_LITE', 'deepseek-v4-flash')  # 轻量模型，用于简单问题
+GAI_MODEL_VISION = os.getenv('GAI_MODEL_VISION', 'deepseek-v4-flash')  # 视觉模型，用于图片输入
+GAI_EMBEDDING_MODEL = os.getenv('GAI_EMBEDDING_MODEL', 'deepseek-v4-flash')
 
 # 额外模型（逗号分隔，会暴露给 Open WebUI）
 # 例如: EXTRA_MODELS=deepseek-v4-lite,deepseek-coder,claude-3-haiku
 EXTRA_MODELS = [m.strip() for m in os.getenv('EXTRA_MODELS', '').split(',') if m.strip()]
 
-# Embedding 模式：'local' 使用本地中文模型（推荐），'api' 使用 LLM API，'default' 使用 ChromaDB 内置模型
-EMBEDDING_MODE = os.getenv('GT_EMBEDDING_MODE', 'local')
-LOCAL_EMBEDDING_MODEL = os.getenv('GT_LOCAL_EMBEDDING_MODEL', 'BAAI/bge-small-zh-v1.5')
+# Embedding 模式：'local' 使用本地中文模型，'api' 使用 LLM API，'siliconflow' 使用 SiliconFlow API
+EMBEDDING_MODE = os.getenv('GAI_EMBEDDING_MODE', 'siliconflow')
+LOCAL_EMBEDDING_MODEL = os.getenv('GAI_LOCAL_EMBEDDING_MODEL', 'BAAI/bge-small-zh-v1.5')
 
 UPLOAD_FOLDER = os.getenv('UPLOAD_FOLDER', os.path.join(PROJECT_ROOT, 'articles'))
 
@@ -133,15 +124,15 @@ _injected_files_lock = threading.Lock()
 # ==================== OpenAI 标准错误格式 ====================
 
 def openai_error(message: str, err_type: str = "server_error", code: str = None, status: int = 500):
-    """生成符合 OpenAI 规范的错误响应"""
-    return jsonify({
+    """生成符合 OpenAI 规范的错误响应（返回 dict，由调用方包装 jsonify）"""
+    return {
         "error": {
             "message": message,
             "type": err_type,
             "param": None,
             "code": code
         }
-    }), status
+    }, status
 
 # ==================== 个人数据库 ====================
 # 存储 AI 的性格、感情、想法、私人记忆等几何论以外的内容

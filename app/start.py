@@ -45,7 +45,7 @@ def run(cmd, check=True):
 def check_python_version():
     """检查 Python 版本 >= 3.9"""
     ver = sys.version_info
-    print(f"{CYAN}[1/5] Python 版本检查{RESET}")
+    print(f"{CYAN}[1/6] Python 版本检查{RESET}")
     print(f"      当前版本: Python {ver.major}.{ver.minor}.{ver.micro}")
     if ver.major < 3 or (ver.major == 3 and ver.minor < 9):
         print(f"{RED}      ✗ 需要 Python 3.9 或更高版本{RESET}")
@@ -56,7 +56,7 @@ def check_python_version():
 
 def check_pip():
     """检查 pip 是否可用"""
-    print(f"{CYAN}[2/5] pip 检查{RESET}")
+    print(f"{CYAN}[2/6] pip 检查{RESET}")
     result = run("pip3 --version", check=False)
     if result.returncode != 0:
         result = run("pip --version", check=False)
@@ -90,7 +90,7 @@ def install_package(package, import_name=None):
 
 def check_dependencies():
     """检查并安装所有依赖"""
-    print(f"{CYAN}[3/5] 依赖检查与安装{RESET}")
+    print(f"{CYAN}[3/6] 依赖检查与安装{RESET}")
     deps = [
         ("openai", "openai"),
         ("flask", "flask"),
@@ -105,18 +105,18 @@ def check_dependencies():
 
 def check_env():
     """检查环境变量"""
-    print(f"{CYAN}[4/5] 环境变量检查{RESET}")
+    print(f"{CYAN}[4/6] 环境变量检查{RESET}")
     api_key = os.environ.get("GAI_API_KEY", "")
     if not api_key:
-        print(f"{YELLOW}      ⚠ API_KEY 未设置{RESET}")
+        print(f"{YELLOW}      ⚠ GAI_API_KEY 未设置{RESET}")
         print(f"      请设置环境变量：")
-        print(f"        export API_KEY=\"你的API密钥\"")
+        print(f"        export GAI_API_KEY=\"你的API密钥\"")
         print(f"      或在启动时传入：")
-        print(f"        API_KEY=xxx python3 server.py")
+        print(f"        GAI_API_KEY=xxx python3 server.py")
         print(f"")
         print(f"      免费注册：https://platform.deepseek.com")
     else:
-        print(f"{GREEN}      ✓ API_KEY 已设置 ({api_key[:8]}...){RESET}")
+        print(f"{GREEN}      ✓ GAI_API_KEY 已设置 ({api_key[:8]}...){RESET}")
 
     # 检查 chroma_db 目录
     script_dir = os.path.dirname(os.path.abspath(__file__))

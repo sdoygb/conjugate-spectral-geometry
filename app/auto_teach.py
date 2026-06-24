@@ -19,7 +19,10 @@ import re
 import os
 import json
 import time
+import logging
 import requests
+
+logger = logging.getLogger(__name__)
 
 ARTICLES_DIR = "/Users/oygb/AI/articles"
 API_BASE = "http://localhost:5000"
@@ -124,10 +127,10 @@ def inject_patch(topic: str, content: str, source: str) -> bool:
             data = resp.json()
             return data.get("success", True)
         else:
-            print(f"  [FAIL] {resp.status_code}: {resp.text[:100]}")
+            logger.info(f"  [FAIL] {resp.status_code}: {resp.text[:100]}")
             return False
     except Exception as e:
-        print(f"  [ERROR] {e}")
+        logger.info(f"  [ERROR] {e}")
         return False
 
 
@@ -138,7 +141,7 @@ def main():
         if f.endswith('.md') and not f.startswith('目录')
     ])
 
-    print(f"发现 {len(files)} 篇文章")
+    logger.info(f"发现 {len(files)} 篇文章")
 
     total_entries = 0
     total_injected = 0
@@ -166,14 +169,14 @@ def main():
         if ok:
             total_injected += 1
 
-    print(f"\n完成！共提取 {total_entries} 条知识，成功注入 {total_injected} 条")
+    logger.info(f"\n完成！共提取 {total_entries} 条知识，成功注入 {total_injected} 条")
 
     # 查看统计
     try:
         resp = requests.get(f"{API_BASE}/v1/teach/stats", timeout=5)
         if resp.status_code == 200:
             stats = resp.json()
-            print(f"教学系统统计: {json.dumps(stats, ensure_ascii=False, indent=2)}")
+            logger.info(f"教学系统统计: {json.dumps(stats, ensure_ascii=False, indent=2)}")
     except:
         pass
 

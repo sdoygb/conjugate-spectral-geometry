@@ -5,6 +5,7 @@ admin_routes.py — Geometry AI Server 管理后台路由
 
 import os
 import json
+import functools
 import logging
 from flask import Blueprint, render_template, request, jsonify, Response
 
@@ -16,6 +17,19 @@ admin_bp = Blueprint('admin', __name__)
 PROJECT_ROOT = _config_module.PROJECT_ROOT
 _LOG_DIR = _config_module._LOG_DIR
 logger = _config_module.logger
+
+
+def require_admin(f):
+    """简单的 admin 认证：通过环境变量 GAI_ADMIN_TOKEN 或默认 token 验证"""
+    @functools.wraps(f)
+    def decorated(*args, **kwargs):
+        token = os.getenv('GAI_ADMIN_TOKEN', 'geometry-ai-admin')
+        auth = request.headers.get('Authorization', '')
+        query_token = request.args.get('token', '')
+        if auth == f'Bearer {token}' or query_token == token:
+            return f(*args, **kwargs)
+        return jsonify({"error": "未授权访问", "code": 401}), 401
+    return decorated
 
 
 def _find_env_file():
@@ -135,11 +149,54 @@ def _mask_api_key(key):
 
 @admin_bp.route('/admin')
 def admin_page():
-    """渲染管理页面"""
-    return render_template('admin.html')
+    """渲染管理页面（未认证时显示登录表单）"""
+    token = os.getenv('GAI_ADMIN_TOKEN', 'geometry-ai-admin')
+    auth = request.headers.get('Authorization', '')
+    query_token = request.args.get('token', '')
+    if auth == f'Bearer {token}' or query_token == token:
+        return render_template('admin.html')
+    # 未认证，显示登录表单
+    login_html = '''<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Geometry AI 管理后台 - 登录</title>
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f5f5f5; }
+.card { background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.1); padding: 40px; width: 360px; }
+h2 { margin: 0 0 20px; color: #333; text-align: center; }
+input[type=password] { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box; margin-bottom: 16px; }
+button { width: 100%; padding: 10px; background: #4a90d9; color: #fff; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; }
+button:hover { background: #357abd; }
+.error { color: #e74c3c; font-size: 13px; text-align: center; margin-bottom: 12px; display: none; }
+</style>
+</head>
+<body>
+<div class="card">
+<h2>Geometry AI 管理后台</h2>
+<p class="error" id="error">Token 不正确，请重试</p>
+<form id="loginForm">
+<input type="password" id="tokenInput" placeholder="请输入 Admin Token" autofocus>
+<button type="submit">登 录</button>
+</form>
+</div>
+<script>
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var t = document.getElementById('tokenInput').value.trim();
+    if (t) { window.location.href = '/admin?token=' + encodeURIComponent(t); }
+});
+if (new URLSearchParams(window.location.search).get('error') === '1') {
+    document.getElementById('error').style.display = 'block';
+}
+</script>
+</body>
+</html>'''
+    return Response(login_html, mimetype='text/html; charset=utf-8')
 
 
 @admin_bp.route('/admin/config', methods=['GET'])
+@require_admin
 def admin_get_config():
     """
     读取 .env 配置文件，返回 JSON 格式的配置。
@@ -160,6 +217,7 @@ def admin_get_config():
 
 
 @admin_bp.route('/admin/config', methods=['POST'])
+@require_admin
 def admin_save_config():
     """
     保存 .env 配置文件。
@@ -212,6 +270,7 @@ def admin_save_config():
 
 
 @admin_bp.route('/admin/logs')
+@require_admin
 def admin_logs():
     """
     返回最近的日志内容（纯文本）。
@@ -239,6 +298,7 @@ def admin_logs():
 
 
 @admin_bp.route('/admin/restart', methods=['POST'])
+@require_admin
 def admin_restart():
     """
     重启中间层服务。

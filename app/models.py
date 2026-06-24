@@ -22,24 +22,22 @@ from typing import List, Tuple, Dict, Optional, Any
 logger = logging.getLogger(__name__)
 
 # 从 config 导入（主文件中定义的常量）
-# 注意：实际使用时需要确保 config 模块已正确配置
-# 以下 import 在 config 模块创建后取消注释：
-# from config import (
-#     PERSONAL_DB_PATH,
-#     UPLOAD_FOLDER,
-#     OPENWEBUI_UPLOAD_DIR,
-#     UPLOAD_SCAN_WINDOW,
-#     GEOMETRY_CONSTANTS,
-#     TERM_SYNONYMS,
-#     GAI_MODEL,
-#     _injected_files,
-#     _injected_files_lock,
-# )
+from config import (
+    PERSONAL_DB_PATH,
+    UPLOAD_FOLDER,
+    OPENWEBUI_UPLOAD_DIR,
+    UPLOAD_SCAN_WINDOW,
+    GEOMETRY_CONSTANTS,
+    TERM_SYNONYMS,
+    GAI_MODEL,
+    _injected_files,
+    _injected_files_lock,
+)
 
 # ==================== 个人数据库 ====================
 # 存储 AI 的性格、感情、想法、私人记忆等几何论以外的内容
 # 首次启动自动生成空库，不上传到 GitHub
-PERSONAL_DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'shouyi_personal.json')
+# PERSONAL_DB_PATH 已从 config 导入
 
 
 def _load_personal_db() -> Dict[str, Any]:
@@ -138,43 +136,7 @@ personal_db = _load_personal_db()
 
 # ==================== LivingInfoField（活体信息场） ====================
 
-# 以下常量在 config 模块创建后从 config 导入，此处保留占位
-# 实际使用时取消注释：
-# from config import GEOMETRY_CONSTANTS, TERM_SYNONYMS
-
-GEOMETRY_CONSTANTS = {
-    "S_e": 137.035999084,
-    "lambda1_eff": 391.05,
-    "lambda2_eff": 59324.3,
-    "chi_L": 1.5092231080e-10,
-    "chi_T": 3.6161912064e-17,
-    "K": 839.758793,
-    "Gamma_geo": 5.75e-23,
-    "tau_dec_days": 7.28,
-    "tau_dec_seconds": 7.28 * 24 * 3600,
-    "Lambda": 3,
-    "k0": 2,
-    "eta_background": 30.0,
-    "eta_p2": 72.53,
-    "theta_I_sat": 72.53,
-}
-
-TERM_SYNONYMS = {
-    "精细结构常数": ["alpha", "s_e", "137"],
-    "九素互扼": ["九素", "互扼", "互锁常数", "lambda", "k0"],
-    "谱刚性": ["laplace", "beltrami", "特征值", "等谱", "等距"],
-    "信息场": ["rho", "密度", "热方程", "退相干"],
-    "退相干": ["tau_dec", "因果深度", "n_dec", "7.28"],
-    "全息屏": ["screen", "sigma", "s2", "面积"],
-    "量纲桥": ["chi_l", "chi_t", "桥接", "尺度"],
-    "质量映射": ["k", "sin3", "theta_m", "能量尺度"],
-    "弱电统一": ["w", "z", "higgs", "混合角", "sin2_theta_w"],
-    "强相互作用": ["alpha_s", "色荷", "胶子", "禁闭"],
-    "中微子": ["neutrino", "m3", "m2", "m1", "质量"],
-    "氢原子": ["h1", "h2", "h3", "超精细", "基态"],
-    "引力": ["gravity", "g_9d", "lyapunov", "弱场"],
-    "自旋": ["spin", "1/2", "so3", "su2", "泡利"],
-}
+# GEOMETRY_CONSTANTS, TERM_SYNONYMS 已从 config 导入
 
 
 class LivingInfoField:
@@ -505,29 +467,7 @@ def allowed_file(filename: str) -> bool:
 
 # ==================== Open WebUI uploads 自动发现 ====================
 
-# 以下常量在 config 模块创建后从 config 导入，此处保留占位
-UPLOAD_FOLDER = os.getenv('UPLOAD_FOLDER', os.path.expanduser("~/AI/articles"))
-OPENWEBUI_UPLOAD_DIR = os.getenv('OPENWEBUI_UPLOAD_DIR', '')
-if not OPENWEBUI_UPLOAD_DIR or not os.path.exists(OPENWEBUI_UPLOAD_DIR):
-    _search_paths = [
-        os.path.expanduser('~/openwebui/venv/lib/python3.11/site-packages/open_webui/data/uploads'),
-        os.path.expanduser('~/open-webui/venv/lib/python3.11/site-packages/open_webui/data/uploads'),
-        '/app/backend/data/uploads',
-        os.path.expanduser('~/openwebui/data/uploads'),
-        os.path.expanduser('~/AI/open-webui/data/uploads'),
-        '/var/lib/docker/volumes/open-webui/_data/uploads',
-    ]
-    for p in _search_paths:
-        if os.path.exists(p):
-            OPENWEBUI_UPLOAD_DIR = p
-            break
-
-UPLOAD_SCAN_WINDOW = int(os.getenv('UPLOAD_SCAN_WINDOW', '600'))
-
-# 记录已注入的文件路径，避免重复注入
-_injected_files: Dict[str, str] = {}  # {filepath: mtime}
-import threading
-_injected_files_lock = threading.Lock()
+# UPLOAD_FOLDER, OPENWEBUI_UPLOAD_DIR, UPLOAD_SCAN_WINDOW 已从 config 导入
 
 
 def scan_openwebui_recent_uploads(max_files: int = 5) -> Tuple[str, List[Tuple[str, str]]]:
@@ -608,8 +548,7 @@ def scan_openwebui_recent_uploads(max_files: int = 5) -> Tuple[str, List[Tuple[s
 _memory_conversations: List[Dict[str, Any]] = []
 _memory_phase_markers: List[Dict[str, Any]] = []
 
-# GAI_MODEL 常量（从 config 导入，此处保留占位）
-GAI_MODEL = os.getenv('GAI_MODEL', 'kimi-k2.7-code')
+# GAI_MODEL 已从 config 导入
 
 
 def save_conversation(

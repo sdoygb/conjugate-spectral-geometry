@@ -34,7 +34,7 @@ GAI_EMBEDDING_MODEL=deepseek-v4-flash
 
 # Embedding 配置：使用 SiliconFlow API (BAAI/bge-large-zh-v1.5, 1024维)
 # 这是经过调试的最佳方案，不要改为 local 或 api
-GT_EMBEDDING_MODE=siliconflow
+GAI_EMBEDDING_MODE=siliconflow
 SILICONFLOW_API_KEY=sk-fgdbxbqxfyztyxdoknxjcgnpdngpbqflwdwdkzqjkrxphdqd
 EOF
     echo -e "${GREEN}[√] 配置已保存${NC}"

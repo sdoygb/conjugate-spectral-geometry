@@ -18,11 +18,11 @@ MYSQL_DB = os.getenv('MYSQL_DB', 'geometric_ai')
 
 # 公开接口用的只写用户（SELECT + INSERT）
 MYSQL_PUBLIC_USER = os.getenv('MYSQL_PUBLIC_USER', 'share_writer')
-MYSQL_PUBLIC_PASS = os.getenv('MYSQL_PUBLIC_PASS', 'Share2026!OnlyWrite')
+MYSQL_PUBLIC_PASS = os.getenv('MYSQL_PUBLIC_PASS', '')
 
 # 管理接口用的管理员用户
-MYSQL_ADMIN_USER = os.getenv('MYSQL_ADMIN_USER', 'geometric_AI')
-MYSQL_ADMIN_PASS = os.getenv('MYSQL_ADMIN_PASS', 'JcMJbG3SrjZtdk4A')
+MYSQL_ADMIN_USER = os.getenv('MYSQL_ADMIN_USER', '')
+MYSQL_ADMIN_PASS = os.getenv('MYSQL_ADMIN_PASS', '')
 
 # 自动选择 MySQL 地址：内网优先，公网备选
 _MYSQL_HOST_OVERRIDE = os.getenv('MYSQL_HOST', '')  # 环境变量可强制指定

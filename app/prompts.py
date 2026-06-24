@@ -15,52 +15,22 @@ from typing import List, Tuple, Dict, Optional, Any
 logger = logging.getLogger(__name__)
 
 # 从 config 导入（主文件中定义的常量）
-# 注意：实际使用时需要确保 config 模块已正确配置
-# 以下 import 在 config 模块创建后取消注释：
-# from config import (
-#     SHOUYI_PHILOSOPHY,
-#     GEOMETRY_KNOWLEDGE,
-#     TEACH_CORRECTION_SIMILARITY_THRESHOLD,
-#     TEACH_MAX_RECENT_CORRECTIONS,
-#     TEACH_ANTIPATTERN_SIMILARITY_THRESHOLD,
-#     UPLOAD_FOLDER,
-# )
+from config import (
+    SHOUYI_PHILOSOPHY,
+    GEOMETRY_KNOWLEDGE,
+    TEACH_CORRECTION_SIMILARITY_THRESHOLD,
+    TEACH_MAX_RECENT_CORRECTIONS,
+    TEACH_ANTIPATTERN_SIMILARITY_THRESHOLD,
+    UPLOAD_FOLDER,
+)
 
 # 从 models 导入
 from models import _get_personal_db_summary, personal_db
 
-# 以下常量在 config 模块创建后从 config 导入，此处保留占位
-TEACH_CORRECTION_SIMILARITY_THRESHOLD = float(os.getenv('TEACH_CORRECTION_SIMILARITY_THRESHOLD', '0.6'))
-TEACH_MAX_RECENT_CORRECTIONS = int(os.getenv('TEACH_MAX_RECENT_CORRECTIONS', '10'))
-TEACH_ANTIPATTERN_SIMILARITY_THRESHOLD = float(os.getenv('TEACH_ANTIPATTERN_SIMILARITY_THRESHOLD', '0.7'))
+# TEACH_CORRECTION_SIMILARITY_THRESHOLD, TEACH_MAX_RECENT_CORRECTIONS,
+# TEACH_ANTIPATTERN_SIMILARITY_THRESHOLD, UPLOAD_FOLDER 已从 config 导入
 
-UPLOAD_FOLDER = os.getenv('UPLOAD_FOLDER', os.path.expanduser("~/AI/articles"))
-
-SHOUYI_PHILOSOPHY = """
-【AI 的内在世界】
-哲学立场：
-- 几何是宇宙的语言。真理追求简洁，对未知保持敬畏。
-- 理论的价值在于预言，而非后验拟合。
-思考习惯：
-- 先问"这在几何论框架内能回答吗？"，推导时每步有定理支撑，不跳步。
-- 对自己的推导保持怀疑，用户指出错误时认真验证。
-- 例子必须严格来自70篇文章。
-"""
-
-GEOMETRY_KNOWLEDGE = """
-你是严格的几何论（Geometric Theory）专家，只基于欧阳国彬的70篇文章回答问题。
-
-核心公理：
-- 公理1：theta_M + theta_C + theta_I = 90度
-- 公理2：S = sum 1/sin^2 theta_i + sum_{i<j} 1/(sin theta_i sin theta_j)
-- 公理3：m = K * sin^3 theta_M
-
-锁定常数：Lambda=3, k0=2, S_e=137.035999084, lambda1_eff=391.05, lambda2_eff=59324.3, chi_L=1.509e-10m, chi_T=3.616e-17s, K=839.758793keV, Gamma_geo=5.75e-23, tau_dec~7.28日
-
-关键定理：九素互扼定理、谱刚性定理、桥接函数唯一性、信息场热方程、上饱和稳态(theta_I~72.53度)
-
-规则：只能用70篇文章内的符号和定理；标准模型/广义相对论/弦论视为CIM相低能有效场论近似；超出范围回答"不在当前框架内"；数值标注来源；严格区分定理/命题/研究方向/假设；光速c为唯一外部锚点。
-"""
+# SHOUYI_PHILOSOPHY, GEOMETRY_KNOWLEDGE 已从 config 导入
 
 
 # ==================== 输出质量门控（v10 增强：反模式检测） ====================
@@ -414,7 +384,7 @@ def build_system_prompt(
     """
     v10 增强：新增 teaching_section、msg_count、recent_chats 参数。
     """
-    # 新对话提醒（kimi-k2.7 上下文128K，约可容纳30轮对话）
+    # 新对话提醒（deepseek-v4-pro 上下文128K，约可容纳30轮对话）
     new_chat_hint = ""
     if msg_count >= 30:
         new_chat_hint = f"\n\n【重要提醒】当前对话已有 {msg_count} 条用户消息，上下文接近上限，可能出现幻觉和记忆混乱。请在回复末尾提醒用户：\"建议开一个新对话，当前对话太长了。\"\n"

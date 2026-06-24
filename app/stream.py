@@ -161,6 +161,7 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                 dsml_depth = 0  # 嵌套深度计数
                 dsml_buffer = ""  # 缓冲区，用于检测 DSML 开始标签
                 dsml_tag_pattern = re.compile(r'<｜｜DSML｜｜')
+                yield _sse_chunk({"role": "assistant"})
                 for chunk in stream:
                     if chunk.choices:
                         delta = chunk.choices[0].delta
@@ -220,7 +221,7 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
         yield "data: [DONE]\n\n"
 
     # 第一个 chunk：发送 role
-    yield _sse_chunk({"role": "assistant", "content": ""})
+    yield _sse_chunk({"role": "assistant"})
 
     for _round in range(max_tool_rounds):
         # 每轮调用前彻底清洗消息（DeepSeek 兼容）

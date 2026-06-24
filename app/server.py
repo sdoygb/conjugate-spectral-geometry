@@ -11,6 +11,7 @@ import hashlib
 import logging
 import time
 import threading
+import uuid
 from datetime import datetime
 from typing import List, Dict, Any, Optional
 
@@ -153,8 +154,8 @@ def extract_files_from_request(data: Dict[str, Any]):
                                     parts = file_url_obj.split(',', 1)
                                     if len(parts) == 2:
                                         fcontent = base64.b64decode(parts[1]).decode('utf-8', errors='replace')
-                                except Exception:
-                                    pass
+                                except Exception as e:
+                                    logger.debug(f"[FILES] base64解码失败: {e}")
                         if isinstance(fcontent, str) and fcontent:
                             files_content.append(
                                 f"--- 文件: {fname} ---\n{fcontent[:50000]}\n--- 文件结束 ---"
@@ -352,7 +353,7 @@ def _finalize_turn(
             logger.error(f"[TEACH-FINALIZE] 检查纠正应用失败: {e}")
 
     return {
-        "id": f"chatcmpl-{hashlib.md5(response_text.encode()).hexdigest()[:12]}",
+        "id": f"chatcmpl-{uuid.uuid4().hex[:24]}",
         "object": "chat.completion",
         "created": int(time.time()),
         "model": request_model or GAI_MODEL,
@@ -775,7 +776,6 @@ def list_models():
         {"id": GAI_MODEL, "object": "model", "created": _created, "owned_by": "provider"},
         {"id": GAI_MODEL_LITE, "object": "model", "created": _created, "owned_by": "provider"},
         {"id": GAI_MODEL_VISION, "object": "model", "created": _created, "owned_by": "provider"},
-        {"id": GAI_EMBEDDING_MODEL, "object": "model", "created": _created, "owned_by": "provider"},
     ]
     # 添加额外模型
     for m_id in EXTRA_MODELS:
@@ -1034,8 +1034,8 @@ def chat_completions():
         with open(_debug_path, 'a', encoding='utf-8') as _f:
             _safe = json.dumps(data, ensure_ascii=False, default=str)[:50000]
             _f.write(f"{datetime.now().isoformat()} | {_safe}\n")
-    except Exception:
-        pass
+    except Exception as e:
+        logger.debug(f"[DEBUG] 请求诊断日志写入失败: {e}")
 
     # 深度诊断最后一条 user 消息
     for m in reversed(data.get('messages', [])):
@@ -1436,8 +1436,8 @@ def chat_completions():
                                 c = d['choices'][0]['delta'].get('content', '')
                                 if c:
                                     collected.append(c)
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        logger.debug(f"[SSE] chunk JSON解析失败: {e}")
                 response_text = ''.join(collected)
                 # 在后台线程执行 finalize，不阻塞 SSE 响应
                 import threading
@@ -1583,8 +1583,8 @@ if __name__ == '__main__':
         try:
             cnt = len([f for f in os.listdir(OPENWEBUI_UPLOAD_DIR) if os.path.isfile(os.path.join(OPENWEBUI_UPLOAD_DIR, f))])
             logger.info(f"[STARTUP] Open WebUI uploads 目录中有 {cnt} 个文件")
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"[STARTUP] 列出上传目录失败: {e}")
 
     # 同步全局单例到 tools 模块
     import tools as _tools_mod
