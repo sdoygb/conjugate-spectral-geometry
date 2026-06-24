@@ -105,9 +105,9 @@ set "ENV_FILE=%APP_DIR%\.env"
 set "NEED_CONFIG=0"
 
 if exist "%ENV_FILE%" (
-    findstr /C:"KIMI_API_KEY=" "%ENV_FILE%" >nul 2>&1
+    findstr /C:"GAI_API_KEY=" "%ENV_FILE%" >nul 2>&1
     if %errorlevel%==0 (
-        findstr /C:"KIMI_API_KEY=在此" "%ENV_FILE%" >nul 2>&1
+        findstr /C:"GAI_API_KEY=在此" "%ENV_FILE%" >nul 2>&1
         if %errorlevel%==0 set "NEED_CONFIG=1"
     ) else (
         set "NEED_CONFIG=1"
@@ -118,6 +118,7 @@ if exist "%ENV_FILE%" (
 
 if "%NEED_CONFIG%"=="1" (
     echo.
+    echo   免费注册: https://platform.deepseek.com/
     echo   请输入你的 DeepSeek API Key
     echo   获取地址: https://platform.deepseek.com
     echo.
@@ -131,12 +132,12 @@ if "%NEED_CONFIG%"=="1" (
 
     (
         echo # Geometry AI Server 配置
-        echo KIMI_API_KEY=!API_KEY!
-        echo KIMI_BASE_URL=https://api.deepseek.com/v1
-        echo KIMI_MODEL=deepseek-v4-pro
-        echo KIMI_MODEL_LITE=deepseek-v4-flash
-        echo KIMI_MODEL_VISION=deepseek-v4-flash
-        echo KIMI_EMBEDDING_MODEL=deepseek-v4-flash
+        echo GAI_API_KEY=!API_KEY!
+        echo GAI_BASE_URL=https://api.deepseek.com/v1
+        echo GAI_MODEL=deepseek-v4-pro
+        echo GAI_MODEL_LITE=deepseek-v4-flash
+        echo GAI_MODEL_VISION=deepseek-v4-flash
+        echo GAI_EMBEDDING_MODEL=deepseek-v4-flash
     ) > "%ENV_FILE%"
     echo [√] 配置已保存
 ) else (

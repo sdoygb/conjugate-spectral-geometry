@@ -8,32 +8,32 @@ set -e
 ENV_FILE="/app/.env"
 
 if [ ! -f "$ENV_FILE" ]; then
-    if [ -n "$KIMI_API_KEY" ]; then
+    if [ -n "$GAI_API_KEY" ]; then
         # 从环境变量生成 .env
         cat > "$ENV_FILE" << EOF
 # Geometry AI Server 配置（Docker 自动生成）
-KIMI_API_KEY=${KIMI_API_KEY}
-KIMI_BASE_URL=${KIMI_BASE_URL:-https://api.deepseek.com/v1}
-KIMI_MODEL=${KIMI_MODEL:-deepseek-v4-pro}
-KIMI_MODEL_LITE=${KIMI_MODEL_LITE:-deepseek-v4-flash}
-KIMI_MODEL_VISION=${KIMI_MODEL_VISION:-deepseek-v4-flash}
-KIMI_EMBEDDING_MODEL=${KIMI_EMBEDDING_MODEL:-deepseek-v4-flash}
+GAI_API_KEY=${GAI_API_KEY}
+GAI_BASE_URL=${GAI_BASE_URL:-https://api.deepseek.com/v1}
+GAI_MODEL=${GAI_MODEL:-deepseek-v4-pro}
+GAI_MODEL_LITE=${GAI_MODEL_LITE:-deepseek-v4-flash}
+GAI_MODEL_VISION=${GAI_MODEL_VISION:-deepseek-v4-flash}
+GAI_EMBEDDING_MODEL=${GAI_EMBEDDING_MODEL:-deepseek-v4-flash}
 EOF
         echo "[INIT] .env 已从环境变量生成"
     else
         # 生成空模板
         cat > "$ENV_FILE" << EOF
 # Geometry AI Server 配置
-# 请在 docker run 时通过 -e KIMI_API_KEY=你的key 传入
+# 请在 docker run 时通过 -e GAI_API_KEY=你的key 传入
 # 或直接编辑此文件后重启容器
-KIMI_API_KEY=
-KIMI_BASE_URL=https://api.deepseek.com/v1
-KIMI_MODEL=deepseek-v4-pro
-KIMI_MODEL_LITE=deepseek-v4-flash
-KIMI_MODEL_VISION=deepseek-v4-flash
-KIMI_EMBEDDING_MODEL=deepseek-v4-flash
+GAI_API_KEY=
+GAI_BASE_URL=https://api.deepseek.com/v1
+GAI_MODEL=deepseek-v4-pro
+GAI_MODEL_LITE=deepseek-v4-flash
+GAI_MODEL_VISION=deepseek-v4-flash
+GAI_EMBEDDING_MODEL=deepseek-v4-flash
 EOF
-        echo "[WARN] 未设置 KIMI_API_KEY，请在 docker run 时传入 -e KIMI_API_KEY=你的key"
+        echo "[WARN] 未设置 GAI_API_KEY，请在 docker run 时传入 -e GAI_API_KEY=你的key"
     fi
 fi
 

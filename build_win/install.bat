@@ -136,7 +136,7 @@ echo.
 set "ENV_FILE=%INSTALL_DIR%\app\.env"
 if exist "%ENV_FILE%" (
     echo 检测到已有配置文件
-    findstr /C:"KIMI_API_KEY=" "%ENV_FILE%" >nul 2>&1
+    findstr /C:"GAI_API_KEY=" "%ENV_FILE%" >nul 2>&1
     if not errorlevel 1 (
         echo 配置已存在，跳过（如需修改请编辑 %ENV_FILE%）
         goto :start
@@ -144,6 +144,7 @@ if exist "%ENV_FILE%" (
 )
 
 :: 输入 API Key
+echo 免费注册: https://platform.deepseek.com/
 set /p "API_KEY=请输入你的 DeepSeek API Key（在 https://platform.deepseek.com 获取）: "
 if "%API_KEY%"=="" (
     echo [!] API Key 不能为空
@@ -154,12 +155,12 @@ if "%API_KEY%"=="" (
 :: 写入配置
 (
     echo # Geometry AI Server 配置
-    echo KIMI_API_KEY=%API_KEY%
-    echo KIMI_BASE_URL=https://api.deepseek.com/v1
-    echo KIMI_MODEL=deepseek-v4-pro
-    echo KIMI_MODEL_LITE=deepseek-v4-flash
-    echo KIMI_MODEL_VISION=deepseek-v4-flash
-    echo KIMI_EMBEDDING_MODEL=deepseek-v4-flash
+    echo GAI_API_KEY=%API_KEY%
+    echo GAI_BASE_URL=https://api.deepseek.com/v1
+    echo GAI_MODEL=deepseek-v4-pro
+    echo GAI_MODEL_LITE=deepseek-v4-flash
+    echo GAI_MODEL_VISION=deepseek-v4-flash
+    echo GAI_EMBEDDING_MODEL=deepseek-v4-flash
 ) > "%ENV_FILE%"
 echo [√] 配置已保存
 

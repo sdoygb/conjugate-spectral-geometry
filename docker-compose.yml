@@ -11,13 +11,13 @@ services:
       - "8080:8080"   # Open WebUI（聊天界面，对外开放）
     environment:
       # 必填：你的 DeepSeek API Key
-      - KIMI_API_KEY=${KIMI_API_KEY:-sk-your-api-key-here}
+      - GAI_API_KEY=${GAI_API_KEY:-sk-your-api-key-here}
       # 可选：自定义配置
-      - KIMI_BASE_URL=https://api.deepseek.com/v1
-      - KIMI_MODEL=deepseek-v4-pro
-      - KIMI_MODEL_LITE=deepseek-v4-flash
-      - KIMI_MODEL_VISION=deepseek-v4-flash
-      - KIMI_EMBEDDING_MODEL=deepseek-v4-flash
+      - GAI_BASE_URL=https://api.deepseek.com/v1
+      - GAI_MODEL=deepseek-v4-pro
+      - GAI_MODEL_LITE=deepseek-v4-flash
+      - GAI_MODEL_VISION=deepseek-v4-flash
+      - GAI_EMBEDDING_MODEL=deepseek-v4-flash
       # 国内镜像加速
       - HF_ENDPOINT=https://hf-mirror.com
       - OPENAI_API_BASE_URLS=http://localhost:5000/v1
