@@ -6,13 +6,80 @@ stream.py — 流式生成模块
 
 import hashlib
 import json
+import re
 import time
+import uuid
 from typing import List, Dict, Any
 
 import openai
 
 from config import KIMI_API_KEY, KIMI_BASE_URL, KIMI_MODEL, logger
 from tools import execute_tool_call
+
+
+def parse_dsml_tool_calls(text: str) -> list:
+    """
+    解析 DeepSeek 模型输出的 DSML 格式工具调用。
+    DSML 格式示例：
+        <｜｜DSML｜｜tool_calls>
+        <｜｜DSML｜｜invoke name="view_article">
+        <｜｜DSML｜｜parameter name="filename" string="true">0.3.1_量纲桥_CN_260626.6.md</｜｜DSML｜｜parameter>
+        </｜｜DSML｜｜invoke>
+        </｜｜DSML｜｜tool_calls>
+
+    返回与 OpenAI tool_calls 格式兼容的列表。
+    """
+    if not text or 'DSML' not in text:
+        return []
+
+    tool_calls = []
+    # 匹配所有 invoke 块
+    invoke_pattern = re.compile(
+        r'<｜｜DSML｜｜invoke\s+name="([^"]+)">(.*?)</｜｜DSML｜｜invoke>',
+        re.DOTALL
+    )
+
+    for match in invoke_pattern.finditer(text):
+        func_name = match.group(1)
+        params_block = match.group(2)
+
+        # 解析参数
+        args = {}
+        param_pattern = re.compile(
+            r'<｜｜DSML｜｜parameter\s+name="([^"]+)"\s+(?:string="[^"]*")?\s*>(.*?)</｜｜DSML｜｜parameter>',
+            re.DOTALL
+        )
+        for param_match in param_pattern.finditer(params_block):
+            param_name = param_match.group(1)
+            param_value = param_match.group(2).strip()
+
+            # 尝试转换为数字
+            try:
+                if '.' in param_value:
+                    param_value = float(param_value)
+                else:
+                    param_value = int(param_value)
+            except (ValueError, TypeError):
+                pass
+
+            # 处理布尔值
+            if param_value == 'true':
+                param_value = True
+            elif param_value == 'false':
+                param_value = False
+
+            args[param_name] = param_value
+
+        tool_calls.append({
+            "id": f"dsml_{uuid.uuid4().hex[:8]}",
+            "type": "function",
+            "function": {
+                "name": func_name,
+                "arguments": json.dumps(args, ensure_ascii=False)
+            }
+        })
+
+    return tool_calls
 
 
 def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: List[Dict],
@@ -189,7 +256,21 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                     "total_tokens": chunk.usage.total_tokens or 0
                 }
 
-        # 判断是否有 tool_calls
+        # 判断是否有 tool_calls（包括 API 结构化的和 DSML 文本格式的）
+        if not collected_tool_calls:
+            # 检查 content 中是否包含 DSML 格式的工具调用（DeepSeek 有时会输出这种格式）
+            dsml_calls = parse_dsml_tool_calls(collected_content)
+            if dsml_calls:
+                logger.info(f"[TOOL-DSML] 从 content 中解析到 {len(dsml_calls)} 个 DSML 工具调用")
+                for i, tc in enumerate(dsml_calls):
+                    collected_tool_calls[i] = tc
+                # 从 content 中移除 DSML 文本
+                dsml_block_pattern = re.compile(
+                    r'<｜｜DSML｜｜tool_calls>.*?</｜｜DSML｜｜tool_calls>',
+                    re.DOTALL
+                )
+                collected_content = dsml_block_pattern.sub('', collected_content).strip()
+
         if not collected_tool_calls:
             # 纯文本回复，现在一次性透传所有内容
             if collected_content:
