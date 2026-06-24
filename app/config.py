@@ -70,12 +70,12 @@ logger = logging.getLogger(__name__)
 # ChromaDB 持久化目录
 CHROMA_DB_DIR = os.getenv('CHROMA_DB_DIR', os.path.join(PROJECT_ROOT, 'chroma_db'))
 
-KIMI_API_KEY = os.getenv('KIMI_API_KEY', '')
-KIMI_BASE_URL = os.getenv('KIMI_BASE_URL', 'https://api.moonshot.cn/v1')
-KIMI_MODEL = os.getenv('KIMI_MODEL', 'kimi-k2.7-code')
-KIMI_MODEL_LITE = os.getenv('KIMI_MODEL_LITE', 'kimi-k2.7')  # 轻量模型，用于简单问题
-KIMI_MODEL_VISION = os.getenv('KIMI_MODEL_VISION', 'kimi-k2.6')  # 视觉模型，用于图片输入
-KIMI_EMBEDDING_MODEL = os.getenv('KIMI_EMBEDDING_MODEL', 'moonshot-embedding-v1')
+GAI_API_KEY = os.getenv('GAI_API_KEY', '')
+GAI_BASE_URL = os.getenv('GAI_BASE_URL', 'https://api.moonshot.cn/v1')
+GAI_MODEL = os.getenv('GAI_MODEL', 'kimi-k2.7-code')
+GAI_MODEL_LITE = os.getenv('GAI_MODEL_LITE', 'kimi-k2.7')  # 轻量模型，用于简单问题
+GAI_MODEL_VISION = os.getenv('GAI_MODEL_VISION', 'kimi-k2.6')  # 视觉模型，用于图片输入
+GAI_EMBEDDING_MODEL = os.getenv('GAI_EMBEDDING_MODEL', 'moonshot-embedding-v1')
 
 # 额外模型（逗号分隔，会暴露给 Open WebUI）
 # 例如: EXTRA_MODELS=deepseek-v4-lite,deepseek-coder,claude-3-haiku
@@ -254,9 +254,9 @@ _QUALITY_GREEN_SIGNALS = [
 # 常量用途说明：
 # ------------------------------------------------------------------
 # CHROMA_DB_DIR          - ChromaDB 向量数据库持久化目录
-# KIMI_API_KEY/BASE_URL  - LLM API 认证和端点配置
-# KIMI_MODEL/LITE        - 主模型和轻量模型名称
-# KIMI_EMBEDDING_MODEL   - LLM embedding 模型名称
+# GAI_API_KEY/BASE_URL  - LLM API 认证和端点配置
+# GAI_MODEL/LITE        - 主模型和轻量模型名称
+# GAI_EMBEDDING_MODEL   - LLM embedding 模型名称
 # EMBEDDING_MODE         - embedding 模式选择 (local/api/default)
 # LOCAL_EMBEDDING_MODEL  - 本地 embedding 模型名称
 # UPLOAD_FOLDER          - 文章上传目录

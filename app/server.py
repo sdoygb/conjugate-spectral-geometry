@@ -19,8 +19,8 @@ from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 
-from config import (logger, KIMI_API_KEY, KIMI_BASE_URL, KIMI_MODEL, KIMI_MODEL_LITE, KIMI_MODEL_VISION,
-                    KIMI_EMBEDDING_MODEL, UPLOAD_FOLDER, OPENWEBUI_UPLOAD_DIR, OPENWEBUI_DB_PATH,
+from config import (logger, GAI_API_KEY, GAI_BASE_URL, GAI_MODEL, GAI_MODEL_LITE, GAI_MODEL_VISION,
+                    GAI_EMBEDDING_MODEL, UPLOAD_FOLDER, OPENWEBUI_UPLOAD_DIR, OPENWEBUI_DB_PATH,
                     MAX_INJECT_CHARS, QUALITY_GATE_ENABLED, MAX_QUALITY_RETRIES,
                     _injected_files, _injected_files_lock, openai_error,
                     CHROMA_DB_DIR, CHROMADB_AVAILABLE, EMBEDDING_MODE, LOCAL_EMBEDDING_MODEL,
@@ -355,7 +355,7 @@ def _finalize_turn(
         "id": f"chatcmpl-{hashlib.md5(response_text.encode()).hexdigest()[:12]}",
         "object": "chat.completion",
         "created": int(time.time()),
-        "model": request_model or KIMI_MODEL,
+        "model": request_model or GAI_MODEL,
         "choices": [{
             "index": 0,
             "message": {"role": "assistant", "content": response_text},
@@ -545,7 +545,7 @@ def health_check():
         "build_date": BUILD_DATE,
         "description": "教学反馈版（无MySQL依赖）",
         "timestamp": datetime.now().isoformat(),
-        "model": KIMI_MODEL,
+        "model": GAI_MODEL,
         "vector_kb_initialized": vector_kb is not None and vector_kb.is_initialized,
         "articles_count": vector_kb.articles_count if vector_kb else 0,
         "learned_count": vector_kb.learned_count if vector_kb else 0,
@@ -574,7 +574,7 @@ def index_status():
         "patches_count": vector_kb.patches_count,
         "upload_folder": UPLOAD_FOLDER,
         "chroma_db_dir": CHROMA_DB_DIR,
-        "embedding_model": KIMI_EMBEDDING_MODEL,
+        "embedding_model": GAI_EMBEDDING_MODEL,
     })
 
 
@@ -772,10 +772,10 @@ def write_file(filename):
 def list_models():
     _created = 1700000000  # 固定时间戳
     _models = [
-        {"id": KIMI_MODEL, "object": "model", "created": _created, "owned_by": "provider"},
-        {"id": KIMI_MODEL_LITE, "object": "model", "created": _created, "owned_by": "provider"},
-        {"id": KIMI_MODEL_VISION, "object": "model", "created": _created, "owned_by": "provider"},
-        {"id": KIMI_EMBEDDING_MODEL, "object": "model", "created": _created, "owned_by": "provider"},
+        {"id": GAI_MODEL, "object": "model", "created": _created, "owned_by": "provider"},
+        {"id": GAI_MODEL_LITE, "object": "model", "created": _created, "owned_by": "provider"},
+        {"id": GAI_MODEL_VISION, "object": "model", "created": _created, "owned_by": "provider"},
+        {"id": GAI_EMBEDDING_MODEL, "object": "model", "created": _created, "owned_by": "provider"},
     ]
     # 添加额外模型
     for m_id in EXTRA_MODELS:
@@ -805,13 +805,13 @@ def embeddings():
     if not data.get('input'):
         return openai_error("Missing required parameter: input", err_type="invalid_request_error", status=400)
     # 缓存检查
-    model = data.get('model', KIMI_EMBEDDING_MODEL)
+    model = data.get('model', GAI_EMBEDDING_MODEL)
     input_data = data['input']
     cache_key = hashlib.md5((json.dumps(input_data, sort_keys=True) + model).encode()).hexdigest()
     if cache_key in _embedding_cache:
         return jsonify(_embedding_cache[cache_key])
     try:
-        client = openai.OpenAI(api_key=KIMI_API_KEY, base_url=KIMI_BASE_URL)
+        client = openai.OpenAI(api_key=GAI_API_KEY, base_url=GAI_BASE_URL)
         resp = client.embeddings.create(model=model, input=input_data)
         result = resp.model_dump()
         # 写入缓存
@@ -1371,7 +1371,7 @@ def chat_completions():
         logger.info(f"[TRIM] 历史消息字符截断: {total_chars} 字符, {len(final_messages)-1} 条")
     # 模型路由：简单问题用轻量模型节省 token
     _requested_model = data.get('model', '')
-    _selected_model = KIMI_MODEL
+    _selected_model = GAI_MODEL
     _query_lower = clean_query.lower() if clean_query else ""
     # 简单问题特征：短查询、无公式、无专业术语
     _is_simple = (
@@ -1383,8 +1383,8 @@ def chat_completions():
     if _requested_model:
         _selected_model = _requested_model
     elif _is_simple:
-        _selected_model = KIMI_MODEL_LITE
-        logger.info(f"[ROUTE] 简单问题，使用轻量模型: {KIMI_MODEL_LITE}")
+        _selected_model = GAI_MODEL_LITE
+        logger.info(f"[ROUTE] 简单问题，使用轻量模型: {GAI_MODEL_LITE}")
 
     api_params = {"model": _selected_model, "messages": final_messages, "tools": ARTICLE_TOOLS}
 
@@ -1458,7 +1458,7 @@ def chat_completions():
             }
         )
     else:
-        client = openai.OpenAI(api_key=KIMI_API_KEY, base_url=KIMI_BASE_URL)
+        client = openai.OpenAI(api_key=GAI_API_KEY, base_url=GAI_BASE_URL)
         try:
             # 质量门控 - 如果AI回复偏离几何论，自动重试
             # v10 增强：反模式检测触发重试时，在prompt中注入反模式警告

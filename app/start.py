@@ -106,7 +106,7 @@ def check_dependencies():
 def check_env():
     """检查环境变量"""
     print(f"{CYAN}[4/5] 环境变量检查{RESET}")
-    api_key = os.environ.get("KIMI_API_KEY", "")
+    api_key = os.environ.get("GAI_API_KEY", "")
     if not api_key:
         print(f"{YELLOW}      ⚠ API_KEY 未设置{RESET}")
         print(f"      请设置环境变量：")

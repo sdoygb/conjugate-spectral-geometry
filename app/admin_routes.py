@@ -65,8 +65,8 @@ def _write_env_file(filepath, config):
     """
     # 已知的配置键（只更新这些键，保留其他内容）
     known_keys = {
-        'KIMI_API_KEY', 'KIMI_BASE_URL', 'KIMI_MODEL', 'KIMI_MODEL_LITE',
-        'KIMI_MODEL_VISION', 'KIMI_EMBEDDING_MODEL', 'GT_EMBEDDING_MODE',
+        'GAI_API_KEY', 'GAI_BASE_URL', 'GAI_MODEL', 'GAI_MODEL_LITE',
+        'GAI_MODEL_VISION', 'GAI_EMBEDDING_MODEL', 'GT_EMBEDDING_MODE',
         'GT_LOCAL_EMBEDDING_MODEL', 'EXTRA_MODELS',
     }
 
@@ -149,8 +149,8 @@ def admin_get_config():
     config = _parse_env_file(env_path)
 
     # 对 API Key 进行脱敏
-    if 'KIMI_API_KEY' in config:
-        config['KIMI_API_KEY'] = _mask_api_key(config['KIMI_API_KEY'])
+    if 'GAI_API_KEY' in config:
+        config['GAI_API_KEY'] = _mask_api_key(config['GAI_API_KEY'])
 
     # 标记 API Key 是否已脱敏
     config['_api_key_masked'] = True
@@ -168,7 +168,7 @@ def admin_save_config():
     data = request.get_json(force=True, silent=True) or {}
 
     # 验证必要字段
-    required_fields = ['KIMI_API_KEY', 'KIMI_BASE_URL', 'KIMI_MODEL']
+    required_fields = ['GAI_API_KEY', 'GAI_BASE_URL', 'GAI_MODEL']
     for field in required_fields:
         value = data.get(field, '').strip()
         if not value:
@@ -178,13 +178,13 @@ def admin_save_config():
             }), 400
 
     # 如果 API Key 是脱敏值（包含 ***），说明用户没有修改，跳过
-    api_key = data.get('KIMI_API_KEY', '').strip()
+    api_key = data.get('GAI_API_KEY', '').strip()
     if '***' in api_key:
         # 保留原始值，从 .env 文件读取
         env_path = _find_env_file()
         original = _parse_env_file(env_path)
-        if 'KIMI_API_KEY' in original:
-            data['KIMI_API_KEY'] = original['KIMI_API_KEY']
+        if 'GAI_API_KEY' in original:
+            data['GAI_API_KEY'] = original['GAI_API_KEY']
 
     # 查找或创建 .env 文件路径
     env_path = _find_env_file()

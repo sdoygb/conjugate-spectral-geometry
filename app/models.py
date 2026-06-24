@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 #     UPLOAD_SCAN_WINDOW,
 #     GEOMETRY_CONSTANTS,
 #     TERM_SYNONYMS,
-#     KIMI_MODEL,
+#     GAI_MODEL,
 #     _injected_files,
 #     _injected_files_lock,
 # )
@@ -608,8 +608,8 @@ def scan_openwebui_recent_uploads(max_files: int = 5) -> Tuple[str, List[Tuple[s
 _memory_conversations: List[Dict[str, Any]] = []
 _memory_phase_markers: List[Dict[str, Any]] = []
 
-# KIMI_MODEL 常量（从 config 导入，此处保留占位）
-KIMI_MODEL = os.getenv('KIMI_MODEL', 'kimi-k2.7-code')
+# GAI_MODEL 常量（从 config 导入，此处保留占位）
+GAI_MODEL = os.getenv('GAI_MODEL', 'kimi-k2.7-code')
 
 
 def save_conversation(
@@ -626,7 +626,7 @@ def save_conversation(
         "eta_before": eta_before,
         "eta_after": eta_after,
         "strategy": strategy,
-        "model_used": KIMI_MODEL,
+        "model_used": GAI_MODEL,
         "articles_loaded": articles_loaded,
         "chunks_loaded": chunks_loaded,
         "novelty_score": metrics.get('novelty', 0),

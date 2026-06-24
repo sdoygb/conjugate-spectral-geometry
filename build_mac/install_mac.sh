@@ -25,12 +25,12 @@ _do_configure() {
 
     cat > "$ENV_FILE" << EOF
 # Geometry AI Server 配置
-KIMI_API_KEY=$API_KEY
-KIMI_BASE_URL=https://api.deepseek.com/v1
-KIMI_MODEL=deepseek-v4-pro
-KIMI_MODEL_LITE=deepseek-v4-flash
-KIMI_MODEL_VISION=deepseek-v4-flash
-KIMI_EMBEDDING_MODEL=deepseek-v4-flash
+GAI_API_KEY=$API_KEY
+GAI_BASE_URL=https://api.deepseek.com/v1
+GAI_MODEL=deepseek-v4-pro
+GAI_MODEL_LITE=deepseek-v4-flash
+GAI_MODEL_VISION=deepseek-v4-flash
+GAI_EMBEDDING_MODEL=deepseek-v4-flash
 
 # Embedding 配置：使用 SiliconFlow API (BAAI/bge-large-zh-v1.5, 1024维)
 # 这是经过调试的最佳方案，不要改为 local 或 api
@@ -167,7 +167,7 @@ echo -e "${CYAN}[3/6] 配置 API Key...${NC}"
 
 ENV_FILE="$APP_DIR/.env"
 if [ -f "$ENV_FILE" ]; then
-    if grep -q "KIMI_API_KEY=" "$ENV_FILE" && ! grep -q 'KIMI_API_KEY=$' "$ENV_FILE" && ! grep -q "KIMI_API_KEY=在此" "$ENV_FILE"; then
+    if grep -q "GAI_API_KEY=" "$ENV_FILE" && ! grep -q 'GAI_API_KEY=$' "$ENV_FILE" && ! grep -q "GAI_API_KEY=在此" "$ENV_FILE"; then
         echo -e "${GREEN}[√] 配置已存在，跳过${NC}"
     else
         _do_configure

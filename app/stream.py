@@ -13,7 +13,7 @@ from typing import List, Dict, Any
 
 import openai
 
-from config import KIMI_API_KEY, KIMI_BASE_URL, KIMI_MODEL, logger
+from config import GAI_API_KEY, GAI_BASE_URL, GAI_MODEL, logger
 from tools import execute_tool_call
 
 # API 调用重试配置
@@ -107,12 +107,12 @@ def parse_dsml_tool_calls(text: str) -> list:
 
 def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: List[Dict],
                     api_params: Dict[str, Any], vector_kb=None) -> Any:
-    client = openai.OpenAI(api_key=KIMI_API_KEY, base_url=KIMI_BASE_URL)
+    client = openai.OpenAI(api_key=GAI_API_KEY, base_url=GAI_BASE_URL)
     max_tool_rounds = 15
     seen_calls = set()  # 防止重复调用
     _resp_id = f"chatcmpl-{hashlib.md5(str(time.time()).encode()).hexdigest()[:12]}"
     _created = int(time.time())
-    _model = data.get('model', KIMI_MODEL)
+    _model = data.get('model', GAI_MODEL)
     _usage_info = {}
 
     def _sse_chunk(delta: dict, finish_reason: str = None, usage: dict = None):

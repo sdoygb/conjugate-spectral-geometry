@@ -15,7 +15,7 @@ import openai
 
 from config import (
     logger,
-    KIMI_API_KEY, KIMI_BASE_URL, KIMI_EMBEDDING_MODEL,
+    GAI_API_KEY, GAI_BASE_URL, GAI_EMBEDDING_MODEL,
     EMBEDDING_MODE, LOCAL_EMBEDDING_MODEL,
     CHROMADB_AVAILABLE,
     MAX_INJECT_CHARS, CHUNK_SIZE, CHUNK_OVERLAP,
@@ -35,8 +35,8 @@ class APIEmbeddingFunction:
     """使用 LLM API 的 ChromaDB 自定义 Embedding Function"""
 
     def __init__(self):
-        self.client = openai.OpenAI(api_key=KIMI_API_KEY, base_url=KIMI_BASE_URL)
-        self.model = KIMI_EMBEDDING_MODEL
+        self.client = openai.OpenAI(api_key=GAI_API_KEY, base_url=GAI_BASE_URL)
+        self.model = GAI_EMBEDDING_MODEL
 
     def name(self) -> str:
         return "api-embedding"
@@ -203,7 +203,7 @@ class VectorKnowledgeBase:
             logger.info("[EMBEDDING] SiliconFlow embedding 就绪（1024维，中文优化）")
         elif EMBEDDING_MODE == 'api':
             self.embedding_fn = APIEmbeddingFunction()
-            self._embedding_name = f"api({KIMI_EMBEDDING_MODEL})"
+            self._embedding_name = f"api({GAI_EMBEDDING_MODEL})"
         elif EMBEDDING_MODE == 'local':
             try:
                 self.embedding_fn = LocalEmbeddingFunction(LOCAL_EMBEDDING_MODEL)
@@ -1394,7 +1394,7 @@ class VectorKnowledgeBase:
             "antipatterns_count": self.antipatterns_count,
             "patches_count": self.patches_count,
             "total_docs": self.total_docs,
-            "embedding_model": KIMI_EMBEDDING_MODEL,
+            "embedding_model": GAI_EMBEDDING_MODEL,
         }
 
 

@@ -17,7 +17,7 @@ from datetime import datetime
 _read_cache: Dict[str, Tuple[str, float]] = {}
 _READ_CACHE_TTL = 10  # 秒
 
-from config import KIMI_API_KEY, KIMI_BASE_URL, KIMI_MODEL, UPLOAD_FOLDER, OPENWEBUI_DB_PATH, logger
+from config import GAI_API_KEY, GAI_BASE_URL, GAI_MODEL, UPLOAD_FOLDER, OPENWEBUI_DB_PATH, logger
 from models import personal_db, _save_personal_db
 
 # ==================== 文本标记工具调用 ====================
