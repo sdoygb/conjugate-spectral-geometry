@@ -3,8 +3,6 @@
 # 使用方法: sudo bash install_linux.sh
 # 仅需一条命令，无需手动安装任何依赖
 
-set -e
-
 echo ""
 echo "  ========================================================"
 echo "      Geometry AI Server - Linux 全自动安装"
@@ -27,79 +25,80 @@ SERVICE_USER="${SUDO_USER:-root}"
 # ============================================================
 echo "[1/6] 准备 Python 3.11 环境..."
 
-ensure_python() {
-    # 先找系统已有的 Python 3.11+
-    for cmd in python3.13 python3.12 python3.11; do
-        if command -v "$cmd" &>/dev/null; then
-            ver=$($cmd -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
-            major=${ver%%.*}
-            minor=${ver##*.}
-            if [ "$major" -eq 3 ] && [ "$minor" -ge 11 ]; then
-                echo "$cmd"
-                return 0
-            fi
-        fi
-    done
+PYTHON=""
 
-    # 没有就自动安装
+# 先找系统已有的 Python 3.11+
+for cmd in python3.13 python3.12 python3.11; do
+    if command -v "$cmd" &>/dev/null; then
+        ver=$($cmd -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null)
+        major=${ver%%.*}
+        minor=${ver##*.}
+        if [ "$major" -eq 3 ] && [ "$minor" -ge 11 ]; then
+            PYTHON="$cmd"
+            break
+        fi
+    fi
+done
+
+if [ -z "$PYTHON" ]; then
     echo "  系统未安装 Python 3.11+，正在自动安装..."
 
     if command -v apt-get &>/dev/null; then
         # Ubuntu/Debian
-        apt-get update -qq
-        apt-get install -y -qq software-properties-common > /dev/null 2>&1
-        add-apt-repository -y ppa:deadsnakes/ppa > /dev/null 2>&1 || true
-        apt-get update -qq
-        apt-get install -y -qq python3.11 python3.11-venv python3.11-dev python3-pip > /dev/null 2>&1
-        echo "python3.11"
-        return 0
-    elif command -v dnf &>/dev/null; then
-        # Fedora/RHEL 8+
-        dnf install -y python3.11 python3.11-pip python3.11-devel 2>/dev/null || {
-            # 如果没有 3.11，尝试安装 3.12
-            dnf install -y python3.12 python3.12-pip python3.12-devel 2>/dev/null || {
-                dnf install -y python3 python3-pip python3-devel
-                echo "python3"
-                return 0
-            }
+        echo "  检测到 apt-get，正在安装 Python 3.11..."
+        apt-get update
+        apt-get install -y software-properties-common
+        add-apt-repository -y ppa:deadsnakes/ppa || {
+            echo "  [!] add-apt-repository 失败，尝试直接安装..."
         }
-        echo "python3.11"
-        return 0
+        apt-get update
+        apt-get install -y python3.11 python3.11-venv python3.11-dev python3-pip
+        PYTHON="python3.11"
+
+    elif command -v dnf &>/dev/null; then
+        echo "  检测到 dnf，正在安装 Python 3.11..."
+        dnf install -y python3.11 python3.11-pip python3.11-devel || \
+        dnf install -y python3.12 python3.12-pip python3.12-devel || \
+        dnf install -y python3 python3-pip python3-devel
+        PYTHON="python3.11"
+
     elif command -v yum &>/dev/null; then
-        # CentOS/RHEL 7
-        yum install -y epel-release > /dev/null 2>&1 || true
-        yum install -y python3 python3-pip python3-devel > /dev/null 2>&1
-        # CentOS 7 的 python3 可能是 3.6，需要用其他方式
-        echo "python3"
-        return 0
+        echo "  检测到 yum，正在安装 Python..."
+        yum install -y epel-release || true
+        yum install -y python3 python3-pip python3-devel
+        PYTHON="python3"
+
     elif command -v apk &>/dev/null; then
-        # Alpine
+        echo "  检测到 apk，正在安装 Python 3.11..."
         apk add --no-cache python3.11 py3-pip
-        echo "python3.11"
-        return 0
+        PYTHON="python3.11"
+
+    else
+        echo "[!] 无法识别的包管理器，请手动安装 Python 3.11+"
+        echo "    Ubuntu/Debian: sudo apt-get install python3.11"
+        echo "    Fedora: sudo dnf install python3.11"
+        echo "    其他: https://www.python.org/downloads/"
+        exit 1
     fi
+fi
 
-    return 1
-}
-
-PYTHON=$(ensure_python)
-
-if [ -z "$PYTHON" ] || ! command -v "$PYTHON" &>/dev/null; then
-    echo "[!] 无法自动安装 Python，请手动安装 Python 3.11+ 后重试"
+# 验证 Python 可用
+if ! command -v "$PYTHON" &>/dev/null; then
+    echo "[!] Python 安装失败，请手动安装 Python 3.11+ 后重试"
     exit 1
 fi
 
-PY_VER=$($PYTHON -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
-echo "  [√] Python $PY_VER ($PYTHON)"
+PY_VER=$($PYTHON -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null)
+PY_MAJOR=$($PYTHON -c "import sys; print(sys.version_info.major)" 2>/dev/null)
+PY_MINOR=$($PYTHON -c "import sys; print(sys.version_info.minor)" 2>/dev/null)
 
-# 检查版本是否够
-PY_MAJOR=$($PYTHON -c "import sys; print(sys.version_info.major)")
-PY_MINOR=$($PYTHON -c "import sys; print(sys.version_info.minor)")
 if [ "$PY_MAJOR" -lt 3 ] || [ "$PY_MINOR" -lt 11 ]; then
-    echo "  [!] Python 版本过低 ($PY_VER)，需要 3.11+"
-    echo "  请手动安装 Python 3.11: https://www.python.org/downloads/"
+    echo "[!] Python 版本过低 ($PY_VER)，需要 3.11+"
+    echo "    请手动安装: sudo apt-get install python3.11"
     exit 1
 fi
+
+echo "  [√] Python $PY_VER ($PYTHON)"
 
 # ============================================================
 # Step 2: 安装 Python 依赖
@@ -108,12 +107,13 @@ echo ""
 echo "[2/6] 安装 Python 依赖..."
 
 # 升级 pip
-"$PYTHON" -m pip install --quiet --disable-pip-version-check --upgrade pip 2>/dev/null || true
+"$PYTHON" -m pip install --disable-pip-version-check --upgrade pip 2>&1 | tail -1 || true
 
-# 安装依赖（忽略版本冲突警告）
+# 安装依赖
+echo "  正在安装依赖（可能需要几分钟）..."
 "$PYTHON" -m pip install --disable-pip-version-check \
     -i https://pypi.tuna.tsinghua.edu.cn/simple \
-    -r "$APP_DIR/requirements.txt" 2>&1 | grep -v "WARNING\|ERROR:.*has requirement" || true
+    -r "$APP_DIR/requirements.txt" 2>&1 | tail -3
 
 echo "  [√] 依赖安装完成"
 
@@ -183,7 +183,12 @@ echo ""
 echo "[5/6] 注册 systemd 服务..."
 
 # 获取 python 完整路径
-PYTHON_PATH=$(command -v "$PYTHON")
+PYTHON_PATH=$(command -v "$PYTHON" 2>/dev/null)
+
+if [ -z "$PYTHON_PATH" ]; then
+    echo "[!] 找不到 Python 路径"
+    exit 1
+fi
 
 cat > /etc/systemd/system/geometry-ai.service << SVCEOF
 [Unit]
@@ -212,13 +217,18 @@ echo "  [√] 已注册为 systemd 服务（开机自启）"
 
 # 等待启动
 echo "  等待服务启动..."
+STARTED=0
 for i in $(seq 1 15); do
     if curl -s http://localhost:5000/health >/dev/null 2>&1; then
         echo "  [√] Geometry AI Server 已启动（端口 5000）"
+        STARTED=1
         break
     fi
     sleep 2
 done
+if [ "$STARTED" -eq 0 ]; then
+    echo "  [!] 服务启动较慢，请稍后检查: sudo systemctl status geometry-ai"
+fi
 
 # ============================================================
 # Step 6: 安装 Open WebUI（可选）
@@ -233,7 +243,7 @@ if "$PYTHON" -c "import open_webui" 2>/dev/null; then
 else
     echo "  正在安装 Open WebUI（首次需要几分钟下载模型）..."
     if "$PYTHON" -m pip install --disable-pip-version-check \
-        -i https://pypi.tuna.tsinghua.edu.cn/simple open-webui 2>&1 | tail -1 | grep -q "Successfully"; then
+        -i https://pypi.tuna.tsinghua.edu.cn/simple open-webui 2>&1 | tail -3 | grep -qi "success"; then
         echo "  [√] Open WebUI 安装完成"
     else
         echo "  [!] Open WebUI 安装失败，聊天界面暂不可用"
