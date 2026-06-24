@@ -22,7 +22,7 @@ Geometry AI Server - macOS 安装说明
 
 三、配置
 --------
-  复制 .env.example 为 .env，填入 DeepSeek API Key 和 SiliconFlow API Key
+  复制 .env.example 为 .env，填入 DeepSeek API Key (https://platform.deepseek.com) 和 SiliconFlow API Key (https://cloud.siliconflow.cn)
 
 四、启动
 --------

@@ -207,7 +207,7 @@ open-webui serve
 | `GAI_MODEL_LITE` | `deepseek-v4-flash` | 轻量模型（简单问题自动路由） |
 | `GAI_MODEL_VISION` | `deepseek-v4-flash` | 视觉模型 |
 | `GAI_EMBEDDING_MODE` | `siliconflow` | Embedding 模式（siliconflow/local/api） |
-| `SILICONFLOW_API_KEY` | （siliconflow 模式必填） | SiliconFlow API 密钥 |
+| `SILICONFLOW_API_KEY` | （siliconflow 模式必填） | SiliconFlow API 密钥（[注册获取](https://cloud.siliconflow.cn/)） |
 | `GAI_ADMIN_TOKEN` | `geometry-ai-admin` | 管理后台认证 token |
 | `UPLOAD_FOLDER` | `app/articles` | 文章目录 |
 | `CHROMA_DB_DIR` | `app/chroma_db` | 向量数据库目录 |

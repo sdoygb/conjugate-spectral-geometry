@@ -152,6 +152,12 @@ if "%API_KEY%"=="" (
     exit /b 1
 )
 
+echo.
+echo  请输入你的 SiliconFlow API Key（向量数据库，免费注册: https://cloud.siliconflow.cn/）
+echo  （如果跳过，将使用本地 embedding 模型）
+set /p "SILICONFLOW_KEY=  SiliconFlow API Key: "
+if "%SILICONFLOW_KEY%"=="" set SILICONFLOW_KEY=not-needed
+
 :: 写入配置
 (
     echo # Geometry AI Server 配置
@@ -161,6 +167,8 @@ if "%API_KEY%"=="" (
     echo GAI_MODEL_LITE=deepseek-v4-flash
     echo GAI_MODEL_VISION=deepseek-v4-flash
     echo GAI_EMBEDDING_MODEL=deepseek-v4-flash
+    echo GAI_EMBEDDING_MODE=siliconflow
+    echo SILICONFLOW_API_KEY=%SILICONFLOW_KEY%
 ) > "%ENV_FILE%"
 echo [√] 配置已保存
 
