@@ -5,7 +5,7 @@ Geometry AI Server - macOS 安装说明
 【全自动安装】
   1. 双击 install_mac.sh（或在终端执行: bash install_mac.sh）
   2. 脚本会自动：检查 Python、安装依赖、配置 API Key、注册开机自启
-  3. 首次运行需要输入 API Key（在 https://platform.deepseek.com 获取）
+  3. 首次运行需要输入 DeepSeek API Key（在 https://platform.deepseek.com 获取）
 
 【手动安装】
   如果全自动安装失败，请按以下步骤操作：
@@ -22,7 +22,7 @@ Geometry AI Server - macOS 安装说明
 
 三、配置
 --------
-  复制 .env.example 为 .env，填入 API Key
+  复制 .env.example 为 .env，填入 DeepSeek API Key 和 SiliconFlow API Key
 
 四、启动
 --------
@@ -35,6 +35,7 @@ Geometry AI Server - macOS 安装说明
 
 【管理界面】
   http://localhost:5000/admin
+  默认 token: geometry-ai-admin（通过 GAI_ADMIN_TOKEN 环境变量修改）
 
 【聊天界面】
   http://localhost:8080
@@ -51,10 +52,11 @@ Geometry AI Server - macOS 安装说明
   7. 开始聊天！
 
 【停止服务】
-  launchctl unload ~/Library/LaunchAgents/com.geometryai.server.plist
-  launchctl unload ~/Library/LaunchAgents/com.geometryai.webui.plist
+  launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/com.geometryai.server.plist
+  launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/com.geometryai.webui.plist
 
 【卸载】
-  1. launchctl unload ~/Library/LaunchAgents/com.geometryai.server.plist
-  2. rm ~/Library/LaunchAgents/com.geometryai.server.plist
-  3. 删除安装目录
+  1. launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/com.geometryai.server.plist
+  2. launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/com.geometryai.webui.plist
+  3. rm ~/Library/LaunchAgents/com.geometryai.*.plist
+  4. 删除安装目录
