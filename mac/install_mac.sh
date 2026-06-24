@@ -31,6 +31,11 @@ KIMI_MODEL=deepseek-v4-pro
 KIMI_MODEL_LITE=deepseek-v4-flash
 KIMI_MODEL_VISION=deepseek-v4-flash
 KIMI_EMBEDDING_MODEL=deepseek-v4-flash
+
+# Embedding 配置：使用 SiliconFlow API (BAAI/bge-large-zh-v1.5, 1024维)
+# 这是经过调试的最佳方案，不要改为 local 或 api
+GT_EMBEDDING_MODE=siliconflow
+SILICONFLOW_API_KEY=sk-fgdbxbqxfyztyxdoknxjcgnpdngpbqflwdwdkzqjkrxphdqd
 EOF
     echo -e "${GREEN}[√] 配置已保存${NC}"
 }
@@ -186,7 +191,7 @@ launchctl unload "$PLIST_PATH" 2>/dev/null || true
 lsof -ti :5000 2>/dev/null | xargs kill -9 2>/dev/null || true
 sleep 1
 
-# 创建 plist（清除 PYTHONHOME 避免干扰）
+# 创建 plist（通过 bash unset 清除 PYTHONHOME/PYTHONPATH，避免 IDE 环境变量污染）
 cat > "$PLIST_PATH" << PLISTEOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -196,8 +201,9 @@ cat > "$PLIST_PATH" << PLISTEOF
     <string>$PLIST_NAME</string>
     <key>ProgramArguments</key>
     <array>
-        <string>$PYTHON</string>
-        <string>$APP_DIR/server.py</string>
+        <string>/bin/bash</string>
+        <string>-c</string>
+        <string>unset PYTHONHOME PYTHONPATH; exec $PYTHON $APP_DIR/server.py</string>
     </array>
     <key>WorkingDirectory</key>
     <string>$APP_DIR</string>
@@ -213,10 +219,6 @@ cat > "$PLIST_PATH" << PLISTEOF
     <dict>
         <key>GEOMETRY_AI_HOME</key>
         <string>$INSTALL_DIR</string>
-        <key>PYTHONHOME</key>
-        <string></string>
-        <key>PYTHONPATH</key>
-        <string></string>
     </dict>
 </dict>
 </plist>
@@ -288,7 +290,7 @@ if [ "$WEBUI_SKIP" != "1" ]; then
     lsof -ti :8080 2>/dev/null | xargs kill -9 2>/dev/null || true
     sleep 1
 
-    # 生成 plist
+    # 生成 plist（通过 bash unset 清除 PYTHONHOME/PYTHONPATH）
     {
         cat << PLISTEOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -299,11 +301,15 @@ if [ "$WEBUI_SKIP" != "1" ]; then
     <string>com.geometryai.webui</string>
     <key>ProgramArguments</key>
     <array>
-        <string>$WEBUI_BIN</string>
+        <string>/bin/bash</string>
+        <string>-c</string>
 PLISTEOF
+        # 构建 unset + exec 命令
+        WEBUI_CMD="unset PYTHONHOME PYTHONPATH; exec $WEBUI_BIN"
         for arg in "${WEBUI_ARGS_ARRAY[@]}"; do
-            echo "        <string>$arg</string>"
+            WEBUI_CMD="$WEBUI_CMD $arg"
         done
+        echo "        <string>$WEBUI_CMD</string>"
         cat << PLISTEOF2
     </array>
     <key>WorkingDirectory</key>
@@ -326,10 +332,6 @@ PLISTEOF
         <string>https://hf-mirror.com</string>
         <key>SENTENCE_TRANSFORMERS_HOME</key>
         <string>$INSTALL_DIR/models_cache</string>
-        <key>PYTHONHOME</key>
-        <string></string>
-        <key>PYTHONPATH</key>
-        <string></string>
     </dict>
 </dict>
 </plist>

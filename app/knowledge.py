@@ -194,7 +194,14 @@ class VectorKnowledgeBase:
         self._patches_count = 0
 
         # 根据配置选择 embedding function
-        if EMBEDDING_MODE == 'api':
+        if EMBEDDING_MODE == 'siliconflow':
+            # 直接使用 SiliconFlow (BAAI/bge-large-zh-v1.5, 1024维)
+            # 这是经过调试的最佳方案
+            sf_key = os.getenv('SILICONFLOW_API_KEY', '')
+            self.embedding_fn = SiliconFlowEmbeddingFunction(api_key=sf_key)
+            self._embedding_name = "siliconflow(BAAI/bge-large-zh-v1.5)"
+            logger.info("[EMBEDDING] SiliconFlow embedding 就绪（1024维，中文优化）")
+        elif EMBEDDING_MODE == 'api':
             self.embedding_fn = APIEmbeddingFunction()
             self._embedding_name = f"api({KIMI_EMBEDDING_MODEL})"
         elif EMBEDDING_MODE == 'local':
