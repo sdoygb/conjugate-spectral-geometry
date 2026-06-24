@@ -97,8 +97,10 @@ def extract_files_from_request(data: Dict[str, Any]):
     all_text_parts: List[str] = []
     messages = data.get('messages', []) if isinstance(data, dict) else []
 
-    # 收集所有 user 消息文本（保持对话连续性，跳过中间层注入的文件消息）
+    # 收集所有 user 消息文本（保持对话连续性，跳过中间层注入的文件消息和OpenWebUI自动任务）
     _FILE_INJECT_MARKER = "【新文件 ·"
+    _AUTO_MARKERS = {'### Task:', '### 任务:', 'Generate a concise', 'Generate 1-3 broad tags',
+                     'Analyze the chat history', 'Create a title', 'Summarize this', 'Generate title'}
     for m in messages:
         if not isinstance(m, dict):
             continue
@@ -108,6 +110,9 @@ def extract_files_from_request(data: Dict[str, Any]):
         # 跳过中间层之前注入的文件消息
         if isinstance(content, str) and content.startswith(_FILE_INJECT_MARKER):
             continue
+        # 跳过OpenWebUI自动任务消息
+        if isinstance(content, str) and any(content.strip().startswith(marker) for marker in _AUTO_MARKERS):
+            continue
         if isinstance(content, str) and content.strip():
             all_text_parts.append(content.strip())
         elif isinstance(content, list):
@@ -116,7 +121,7 @@ def extract_files_from_request(data: Dict[str, Any]):
                     continue
                 if item.get('type') == 'text':
                     txt = item.get('text', '').strip()
-                    if txt:
+                    if txt and not any(txt.startswith(marker) for marker in _AUTO_MARKERS):
                         all_text_parts.append(txt)
 
     # 只从最后一条 user 消息中提取文件内容（避免历史中的旧文件被重复提取）

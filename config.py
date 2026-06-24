@@ -117,7 +117,7 @@ if not OPENWEBUI_DB_PATH:
 MAX_INJECT_CHARS = int(os.getenv('MAX_INJECT_CHARS', '5000'))
 CHUNK_SIZE = int(os.getenv('CHUNK_SIZE', '1000'))
 CHUNK_OVERLAP = int(os.getenv('CHUNK_OVERLAP', '200'))
-MAX_CHUNKS_PER_QUERY = int(os.getenv('MAX_CHUNKS_PER_QUERY', '8'))
+MAX_CHUNKS_PER_QUERY = int(os.getenv('MAX_CHUNKS_PER_QUERY', '12'))
 
 # 输出质量门控 - 检测LLM回复是否偏离几何论
 QUALITY_GATE_ENABLED = os.getenv('QUALITY_GATE_ENABLED', 'true').lower() == 'true'
