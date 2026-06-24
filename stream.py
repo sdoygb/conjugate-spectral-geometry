@@ -18,7 +18,7 @@ from tools import execute_tool_call
 def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: List[Dict],
                     api_params: Dict[str, Any]) -> Any:
     client = openai.OpenAI(api_key=KIMI_API_KEY, base_url=KIMI_BASE_URL)
-    max_tool_rounds = 8
+    max_tool_rounds = 15
     seen_calls = set()  # 防止重复调用
     _resp_id = f"chatcmpl-{hashlib.md5(str(time.time()).encode()).hexdigest()[:12]}"
     _created = int(time.time())
