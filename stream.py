@@ -16,7 +16,7 @@ from tools import execute_tool_call
 
 
 def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: List[Dict],
-                    api_params: Dict[str, Any]) -> Any:
+                    api_params: Dict[str, Any], vector_kb=None) -> Any:
     client = openai.OpenAI(api_key=KIMI_API_KEY, base_url=KIMI_BASE_URL)
     max_tool_rounds = 15
     seen_calls = set()  # 防止重复调用
@@ -238,7 +238,7 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
             result = None
             for _retry in range(2):
                 try:
-                    result = execute_tool_call(func_name, func_args)
+                    result = execute_tool_call(func_name, func_args, vector_kb=vector_kb)
                     if result and not result.startswith("工具执行错误"):
                         break
                     logger.warning(f"[TOOL] 第{_retry+1}次执行失败: {result[:100]}")

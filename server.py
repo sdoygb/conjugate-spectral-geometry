@@ -1421,7 +1421,7 @@ def chat_completions():
         def gen():
             try:
                 collected = []
-                for ev in stream_generate(data, eta_before, final_messages, api_params):
+                for ev in stream_generate(data, eta_before, final_messages, api_params, vector_kb=vector_kb):
                     yield ev
                     try:
                         if ev.startswith('data: '):

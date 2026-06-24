@@ -110,6 +110,28 @@ ARTICLE_TOOLS = [
     {
         "type": "function",
         "function": {
+            "name": "vector_search",
+            "description": "主动向量语义搜索。用自然语言描述你要找的内容，返回最相关的文章片段（含文件名和位置）。适用于：查找特定概念/定理/公式在哪些文章中出现、跨文章主题汇总、审核时查找相关引用。与被动自动注入不同，你可以用不同查询词多次搜索以覆盖不同角度。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "搜索查询，自然语言描述要查找的内容。如 'S_e锁定的证明过程'、'中微子振荡的几何解释'、'因果场动力学与信息场的关系'。"
+                    },
+                    "top_k": {
+                        "type": "integer",
+                        "description": "返回结果数量（默认8，最大20）",
+                        "default": 8
+                    }
+                },
+                "required": ["query"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
             "name": "write_article",
             "description": "将内容写入 articles 目录中的文件，用于创建或修改几何论文章。写入时旧版自动归档到 archive/。",
             "parameters": {
@@ -349,10 +371,31 @@ def _git_push() -> str:
         return f"push 异常: {str(e)[:60]}"
 
 
-def execute_tool_call(name: str, arguments: Dict[str, Any]) -> str:
+def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> str:
     """执行工具调用并返回结果文本。"""
     try:
-        if name == "view_article":
+        if name == "vector_search":
+            query = arguments.get("query", "")
+            top_k = min(arguments.get("top_k", 8), 20)
+            if not vector_kb or not vector_kb.is_initialized:
+                return "向量知识库未初始化，无法搜索"
+            results = vector_kb.search(query, top_k=top_k)
+            if not results:
+                return f"未找到与 '{query}' 相关的内容"
+            # 格式化结果
+            output_parts = [f"向量搜索 '{query}' 返回 {len(results)} 条结果:\n"]
+            for r in results:
+                meta = r.get('metadata', {})
+                fname = meta.get('fname', '?')
+                aid = meta.get('article_id', '?')
+                start = meta.get('start', '?')
+                end = meta.get('end', '?')
+                dist = r.get('distance', 0)
+                content = r.get('document', '')[:500]
+                output_parts.append(f"[{aid}] {fname} 位置:{start}-{end} 距离:{dist:.4f}\n{content}\n")
+            return "\n".join(output_parts)
+
+        elif name == "view_article":
             filename = arguments.get("filename", "")
             limit = arguments.get("limit", 0)
             offset = arguments.get("offset", 0)
