@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 chcp 65001 >nul 2>&1
 title Geometry AI Server - Windows 全自动安装
 setlocal enabledelayedexpansion

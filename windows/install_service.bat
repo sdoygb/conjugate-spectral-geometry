@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 echo 正在注册 Geometry AI Server 服务...
 
 set "APP_DIR=%~dp0app"
