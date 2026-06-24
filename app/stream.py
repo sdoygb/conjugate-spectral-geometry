@@ -131,11 +131,40 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
         stream = client.chat.completions.create(**params)
         text_buf = ""
         fr = "stop"
+        # DSML 过滤状态
+        dsml_depth = 0  # 嵌套深度计数
+        dsml_buffer = ""  # 缓冲区，用于检测 DSML 开始标签
+        dsml_tag_pattern = re.compile(r'<｜｜DSML｜｜')
         for chunk in stream:
             if chunk.choices:
                 delta = chunk.choices[0].delta
                 if delta.content:
                     text_buf += delta.content
+                    # DSML 过滤：检测到 DSML 开始标签后，停止透传直到所有标签关闭
+                    if dsml_depth > 0:
+                        # 在 DSML 块内，不透传，只跟踪嵌套深度
+                        dsml_buffer += delta.content
+                        # 计算开启和关闭标签数量
+                        open_tags = len(dsml_tag_pattern.findall(dsml_buffer))
+                        close_tags = dsml_buffer.count('</｜｜DSML｜｜')
+                        dsml_depth = open_tags - close_tags
+                        if dsml_depth <= 0:
+                            # DSML 块结束，清空缓冲区
+                            dsml_buffer = ""
+                            dsml_depth = 0
+                        continue
+                    # 检查是否新 token 开始了 DSML 块
+                    if '<｜｜DSML｜｜' in delta.content:
+                        # 可能是 DSML 开始，先缓冲
+                        dsml_buffer = delta.content
+                        open_tags = len(dsml_tag_pattern.findall(dsml_buffer))
+                        close_tags = dsml_buffer.count('</｜｜DSML｜｜')
+                        dsml_depth = open_tags - close_tags
+                        if dsml_depth > 0:
+                            continue  # 确认在 DSML 块内，不透传
+                        # 如果开启和关闭标签数量相等（自闭合），清空缓冲区
+                        dsml_buffer = ""
+                        continue  # 即使自闭合也不透传
                     yield _sse_chunk({"content": delta.content})
                 cfr = getattr(chunk.choices[0], 'finish_reason', None)
                 if cfr:
