@@ -19,16 +19,16 @@ INSTALL_DIR="$(cd "$(dirname "$0")" && pwd)"
 APP_DIR="$INSTALL_DIR/app"
 SERVICE_USER="${SUDO_USER:-root}"
 
-# Step 1: 检查/安装 Python 3.9+
+# Step 1: 检查/安装 Python 3.11+
 echo "[1/6] 检查 Python 环境..."
 
 PYTHON=""
-for cmd in python3.11 python3.12 python3.13 python3 python; do
+for cmd in python3.11 python3.12 python3.13 python3; do
     if command -v "$cmd" &>/dev/null; then
         ver=$($cmd --version 2>&1 | grep -oP '\d+\.\d+')
         major=$(echo "$ver" | cut -d. -f1)
         minor=$(echo "$ver" | cut -d. -f2)
-        if [ "$major" -ge 3 ] && [ "$minor" -ge 9 ]; then
+        if [ "$major" -ge 3 ] && [ "$minor" -ge 11 ]; then
             PYTHON="$cmd"
             break
         fi
@@ -36,19 +36,21 @@ for cmd in python3.11 python3.12 python3.13 python3 python; do
 done
 
 if [ -z "$PYTHON" ]; then
-    echo "  未找到 Python 3.9+，正在安装..."
+    echo "  未找到 Python 3.11+，正在安装..."
     if command -v apt-get &>/dev/null; then
         apt-get update -qq
-        apt-get install -y python3 python3-pip python3-venv
-        PYTHON=python3
+        apt-get install -y software-properties-common
+        add-apt-repository -y ppa:deadsnakes/ppa 2>/dev/null || true
+        apt-get install -y python3.11 python3.11-venv python3-pip
+        PYTHON=python3.11
     elif command -v yum &>/dev/null; then
-        yum install -y python3 python3-pip
-        PYTHON=python3
+        yum install -y python3.11 python3.11-pip
+        PYTHON=python3.11
     elif command -v dnf &>/dev/null; then
-        dnf install -y python3 python3-pip
-        PYTHON=python3
+        dnf install -y python3.11 python3.11-pip
+        PYTHON=python3.11
     else
-        echo "[!] 不支持的系统，请手动安装 Python 3.9+"
+        echo "[!] 不支持的系统，请手动安装 Python 3.11+"
         exit 1
     fi
 fi
@@ -167,14 +169,21 @@ if "$PYTHON" -c "import open_webui" 2>/dev/null; then
     echo "  [√] Open WebUI 已安装"
 else
     echo "  正在安装 Open WebUI（需要几分钟，首次会下载模型）..."
-    "$PYTHON" -m pip install --quiet --disable-pip-version-check \
-        -i https://pypi.tuna.tsinghua.edu.cn/simple open-webui
-    echo "  [√] Open WebUI 安装完成"
+    if "$PYTHON" -m pip install --disable-pip-version-check \
+        -i https://pypi.tuna.tsinghua.edu.cn/simple open-webui 2>/dev/null; then
+        echo "  [√] Open WebUI 安装完成"
+    else
+        echo "  [!] Open WebUI 安装失败（可能需要 Python 3.11+）"
+        echo "  聊天界面暂不可用，可稍后手动安装:"
+        echo "    $PYTHON -m pip install open-webui"
+        WEBUI_SKIP=1
+    fi
 fi
 
-# 注册 Open WebUI 服务
-WEBUI_SERVICE_FILE="/etc/systemd/system/geometry-ai-webui.service"
-cat > "$WEBUI_SERVICE_FILE" << SVCEOF
+if [ -z "$WEBUI_SKIP" ]; then
+    # 注册 Open WebUI 服务
+    WEBUI_SERVICE_FILE="/etc/systemd/system/geometry-ai-webui.service"
+    cat > "$WEBUI_SERVICE_FILE" << SVCEOF
 [Unit]
 Description=Geometry AI WebUI (Open WebUI)
 After=network.target geometry-ai.service
@@ -193,10 +202,11 @@ Environment=OPENAI_API_KEYS=not-needed
 WantedBy=multi-user.target
 SVCEOF
 
-systemctl daemon-reload
-systemctl enable geometry-ai-webui
-systemctl start geometry-ai-webui
-echo "  [√] Open WebUI 已启动（端口 8080）"
+    systemctl daemon-reload
+    systemctl enable geometry-ai-webui
+    systemctl start geometry-ai-webui
+    echo "  [√] Open WebUI 已启动（端口 8080）"
+fi
 
 echo ""
 echo "  ========================================================"
