@@ -7,7 +7,6 @@ __pycache__/
 *.so
 *.egg-info/
 dist/
-build/
 .eggs/
 
 # 虚拟环境
@@ -66,9 +65,25 @@ app/logs/
 app/__pycache__/
 app/*.pyc
 app/request_debug*
+app/shouyi_personal.json
 
-# 构建产物中的重复数据（不提交）
-build_win/app/articles/
-build_mac/app/articles/
-build_win/app/chroma_db/
-build_mac/app/chroma_db/
+# 构建产物（由 build_mac.py / build_win.py 生成，不提交）
+build/
+build_win/
+build_mac/
+
+# 根目录旧版副本（防止误提交）
+/config.py
+/knowledge.py
+/models.py
+/prompts.py
+/server.py
+/share_routes.py
+/start.py
+/stream.py
+/tools.py
+/auto_teach.py
+/version.py
+/requirements.txt
+/templates/
+/articles/

@@ -1,6 +1,7 @@
 # Geometry AI Server
 
 > **当前版本**: v1.0.0.74 (2026-06-23)
+
 几何论 AI 中间层服务 -- 基于 DeepSeek 大模型的几何论知识问答系统。
 
 ## 项目说明
@@ -23,28 +24,45 @@
 
 ```
 geometry-ai-server/
-├── app/
-│   ├── server.py          # Flask 路由、API 端点（主入口）
-│   ├── config.py          # 环境变量、日志配置
-│   ├── knowledge.py       # ChromaDB 向量库、SiliconFlow Embedding、语义检索
-│   ├── models.py          # eta 动力学、personal_db、对话记录
-│   ├── prompts.py         # system prompt 构建、教学系统、质量检查
-│   ├── tools.py           # Function Calling 工具定义与执行
-│   ├── stream.py          # 流式生成、SSE 格式化、DSML 解析、API 重试
-│   ├── admin_routes.py    # 管理后台（含 token 认证）
-│   ├── share_routes.py    # 分享功能
-│   ├── auto_teach.py      # 自动教学脚本
-│   ├── start.py           # 一键启动脚本（watchdog 热重载）
-│   ├── .env               # 环境变量配置（不提交到 Git）
-│   ├── .env.example       # 配置模板
-│   ├── requirements.txt   # Python 依赖
-│   ├── articles/          # 几何论文章源文件（52+篇）
-│   └── chroma_db/         # ChromaDB 持久化向量数据库
-├── install_mac.sh        # macOS 全自动安装脚本（含开机自启）
-├── build_mac/             # 构建目录
-├── mac/                   # Mac 专用资源
+├── app/                    # 主源码目录
+│   ├── server.py           # Flask 路由、API 端点（主入口）
+│   ├── config.py           # 环境变量、日志配置
+│   ├── stream.py           # 流式生成、SSE、DSML 解析、API 重试
+│   ├── knowledge.py        # ChromaDB 向量库、SiliconFlow Embedding
+│   ├── models.py           # eta 动力学、personal_db、对话记录
+│   ├── prompts.py          # system prompt、教学系统、质量检查
+│   ├── tools.py            # Function Calling 工具定义与执行
+│   ├── admin_routes.py     # 管理后台（token 认证）
+│   ├── share_routes.py     # 分享功能
+│   ├── auto_teach.py       # 自动教学脚本
+│   ├── start.py            # 一键启动（watchdog 热重载）
+│   ├── version.py          # 版本号
+│   ├── .env.example        # 配置模板
+│   ├── requirements.txt    # Python 依赖
+│   ├── templates/          # HTML 模板
+│   │   ├── admin.html
+│   │   └── share.html
+│   └── articles/           # 几何论文章（80+篇）
+├── mac/                    # macOS 安装资源
+│   ├── install_mac.sh
+│   └── uninstall_mac.sh
+├── windows/                # Windows 安装资源
+│   ├── install_win.bat
+│   ├── install.bat
+│   ├── installer.iss
+│   ├── start.bat
+│   ├── install_service.bat
+│   ├── uninstall_service.bat
+│   └── uninstall_win.bat
+├── docker/                 # Docker 部署
+│   └── entrypoint.sh
+├── docker-compose.yml
+├── build_mac.py            # Mac 构建脚本
+├── build_win.py            # Win 构建脚本
+├── geometry-ai-intro.md    # 项目介绍
+├── geometry-ai-intro/     # 介绍网页
 ├── README.md
-└── README.txt             # macOS 安装简要说明
+└── README.txt
 ```
 
 ## 核心特性
@@ -79,7 +97,7 @@ git clone https://github.com/sdoygb/geometry-ai-server.git
 cd geometry-ai-server
 
 # 运行安装脚本（自动安装依赖、配置环境变量、注册开机自启）
-bash install_mac.sh
+bash mac/install_mac.sh
 ```
 
 安装完成后，重启电脑即可使用。打开浏览器访问 `http://localhost:8080`。
@@ -112,6 +130,17 @@ python3 start.py
 ```
 
 `start.py` 包含 watchdog，检测到代码变更自动重启服务器。
+
+### Docker 部署
+
+```bash
+# 使用 docker-compose
+docker-compose up -d
+
+# 或手动构建
+docker build -t geometry-ai-server .
+docker run -p 5000:5000 --env-file .env geometry-ai-server
+```
 
 ## Open WebUI 接入
 
