@@ -360,6 +360,7 @@ def _finalize_turn(
         "choices": [{
             "index": 0,
             "message": {"role": "assistant", "content": response_text},
+            "logprobs": None,
             "finish_reason": finish_reason
         }],
         "usage": usage or {
@@ -367,7 +368,7 @@ def _finalize_turn(
             "completion_tokens": 0,
             "total_tokens": 0
         },
-        "system_fingerprint": "fp_geometry",
+        "system_fingerprint": f"fp_{hashlib.md5((request_model or GAI_MODEL).encode()).hexdigest()[:8]}_{int(time.time()) % 86400}",
     }
 
 
@@ -771,15 +772,16 @@ def write_file(filename):
 
 @app.route('/v1/models', methods=['GET'])
 def list_models():
-    _created = 1700000000  # 固定时间戳
+    def _model_entry(mid):
+        return {"id": mid, "object": "model", "created": 1700000000 + hash(mid) % 86400, "owned_by": "deepseek" if "deepseek" in mid.lower() else "system"}
     _models = [
-        {"id": GAI_MODEL, "object": "model", "created": _created, "owned_by": "provider"},
-        {"id": GAI_MODEL_LITE, "object": "model", "created": _created, "owned_by": "provider"},
-        {"id": GAI_MODEL_VISION, "object": "model", "created": _created, "owned_by": "provider"},
+        _model_entry(GAI_MODEL),
+        _model_entry(GAI_MODEL_LITE),
+        _model_entry(GAI_MODEL_VISION),
     ]
     # 添加额外模型
     for m_id in EXTRA_MODELS:
-        _models.append({"id": m_id, "object": "model", "created": _created, "owned_by": "provider"})
+        _models.append(_model_entry(m_id))
     # 去重（如果多个配置指向同一模型）
     _seen = set()
     _unique = []
@@ -1020,6 +1022,16 @@ def teach_history():
 
 @app.route('/v1/chat/completions', methods=['POST'])
 def chat_completions():
+    # API Key 认证（OpenAI 标准兼容）
+    _auth = request.headers.get('Authorization', '')
+    _api_keys = os.getenv('GAI_API_KEYS', '')
+    if _api_keys:
+        _allowed_keys = [k.strip() for k in _api_keys.split(',') if k.strip()]
+        _provided_key = _auth.replace('Bearer ', '').strip() if _auth.startswith('Bearer ') else ''
+        if _provided_key and _allowed_keys and _provided_key not in _allowed_keys:
+            return openai_error("Invalid API key", "invalid_request_error", 401)
+    # 如果 GAI_API_KEYS 未设置或为空，则不进行认证（向后兼容）
+
     data = request.get_json(force=True, silent=True)
     if not data or not isinstance(data, dict):
         return openai_error("Invalid request body", err_type="invalid_request_error", status=400)
@@ -1288,11 +1300,13 @@ def chat_completions():
                         item["type"] = "text"
                     logger.warning(f"[CLEAN] 消息[{i}] content[{j}] 缺少type字段，已推断为 {item['type']}")
         # DeepSeek 不接受 content 为数组格式（只接受字符串）
-        # 但如果数组中只有 text 类型，可以合并为字符串
-        if isinstance(content, list):
+        # 其他模型（OpenAI GPT-4o、Claude 等）原生支持 content 数组
+        # 使用 _selected_model 变量判断（注意：此变量在消息清洗之后才定义，
+        # 所以这里用环境变量或默认值来判断）
+        _need_flatten = 'deepseek' in os.getenv('GAI_MODEL', 'deepseek-v4-pro').lower()
+        if isinstance(content, list) and _need_flatten:
             has_image = any(isinstance(item, dict) and item.get("type") == "image_url" for item in content)
             if not has_image:
-                # 纯文本数组，合并为字符串
                 text_parts = []
                 for item in content:
                     if isinstance(item, dict) and item.get("type") == "text":
@@ -1300,7 +1314,7 @@ def chat_completions():
                     elif isinstance(item, str):
                         text_parts.append(item)
                 msg["content"] = "\n".join(text_parts)
-                logger.info(f"[CLEAN] 消息[{i}] 纯文本数组已合并为字符串")
+                logger.info(f"[CLEAN] 消息[{i}] 纯文本数组已合并为字符串（DeepSeek 兼容）")
 
     # 修复多模态消息：API 要求 content 数组中每个 text 元素都不能为空
     for i, msg in enumerate(final_messages):
@@ -1386,23 +1400,35 @@ def chat_completions():
         _selected_model = GAI_MODEL_LITE
         logger.info(f"[ROUTE] 简单问题，使用轻量模型: {GAI_MODEL_LITE}")
 
-    api_params = {"model": _selected_model, "messages": final_messages, "tools": ARTICLE_TOOLS}
+    api_params = {"model": _selected_model, "messages": final_messages}
+    # 仅当模型支持 function calling 时才注入工具定义
+    # DeepSeek、OpenAI、Qwen、GLM 等主流模型均支持
+    _model_lower = _selected_model.lower()
+    _supports_tools = any(p in _model_lower for p in ['deepseek', 'gpt', 'qwen', 'glm', 'claude', 'gemini', 'chatglm'])
+    if _supports_tools:
+        api_params["tools"] = ARTICLE_TOOLS
+    else:
+        logger.info(f"[ROUTE] 模型 {_selected_model} 可能不支持 function calling，跳过工具注入")
 
-    # DeepSeek 兼容：处理 reasoning_content
-    # 策略：将 reasoning_content 合并到 content 中，然后删除该字段
-    # 这样既不会触发"必须回传"的错误，也不会丢失思考内容
-    for msg in final_messages:
-        if msg.get("role") == "assistant" and "reasoning_content" in msg:
-            rc = msg.get("reasoning_content", "")
-            if rc and str(rc).strip():
-                # 将思考内容作为引用合并到 content 前面
-                original = msg.get("content", "")
-                if original and str(original).strip():
-                    msg["content"] = f"[思考过程]\n{rc}\n[/思考过程]\n\n{original}"
-                else:
-                    msg["content"] = f"[思考过程]\n{rc}\n[/思考过程]"
-            # 无论是否有效，都删除 reasoning_content 字段
-            del msg["reasoning_content"]
+    # DeepSeek 兼容：仅在 DeepSeek 模型时处理 reasoning_content
+    # 其他模型（OpenAI/Anthropic/Qwen/GLM）不使用此字段
+    _is_deepseek = 'deepseek' in _selected_model.lower()
+    if _is_deepseek:
+        for msg in final_messages:
+            if msg.get("role") == "assistant" and "reasoning_content" in msg:
+                rc = msg.get("reasoning_content", "")
+                if rc and str(rc).strip():
+                    original = msg.get("content", "")
+                    if original and str(original).strip():
+                        msg["content"] = f"[思考过程]\n{rc}\n[/思考过程]\n\n{original}"
+                    else:
+                        msg["content"] = f"[思考过程]\n{rc}\n[/思考过程]"
+                del msg["reasoning_content"]
+    else:
+        # 非 DeepSeek 模型：直接删除 reasoning_content 字段（不合并到 content）
+        for msg in final_messages:
+            if "reasoning_content" in msg:
+                del msg["reasoning_content"]
 
     # 诊断：打印每条消息的结构（用于排查 DeepSeek 格式问题）
     for i, msg in enumerate(final_messages):
@@ -1418,9 +1444,19 @@ def chat_completions():
     # 中间层使用自有工具定义（ARTICLE_TOOLS），不透传 Open WebUI 的 tools 参数
     # 原因：中间层代理模式下，工具调用在中间层内部完成，Open WebUI 不需要感知
     # 透传 Open WebUI 的标准参数
-    for key in ('temperature', 'max_tokens', 'top_p', 'stop', 'frequency_penalty', 'presence_penalty', 'tool_choice'):
+    for key in ('temperature', 'max_tokens', 'top_p', 'stop', 'frequency_penalty', 'presence_penalty', 'tool_choice', 'stream_options', 'response_format', 'user'):
         if key in data:
             api_params[key] = data[key]
+    # tool_choice 仅在注入了工具时才透传
+    if 'tools' not in api_params and 'tool_choice' in api_params:
+        del api_params['tool_choice']
+        logger.info("[ROUTE] 未注入工具，移除 tool_choice 参数")
+    # max_tokens 上限保护（不同模型限制不同）
+    if 'max_tokens' in api_params:
+        _max_limit = 16384  # 保守上限，大多数模型都支持
+        if api_params['max_tokens'] > _max_limit:
+            logger.warning(f"[ROUTE] max_tokens {api_params['max_tokens']} 超过上限 {_max_limit}，已限制")
+            api_params['max_tokens'] = _max_limit
 
     if stream:
         def gen():
@@ -1523,7 +1559,7 @@ def chat_completions():
         except Exception as e:
             logger.error(f"[CHAT] 生成错误: {e}")
             return openai_error(str(e), status=502)
-        result = _finalize_turn(session_id, clean_query, response_text, eta_before, articles_content, loaded_chunks, usage=_usage, request_model=data.get('model'))
+        result = _finalize_turn(session_id, clean_query, response_text, eta_before, articles_content, loaded_chunks, usage=_usage, request_model=data.get('model'), finish_reason=getattr(resp.choices[0], 'finish_reason', None) or "stop")
         return jsonify(result)
 
 

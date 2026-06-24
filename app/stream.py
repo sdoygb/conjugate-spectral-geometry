@@ -125,7 +125,6 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
             "choices": [{
                 "index": 0,
                 "delta": delta,
-                "logprobs": None,
                 "finish_reason": finish_reason
             }]
         }
@@ -187,6 +186,7 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                                 open_tags = len(dsml_tag_pattern.findall(dsml_buffer))
                                 close_tags = dsml_buffer.count('</｜｜DSML｜｜')
                                 dsml_depth = open_tags - close_tags
+                                logger.info(f"[DSML-FILTER] 检测到 DSML 标签，depth={dsml_depth}, content={delta.content[:80]}")
                                 if dsml_depth > 0:
                                     continue  # 确认在 DSML 块内，不透传
                                 # 如果开启和关闭标签数量相等（自闭合），清空缓冲区
@@ -204,6 +204,9 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                             "total_tokens": chunk.usage.total_tokens or 0
                         }
                 yield _sse_chunk({}, fr, usage=_usage_info if _usage_info else None)
+                # 最终检查：如果 text_buf 中仍有 DSML 残留，记录警告
+                if '<｜｜DSML｜｜' in text_buf:
+                    logger.warning(f"[DSML-FILTER] _stream_text 完成后 text_buf 中仍有 DSML 残留！len={len(text_buf)}")
                 yield "data: [DONE]\n\n"
                 return  # 成功完成，退出重试循环
             except Exception as e:
@@ -219,9 +222,6 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
         # 所有重试都失败
         yield _sse_error(f"生成错误（已重试{API_MAX_RETRIES}次）: {last_error}")
         yield "data: [DONE]\n\n"
-
-    # 第一个 chunk：发送 role
-    yield _sse_chunk({"role": "assistant"})
 
     for _round in range(max_tool_rounds):
         # 每轮调用前彻底清洗消息（DeepSeek 兼容）
@@ -394,7 +394,15 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                     r'<｜｜DSML｜｜tool_calls>.*?</｜｜DSML｜｜tool_calls>',
                     re.DOTALL
                 )
+                before = len(collected_content)
                 collected_content = dsml_block_pattern.sub('', collected_content).strip()
+                logger.info(f"[TOOL-DSML] content 从 {before} 字符减至 {len(collected_content)} 字符")
+            elif '<｜｜DSML｜｜' in collected_content:
+                logger.warning(f"[TOOL-DSML] content 中包含 DSML 标签但解析失败，content={collected_content[:200]}")
+                # 即使解析失败，也从 content 中移除所有 DSML 相关行
+                lines = collected_content.split('\n')
+                filtered = [l for l in lines if '<｜｜DSML｜｜' not in l]
+                collected_content = '\n'.join(filtered).strip()
 
         if not collected_tool_calls:
             # 纯文本回复，现在一次性透传所有内容
@@ -409,6 +417,9 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
 
         # 构建 tool_calls 列表
         tool_calls_list = [collected_tool_calls[i] for i in sorted(collected_tool_calls.keys())]
+
+        # 向客户端发送 finish_reason: "tool_calls"（OpenAI 标准兼容）
+        yield _sse_chunk({"tool_calls": tool_calls_list}, "tool_calls")
 
         # 构建 assistant 消息（含 tool_calls + reasoning_content）
         assistant_msg = {
