@@ -414,11 +414,11 @@ def build_system_prompt(
     """
     v10 增强：新增 teaching_section、msg_count、recent_chats 参数。
     """
-    # 新对话提醒
+    # 新对话提醒（kimi-k2.7 上下文128K，约可容纳30轮对话）
     new_chat_hint = ""
-    if msg_count >= 10:
-        new_chat_hint = f"\n\n【重要提醒】当前对话已有 {msg_count} 条用户消息，上下文较长，容易出现幻觉和记忆混乱。请在回复末尾提醒用户：\"建议开一个新对话，当前对话太长了。\"\n"
-    elif msg_count >= 6:
+    if msg_count >= 30:
+        new_chat_hint = f"\n\n【重要提醒】当前对话已有 {msg_count} 条用户消息，上下文接近上限，可能出现幻觉和记忆混乱。请在回复末尾提醒用户：\"建议开一个新对话，当前对话太长了。\"\n"
+    elif msg_count >= 20:
         new_chat_hint = f"\n\n【提醒】当前对话已有 {msg_count} 条消息，如果感觉回答质量下降，建议开新对话。\n"
     index_warning = ""
     if index_empty:
