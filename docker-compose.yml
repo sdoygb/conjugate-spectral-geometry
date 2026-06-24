@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  geometry-ai:
+    build: .
+    image: geometry-ai-server:latest
+    container_name: geometry-ai-server
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5000:5000"   # Geometry AI Server（仅本机/内网访问）
+      - "8080:8080"   # Open WebUI（聊天界面，对外开放）
+    environment:
+      # 必填：你的 DeepSeek API Key
+      - KIMI_API_KEY=${KIMI_API_KEY:-sk-your-api-key-here}
+      # 可选：自定义配置
+      - KIMI_BASE_URL=https://api.deepseek.com/v1
+      - KIMI_MODEL=deepseek-v4-pro
+      - KIMI_MODEL_LITE=deepseek-v4-flash
+      - KIMI_MODEL_VISION=deepseek-v4-flash
+      - KIMI_EMBEDDING_MODEL=deepseek-v4-flash
+      # 国内镜像加速
+      - HF_ENDPOINT=https://hf-mirror.com
+      - OPENAI_API_BASE_URLS=http://localhost:5000/v1
+      - OPENAI_API_KEYS=not-needed
+      # MySQL配置（Docker内连宿主机MySQL）
+      - MYSQL_HOST=${MYSQL_HOST:-host.docker.internal}
+      - MYSQL_PORT=3306
+      - MYSQL_DB=geometric_ai
+      - MYSQL_ADMIN_USER=geometric_AI
+      - MYSQL_ADMIN_PASS=JcMJbG3SrjZtdk4A
+      - MYSQL_PUBLIC_USER=share_writer
+      - MYSQL_PUBLIC_PASS=Share2026!OnlyWrite
+    extra_hosts:
+      # Linux Docker 需要这行才能解析 host.docker.internal
+      - "host.docker.internal:host-gateway"
+    volumes:
+      # 持久化数据（知识库、配置、模型缓存）
+      - geometry-data:/app/data
+      - geometry-models:/app/models_cache
+
+volumes:
+  geometry-data:
+  geometry-models:

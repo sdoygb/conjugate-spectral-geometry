@@ -1,0 +1,267 @@
+# Geometry AI Server
+
+几何论 AI 中间层服务 -- 基于 KIMI 大模型的几何论知识问答系统。
+
+## 项目说明
+
+这是一个帮助学习几何论的 AI 系统。它通过中间层服务连接 Open WebUI 和 KIMI 大模型，在对话中注入几何论知识库、活体信息场动力学和教学反馈机制，让 AI 能够基于几何论框架回答问题。
+
+**首次启动自动构建知识库**：`chroma_db/` 目录在首次运行时自动从 `articles/` 目录构建，无需手动准备。
+
+## 架构
+
+```
+用户 → Open WebUI → 本中间层 → KIMI API
+                    ↓
+              ChromaDB 向量数据库（知识检索）
+              LivingInfoField（活体信息场）
+              TeachingSystem（教学反馈）
+```
+
+## 模块结构
+
+```
+geometry-ai-server/
+├── server.py          # Flask 路由、API 端点、启动代码（主入口）
+├── config.py          # 常量、环境变量、模型配置、日志
+├── knowledge.py       # ChromaDB 向量库、Embedding、语义检索
+├── models.py          # eta 动力学、personal_db、文件操作、对话记录
+├── prompts.py         # system prompt 构建、教学系统、质量检查
+├── tools.py           # Function Calling 工具定义与执行
+├── stream.py          # 流式生成、SSE 格式化
+├── start.py           # 一键启动脚本（自动检测环境、安装依赖）
+├── auto_teach.py      # 自动教学脚本
+├── articles/          # 几何论文章源文件（72篇）
+├── shouyi_personal.json  # 个人数据库（首次启动自动生成，不上传GitHub）
+├── .gitignore
+├── README.md
+└── geometry-ai-intro.md  # 推广介绍页
+```
+
+## 核心特性
+
+- **向量语义检索**：ChromaDB 存储几何论知识库，支持语义匹配而非关键词匹配
+- **活体信息场**：eta 角动力学驱动回答风格，每个会话独立演化
+- **教学反馈系统**：通过纠正 API、反模式库、知识补丁，让系统"越聊越懂"
+- **输出质量门控**：自动检测低质量回复并重试
+- **Function Calling 工具**：AI 可主动读写文章、管理个人数据库、查询历史对话
+- **个人数据库**：JSON + ChromaDB 双存储，支持性格/感情/想法/记忆的持久化和语义检索
+- **对话记录查询**：可直接查询 Open WebUI 的历史对话
+- **文件自动注入**：从 Open WebUI uploads 目录自动读取上传文件
+- **OpenAI 规范兼容**：完整的 OpenAI API 格式支持（流式/非流式/错误格式/embeddings）
+- **Token 优化**：智能模型路由、历史消息截断、检索量控制
+- **零外部数据库依赖**：只需 Python + ChromaDB，无需 MySQL
+
+## 快速开始
+
+### 环境要求
+
+- Python 3.9+（推荐 3.11）
+- KIMI API Key（[免费注册](https://platform.moonshot.cn/)，新用户有赠送额度）
+- macOS / Linux / Windows（跨平台）
+- macOS 用户如需语音输入功能，需安装 ffmpeg：`brew install ffmpeg`
+
+### 一键启动（推荐）
+
+```bash
+# 克隆仓库
+git clone https://github.com/sdoygb/geometry-ai-server.git
+cd geometry-ai-server
+
+# 设置 API Key
+export KIMI_API_KEY="你的密钥"
+
+# 一键启动（自动检测环境、安装依赖、启动服务器）
+python3 start.py
+```
+
+`start.py` 会自动完成以下步骤：
+1. 检查 Python 版本（需要 >= 3.9）
+2. 检查 pip 可用性
+3. 自动安装缺失依赖（openai、flask、flask-cors、chromadb）
+4. 检查环境变量和向量数据库
+5. 启动服务器
+
+### 手动安装
+
+```bash
+# 1. 克隆仓库
+git clone https://github.com/sdoygb/geometry-ai-server.git
+cd geometry-ai-server
+
+# 2. 安装依赖
+pip3 install openai flask flask-cors chromadb
+
+# 3. 设置 API Key
+export KIMI_API_KEY="你的密钥"
+
+# 4. 启动
+python3 server.py
+```
+
+> **注意**：如果 `pip3 install` 报权限错误，macOS 用户加 `--break-system-packages`，Linux 用户用 `sudo` 或虚拟环境。
+
+服务启动在 `http://localhost:5000`。
+
+### 首次启动
+
+首次启动时会自动下载中文 Embedding 模型（约100MB，只需一次），并从 `articles/` 目录构建向量索引（约 2-3 分钟）。后续启动直接加载，跳过下载和构建。
+
+## Open WebUI 接入
+
+### 安装 Open WebUI（聊天界面）
+
+```bash
+pip install open-webui
+open-webui serve
+# 浏览器打开 http://localhost:3000 完成初始设置
+```
+
+### 添加自定义模型
+
+在 Open WebUI 网页 → 设置 → 模型 中添加：
+
+- **API Base URL**: `http://localhost:5000/v1`
+- **API Key**: 任意非空字符串
+- **模型名称**: `kimi-k2.7-code`
+
+**重要设置**：关闭 Open WebUI 的"联网搜索"和"引用"功能，否则会干扰正常对话。
+
+### Function Calling 模式设置
+
+在 Open WebUI 中，模型的 **Function Calling** 必须设为 **Native（原生）** 模式：
+
+1. 进入 **Admin Panel → Settings → Models**
+2. 找到对应模型，点击编辑
+3. **Advanced Params → Function Calling → Native**
+4. 保存
+
+## AI 工具系统
+
+中间层通过 OpenAI Function Calling 协议为 AI 提供 7 个工具。AI 可以自主决定何时调用这些工具，无需用户干预。
+
+### 文章操作工具
+
+| 工具 | 说明 |
+|------|------|
+| `list_articles` | 列出 articles 目录中的所有文件，支持关键词过滤（如 "1号"、"氢原子"） |
+| `read_article` | 读取指定文章全文，支持模糊匹配文件名 |
+| `write_article` | 写入/修改文章，自动更新向量索引 |
+
+### 个人数据库工具
+
+| 工具 | 说明 |
+|------|------|
+| `personal_read` | 读取个人数据库全部内容（性格、感情、想法、记忆） |
+| `personal_write` | 写入个人数据库，支持类别和子字段 |
+
+个人数据库使用 JSON + ChromaDB 双存储：
+- **JSON 文件**（`shouyi_personal.json`）：结构化数据，启动时注入 system prompt
+- **ChromaDB `personal` 集合**：长文本语义检索，与主知识库一起被搜索
+
+首次启动自动生成空库模板，私人数据不上传到 GitHub（已加入 .gitignore）。
+
+### 对话记录工具
+
+| 工具 | 说明 |
+|------|------|
+| `chat_history` | 查询 Open WebUI 历史对话列表（标题、时间、ID） |
+| `chat_read` | 读取指定对话的完整消息链（最多 80 条） |
+
+需要配置 `OPENWEBUI_DB_PATH` 环境变量指向 Open WebUI 的 SQLite 数据库文件，否则自动检测。
+
+## API 文档
+
+### 对话
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | `/v1/chat/completions` | OpenAI 兼容的对话接口（流式/非流式） |
+| GET | `/v1/models` | 列出可用模型 |
+| POST | `/v1/embeddings` | OpenAI 兼容的 Embedding 接口 |
+| GET | `/health` | 健康检查 |
+
+### 教学系统
+
+通过教学 API 可以纠正 AI 的错误、标记禁止模式、补充知识，让系统逐步学习。
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | `/v1/teach/correct` | 纠正 KIMI 的错误回答 |
+| POST | `/v1/teach/antipattern` | 标记禁止的回复模式 |
+| POST | `/v1/teach/patch` | 补充几何论知识 |
+| GET | `/v1/teach/stats` | 查看教学统计 |
+| GET | `/v1/teach/history` | 查看教学历史 |
+
+#### 纠正示例
+
+```bash
+curl -X POST http://localhost:5000/v1/teach/correct \
+  -H "Content-Type: application/json" \
+  -d '{
+    "wrong": "eta是数据库写死的数",
+    "correct": "eta是信息场软模激发度的实时读出",
+    "reason": "活体调度规则2"
+  }'
+```
+
+#### 反模式示例
+
+```bash
+curl -X POST http://localhost:5000/v1/teach/antipattern \
+  -H "Content-Type: application/json" \
+  -d '{
+    "pattern": "未找到任何引用来源",
+    "description": "禁止说找不到引用，必须基于核心公理回答",
+    "severity": "high"
+  }'
+```
+
+#### 知识补丁示例
+
+```bash
+curl -X POST http://localhost:5000/v1/teach/patch \
+  -H "Content-Type: application/json" \
+  -d '{
+    "topic": "eta角的几何含义",
+    "content": "eta角是信息场软模激发度的度量，取值范围[30度, 72.53度]",
+    "source": "文章33 §3.1"
+  }'
+```
+
+### 向量知识库
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | `/v1/vector/status` | 向量库状态（文章数、学习记忆数） |
+| POST | `/v1/vector/rebuild` | 重建文章索引 |
+| POST | `/v1/vector/learned/clear` | 清空学习记忆 |
+
+### 活体信息场
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | `/v1/living/status` | 全局状态 |
+| GET | `/v1/living/sessions` | 活跃会话列表 |
+| GET | `/v1/living/session/<id>` | 单个会话详情 |
+
+## 环境变量
+
+| 变量 | 默认值 | 说明 |
+|------|--------|------|
+| `KIMI_API_KEY` | （必填） | KIMI API 密钥 |
+| `KIMI_BASE_URL` | `https://api.moonshot.cn/v1` | KIMI API 地址 |
+| `KIMI_MODEL` | `kimi-k2.7-code` | 主模型名称 |
+| `KIMI_MODEL_LITE` | `kimi-k2.7` | 轻量模型（简单问题自动路由） |
+| `UPLOAD_FOLDER` | `~/AI/articles` | 文章目录 |
+| `CHROMA_DB_DIR` | `~/AI/chroma_db` | 向量数据库目录 |
+| `OPENWEBUI_UPLOAD_DIR` | 自动检测 | Open WebUI 上传目录 |
+| `OPENWEBUI_DB_PATH` | 自动检测 | Open WebUI SQLite 数据库路径 |
+| `EMBEDDING_MODE` | `default` | Embedding 模式（default/kimi） |
+| `MAX_INJECT_CHARS` | `5000` | 检索结果注入上限（字符） |
+| `MAX_CHUNKS_PER_QUERY` | `8` | 每次检索最大 chunk 数 |
+| `QUALITY_GATE_ENABLED` | `true` | 输出质量门控开关 |
+
+## License
+
+CC BY-NC-SA 4.0 -- 禁止商业用途，修改后必须以相同协议共享，需署名原作者。
