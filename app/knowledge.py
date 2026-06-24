@@ -252,11 +252,17 @@ class VectorKnowledgeBase:
             # 尝试用当前 embedding function 生成一个测试向量来检测维度
             test_emb = self.embedding_fn(["维度检测测试"])
             current_dim = len(test_emb[0]) if test_emb else 0
-            # 从集合中获取一条记录的维度
-            peek = existing.peek(1)
-            if peek and peek.get('embeddings') and peek['embeddings'][0]:
-                stored_dim = len(peek['embeddings'][0])
-                if current_dim > 0 and stored_dim != current_dim:
+            # 从集合中获取一条记录的维度（peek 不支持 include，用 get 代替）
+            stored_dim = 0
+            if count > 0:
+                try:
+                    sample = existing.get(limit=1, include=["embeddings"])
+                    embs = sample.get('embeddings')
+                    if embs is not None and len(embs) > 0:
+                        stored_dim = len(embs[0])
+                except Exception as e:
+                    logger.debug(f"[VECTOR] 获取集合 '{collection_name}' 维度时出错: {e}")
+            if current_dim > 0 and stored_dim > 0 and stored_dim != current_dim:
                     logger.warning(
                         f"[VECTOR] 集合 '{collection_name}' 维度不匹配 "
                         f"(存储={stored_dim}, 当前={current_dim})，将删除旧数据重建"
