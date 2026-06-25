@@ -1306,7 +1306,17 @@ def chat_completions():
         _need_flatten = 'deepseek' in os.getenv('GAI_MODEL', 'deepseek-v4-pro').lower()
         if isinstance(content, list) and _need_flatten:
             has_image = any(isinstance(item, dict) and item.get("type") == "image_url" for item in content)
-            if not has_image:
+            if has_image:
+                # DeepSeek 不支持 image_url，移除图片元素，只保留 text
+                text_parts = []
+                for item in content:
+                    if isinstance(item, dict) and item.get("type") == "text":
+                        text_parts.append(item.get("text", ""))
+                    elif isinstance(item, str):
+                        text_parts.append(item)
+                msg["content"] = "\n".join(text_parts) if text_parts else "用户发送了一张图片，但当前模型不支持图片输入。"
+                logger.info(f"[CLEAN] 消息[{i}] 图片元素已移除，仅保留文本（DeepSeek 不支持图片）")
+            else:
                 text_parts = []
                 for item in content:
                     if isinstance(item, dict) and item.get("type") == "text":
