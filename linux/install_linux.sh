@@ -352,7 +352,7 @@ After=network.target geometry-ai.service
 [Service]
 Type=simple
 User=$SERVICE_USER
-ExecStart=$PYTHON_PATH -m open_webui.main
+ExecStart=$PYTHON_PATH -m open_webui serve
 Restart=always
 RestartSec=5
 Environment=HF_ENDPOINT=https://hf-mirror.com
