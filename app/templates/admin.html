@@ -1227,10 +1227,10 @@
                 showLoading();
                 var data = await apiRequest('/admin/config');
 
-                document.getElementById('cfgApiKey').value = data.KIMI_API_KEY || '';
-                document.getElementById('cfgBaseUrl').value = data.KIMI_BASE_URL || '';
-                document.getElementById('cfgModel').value = data.KIMI_MODEL || '';
-                document.getElementById('cfgModelLite').value = data.KIMI_MODEL_LITE || '';
+                document.getElementById('cfgApiKey').value = data.GAI_API_KEY || '';
+                document.getElementById('cfgBaseUrl').value = data.GAI_BASE_URL || '';
+                document.getElementById('cfgModel').value = data.GAI_MODEL || '';
+                document.getElementById('cfgModelLite').value = data.GAI_MODEL_LITE || '';
                 document.getElementById('cfgEmbeddingMode').value = data.GT_EMBEDDING_MODE || 'local';
                 document.getElementById('cfgExtraModels').value = data.EXTRA_MODELS || '';
 
@@ -1272,10 +1272,10 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        KIMI_API_KEY: apiKey,
-                        KIMI_BASE_URL: baseUrl,
-                        KIMI_MODEL: model,
-                        KIMI_MODEL_LITE: modelLite,
+                        GAI_API_KEY: apiKey,
+                        GAI_BASE_URL: baseUrl,
+                        GAI_MODEL: model,
+                        GAI_MODEL_LITE: modelLite,
                         GT_EMBEDDING_MODE: embeddingMode
                     })
                 });
