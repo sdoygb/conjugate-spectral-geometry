@@ -158,41 +158,54 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                 fr = "stop"
                 # DSML 过滤状态
                 dsml_depth = 0  # 嵌套深度计数
-                dsml_buffer = ""  # 缓冲区，用于检测 DSML 开始标签
+                dsml_buffer = ""  # 缓冲区，用于检测跨 token 的 DSML 标签
                 dsml_tag_pattern = re.compile(r'<｜｜DSML｜｜')
+                dsml_pending = ""  # 待透传的文本（等待确认不是 DSML 的一部分）
                 yield _sse_chunk({"role": "assistant"})
                 for chunk in stream:
                     if chunk.choices:
                         delta = chunk.choices[0].delta
                         if delta.content:
                             text_buf += delta.content
-                            # DSML 过滤：检测到 DSML 开始标签后，停止透传直到所有标签关闭
+                            dsml_buffer += delta.content
+                            
+                            # 如果在 DSML 块内
                             if dsml_depth > 0:
-                                # 在 DSML 块内，不透传，只跟踪嵌套深度
-                                dsml_buffer += delta.content
-                                # 计算开启和关闭标签数量
                                 open_tags = len(dsml_tag_pattern.findall(dsml_buffer))
                                 close_tags = dsml_buffer.count('</｜｜DSML｜｜')
                                 dsml_depth = open_tags - close_tags
                                 if dsml_depth <= 0:
-                                    # DSML 块结束，清空缓冲区
                                     dsml_buffer = ""
                                     dsml_depth = 0
                                 continue
-                            # 检查是否新 token 开始了 DSML 块
-                            if '<｜｜DSML｜｜' in delta.content:
-                                # 可能是 DSML 开始，先缓冲
-                                dsml_buffer = delta.content
+                            
+                            # 检查缓冲区中是否出现 DSML 标签
+                            if '<｜｜DSML｜｜' in dsml_buffer:
+                                # 找到 DSML 标签，计算深度
                                 open_tags = len(dsml_tag_pattern.findall(dsml_buffer))
                                 close_tags = dsml_buffer.count('</｜｜DSML｜｜')
                                 dsml_depth = open_tags - close_tags
-                                logger.info(f"[DSML-FILTER] 检测到 DSML 标签，depth={dsml_depth}, content={delta.content[:80]}")
-                                if dsml_depth > 0:
-                                    continue  # 确认在 DSML 块内，不透传
-                                # 如果开启和关闭标签数量相等（自闭合），清空缓冲区
-                                dsml_buffer = ""
-                                continue  # 即使自闭合也不透传
-                            yield _sse_chunk({"content": delta.content})
+                                
+                                # 透传 DSML 标签之前的正常文本
+                                dsml_idx = dsml_buffer.find('<｜｜DSML｜｜')
+                                safe_text = dsml_buffer[:dsml_idx]
+                                if safe_text:
+                                    yield _sse_chunk({"content": safe_text})
+                                
+                                if dsml_depth <= 0:
+                                    # 自闭合标签，清空
+                                    dsml_buffer = ""
+                                    dsml_depth = 0
+                                continue
+                            
+                            # 安全透传：保留最近 20 个字符作为滑动窗口
+                            # 如果缓冲区超过 20 字符且没有 DSML 标签，透传前面的部分
+                            if len(dsml_buffer) > 20:
+                                safe_len = len(dsml_buffer) - 20
+                                safe_text = dsml_buffer[:safe_len]
+                                dsml_buffer = dsml_buffer[safe_len:]
+                                if safe_text:
+                                    yield _sse_chunk({"content": safe_text})
                         cfr = getattr(chunk.choices[0], 'finish_reason', None)
                         if cfr:
                             fr = cfr
@@ -203,6 +216,14 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                             "completion_tokens": chunk.usage.completion_tokens or 0,
                             "total_tokens": chunk.usage.total_tokens or 0
                         }
+                # 透传剩余的安全缓冲区（非 DSML 内容）
+                if dsml_buffer and dsml_depth <= 0:
+                    # 最终检查：移除任何残留的 DSML 片段
+                    if '<｜｜' in dsml_buffer:
+                        dsml_buffer = re.sub(r'<｜｜[^>]*>', '', dsml_buffer)
+                    if dsml_buffer.strip():
+                        yield _sse_chunk({"content": dsml_buffer})
+                    dsml_buffer = ""
                 yield _sse_chunk({}, fr, usage=_usage_info if _usage_info else None)
                 # 最终检查：如果 text_buf 中仍有 DSML 残留，记录警告
                 if '<｜｜DSML｜｜' in text_buf:
@@ -389,20 +410,30 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                 logger.info(f"[TOOL-DSML] 从 content 中解析到 {len(dsml_calls)} 个 DSML 工具调用")
                 for i, tc in enumerate(dsml_calls):
                     collected_tool_calls[i] = tc
-                # 从 content 中移除 DSML 文本
+                # 从 content 中彻底移除所有 DSML 相关内容
+                before = len(collected_content)
+                # 先移除完整的 DSML 块
                 dsml_block_pattern = re.compile(
                     r'<｜｜DSML｜｜tool_calls>.*?</｜｜DSML｜｜tool_calls>',
                     re.DOTALL
                 )
-                before = len(collected_content)
-                collected_content = dsml_block_pattern.sub('', collected_content).strip()
+                collected_content = dsml_block_pattern.sub('', collected_content)
+                # 再移除任何残留的 DSML 标签（不完整的也移除）
+                collected_content = re.sub(r'<｜｜DSML｜｜[^>]*>', '', collected_content)
+                collected_content = re.sub(r'</｜｜DSML｜｜[^>]*>', '', collected_content)
+                # 移除可能残留的 DSML 片段（如跨行的半个标签）
+                collected_content = re.sub(r'<｜｜.*?｜｜>', '', collected_content)
+                collected_content = collected_content.strip()
                 logger.info(f"[TOOL-DSML] content 从 {before} 字符减至 {len(collected_content)} 字符")
-            elif '<｜｜DSML｜｜' in collected_content:
+            elif '<｜｜DSML｜｜' in collected_content or '<｜｜' in collected_content:
                 logger.warning(f"[TOOL-DSML] content 中包含 DSML 标签但解析失败，content={collected_content[:200]}")
-                # 即使解析失败，也从 content 中移除所有 DSML 相关行
-                lines = collected_content.split('\n')
-                filtered = [l for l in lines if '<｜｜DSML｜｜' not in l]
-                collected_content = '\n'.join(filtered).strip()
+                before = len(collected_content)
+                # 彻底移除所有 DSML 相关内容
+                collected_content = re.sub(r'<｜｜DSML｜｜[^>]*>', '', collected_content)
+                collected_content = re.sub(r'</｜｜DSML｜｜[^>]*>', '', collected_content)
+                collected_content = re.sub(r'<｜｜.*?｜｜>', '', collected_content)
+                collected_content = collected_content.strip()
+                logger.info(f"[TOOL-DSML] 强制清理后 content 从 {before} 字符减至 {len(collected_content)} 字符")
 
         if not collected_tool_calls:
             # 纯文本回复，现在一次性透传所有内容
