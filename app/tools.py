@@ -133,7 +133,7 @@ ARTICLE_TOOLS = [
         "type": "function",
         "function": {
             "name": "write_article",
-            "description": "将内容写入 articles 目录中的文件，用于创建或修改几何论文章。写入时旧版自动归档到 archive/。",
+            "description": "将内容写入 articles 目录中的文件，用于创建或修改几何论文章。支持分段写入大文章：第一次用 mode=write，后续用 mode=append 追加。写入时旧版自动归档到 archive/。",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -143,7 +143,12 @@ ARTICLE_TOOLS = [
                     },
                     "content": {
                         "type": "string",
-                        "description": "要写入的完整文件内容（Markdown格式）"
+                        "description": "要写入的文件内容（Markdown格式）。对于超过30000字符的长文章，请分段调用：第一次 mode=write 写入前半部分，后续 mode=append 追加剩余部分。"
+                    },
+                    "mode": {
+                        "type": "string",
+                        "enum": ["write", "append"],
+                        "description": "写入模式：write=覆盖写入（默认，首次使用），append=追加写入（续写大文章的后续部分）"
                     }
                 },
                 "required": ["filename", "content"]
@@ -438,6 +443,7 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
         elif name == "write_article":
             filename = arguments.get("filename", "")
             content = arguments.get("content", "")
+            mode = arguments.get("mode", "write")
             if not filename:
                 return "错误：缺少文件名"
             os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -445,34 +451,42 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                 fpath = _safe_path(filename)
             except ValueError as e:
                 return f"错误：{e}"
-            # 自动归档旧版（如果同名文件已存在）
-            archive_msg = ""
-            if os.path.exists(fpath):
-                archive_dir = os.path.join(UPLOAD_FOLDER, "archive")
-                os.makedirs(archive_dir, exist_ok=True)
-                archive_path = os.path.join(archive_dir, filename)
-                # 如果归档目录已有同名文件，加时间戳区分
-                if os.path.exists(archive_path):
-                    import time as _time2
-                    ts = _time2.strftime("%Y%m%d_%H%M%S")
-                    stem, ext = os.path.splitext(filename)
-                    archive_path = os.path.join(archive_dir, f"{stem}_{ts}{ext}")
-                import shutil as _shutil
-                _shutil.move(fpath, archive_path)
-                archive_msg = f"（旧版已归档到 archive/）"
-            with open(fpath, 'w', encoding='utf-8') as f:
-                f.write(content)
-            # 只索引新写入的文件（增量索引，不重建全部）
-            if vector_kb and vector_kb.is_initialized:
-                vector_kb.index_single_file(fpath)
-            # 自动 git commit（版本管理）
-            _git_result = _auto_git_commit(filename, content)
-            try:
-                preview_host = _request.host
-            except RuntimeError:
-                preview_host = "localhost:5000"
-            preview_url = f"http://{preview_host}/preview/{filename}"
-            return f"已写入 {filename} ({len(content)} 字符)，向量索引已更新。{archive_msg}{_git_result}\n\n【重要】请务必在回复中告诉用户文章已保存，并将以下预览链接以Markdown格式提供给用户：[点击预览文章]({preview_url})"
+
+            if mode == "append":
+                # 追加模式：不归档，直接追加
+                with open(fpath, 'a', encoding='utf-8') as f:
+                    f.write(content)
+                total_chars = os.path.getsize(fpath)
+                return f"已追加到 {filename}（当前共 {total_chars} 字符）。如还有剩余内容，请继续用 mode=append 调用。全部写完后，向量索引和 git 提交将自动完成。"
+            else:
+                # 覆盖写入模式（默认）
+                # 自动归档旧版（如果同名文件已存在）
+                archive_msg = ""
+                if os.path.exists(fpath):
+                    archive_dir = os.path.join(UPLOAD_FOLDER, "archive")
+                    os.makedirs(archive_dir, exist_ok=True)
+                    archive_path = os.path.join(archive_dir, filename)
+                    if os.path.exists(archive_path):
+                        import time as _time2
+                        ts = _time2.strftime("%Y%m%d_%H%M%S")
+                        stem, ext = os.path.splitext(filename)
+                        archive_path = os.path.join(archive_dir, f"{stem}_{ts}{ext}")
+                    import shutil as _shutil
+                    _shutil.move(fpath, archive_path)
+                    archive_msg = f"（旧版已归档到 archive/）"
+                with open(fpath, 'w', encoding='utf-8') as f:
+                    f.write(content)
+                # 只索引新写入的文件（增量索引，不重建全部）
+                if vector_kb and vector_kb.is_initialized:
+                    vector_kb.index_single_file(fpath)
+                # 自动 git commit（版本管理）
+                _git_result = _auto_git_commit(filename, content)
+                try:
+                    preview_host = _request.host
+                except RuntimeError:
+                    preview_host = "localhost:5000"
+                preview_url = f"http://{preview_host}/preview/{filename}"
+                return f"已写入 {filename} ({len(content)} 字符)，向量索引已更新。{archive_msg}{_git_result}\n\n【重要】请务必在回复中告诉用户文章已保存，并将以下预览链接以Markdown格式提供给用户：[点击预览文章]({preview_url})"
 
         elif name == "personal_read":
             # 读取个人数据库

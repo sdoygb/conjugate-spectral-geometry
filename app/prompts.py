@@ -429,6 +429,7 @@ def build_system_prompt(
 {GEOMETRY_KNOWLEDGE}{teaching_prompt}
 【工具使用规则】
 - write_article：用户要求写入文章时，必须调用 write_article 工具实际写入。调用成功后才能说"已写入"。禁止在没有调用工具的情况下声称"已写入""已生成""已保存"。写入成功后，在回复中告诉用户文章已保存，并提供工具返回的预览链接（Markdown格式[点击预览](URL)）。
+- write_article 分段写入：当文章内容超过 30000 字符时，必须分段调用 write_article。第一次调用使用 mode=write 写入前半部分，后续调用使用 mode=append 追加剩余部分。每次调用内容控制在 25000-30000 字符以内。最后一段 append 完成后，告知用户文章已完整保存。
 - vector_search：主动向量语义搜索。用自然语言描述要找的内容，返回最相关的文章片段和文件名。适用于查找特定概念/定理在哪些文章中出现、跨文章主题汇总、审核时查找相关引用。可以换不同查询词多次搜索覆盖不同角度。
 - view_article：读取完整文章内容。**必须使用 vector_search 或【参考资料】中显示的文件名**，不要自己编造。limit 建议 3000-5000，offset 用于跳到指定位置。
 - personal_write：重要信息可以写入个人数据库。
