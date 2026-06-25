@@ -264,6 +264,12 @@ systemctl stop geometry-ai 2>/dev/null || true
 pkill -f "python.*server.py" 2>/dev/null || true
 sleep 1
 
+# 清理旧版 service 文件（确保使用最新配置）
+echo "  清理旧配置..."
+rm -f /etc/systemd/system/geometry-ai.service 2>/dev/null
+rm -f /etc/systemd/system/geometry-ai-webui.service 2>/dev/null
+systemctl daemon-reload 2>/dev/null
+
 # ============================================================
 # Step 5: 注册 systemd 服务并启动
 # ============================================================
