@@ -342,6 +342,8 @@ else
 fi
 
 if [ -z "${WEBUI_SKIP:-}" ]; then
+    # 生成随机 WEBUI_SECRET_KEY
+    WEBUI_SECRET=$("$PYTHON" -c "import secrets; print(secrets.token_hex(32))")
     cat > /etc/systemd/system/geometry-ai-webui.service << SVCEOF
 [Unit]
 Description=Geometry AI WebUI (Open WebUI)
@@ -356,6 +358,9 @@ RestartSec=5
 Environment=HF_ENDPOINT=https://hf-mirror.com
 Environment=OPENAI_API_BASE_URLS=http://localhost:5000/v1
 Environment=OPENAI_API_KEYS=not-needed
+Environment=WEBUI_SECRET_KEY=$WEBUI_SECRET
+Environment=WEBUI_HOST=0.0.0.0
+Environment=WEBUI_PORT=8080
 
 [Install]
 WantedBy=multi-user.target
