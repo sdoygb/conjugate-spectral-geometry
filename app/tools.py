@@ -133,7 +133,7 @@ ARTICLE_TOOLS = [
         "type": "function",
         "function": {
             "name": "write_article",
-            "description": "创建新文章或追加内容到已有文章。注意：不允许覆盖已有文章内容，只能创建新文件或追加。如果文件已存在且需要修改，请告知用户手动修改。",
+            "description": "将内容写入 articles 目录中的文件，用于创建或修改几何论文章。支持分段写入大文章：第一次用 mode=write，后续用 mode=append 追加。写入时旧版自动归档到 archive/。",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -148,7 +148,7 @@ ARTICLE_TOOLS = [
                     "mode": {
                         "type": "string",
                         "enum": ["write", "append"],
-                        "description": "写入模式：write=创建新文件（如果文件已存在则拒绝写入），append=追加内容到已有文件"
+                        "description": "写入模式：write=覆盖写入（默认，首次使用），append=追加写入（续写大文章的后续部分）"
                     }
                 },
                 "required": ["filename", "content"]
@@ -252,14 +252,14 @@ ARTICLE_TOOLS = [
         "type": "function",
         "function": {
             "name": "manage_articles",
-            "description": "管理文章目录：创建子目录、查看归档。注意：不允许删除、移动或归档文章，这些操作只能由用户手动完成。",
+            "description": "管理文章的子目录操作：归档旧版文章到 archive/ 子目录、查看归档、创建子目录。注意：只在用户明确要求归档/管理文章时才使用。",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "action": {
                         "type": "string",
-                        "enum": ["create_dir", "list_archive"],
-                        "description": "操作类型：create_dir(创建子目录)、list_archive(查看归档)"
+                        "enum": ["archive", "list_archive", "create_dir", "move", "delete"],
+                        "description": "操作类型：archive(归档到archive/)、list_archive(查看归档)、create_dir(创建子目录)、move(移动文件)、delete(删除文件)"
                     },
                     "filename": {
                         "type": "string",
@@ -459,9 +459,21 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                 total_chars = os.path.getsize(fpath)
                 return f"已追加到 {filename}（当前共 {total_chars} 字符）。如还有剩余内容，请继续用 mode=append 调用。全部写完后，向量索引和 git 提交将自动完成。"
             else:
-                # 创建新文件模式
+                # 覆盖写入模式（默认）
+                # 自动归档旧版（如果同名文件已存在）
+                archive_msg = ""
                 if os.path.exists(fpath):
-                    return f"错误：文件 {filename} 已存在，不允许覆盖。如需修改，请告知用户手动修改，或使用 mode=append 追加内容。"
+                    archive_dir = os.path.join(UPLOAD_FOLDER, "archive")
+                    os.makedirs(archive_dir, exist_ok=True)
+                    archive_path = os.path.join(archive_dir, filename)
+                    if os.path.exists(archive_path):
+                        import time as _time2
+                        ts = _time2.strftime("%Y%m%d_%H%M%S")
+                        stem, ext = os.path.splitext(filename)
+                        archive_path = os.path.join(archive_dir, f"{stem}_{ts}{ext}")
+                    import shutil as _shutil
+                    _shutil.move(fpath, archive_path)
+                    archive_msg = f"（旧版已归档到 archive/）"
                 with open(fpath, 'w', encoding='utf-8') as f:
                     f.write(content)
                 # 只索引新写入的文件（增量索引，不重建全部）
@@ -474,7 +486,7 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                 except RuntimeError:
                     preview_host = "localhost:5000"
                 preview_url = f"http://{preview_host}/preview/{filename}"
-                return f"已创建新文章 {filename} ({len(content)} 字符)，向量索引已更新。{_git_result}\n\n【重要】请务必在回复中告诉用户文章已保存，并将以下预览链接以Markdown格式提供给用户：[点击预览文章]({preview_url})"
+                return f"已写入 {filename} ({len(content)} 字符)，向量索引已更新。{archive_msg}{_git_result}\n\n【重要】请务必在回复中告诉用户文章已保存，并将以下预览链接以Markdown格式提供给用户：[点击预览文章]({preview_url})"
 
         elif name == "personal_read":
             # 读取个人数据库
@@ -725,8 +737,25 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
             filename = arguments.get("filename", "")
             target = arguments.get("target", "")
 
-            elif action == "archive":
-                return "错误：不允许通过 AI 归档文章。如需归档，请用户手动操作。"
+            if action == "archive":
+                if not filename:
+                    return "错误：缺少文件名"
+                try:
+                    fpath = _safe_path(filename)
+                except ValueError as e:
+                    return f"错误：{e}"
+                if not os.path.exists(fpath):
+                    return f"文件 '{filename}' 不存在"
+                archive_dir = os.path.join(UPLOAD_FOLDER, "archive")
+                os.makedirs(archive_dir, exist_ok=True)
+                archive_path = os.path.join(archive_dir, filename)
+                if os.path.exists(archive_path):
+                    import time as _time3
+                    ts = _time3.strftime("%Y%m%d_%H%M%S")
+                    stem, ext = os.path.splitext(filename)
+                    archive_path = os.path.join(archive_dir, f"{stem}_{ts}{ext}")
+                _shutil2.move(fpath, archive_path)
+                return f"已归档: {filename} -> archive/"
 
             elif action == "list_archive":
                 archive_dir = os.path.join(UPLOAD_FOLDER, "archive")
@@ -750,13 +779,34 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                 return f"已创建子目录: {target}/"
 
             elif action == "move":
-                return "错误：不允许通过 AI 移动文章。如需移动，请用户手动操作。"
+                if not filename or not target:
+                    return "错误：缺少文件名和目标路径"
+                try:
+                    fpath = _safe_path(filename)
+                except ValueError as e:
+                    return f"错误：{e}"
+                if not os.path.exists(fpath):
+                    return f"文件 '{filename}' 不存在"
+                target_dir = os.path.join(UPLOAD_FOLDER, target)
+                os.makedirs(target_dir, exist_ok=True)
+                target_path = os.path.join(target_dir, filename)
+                _shutil2.move(fpath, target_path)
+                return f"已移动: {filename} -> {target}/"
 
             elif action == "delete":
-                return "错误：不允许通过 AI 删除文章。如需删除，请用户手动操作。"
+                if not filename:
+                    return "错误：缺少文件名"
+                try:
+                    fpath = _safe_path(filename)
+                except ValueError as e:
+                    return f"错误：{e}"
+                if not os.path.exists(fpath):
+                    return f"文件 '{filename}' 不存在"
+                os.remove(fpath)
+                return f"已删除: {filename}"
 
             else:
-                return f"未知操作: {action}，支持: create_dir/list_archive"
+                return f"未知操作: {action}，支持: archive/list_archive/create_dir/move/delete"
 
         else:
             return f"未知工具: {name}"
