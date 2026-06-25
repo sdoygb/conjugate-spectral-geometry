@@ -162,6 +162,38 @@ echo "  [√] Python $PY_VER ($PYTHON)"
 echo ""
 echo "[2/6] 安装 Python 依赖..."
 
+# 检查并升级系统 sqlite3（ChromaDB 要求 >= 3.35.0）
+echo "  检查系统 sqlite3 版本..."
+SQLITE_VER=$(sqlite3 --version 2>/dev/null | grep -oP '\d+\.\d+\.\d+' | head -1)
+if [ -n "$SQLITE_VER" ]; then
+    SQLITE_MAJOR=$(echo "$SQLITE_VER" | cut -d. -f1)
+    SQLITE_MINOR=$(echo "$SQLITE_VER" | cut -d. -f2)
+    if [ "$SQLITE_MAJOR" -lt 3 ] || { [ "$SQLITE_MAJOR" -eq 3 ] && [ "$SQLITE_MINOR" -lt 35 ]; }; then
+        echo "  sqlite3 版本过低 ($SQLITE_VER)，正在升级..."
+        if command -v apt-get &>/dev/null; then
+            apt-get install -y -qq libsqlite3-dev wget 2>/dev/null
+            # 从源码编译安装新版 sqlite3
+            SQLITE_URL="https://www.sqlite.org/2024/sqlite-autoconf-3450000.tar.gz"
+            wget -q "$SQLITE_URL" -O /tmp/sqlite3.tar.gz 2>/dev/null && \
+            cd /tmp && tar xzf sqlite3.tar.gz && cd sqlite-autoconf-3450000 && \
+            ./configure --prefix=/usr/local && make -j$(nproc) && make install && \
+            ldconfig && \
+            echo "  [√] sqlite3 已升级到 3.45.0"
+        elif command -v yum &>/dev/null; then
+            yum install -y sqlite-devel wget 2>/dev/null
+            SQLITE_URL="https://www.sqlite.org/2024/sqlite-autoconf-3450000.tar.gz"
+            wget -q "$SQLITE_URL" -O /tmp/sqlite3.tar.gz 2>/dev/null && \
+            cd /tmp && tar xzf sqlite3.tar.gz && cd sqlite-autoconf-3450000 && \
+            ./configure --prefix=/usr/local && make -j$(nproc) && make install && \
+            ldconfig && \
+            echo "  [√] sqlite3 已升级到 3.45.0"
+        fi
+    else
+        echo "  [√] sqlite3 版本 $SQLITE_VER（满足要求）"
+    fi
+else
+    echo "  未检测到 sqlite3，将使用 pysqlite3-binary"
+fi
 # 升级 pip
 "$PYTHON" -m pip install --disable-pip-version-check --upgrade pip 2>&1 | tail -1 || true
 
