@@ -515,6 +515,11 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
 
     # 超过轮数限制，强制要求模型直接回答 -- 真正流式
     logger.warning(f"[TOOL] 超过 {max_tool_rounds} 轮，强制生成文本回复")
+    # 追加强制文本回复指令（防止模型继续输出 DSML 工具调用格式）
+    final_messages.append({
+        "role": "user",
+        "content": "【系统指令】工具调用轮数已达上限。请直接用纯文本回答用户的问题，不要使用任何工具调用格式（不要输出 <｜｜DSML｜｜ 等标签）。"
+    })
     # 最终回复前也清洗 reasoning_content
     for msg in final_messages:
         if "reasoning_content" in msg:

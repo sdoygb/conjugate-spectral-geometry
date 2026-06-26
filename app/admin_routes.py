@@ -306,22 +306,23 @@ def admin_restart():
     """
     import subprocess
     try:
+        # 找到当前进程 PID
         my_pid = os.getpid()
+        # 用 launchctl 重启（如果是 launchd 管理的）
         plist_path = os.path.expanduser('~/Library/LaunchAgents/com.geometryai.server.plist')
         if os.path.exists(plist_path):
             subprocess.Popen(['launchctl', 'kickstart', '-k', 'gui/$(id -u)/com.geometryai.server'],
                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             return jsonify({"success": True, "message": "服务正在重启..."})
         else:
-            # 非 launchd 管理：用 setsid 启动新进程，确保不被父进程终止
+            # 非 launchd 管理，用 os.execv 重启自身
             import sys
             python = sys.executable
-            server_dir = _config_module.PROJECT_ROOT
+            # 延迟重启，先返回响应
             subprocess.Popen([
                 'bash', '-c',
-                f'nohup {python} {server_dir}/server.py > /dev/null 2>&1 & sleep 1 && kill -9 {my_pid}'
-            ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-               preexec_fn=os.setsid)
+                f'sleep 1 && kill {my_pid} && cd {_config_module.PROJECT_ROOT} && {python} server.py'
+            ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             return jsonify({"success": True, "message": "服务正在重启..."})
     except Exception as e:
         logger.error(f"[ADMIN] 重启失败: {e}")
