@@ -1638,4 +1638,16 @@ if __name__ == '__main__':
     _tools_mod.teaching_system = teaching_system
     _tools_mod.living_field = living_field
 
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    # 自动清理占用同端口的旧进程
+    import subprocess as _sp
+    _port = 5000
+    try:
+        _port_pid = _sp.check_output(['lsof', '-ti', f':{_port}'], stderr=_sp.DEVNULL).decode().strip()
+        if _port_pid:
+            logger.warning(f"[STARTUP] 端口 {_port} 被占用，正在清理旧进程 PID={_port_pid}...")
+            os.kill(int(_port_pid.split('\n')[0]), 9)
+            time.sleep(1)
+    except (subprocess.CalledProcessError, FileNotFoundError, ProcessLookupError):
+        pass
+
+    app.run(host='0.0.0.0', port=_port, debug=False)
