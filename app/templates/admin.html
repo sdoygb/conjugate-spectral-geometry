@@ -1059,6 +1059,12 @@
         async function apiRequest(url, options) {
             options = options || {};
             try {
+                // 自动为 /admin/ 路径添加 token 认证
+                if (url.indexOf('/admin/') !== -1 && url.indexOf('token=') === -1) {
+                    var token = new URLSearchParams(window.location.search).get('token') || 'geometry-ai-admin';
+                    var sep = url.indexOf('?') !== -1 ? '&' : '?';
+                    url = url + sep + 'token=' + encodeURIComponent(token);
+                }
                 var resp = await fetch(url, options);
                 if (!resp.ok) {
                     var errData = null;
