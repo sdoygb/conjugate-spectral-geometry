@@ -826,7 +826,11 @@ class VectorKnowledgeBase:
                     "quality_score": round(score, 4),
                     "source": "learned",
                     "created_at": datetime.now().isoformat(),
-                    "answer_length": len(a)
+                    "answer_length": len(a),
+                    "fname": "learned_qa",
+                    "article_id": "learned",
+                    "start": 0,
+                    "end": len(doc)
                 }]
             )
             self._learned_count = self.learned_collection.count()
@@ -859,7 +863,11 @@ class VectorKnowledgeBase:
                     "quality_score": round(score, 4),
                     "source": "learned",
                     "created_at": datetime.now().isoformat(),
-                    "answer_length": len(proposition)
+                    "answer_length": len(proposition),
+                    "fname": "learned_proposition",
+                    "article_id": "learned",
+                    "start": 0,
+                    "end": len(proposition)
                 }]
             )
             self._learned_count = self.learned_collection.count()
@@ -897,7 +905,11 @@ class VectorKnowledgeBase:
                 "quality_score": round(score, 4),
                 "source": "learned",
                 "created_at": now,
-                "answer_length": len(prop)
+                "answer_length": len(prop),
+                "fname": "learned_proposition",
+                "article_id": "learned",
+                "start": 0,
+                "end": len(prop)
             })
 
         try:

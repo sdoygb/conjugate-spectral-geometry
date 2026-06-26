@@ -647,7 +647,11 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                             "category": cat_key,
                             "sub_field": sub_field or "",
                             "timestamp": datetime.now().isoformat(),
-                            "source": "personal_write"
+                            "source": "personal_write",
+                            "fname": f"personal_{cat_key}",
+                            "article_id": "personal",
+                            "start": 0,
+                            "end": len(content)
                         }]
                     )
                     logger.info(f"[PERSONAL] 写入向量库: {cat_key}.{sub_field or '*'}, {len(content)}字符")
