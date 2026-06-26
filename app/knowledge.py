@@ -585,7 +585,7 @@ class VectorKnowledgeBase:
         except Exception as e:
             logger.error(f"[VECTOR] 增量索引失败 {fname}: {e}")
 
-    def search(self, query: str, top_k: int = 15) -> List[Dict[str, Any]]:
+    def search(self, query: str, top_k: int = 15, include_personal: bool = False) -> List[Dict[str, Any]]:
         """
         从 articles + learned 两个集合检索，返回相关文本。
         每个结果包含 text, source, metadata 等信息。
@@ -639,31 +639,33 @@ class VectorKnowledgeBase:
         except Exception as e:
             logger.error(f"[VECTOR] learned 检索失败: {e}")
 
-        # 从 personal 集合检索（个人数据）
-        try:
-            if hasattr(self, 'personal_collection') and self.personal_collection:
-                n_personal = min(top_k // 2, self.personal_collection.count())
-                if n_personal > 0:
-                    personal_results = self.personal_collection.query(
-                        query_texts=[query],
-                        n_results=n_personal
-                    )
-                    if personal_results and personal_results['documents']:
-                        for i, doc in enumerate(personal_results['documents'][0]):
-                            meta = personal_results['metadatas'][0][i] if personal_results['metadatas'] else {}
-                            dist = personal_results['distances'][0][i] if personal_results['distances'] else 0.0
-                            results.append({
-                                'text': doc,
-                                'source': 'personal',
-                                'metadata': meta,
-                                'distance': dist,
-                                'label': f"[个人记忆] {meta.get('category', '?')} ({meta.get('timestamp', '?')})"
-                            })
-        except Exception as e:
-            logger.error(f"[VECTOR] personal 检索失败: {e}")
-
         # 按距离排序（越小越相关）
         results.sort(key=lambda x: x.get('distance', 999.0))
+
+        # personal 集合单独追加（不抢占文章排名）
+        if include_personal:
+            try:
+                if hasattr(self, 'personal_collection') and self.personal_collection:
+                    n_personal = min(top_k // 2, self.personal_collection.count())
+                    if n_personal > 0:
+                        personal_results = self.personal_collection.query(
+                            query_texts=[query],
+                            n_results=n_personal
+                        )
+                        if personal_results and personal_results['documents']:
+                            for i, doc in enumerate(personal_results['documents'][0]):
+                                meta = personal_results['metadatas'][0][i] if personal_results['metadatas'] else {}
+                                dist = personal_results['distances'][0][i] if personal_results['distances'] else 0.0
+                                results.append({
+                                    'text': doc,
+                                    'source': 'personal',
+                                    'metadata': meta,
+                                    'distance': dist,
+                                    'label': f"[个人记忆] {meta.get('category', '?')} ({meta.get('timestamp', '?')})"
+                                })
+            except Exception as e:
+                logger.error(f"[VECTOR] personal 检索失败: {e}")
+
         return results[:top_k]
 
     def search_corrections(self, query: str, top_k: int = 5) -> List[Dict[str, Any]]:
