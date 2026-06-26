@@ -599,7 +599,7 @@ class VectorKnowledgeBase:
 
         # 从 articles 集合检索
         try:
-            n_articles = min(top_k, self.articles_count) if self.articles_count > 0 else 0
+            n_articles = min(top_k * 2 // 3, self.articles_count) if self.articles_count > 0 else 0
             if n_articles > 0:
                 art_results = self.articles_collection.query(
                     query_texts=[query],
@@ -619,9 +619,9 @@ class VectorKnowledgeBase:
         except Exception as e:
             logger.error(f"[VECTOR] articles 检索失败: {e}")
 
-        # 从 learned 集合检索（始终参与搜索）
+        # 从 learned 集合检索（始终参与搜索，但数量限制为 top_k//3）
         try:
-            n_learned = min(top_k, self.learned_count) if self.learned_count > 0 else 0
+            n_learned = min(top_k // 3, self.learned_count) if self.learned_count > 0 else 0
             if n_learned > 0:
                 learned_results = self.learned_collection.query(
                     query_texts=[query],
@@ -636,7 +636,7 @@ class VectorKnowledgeBase:
                             'source': 'learned',
                             'metadata': meta,
                             'distance': dist,
-                            'label': f"[学习记忆] q={meta.get('question', '?')[:50]} (质量:{meta.get('quality_score', '?')})"
+                            'label': f"[学习{meta.get('type', '记忆')}] q={meta.get('question', doc[:50])[:50]} (质量:{meta.get('quality_score', '?')})"
                         })
         except Exception as e:
             logger.error(f"[VECTOR] learned 检索失败: {e}")
