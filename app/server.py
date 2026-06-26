@@ -4,6 +4,11 @@ server.py - 几何论AI调度中间层主入口
 """
 
 import os
+
+# 清除代理环境变量，防止 http_proxy 影响服务器 API 请求（DeepSeek/SiliconFlow 等）
+for _pv in ['http_proxy', 'https_proxy', 'HTTP_PROXY', 'HTTPS_PROXY', 'all_proxy', 'ALL_PROXY']:
+    os.environ.pop(_pv, None)
+os.environ['NO_PROXY'] = '*'
 import re
 import math
 import json
