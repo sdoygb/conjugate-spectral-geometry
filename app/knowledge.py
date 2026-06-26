@@ -585,9 +585,10 @@ class VectorKnowledgeBase:
         except Exception as e:
             logger.error(f"[VECTOR] 增量索引失败 {fname}: {e}")
 
-    def search(self, query: str, top_k: int = 15, include_personal: bool = False) -> List[Dict[str, Any]]:
+    def search(self, query: str, top_k: int = 15, include_personal: bool = False, include_learned: bool = False) -> List[Dict[str, Any]]:
         """
-        从 articles + learned 两个集合检索，返回相关文本。
+        从 articles 集合检索，返回相关文本。
+        可通过 include_personal / include_learned 附加个人记忆和学习记忆。
         每个结果包含 text, source, metadata 等信息。
         """
         if not self._initialized:
@@ -617,32 +618,34 @@ class VectorKnowledgeBase:
         except Exception as e:
             logger.error(f"[VECTOR] articles 检索失败: {e}")
 
-        # 从 learned 集合检索
-        try:
-            n_learned = min(top_k, self.learned_count) if self.learned_count > 0 else 0
-            if n_learned > 0:
-                learned_results = self.learned_collection.query(
-                    query_texts=[query],
-                    n_results=n_learned
-                )
-                if learned_results and learned_results['documents']:
-                    for i, doc in enumerate(learned_results['documents'][0]):
-                        meta = learned_results['metadatas'][0][i] if learned_results['metadatas'] else {}
-                        dist = learned_results['distances'][0][i] if learned_results['distances'] else 0.0
-                        results.append({
-                            'text': doc,
-                            'source': 'learned',
-                            'metadata': meta,
-                            'distance': dist,
-                            'label': f"[学习记忆] (质量:{meta.get('quality_score', '?')})"
-                        })
-        except Exception as e:
-            logger.error(f"[VECTOR] learned 检索失败: {e}")
+        # learned 集合不再默认搜索，移到排序后
 
         # 按距离排序（越小越相关）
         results.sort(key=lambda x: x.get('distance', 999.0))
 
-        # personal 集合单独追加（不抢占文章排名）
+        # learned 和 personal 集合单独追加（不抢占文章排名）
+        if include_learned:
+            try:
+                n_learned = min(top_k, self.learned_count) if self.learned_count > 0 else 0
+                if n_learned > 0:
+                    learned_results = self.learned_collection.query(
+                        query_texts=[query],
+                        n_results=n_learned
+                    )
+                    if learned_results and learned_results['documents']:
+                        for i, doc in enumerate(learned_results['documents'][0]):
+                            meta = learned_results['metadatas'][0][i] if learned_results['metadatas'] else {}
+                            dist = learned_results['distances'][0][i] if learned_results['distances'] else 0.0
+                            results.append({
+                                'text': doc,
+                                'source': 'learned',
+                                'metadata': meta,
+                                'distance': dist,
+                                'label': f"[学习记忆] (质量:{meta.get('quality_score', '?')})"
+                            })
+            except Exception as e:
+                logger.error(f"[VECTOR] learned 检索失败: {e}")
+
         if include_personal:
             try:
                 if hasattr(self, 'personal_collection') and self.personal_collection:
