@@ -1647,7 +1647,7 @@ if __name__ == '__main__':
             logger.warning(f"[STARTUP] 端口 {_port} 被占用，正在清理旧进程 PID={_port_pid}...")
             os.kill(int(_port_pid.split('\n')[0]), 9)
             time.sleep(1)
-    except (subprocess.CalledProcessError, FileNotFoundError, ProcessLookupError):
+    except (_sp.CalledProcessError, FileNotFoundError, ProcessLookupError):
         pass
 
     app.run(host='0.0.0.0', port=_port, debug=False)
