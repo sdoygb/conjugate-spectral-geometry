@@ -219,15 +219,25 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                 # 透传剩余的安全缓冲区（非 DSML 内容）
                 if dsml_buffer and dsml_depth <= 0:
                     # 最终检查：移除任何残留的 DSML 片段
-                    if '<｜｜' in dsml_buffer:
-                        dsml_buffer = re.sub(r'<｜｜[^>]*>', '', dsml_buffer)
+                    dsml_buffer = re.sub(r'<｜｜[^>]*>', '', dsml_buffer)
+                    dsml_buffer = re.sub(r'</｜｜[^>]*>', '', dsml_buffer)
                     if dsml_buffer.strip():
                         yield _sse_chunk({"content": dsml_buffer})
                     dsml_buffer = ""
+                # 最终检查：如果 text_buf 中有 DSML 残留，清理后输出
+                if '<｜｜' in text_buf:
+                    cleaned = re.sub(r'<｜｜[^>]*>.*?</｜｜[^>]*>', '', text_buf, flags=re.DOTALL)
+                    cleaned = re.sub(r'<｜｜[^>]*>', '', cleaned)
+                    cleaned = re.sub(r'</｜｜[^>]*>', '', cleaned)
+                    # 只输出被清理的部分（之前已安全输出的部分不再重复）
+                    if cleaned.strip() and cleaned.strip() != text_buf.strip():
+                        # text_buf 中被过滤的 DSML 内容后可能有正常文本，追加输出
+                        after_dsml = re.split(r'</｜｜[^>]*>', text_buf)[-1]
+                        after_dsml = re.sub(r'<｜｜[^>]*>', '', after_dsml)
+                        if after_dsml.strip():
+                            yield _sse_chunk({"content": after_dsml})
+                    logger.warning(f"[DSML-FILTER] text_buf 中 DSML 已清理，原始len={len(text_buf)}")
                 yield _sse_chunk({}, fr, usage=_usage_info if _usage_info else None)
-                # 最终检查：如果 text_buf 中仍有 DSML 残留，记录警告
-                if '<｜｜DSML｜｜' in text_buf:
-                    logger.warning(f"[DSML-FILTER] _stream_text 完成后 text_buf 中仍有 DSML 残留！len={len(text_buf)}")
                 yield "data: [DONE]\n\n"
                 return  # 成功完成，退出重试循环
             except Exception as e:
