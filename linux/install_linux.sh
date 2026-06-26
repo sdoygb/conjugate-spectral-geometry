@@ -47,15 +47,14 @@ if [ -z "$PYTHON" ]; then
         # Ubuntu/Debian
         echo "  检测到 apt-get，正在安装 Python 3.11..."
 
-        # 尝试方法1: add-apt-repository + PPA
+        # 尝试方法1: add-apt-repository + PPA（完全非交互）
         PPADONE=0
+        export DEBIAN_FRONTEND=noninteractive
         if command -v add-apt-repository &>/dev/null; then
-            apt-get install -y software-properties-common 2>/dev/null
-            if add-apt-repository -y ppa:deadsnakes/ppa 2>/dev/null; then
-                apt-get update
-                PPADONE=1
-            fi
+            apt-get install -y software-properties-common 2>/dev/null || true
+            add-apt-repository -y ppa:deadsnakes/ppa 2>/dev/null && apt-get update -qq 2>/dev/null && PPADONE=1
         fi
+        unset DEBIAN_FRONTEND
 
         if [ "$PPADONE" -eq 1 ]; then
             if apt-get install -y python3.11 python3.11-venv python3.11-dev python3-pip; then
