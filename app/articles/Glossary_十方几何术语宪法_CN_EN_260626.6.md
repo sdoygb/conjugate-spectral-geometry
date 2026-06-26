@@ -1,8 +1,26 @@
 # 十方几何（Shifang Geometry）术语宪法 · 中英对照表
 
-**版本：260626.6 草案 v1**  
-**覆盖：基础篇21篇 + 应用篇49篇，共70篇**  
-**说明：** ⚡=需人工审定 | 🔒=已有框架内英文先例 | ❓=尚无固定英译
+**版本：260626.6 v2 — 经总论文章 `Mathematical_Theory_of_the_Ten-Direction_Geometric_Space_260626.6` 验证**  
+**覆盖：总论文章 + 基础篇21篇 + 应用篇49篇，共70篇**  
+**说明：** 🔒=总论文章已验证锁定 | ⚡=需人工审定 | ❓=总论文章未出现，尚无固定英译 | * = 仅总论文章出现
+
+---
+
+## 〇、修订说明（v1→v2）
+
+本版以总论文章 `Mathematical_Theory_of_the_Ten-Direction_Geometric_Space_260626.6` 为标准，进行系统比对修正：
+
+| 类别 | 修正数量 |
+|------|---------|
+| 重大翻译修正（文章有明确用法） | 3条 |
+| 新增术语（文章出现但v1未收录） | 约150条 |
+| 状态变更（⚡→🔒） | 约30条 |
+| 次要修正 | 5条 |
+
+**重大修正摘要**：
+1. "九素互扼定理" → `Nine-Principle Mutual Arrest`（非 Ninefold Interlocking Theorem）
+2. "激发态参数空间" → `Excitation Parameter Space`（非 Excited State）
+3. "六项作用量" → 锁定为 `Six-Term Action`（非 Sextic Action）
 
 ---
 
@@ -10,7 +28,8 @@
 
 | 中文术语 | 英文固定译法 | 首次出现文章 | 备注 |
 |---------|------------|-----------|------|
-| 十方几何 | Shifang Geometry / Deca-Realm Geometry | 0.0.7 | ⚡建议Shifang为品牌保留，Deca-Realm为学术全称 |
+| 十方几何 | Shifang Geometry / Ten-Direction Geometric Space | 0.0.7 | 🔒 学术全称 Ten-Direction Geometric Space，Shifang 为品牌保留 |
+| 十方几何空间 | Ten-Direction Geometric Space 𝒯 | 0.0.7 | 🔒 总论文章定义的形式名称，𝒯 为符号 |
 | 几何论 | Geometric Theory | 0.1 | 日常简称 |
 | 三公理框架 | Three-Axiom Framework | 0.1 | 整个理论的逻辑骨架 |
 
@@ -20,12 +39,17 @@
 
 | 中文术语 | 英文固定译法 | 首次出现文章 | 备注 |
 |---------|------------|-----------|------|
-| 圆拓扑公理 | Circle Topology Axiom | 0.0.7 | 公理1：D=S¹\\{p₀,p*} |
-| 边界极限公理 | Boundary Limit Axiom | 0.0.7 | 公理2：S→0 at p₀, S→∞ at p* |
-| 全息屏编码条件 | Holographic Screen Encoding Condition | 0.0.7 | 公理3：θ_M+θ_C+θ_I=90° |
-| 完备性公理 | Completeness Axiom | 0.1 | 即θ_M+θ_C+θ_I=90° |
+| 圆拓扑公理 | Circle Topology Axiom | 0.0.7 | 🔒 公理1：D=S¹\\{p₀,p*} |
+| 边界极限公理 | Boundary Limit Axiom | 0.0.7 | 🔒 公理2：S→0 at p₀, S→∞ at p* |
+| 全息屏编码条件 | Holographic Screen Encoding Condition | 0.0.7 | 🔒 公理3：θ₁+θ₂+θ₃=90° |
+| 完备性公理 | Completeness Axiom | 0.1 | 即 θ_M+θ_C+θ_I=90°，与公理3等价 |
 | 作用量公理 | Action Axiom | 0.3.1 | 即六项作用量定义 |
 | 质量映射公理 | Mass Mapping Axiom | 0.3.1 | m=K sin³θ_M |
+| 真空点 | Vacuum Point p₀ | 0.0.7 | 🔒 公理1中从S¹移除的点之一 |
+| 退化点 | Degeneration Point p* | 0.0.7 | 🔒 公理1中从S¹移除的点之一 |
+| 严格单调性假设 | Strict Monotonicity Hypothesis | 0.0.7 | 🔒 定义2.1'，框架的结构性假设 |
+| 范围定理 | Range Theorem | 0.0.7 | 🔒 定理2.1，S(D_±)=(0,+∞) |
+| 存在定理 | Existence Theorem | 0.0.7 | 🔒 定理2.2，任意S₀>0存在原像 |
 
 ---
 
@@ -33,19 +57,20 @@
 
 | 中文术语 | 英文固定译法 | 首次出现文章 | 备注 |
 |---------|------------|-----------|------|
-| 三分切丛 | Trifurcated Tangent Bundle | 0.0.6 | 🔒已锁定，TM=𝓜⊕𝓒⊕𝓘 |
-| 物质场/物质界/物质扇区 | Material Field / M-Sector | 0.1 | 🔒 𝓜 |
-| 因果场/因果界/因果扇区 | Causal Field / C-Sector | 0.1 | 🔒 𝓒 |
-| 信息场/信息界/信息扇区 | Information Field / I-Sector | 0.1 | 🔒 𝓘 |
-| 扇区投影强度角 | Sector Projection Intensity Angle | 0.0.7 | θ_M, θ_C, θ_I |
+| 三分切丛 | Trifurcated Tangent Bundle | 0.0.6 | 🔒 TM=𝓜⊕𝓒⊕𝓘 |
+| 物质场/物质界/物质扇区 | Material Field / M-Sector / Material Realm | 0.1 | 🔒 𝓜 |
+| 因果场/因果界/因果扇区 | Causal Field / C-Sector / Causal Realm | 0.1 | 🔒 𝓒 |
+| 信息场/信息界/信息扇区 | Information Field / I-Sector / Information Realm | 0.1 | 🔒 𝓘 |
+| 扇区投影强度角 | Sector Projection Intensity Angle | 0.0.7 | 🔒 θ₁, θ₂, θ₃（也记作 θ_M, θ_C, θ_I） |
 | 物质角 | Material Angle | 0.1 | θ_M |
 | 因果角 | Causal Angle | 0.1 | θ_C |
 | 信息角 | Information Angle | 0.1 | θ_I |
 | 三对偶几何空间 | Tri-Dual Geometric Space | 0.1.1 | 物质界/因果界/信息界 |
-| S₃ 轮换对称性 | S₃ Cyclic Symmetry | 0.1.1 | 三分切丛置换群 |
-| 有序扇区规范 | Ordered Sector Gauge | 0.1 | D_ord |
+| S₃ 轮换对称性 | S₃ Cyclic Symmetry | 0.1.1 | 🔒 三分切丛置换群 |
+| 有序扇区规范 | Ordered Sector Gauge | 0.1 | 🔒 D_ord |
 | 三界因果序 | Tri-Realm Causal Order | 0.5 | |
 | 信息/相位通道 | Information/Phase Channel | 0.1 | 𝓘扇区不对应独立粒子 |
+| 三分切丛置换群刚性 | Rigidity of Trifurcated Tangent Bundle Sector Permutations | 0.0.7 | 🔒 定理3.0'，G≅S₃唯一确定 |
 
 ---
 
@@ -53,14 +78,19 @@
 
 | 中文术语 | 英文固定译法 | 首次出现文章 | 备注 |
 |---------|------------|-----------|------|
-| 激发态参数空间 | Excited State Parameter Space | 0.0.3 | D=S¹\\{p₀,p*} |
-| 约束乘积球面 | Constrained Product Sphere | 0.0.5 | M(a)=S³×S³×S³ |
+| 激发态参数空间 | Excitation Parameter Space | 0.0.3 | 🔒 修正：非 Excited State。D=S¹\\{p₀,p*} |
+| 约束乘积球面 | Constrained Product Sphere (CPS) | 0.0.5 | 🔒 M(a)=S³(a)×S³(a/√Λ)×S³(a/√Λk₀) |
 | 约束截面 | Constraint Section / Constraint Surface | 0.2.1 | Σ≅S² |
 | 约束流形 | Constraint Manifold | 0.1 | |
-| 全息屏 | Holographic Screen | 0.0.6 | Σ |
+| 全息屏 | Holographic Screen | 0.0.6 | 🔒 Σ，二维定向子空间 |
 | 九维谱三元组 | 9D Spectral Triple | 0.3.1 | (𝓐,𝓗,D,J,γ) |
-| 十方几何空间 | Ten-Direction Geometric Space | 0.0.7 | 约束乘积球面族 |
-| 三分切丛置换群 | Trifurcated Tangent Bundle Permutation Group | 0.0.7 | G≅S₃ |
+| 十方几何空间 | Ten-Direction Geometric Space 𝒯 | 0.0.7 | 🔒 约束乘积球面族的统称，定理5.1定义 |
+| 三分切丛置换群 | Trifurcated Tangent Bundle Permutation Group | 0.0.7 | 🔒 G≅S₃ |
+| 模空间 | Moduli Space | 0.0.7 | 🔒 𝓜_{(Λ,k₀)}≅(0,+∞)_a |
+| 角度配置空间 | Angle Configuration Space D_θ | 0.0.7 | 🔒 {(θ₁,θ₂,θ₃)｜θᵢ>0, Σθᵢ=90°} |
+| 对称轴 | Symmetry Axis γ | 0.0.7 | 🔒 {θ₂=θ₃} |
+| S₃ 对称点 | S₃ Symmetric Point | 0.0.7 | 🔒 θ₀=(30°,30°,30°)，S_min=24 |
+| 全息屏兼容三元组 | Holographic Screen Compatible Triple | 0.0.7 | 🔒 (Σ, g_Σ, J, ω) 为Kähler流形 |
 
 ---
 
@@ -68,22 +98,52 @@
 
 | 中文术语 | 英文固定译法 | 首次出现文章 | 备注 |
 |---------|------------|-----------|------|
-| 六项作用量 | Sextic Action / Six-Term Action | 0.1 | 🔒 S(θ)=Σ1/sin²θᵢ+Σᵢ<ⱼ1/(sinθᵢ sinθⱼ) |
-| 谱刚性定理 | Spectral Rigidity Theorem | 0.0.5 | 🔒 |
-| 桥接函数唯一性 / 桥接定理 | Bridging Function Uniqueness / Bridging Theorem | 0.0.7 | S(a)=12(a²/ℓ₀²+ℓ₀²/a²) |
-| 尺度倒数对偶 | Scale-Reciprocity Duality | 0.0.7 | |
+| 六项作用量 | Six-Term Action | 0.1 | 🔒 修正：锁定为 Six-Term Action，S(θ)=Σ1/sin²θᵢ+Σ_{i<j}1/(sinθᵢ sinθⱼ) |
+| 谱刚性定理 | Spectral Rigidity Theorem | 0.0.5 | 🔒 定理3.4 |
+| 约束等谱刚性 | Constrained Isospectral Rigidity | 0.0.7 | 🔒 定理7.1 |
+| 桥接函数 | Bridging Function | 0.3.5 | 🔒 𝓑(n,m) |
+| 桥接函数唯一性 / 桥接定理 | Bridging Function Uniqueness / Bridging Theorem | 0.0.7 | 定理5.3 |
+| 桥公理 | Bridge Axiom | 0.0.7 | 🔒 定义5.1'，S(a)=12(a²/ℓ₀²+ℓ₀²/a²) |
+| 桥函数正则形式族 | Bridge Function Canonical Form Family | 0.0.7 | 🔒 𝓕_bridge |
+| 归一化条件 | Normalization Condition | 0.0.7 | 🔒 5.1''，选定c₀=0, c₂=12 |
+| 尺度倒数对偶 | Scale-Reciprocity Duality | 0.0.7 | 🔒 S(a)=S(ℓ₀²/a) |
+| 基态锁定 | Ground State Locking | 0.0.7 | 🔒 S(ℓ₀)=24 |
+| 谱渐近约束 | Spectral Asymptotic Constraint | 0.0.7 | 🔒 S(a)~C/a² (a→0⁺) |
+| 正则化几何量 | Regularized Geometric Quantity | 0.0.7 | 🔒 S̃(x)=S_abstract(x)+24 |
+| UV 分支 / IR 分支 | UV Branch / IR Branch | 0.0.7 | 🔒 a∈(0,ℓ₀] / a∈[ℓ₀,+∞) |
 | Hessian 矩阵 | Hessian Matrix | 0.1 | H̃_{ab} |
 | 软模 | Soft Mode | 0.1 | 🔒 λ₁ |
 | 硬模 | Hard Mode | 0.1 | 🔒 λ₂ |
 | 有效软硬模 | Effective Soft/Hard Modes | 0.1 | λ₁^eff=391.05, λ₂^eff=59324.3 |
 | 裸 Hessian 本征值 | Bare Hessian Eigenvalues | 0.5 | λ₁=392.21, λ₂=58760.77 |
 | 软硬模比 | Soft-to-Hard Mode Ratio | 0.2.1 | λ₂/λ₁≈150 |
-| 谱互锁定理 | Spectral Interlocking Theorem | 0.3.1 | 🔒 m_e与S_e的相容约束 |
+| Hessian 谱不变量 | Hessian Spectral Invariant | 0.0.7 | 🔒 引理4.2，谱{124,124} |
+| 谱互锁定理 | Spectral Interlocking Theorem | 0.3.1 | m_e与S_e的相容约束 |
 | Hessian 软硬模 | Hessian Soft/Hard Modes | 0.1 | |
 | 有效度规 | Effective Metric | 0.2.1 | g^eff=diag(λ₂^eff, λ₁^eff) |
 | 辛几何 | Symplectic Geometry | 0.2.1 | 约束截面内禀数学骨架 |
+| 辛形式 / 辛结构 | Symplectic Form / Symplectic Structure | 0.0.7 | 🔒 ω=dA |
 | Hamilton 流 | Hamiltonian Flow | 0.2.1 | |
+| Hamiltonian 向量场 | Hamiltonian Vector Field | 0.0.7 | 🔒 |
 | Lagrange 子流形 | Lagrangian Submanifold | 0.2.1 | |
+| Darboux 定理 | Darboux Theorem | 0.0.7 | 🔒 |
+| S₃-等变矩映射 | S₃-Equivariant Moment Map | 0.0.7 | 🔒 |
+| Marsden-Weinstein 约化 | Marsden-Weinstein Reduction | 0.0.7 | 🔒 |
+| 中心化子 | Centralizer | 0.0.7 | 🔒 |
+| 各向同性子群 | Isotropy Subgroup | 0.0.7 | 🔒 |
+| 切线丛平方根分解 | Tangent Bundle Square Root Decomposition | 0.0.7 | 🔒 𝒪(2)=𝒪(1)⊗𝒪(1) |
+| 正合投影结构 | Holomorphic Projection Structure | 0.0.7 | 🔒 定理4.6 |
+| 范围一致性定理 | Range Consistency Theorem | 0.0.7 | 🔒 定理5.1 |
+| 显式参数映射 | Explicit Parametric Mapping | 0.0.7 | 🔒 定理5.2，Φ: D_±→D_θ |
+| 第一特征值坐标 | First Eigenvalue as a Coordinate | 0.0.7 | 🔒 定理3.1'，λ₁^Δ=3/a² |
+| 谱签名 | Spectral Signature | 0.0.7 | 🔒 推论3.1，(1, 8/3, Λ) |
+| 谱分离 | Spectral Separation | 0.0.7 | 🔒 命题3.1 |
+| 逆解公式 | Inverse Formula | 0.0.7 | 🔒 定理3.3 |
+| 维度必要条件 | Dimensional Necessary Condition | 0.0.7 | 🔒 定理3.6，d≤k |
+| 模空间参数化 | Parametrization of the Moduli Space | 0.0.7 | 🔒 定理3.1 |
+| Sunada 方法 | Sunada Method | 0.0.7 | 🔒 定理3.5，在CPS类不适用 |
+| 2:1 覆盖结构 | 2:1 Covering Structure | 0.0.7 | 🔒 附录B.2，Vieta不变量 a_UV·a_IR=ℓ₀² |
+| 范围对应 | Range Correspondence | 0.0.7 | 🔒 附录B.5，S_abstract=S-24对应(0,+∞) |
 
 ---
 
@@ -91,10 +151,13 @@
 
 | 中文术语 | 英文固定译法 | 首次出现文章 | 备注 |
 |---------|------------|-----------|------|
-| 互锁常数 | Interlocking Constants | 0.1 | Λ, k₀, ℓ₀ |
-| 三等分比例参数 | Trisection Ratio Parameter | 0.0.7 | Λ=3 |
-| 二分紧致性常数 | Dichotomy Compactness Constant | 0.0.7 | k₀=2 |
-| 标度常数 | Scale Constant | 0.0.7 | ℓ₀ |
+| 互锁常数 | Interlocking Constants | 0.1 | 🔒 Λ, k₀, ℓ₀ |
+| 互锁函数 | Interlocking Function Λ(G) | 0.0.7 | 🔒 定义3.0，Λ(G)=｜Conj(G)｜ |
+| 紧致性函数 | Compactness Function k₀(G) | 0.0.7 | 🔒 定义3.0，k₀(G)=[G:N_max] |
+| 三等分比例参数 | Tripartition Proportionality Parameter | 0.0.7 | 🔒 Λ=Λ(S₃)=3 |
+| 二分紧致性常数 | Dichotomous Compactness Constant | 0.0.7 | 🔒 k₀=k₀(S₃)=2 |
+| 标度常数 | Scale Constant | 0.0.7 | 🔒 ℓ₀>0 |
+| 谱单位选择定理 | Spectral Unit Selection Theorem | 0.0.7 | 🔒 定理10.2'，ℓ₀由体积归一化唯一确定 |
 | 精细结构常数倒数 | Inverse Fine-Structure Constant | 0.1 | S_e=137.035999084 |
 | 质量量子 / 几何能量尺度常数 | Mass Quantum / Geometric Energy Scale | 0.1 | K=839.758793 keV |
 | 特征长度 | Characteristic Length | 0.1 | χ_L=1.509×10⁻¹⁰ m |
@@ -103,6 +166,7 @@
 | 宏观角度量子 | Macroscopic Angle Quantum | 0.2.1 | ΔΘ=5° |
 | 基态角 | Ground State Angle | 0.2.1 | θ₀=30° |
 | 对称基态 | Symmetric Ground State | 0.1 | (30°,30°,30°)，S_min=24 |
+| 互锁常数唯一性定理 | Uniqueness Theorem for the Interlocking Constants | 0.0.7 | 🔒 定理10.1 |
 
 ---
 
@@ -110,19 +174,23 @@
 
 | 中文术语 | 英文固定译法 | 首次出现文章 | 备注 |
 |---------|------------|-----------|------|
-| 九素互扼定理 | Theorem of Nine Mutual Lockings / Ninefold Interlocking Theorem | 0.0.7 | ⚡需审定 |
-| 九素互扼的谱实现 | Spectral Realization of Nine Mutual Lockings | 0.3.1 | |
-| 自举封闭 | Bootstrap Closure | 0.0.7 | |
-| 超定锁定 | Overdetermined Locking | 0.0.7 | |
-| Bott 截断 | Bott Truncation | 0.0.7 | Λ=3 |
+| 九素互扼 | Nine-Principle Mutual Arrest | 0.0.7 | 🔒 修正：非 Ninefold Interlocking。文章第9章标题 |
+| 九素 | The Nine Primes | 0.0.7 | 🔒 定义9.1：三公理+三互锁常数+三工具层 |
+| 九素互扼的锁定结构 | Locking Structure of the Nine-Principle Mutual Arrest | 0.0.7 | 🔒 定理9.1 |
+| 自举封闭 | Bootstrap Closure | 0.0.7 | 🔒 定理10.3 |
+| 超定锁定 | Overdetermined Locking | 0.0.7 | 🔒 第10章 |
+| 超定方程组 | Overdetermined System of Equations | 0.0.7 | 🔒 §10.1 |
+| 依赖定理链 | Dependency Theorem Chain | 0.0.7 | 🔒 §10.3，有向无环图(DAG) |
+| 依赖层级偏序 | Dependency Level Partial Order | 0.0.7 | 🔒 引理10.8 |
+| Bott 截断 | Bott Truncation | 0.0.7 | 🔒 Λ=3，定理6.3 |
 | 截断阶 | Truncation Order | 0.1.1 | k₀=2 |
 | 背景作用量 | Background Action | 0.1.1 | S_min=24 |
-| 余维数 | Codimension | 0.1.1 | L=7 |
-| 总维数 | Total Dimension | 0.1.1 | D=9 |
+| 余维数 | Codimension | 0.1.1 | 🔒 L=7 |
+| 总维数 | Total Dimension | 0.1.1 | 🔒 D=9 |
 | 信息衰减时标 | Information Decay Timescale | 0.1.1 | τ_dec≈7.28 日 |
 | 慢化因子 | Slowing Factor | 0.1.1 | s≈5.33 |
 | 因果单元数 | Causal Unit Count | 0.1.1 | N_cause≈10 |
-| 六互扼环节 | Six Interlocking Links | 0.0.7 | 三公理+三互锁常数+三工具层 |
+| 六互扼环节 | Six Interlocking Links | 0.0.7 | 三公理+三互锁常数 |
 
 ---
 
@@ -139,13 +207,15 @@
 | 传播模 | Propagation Mode | 0.1 | 𝓒扇区零锥结构→光子 |
 | 裸基准点 / 物理识别点 | Bare Benchmark Point / Physical Identification Point | 0.1 | |
 | 双模零误差条件 | Dual-Mode Zero-Error Condition | 0.1 | |
-| 量纲桥 | Dimensional Bridge | 0.3.1 | 🔒 |
+| 量纲桥 | Dimensional Bridge | 0.3.1 | 🔒 四方程联立结构 |
 | 量纲桥四方程 | Dimensional Bridge Four Equations | 0.3.1 | |
 | 量纲桥第一标度 | Dimensional Bridge First Scale | 0.1 | N₁=6000 |
 | 核子几何荷 | Nucleon Geometric Charge | 0.1 | v_p=1117 |
 | 七级递推 | Seven-Level Recursion | 0.2.1 | |
 | 反向递推算法 | Reverse Recursion Algorithm | 0.3.1 | |
 | 函子性重建 | Functorial Reconstruction | 0.3.1 | |
+| 信息单元面积 | Information Unit Area | 0.0.7 | 🔒 a_unit²=χ_L²/S_e |
+| 级嵌套 | Level Nesting | 0.0.7 | 🔒 §8.7，N_n=S_e²·3^{2n} |
 
 ---
 
@@ -172,7 +242,7 @@
 | 信息场动力学 | Information Field Dynamics | 0.4 | 🔒 |
 | 随机矩阵理论 | Random Matrix Theory (RMT) | 0.4 | |
 | 谱图论 | Spectral Graph Theory | 0.4 | |
-| 图拉普拉斯 | Graph Laplacian | 0.4 | |
+| 图拉普拉斯 | Graph Laplacian | 0.4 | 🔒 |
 | 图热方程 | Graph Heat Equation | 0.4 | |
 | 非齐次扩散 | Non-homogeneous Diffusion | 0.4 | |
 | GOE(2) 系综 | GOE(2) Ensemble | 0.4 | 高斯正交系综 |
@@ -180,6 +250,8 @@
 | Wigner 半圆律 | Wigner Semicircle Law | 0.4 | |
 | Cheeger 不等式 | Cheeger Inequality | 0.4 | |
 | 代数连通度 | Algebraic Connectivity | 0.4 | |
+| ϵ-网图 | ϵ-Net Graph | 0.0.7 | 🔒 G_N，全息屏离散逼近 |
+| 谱收敛 | Spectral Convergence | 0.0.7 | 🔒 定理8.5 |
 | 退相干因果深度 | Decoherence Causal Depth | 0.4 | N_dec |
 | 退相干时间 | Decoherence Time | 0.4 | τ_dec≈7.28 日 |
 | 信息场空间分辨率 | Information Field Spatial Resolution | 0.4 | Δr_min |
@@ -195,6 +267,10 @@
 | 约束截面 Poisson 方程 | Constraint Section Poisson Equation | 0.4 | |
 | 图拉普拉斯半群 | Graph Laplacian Semigroup | 0.4 | |
 | 信息场冻结定理 | Information Field Freeze Theorem | 0.4 / 14 | |
+| 信息场退化 | Information Field Degradation | 0.0.7 | 🔒 第8章 |
+| 离散图逼近 | Discrete Graph Approximation | 0.0.7 | 🔒 |
+| 热核衰减 | Heat Kernel Decay | 0.0.7 | 🔒 定理8.4 |
+| Weyl 律 | Weyl's Law | 0.0.7 | 🔒 定理8.3 |
 
 ---
 
@@ -237,8 +313,10 @@
 | Dixmier 迹 | Dixmier Trace | 0.3.1 | |
 | 热核渐近 | Heat Kernel Asymptotics | 0.3.1 | |
 | 热核系数恒等式 | Heat Kernel Coefficient Identity | 0.3.1 | |
+| 热核展开 | Heat Kernel Expansion | 0.0.7 | 🔒 定理7.3，Seeley-de Witt系数 |
 | KO-维数 | KO-Dimension | 0.3.1 | 9≡1(mod 8) |
 | Cl(9) 旋量丛 | Cl(9) Spinor Bundle | 0.3.1 | |
+| Spin(9) 扩展 | Spin(9) Extension | 0.0.7 | 🔒 附录D，命名数学注记 |
 | 谱互锁条件 | Spectral Interlocking Condition | 0.3.1 | |
 | 最小映射输入集 | Minimal Mapping Input Set | 0.3.1 | |
 | 全息屏层状结构 | Holographic Screen Layered Structure | 0.3.5 | |
@@ -250,7 +328,66 @@
 
 ---
 
-## 十三、几何约束截面结构
+## 十三、形变量子化与幻数（总论第6章）
+
+| 中文术语 | 英文固定译法 | 首次出现文章 | 备注 |
+|---------|------------|-----------|------|
+| 形变量子化 | Deformation Quantization | 0.0.7 | 🔒 第6章 |
+| Kontsevich 星积 | Kontsevich Star Product | 0.0.7 | 🔒 f⋆g=fg+ΣħⁿC_n(f,g) |
+| Berezin-Toeplitz 量子化 | Berezin-Toeplitz Quantization | 0.0.7 | 🔒 |
+| Toeplitz 算子 | Toeplitz Operators | 0.0.7 | 🔒 T_f^(k)=Π_k∘M_f∘Π_k |
+| Bergman 投影 | Bergman Projection | 0.0.7 | 🔒 Π_k |
+| Schlichenmaier 定理 | Schlichenmaier Theorem | 0.0.7 | 🔒 |
+| 超平面丛 | Hyperplane Bundle | 0.0.7 | 🔒 L=𝒪(1) |
+| 全纯线丛 | Holomorphic Line Bundle | 0.0.7 | 🔒 |
+| 幻数序列 | Magic Number Sequence | 0.0.7 | 🔒 2,8,18,32,50,72,98 |
+| 严格几何幻数 | Strictly Geometric Magic Numbers | 0.0.7 | 🔒 (k+1)² → 1,4,9,16,25,36,49 |
+| Bott 周期性截断 | Bott Periodicity Truncation | 0.0.7 | 🔒 定理6.3，N_eff=7 |
+| 有效独立通道数 | Effective Number of Independent Channels N_eff | 0.0.7 | 🔒 =7 |
+| 谱简并度 | Spectral Degeneracy | 0.0.7 | 🔒 dim ℋ_k^(spatial)=(k+1)² |
+| 自旋 1/2 自由度 | Spin 1/2 Degree of Freedom | 0.0.7 | 🔒 条件性命题* |
+| 量化角度锁定 | Quantized Angle Locking | 0.0.7 | 🔒 定理8.7 |
+
+---
+
+## 十四、高维谱几何与 Dirac 指标（总论第7章）
+
+| 中文术语 | 英文固定译法 | 首次出现文章 | 备注 |
+|---------|------------|-----------|------|
+| Â 类 | Â-Class | 0.0.7 | 🔒 |
+| Â 亏格 | Â-Genus | 0.0.7 | 🔒 9维流形恒为零 |
+| 法丛 | Normal Bundle | 0.0.7 | 🔒 NΣ，秩7 |
+| 第二基本形式 | Second Fundamental Form | 0.0.7 | 🔒 h=diag(λ₁,λ₂) |
+| Spin 联络 | Spin Connection | 0.0.7 | 🔒 ∇^⊥ |
+| Dirac 指标定理 | Dirac Index Theorem | 0.0.7 | 🔒 定理7.2 |
+| 谱作用量 | Spectral Action | 0.0.7 | 🔒 Chamseddine-Connes框架 |
+| Seeley-de Witt 系数 | Seeley-de Witt Coefficients | 0.0.7 | 🔒 a_{2n}(D²) |
+| 低能 Laplace 本征模 | Low-Energy Laplace Eigenmodes | 0.0.7 | 🔒 定理7.4 |
+| 法丛曲率-Hessian 锁定 | Normal Bundle Curvature–Hessian Locking | 0.0.7 | 🔒 定理7.6 |
+| Gauss-Codazzi 方程 | Gauss-Codazzi Equations | 0.0.7 | 🔒 |
+| Ricci 方程 | Ricci Equation | 0.0.7 | 🔒 |
+| 形状算子 / Weingarten 映射 | Shape Operator / Weingarten Map | 0.0.7 | 🔒 A_ξ |
+| 常曲率条件 | Constant Curvature Condition | 0.0.7 | 🔒 附加假设4.1 |
+| 整数量子化条件 | Integer Quantization Condition | 0.0.7 | 🔒 ∫_Σ ω/(2π)=1 |
+
+---
+
+## 十五、全局几何图景（总论第9章）
+
+| 中文术语 | 英文固定译法 | 首次出现文章 | 备注 |
+|---------|------------|-----------|------|
+| 抽象激发流形 | Abstract Excitation Manifold 𝒟_± | 0.0.7 | 🔒 ≅(0,1) |
+| 辛全息屏面 | Symplectic Holographic Screen Face 𝒫_θ | 0.0.7 | 🔒 2维辛流形 |
+| 度量模空间 | Metric Moduli Space 𝓜_rigid | 0.0.7 | 🔒 ≅(0,+∞)_a |
+| 谱空间 Weyl 腔 | Spectral Space Weyl Chamber 𝒲 | 0.0.7 | 🔒 |
+| 量化壳层空间 | Quantization Shell Space 𝒬 | 0.0.7 | 🔒 |
+| 离散图空间 | Discrete Graph Space 𝒢 | 0.0.7 | 🔒 |
+| Morse 函数 | Morse Function | 0.0.7 | 🔒 S(θ): 𝒫_θ→[24,+∞) |
+| 层上同调隐喻 | Sheaf Cohomology Metaphor | 0.0.7 | 🔒 附录C，非严格 |
+
+---
+
+## 十六、几何约束截面结构
 
 | 中文术语 | 英文固定译法 | 首次出现文章 | 备注 |
 |---------|------------|-----------|------|
@@ -265,12 +402,11 @@
 | 七层截断定理 | Seven-Layer Truncation Theorem | 0.2.2 | |
 | 离散-连续对应 | Discrete-Continuous Correspondence | 0.4 | |
 | 离散逼近 | Discrete Approximation | 0.0.7 | |
-| 信息场退化 | Information Field Degradation | 0.0.7 | |
 | 几何分子结构 | Geometric Molecular Structure | 0.7 | |
 
 ---
 
-## 十四、数学工具与定理类型
+## 十七、数学工具与定理类型
 
 | 中文术语 | 英文固定译法 | 首次出现文章 | 备注 |
 |---------|------------|-----------|------|
@@ -280,18 +416,20 @@
 | 公理 | Axiom | 全系列 | |
 | 公设 | Postulate | 0.1 | |
 | 猜想 | Conjecture | 全系列 | |
-| 诚实标注 | Honest Annotation | 全系列 | ⚡框架特有风格，建议保留 |
+| 诚实标注 | Honest Annotation | 全系列 | 🔒 框架特有风格 |
 | 研究框架 | Research Framework | 全系列 | 非定理，开放方向 |
 | 结构假设 | Structural Hypothesis | 0.1.1 | |
 | 物理ansatz | Physical Ansatz | 0.5 | |
-| 开放问题 | Open Problem | 全系列 | |
-| 条件性命题层 | Conditional Proposition Layer | 0.0.7 | |
+| 开放问题 | Open Problem | 全系列 | 🔒 总论文章多处使用 |
+| 条件性命题层 | Conditional Proposition Layer | 0.0.7 | 🔒 定理标记* |
 | 结构锚点 | Structural Anchor | 0.3.1 | |
 | 前向引用 | Forward Reference | 0.4 | |
+| 附加假设 | Additional Hypothesis | 0.0.7 | 🔒 如4.1常数曲率条件 |
+| 构造性假设 | Constructive Hypothesis | 0.0.7 | 🔒 如严格单调性 |
 
 ---
 
-## 十五、应用篇——粒子物理
+## 十八、应用篇——粒子物理
 
 | 中文术语 | 英文固定译法 | 首次出现文章 | 备注 |
 |---------|------------|-----------|------|
@@ -315,7 +453,7 @@
 
 ---
 
-## 十六、应用篇——引力与宇宙学
+## 十九、应用篇——引力与宇宙学
 
 | 中文术语 | 英文固定译法 | 首次出现文章 | 备注 |
 |---------|------------|-----------|------|
@@ -335,7 +473,7 @@
 
 ---
 
-## 十七、应用篇——创世与宇宙演化
+## 二十、应用篇——创世与宇宙演化
 
 | 中文术语 | 英文固定译法 | 首次出现文章 | 备注 |
 |---------|------------|-----------|------|
@@ -362,7 +500,7 @@
 
 ---
 
-## 十八、应用篇——生命科学与人体
+## 二十一、应用篇——生命科学与人体
 
 | 中文术语 | 英文固定译法 | 首次出现文章 | 备注 |
 |---------|------------|-----------|------|
@@ -396,7 +534,7 @@
 
 ---
 
-## 十九、应用篇——凝聚态与工程
+## 二十二、应用篇——凝聚态与工程
 
 | 中文术语 | 英文固定译法 | 首次出现文章 | 备注 |
 |---------|------------|-----------|------|
@@ -417,16 +555,17 @@
 
 ---
 
-## 二十、符号铁律
+## 二十三、符号铁律
 
 | 符号 | 含义 | 格式要求 |
 |------|------|---------|
 | S_e | 精细结构常数倒数 | 必须保留下标 e |
 | λ₁^eff / λ₂^eff | 有效软/硬模 | 必须保留上下标结构 |
 | χ_L / χ_T | 特征长度/时间 | 必须使用希腊字母 chi |
-| Λ | 三等分比例参数 | 大写 Lambda，=3（常数） |
-| k₀ | 二分紧致性常数 | k下标0，=2（常数） |
+| Λ | 三等分比例参数（互锁函数 Λ(S₃)=3） | 大写 Lambda，=3（常数） |
+| k₀ | 二分紧致性常数（紧致性函数 k₀(S₃)=2） | k下标0，=2（常数） |
 | ℓ₀ | 标度常数 | 花体小写 ℓ |
+| θ₁, θ₂, θ₃ | 扇区投影强度角（也记θ_M,θ_C,θ_I） | 希腊字母 theta，下标1,2,3 |
 | N₁ | 量纲桥第一标度 | N下标1，=6000 |
 | v_p | 核子几何荷 | v下标p，=1117 |
 | N_dec | 退相干因果深度 | N下标dec |
@@ -444,47 +583,71 @@
 | S_min | 六项作用量最小值 | S下标min，=24 |
 | v_geo | 几何速度 | v下标geo |
 | ΔΘ | 宏观角度量子 | 大写Delta 大写Theta，=5° |
+| N_eff | 有效独立通道数 | N下标eff，=7 |
+| a_unit | 信息单元长度 | a下标unit |
+| 𝒯 | 十方几何空间 | 花体大写T |
+| D_θ | 角度配置空间 | D下标θ |
+| γ | 对称轴 | 小写gamma |
+| D_ord | 有序扇区规范 | D下标ord |
+| ℋ_k^(spatial) | k-th空间Hilbert空间 | 花体H，上标(spatial) |
+| ℋ_k^(total) | k-th总Hilbert空间 | 花体H，上标(total) |
+| 𝒫_θ | 辛全息屏面 | 花体大写P，下标θ |
+| 𝓜_rigid | 度量模空间 | 花体大写M，下标rigid |
+| 𝒲 | 谱空间Weyl腔 | 花体大写W |
+| 𝒬 | 量化壳层空间 | 花体大写Q |
+| 𝒢 | 离散图空间 | 花体大写G |
 
 ---
 
-## 二十一、翻译风格约定
+## 二十四、翻译风格约定
 
 | 类型 | 处理策略 |
 |-----|---------|
 | 层级编号（0.3.1.1） | 保留阿拉伯数字 |
 | 定理X.Y | Theorem X.Y（带 prime 符号的不省略：3.1'≠3.1） |
-| 人名（Atiyah, Wodzicki, Bott） | 保持原拼写 |
-| 标准数学术语（Hessian, Dirac, Laplace-Beltrami） | 使用标准译法 |
+| 人名（Atiyah, Wodzicki, Bott, Kontsevich, Connes） | 保持原拼写 |
+| 标准数学术语（Hessian, Dirac, Laplace-Beltrami, Riemann-Roch） | 使用标准译法 |
 | 自创复合术语 | 首次出现时中英双语标注 |
 | 诚实标注 | 保留为 Honest Annotation / Honest Note |
 | LaTeX 公式 | 保持原格式 |
 | 角度单位（度°） | 保留 degree 符号 |
 | 拼音保留 | Shifang（品牌）、中阴身可译为 Bardo 并加注 |
+| 条件性命题标记 * | 保留星号标记，如 Theorem X.Y* |
+| 附加假设 | 标注为 Additional Hypothesis X.Y |
 
 ---
 
 ## 附录：待人工审定的关键术语
 
-以下术语涉及框架核心概念，其英文译法对理论传播影响重大，建议作者亲自审定：
+以下术语涉及框架核心概念，经总论文章验证后状态更新：
 
-| 中文 | 候选英译 | 建议 |
-|------|---------|------|
-| 十方几何 | ①Shifang Geometry ②Deca-Realm Geometry ③Ten-Direction Geometry | 建议①为品牌，②为学术全称 |
-| 九素互扼定理 | ①Ninefold Interlocking Theorem ②Theorem of Nine Mutual Lockings ③Nine-Element Mutual-Arrest Theorem | ①最简洁 |
-| 七级递推 | ①Seven-Level Recursion ②Seven-Tier Recursion ③Heptatic Recursion | ① |
-| 三对偶几何空间 | ①Tri-Dual Geometric Space ②Three Dual Geometric Spaces | ① |
-| 非对称扭曲碗 | ①Asymmetric Twisted Bowl ②Asymmetric Warped Bowl | ① |
-| 上饱和稳态 | ①Upper Saturation Steady State ②Supersaturated Steady State | ❓待定 |
-| 全息屏编码条件 | ①Holographic Screen Encoding Condition ②Holographic Encoding Condition | ①更完整 |
-| 腰边耦合 | ①Waist-Edge Coupling ②Flank Coupling | ① |
-| 圆满 | ①Consummation ②Perfection ③Fulfillment | ① |
-| 归零消融 | ①Zero-Return Dissolution ②Zero-Return Annihilation | ① |
-| 创世 | ①Genesis ②Cosmogony | ① |
-| 劫 | ①Kalpa（梵文）②Aeon | ①保留梵文 |
-| 中阴身 | ①Bardo（藏文）②Intermediate State | ①保留藏文并加注 |
-| 死物冻结定理 | ①Inanimate Freeze Theorem ②Lifeless Freeze Theorem | ① |
-| 人体三界不可约定理 | ①Human Tri-Realm Irreducibility Theorem ②Human Three-Realm Irreducibility Theorem | ① |
+| 中文 | 修正前(v1) | 修正后(v2) | 状态 |
+|------|-----------|-----------|------|
+| 九素互扼 | ⚡ Ninefold Interlocking Theorem | 🔒 Nine-Principle Mutual Arrest | 总论第9章标题锁定 |
+| 激发态参数空间 | Excited State Parameter Space | 🔒 Excitation Parameter Space | 总论全文统一用法 |
+| 六项作用量 | Sextic Action / Six-Term Action | 🔒 Six-Term Action | 总论定义4.3锁定 |
+| 十方几何 | ⚡ Shifang / Deca-Realm | 🔒 Ten-Direction Geometric Space (学术) / Shifang Geometry (品牌) | 总论标题锁定 |
+| 全息屏编码条件 | ⚡ 两个候选 | 🔒 Holographic Screen Encoding Condition | 总论公理3锁定 |
+| 严格单调性假设 | — | 🔒 Strict Monotonicity Hypothesis | 总论新增 |
+| 范围定理 | — | 🔒 Range Theorem | 总论定理2.1 |
+| 互锁函数 | — | 🔒 Interlocking Function Λ(G) | 总论定义3.0 |
+| 紧致性函数 | — | 🔒 Compactness Function k₀(G) | 总论定义3.0 |
+| 桥公理 | — | 🔒 Bridge Axiom | 总论定义5.1' |
+| 正则化几何量 | — | 🔒 Regularized Geometric Quantity | 总论定理5.2 |
+| 显式参数映射 | — | 🔒 Explicit Parametric Mapping Φ | 总论定理5.2 |
+| 幻数序列 | — | 🔒 Magic Number Sequence | 总论第6章 |
+| 有效独立通道数 | — | 🔒 N_eff=7 | 总论定理6.3 |
+| 量化角度锁定 | — | 🔒 Quantized Angle Locking | 总论定理8.7 |
+| 自举封闭 | — | 🔒 Bootstrap Closure | 总论定理10.3 |
+| 依赖定理链 | — | 🔒 Dependency Theorem Chain (DAG) | 总论§10.3 |
+| 谱签名 | — | 🔒 Spectral Signature (1, 8/3, Λ) | 总论推论3.1 |
+| 第一特征值坐标 | — | 🔒 First Eigenvalue as a Coordinate | 总论定理3.1' |
+| 法丛曲率-Hessian 锁定 | — | 🔒 Normal Bundle Curvature–Hessian Locking | 总论定理7.6 |
+| 圆满 | ⚡ Consummation | 保留 Consummation | 总论未出现 |
+| 归零消融 | ⚡ Zero-Return Dissolution | 保留 | 总论未出现 |
+| 劫 | ⚡ Kalpa | 保留 Kalpa | 总论未出现 |
+| 中阴身 | ⚡ Bardo | 保留 Bardo | 总论未出现 |
 
 ---
 
-> **使用说明**：本表为草案 v1。凡标 ⚡ 的需人工审定。审定后可将本表作为所有翻译任务的强制性前置规范。新出现的术语应遵循命名模式（如 X 界→X-Realm/X-Sector、X 定理→X Theorem）并同步加入本表。
+> **使用说明**：本表为 v2，经总论文章 `Mathematical_Theory_of_the_Ten-Direction_Geometric_Space_260626.6` 全文验证。凡标 🔒 的已由总论文章锁定用法，翻译时不可更改。凡标 ⚡ 的仍需人工审定。新出现的术语应遵循命名模式（如 X 界→X-Realm/X-Sector、X 定理→X Theorem）并同步加入本表。
