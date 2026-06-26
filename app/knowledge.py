@@ -285,6 +285,18 @@ class VectorKnowledgeBase:
         if not CHROMADB_AVAILABLE:
             logger.error("[VECTOR] chromadb 未安装，向量检索不可用")
             return False
+
+        # 启动时验证 embedding function 可用性
+        if self.embedding_fn is not None:
+            try:
+                test = self.embedding_fn(["启动测试"])
+                if not test or not test[0]:
+                    logger.error("[VECTOR] embedding function 返回空结果，请检查 API 连接")
+                    return False
+            except Exception as e:
+                logger.error(f"[VECTOR] embedding function 不可用: {e}")
+                return False
+
         try:
             import chromadb
             self.client = chromadb.PersistentClient(path=self.persist_dir)
