@@ -894,6 +894,43 @@
             <div class="panel-title">教学系统</div>
 
             <div class="card">
+                <div class="card-title">手动添加教学反馈</div>
+                <p style="color:#999;font-size:13px;margin-bottom:12px;">直接向 AI 教学系统添加纠正、反模式或知识补丁，帮助改进后续回答质量。</p>
+                
+                <!-- 纠正 -->
+                <div style="margin-bottom:16px;padding:12px;background:#1a1a1a;border-radius:6px;border-left:3px solid #4a9eff;">
+                    <div style="font-weight:bold;color:#4a9eff;margin-bottom:8px;">纠正错误</div>
+                    <input class="form-input" id="teachWrong" placeholder="错误内容" style="width:100%;margin-bottom:6px;">
+                    <input class="form-input" id="teachCorrect" placeholder="正确内容" style="width:100%;margin-bottom:6px;">
+                    <input class="form-input" id="teachReason" placeholder="原因（可选）" style="width:100%;margin-bottom:8px;">
+                    <button class="btn btn-primary" onclick="submitTeachCorrection()" style="padding:6px 14px;font-size:13px;">提交纠正</button>
+                </div>
+                
+                <!-- 反模式 -->
+                <div style="margin-bottom:16px;padding:12px;background:#1a1a1a;border-radius:6px;border-left:3px solid #f44336;">
+                    <div style="font-weight:bold;color:#f44336;margin-bottom:8px;">标记反模式</div>
+                    <input class="form-input" id="teachPattern" placeholder="错误模式描述" style="width:100%;margin-bottom:6px;">
+                    <input class="form-input" id="teachPatternDesc" placeholder="详细说明（可选）" style="width:100%;margin-bottom:6px;">
+                    <select class="form-input" id="teachSeverity" style="width:100%;margin-bottom:8px;">
+                        <option value="high">高严重度</option>
+                        <option value="medium" selected>中严重度</option>
+                        <option value="low">低严重度</option>
+                    </select>
+                    <button class="btn btn-danger" onclick="submitTeachAntipattern()" style="padding:6px 14px;font-size:13px;">提交反模式</button>
+                </div>
+                
+                <!-- 知识补丁 -->
+                <div style="margin-bottom:8px;padding:12px;background:#1a1a1a;border-radius:6px;border-left:3px solid #4caf50;">
+                    <div style="font-weight:bold;color:#4caf50;margin-bottom:8px;">知识补丁</div>
+                    <input class="form-input" id="teachTopic" placeholder="知识主题" style="width:100%;margin-bottom:6px;">
+                    <textarea class="form-input" id="teachPatchContent" placeholder="补充的知识内容" rows="3" style="width:100%;margin-bottom:6px;resize:vertical;"></textarea>
+                    <input class="form-input" id="teachSource" placeholder="来源（可选）" style="width:100%;margin-bottom:8px;">
+                    <button class="btn" onclick="submitTeachPatch()" style="padding:6px 14px;font-size:13px;background:#4caf50;border-color:#4caf50;">提交补丁</button>
+                </div>
+                <div id="teachSubmitResult" style="margin-top:8px;color:#999;font-size:13px;"></div>
+            </div>
+
+            <div class="card">
                 <div class="card-title">统计数据</div>
                 <div class="stats-grid" id="teachStats">
                     <!-- 动态填充 -->
@@ -1525,6 +1562,87 @@
         }
 
         /* ==================== 教学系统面板 ==================== */
+
+        /**
+         * 手动提交教学反馈
+         */
+        function showTeachResult(msg, success) {
+            var el = document.getElementById('teachSubmitResult');
+            el.textContent = msg;
+            el.style.color = success ? '#4caf50' : '#f44336';
+            setTimeout(function() { el.textContent = ''; }, 3000);
+        }
+
+        async function submitTeachCorrection() {
+            var wrong = document.getElementById('teachWrong').value.trim();
+            var correct = document.getElementById('teachCorrect').value.trim();
+            var reason = document.getElementById('teachReason').value.trim();
+            if (!wrong || !correct) { showTeachResult('请填写错误内容和正确内容', false); return; }
+            try {
+                var resp = await fetch('/v1/teach/correct', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ wrong: wrong, correct: correct, reason: reason })
+                });
+                var data = await resp.json();
+                if (data.success) {
+                    showTeachResult('纠正已提交', true);
+                    document.getElementById('teachWrong').value = '';
+                    document.getElementById('teachCorrect').value = '';
+                    document.getElementById('teachReason').value = '';
+                    loadTeachData();
+                } else {
+                    showTeachResult('提交失败: ' + (data.error || '未知错误'), false);
+                }
+            } catch(e) { showTeachResult('网络错误: ' + e.message, false); }
+        }
+
+        async function submitTeachAntipattern() {
+            var pattern = document.getElementById('teachPattern').value.trim();
+            var description = document.getElementById('teachPatternDesc').value.trim();
+            var severity = document.getElementById('teachSeverity').value;
+            if (!pattern) { showTeachResult('请填写错误模式描述', false); return; }
+            try {
+                var resp = await fetch('/v1/teach/antipattern', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pattern: pattern, description: description, severity: severity })
+                });
+                var data = await resp.json();
+                if (data.success) {
+                    showTeachResult('反模式已提交', true);
+                    document.getElementById('teachPattern').value = '';
+                    document.getElementById('teachPatternDesc').value = '';
+                    loadTeachData();
+                } else {
+                    showTeachResult('提交失败: ' + (data.error || '未知错误'), false);
+                }
+            } catch(e) { showTeachResult('网络错误: ' + e.message, false); }
+        }
+
+        async function submitTeachPatch() {
+            var topic = document.getElementById('teachTopic').value.trim();
+            var content = document.getElementById('teachPatchContent').value.trim();
+            var source = document.getElementById('teachSource').value.trim();
+            if (!topic || !content) { showTeachResult('请填写主题和内容', false); return; }
+            try {
+                var resp = await fetch('/v1/teach/patch', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ topic: topic, content: content, source: source })
+                });
+                var data = await resp.json();
+                if (data.success) {
+                    showTeachResult('知识补丁已提交', true);
+                    document.getElementById('teachTopic').value = '';
+                    document.getElementById('teachPatchContent').value = '';
+                    document.getElementById('teachSource').value = '';
+                    loadTeachData();
+                } else {
+                    showTeachResult('提交失败: ' + (data.error || '未知错误'), false);
+                }
+            } catch(e) { showTeachResult('网络错误: ' + e.message, false); }
+        }
 
         /**
          * 加载教学系统数据

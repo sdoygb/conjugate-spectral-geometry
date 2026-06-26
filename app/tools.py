@@ -294,6 +294,56 @@ ARTICLE_TOOLS = [
                 "required": []
             }
         }
+    },
+    # ====== 教学反馈工具 ======
+    {
+        "type": "function",
+        "function": {
+            "name": "teach_correction",
+            "description": "当你发现之前的回答中有错误或需要纠正时调用。将错误内容和正确内容记录下来，帮助改进后续回答。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "wrong": {"type": "string", "description": "之前回答中的错误内容"},
+                    "correct": {"type": "string", "description": "纠正后的正确内容"},
+                    "reason": {"type": "string", "description": "纠正原因（可选）"},
+                    "context": {"type": "string", "description": "对话上下文（可选）"}
+                },
+                "required": ["wrong", "correct"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "teach_antipattern",
+            "description": "标记不应出现的回复模式。例如：AI不应该编造数据、不应该在缺少依据时给出确定结论、不应该忽略文章中的限定条件。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "pattern": {"type": "string", "description": "错误模式描述"},
+                    "description": {"type": "string", "description": "详细说明为什么这是不好的模式"},
+                    "severity": {"type": "string", "enum": ["high", "medium", "low"], "description": "严重程度（默认 medium）"}
+                },
+                "required": ["pattern"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "teach_patch",
+            "description": "补充知识补丁。当发现文章库或回答中缺少某个重要知识时调用，记录后后续回答会参考此补丁。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "topic": {"type": "string", "description": "知识主题"},
+                    "content": {"type": "string", "description": "补充的知识内容"},
+                    "source": {"type": "string", "description": "知识来源（可选，如文章编号、URL等）"}
+                },
+                "required": ["topic", "content"]
+            }
+        }
     }
 ]
 
@@ -811,6 +861,47 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
 
             else:
                 return f"未知操作: {action}，支持: archive/list_archive/create_dir/move/delete"
+
+        # ====== 教学反馈工具 ======
+        elif name == "teach_correction":
+            if not teaching_system:
+                return "教学系统未初始化"
+            wrong = arguments.get("wrong", "")
+            correct = arguments.get("correct", "")
+            reason = arguments.get("reason", "")
+            context = arguments.get("context", "")
+            result = teaching_system.add_correction(
+                wrong=wrong, correct=correct, reason=reason, context=context
+            )
+            if result["success"]:
+                return f"已记录纠正：将\"{wrong[:50]}\"纠正为\"{correct[:50]}\""
+            return f"纠正记录失败: {result.get('error', '未知错误')}"
+
+        elif name == "teach_antipattern":
+            if not teaching_system:
+                return "教学系统未初始化"
+            pattern = arguments.get("pattern", "")
+            description = arguments.get("description", "")
+            severity = arguments.get("severity", "medium")
+            result = teaching_system.add_antipattern(
+                pattern=pattern, description=description, severity=severity
+            )
+            if result["success"]:
+                return f"已记录反模式（{severity}）：{pattern[:80]}"
+            return f"反模式记录失败: {result.get('error', '未知错误')}"
+
+        elif name == "teach_patch":
+            if not teaching_system:
+                return "教学系统未初始化"
+            topic = arguments.get("topic", "")
+            content = arguments.get("content", "")
+            source = arguments.get("source", "")
+            result = teaching_system.add_patch(
+                topic=topic, content=content, source=source
+            )
+            if result["success"]:
+                return f"已记录知识补丁：{topic[:60]}"
+            return f"知识补丁记录失败: {result.get('error', '未知错误')}"
 
         else:
             return f"未知工具: {name}"
