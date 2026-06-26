@@ -410,6 +410,16 @@ def _auto_git_commit(filename: str, content: str) -> str:
         return f"(git commit 异常: {str(e)[:60]})"
 
 
+def _article_sort_key(filename: str):
+    """按文章编号排序：0.0.1 < 0.1 < 1 < 10 < 目录"""
+    import re
+    m = re.match(r'^(\d+(?:\.\d+)*)', filename)
+    if m:
+        parts = [int(x) for x in m.group(1).split('.')]
+        return (0, parts, filename)
+    return (1, [], filename)
+
+
 def _git_push() -> str:
     """尝试 git push"""
     repo = _find_git_repo()
@@ -474,9 +484,11 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                         matches.sort(reverse=True)
                         fpath = os.path.join(UPLOAD_FOLDER, matches[0])
                     else:
-                        # 列出所有文件帮助AI选择
-                        all_files = sorted(os.listdir(UPLOAD_FOLDER))
-                        return f"文件 '{filename}' 不存在。可用文件：\n" + "\n".join(all_files[:30])
+                        # 列出所有文件帮助AI选择（按编号智能排序）
+                        all_files = sorted(os.listdir(UPLOAD_FOLDER), key=_article_sort_key)
+                        # 如果是数字编号搜索，高亮匹配项
+                        hint = f"文件 '{filename}' 不存在。共 {len(all_files)} 个文件，按编号排序：\n"
+                        return hint + "\n".join(all_files[:50]) + (f"\n...还有 {len(all_files)-50} 个文件" if len(all_files) > 50 else "")
                 else:
                     return "文章目录不存在"
             with open(fpath, 'r', encoding='utf-8') as f:
@@ -815,7 +827,7 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                 archive_dir = os.path.join(UPLOAD_FOLDER, "archive")
                 if not os.path.exists(archive_dir):
                     return "归档目录为空（archive/ 不存在）"
-                files = sorted(os.listdir(archive_dir))
+                files = sorted(os.listdir(archive_dir), key=_article_sort_key)
                 if not files:
                     return "归档目录为空"
                 result = f"归档目录共 {len(files)} 个文件：\n"
