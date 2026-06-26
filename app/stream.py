@@ -449,9 +449,9 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
         # 构建 tool_calls 列表
         tool_calls_list = [collected_tool_calls[i] for i in sorted(collected_tool_calls.keys())]
 
-        # 向客户端发送 tool_calls（中间轮次不发 finish_reason，防止 Open WebUI 断开显示）
-        # 只有在需要客户端参与时才发送 finish_reason
-        yield _sse_chunk({"tool_calls": tool_calls_list})
+        # 中间轮次不向客户端发送 tool_calls（防止 Open WebUI 停止渲染后续内容）
+        # 只在 Open WebUI 作为真正的 tool 循环代理时才发送 tool_calls + finish_reason
+        # 我们的服务端内部自行处理 tool 循环，客户端只需最终文本
 
         # 构建 assistant 消息（含 tool_calls + reasoning_content）
         assistant_msg = {
