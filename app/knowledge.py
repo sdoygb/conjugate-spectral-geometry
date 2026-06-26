@@ -469,13 +469,15 @@ class VectorKnowledgeBase:
         try:
             # 删除旧集合再重新创建，确保干净重建
             self.client.delete_collection("articles")
-            self.articles_collection = self.client.get_or_create_collection(
-                name="articles",
-                metadata={"description": "几何论70篇文章静态知识库"},
-                embedding_function=self.embedding_fn
-            )
         except Exception as e:
             logger.warning(f"[VECTOR] 清空 articles 集合时出错（可能为空）: {e}")
+        
+        # 重新获取 collection 引用（确保是删除后的新实例）
+        self.articles_collection = self.client.get_or_create_collection(
+            name="articles",
+            metadata={"description": "几何论70篇文章静态知识库"},
+            embedding_function=self.embedding_fn
+        )
 
         # 批量插入（ChromaDB 有批量大小限制，每批500条）
         batch_size = 500
