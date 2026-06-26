@@ -477,6 +477,15 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                         for f in os.listdir(UPLOAD_FOLDER):
                             if f.startswith(filename + "_"):
                                 matches.append(f)
+                    # 提取纯数字编号再匹配（如"3号文章"→"3"，"3(260626.6)"→"3"）
+                    if not matches:
+                        import re as _re
+                        num_match = _re.match(r'^(\d+(?:\.\d+)*)', filename)
+                        if num_match:
+                            prefix = num_match.group(1)
+                            for f in os.listdir(UPLOAD_FOLDER):
+                                if f.startswith(prefix + "_"):
+                                    matches.append(f)
                     if len(matches) == 1:
                         fpath = os.path.join(UPLOAD_FOLDER, matches[0])
                     elif len(matches) > 1:

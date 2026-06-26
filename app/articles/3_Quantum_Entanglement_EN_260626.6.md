@@ -203,3 +203,178 @@ $$C(\vec{a},\vec{b})=\big\langle m_A(\vec{a})(-m_A(\vec{b}))\big\rangle_{\Sigma}
 ∎
 
 **Honest Annotation**: The conclusion $C(\vec{a},\vec{b})=-\vec{a}\cdot\vec{b}$ of Proposition 4.1 is mathematically equivalent in form to the correlation function of a spin singlet state in quantum mechanics, but this is **a derived result after accepting Convention A and Convention B**. Convention A has a relatively solid geometric foundation (antipodal locking → antiphase, guaranteed by Definition 2.2); Convention B is the core bridge of the physical mapping, whose rigor is equivalent to "deriving the Born rule from the three axioms"—this is one of the core open problems of Geometric Theory. Hence the status of Proposition 4.1 is a **mapping-layer proposition**, not an intrinsic theorem of Geometric Theory.
+# 5. CHSH Combination and the Classical Limit
+
+## 5.1 Geometrization of Measurement Settings
+
+**Definition 5.1 (CHSH Configuration).** On the ℳ-sector $S^3$, select four readout directions:
+
+- Particle $A$: $\vec{a}_1,\vec{a}_2$
+- Particle $B$: $\vec{b}_1,\vec{b}_2$
+
+**Definition 5.2 (CHSH Combination).**
+
+$$S_{\text{CHSH}}=C(\vec{a}_1,\vec{b}_1)+C(\vec{a}_1,\vec{b}_2)+C(\vec{a}_2,\vec{b}_1)-C(\vec{a}_2,\vec{b}_2).$$
+
+## 5.2 The Classical Limit Theorem
+
+**Theorem 5.1 (Classical Limit).** Consider the hypothetical limiting case $\lambda_2^{\text{eff}}\to\infty$, where the ℐ-sector is fully compactified. This limit does not represent actual physics (in Geometric Theory, $\lambda_2^{\text{eff}}=59324.3$ is a fixed constant, 0.1 Theorem 6.2); it serves only as a thought experiment to contrast the difference between classical and quantum correlations. In this limit, the information field is localized, and the algebraic upper bound of the CHSH combination is $2$.
+
+*Proof.* When $\lambda_2^{\text{eff}}\to\infty$, by Constructive Definition 1.3, the ℐ-sector pixels become infinitely dense ($\Delta\xi_{\min}\to0$), and the information field is fully localized. The ℐ-freezing of the geometric entanglement string $\mathcal{E}_{AB}$ is lifted, and the ℳ-sectors of $p_A,p_B$ are fully decoupled. Hence $m_A(\vec{a})$ depends only on the local geometry of $p_A$, and $m_B(\vec{b})$ depends only on the local geometry of $p_B$; the two are approximately independent in the limit. Substituting into Definition 5.2:
+
+$$|S_{\text{CHSH}}|\le |m_B(\vec{b}_1)+m_B(\vec{b}_2)|+|m_B(\vec{b}_1)-m_B(\vec{b}_2)|=2.$$
+
+This theorem does not rely on Bell's inequality; it is a purely algebraic corollary in the geometric limit. ∎
+
+*Note.* This upper bound $2$ is a purely algebraic consequence of factorization in the $\lambda_2^{\text{eff}}\to\infty$ limit, requiring no hidden-variable distribution hypothesis as in Bell's original derivation.
+
+
+# 6. The Tsirelson Theorem
+
+## 6.1 Preservation of Nonlocal Correlations
+
+**Theorem 6.1 (Tsirelson Bound).** Under the discrete encoding with finite $\lambda_2^{\text{eff}}$ (i.e., with ℐ-sector freezing effective), and accepting the correlation mapping of Proposition 4.1, the CHSH combination satisfies
+
+$$|S_{\text{CHSH}}|\le 2\sqrt{2}.$$
+
+The supremum $2\sqrt{2}$ is attained by the following configuration:
+
+$$\vec{b}_1\perp\vec{b}_2,\quad \vec{a}_1=\frac{\vec{b}_1+\vec{b}_2}{|\vec{b}_1+\vec{b}_2|},\quad \vec{a}_2=\frac{\vec{b}_1-\vec{b}_2}{|\vec{b}_1-\vec{b}_2|}.$$
+
+*Proof.* By Proposition 4.1, $C(\vec{a},\vec{b})=-\vec{a}\cdot\vec{b}$. Substituting into Definition 5.2:
+
+$$S_{\text{CHSH}}=-\vec{a}_1\cdot(\vec{b}_1+\vec{b}_2)-\vec{a}_2\cdot(\vec{b}_1-\vec{b}_2).$$
+
+By the Cauchy-Schwarz inequality:
+
+$$S_{\text{CHSH}}\le|\vec{a}_1||\vec{b}_1+\vec{b}_2|+|\vec{a}_2||\vec{b}_1-\vec{b}_2|=|\vec{b}_1+\vec{b}_2|+|\vec{b}_1-\vec{b}_2|,$$
+
+Let $\vec{b}_1\cdot\vec{b}_2=\cos\theta$; then $|\vec{b}_1+\vec{b}_2|=2\cos(\theta/2)$, $|\vec{b}_1-\vec{b}_2|=2\sin(\theta/2)$. Hence
+
+$$S_{\text{CHSH}}\le 2(\cos(\theta/2)+\sin(\theta/2))\le 2\sqrt{2},$$
+
+with equality when $\theta=\pi/2$ (i.e., $\vec{b}_1\perp\vec{b}_2$) and $\vec{a}_1\parallel(\vec{b}_1+\vec{b}_2)$, $\vec{a}_2\parallel(\vec{b}_1-\vec{b}_2)$. Then $|S_{\text{CHSH}}|=2\sqrt{2}$. ∎
+
+## 6.2 Why $2\sqrt{2}$
+
+**Structural Note 6.2.** $2\sqrt{2}=\sqrt{8}$ is directly related to the 2-dimensionality of the ℳ-sector readout plane. Numerically, the appearance of $\sqrt{8}$ has a potential correspondence with the eight-dimensional structure containing $\text{Spin}(8)$ triality within the even subalgebra $Cl^0(9)\cong Cl(8)$ of the $Cl(9)$ interaction framework of 0.3.5 (0.3.5 §2). The Tsirelson supremum is strictly locked by Cauchy-Schwarz optimization in the 2-dimensional Euclidean geometry of the ℳ-sector; the connection of its deep algebraic origin with the 8-dimensional Clifford algebra of $Cl(8)$ and the overall structure of the trifurcated tangent bundle $T\Sigma=\mathcal{M}\oplus\mathcal{C}\oplus\mathcal{I}$ is an open problem, to be explored in subsequent articles.
+
+
+# 7. Conclusion
+
+(1) **Pixel Theorem**: Holographic screen pixels are defined by ℐ-sector harmonic oscillator eigenfunctions (Proposition 1.1); the minimum resolvable angle $\Delta\xi_{\min}=2(\lambda_2^{\text{eff}})^{-1/4}=0.1281$ rad is a constructive definition based on the characteristic width of the harmonic oscillator ground state (Constructive Definition 1.3); rigorous justification requires independent derivation from the information-theoretic resolution limit of the Sturm-Liouville orthonormal basis. This article corrects the formal error in the information field equation of version 260622.6 (constant potential → harmonic oscillator potential). The Bott periodicity cutoff ensures that effective pixel degrees of freedom are finite ($n_{\text{eff}}\le7$). The Nine-Element Mutual Arrest constraint (0.3.1 §3.1a) is the deep geometric origin of ℐ-sector freezing and the Bott cutoff.
+
+(2) **Entanglement Definition**: Geometric maximal entanglement is the geometric configuration of two $S$-minima on $\Sigma_\eta$ with ℐ-sector freezing and ℳ-sector antipodal locking. Variational stability is jointly guaranteed by the Nine-Element Mutual Arrest constraint (0.3.1 Theorem 3.1a), cross-sector coupling structure (0.1 Theorems 4.2/4.3: waist edge $w=-0.7885$, base edge $w'=-2.444$), and weak coupling parameter $\gamma=0.0928$. The geometric entanglement string length $L(\mathcal{E}_{AB})=\pi R_{\mathcal{M}}=0.2247$ rad (using effective soft mode $\lambda_1^{\text{eff}}=391.05$).
+
+(3) **Two-Level Theorem**: The low-energy non-trivial excitation space of a geometrically maximally entangled pair is exactly 2-dimensional, spanned by the two antiphase branches of the first zonal harmonic function on $S^3$; the "qubit" is a product of geometric spectral rigidity (physical mapping layer correspondence). The $\ell=0$ constant ground state is frozen and subtracted in the relative coordinate description.
+
+(4) **Correlation Function**: Accepting antipodal antiphase (Convention A, guaranteed by Definition 2.2) and Born rule correspondence (Convention B, physical mapping convention), $C(\vec{a},\vec{b})=-\vec{a}\cdot\vec{b}$. Proposition 4.1 is a mapping-layer proposition, not an intrinsic theorem of Geometric Theory.
+
+(5) **Classical Limit**: In the hypothetical $\lambda_2^{\text{eff}}\to\infty$ limit, the information field is localized, and the CHSH combination upper bound $2$ is an algebraic identity of factorization.
+
+(6) **Tsirelson Theorem**: Accepting the correlation mapping of Proposition 4.1, $|S_{\text{CHSH}}|\le2\sqrt{2}$ is strictly locked by Cauchy-Schwarz optimization in the 2-dimensional Euclidean geometry of the ℳ-sector. The value $2\sqrt{2}=\sqrt{8}$ has a potential correspondence with the algebraic structure of $Cl(8)$.
+
+(7) **Closed-Loop Status**: Chapters 1–6 of this article are completed within the closure of 0.0.X + single core mapping, introducing no independent hypotheses beyond the Nine-Element Mutual Arrest and the three axioms. Convention A is guaranteed by the geometric configuration of Definition 2.2; Convention B is an external correspondence of the physical mapping layer, labeled as an open core problem. Appendix A demonstrates the mapping capacity of Geometric Theory for interference phenomena under the external input hypothesis of a double-slit topological defect, and does not satisfy the closed-loop criterion.
+
+(8) **Version Upgrade**: 260622.6 → 260626.6. Principal changes: corrected information field equation (constant potential → harmonic oscillator potential); comprehensive parameter upgrade to effective metric values ($\lambda_1^{\text{eff}}=391.05$, $\lambda_2^{\text{eff}}=59324.3$); explicit introduction of Nine-Element Mutual Arrest constraint (§1.0); strict labeling of all theorem/proposition statuses; corrected source citations; Chapter 7 moved to Appendix A.
+
+
+# Appendix A: Electron Double-Slit Interference Theorem (Geometric Model Conjecture)
+
+**External Input Declaration**: This Appendix demonstrates the mapping capacity of Geometric Theory for interference phenomena under the external input hypothesis of a double-slit topological defect. The hypothesis assumes the existence of two disjoint topological holes on $\Sigma_\eta$ (removal of two small disks, corresponding to the double slit); this hypothesis is not a theorem derived from the ℰ mapping or the three axioms, but an external geometric input. Hence this Appendix **does not satisfy** the closed-loop criterion that "0.0.X + single core mapping suffices to compute all quantities, requiring no further anchors or inputs." Status is labeled as **geometric model conjecture**.
+
+## A.1 Topological Defects and Circulating Flows
+
+**Definition A.1 (Double-Slit Defect — External Hypothesis).** On $\Sigma_\eta$, the double slits $A,B$ are two disjoint topological holes (removal of two small disks), with center separation $d_\eta$ (geometric intrinsic quantity).
+
+**Model Description A.1 (Circulating Flow Decomposition).** When a single $S$-minimum (electron) propagates to the double-slit plane, due to the topological non-triviality of $\Sigma_\eta$ (doubly connected region), the information field $\Psi$ decomposes into two circulating flow branches $\Psi_A,\Psi_B$, propagating around slits $A,B$ respectively. By the 2-dimensionality of $\Sigma_\eta$, after removing the two disks, $H_1(\Sigma_\eta\setminus\{A,B\})=\mathbb{Z}\oplus\mathbb{Z}$. Under the Dirichlet zero boundary condition specified by the infiltration function analytic framework of 0.2.1.1, the information field, as a harmonic section on $\Sigma_\eta$, satisfies winding number conservation in topologically non-trivial regions, hence decomposes into two branches respectively encircling the two holes.
+
+## A.2 Phase Difference and Connection
+
+**Proposition A.1 (Phase Theorem).** The phase difference between the two circulating flow branches $\Psi_A,\Psi_B$ at the detection screen is
+
+$$\Delta\phi=\sqrt{\lambda_1^{\text{eff}}}\cdot\Delta L_\eta,$$
+
+where $\Delta L_\eta=|L_A-L_B|$ is the difference in geometric angular path lengths of the two branches on $\Sigma_\eta$ (unit: rad).
+
+*Derivation.* By the local harmonic oscillator theorem of 0.2.1 (Theorem 3.5.10), in Darboux coordinates, the Hamiltonian flow in the soft-mode direction yields the phase connection $\omega=\sqrt{\lambda_1^{\text{eff}}}\,\mathrm{d}\eta$ (geometric units $\hbar=1$). The circulating flow phase is given by the integral of the connection along the path: $\phi_{A,B}=\int_{\gamma_{A,B}}\omega$. Hence $\Delta\phi=\sqrt{\lambda_1^{\text{eff}}}\oint_{\gamma_A-\gamma_B}\mathrm{d}\eta=\sqrt{\lambda_1^{\text{eff}}}\Delta L_\eta$. ∎
+
+*Note*: The phase connection $\omega=\sqrt{\lambda_1^{\text{eff}}}\,\mathrm{d}\eta$ is here constructed in the soft-mode direction; its relationship to 0.2.1 Theorem 3.5.4 (Hamiltonian Flow Frequency Theorem, giving frequency $\sqrt{\det H}/A_0$) is: under the ℐ-freezing approximation, the soft-mode direction $\eta$ evolves independently, with its phase accumulation rate controlled by $\sqrt{\lambda_1^{\text{eff}}}$. Rigorous derivation requires starting from the full Hamiltonian of 0.2.1 Theorem 3.5.10, in the $(\xi,\eta)$ decoupling limit.
+
+## A.3 Interference Fringes
+
+**Proposition A.2 (Fringe Spacing).** Under the far-field condition $L_\eta\gg d_\eta$, the spacing between adjacent bright fringes (fringe spacing) is
+
+$$\Delta x_\eta=\frac{2\pi L_\eta}{\sqrt{\lambda_1^{\text{eff}}}d_\eta}.$$
+
+*Derivation.* Bright fringe condition $\Delta\phi=2n\pi$, path difference $\Delta L_\eta\approx d_\eta x_\eta/L_\eta$ (far-field approximation). Substitute into Proposition A.1. ∎
+
+## A.4 Dimensional Bridge Conversion and Numerical Verification
+
+By the 0.3.1 dimensional bridge, laboratory length $x=\chi_L x_\eta$. Fringe spacing:
+
+$$\Delta x=\chi_L\Delta x_\eta=\frac{2\pi\chi_L L}{\sqrt{\lambda_1^{\text{eff}}}d}.$$
+
+**Proposition A.3 (Geometric Correspondence of the de Broglie Wavelength).** Define the geometric characteristic momentum $p_0$ satisfying $\chi_L p_0=\hbar$ (0.3.1 dimensional bridge triple lock). Then the fringe spacing can be written as
+
+$$\Delta x=\frac{\lambda L}{d},\quad \lambda=\frac{2\pi\hbar}{p}=\frac{h}{p}.$$
+
+**Numerical Verification.** Take experimental parameters: accelerating voltage $U=50\ \text{V}$, slit separation $d=1.0\ \mu\text{m}$, screen distance $L=1.0\ \text{m}$. Using 0.3.1 locked constants:
+
+- $m_e=510.99895\ \text{keV}/c^2$ (0.1 Derived Item 2.2.2)
+- $\hbar=6.5821195675\times10^{-16}\ \text{eV}\cdot\text{s}$ (0.3.1 Theorem 7.2)
+- $c=299792458\ \text{m/s}$ (sole external anchor)
+
+Kinetic energy $E_k=50\ \text{eV}$, non-relativistic momentum $pc=\sqrt{2m_ec^2E_k}=7148.4\ \text{eV}$, wavelength $\lambda=hc/(pc)$. From $\hbar c=1.973269804\times10^{-7}\ \text{eV}\cdot\text{m}$:
+
+$$\lambda=\frac{2\pi\times1.97327\times10^{-7}}{7148.4}=1.734\times10^{-10}\ \text{m}=1.734\ \text{\AA}.$$
+
+Fringe spacing $\Delta x=\lambda L/d=1.734\times10^{-4}\ \text{m}=0.1734\ \text{mm}$. This result agrees with the standard quantum mechanical formula $\lambda=h/p$ to within $10^{-4}$ relative precision. However, note: $h$ here is a **0.3.1 dimensional bridge derived quantity**, not an external input.
+
+**Honest Annotation**: The derivation in this Appendix takes the external input of a double-slit topological defect as its premise (Definition A.1), and does not satisfy the closed-loop criterion. Its retention as an Appendix is for the purpose of demonstrating the mapping capacity of Geometric Theory for interference phenomena under the topological defect hypothesis, while honestly labeling its conjectural status.
+
+
+# Appendix B: Table of Endogenous Constants
+
+| Constant | Value | Geometric Origin |
+|:---|:---|:---|
+| $S_e$ | $1.37035999084\times10^2$ | Geometric intrinsic quantity of single core mapping layer (0.1 Derived Item 2.2.1) |
+| $\lambda_1^{\text{eff}}$ | $3.9105\times10^2\ \text{rad}^{-2}$ | Effective soft mode (0.1 Theorem 6.2) |
+| $\lambda_2^{\text{eff}}$ | $5.93243\times10^4\ \text{rad}^{-2}$ | Effective hard mode (0.1 Theorem 6.2) |
+| $\lambda_2^{\text{eff}}/\lambda_1^{\text{eff}}$ | $1.517\times10^2$ | Effective soft-hard mode ratio (Nine-Element Mutual Arrest stiffness ratio, 0.3.1 §3.1a) |
+| $\Delta\xi_{\min}$ | $2(\lambda_2^{\text{eff}})^{-1/4}=0.1281\ \text{rad}$ | Pixel minimum resolvable angle (Constructive Definition 1.3) |
+| $R_{\mathcal{M}}$ | $\sqrt{2/\lambda_1^{\text{eff}}}=0.07151\ \text{rad}$ | ℳ-sector effective curvature radius (working hypothesis) |
+| $L(\mathcal{E}_{AB})$ | $\pi R_{\mathcal{M}}=0.2247\ \text{rad}$ | Geometric entanglement string length (Proposition 2.1) |
+| $\chi_L$ | $1.5092231080\times10^{-10}\ \text{m}$ | Length mapping factor (0.3.1 §6) |
+| $\hbar$ | $6.5821195675\times10^{-16}\ \text{eV}\cdot\text{s}$ | Dimensional bridge derived (0.3.1 Theorem 7.2) |
+| $K$ | $839.758793\ \text{keV}$ | Mass quantum (0.3.1 Theorem 9.1) |
+| $m_e$ | $510.99895\ \text{keV}/c^2$ | Electron mass (0.1 Derived Item 2.2.2) |
+| $w$ | $-0.7885$ | Waist-edge coupling (0.1 Theorem 4.3) |
+| $w'$ | $-2.444$ | Base-edge coupling (0.1 Theorem 4.3) |
+| $\gamma$ | $0.0928$ | Block correlation parameter (0.4) |
+| $S_{\text{CHSH}}$ (classical limit) | $2$ | Classical Limit Theorem (§5.2, hypothetical limit) |
+| $S_{\text{CHSH}}$ (quantum) | $2\sqrt{2}\approx2.828427$ | Tsirelson Theorem (§6.1, accepting Conventions A+B) |
+
+
+# Document Version Notes
+
+> **Article Number:** 3　　**Title:** Quantum Entanglement and the Geometric Theorem of the Tsirelson Bound　　**Version:** 260626.6
+>
+> **Revision Record (260622.6 → 260626.6):**
+>
+> - **Version number**: 260622.6 → 260626.6; all dependencies upgraded to 260626.6
+> - **§1.0 (new)**: Explicit introduction of the Nine-Element Mutual Arrest constraint declaration, connecting ℐ-sector freezing, Bott periodicity cutoff, soft-hard mode separation, and tri-decomposition frame structure to the Nine-Element Mutual Arrest framework of 0.3.1 §3.1a and 0.2.1 §1.4
+> - **§1.1**: Corrected information field equation — from $(\Delta_{\Sigma_\eta}+\Lambda)\Psi=0$ (erroneous: Λ parameter of unclear origin) to $[-\frac{1}{2}\Delta_{\Sigma_\eta}+\frac{1}{2}\lambda_1^{\text{eff}}\eta^2+\frac{1}{2}\lambda_2^{\text{eff}}\xi^2]\Psi=E\Psi$, rigorously derived from 0.2.1 Theorem 3.5.10
+> - **§1.2**: Corrected ℐ-sector characteristic equation — from $(-\mathrm{d}^2/\mathrm{d}\xi^2+\lambda_2)\phi_n=\mu_n\phi_n$ (erroneous: constant potential) to $(-\mathrm{d}^2/\mathrm{d}\xi^2+\lambda_2^{\text{eff}}\xi^2)\phi_n=\mu_n\phi_n$ (harmonic oscillator potential), self-consistent with ground state $\phi_0\propto\exp(-\sqrt{\lambda_2^{\text{eff}}}\xi^2/2)$
+> - **§1.3**: Corrected minimum resolvable angle — from $\pi/(2\sqrt{\lambda_2})\approx6.48\times10^{-3}$ rad (based on erroneous equation) to $2(\lambda_2^{\text{eff}})^{-1/4}=0.1281$ rad (based on harmonic oscillator ground state width); this definition labeled as "geometric analog construction" (Constructive Definition 1.3)
+> - **§1.4 (new)**: Spectral triple toolkit connection note, labeling the spectral origins of $\chi_L$ (Wodzicki residue), $K$ (Dixmier trace), $\hbar$ (heat kernel asymmetry term) (0.3.1 §3), noting that the Hermite basis is the ℐ-frozen approximation of Toeplitz quantization
+> - **§2.1**: Single core mapping declaration aligned to 0.1 §1.3; variational stability argument of Definition 2.2 changed from vague "0.2.1 soft mode theorem" to explicit three sources: (i) Nine-Element Mutual Arrest constraint (ii) cross-sector coupling structure (iii) weak coupling condition
+> - **§2.2**: Identification $R_{\mathcal{M}}^{-2}=\lambda_1^{\text{eff}}/2$ in Proposition 2.1 honestly labeled as "working hypothesis" ($S^3$ scalar curvature is $6/r^2$, not $\lambda_1$); length value updated using $\lambda_1^{\text{eff}}=391.05$
+> - **§3.1**: Rank-2 projection argument of Two-Level Theorem connected to Nine-Element Mutual Arrest first-order condition (0.3.1 Theorem 3.1a), replacing previously vague "0.0.7 constraint mapping" citation; ℓ=0 freezing subtraction supplemented with compatibility note regarding completeness axiom
+> - **§4**: Theorem 4.1 downgraded to "Mapping-Layer Proposition 4.1"; correlation function derivation explicitly decomposed into Convention A (antipodal antiphase, guaranteed by Definition 2.2) and Convention B (Born rule correspondence, physical mapping convention); removed previous false claim of "intrinsic geometric equality of $S^3$ harmonic functions"
+> - **§5–§6**: Unified parameter usage to $\lambda_2^{\text{eff}}$ in Theorems 5.1/6.1; premise of Theorem 6.1 explicitly labeled as "accepting the correlation mapping of Proposition 4.1"
+> - **Former Chapter 7 → Appendix A**: Double-slit interference removed from main text, placed in Appendix A and labeled as "geometric model conjecture"; explicitly declared not satisfying 0.0.X + single core mapping closed-loop criterion (due to dependence on external input hypothesis of double-slit topological defect); phase connection citation to 0.2.1 corrected
+> - **Comprehensive parameter upgrade**: bare values $(\lambda_1=392.21,\ \lambda_2=58760.77)$ → effective values $(\lambda_1^{\text{eff}}=391.05,\ \lambda_2^{\text{eff}}=59324.3)$; removed precision estimate skip claiming "bare vs. effective metric difference <0.3% negligible"
+> - **Source citation corrections**: Removed all non-existent "0.2.1 Theorem 3.5.4 (soft mode theorem) → phase connection" citations; 0.0.7 constraint mapping citation changed to 0.0.6 projection mapping + Nine-Element Mutual Arrest first-order condition; 0.2.1 Theorem 3.5.10 citation method corrected
+> - **Strict labeling of theorem/proposition statuses**: Theorem 1.1 → Proposition 1.1; Theorem 1.2 → Constructive Definition 1.3; Theorem 2.1 → Proposition 2.1 (with working hypothesis note); Theorem 4.1 → Mapping-Layer Proposition 4.1; Appendix A Theorems 7.2/7.3/7.4 → Propositions A.1/A.2/A.3 (conjectural layer)
+> - **Appendix B constant table**: All values updated to effective metric version; newly added length $L(\mathcal{E}_{AB})$, etc.
