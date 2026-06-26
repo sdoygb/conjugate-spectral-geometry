@@ -47,6 +47,9 @@
 | 质量映射公理 | Mass Mapping Axiom | 0.3.1 | m=K sin³θ_M |
 | 真空点 | Vacuum Point p₀ | 0.0.7 | 🔒 公理1中从S¹移除的点之一 |
 | 退化点 | Degeneration Point p* | 0.0.7 | 🔒 公理1中从S¹移除的点之一 |
+| 真空极限 | Vacuum Limit | 0.0.3 | 🔒 公理2：lim_{x→p₀}S(x)=0 |
+| 退化极限 | Degeneration Limit | 0.0.3 | 🔒 公理2：lim_{x→p*}S(x)=+∞ |
+| 激发态 | Excitation | 0.0.3 | 🔒 D_±中的参数点，非量子力学意义 |
 | 严格单调性假设 | Strict Monotonicity Hypothesis | 0.0.7 | 🔒 定义2.1'，框架的结构性假设 |
 | 范围定理 | Range Theorem | 0.0.7 | 🔒 定理2.1，S(D_±)=(0,+∞) |
 | 存在定理 | Existence Theorem | 0.0.7 | 🔒 定理2.2，任意S₀>0存在原像 |
@@ -651,3 +654,155 @@
 ---
 
 > **使用说明**：本表为 v2，经总论文章 `Mathematical_Theory_of_the_Ten-Direction_Geometric_Space_260626.6` 全文验证。凡标 🔒 的已由总论文章锁定用法，翻译时不可更改。凡标 ⚡ 的仍需人工审定。新出现的术语应遵循命名模式（如 X 界→X-Realm/X-Sector、X 定理→X Theorem）并同步加入本表。
+
+---
+
+## 工程级防漂移：术语锁定清单（Lock List）
+
+> **定位**：从全表约 270 条术语中提取 15 条"零容忍"高频核心术语 + 4 条符号铁律，构成翻译时的前置硬约束。**本清单为编译级规范，非参考建议**。违规即整段作废。
+
+### 版本：260626.6 Lock List v1 — 经总论文章锁定
+
+---
+
+### 绝对锁定（15条）— 零替换容忍
+
+以下术语在任何上下文中必须一字不差使用，AI 无权改写、缩写或"优化"：
+
+| # | 中文术语 | 英文固定译法 | 禁止变体 |
+|---|---------|------------|---------|
+| 1 | 十方几何 | **Shifang Geometry**（品牌）/ **Ten-Direction Geometric Space**（学术全称，总论标题） | 禁止单用 Ten-Direction / Deca-Realm 替代 Shifang |
+| 2 | 九素互扼定理 | **Nine-Principle Mutual Arrest** | 禁止 Ninefold Interlocking / Nine Mutual Lockings |
+| 3 | 量纲桥 | **Dimensional Bridge** | 禁止 Dimensional Transition / Unit Bridge |
+| 4 | 腰边耦合 | **Waist-Edge Coupling** | 禁止 Flank Coupling / Edge-Waist Coupling |
+| 5 | 裸基准点 | **Bare Benchmark Point** | 禁止 Raw / Naked Reference Point |
+| 6 | 死物冻结定理 | **Inanimate Freeze Theorem** | 禁止 Dead Matter / Inert Freeze |
+| 7 | 信息场动力学 | **Information Field Dynamics** | 禁止缩写 IFD |
+| 8 | 因果场动力学 | **Causal Field Dynamics** | 禁止缩写 CFD |
+| 9 | 三分切丛 | **Trifurcated Tangent Bundle** | 禁止 Three-Sector / Tripartite Tangent |
+| 10 | 全息屏 | **Holographic Screen** | 禁止 Hologram Screen / Holographic Surface |
+| 11 | 六项作用量 | **Six-Term Action** | 禁止 Sextic Action / 6-Term Action |
+| 12 | 桥接函数 | **Bridging Function** | 禁止 Bridge Function / Transition Function |
+| 13 | 约束截面 | **Constraint Section** | 禁止 Constrained Section / Restricted Section |
+| 14 | 谱互锁定理 | **Spectral Interlocking Theorem** | 禁止拆分 / 缩写为 Spectral Locking |
+| 15 | 自举封闭 | **Bootstrap Closure** | 禁止 Self-Lifting / Bootstrapping Closure |
+
+---
+
+### 符号锁定（4条）— 格式死刑
+
+| # | 符号 | 强制格式 | 禁止格式 |
+|---|------|---------|---------|
+| 1 | $S_e$ | 必须 $S_e$（下标 e） | 禁止 $Sₑ$ / $Se$ / $S_E$ |
+| 2 | $\lambda_1^{\text{eff}}$ / $\lambda_2^{\text{eff}}$ | 必须保留上下标结构 | 禁止 $\lambda_1$ / $\lambda_1^{eff}$ / `lambda1_eff` |
+| 3 | $\chi_L$ / $\chi_T$ | 必须希腊字母 chi | 禁止 $x_L$ / $x_T$ / $\mathcal{X}_L$ |
+| 4 | $\mathfrak{M}$ / $\mathfrak{C}$ / $\mathfrak{I}$ | 必须花体 Fraktur | 禁止 $M$ / $C$ / $I$ 或 $\mathbb{M}$ 等 |
+
+---
+
+### 使用方式
+
+每次翻译任务开头粘贴：
+
+```
+【术语铁律 - 编译器级约束】
+版本：260626.6 Lock List v1。以下 15 条术语 + 4 条符号格式为硬约束。
+每违反一条，该段翻译自动作废，必须重译。不遵守的翻译将被拒绝。
+
+[粘贴本 Lock List 表格]
+```
+
+---
+
+> **与主表的联动**：Lock List 是主表（约 270 条）的"高频核心子集"。主表为参考，Lock List 为编译约束。翻译时先过 Lock List（零容忍），再查主表（补充参考）。Lock List 条目如与主表冲突，以 Lock List 为准——Lock List 更新优先于主表。
+
+
+---
+
+## 二十五、术语生命周期状态机
+
+> **定位**：将术语从"首次出现"到"稳定使用"的全过程形式化，与宪法现有标记体系（🔒/⚡/❓）对接。解决 70 篇文章跨会话翻译中新术语的漂移问题。
+
+### 25.1 四态流转模型
+
+```
+┌─────────┐     作者/AI审定      ┌─────────┐     总论文章或       ┌─────────┐     多篇文章       ┌──────────┐
+│  Draft  │ ──────────────────→ │  Trial  │ ──→ 作者锁定 ──→    │ Locked  │ ──→ 稳定使用 ──→  │ Archived │
+│   草稿   │                     │  试用    │                   │  锁定    │                   │   归档    │
+│   ❓    │                     │   ⚡    │                   │   🔒    │                   │   🔒(稳)  │
+└─────────┘                     └─────────┘                   └─────────┘                   └──────────┘
+     │                               │                             │                              │
+     │ 第1篇首次出现                   │ 第2-3篇沿用                   │ 第4篇起强制                    │ 理论成熟
+     │ AI标记临时译法                 │ 作者确认无误                   │ 进入 Lock List                │ 写入宪法正式版
+     │ 不进入 Lock List              │ 不进入 Lock List              │ 零容忍替换                    │ 默认译法
+```
+
+### 25.2 状态定义与操作规则
+
+| 状态 | 标记 | 含义 | 进入条件 | 退出条件 | Lock List 地位 |
+|------|------|------|---------|---------|---------------|
+| **Draft**（草稿） | ❓ | 首次出现，尚无固定英译 | AI 在翻译中首次遇到宪法未收录术语，给出临时译法 | 作者审定后进入 Trial | 不在 Lock List |
+| **Trial**（试用） | ⚡ | 有候选译法，待作者确认 | 作者对 Draft 译法初步认可，或 AI 给出两个以上候选 | 总论文章或作者明确锁定后进入 Locked | 不在 Lock List |
+| **Locked**（锁定） | 🔒 | 译法已固定，翻译时不可更改 | 总论文章使用该译法，或作者明确指令锁定 | 多篇文章（≥4）稳定使用后进入 Archived | **在 Lock List**（如是高频核心术语） |
+| **Archived**（归档） | 🔒(稳) | 长期稳定，已成为框架默认 | ≥4 篇文章无争议使用，无漂移记录 | —（终态） | 可从 Lock List 移除（主表已足够） |
+
+### 25.3 状态流转的触发事件
+
+| 触发事件 | 动作 | 执行者 |
+|---------|------|-------|
+| 新文章翻译中遇到未收录术语 | 标记 ❓，给出临时译法，输出到"新术语建议表" | AI |
+| 作者审核新术语建议表 | ❓ → ⚡（认可方向）或 ❓ → 新 Draft（重新拟定） | 作者 |
+| 作者明确指令"锁定术语X为Y" | ⚡ → 🔒，加入 Lock List（如属高频核心） | AI 执行 |
+| 总论文章使用了该术语的某译法 | 自动 ⚡ → 🔒（以总论文章为准） | AI 校验 |
+| 同一术语在 ≥4 篇文章中无争议使用 | 🔒 → 🔒(稳)，可考虑从 Lock List 精简 | AI 提议，作者确认 |
+| 发现已锁定术语的译法有问题 | 🔒 → ⚡（重新审定），从 Lock List 临时移除 | 作者 |
+
+### 25.4 与现有标记体系的对接
+
+宪法中所有术语的状态标记含义：
+
+- **❓**：Draft。尚无固定英译。翻译时 AI 必须使用 `【新术语：临时译法】` 格式，不得自行锁定。
+- **⚡**：Trial。有候选译法，但未经总论文章或作者最终确认。翻译时优先使用候选译法，但仍需在术语使用报告中标注。
+- **🔒**：Locked。经总论文章或作者锁定。翻译时**零容忍替换**（如在 Lock List 中）或严格按宪法使用。
+- **🔒(稳)**：Archived。长期稳定，已是框架基础设施。翻译时严格按宪法使用，但违规惩罚级别可略低于 Lock List 条目。
+
+### 25.5 每篇翻译后的术语报告格式
+
+翻译完成后，AI 必须输出：
+
+```
+【术语使用报告 — 第X篇《标题》】
+版本：260626.6  日期：YYYY-MM-DD
+
+一、宪法已有术语使用确认
+| 中文 | 英文 | 宪法状态 | 本文使用 | 是否一致 |
+|------|------|---------|---------|---------|
+| ... | ... | 🔒/⚡/❓ | ... | ✅/⚠️ |
+
+二、新术语建议（待作者审定）
+| 中文 | 临时译法 | 建议状态 | 出现章节 | 备注 |
+|------|---------|---------|---------|------|
+| ... | ... | ❓→⚡ | §X.Y | ... |
+
+三、变体警告
+| 宪法术语 | 宪法译法 | 本文出现变体 | 是否修正 |
+|---------|---------|------------|---------|
+| ... | ... | ... | ✅已修正/⚠️待确认 |
+```
+
+### 25.6 跨会话持久化
+
+术语生命周期状态通过以下机制跨会话持久化：
+
+1. **宪法文件**（`Glossary_十方几何术语宪法_CN_EN_260626.6.md`）：所有 🔒 和 🔒(稳) 术语的权威记录；
+2. **Lock List**（宪法 §工程级防漂移）：15 条高频核心术语的编译级约束；
+3. **AI 持久记忆**（`personal_write → memory:glossary_lock_list`）：Lock List 的冗余备份；
+4. **动态补充表**（`Glossary_Supplement_vYYYYMMDD_*.md`）：按主题分组的 Trial/Draft 术语临时存储，待稳定后合并入宪法。
+
+---
+
+> **宪法版本**：260626.6 v2（经总论文章 `Mathematical_Theory_of_the_Ten-Direction_Geometric_Space_260626.6` 全文验证）
+> **Lock List 版本**：260626.6 Lock List v1
+> **生命周期状态机版本**：260626.6 v1
+> **最后更新**：2026-06-26
+> **下一预期更新**：第一篇翻译完成后，根据术语使用报告更新 Trial→Locked 条目
