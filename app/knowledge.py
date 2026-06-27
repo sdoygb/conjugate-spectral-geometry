@@ -192,11 +192,11 @@ class VectorKnowledgeBase:
         self._corrections_count = 0
         self._antipatterns_count = 0
         self._patches_count = 0
+        self._dim_stale_collections = set()  # 维度过期的集合名，不参与搜索
 
         # 根据配置选择 embedding function
+        # 强制使用 SiliconFlow 1024 维，不允许回退到 ChromaDB 默认 384 维
         if EMBEDDING_MODE == 'siliconflow':
-            # 直接使用 SiliconFlow (BAAI/bge-large-zh-v1.5, 1024维)
-            # 这是经过调试的最佳方案
             sf_key = os.getenv('SILICONFLOW_API_KEY', '')
             self.embedding_fn = SiliconFlowEmbeddingFunction(api_key=sf_key)
             self._embedding_name = "siliconflow(BAAI/bge-large-zh-v1.5)"
@@ -209,24 +209,29 @@ class VectorKnowledgeBase:
                 self.embedding_fn = LocalEmbeddingFunction(LOCAL_EMBEDDING_MODEL)
                 self._embedding_name = f"local({LOCAL_EMBEDDING_MODEL})"
             except Exception as e:
-                logger.warning(f"[EMBEDDING] 本地模型加载失败({e})，回退到SiliconFlow免费API")
-                try:
-                    sf_key = os.getenv('SILICONFLOW_API_KEY', '')
-                    self.embedding_fn = SiliconFlowEmbeddingFunction(api_key=sf_key)
-                    self._embedding_name = "siliconflow(BAAI/bge-large-zh-v1.5)"
-                    logger.info("[EMBEDDING] SiliconFlow embedding 就绪（免费API，中文优化）")
-                except Exception as e2:
-                    logger.warning(f"[EMBEDDING] SiliconFlow也失败({e2})，回退到ChromaDB默认embedding")
-                    self.embedding_fn = None
-                    self._embedding_name = "chromadb-default(fallback)"
+                logger.warning(f"[EMBEDDING] 本地模型加载失败({e})，回退到SiliconFlow")
+                sf_key = os.getenv('SILICONFLOW_API_KEY', '')
+                self.embedding_fn = SiliconFlowEmbeddingFunction(api_key=sf_key)
+                self._embedding_name = "siliconflow(BAAI/bge-large-zh-v1.5)"
+                logger.info("[EMBEDDING] SiliconFlow embedding 就绪（1024维，中文优化）")
         else:
-            self.embedding_fn = None  # 使用 ChromaDB 默认 embedding
-            self._embedding_name = "chromadb-default"
+            # 未知模式，强制使用 SiliconFlow（不允许 384 维 ChromaDB 默认）
+            logger.warning(f"[EMBEDDING] 未知 EMBEDDING_MODE='{EMBEDDING_MODE}'，强制使用 SiliconFlow 1024维")
+            sf_key = os.getenv('SILICONFLOW_API_KEY', '')
+            self.embedding_fn = SiliconFlowEmbeddingFunction(api_key=sf_key)
+            self._embedding_name = "siliconflow(BAAI/bge-large-zh-v1.5)"
+
+        # 最终保底：如果 embedding_fn 仍为 None，强制 SiliconFlow
+        if self.embedding_fn is None:
+            sf_key = os.getenv('SILICONFLOW_API_KEY', '')
+            self.embedding_fn = SiliconFlowEmbeddingFunction(api_key=sf_key)
+            self._embedding_name = "siliconflow(BAAI/bge-large-zh-v1.5)"
+            logger.warning("[EMBEDDING] embedding_fn 为 None，强制使用 SiliconFlow 1024维")
 
     def _get_embedding_dim(self) -> int:
         """探测当前 embedding function 的输出维度"""
         if self.embedding_fn is None:
-            return 384  # ChromaDB 默认维度
+            raise RuntimeError("[VECTOR] embedding_fn 不能为 None（强制 1024 维 SiliconFlow）")
         try:
             result = self.embedding_fn(["探测维度"])
             if result and len(result) > 0:
@@ -236,12 +241,16 @@ class VectorKnowledgeBase:
         # 根据 embedding 类型返回已知默认值
         if hasattr(self.embedding_fn, '_dim'):
             return self.embedding_fn._dim
-        return 384
+        return 1024
 
     def _rebuild_collection_if_dim_mismatch(self, collection_name: str, description: str) -> Any:
         """
         检查集合的 embedding 维度是否与当前 embedding function 匹配。
-        如果不匹配，删除旧集合并重建空集合。
+        
+        策略：
+        - articles 集合：维度不匹配时重建（因为有源文件可以重新索引）
+        - learned/corrections/antipatterns/patches/personal：维度不匹配时保留数据，
+          但标记为「维度过期」不参与搜索。这些集合没有可靠的重建源。
         """
         import chromadb
         try:
@@ -263,6 +272,8 @@ class VectorKnowledgeBase:
                 except Exception as e:
                     logger.debug(f"[VECTOR] 获取集合 '{collection_name}' 维度时出错: {e}")
             if current_dim > 0 and stored_dim > 0 and stored_dim != current_dim:
+                # articles 集合可以安全重建（有源文件）
+                if collection_name == "articles":
                     logger.warning(
                         f"[VECTOR] 集合 '{collection_name}' 维度不匹配 "
                         f"(存储={stored_dim}, 当前={current_dim})，将删除旧数据重建"
@@ -273,9 +284,20 @@ class VectorKnowledgeBase:
                         col_kwargs["embedding_function"] = self.embedding_fn
                     return self.client.get_or_create_collection(
                         name=collection_name,
-                        metadata={"description": description},
+                        metadata={"description": description, "embedding_dim": current_dim},
                         **col_kwargs
                     )
+                else:
+                    # 非源文件集合：保留数据，标记维度过期，不删除
+                    self._dim_stale_collections.add(collection_name)
+                    logger.error(
+                        f"[VECTOR] 集合 '{collection_name}' 维度不匹配 "
+                        f"(存储={stored_dim}, 当前={current_dim})，"
+                        f"保留 {count} 条旧数据。这些数据将不参与向量搜索。"
+                        f"如需重建，请手动调用 clear 方法。"
+                    )
+                    # 返回 None 表示「不要覆盖」，让正常路径的 get_or_create 处理
+                    return None
         except Exception as e:
             logger.debug(f"[VECTOR] 检查集合 '{collection_name}' 维度时出错: {e}")
         return None
@@ -477,30 +499,24 @@ class VectorKnowledgeBase:
             logger.warning("[VECTOR] 没有索引到任何文档")
             return diag
 
-        # 清空旧索引并重建
-        try:
-            # 删除旧集合再重新创建，确保干净重建
-            self.client.delete_collection("articles")
-        except Exception as e:
-            logger.warning(f"[VECTOR] 清空 articles 集合时出错（可能为空）: {e}")
-        
-        # 重新获取 collection 引用（确保是删除后的新实例）
-        self.articles_collection = self.client.get_or_create_collection(
-            name="articles",
-            metadata={"description": "几何论70篇文章静态知识库"},
-            embedding_function=self.embedding_fn
-        )
-
-        # 批量插入（ChromaDB 有批量大小限制，每批500条）
+        # 安全重建策略：
+        # 1. 先用第一批数据测试 embedding 是否可用
+        # 2. 测试通过后才删除旧集合
+        # 3. 如果中途失败，记录错误，旧集合已被删但至少日志中有记录
         batch_size = 500
-        ids = []
-        documents = []
-        metadatas = []
-        for i, chunk in enumerate(all_chunks):
-            chunk_id = f"art_{chunk['article_id']}_{chunk['start']}_{chunk['end']}"
-            ids.append(chunk_id)
-            documents.append(chunk['text'])
-            metadatas.append({
+        failed_batches = 0
+        success_chunks = 0
+
+        # 构建所有 chunk 数据
+        all_ids = []
+        all_documents = []
+        all_metadatas = []
+        for chunk in all_chunks:
+            fname_hash = hashlib.md5(chunk['fname'].encode()).hexdigest()[:6]
+            chunk_id = f"art_{chunk['article_id']}_{fname_hash}_{chunk['start']}_{chunk['end']}"
+            all_ids.append(chunk_id)
+            all_documents.append(chunk['text'])
+            all_metadatas.append({
                 "article_id": chunk['article_id'],
                 "fname": chunk['fname'],
                 "start": chunk['start'],
@@ -508,27 +524,41 @@ class VectorKnowledgeBase:
                 "source": "articles"
             })
 
-            if len(ids) >= batch_size:
-                try:
-                    self.articles_collection.add(
-                        ids=ids, documents=documents, metadatas=metadatas
-                    )
-                except Exception as e:
-                    diag["errors"].append(f"批量插入失败: {e}")
-                    logger.error(f"[VECTOR] 批量插入 articles 失败: {e}")
-                ids = []
-                documents = []
-                metadatas = []
+        # 预检查：用第一批测试 embedding 可用性
+        try:
+            self.embedding_fn(all_documents[:1])
+        except Exception as e:
+            diag["errors"].append(f"Embedding 预检查失败（旧索引保留）: {e}")
+            logger.error(f"[VECTOR] Embedding 预检查失败，放弃重建: {e}")
+            return diag
+        logger.info(f"[VECTOR] Embedding 预检查通过，开始重建索引 ({len(all_chunks)} 块)")
 
-        # 插入剩余的
-        if ids:
+        # 删除旧集合
+        try:
+            self.client.delete_collection("articles")
+        except Exception as e:
+            logger.warning(f"[VECTOR] 清空 articles 集合时出错（可能为空）: {e}")
+
+        self.articles_collection = self.client.get_or_create_collection(
+            name="articles",
+            metadata={"description": "几何论70篇文章静态知识库"},
+            embedding_function=self.embedding_fn
+        )
+
+        # 批量插入
+        for batch_start in range(0, len(all_ids), batch_size):
+            batch_ids = all_ids[batch_start:batch_start + batch_size]
+            batch_docs = all_documents[batch_start:batch_start + batch_size]
+            batch_meta = all_metadatas[batch_start:batch_start + batch_size]
             try:
                 self.articles_collection.add(
-                    ids=ids, documents=documents, metadatas=metadatas
+                    ids=batch_ids, documents=batch_docs, metadatas=batch_meta
                 )
+                success_chunks += len(batch_ids)
             except Exception as e:
-                diag["errors"].append(f"最后批次插入失败: {e}")
-                logger.error(f"[VECTOR] 最后批次插入 articles 失败: {e}")
+                failed_batches += 1
+                diag["errors"].append(f"批量插入失败 (批次{batch_start//batch_size+1}): {e}")
+                logger.error(f"[VECTOR] 批量插入失败 (批次{batch_start//batch_size+1}): {e}")
 
         self._articles_count = self.articles_collection.count()
         diag["total_chunks"] = self._articles_count
@@ -636,7 +666,7 @@ class VectorKnowledgeBase:
         # 从 learned 集合检索（始终参与搜索，但数量限制为 top_k//3）
         try:
             n_learned = min(top_k // 3, self.learned_count) if self.learned_count > 0 else 0
-            if n_learned > 0:
+            if n_learned > 0 and 'learned' not in self._dim_stale_collections:
                 learned_results = self.learned_collection.query(
                     query_texts=[query],
                     n_results=n_learned
@@ -693,6 +723,8 @@ class VectorKnowledgeBase:
         """
         if not self._initialized or not self.corrections_collection:
             return []
+        if 'corrections' in self._dim_stale_collections:
+            return []
         try:
             n = min(top_k, self.corrections_count) if self.corrections_count > 0 else 0
             if n == 0:
@@ -722,6 +754,8 @@ class VectorKnowledgeBase:
         """
         if not self._initialized or not self.antipatterns_collection:
             return []
+        if 'antipatterns' in self._dim_stale_collections:
+            return []
         try:
             n = min(top_k, self.antipatterns_count) if self.antipatterns_count > 0 else 0
             if n == 0:
@@ -750,6 +784,8 @@ class VectorKnowledgeBase:
         v10 新增：从 patches 集合检索与当前查询相关的知识补丁。
         """
         if not self._initialized or not self.patches_collection:
+            return []
+        if 'patches' in self._dim_stale_collections:
             return []
         try:
             n = min(top_k, self.patches_count) if self.patches_count > 0 else 0
@@ -1323,20 +1359,13 @@ class VectorKnowledgeBase:
         return stats
 
     def _get_embeddings(self, texts: List[str]) -> List[List[float]]:
-        """获取文本的 embedding 向量，根据配置使用自定义或 ChromaDB 默认 embedding"""
+        """获取文本的 embedding 向量（强制 SiliconFlow 1024 维）"""
         if not texts:
             return []
         if self.embedding_fn is not None:
             return self.embedding_fn(texts)
-        # 使用 ChromaDB 内置 embedding（通过临时 collection 的 _embed 方法）
-        try:
-            temp_col = self.client.get_or_create_collection(name="_temp_embed")
-            result = temp_col._embed(input=texts, is_query=False)
-            return result
-        except Exception:
-            # 最后降级：返回零向量
-            dim = 384  # ChromaDB 默认维度
-            return [[0.0] * dim for _ in texts]
+        # 不应到达此处（__init__ 已强制 embedding_fn 非 None）
+        raise RuntimeError("[VECTOR] embedding_fn 为 None，无法生成向量")
 
     def novelty_score(self, query: str, history_queries: List[str]) -> float:
         """
@@ -1428,6 +1457,7 @@ class VectorKnowledgeBase:
             "patches_count": self.patches_count,
             "total_docs": self.total_docs,
             "embedding_model": GAI_EMBEDDING_MODEL,
+            "dim_stale_collections": list(self._dim_stale_collections) if self._dim_stale_collections else [],
         }
 
 
