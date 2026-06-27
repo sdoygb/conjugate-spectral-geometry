@@ -246,11 +246,7 @@ class VectorKnowledgeBase:
     def _rebuild_collection_if_dim_mismatch(self, collection_name: str, description: str) -> Any:
         """
         检查集合的 embedding 维度是否与当前 embedding function 匹配。
-        
-        策略：
-        - articles 集合：维度不匹配时重建（因为有源文件可以重新索引）
-        - learned/corrections/antipatterns/patches/personal：维度不匹配时保留数据，
-          但标记为「维度过期」不参与搜索。这些集合没有可靠的重建源。
+        维度不匹配时一律删除重建（所有集合统一 1024 维），不再保留旧数据。
         """
         import chromadb
         try:
@@ -258,10 +254,8 @@ class VectorKnowledgeBase:
             count = existing.count()
             if count == 0:
                 return existing
-            # 尝试用当前 embedding function 生成一个测试向量来检测维度
             test_emb = self.embedding_fn(["维度检测测试"])
             current_dim = len(test_emb[0]) if test_emb else 0
-            # 从集合中获取一条记录的维度（peek 不支持 include，用 get 代替）
             stored_dim = 0
             if count > 0:
                 try:
@@ -272,32 +266,19 @@ class VectorKnowledgeBase:
                 except Exception as e:
                     logger.debug(f"[VECTOR] 获取集合 '{collection_name}' 维度时出错: {e}")
             if current_dim > 0 and stored_dim > 0 and stored_dim != current_dim:
-                # articles 集合可以安全重建（有源文件）
-                if collection_name == "articles":
-                    logger.warning(
-                        f"[VECTOR] 集合 '{collection_name}' 维度不匹配 "
-                        f"(存储={stored_dim}, 当前={current_dim})，将删除旧数据重建"
-                    )
-                    self.client.delete_collection(collection_name)
-                    col_kwargs = {}
-                    if self.embedding_fn is not None:
-                        col_kwargs["embedding_function"] = self.embedding_fn
-                    return self.client.get_or_create_collection(
-                        name=collection_name,
-                        metadata={"description": description, "embedding_dim": current_dim},
-                        **col_kwargs
-                    )
-                else:
-                    # 非源文件集合：保留数据，标记维度过期，不删除
-                    self._dim_stale_collections.add(collection_name)
-                    logger.error(
-                        f"[VECTOR] 集合 '{collection_name}' 维度不匹配 "
-                        f"(存储={stored_dim}, 当前={current_dim})，"
-                        f"保留 {count} 条旧数据。这些数据将不参与向量搜索。"
-                        f"如需重建，请手动调用 clear 方法。"
-                    )
-                    # 返回 None 表示「不要覆盖」，让正常路径的 get_or_create 处理
-                    return None
+                logger.warning(
+                    f"[VECTOR] 集合 '{collection_name}' 维度不匹配 "
+                    f"(存储={stored_dim}, 当前={current_dim})，删除旧数据重建（统一1024维）"
+                )
+                self.client.delete_collection(collection_name)
+                col_kwargs = {}
+                if self.embedding_fn is not None:
+                    col_kwargs["embedding_function"] = self.embedding_fn
+                return self.client.get_or_create_collection(
+                    name=collection_name,
+                    metadata={"description": description, "embedding_dim": current_dim},
+                    **col_kwargs
+                )
         except Exception as e:
             logger.debug(f"[VECTOR] 检查集合 '{collection_name}' 维度时出错: {e}")
         return None
@@ -634,16 +615,21 @@ class VectorKnowledgeBase:
         从 articles 集合检索，返回相关文本。
         learned 集合始终参与搜索，可通过 include_personal 附加个人记忆。
         每个结果包含 text, source, metadata 等信息。
-        排序规则：articles 优先（按距离），然后 learned（按距离），最后 personal（按距离）。
+        增加了 article_id 精确匹配：当向量搜索找不到或用户询问特定编号时，
+        尝试按 article_id 或 fname 精确匹配。
         """
         if not self._initialized:
             return []
 
         results = []
 
-        # 从 articles 集合检索
+        # 检测是否在询问特定文章编号
+        id_pattern = re.search(r'(\d+[\d\.]*)', query)
+        target_id = id_pattern.group(1) if id_pattern else None
+
+        # 从 articles 集合检索（扩大召回范围，避免只取 top_k*2//3=10 条）
         try:
-            n_articles = min(top_k * 2 // 3, self.articles_count) if self.articles_count > 0 else 0
+            n_articles = min(top_k * 2, self.articles_count) if self.articles_count > 0 else 0
             if n_articles > 0:
                 art_results = self.articles_collection.query(
                     query_texts=[query],
@@ -663,7 +649,37 @@ class VectorKnowledgeBase:
         except Exception as e:
             logger.error(f"[VECTOR] articles 检索失败: {e}")
 
-        # 从 learned 集合检索（始终参与搜索，但数量限制为 top_k//3）
+        # 当向量搜索没结果，或用户明显在找特定编号时，尝试精确匹配
+        if target_id and self.articles_collection and self.articles_count > 0:
+            try:
+                # 按 article_id 模糊匹配（ChromaDB $contains 操作符）
+                match_results = self.articles_collection.get(
+                    where={"article_id": {"$contains": target_id}}
+                )
+                if match_results and match_results['documents']:
+                    existing_fnames = {r['metadata'].get('fname') for r in results}
+                    for i, doc in enumerate(match_results['documents']):
+                        meta = match_results['metadatas'][i] if match_results['metadatas'] else {}
+                        fname = meta.get('fname', '')
+                        if fname not in existing_fnames:
+                            results.append({
+                                'text': doc,
+                                'source': 'articles',
+                                'metadata': meta,
+                                'distance': 0.0,
+                                'label': f"[精确匹配] 文章库: {fname} ({meta.get('article_id', '?')})"
+                            })
+                            existing_fnames.add(fname)
+            except Exception as e:
+                logger.debug(f"[VECTOR] article_id 精确匹配失败: {e}")
+
+        # 排序：精确匹配排前面，向量结果按距离排序
+        def _sort_key(r):
+            is_exact = 0 if r.get('label', '').startswith('[精确匹配]') else 1
+            return (is_exact, r.get('distance', 999.0))
+        results.sort(key=_sort_key)
+
+        # 从 learned 集合检索
         try:
             n_learned = min(top_k // 3, self.learned_count) if self.learned_count > 0 else 0
             if n_learned > 0 and 'learned' not in self._dim_stale_collections:
@@ -685,13 +701,7 @@ class VectorKnowledgeBase:
         except Exception as e:
             logger.error(f"[VECTOR] learned 检索失败: {e}")
 
-        # 分组排序：articles 优先（按距离），然后 learned（按距离），最后 personal（按距离）
-        def _sort_key(r):
-            source_order = {'articles': 0, 'learned': 1, 'personal': 2}
-            return (source_order.get(r.get('source', ''), 99), r.get('distance', 999.0))
-        results.sort(key=_sort_key)
-
-        # personal 集合单独追加（不抢占文章排名）
+        # personal 集合单独追加
         if include_personal:
             try:
                 if hasattr(self, 'personal_collection') and self.personal_collection:
@@ -715,7 +725,8 @@ class VectorKnowledgeBase:
             except Exception as e:
                 logger.error(f"[VECTOR] personal 检索失败: {e}")
 
-        return results[:top_k]
+        return results[:top_k * 2]
+
 
     def search_corrections(self, query: str, top_k: int = 5) -> List[Dict[str, Any]]:
         """

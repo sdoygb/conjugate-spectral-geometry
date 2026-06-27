@@ -7,6 +7,7 @@ Geometry AI Server 一键启动脚本
 import subprocess
 import sys
 import os
+import shutil
 
 # 自动加载 .env 文件（如果存在）
 _script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -147,7 +148,6 @@ def start_server():
         # 运行目录和源目录不同，需要同步文件
         py_files = [f for f in os.listdir(source_dir) if f.endswith('.py') and f != 'auto_teach.py']
         if os.path.exists(run_dir):
-            import shutil
             synced = 0
             for f in py_files:
                 src = os.path.join(source_dir, f)

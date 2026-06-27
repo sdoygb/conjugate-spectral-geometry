@@ -1,4 +1,9 @@
 """
+
+
+
+
+
 server.py - 几何论AI调度中间层主入口
 从 geometry_ai_server_v5_12.py 提取的 Flask 路由和启动代码
 """
@@ -1144,8 +1149,19 @@ def chat_completions():
             else:
                 search_query = clean_query[:100]
         results = vector_kb.search(search_query, top_k=MAX_CHUNKS_PER_QUERY)
+        article_fnames = set()
         if results:
             articles_content, loaded_chunks = vector_kb.get_formatted_results(results)
+            # 提取所有检索到的文件名列表（用于让AI知道哪些文章存在）
+            for r in results:
+                meta = r.get('metadata', {})
+                fname = meta.get('fname', '')
+                if fname:
+                    article_fnames.add(fname)
+            # 在参考资料顶部插入文件名索引
+            if article_fnames:
+                fname_list = '\n'.join(sorted(article_fnames))
+                articles_content = f"【本次检索命中以下文章】\n{fname_list}\n\n{articles_content}"
         if not articles_content:
             logger.info(f"[VECTOR] 检索无结果: query='{clean_query[:80]}...', search='{search_query[:80]}', top_k={MAX_CHUNKS_PER_QUERY}, total_docs={vector_kb.total_docs}")
     index_empty = not articles_content
@@ -1493,7 +1509,9 @@ def chat_completions():
                 response_text = ''.join(collected)
                 # 在后台线程执行 finalize，不阻塞 SSE 响应
                 import threading
-                _ctx = (session_id, clean_query, response_text, eta_before, articles_content, loaded_chunks)
+                _ctx_usage = None
+                _ctx_finish_reason = "stop"
+                _ctx = (session_id, clean_query, response_text, eta_before, articles_content, loaded_chunks, _ctx_usage, data.get('model', None) if isinstance(data, dict) else None, _ctx_finish_reason)
                 threading.Thread(target=_finalize_turn, args=_ctx, daemon=True).start()
             except Exception as e:
                 logger.error(f"[CHAT-STREAM] 生成器异常: {e}")
