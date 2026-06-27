@@ -32,7 +32,7 @@ from config import (logger, GAI_API_KEY, GAI_BASE_URL, GAI_MODEL, GAI_MODEL_LITE
                     CHROMA_DB_DIR, CHROMADB_AVAILABLE, EMBEDDING_MODE, LOCAL_EMBEDDING_MODEL,
                     CHUNK_SIZE, CHUNK_OVERLAP, MAX_CHUNKS_PER_QUERY, PERSONAL_DB_PATH,
                     LEARN_COHERENCE_THRESHOLD, LEARN_MIN_LENGTH, GEOMETRY_CONSTANTS,
-                    EXTRA_MODELS)
+                    EXTRA_MODELS, get_provider_for_model, get_available_models)
 from version import VERSION, BUILD_DATE
 from knowledge import VectorKnowledgeBase, APIEmbeddingFunction, LocalEmbeddingFunction
 from models import (personal_db, _save_personal_db, _get_personal_db_summary, LivingInfoField,
@@ -778,7 +778,8 @@ def write_file(filename):
 @app.route('/v1/models', methods=['GET'])
 def list_models():
     def _model_entry(mid):
-        return {"id": mid, "object": "model", "created": 1700000000 + hash(mid) % 86400, "owned_by": "deepseek" if "deepseek" in mid.lower() else "system"}
+        owner = "deepseek" if "deepseek" in mid.lower() else "openai" if "gpt" in mid.lower() else "system"
+        return {"id": mid, "object": "model", "created": 1700000000 + hash(mid) % 86400, "owned_by": owner}
     _models = [
         _model_entry(GAI_MODEL),
         _model_entry(GAI_MODEL_LITE),
@@ -1509,7 +1510,10 @@ def chat_completions():
             }
         )
     else:
-        client = openai.OpenAI(api_key=GAI_API_KEY, base_url=GAI_BASE_URL)
+        # 多模型路由
+        req_model = request_model or GAI_MODEL
+        base_url, api_key = get_provider_for_model(req_model)
+        client = openai.OpenAI(api_key=api_key, base_url=base_url)
         try:
             # 质量门控 - 如果AI回复偏离几何论，自动重试
             # v10 增强：反模式检测触发重试时，在prompt中注入反模式警告

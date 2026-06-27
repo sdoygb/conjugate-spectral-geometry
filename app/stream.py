@@ -13,7 +13,7 @@ from typing import List, Dict, Any
 
 import openai
 
-from config import GAI_API_KEY, GAI_BASE_URL, GAI_MODEL, logger
+from config import GAI_API_KEY, GAI_BASE_URL, GAI_MODEL, logger, get_provider_for_model
 from tools import execute_tool_call
 
 # API 调用重试配置
@@ -107,7 +107,10 @@ def parse_dsml_tool_calls(text: str) -> list:
 
 def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: List[Dict],
                     api_params: Dict[str, Any], vector_kb=None) -> Any:
-    client = openai.OpenAI(api_key=GAI_API_KEY, base_url=GAI_BASE_URL)
+    # 多模型路由：根据请求中的 model 字段选择提供商
+    request_model = api_params.get("model", GAI_MODEL)
+    base_url, api_key = get_provider_for_model(request_model)
+    client = openai.OpenAI(api_key=api_key, base_url=base_url)
     max_tool_rounds = 15
     seen_calls = set()  # 防止重复调用
     _resp_id = f"chatcmpl-{hashlib.md5(str(time.time()).encode()).hexdigest()[:12]}"

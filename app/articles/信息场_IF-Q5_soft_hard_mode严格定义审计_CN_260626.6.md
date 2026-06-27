@@ -17,9 +17,9 @@
 2. 信息场传播中的快慢分量；
 3. 分辨率结构中的粗/细尺度模态；
 4. 慢化因子
-   \[
-   s=\left(\frac{\lambda_2}{\lambda_1}\right)^{1/3}
-   \]
+   $$
+s=\left(\frac{\lambda_2}{\lambda_1}\right)^{1/3}
+   $$
    的几何来源。
 
 但到目前为止，这两个术语仍存在三种可能混用：
@@ -41,17 +41,17 @@
 前序审计已形成如下工作结构：
 
 - 信息场基本变量取为定义在约束几何背景上的标量场
-  \[
-  \Phi_I
-  \]
+  $$
+\Phi_I
+  $$
 - 统一方程优先取抛物型热方程
-  \[
-  \partial_t\Phi_I = \frac{1}{s}\,\mathcal D_I\Phi_I
-  \]
+  $$
+\partial_t\Phi_I = \frac{1}{s}\,\mathcal D_I\Phi_I
+  $$
 - 静态问题由谱方程给出
-  \[
-  \mathcal D_I \psi_n = -\mu_n \psi_n
-  \]
+  $$
+\mathcal D_I \psi_n = -\mu_n \psi_n
+  $$
 - 局部分辨率近似可退化为谐振子问题。
 
 因此，soft/hard mode 的严格定义应首先兼容谱分解，而不应先从传播直觉出发。
@@ -61,14 +61,13 @@
 ### 2.2 有效谱背景
 
 当前材料中已锁定 effective Hessian 的两条特征值：
-\[
+$$
 \lambda_1^{\rm eff}=391.05,\qquad \lambda_2^{\rm eff}=59324.3
-\]
+$$
 并已出现慢化指标
-\[
+$$
 s=\left(\frac{\lambda_2}{\lambda_1}\right)^{1/3}.
-\]
-
+$$
 这说明“soft/hard”至少与谱刚性差异直接相关。
 
 ---
@@ -83,10 +82,10 @@ s=\left(\frac{\lambda_2}{\lambda_1}\right)^{1/3}.
 - 较大本征值对应 hard。
 
 即若
-\[
+$$
 \lambda_a < \lambda_b,
-\]
-则称与 \(\lambda_a\) 关联的模态比与 \(\lambda_b\) 关联的模态更 soft。
+$$
+则称与 $\lambda_a$ 关联的模态比与 $\lambda_b$ 关联的模态更 soft。
 
 #### 优点
 1. 与 effective Hessian 直接相连；
@@ -103,9 +102,9 @@ s=\left(\frac{\lambda_2}{\lambda_1}\right)^{1/3}.
 ### 3.2 候选定义 B：按传播/弛豫时间尺度定义
 
 若模态展开满足
-\[
+$$
 a_n(t)=a_n(0)e^{-\mu_n t/s},
-\]
+$$
 则可按衰减快慢定义：
 
 - 衰减慢的模态为 soft；
@@ -117,8 +116,8 @@ a_n(t)=a_n(0)e^{-\mu_n t/s},
 
 #### 缺点
 1. 它依赖已选定的传播方程；
-2. soft/hard 会随算子 \(\mathcal D_I\) 的定义改变；
-3. 若局部讨论基于 Hessian，而全局讨论基于 \(\mathcal D_I\) 谱，则可能出现定义错位。
+2. soft/hard 会随算子 $\mathcal D_I$ 的定义改变；
+3. 若局部讨论基于 Hessian，而全局讨论基于 $\mathcal D_I$ 谱，则可能出现定义错位。
 
 因此，此定义更适合做派生解释，而不适合作为主定义。
 
@@ -154,24 +153,22 @@ a_n(t)=a_n(0)e^{-\mu_n t/s},
 - 与较小本征值对应的模态称为 **soft mode**；
 - 与较大本征值对应的模态称为 **hard mode**。
 
-若谱参数记为 \(\sigma\)，则
-\[
+若谱参数记为 $\sigma$，则
+$$
 \sigma_a<\sigma_b
 \quad\Rightarrow\quad
 \text{mode}(\sigma_a)\text{ is softer than mode}(\sigma_b).
-\]
-
+$$
 在当前局部二模近似中，若
-\[
+$$
 \lambda_1^{\rm eff}<\lambda_2^{\rm eff},
-\]
+$$
 则：
-\[
+$$
 \lambda_1^{\rm eff}\text{ 对应 soft mode},
 \qquad
 \lambda_2^{\rm eff}\text{ 对应 hard mode}.
-\]
-
+$$
 ---
 
 ## 5. 派生解释
@@ -205,10 +202,10 @@ a_n(t)=a_n(0)e^{-\mu_n t/s},
 ### 6.1 与最小分辨角公式的兼容性
 
 在 IF-Q3 中，最小分辨角写为
-\[
+$$
 \Delta \xi_{\min}=2(\lambda_2^{\mathrm{eff}})^{-1/4}.
-\]
-这里使用较大的 \(\lambda_2^{\rm eff}\) 作为控制尺度，说明分辨率阈值主要受 hard mode 控制。
+$$
+这里使用较大的 $\lambda_2^{\rm eff}$ 作为控制尺度，说明分辨率阈值主要受 hard mode 控制。
 
 因此：
 
@@ -222,10 +219,10 @@ a_n(t)=a_n(0)e^{-\mu_n t/s},
 ### 6.2 与慢化因子的兼容性
 
 在 IF-Q4 中，慢化因子写为
-\[
+$$
 s=\left(\frac{\lambda_2}{\lambda_1}\right)^{1/3}.
-\]
-若 \(\lambda_2\) 为 hard，\(\lambda_1\) 为 soft，则该式正表示硬/软刚性差异诱导的整体时标放大。
+$$
+若 $\lambda_2$ 为 hard，$\lambda_1$ 为 soft，则该式正表示硬/软刚性差异诱导的整体时标放大。
 
 因此，slowing 不是在定义 soft/hard，而是在利用 soft/hard 的谱差异构造动力学规则。
 
@@ -240,11 +237,11 @@ s=\left(\frac{\lambda_2}{\lambda_1}\right)^{1/3}.
 当前 soft/hard 的最稳定义来自谱大小，但谱对象可能有两类：
 
 1. 局部 effective Hessian 的本征值；
-2. 全局信息场算子 \(\mathcal D_I\) 的本征值。
+2. 全局信息场算子 $\mathcal D_I$ 的本征值。
 
 现阶段最安全表述应为：
 
-> 在局部分析中，soft/hard 先按 effective Hessian 本征值定义；在全局分析中，应按 \(\mathcal D_I\) 的模态谱定义。若两者需要直接对应，必须额外给出桥接规则。
+> 在局部分析中，soft/hard 先按 effective Hessian 本征值定义；在全局分析中，应按 $\mathcal D_I$ 的模态谱定义。若两者需要直接对应，必须额外给出桥接规则。
 
 这一步尚未完全完成，因此不能混写。
 
@@ -252,7 +249,7 @@ s=\left(\frac{\lambda_2}{\lambda_1}\right)^{1/3}.
 
 ### 7.2 二模近似与多模谱的推广
 
-当前大量语言来自二模近似 \((\lambda_1,\lambda_2)\)。但严格说，多模系统中 soft/hard 更适合视为一个顺序谱带，而不是只有两类。
+当前大量语言来自二模近似 $(\lambda_1,\lambda_2)$。但严格说，多模系统中 soft/hard 更适合视为一个顺序谱带，而不是只有两类。
 
 因此更严谨的说法是：
 

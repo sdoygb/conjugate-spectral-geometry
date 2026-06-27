@@ -72,6 +72,64 @@ GAI_EMBEDDING_MODEL = os.getenv('GAI_EMBEDDING_MODEL', 'deepseek-v4-flash')
 # 例如: EXTRA_MODELS=deepseek-v4-lite,deepseek-coder,claude-3-haiku
 EXTRA_MODELS = [m.strip() for m in os.getenv('EXTRA_MODELS', '').split(',') if m.strip()]
 
+# ==================== 多模型提供商路由 ====================
+# MODEL_PROVIDERS: 根据 model 名称前缀自动选择 API 提供商
+# 格式: "模型名前缀": {"base_url": "...", "api_key": "环境变量名或直接key"}
+# 匹配规则: 请求中的 model 字段包含某个 key 的前缀，就路由到对应提供商
+# 如果没有任何匹配，使用默认的 GAI_BASE_URL / GAI_API_KEY
+
+def _build_model_providers():
+    """从环境变量构建多提供商路由表"""
+    providers = {}
+    # 环境变量格式: PROVIDER_gpt=BASE_URL,API_KEY (用逗号分隔base_url和key)
+    # 例如: PROVIDER_gpt=https://oa.api2d.net/v1,fk245651-xxx
+    #       PROVIDER_claude=https://api.anthropic.com,sk-ant-xxx
+    prefix = 'PROVIDER_'
+    for key, val in os.environ.items():
+        if key.startswith(prefix):
+            model_prefix = key[len(prefix):].lower()  # 如 "gpt", "claude", "deepseek"
+            parts = val.split(',', 1)
+            if len(parts) == 2:
+                base_url = parts[0].strip()
+                api_key = parts[1].strip()
+                providers[model_prefix] = {"base_url": base_url, "api_key": api_key}
+            elif len(parts) == 1:
+                # 只提供了 base_url，key 用默认的
+                providers[model_prefix] = {"base_url": parts[0].strip(), "api_key": ""}
+    return providers
+
+MODEL_PROVIDERS = _build_model_providers()
+
+def get_provider_for_model(model_name: str) -> tuple:
+    """
+    根据 model 名称返回对应的 (base_url, api_key)。
+    如果没有匹配的提供商，返回默认的 (GAI_BASE_URL, GAI_API_KEY)。
+    """
+    model_lower = model_name.lower()
+    for prefix, config in MODEL_PROVIDERS.items():
+        if prefix and model_lower.startswith(prefix):
+            base_url = config["base_url"]
+            api_key = config["api_key"] or GAI_API_KEY
+            return base_url, api_key
+    return GAI_BASE_URL, GAI_API_KEY
+
+def get_available_models() -> list:
+    """返回所有可用模型的列表（用于 /v1/models 和 Open WebUI 发现）"""
+    models = [GAI_MODEL]
+    if GAI_MODEL_LITE not in models:
+        models.append(GAI_MODEL_LITE)
+    if GAI_MODEL_VISION not in models:
+        models.append(GAI_MODEL_VISION)
+    for m in EXTRA_MODELS:
+        if m not in models:
+            models.append(m)
+    # 从提供商配置中提取模型名
+    for prefix in MODEL_PROVIDERS:
+        # 为每个提供商添加一个通用模型名
+        if prefix not in [m.split('-')[0].split('.')[0] for m in models]:
+            pass  # 不自动添加，让用户在 EXTRA_MODELS 中指定
+    return models
+
 # Embedding 模式：'local' 使用本地中文模型，'api' 使用 LLM API，'siliconflow' 使用 SiliconFlow API
 EMBEDDING_MODE = os.getenv('GAI_EMBEDDING_MODE', 'siliconflow')
 LOCAL_EMBEDDING_MODEL = os.getenv('GAI_LOCAL_EMBEDDING_MODEL', 'BAAI/bge-small-zh-v1.5')
