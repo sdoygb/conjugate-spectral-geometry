@@ -1148,7 +1148,41 @@ def chat_completions():
                 search_query = ' '.join(search_parts)
             else:
                 search_query = clean_query[:100]
-        results = vector_kb.search(search_query, top_k=MAX_CHUNKS_PER_QUERY)
+        # 多轮检索：三角度交叉搜索（原始查询 + 数学工具角度 + 文章编号角度）
+            search_terms = _re2.findall(r'[\u4e00-\u9fff]{2,6}', clean_query) if '_re2' in dir() else []
+            search_numbers = _re2.findall(r'\d+(?:\.\d+)*', clean_query) if '_re2' in dir() else []
+            results_main = vector_kb.search(search_query, top_k=8)
+            if search_terms:
+                results_math = vector_kb.search(
+                    '公理 定理 引理 推导 证明 ' + ' '.join(search_terms[:5]),
+                    top_k=8
+                )
+            else:
+                results_math = []
+            if search_numbers:
+                results_nums = vector_kb.search(
+                    '文章编号 ' + ' '.join(search_numbers[:3]),
+                    top_k=6
+                )
+            else:
+                results_nums = []
+            # 合并去重（按id去重，保留距离最近的）
+            seen_ids = set()
+            merged = []
+            for r in (results_main or []) + (results_math or []) + (results_nums or []):
+                rid = r.get('id', '')
+                if rid and rid not in seen_ids:
+                    seen_ids.add(rid)
+                    merged.append(r)
+            merged.sort(key=lambda x: x.get('distance', 1.0))
+            results = merged[:MAX_CHUNKS_PER_QUERY]
+            logger.info(
+                f"[VECTOR-MULTI] 三角度检索: main={len(results_main or [])}, "
+                f"math={len(results_math or [])}, nums={len(results_nums or [])}, "
+                f"merge={len(results)}"
+            )
+        else:
+            results = []
         article_fnames = set()
         if results:
             articles_content, loaded_chunks = vector_kb.get_formatted_results(results)
