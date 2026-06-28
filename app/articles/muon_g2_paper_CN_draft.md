@@ -519,6 +519,5 @@ $$\boxed{\mathcal{N}_\Sigma = \frac{\int_{S^2} K_G dA}{\chi(S^2) \cdot \mathcal{
 
 ---
 
-*初稿日期：2025年7月*  
 *目标期刊：Physical Review D（首选）*  
 *字数：约 12000 字（含附录和参考文献）*
