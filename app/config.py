@@ -208,6 +208,9 @@ TEACH_ANTIPATTERN_SIMILARITY_THRESHOLD = float(os.getenv('TEACH_ANTIPATTERN_SIMI
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+# 对话记录 SQLite 数据库路径
+CONVERSATIONS_DB_PATH = os.path.join(PROJECT_ROOT, 'conversations.db')
+
 
 # ------------------------------------------------------------------
 # 几何论锁定常数（仅保留 70 篇文章中声明的常数）
