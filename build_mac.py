@@ -22,7 +22,7 @@ PY_FILES = [
 ]
 
 # 数据目录
-DATA_DIRS = ["articles", "chroma_db", "templates"]
+DATA_DIRS = ["articles", "templates"]
 
 # Python 依赖
 REQUIREMENTS = [
@@ -35,9 +35,12 @@ def copy_app_files():
     app_dir = BUILD_DIR / "app"
     app_dir.mkdir(parents=True, exist_ok=True)
 
+    # 源码在 app/ 子目录下
+    APP_SRC = PROJECT_ROOT / "app"
+
     print("[复制] Python 源码文件 -> build_mac/app/")
     for py_file in PY_FILES:
-        src = PROJECT_ROOT / py_file
+        src = APP_SRC / py_file
         dst = app_dir / py_file
         if src.exists():
             shutil.copy2(src, dst)
@@ -47,7 +50,7 @@ def copy_app_files():
 
     print("[复制] 数据目录 -> build_mac/app/")
     for data_dir in DATA_DIRS:
-        src = PROJECT_ROOT / data_dir
+        src = APP_SRC / data_dir
         dst = app_dir / data_dir
         if src.exists():
             shutil.copytree(src, dst, dirs_exist_ok=True)
@@ -56,7 +59,7 @@ def copy_app_files():
             print(f"  [跳过] {data_dir}/ (不存在)")
 
     # 复制配置文件
-    env_example = PROJECT_ROOT / ".env.example"
+    env_example = APP_SRC / ".env.example"
     if env_example.exists():
         shutil.copy2(env_example, app_dir / ".env.example")
         print("[复制] .env.example")
