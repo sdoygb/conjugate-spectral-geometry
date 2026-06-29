@@ -1499,7 +1499,7 @@ def chat_completions():
     # 仅当模型支持 function calling 时才注入工具定义
     # DeepSeek、OpenAI、Qwen、GLM 等主流模型均支持
     _model_lower = _selected_model.lower()
-    _supports_tools = any(p in _model_lower for p in ['deepseek', 'gpt', 'qwen', 'glm', 'claude', 'gemini', 'chatglm'])
+    _supports_tools = any(p in _model_lower for p in ['deepseek', 'gpt', 'qwen', 'glm', 'claude', 'gemini', 'chatglm', 'kimi', 'moonshot'])
     if _supports_tools:
         api_params["tools"] = ARTICLE_TOOLS
     else:
@@ -1606,6 +1606,34 @@ def chat_completions():
         try:
             # 质量门控 - 如果AI回复偏离几何论，自动重试
             # v10 增强：反模式检测触发重试时，在prompt中注入反模式警告
+            # 工具调用链（非流式）——处理 KIMI 等模型的 function calling
+            MAX_TOOL_CHAIN = 5
+            for _tc_round in range(MAX_TOOL_CHAIN):
+                resp = client.chat.completions.create(**api_params)
+                _tc_content = resp.choices[0].message.content or ""
+                # 检查是否有 tool_calls
+                if (not _tc_content or _tc_content == "") and hasattr(resp.choices[0].message, "tool_calls") and resp.choices[0].message.tool_calls:
+                    _tcs = resp.choices[0].message.tool_calls
+                    logger.info(f"[TOOL] 工具调用 #{_tc_round+1}: {len(_tcs)} 个")
+                    # 追加 assistant 消息含 tool_calls
+                    _asst = {"role": "assistant", "content": None, "tool_calls": []}
+                    for _tc in _tcs:
+                        _asst["tool_calls"].append({"id": _tc.id, "type": "function", "function": {"name": _tc.function.name, "arguments": _tc.function.arguments}})
+                    clean_messages.append(_asst)
+                    # 执行并追加工具结果
+                    for _tc in _tcs:
+                        try:
+                            _args = json.loads(_tc.function.arguments)
+                        except Exception:
+                            _args = {}
+                        _result = execute_tool_call(_tc.function.name, _args, vector_kb=vector_kb)
+                        clean_messages.append({"role": "tool", "tool_call_id": _tc.id, "content": str(_result)})
+                    # 更新 messages 重新请求
+                    api_params["messages"] = [{"role": "system", "content": system_prompt}] + clean_messages
+                else:
+                    # 正常回复，使用这个 response_text
+                    response_text = _tc_content
+                    break
             response_text = ""
             for attempt in range(1 + MAX_QUALITY_RETRIES):
                 if attempt > 0:
