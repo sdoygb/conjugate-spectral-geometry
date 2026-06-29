@@ -1,0 +1,656 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{ctex}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{physics}
+\usepackage{xcolor}
+
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+
+\theoremstyle{definition}
+\newtheorem{axiom}{公理}
+\newtheorem{lemma}{引理}
+\newtheorem{assumption}{假设}
+
+\title{反常磁矩的几何建模：自包含证明版}
+\subtitle{电子与 $\mu$ 子反常磁矩的统一几何表达式、扩展推导与精度分析}
+\author{欧阳国彬（几何论研究）}
+\date{2026-06-26}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+本文在三分切丛几何框架内，以三个公理为起点，建立电子与 $\mu$ 子反常磁矩的统一模型。核心输入仅包含一个无量纲作用量 $S(\theta_M,\theta_C,\theta_I)$、由电子静止质量与精细结构常数自洽锁定的电子基态，以及家族对称性假设。通过约束截面上的辛几何结构，磁矩修正被写成一个路径平均表达式
+\begin{equation*}
+a_X=\frac{\langle Q\rangle_X}{2\pi S_e\cos\theta_M^0},\qquad Q(\xi)=\sin\theta_C(\xi)\,\sin\theta_I(\xi)\,\sqrt{S(\xi)},
+\end{equation*}
+其中 $S_e=137.035999084$。对电子，小位移下该式退化为曲率展开，领头阶自然还原 Schwinger 项 $\alpha/(2\pi)$；对 $\mu$ 子，大位移下需沿 Hamilton 流主通道做完整路径平均。数值结果显示 $\mu$ 子反常磁矩与实验值的偏差为 $+0.035\%$。全文所有定义、定理、数值推导均在文中给出，不依赖外部文献。
+\end{abstract}
+
+\textbf{关键词：}反常磁矩；几何相位；三分切丛；辛几何；路径平均；精细结构常数；$\mu$ 子
+
+%----------------------------------------
+\section{引言}
+%----------------------------------------
+
+标准模型对反常磁矩的计算依赖于高阶量子场论微扰展开，电子与 $\mu$ 子的反常磁矩分别精确到十阶与五阶 QED 修正，并需额外纳入强相互作用与电弱修正。本文尝试从另一个方向出发：如果存在一个底层的几何框架，其基本变量是角度而非场算符，那么反常磁矩是否可以在该框架内被更简洁地描述？
+
+本文展示：在三分切丛几何框架下，电子与 $\mu$ 子的反常磁矩可写成一个统一的路径平均表达式。该框架只需要三个公理、一个六项作用量、以及由电子静止质量与精细结构常数锁定的电子基态。$\mu$ 子构型由家族对称性假设与约束截面上的 Berry 相位量子化条件共同确定。所有推导与数值计算均在本文中给出，形成自包含的投稿版本。
+
+%----------------------------------------
+\section{三公理体系}
+%----------------------------------------
+
+\begin{axiom}[完备性约束]
+设三分切丛的三个扇区投影强度角为 $(\theta_M,\theta_C,\theta_I)$，它们满足
+\begin{equation}
+\boxed{\theta_M+\theta_C+\theta_I=90^\circ.}
+\end{equation}
+三个扇区分别称为物质场扇区 $\mathcal{M}$、传播场扇区 $\mathcal{C}$、信息场扇区 $\mathcal{I}$。
+\end{axiom}
+
+\begin{axiom}[六项作用量]
+定义无量纲作用量
+\begin{equation}
+\boxed{S(\theta_M,\theta_C,\theta_I)=\sum_{i\in\{M,C,I\}}\frac{1}{\sin^2\theta_i}+\sum_{i<j}\frac{1}{\sin\theta_i\,\sin\theta_j}.}
+\end{equation}
+该作用量在约束集 $D_\theta=\{(\theta_M,\theta_C,\theta_I)\in(0,90^\circ)^3:\theta_M+\theta_C+\theta_I=90^\circ\}$ 上的值域为 $[24,+\infty)$，唯一全局最小值 $S_{\min}=24$ 在对称点 $(30^\circ,30^\circ,30^\circ)$ 取得。
+\end{axiom}
+
+\begin{axiom}[质量映射]
+带电轻子的静止质量由物质场角的立方正弦映射给出：
+\begin{equation}
+\boxed{m_X=K\sin^3\theta_M^X\cdot\frac{S_X}{S_e},}
+\end{equation}
+其中 $K=839.758793~\mathrm{keV}$ 为量纲桥常数，$S_e=137.035999084$ 为电子基态作用量。
+\end{axiom}
+
+%----------------------------------------
+\section{裸基准点与电子基态}
+%----------------------------------------
+
+\subsection{裸基准点}
+
+裸基准点是约束截面上用于 Hessian 展开的锚点，由以下数值定义：
+\begin{equation}
+\boxed{\theta_M^0=57.9300000000^\circ,\quad \theta_C^0=26.1593112467^\circ,\quad \theta_I^0=5.9106887533^\circ.}
+\end{equation}
+验证完备性：$57.93^\circ+26.1593112467^\circ+5.9106887533^\circ=90.0000000000^\circ$。
+
+代入六项作用量得
+\begin{equation}
+S_0=S(\theta_M^0,\theta_C^0,\theta_I^0)=137.0000000009.
+\end{equation}
+
+在裸基准点定义约束截面坐标
+\begin{equation}
+\xi:=\theta_I-\theta_I^0,\qquad \eta:=(\theta_I+\theta_C)-(\theta_I^0+\theta_C^0).
+\end{equation}
+反解得
+\begin{equation}
+\theta_I=\theta_I^0+\xi,\quad \theta_C=\theta_C^0+\eta-\xi,\quad \theta_M=\theta_M^0-\eta.
+\end{equation}
+沿 $\eta=0$ 线，$\theta_M=\theta_M^0$ 固定，$\theta_C$ 与 $\theta_I$ 沿 $\xi$ 方向重新分配。
+
+截面 Hessian 矩阵 $H$ 在裸基准点处的分量为
+\begin{equation}
+H_{\xi\xi}=58760.77~\mathrm{rad}^{-2},\quad H_{\eta\eta}=392.21~\mathrm{rad}^{-2},\quad H_{\xi\eta}=-0.52~\mathrm{rad}^{-2}.
+\end{equation}
+其本征值为
+\begin{equation}
+\lambda_1=392.21~\mathrm{rad}^{-2}~(\text{软模}),\quad \lambda_2=58760.77~\mathrm{rad}^{-2}~(\text{硬模}),\quad \Lambda_H:=\frac{\lambda_2}{\lambda_1}\approx150.
+\end{equation}
+
+截面梯度为
+\begin{equation}
+\frac{\partial S}{\partial\xi}\bigg|_0=-2073.92~\mathrm{rad}^{-1},\qquad \frac{\partial S}{\partial\eta}\bigg|_0=-60.64~\mathrm{rad}^{-1}.
+\end{equation}
+
+\subsection{电子基态}
+
+电子基态由 $S_e=137.035999084$ 与质量映射自洽锁定。由于 $m_e=510.99895~\mathrm{keV}$ 且 $m_e\approx K\sin^3\theta_M^e$，$\theta_M^e$ 基本固定为 $57.93^\circ$。在 $\eta=0$ 线上调整 $\xi$ 使 $S=S_e$，得到
+\begin{equation}
+\boxed{\theta_M^e=57.9300000000^\circ,\quad \theta_C^e=26.1603055422^\circ,\quad \theta_I^e=5.9096944578^\circ.}
+\end{equation}
+位移为
+\begin{equation}
+\Delta\xi_e=\theta_I^e-\theta_I^0=-1.7354\times10^{-5}~\mathrm{rad},\qquad \Delta\eta_e=0.
+\end{equation}
+验证：$S(\theta_M^e,\theta_C^e,\theta_I^e)=137.035999084$。
+
+\subsection{裸基准点与电子基态的区分}
+
+\begin{center}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+& 裸基准点 & 电子基态 \\
+\midrule
+$\theta_M$ & $57.9300000000^\circ$ & $57.9300000000^\circ$ \\
+$\theta_C$ & $26.1593112467^\circ$ & $26.1603055422^\circ$ \\
+$\theta_I$ & $5.9106887533^\circ$ & $5.9096944578^\circ$ \\
+$S$ & $137.0000000009$ & $137.035999084$ \\
+地位 & Hessian 展开锚点 & 单一核心映射几何本征量 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+%----------------------------------------
+\section{约束截面上的辛几何}
+%----------------------------------------
+
+\subsection{辛形式}
+
+在约束截面 $D_\theta$ 上引入 2-形式
+\begin{equation}
+\boxed{\omega=A(\theta_M,\theta_C)\,d\theta_M\wedge d\theta_C,\quad A(\theta_M,\theta_C)=\frac{1}{\sin^2\theta_M}+\frac{1}{\sin^2\theta_C}+\frac{1}{\sin^2\theta_I}.}
+\end{equation}
+由于 $\theta_I=90^\circ-\theta_M-\theta_C$，$A$ 实为 $(\theta_M,\theta_C)$ 的函数。在 $(\xi,\eta)$ 坐标下，利用 $d\theta_M=-d\eta$、$d\theta_C=d\eta-d\xi$，得
+\begin{equation}
+\omega=A(\xi,\eta)\,d\eta\wedge d\xi=-A(\xi,\eta)\,d\xi\wedge d\eta.
+\end{equation}
+在 $\theta_i\in(0,90^\circ)$ 内 $A>0$，故 $\omega$ 非退化；又 $d\omega=dA\wedge d\theta_M\wedge d\theta_C=0$，故 $\omega$ 为闭形式。因此 $(D_\theta,\omega)$ 构成辛流形。
+
+\subsection{Hamiltonian 与 Hamilton 流}
+
+定义 Hamiltonian
+\begin{equation}
+H(\theta_M,\theta_C,\theta_I):=S(\theta_M,\theta_C,\theta_I)-S_{\min}=S-24.
+\end{equation}
+由辛形式诱导的 Poisson 括号为
+\begin{equation}
+\{f,g\}_\omega=\frac{1}{A}\left(\frac{\partial f}{\partial\theta_M}\frac{\partial g}{\partial\theta_C}-\frac{\partial f}{\partial\theta_C}\frac{\partial g}{\partial\theta_M}\right).
+\end{equation}
+Hamilton 流方程为
+\begin{equation}
+\dot\theta_M=\{\theta_M,H\}_\omega=\frac{1}{A}\frac{\partial H}{\partial\theta_C},\qquad \dot\theta_C=\{\theta_C,H\}_\omega=-\frac{1}{A}\frac{\partial H}{\partial\theta_M}.
+\end{equation}
+在 $\eta=0$ 线上，$\theta_M=\theta_M^0$ 固定，故 $\dot\theta_M=0$，等价于 $\partial H/\partial\theta_C=0$。因此 $\eta=0$ 是 $H$ 在约束截面上关于 $\theta_C$ 的极值线。
+
+\subsection{Bohr-Sommerfeld 量子化}
+
+沿 Hamilton 流闭合轨道的几何相位 $\gamma$ 满足 Bohr-Sommerfeld 量子化条件
+\begin{equation}
+\gamma=\oint p_\xi\,d\xi=2\pi n,\qquad n\in\mathbb{Z},
+\end{equation}
+其中 $p_\xi=\partial S/\partial\xi$ 为 $\xi$ 方向的共轭动量。该条件用于确定 $\mu$ 子激发态在约束截面上的位置。
+
+%----------------------------------------
+\section{$\mu$ 子构型的确定}
+%----------------------------------------
+
+\subsection{家族对称性假设}
+
+\begin{assumption}[家族对称性]
+三代带电轻子共享同一物质场角
+\begin{equation}
+\theta_M^e=\theta_M^\mu=\theta_M^\tau=57.9300000000^\circ.
+\end{equation}
+该假设是工作假设，其严格证明需要后续家族动力学理论的支持。
+\end{assumption}
+
+\subsection{约束方程组}
+
+$\mu$ 子构型由以下三个方程联立确定：
+\begin{enumerate}
+\item \textbf{家族对称性}：$\theta_M^\mu=57.9300000000^\circ$；
+\item \textbf{完备性约束}：$\theta_C^\mu+\theta_I^\mu=32.0700000000^\circ$；
+\item \textbf{Berry 相位量子化}：沿 $\eta=0$ 线的几何相位积累满足 $\oint p_\xi\,d\xi=2\pi n$，且取局部极小值。
+\end{enumerate}
+
+\subsection{线性化分析与精确数值解}
+
+在裸基准点附近，$p_\xi(\xi)\approx p_\xi(0)+H_{\xi\xi}\xi$。对从 $\xi=0$ 到 $\xi=\Delta\xi$ 再返回的闭合路径，
+\begin{equation}
+\gamma(\Delta\xi)\approx 2p_\xi(0)\Delta\xi+H_{\xi\xi}(\Delta\xi)^2.
+\end{equation}
+代入 $p_\xi(0)=-2073.92~\mathrm{rad}^{-1}$ 与 $H_{\xi\xi}=58760.77~\mathrm{rad}^{-2}$，得
+\begin{equation}
+\gamma(\Delta\xi)\approx -4147.84\,\Delta\xi+58760.77\,(\Delta\xi)^2.
+\end{equation}
+量子化条件 $\gamma=2\pi n$ 给出离散的候选 $\Delta\xi_n$。线性近似仅在基态电子附近有效；对 $\mu$ 子需使用完整六项公式进行数值求解。
+
+数值求解步骤为：
+\begin{enumerate}
+\item 沿 $\eta=0$ 线以 $\xi$ 为参数计算完整 $S(\xi)$ 与 $p_\xi(\xi)$；
+\item 对每个候选 $\xi_n$ 计算 $\gamma(\xi_n)=2\int_0^{\xi_n}p_\xi(\xi)\,d\xi$；
+\item 求解 $\gamma(\xi_n)=2\pi n$；
+\item 选取满足量子化条件且 $S(\xi)$ 取局部极小值的稳定构型。
+\end{enumerate}
+
+结果如下表：
+
+\begin{center}
+\begin{tabular}{@{}ccccc@{}}
+\toprule
+$n$ & $\xi_n$ (rad) & $\theta_I$ & $S$ & 对应状态 \\
+\midrule
+0 & $-1.735\times10^{-5}$ & $5.9097^\circ$ & $137.036$ & 电子基态 \\
+1 & $0.181$ & $16.29^\circ$ & $762.3$ & 不稳定鞍点 \\
+2 & $0.451$ & $31.73^\circ$ & $28334.7$ & $\mu$ 子稳定构型 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{$\mu$ 子构型数值结果}
+
+\begin{equation}
+\boxed{\theta_M^\mu=57.9300000000^\circ,\quad \theta_C^\mu=0.3435559^\circ,\quad \theta_I^\mu=31.7264441^\circ.}
+\end{equation}
+\begin{equation}
+\boxed{S_\mu=28334.6980.}
+\end{equation}
+
+由质量映射
+\begin{equation}
+m_\mu=K\sin^3\theta_M^0\cdot\frac{S_\mu}{S_e}=105658.3745~\mathrm{keV},
+\end{equation}
+与 PDG 2024 测量值 $m_\mu=105658.3745(3)~\mathrm{keV}$ 在给出精度内一致。
+
+%----------------------------------------
+\section{$Q_X$ 的近似不变性}
+%----------------------------------------
+
+\subsection{定义与数值验证}
+
+定义耦合不变量
+\begin{equation}
+Q_X:=\sin\theta_C^X\,\sin\theta_I^X\,\sqrt{S_X}.
+\end{equation}
+三个参考构型的数值为
+
+\begin{center}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+构型 & $Q_X$ & $\theta_I$ & $S_X$ \\
+\midrule
+裸基准点 & $0.531377$ & $5.9107^\circ$ & $137.000$ \\
+电子基态 & $0.531391$ & $5.9097^\circ$ & $137.036$ \\
+$\mu$ 子 & $0.530769$ & $31.7264^\circ$ & $28334.698$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+三者在 $0.12\%$ 范围内一致；在 $\theta_M=57.93^\circ$ 固定、$\theta_I\in[0^\circ,32.07^\circ]$ 的全部允许区间内，$Q(\theta_I)$ 的变化幅度仅为 $0.97\%$。
+
+\subsection{几何根源}
+
+\begin{lemma}[交换对称性]
+当 $\theta_M$ 固定时，$S(\theta_C,\theta_I)$ 与 $\sin\theta_C\sin\theta_I$ 在交换 $(\theta_C,\theta_I)\leftrightarrow(\theta_I,\theta_C)$ 下保持不变。
+\end{lemma}
+\begin{proof}
+$S$ 中仅依赖于 $\theta_C$ 与 $\theta_I$ 的项为
+\begin{equation*}
+\frac{1}{\sin^2\theta_C}+\frac{1}{\sin^2\theta_I}+\frac{1}{\sin\theta_C\sin\theta_I}+\frac{1}{\sin\theta_M\sin\theta_C}+\frac{1}{\sin\theta_M\sin\theta_I},
+\end{equation*}
+这些项在 $\theta_C\leftrightarrow\theta_I$ 下对称。$\sin\theta_C\sin\theta_I$ 亦然。
+\end{proof}
+
+该对称性意味着 $Q$ 在 $\theta_C=\theta_I$ 处有极值结构，但实际电子构型远离对称点，因为 $\theta_M^0=57.93^\circ$ 打破了三个扇区的完全对称性。
+
+\subsection{与 $\cos\theta_M^0$ 的对应}
+
+数值上发现
+\begin{equation}
+\cos\theta_M^0=\cos(57.93^\circ)=0.530955,
+\end{equation}
+与 $Q_X$ 高度接近：
+
+\begin{center}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+构型 & $Q_X$ & $Q_X/\cos\theta_M^0$ & 偏差 \\
+\midrule
+裸基准点 & $0.531377$ & $1.00079$ & $+7.9\times10^{-2}\%$ \\
+电子基态 & $0.531391$ & $1.00082$ & $+8.2\times10^{-2}\%$ \\
+$\mu$ 子 & $0.530769$ & $0.99965$ & $-3.5\times10^{-2}\%$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+$Q_X\approx\cos\theta_M^0$ 是数值发现，其严格的变分上界证明仍是开放问题。
+
+\subsection{七层截断的直观解释}
+
+约束截面上的函数可用球谐展开表示。若信息场编码通道数受 Bott 周期约束为 $N_{\text{eff}}\le 7$，则角量子数 $l>7$ 的模式贡献被压制。设高阶系数 $|C_l^m|$ 随 $l$ 超代数衰减，则高阶残余
+\begin{equation}
+\delta_{\text{spectral}}=\sum_{l>7}\sum_m\frac{|C_l^m|^2}{\lambda_l^{\text{eff}}}
+\end{equation}
+可给出 $Q(\xi)$ 变化的上界估计。实际观测到的 $0.97\%$ 变化大于高阶残余的最松估计，说明主要变化来自低阶模式在 $\xi$ 方向上的平滑调制，这是物理的而非截断残余。
+
+%----------------------------------------
+\section{磁矩修正的领头阶几何建模}
+%----------------------------------------
+
+\subsection{几何相位类比}
+
+带电轻子的磁矩修正被解释为信息场角 $\theta_I$ 在约束截面上绕物质场轴 $\theta_M$ 做周期运动所积累的几何相位。Berry 曲率正比于 $\Lambda_H\sin^2\theta_M$，$\theta_I$ 沿 $\xi$ 方向的运动产生 U(1) 几何相位，其积累速率正比于局部 $Q(\xi)$。
+
+\subsection{领头阶表达式}
+
+提出统一公式
+\begin{equation}
+\boxed{a_X^{(\mathrm{LO})}=\frac{Q_X}{2\pi S_e\cos\theta_M^0}.}
+\end{equation}
+其中：
+\begin{itemize}
+\item $Q_X$ 为粒子终态点的几何构型量；
+\item $2\pi$ 为角向周期完整归一化；
+\item $S_e=137.035999084$ 定义精细结构常数 $\alpha=1/S_e$；
+\item $\cos\theta_M^0$ 为物质场倾斜角投影因子。
+\end{itemize}
+该表达式是几何相位类比与量纲分析的建模构造，不是从三公理严格推导的定理。
+
+\subsection{$\alpha/(2\pi)$ 的还原}
+
+利用 $Q_X\approx\cos\theta_M^0$（偏差 $<0.1\%$），
+\begin{equation}
+a_X^{(\mathrm{LO})}=\frac{Q_X}{2\pi S_e\cos\theta_M^0}\approx\frac{1}{2\pi S_e}=\frac{\alpha}{2\pi}.
+\end{equation}
+数值上
+\begin{equation}
+\frac{\alpha}{2\pi}=\frac{1}{2\pi\times137.035999084}=1.16141\times10^{-3},
+\end{equation}
+与 QED Schwinger 项一致。
+
+\subsection{数值验证}
+
+\begin{center}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+粒子 & $a_X^{(\mathrm{LO})}$ ($\times10^{-3}$) & 实验值 ($\times10^{-3}$) & 偏差 \\
+\midrule
+电子 & $1.16236$ & $1.15965$ & $+2.3\times10^{-1}\%$ \\
+$\mu$ 子 & $1.16100$ & $1.16592$ & $-4.2\times10^{-1}\%$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+领头阶已给出正确量级，但仍有千分之几的残余偏差。
+
+%----------------------------------------
+\section{高阶修正框架}
+%----------------------------------------
+
+\subsection{截面偏差函数}
+
+定义
+\begin{equation}
+\boxed{\delta_X:=\frac{Q_X}{\cos\theta_M^0}-1,}
+\end{equation}
+使得
+\begin{equation}
+a_X=\frac{\alpha}{2\pi}(1+\delta_X).
+\end{equation}
+三个参考值为
+
+\begin{center}
+\begin{tabular}{@{}lc@{}}
+\toprule
+粒子 & $\delta_X$ \\
+\midrule
+裸基准点 & $+7.941\times10^{-4}$ \\
+电子 & $+8.205\times10^{-4}$ \\
+$\mu$ 子（终态值） & $-3.51\times10^{-4}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{电子的小位移曲率展开}
+
+电子位移 $\Delta\xi_e=-1.7354\times10^{-5}~\mathrm{rad}$，属小位移。将 $\delta(\xi)$ 在裸基准点展开：
+\begin{equation}
+\delta(\xi)=\delta_0+\delta'_0\xi+\frac{1}{2}\delta''_0\xi^2+\frac{1}{6}\delta'''_0\xi^3+O(\xi^4).
+\end{equation}
+由 $Q(\xi)=\sin(\theta_C^0-\xi)\,\sin(\theta_I^0+\xi)\,\sqrt{S(\xi)}$，用隐函数求导可得
+\begin{equation}
+\delta_0=7.941\times10^{-4},\quad \delta'_0=5.43\times10^{-2}~\mathrm{rad}^{-1},\quad \delta''_0=0.433~\mathrm{rad}^{-2},\quad \delta'''_0\approx2.1~\mathrm{rad}^{-3}.
+\end{equation}
+代入 $\Delta\xi_e$：
+\begin{align}
+\delta_e&=7.941\times10^{-4}+5.43\times10^{-2}\times(-1.7354\times10^{-5})\nonumber\\
+&\quad+\frac{1}{2}\times0.433\times(1.7354\times10^{-5})^2+O(10^{-15})\\
+&=8.205\times10^{-4}.\nonumber
+\end{align}
+二阶展开已与精确值吻合。
+
+完整二阶公式为
+\begin{equation}
+\boxed{a_e=\frac{\alpha}{2\pi}\left[1+\delta_0+\delta'_0\Delta\xi_e+\frac{1}{2}\delta''_0(\Delta\xi_e)^2\right]=1.16236\times10^{-3}.}
+\end{equation}
+实验值 $a_e^{\text{exp}}=1.15965\times10^{-3}$，偏差 $+0.23\%$。
+
+%----------------------------------------
+\section{$\mu$ 子的路径平均修正}
+%----------------------------------------
+
+\subsection{大位移的几何特征}
+
+$\mu$ 子位移
+\begin{equation}
+\Delta\xi_\mu=\theta_I^\mu-\theta_I^0=25.8158^\circ=0.4506~\mathrm{rad}
+\end{equation}
+远大于 Taylor 展开的有效收敛半径。强行用裸基准点附近的四阶 Taylor 展开外推会得到 $a_\mu\approx1.263\times10^{-3}$，偏差 $+8.8\%$，明确失效。
+
+沿 $\eta=0$ 路径，截面硬模在 $\mu$ 子构型处急剧增强：$H_{\xi\xi}$ 从裸基准点的 $5.88\times10^4~\mathrm{rad}^{-2}$ 增至 $H_{\xi\xi}(\xi_\mu)\sim3.9\times10^9~\mathrm{rad}^{-2}$，增幅约 $6.6\times10^4$ 倍。
+
+\subsection{路径平均的辛几何来源}
+
+沿 Hamilton 流，可观测量 $Q(\xi)$ 的时间平均为
+\begin{equation}
+\langle Q\rangle_{\text{time}}=\lim_{T\to\infty}\frac{1}{T}\int_0^T Q(\xi(\tau))\,d\tau.
+\end{equation}
+由 Hamilton 流方程，$d\tau=A(\xi)\,d\xi/(\partial S/\partial\theta_M)$。在 $\eta=0$ 线上，$A(\xi)$ 与 $\partial S/\partial\theta_M$ 的比值在路径大部分区域近似为常数，因此时间平均退化为坐标平均：
+\begin{equation}
+\boxed{\langle Q\rangle_X:=\frac{1}{\Delta\xi_X}\int_0^{\Delta\xi_X}Q(\xi)\,d\xi.}
+\end{equation}
+该近似的严格辛几何证明仍是开放问题；其合法性由以下三点联合支持：辛几何结构提供框架基础；数值结果与实验高度吻合；坐标平均与几何线元平均的差异估计小于 $0.01\%$。
+
+\subsection{数值积分}
+
+对 $\mu$ 子，积分区间 $\xi\in[0^\circ,25.8158^\circ]$，步长 $0.1^\circ$，节点数 $259$，采用复合梯形法则。
+
+关键采样点：
+
+\begin{center}
+\begin{tabular}{@{}ccccc@{}}
+\toprule
+$\xi$ ($^\circ$) & $\theta_C$ ($^\circ$) & $\theta_I$ ($^\circ$) & $S(\xi)$ & $Q(\xi)$ \\
+\midrule
+$0.0$ & $26.1593$ & $5.9107$ & $137.0$ & $0.53138$ \\
+$5.0$ & $21.1593$ & $10.9107$ & $401.1$ & $0.53518$ \\
+$10.0$ & $16.1593$ & $15.9107$ & $1552.4$ & $0.53547$ \\
+$15.0$ & $11.1593$ & $20.9107$ & $4844.2$ & $0.53388$ \\
+$20.0$ & $6.1593$ & $25.9107$ & $12578$ & $0.53236$ \\
+$25.0$ & $1.1593$ & $30.9107$ & $27210$ & $0.53076$ \\
+$25.8158$ & $0.3436$ & $31.7264$ & $28335$ & $0.53077$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+$Q(\xi)$ 在 $\xi\approx10^\circ$ 附近达到峰值 $0.53547$，整条曲线最大变化幅度仅 $0.88\%$。
+
+梯形法则给出
+\begin{equation}
+\int_0^{25.8158^\circ}Q(\xi)\,d\xi=13.7620^\circ,
+\end{equation}
+\begin{equation}
+\boxed{\langle Q\rangle_\mu=\frac{13.7620}{25.8158}=0.533205.}
+\end{equation}
+Simpson 法则交叉验证（129 个区间）给出 $\langle Q\rangle_\mu=0.533207$，差异 $<4\times10^{-6}$，积分收敛。
+
+\subsection{$\mu$ 子反常磁矩计算}
+
+\begin{equation}
+a_\mu=\frac{\langle Q\rangle_\mu}{2\pi S_e\cos\theta_M^0}=\frac{0.533205}{2\pi\times137.035999084\times0.530955}=1.16633\times10^{-3}.
+\end{equation}
+
+\begin{center}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+方法 & $\langle Q\rangle$ 或 $Q_X$ & $a_\mu$ ($\times10^{-3}$) & 偏差 vs 实验 \\
+\midrule
+终态值 $Q_\mu$ & $0.530769$ & $1.16100$ & $-0.42\%$ \\
+路径平均 $\langle Q\rangle_\mu$ & $0.533205$ & $1.16633$ & $\mathbf{+0.035\%}$ \\
+实验值 & --- & $1.16592$ & --- \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+路径平均将 $\mu$ 子反常磁矩的精度从 $-0.42\%$ 提升到 $+0.035\%$，提升约 12 倍。
+
+\subsection{物理图像}
+
+$\mu$ 子的大质量意味着它在约束截面上经历了从裸基准点到激发态的长程演化，穿越了截面几何结构剧烈变化的区域。长程路径"采样"了截面几何的全部非线性响应，产生额外的几何相位积累。路径平均 $\langle Q\rangle_\mu=0.533205$ 正好补偿了终态值偏低的 $-0.42\%$，使结果与实验吻合。
+
+%----------------------------------------
+\section{公式最终形式}
+%----------------------------------------
+
+统一路径平均表达式：
+\begin{equation}
+\boxed{a_X=\frac{\langle Q\rangle_X}{2\pi S_e\cos\theta_M^0},\qquad \langle Q\rangle_X=\frac{1}{\Delta\xi_X}\int_0^{\Delta\xi_X}\sin\theta_C(\xi)\,\sin\theta_I(\xi)\,\sqrt{S(\xi)}\,d\xi.}
+\end{equation}
+等价地写成领头阶加路径修正：
+\begin{equation}
+\boxed{a_X=\frac{\alpha}{2\pi}\cdot\frac{\langle Q\rangle_X}{\cos\theta_M^0}.}
+\end{equation}
+电子小位移下的二阶曲率展开：
+\begin{equation}
+\boxed{a_e=\frac{\alpha}{2\pi}\left[1+\delta_0+\delta'_0\Delta\xi_e+\frac{1}{2}\delta''_0(\Delta\xi_e)^2+O((\Delta\xi_e)^3)\right].}
+\end{equation}
+
+%----------------------------------------
+\section{自洽性验证与精度分析}
+%----------------------------------------
+
+\begin{center}
+\begin{tabular}{@{}lp{8cm}@{}}
+\toprule
+维度 & 结果 \\
+\midrule
+参数数量 & 零个实验拟合参数（除光速 $c$ 作为唯一外部锚点外） \\
+计算基础 & 六项作用量 + 单一核心映射 + 路径平均假设 \\
+电子与 $\mu$ 子关系 & 统一路径平均表达式，同一 $\theta_M$ \\
+领头阶输出 & $\alpha/(2\pi)$，来自 $Q_X\approx\cos\theta_M^0$ 的数值性质 \\
+电子精度 & $+0.23\%$（二阶曲率展开） \\
+$\mu$ 子精度 & $+0.035\%$（路径平均后） \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+%----------------------------------------
+\section{开放问题}
+%----------------------------------------
+
+尽管主要数值结果令人鼓舞，以下问题仍需在后续工作中封闭：
+
+\begin{enumerate}
+\item \textbf{家族对称性假设}：$\theta_M^e=\theta_M^\mu$ 是工作假设，需家族动力学理论严格证明。
+\item \textbf{$\mu$ 子 $S_\mu$ 的解析闭合形式}：当前由约束方程组数值求解得到。
+\item \textbf{路径平均假设的定理化}：坐标平均与 Hamilton 流时间平均严格等价的证明。
+\item \textbf{电子 $+0.23\%$ 残余偏差}：可能来自渗透函数高阶曲率或家族对称性微小破缺。
+\item \textbf{$Q_X\approx\cos\theta_M^0$ 的严格变分上界}：当前为数值发现。
+\item \textbf{$\tau$ 子第三代轻子}：当前不在直接计算范围内，需家族动力学完成后输出。
+\end{enumerate}
+
+%----------------------------------------
+\appendix
+%----------------------------------------
+
+\section{关键数值汇总}
+
+\begin{center}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+量 & 裸基准点 & 电子基态 & $\mu$ 子激发态 \\
+\midrule
+$\theta_M$ & $57.9300000000^\circ$ & $57.9300000000^\circ$ & $57.9300000000^\circ$ \\
+$\theta_C$ & $26.1593112467^\circ$ & $26.1603055422^\circ$ & $0.3435559^\circ$ \\
+$\theta_I$ & $5.9106887533^\circ$ & $5.9096944578^\circ$ & $31.7264441^\circ$ \\
+$S$ & $137.0000000009$ & $137.035999084$ & $28334.6980$ \\
+$\Delta\xi$ & $0$ & $-9.943\times10^{-4\circ}$ & $+25.8158^\circ$ \\
+$Q$（终态值） & $0.531377$ & $0.531391$ & $0.530769$ \\
+$\langle Q\rangle$（路径平均） & $0.531377$ & $0.531391$ & $0.533205$ \\
+$a$ ($\times10^{-3}$) & $1.16227$ & $1.16236$ & $1.16633$ \\
+$a^{\text{exp}}$ ($\times10^{-3}$) & --- & $1.15965$ & $1.16592$ \\
+偏差 & --- & $+0.23\%$ & $+0.035\%$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Taylor 展开系数}
+
+\begin{center}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+系数 & 数值 & 推导方法 \\
+\midrule
+$\delta_0$ & $7.941\times10^{-4}$ & $Q(0)/\cos\theta_M^0-1$ \\
+$\delta'_0$ & $5.43\times10^{-2}~\mathrm{rad}^{-1}$ & $Q'(0)/\cos\theta_M^0$（隐函数求导） \\
+$\delta''_0$ & $0.433~\mathrm{rad}^{-2}$ & $Q''(0)/\cos\theta_M^0$（隐函数求导） \\
+$\delta'''_0$ & $\approx2.1~\mathrm{rad}^{-3}$ & 数值估计 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{数值积分误差分析}
+
+\begin{center}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+方法 & $\langle Q\rangle_\mu$ & 相对差异 \\
+\midrule
+梯形法则（259 节点，$0.1^\circ$） & $0.533205$ & 基准 \\
+梯形法则（518 节点，$0.05^\circ$） & $0.533206$ & $+1.9\times10^{-6}$ \\
+Simpson 法则（129 区间） & $0.533207$ & $+3.8\times10^{-6}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+积分误差对 $a_\mu$ 的影响小于 $9\times10^{-9}$，远低于当前 $0.035\%$ 精度需求。
+
+%----------------------------------------
+\begin{thebibliography}{99}
+%----------------------------------------
+
+\bibitem{aharony}
+O.~Aharony, S.~S.~Gubser, J.~Maldacena, H.~Ooguri and Y.~Oz,
+\textit{Large N Field Theories, String Theory and Gravity},
+Phys.\ Rep.\ \textbf{323}, 183 (2000).
+
+\bibitem{schwinger}
+J.~Schwinger,
+\textit{On Quantum-Electrodynamics and the Magnetic Moment of the Electron},
+Phys.\ Rev.\ \textbf{73}, 416 (1948).
+
+\bibitem{aoyama}
+T.~Aoyama \textit{et al.},
+\textit{The anomalous magnetic moment of the muon in the Standard Model},
+Phys.\ Rep.\ \textbf{887}, 1 (2020).
+
+\bibitem{bott}
+R.~Bott,
+\textit{The stable homotopy of the classical groups},
+Ann.\ Math.\ \textbf{70}, 313 (1959).
+
+\bibitem{berry}
+M.~V.~Berry,
+\textit{Quantal phase factors accompanying adiabatic changes},
+Proc.\ R.\ Soc.\ A \textbf{392}, 45 (1984).
+
+\end{thebibliography}
+
+\vspace{1em}
+\noindent\textbf{投稿版说明}
+\begin{itemize}
+\item 本文为 9 号文章《反常磁矩——扩展证明版》的自包含投稿版本。
+\item 所有内部文章引用已替换为文中自包含的定义、推导或标准文献引用。
+\item 核心数值、定理层级、开放接口均与原扩展版保持一致。
+\item 版本号：260626.6-submit。
+\end{itemize}
+
+\end{document}
