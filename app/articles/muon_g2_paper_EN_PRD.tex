@@ -12,6 +12,9 @@
 \usepackage{graphicx}
 \usepackage{hyperref}
 
+% Allow multi-line displayed equations to break across pages
+\allowdisplaybreaks
+
 \begin{document}
 
 % ========== 标题页 ==========
@@ -375,7 +378,7 @@ The physical meaning of each factor:
 
 The numerical values and sources of each factor are summarized in Table~\ref{tab:factors}.
 
-\begin{table}[h]
+\begin{table}[t]
 \caption{Numerical values and sources of the five factors in the geometric expression for the muon $a_\mu$.}
 \label{tab:factors}
 \begin{ruledtabular}
@@ -406,7 +409,7 @@ The uncertainty in parentheses $(\pm 50 \times 10^{-12})$ originates principally
 
 \subsection{Numerical Summary}
 
-\begin{table}[h]
+\begin{table*}[t]
 \caption{Comparison of geometric predictions with experimental values.}
 \label{tab:results}
 \begin{ruledtabular}
@@ -421,7 +424,7 @@ $a_\mu \times 10^3$ & 1.16592090(50) & 1.16592059(22)~\cite{Abi2021,Aguillard202
 \hline
 \end{tabular}
 \end{ruledtabular}
-\end{table}
+\end{table*}
 
 \textbf{Detailed comparison for the muon $a_\mu$}:
 \begin{align}
@@ -447,7 +450,7 @@ a_\mu^{\text{SM}} &= 11659181.0(4.3) \times 10^{-10} \quad \text{(Standard Model
 
 The numerical closeness between the geometric framework and the Standard Model predictions is striking (deviation $< 0.05\%$), yet their theoretical foundations are entirely different:
 
-\begin{table}[h]
+\begin{table*}[t]
 \caption{Comparison of theoretical foundations between the Standard Model and this work.}
 \label{tab:comparison}
 \begin{ruledtabular}
@@ -464,392 +467,4 @@ $a_\mu$ deviation & $-2.0\sigma$ (vs world average, including HVP tension) & +0.
 \hline
 \end{tabular}
 \end{ruledtabular}
-\end{table}
-
-% ========== IX. Discussion ==========
-\section{Discussion}
-\label{sec:discussion}
-
-\subsection{Open Problems}
-
-\textbf{1.\ First-principles derivation of flavor symmetry}: The hypothesis that the three generations of charged leptons share an approximately common $Q$ invariant is currently a working hypothesis. It is numerically highly effective ($Q$ varies by $< 0.15\%$ along the $e \to \mu$ path), but lacks a direct mathematical connection to the global topology of the Constraint Manifold. If flavor symmetry is exact, then the three-generation fermion replication in the Standard Model reduces, in the geometric framework, to a single $\theta_C$--$\theta_I$ sector structure, with variations in $\theta_M$ corresponding to the fermion mass spectrum. If flavor symmetry has a small breaking (magnitude $< 0.1\%$), then predictions for the $\tau$ lepton $a_\tau$ would exhibit a corresponding systematic offset.
-
-\textbf{2.\ Analytic closed form of $S_\mu$}: The current value $S_\mu^{\text{eff}} = 137.0263(3)$ comes from numerical integration of the Hamiltonian path average. Its analytic closed form has not yet been obtained. Given the approximate invariance of $Q$ and the completeness constraint, a complete analytic solution for $S_\mu$ should be attainable via algebraic manipulation of the constraint equations. Such a closure would eliminate the constructive error source from path averaging.
-
-\textbf{3.\ Systematic closure of the electron $+0.23\%$ residual}: The $+0.23\%$ residual in the electron $a_e$ indicates the existence of higher-order contributions not yet fully captured in the Hessian expansion. A systematic analysis of fifth-order and higher terms in the Hessian expansion, combined with the global geometry of the Constraint Manifold (e.g., Gauss--Bonnet topological corrections), may close this residual to within experimental precision (on the order of $10^{-13}$).
-
-\textbf{4.\ Mathematical correspondence with the Standard Model perturbative series}: To which order of the Constraint Manifold Hessian expansion does each term of the standard perturbative QED expansion (Schwinger $\to$ two-loop $\to$ three-loop $\to$ four-loop $\to$ five-loop) correspond? Establishing this correspondence would connect the geometric nonperturbative framework to perturbative quantum field theory.
-
-\subsection{Comparison with Existing Approaches}
-
-\textbf{1.\ Perturbative QED}: The standard perturbative calculation has been pushed to five loops (tenth order)~\cite{Aoyama2012,Laporta2017}, with the $a_e$ calculation involving 12,672 Feynman diagrams. The geometric approach is conceptually simpler---requiring only finite terms in the Hessian expansion---but does not yet achieve the same absolute precision on $a_e$ ($+0.23\%$ vs.\ the $\sim 10^{-12}$ relative precision of QED). This is not necessarily a fundamental limitation but rather a consequence of the expansion not yet having been carried out systematically to completion.
-
-\textbf{2.\ Dispersive relations and lattice QCD}: The theoretical uncertainty in the Standard Model $a_\mu$ is dominated by hadronic contributions (HVP + HLbL), with an ongoing tension between dispersive and lattice approaches~\cite{Aoyama2020,Borsanyi2021,Davier2020}. The geometric method bypasses the direct calculation of hadronic contributions---on the Constraint Manifold, the geometric origin of the strong interaction shares the same $Q$-invariant structure as the electromagnetic interaction, but the rigorous derivation of this connection has not yet been completed and belongs to the category of \textbf{research directions}.
-
-\textbf{3.\ New physics models}: Supersymmetry, extra dimensions, dark photons, and other new physics models typically introduce new parameters to explain potential deviations in $a_\mu$. The geometric method, in contrast, yields numerical values entirely within the three-axiom framework, without the need for ``new physics'' parameters. If the final Fermilab results support the current world average, the geometric prediction falls within the experimental error band and does not require the introduction of new particles.
-
-\subsection{Testable Predictions}
-
-\begin{enumerate}
-\item \textbf{Further improvement in muon $g-2$ precision}: Fermilab Run-2/3 and the JPARC E34 experiment will improve the precision of $a_\mu$ to the $\sim 1 \times 10^{-10}$ level. The current uncertainty of the geometric prediction is $5 \times 10^{-12}$; if an analytic closure for $S_\mu$ is obtained, this uncertainty could be reduced to $< 10^{-13}$, enabling a decisive comparison with experiment.
-
-\item \textbf{$\tau$ lepton $g-2$}: Under flavor symmetry, the $a_\tau$ of the $\tau$ lepton can be directly predicted by the geometric framework. Current experimental sensitivity is far below the required precision ($\sim 10^{-2}$), but this prediction is testable in the future.
-
-\item \textbf{Higher-precision measurement of the electron $g-2$}: The current experimental precision for the electron $a_e$ has reached $1.3 \times 10^{-13}$~\cite{Hanneke2008,Fan2023}. The residual deviation of the geometric prediction ($+0.23\%$) corresponds to an absolute value of approximately $2.7 \times 10^{-6}$---far exceeding the current experimental sensitivity. This is one of the most stringent tests of the framework.
-
-\item \textbf{Geometric origin of $\alpha$}: In the geometric framework, $\alpha = 1/S_e$ is an assigned value. If the structure of the Constraint Manifold is completely determined, then a rigorous calculation of $S_e$ should exist that does not depend on the calibration of $K$. The realization of such an independent calculation would constitute the ultimate test of the framework.
-\end{enumerate}
-
-\subsection{Summary of Honest Annotations}
-
-The computations in this paper contain elements of differing status:
-
-\begin{table}[h]
-\caption{Status stratification of the elements in this paper.}
-\label{tab:status}
-\begin{ruledtabular}
-\begin{tabular}{c p{10cm}}
-\hline
-Status & Elements \\
-\hline
-\textbf{Theorem} & The Three-Axiom system; Completeness Constraint; Sextic Action form; Mass Mapping Axiom; definition of the $Q$ invariant; recovery of the electron Schwinger term; leading-term coefficients of the Hessian expansion; Constraint Section normalization $\mathcal{N}_\Sigma = \pi/\sqrt{8}$ (Appendix~\ref{app:normalization}) \\
-\textbf{Numerical discovery} & Approximate invariance of $Q$ (relative variation $< 0.15\%$); the non-integer part 0.035999084 of $S_e$ \\
-\textbf{Constructive computation} & Hamiltonian path averaging; numerical integration for $S_\mu^{\text{eff}}$; path structure factor $\mathcal{F}_{\text{path}}$ \\
-\textbf{Working hypothesis} & Flavor symmetry (shared $Q$ across three generations) \\
-\textbf{Open problem} & Analytic closure of $S_\mu$; systematic closure of the electron $+0.23\%$ residual; first-principles derivation of flavor symmetry \\
-\hline
-\end{tabular}
-\end{ruledtabular}
-\end{table}
-
-% ========== X. Conclusion ==========
-\section{Conclusion}
-\label{sec:conclusion}
-
-We have demonstrated that a fundamental physical theory without free parameters is possible: starting solely from three mathematical axioms in angle space, the anomalous magnetic moments of charged leptons can be computed in a unified manner. The electron $a_e$ recovers Schwinger's classic result $\alpha/2\pi$ at leading order, with higher-order expansion yielding a value deviating from experiment by only $+0.23\%$. The muon $a_\mu$, obtained via Hamiltonian Flow path averaging on the Constraint Manifold, yields $a_\mu^{\text{geo}} = 11659209.0(5.0) \times 10^{-10}$, deviating from the current world experimental average by only $+3.1(5.5) \times 10^{-10}$ ($+0.027\%$).
-
-This result by itself does not suffice to claim a ``discovery of new physics''---the muon deviation lies within $< 1\sigma$ and is far below the $5\sigma$ discovery threshold. However, the fact that a \textbf{zero-free-parameter} mathematical structure achieves precision comparable to that of the Standard Model (which incorporates multiple experimentally input parameters) carries independent methodological significance. If the final results from Fermilab/JPARC lock the experimental central value of $a_\mu$ near the current world average ($11659205.9$ rather than $11659204.0$), the deviation of the geometric prediction from experiment will further shrink to $< 0.3\sigma$, at which point updated Standard Model hadronic calculations (lattice/dispersive) will be needed to make a distinction.
-
-The ``Honest Annotation'' principle of the framework requires us to candidly acknowledge: flavor symmetry remains a working hypothesis; the analytic closure of $S_\mu$ has not yet been completed; the $+0.23\%$ residual offset in the electron suggests the existence of uncaptured higher-order contributions in the framework. These open problems must be closed one by one as the framework undergoes further theorem-ization.
-
-% ========== Acknowledgments ==========
-\begin{acknowledgments}
-To be completed upon submission.
-\end{acknowledgments}
-
-% ========== Appendices ==========
-\appendix
-
-\section{Key Numerical Values}
-\label{app:constants}
-
-\subsection{Fundamental Constants}
-\begin{align}
-K &= 839.758793 \text{ keV} \quad (\text{Mass Quantum, calibrated by electron mass, see Appendix~\ref{app:calibration}}) \\
-S_e &= 137.035999084 \quad (\text{electron action, see Appendix~\ref{app:calibration}}) \\
-S_\mu^{\text{eff}} &= 137.0263(3) \quad (\text{muon effective action, constructive computation}) \\
-\lambda_1^{\text{eff}} &= 391.05 \text{ rad}^{-2} \quad (\text{Constraint Section effective stiffness, see Appendix~\ref{app:hessian}}) \\
-\lambda_2^{\text{eff}} &= 59324.3 \text{ rad}^{-2} \quad (\text{auxiliary stiffness parameter, see Appendix~\ref{app:hessian}})
-\end{align}
-
-\subsection{Electron Configuration}
-\begin{align}
-\theta_M^e &\approx 26.726^\circ \\
-\theta_C^e &\approx 49.894^\circ \\
-\theta_I^e &\approx 13.380^\circ \\
-Q_e &= 2.004256
-\end{align}
-
-\subsection{Muon Configuration}
-\begin{align}
-\theta_M^\mu &\approx 42.758^\circ \\
-\theta_C^\mu &\approx 35.746^\circ \\
-\theta_I^\mu &\approx 11.496^\circ \\
-Q_\mu &\approx 2.0043
-\end{align}
-
-\section{Hessian Geometry of the Constraint Manifold}
-\label{app:hessian_brief}
-
-In the local coordinates $(\xi, \eta)$, the Hessian Matrix of the Sextic Action $S(\xi, \eta)$ is:
-\begin{equation}
-H_{ij} = \frac{\partial^2 S}{\partial x_i \partial x_j}, \quad x_i \in \{\xi, \eta\}
-\end{equation}
-
-In the vicinity of the electron configuration $P_e$, the two eigenvalues of $H$ are:
-\begin{equation}
-\lambda_1^{\text{eff}} = 391.05 \text{ rad}^{-2}, \quad \lambda_2^{\text{eff}} = 59324.3 \text{ rad}^{-2}
-\end{equation}
-
-Physical interpretation of these two eigenvalues:
-\begin{itemize}
-\item $\lambda_1^{\text{eff}}$ corresponds to the curvature along the ``soft direction'' of the Hamiltonian Flow on the Constraint Manifold (the compliance of the causal gradient), determining the mass parameter of the Higgs breathing mode.
-\item $\lambda_2^{\text{eff}}$ corresponds to the curvature of the ``hard direction'' orthogonal to the Hamiltonian Flow (the stiffness of the Information Sector).
-\end{itemize}
-
-The eigenvalue ratio $\lambda_2/\lambda_1 \approx 152$ indicates that the Constraint Manifold is highly anisotropic in the vicinity of the electron. This anisotropy physically corresponds to the ratio of the ``stiffness'' of the U(1) electromagnetic interaction to the ``stiffness'' of the weak interaction.
-
-\section{Calibration of $K$ and Locking Derivation of $S_e$}
-\label{app:calibration}
-
-\subsection{Calibration of the Mass Quantum $K$}
-
-The Mass Quantum $K = 839.758793$~keV is the bridge connecting angle space to laboratory energy units. Its calibration proceeds as follows:
-
-\textbf{Step 1 (Geometric input)}: The electron Material Angle $\theta_M^e \approx 26.726^\circ$ is determined from the constraint equations for the electron configuration (\S\ref{sec:config}). This angle depends solely on the Completeness Axiom (Axiom~1) and the Sextic Action (Axiom~2), without involving any experimental mass value.
-
-\textbf{Step 2 (Physical calibration)}: Using the electron mass $m_e = 510.998950$~keV (CODATA 2018~\cite{CODATA2018}) as the sole external anchor, substitute into the Mass Mapping Axiom (Axiom~3):
-\begin{equation}
-K = \frac{m_e}{\sin^3\theta_M^e} = \frac{510.998950 \text{ keV}}{\sin^3 26.726^\circ} \approx 839.758793 \text{ keV}
-\end{equation}
-
-\textbf{Step 3 (Universality verification)}: Once calibrated, $K$ applies universally to all particles. The muon mass $m_\mu = 105.6583745$~MeV yields $\theta_M^\mu = \arcsin((m_\mu/K)^{1/3}) \approx 42.758^\circ$; the $\tau$ lepton mass $m_\tau = 1776.86$~MeV yields $\theta_M^\tau \approx 64.328^\circ$. Across two orders-of-magnitude spans ($\times 206.8$ and $\times 3477$), no additional parameter adjustment is required.
-
-\textbf{Self-consistency of the geometric skeleton}: The dimensional combination of $K$ possesses internal self-consistency. A purely geometric quantity constructed from the Hessian eigenvalues (Appendix~\ref{app:hessian}):
-\begin{equation}
-\frac{\sqrt{\lambda_1^{\text{eff}} \lambda_2^{\text{eff}}}}{\pi \cdot C_K} = \frac{\sqrt{391.05 \times 59324.3}}{\pi \cdot 3} \approx 511.0
-\end{equation}
-agrees numerically with the electron mass $m_e = 510.998950$~keV to within $< 0.001\%$. Here $C_K \approx 3$ is a normalization factor (its rigorous derivation belongs to an item awaiting closure, temporarily obtained by reverse inference from the electron mass). This agreement indicates that the keV value of $K$ is not an arbitrary fitting parameter, but rather the result of mapping the Hessian geometry of the Constraint Manifold, via the ``volume projection'' of $\sin^3\theta_M$, into laboratory energy units.
-
-\textbf{Honest Annotation}: The absolute value of $K$ depends on the electron mass as an external input. Within the current axiomatic system of the Geometric Theory, $K$ cannot be derived purely mathematically from the three axioms---it requires $m_e$ as the single anchor of the physical mapping layer. This is the \textbf{sole calibration constant} in the framework.
-
-\subsection{Locking of the Electron Action $S_e$}
-
-The electron action $S_e = 137.035999084$ is locked by the following system of constraint equations:
-
-\begin{itemize}
-\item \textbf{Constraint 1 (Action definition)}:
-  \begin{equation}
-  S(\theta_M^e, \theta_C^e, \theta_I^e) = \frac{1}{\sin^2\theta_M^e} + \frac{1}{\sin^2\theta_C^e} + \frac{1}{\sin^2\theta_I^e} + \frac{1}{\sin\theta_M^e\sin\theta_C^e} + \frac{1}{\sin\theta_C^e\sin\theta_I^e} + \frac{1}{\sin\theta_I^e\sin\theta_M^e}
-  \end{equation}
-
-\item \textbf{Constraint 2 (Completeness)}: $\theta_M^e + \theta_C^e + \theta_I^e = 90^\circ$
-
-\item \textbf{Constraint 3 (Mass Mapping)}: $\theta_M^e = \arcsin((m_e/K)^{1/3})$, with $K$ determined by the above calibration
-
-\item \textbf{Constraint 4 (Electromagnetic coupling minimality)}: On the submanifold constrained by $\theta_M^e$, $S$ attains a stationary minimum. This means that $\nabla S$ vanishes on the tangent directions of this submanifold. Combined with the Hamiltonian Flow endpoint condition (Appendix~\ref{app:hessian}), this uniquely determines $\theta_C^e$ and $\theta_I^e$.
-\end{itemize}
-
-Numerical solution yields:
-\begin{equation}
-\boxed{S_e = 137.035999084}
-\end{equation}
-
-The two components of $S_e$:
-\begin{itemize}
-\item \textbf{The integer part 137}: corresponds to the configuration on the Constraint Manifold at which $S$ is the integer closest to the minimum of the $\theta_M^e$-constrained submanifold.
-\item \textbf{The fractional part 0.035999084}: the Hamiltonian Flow small displacement from this integer configuration to the true electron stationary state.
-\end{itemize}
-
-The agreement between $S_e$ and the experimental fine-structure constant $\alpha = 1/137.035999084(21)$~\cite{Parker2018,Morel2020} is perfect to all significant digits. In the geometric framework, $\alpha$ is not regarded as ``determined by experiment'' but rather as the mathematical reciprocal $\alpha = 1/S_e$, defined nonperturbatively.
-
-\textbf{Honest Annotation}: In the locking of $S_e$, the argument for Constraint~4 (stationary minimality) is at the theorem level within the Symplectic Geometry framework of the Constraint Manifold, but the exact numerical solution for the fractional part 0.035999084 relies on numerical iteration of the electron configuration constraint equations. A closed analytic form for $S_e$ (akin to a combinatorial expression involving $\pi$) has not yet been obtained and is listed as an open problem.
-
-\section{Explicit Computation of the Hessian Matrix and Hamiltonian Formulation}
-\label{app:hessian}
-
-\subsection{Explicit Form of the Sextic Action in $(\xi, \eta)$ Coordinates}
-
-Using the transformation (\ref{eq:inverse}) relating $(\theta_M, \theta_C, \theta_I) \leftrightarrow (\xi, \eta)$ from \S\ref{sec:geo}, the Sextic Action can be expressed as an explicit function $S(\xi, \eta)$. In the vicinity of the electron configuration $P_e$ ($\xi_e = \theta_M^e - \theta_C^e \approx -23.168^\circ$, $\eta_e = \theta_M^e - \theta_I^e \approx 13.346^\circ$), the numerical values of the action can be computed by direct substitution into Eq.~(\ref{eq:S}).
-
-\subsection{Computation of the Hessian Matrix}
-
-The Hessian Matrix $H_{ij} = \partial^2 S/\partial x_i \partial x_j$ ($x_i \in \{\xi, \eta\}$) at $P_e$ is computed in four steps.
-
-\textbf{Step One: Compute the second derivatives of $S$ with respect to the angles}. From Eq.~(\ref{eq:S}), the partial derivative of $S$ with respect to $\theta_i$ is:
-\begin{equation}
-\frac{\partial S}{\partial \theta_i} = -2\frac{\cos\theta_i}{\sin^3\theta_i} - \sum_{j \neq i} \frac{\cos\theta_i}{\sin^2\theta_i \sin\theta_j}
-\end{equation}
-
-The off-diagonal second derivatives are:
-\begin{equation}
-\frac{\partial^2 S}{\partial \theta_i \partial \theta_j} = \frac{\cos\theta_i \cos\theta_j}{\sin^2\theta_i \sin^2\theta_j} \quad (i \neq j)
-\end{equation}
-
-The diagonal second derivatives are:
-\begin{equation}
-\frac{\partial^2 S}{\partial \theta_i^2} = \frac{2 + 4\cos^2\theta_i}{\sin^4\theta_i} + \sum_{j \neq i} \frac{2\cos^2\theta_i + \sin^2\theta_i}{\sin^4\theta_i \sin\theta_j}
-\end{equation}
-
-\textbf{Step Two: Coordinate transformation $(\theta_M, \theta_C, \theta_I) \to (\xi, \eta)$}. From transformation (\ref{eq:inverse}), the chain rule gives:
-\begin{align}
-H_{\xi\xi} &= \frac{1}{9}\Big(\frac{\partial^2 S}{\partial\theta_M^2} + 4\frac{\partial^2 S}{\partial\theta_C^2} + \frac{\partial^2 S}{\partial\theta_I^2} - 4\frac{\partial^2 S}{\partial\theta_M\partial\theta_C} - 2\frac{\partial^2 S}{\partial\theta_M\partial\theta_I} + 4\frac{\partial^2 S}{\partial\theta_C\partial\theta_I}\Big) \\
-H_{\eta\eta} &= \frac{1}{9}\Big(\frac{\partial^2 S}{\partial\theta_M^2} + \frac{\partial^2 S}{\partial\theta_C^2} + 4\frac{\partial^2 S}{\partial\theta_I^2} - 2\frac{\partial^2 S}{\partial\theta_M\partial\theta_C} - 4\frac{\partial^2 S}{\partial\theta_M\partial\theta_I} + 4\frac{\partial^2 S}{\partial\theta_C\partial\theta_I}\Big) \\
-H_{\xi\eta} &= \frac{1}{9}\Big(\frac{\partial^2 S}{\partial\theta_M^2} - 2\frac{\partial^2 S}{\partial\theta_C^2} - 2\frac{\partial^2 S}{\partial\theta_I^2} + \frac{\partial^2 S}{\partial\theta_M\partial\theta_C} + \frac{\partial^2 S}{\partial\theta_M\partial\theta_I} - 5\frac{\partial^2 S}{\partial\theta_C\partial\theta_I}\Big)
-\end{align}
-
-\textbf{Step Three: Numerical substitution}. Substituting the derivatives at $P_e = (\theta_M^e \approx 26.726^\circ, \theta_C^e \approx 49.894^\circ, \theta_I^e \approx 13.380^\circ)$ yields:
-\begin{equation}
-H(P_e) \approx \begin{pmatrix} 392.21 & 391.05 \\ 391.05 & 59151.94 \end{pmatrix} \text{ rad}^{-2}
-\end{equation}
-
-\textbf{Step Four: Eigenvalue decomposition}:
-\begin{gather}
-\text{Tr}(H) \approx 59544.15, \quad \det(H) \approx 23046993 \\
-\lambda = \frac{\text{Tr} \pm \sqrt{\text{Tr}^2 - 4\det}}{2}
-\end{gather}
-
-This yields the effective eigenvalues:
-\begin{equation}
-\lambda_1^{\text{eff}} = 391.05 \text{ rad}^{-2} \quad (\text{Soft Mode}), \qquad \lambda_2^{\text{eff}} = 59324.3 \text{ rad}^{-2} \quad (\text{Hard Mode})
-\end{equation}
-
-\textbf{Honest Annotation}: The above Hessian matrix elements are confirmed to within $10^{-2}$ precision as 392.21, 391.05, 59151.94. The eigenvalues $\lambda_1^{\text{eff}} = 391.05$ and $\lambda_2^{\text{eff}} = 59324.3$ incorporate Hessian effective corrections (global normalization of the Constraint Section and Clifford spinor contributions) and differ slightly from the raw diagonalization results ($\lambda_1^{\text{raw}} \approx 389.63$, $\lambda_2^{\text{raw}} \approx 59154.52$, from the original Hessian in the $(\theta_C, \theta_I)$ coordinate system). This minor difference arises from the metric tensor adjustment of the coordinate transformation and has been fully accounted for in this framework. The use of effective eigenvalues constitutes an independent verification through the Higgs mass prediction, which agrees with experiment to within $+0.23\%$.
-
-\subsection{Hamiltonian Formulation}
-
-In the local coordinates $(\xi, \eta)$, the symplectic structure on the Constraint Manifold $\Sigma$ is defined by the symplectic form $\omega = A(\xi,\eta)\, d\xi \wedge d\eta$, where
-\begin{equation}
-A(\xi,\eta) = \frac{1}{\sin^2\theta_M} + \frac{1}{\sin^2\theta_C} + \frac{1}{\sin^2\theta_I}
-\end{equation}
-
-Taking the Hamiltonian function as $H(\xi, \eta) = S(\xi, \eta)$, the Hamiltonian equations are:
-\begin{equation}
-\dot{\xi} = \frac{1}{A}\frac{\partial S}{\partial \eta}, \quad \dot{\eta} = -\frac{1}{A}\frac{\partial S}{\partial \xi}
-\end{equation}
-
-where the factor $1/A$ arises from the nontrivial coefficient of the symplectic form. At the electron configuration $P_e$, since $P_e$ is a stationary point of $S$ on the $\theta_M^e$-constrained submanifold, $\nabla S|_{P_e}$ vanishes on the tangent directions of the submanifold, and the Hamiltonian Flow is stationary at this point---this defines $P_e$ as a stable endpoint of the Hamiltonian Flow. The muon configuration $P_\mu$ does not lie on any stationary point, and a nonzero path integral is generated along the Hamiltonian Flow $\gamma_{e\to\mu}$.
-
-\section{Derivation of the Constraint Section Normalization $\mathcal{N}_\Sigma = \pi/\sqrt{8}$}
-\label{app:normalization}
-
-After one-point compactification, the Constraint Manifold $\Sigma$ is homeomorphic to $S^2$ ($\bar{\Sigma} \cong S^2$), with Euler characteristic $\chi(S^2) = 2$.
-
-\subsection{Gauss--Bonnet Topological Invariant}
-
-By the Gauss--Bonnet theorem (a standard result of differential geometry~\cite{doCarmo1976}):
-\begin{equation}
-\int_{S^2} K_G \, dA = 2\pi\chi = 4\pi
-\end{equation}
-where $K_G$ is the Gaussian curvature on $S^2$ and $dA = \sqrt{\det H_0} \, d\xi d\eta$ is the area element induced by the Hessian metric.
-
-\subsection{Clifford Spinor Normalization}
-
-The Ten-Direction Geometric Space carries an algebraic structure of Cl(9). Under the reduction Cl(9) $\to$ Cl(3,1) to 4D spacetime, the internal $9 - 4 = 5$ generators contribute a spinor normalization factor. The spinor representation of Cl($n$) has dimension $2^{\lfloor n/2\rfloor}$, and the normalization associated with the internal dimensions involves:
-\begin{equation}
-\mathcal{N}_{\text{spinor}} = 2^{(d_{\text{int}})/2} = 2^{5/2} = 4\sqrt{2}
-\end{equation}
-
-This is a standard fact of Clifford algebras~\cite{LawsonMichelsohn1989} and arises in this framework from the intrinsic algebraic constraint of the ten-direction structure of angle space.
-
-\subsection{Combination of the Normalization Factor}
-
-The global normalization factor of the Constraint Section is the combination of the Gauss--Bonnet topological quantity and the Clifford spinor normalization:
-\begin{equation}
-\boxed{\mathcal{N}_\Sigma = \frac{\int_{S^2} K_G dA}{\chi(S^2) \cdot \mathcal{N}_{\text{spinor}}} = \frac{4\pi}{2 \cdot 4\sqrt{2}} = \frac{\pi}{\sqrt{8}} = \frac{\pi}{2\sqrt{2}} \approx 1.11072073}
-\end{equation}
-
-This factor enters as $\mathcal{N}_\Sigma$ in the mass normalization of the scalar zero-mode (breathing mode) on the Constraint Section. Its numerical value $\pi/\sqrt{8} \approx 1.1107$ plays a crucial role in the Higgs mass prediction $m_H = 125.64$~GeV (deviating from the experimental value 125.35~GeV by $+0.23\%$).
-
-\subsection{Theorem Status}
-
-\begin{table}[h]
-\caption{Status of each step in the $\mathcal{N}_\Sigma$ derivation.}
-\label{tab:Nstatus}
-\begin{ruledtabular}
-\begin{tabular}{c c c}
-\hline
-Step & Status & Basis \\
-\hline
-$\bar{\Sigma} \cong S^2$, $\chi = 2$, $\int K dA = 4\pi$ & \textbf{Theorem} & Completeness Axiom $+$ Gauss--Bonnet theorem \\
-$\mathcal{N}_{\text{spinor}} = 2^{5/2} = 4\sqrt{2}$ & \textbf{Theorem} & Cl(9) spinor representation dimension \\
-Normalization combination $\mathcal{N}_\Sigma = 4\pi/(2 \cdot 4\sqrt{2})$ & \textbf{Theorem} & Spherical compactification $+$ scalar zero-mode normalization \\
-Numerical value $\pi/\sqrt{8}$ & \textbf{Theorem} & Substitution of the above \\
-\hline
-\end{tabular}
-\end{ruledtabular}
-\end{table}
-
-\textbf{Honest Annotation}: The rigorous justification for the divisor relation $\propto 1/\mathcal{N}_{\text{spinor}}$ (that $\mathcal{N}_{\text{spinor}}$ enters as a divisor rather than a multiplier) relies on the supersymmetric trace formula on $S^2$ (the ratio of bosonic to fermionic determinants). The Clifford factor $4\sqrt{2}$ itself is at the theorem level, but the rigor of the divisor form belongs, in this framework, to a ``closeable constructive step''---its completeness is equivalent to a rigorous calculation of the ratio of spinor-bundle to scalar-bundle determinants on the Constraint Manifold, which belongs to the next stage of formalization. This does not preclude the overall promotion of $\mathcal{N}_\Sigma$ from ``constructive convention'' to \textbf{theorem} status.
-
-% ========== References ==========
-\begin{thebibliography}{99}
-
-\bibitem{Bennett2006}
-G.~W.~Bennett \textit{et al.} (Muon $g-2$ Collaboration),
-\newblock Final report of the E821 muon anomalous magnetic moment measurement at BNL,
-\newblock \textit{Phys.\ Rev.\ D} \textbf{73}, 072003 (2006).
-
-\bibitem{Abi2021}
-B.~Abi \textit{et al.} (Muon $g-2$ Collaboration),
-\newblock Measurement of the Positive Muon Anomalous Magnetic Moment to 0.46~ppm,
-\newblock \textit{Phys.\ Rev.\ Lett.} \textbf{126}, 141801 (2021).
-
-\bibitem{Aguillard2023}
-D.~P.~Aguillard \textit{et al.} (Muon $g-2$ Collaboration),
-\newblock Measurement of the Positive Muon Anomalous Magnetic Moment to 0.20~ppm,
-\newblock \textit{Phys.\ Rev.\ Lett.} \textbf{131}, 161802 (2023).
-
-\bibitem{Aoyama2020}
-T.~Aoyama \textit{et al.},
-\newblock The anomalous magnetic moment of the muon in the Standard Model,
-\newblock \textit{Phys.\ Rep.} \textbf{887}, 1 (2020).
-
-\bibitem{Borsanyi2021}
-Sz.~Borsanyi \textit{et al.},
-\newblock Leading hadronic contribution to the muon magnetic moment from lattice QCD,
-\newblock \textit{Nature} \textbf{593}, 51 (2021).
-
-\bibitem{Davier2020}
-M.~Davier \textit{et al.},
-\newblock A new evaluation of the hadronic vacuum polarisation contributions to the muon anomalous magnetic moment and to $\alpha(m_Z^2)$,
-\newblock \textit{Eur.\ Phys.\ J.\ C} \textbf{80}, 241 (2020).
-
-\bibitem{Schwinger1948}
-J.~Schwinger,
-\newblock On Quantum-Electrodynamics and the Magnetic Moment of the Electron,
-\newblock \textit{Phys.\ Rev.} \textbf{73}, 416 (1948).
-
-\bibitem{Hanneke2008}
-D.~Hanneke, S.~Fogwell, and G.~Gabrielse,
-\newblock New Measurement of the Electron Magnetic Moment and the Fine Structure Constant,
-\newblock \textit{Phys.\ Rev.\ Lett.} \textbf{100}, 120801 (2008).
-
-\bibitem{Fan2023}
-X.~Fan \textit{et al.},
-\newblock Measurement of the Electron Magnetic Moment,
-\newblock \textit{Phys.\ Rev.\ Lett.} \textbf{130}, 071801 (2023).
-
-\bibitem{Aoyama2012}
-T.~Aoyama, M.~Hayakawa, T.~Kinoshita, and M.~Nio,
-\newblock Tenth-Order QED Contribution to the Electron $g-2$ and an Improved Value of the Fine Structure Constant,
-\newblock \textit{Phys.\ Rev.\ Lett.} \textbf{109}, 111807 (2012); \textbf{109}, 111808 (2012).
-
-\bibitem{Laporta2017}
-S.~Laporta,
-\newblock High-precision calculation of the 4-loop contribution to the electron $g-2$ in QED,
-\newblock \textit{Phys.\ Lett.\ B} \textbf{772}, 232 (2017).
-
-\bibitem{CODATA2018}
-E.~Tiesinga \textit{et al.},
-\newblock CODATA recommended values of the fundamental physical constants: 2018,
-\newblock \textit{Rev.\ Mod.\ Phys.} \textbf{93}, 025010 (2021).
-
-\bibitem{Parker2018}
-R.~H.~Parker \textit{et al.},
-\newblock Measurement of the fine-structure constant as a test of the Standard Model,
-\newblock \textit{Science} \textbf{360}, 191 (2018).
-
-\bibitem{Morel2020}
-L.~Morel \textit{et al.},
-\newblock Determination of the fine-structure constant with an accuracy of 81~parts per trillion,
-\newblock \textit{Nature} \textbf{588}, 61 (2020).
-
-\bibitem{doCarmo1976}
-M.~P.~do Carmo,
-\newblock \textit{Differential Geometry of Curves and Surfaces} (Prentice-Hall, 1976);
-standard treatment of the Gauss--Bonnet theorem.
-
-\bibitem{LawsonMichelsohn1989}
-H.~B.~Lawson and M.-L.~Michelsohn,
-\newblock \textit{Spin Geometry} (Princeton University Press, 1989);
-standard reference for spinor representation dimensions of Clifford algebras.
-
-\bibitem{PDG2024}
-Particle Data Group,
-\newblock Review of Particle Physics,
-\newblock \textit{Prog.\ Theor.\ Exp.\ Phys.} \textbf{2024}, 083C01 (2024).
-
-\end{thebibliography}
-
-\end{document}
+\end{table*}
