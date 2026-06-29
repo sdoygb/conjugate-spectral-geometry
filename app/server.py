@@ -1154,7 +1154,7 @@ def chat_completions():
             results_main = vector_kb.search(search_query, top_k=8)
             if search_terms:
                 results_math = vector_kb.search(
-                    '公理 定理 引理 推导 证明 ' + ' '.join(search_terms[:5]),
+                    '公理 定理 引理 推导 证明 定义 假设 推论 ' + ' '.join(search_terms[:5]),
                     top_k=8
                 )
             else:
@@ -1166,10 +1166,15 @@ def chat_completions():
                 )
             else:
                 results_nums = []
+            # 新增：跨领域关联搜索（找与问题同主题的前后文和对称概念）
+            results_cross = []
+            if search_terms:
+                cross_query = '对称 对偶 逆 对应 变换 映射 相关 ' + ' '.join(search_terms[:3])
+                results_cross = vector_kb.search(cross_query, top_k=6) or []
             # 合并去重（按id去重，保留距离最近的）
             seen_ids = set()
             merged = []
-            for r in (results_main or []) + (results_math or []) + (results_nums or []):
+            for r in (results_main or []) + (results_math or []) + (results_nums or []) + (results_cross or []):
                 rid = r.get('id', '')
                 if rid and rid not in seen_ids:
                     seen_ids.add(rid)
@@ -1177,9 +1182,9 @@ def chat_completions():
             merged.sort(key=lambda x: x.get('distance', 1.0))
             results = merged[:MAX_CHUNKS_PER_QUERY]
             logger.info(
-                f"[VECTOR-MULTI] 三角度检索: main={len(results_main or [])}, "
+                f"[VECTOR-MULTI] 四角度检索: main={len(results_main or [])}, "
                 f"math={len(results_math or [])}, nums={len(results_nums or [])}, "
-                f"merge={len(results)}"
+                f"cross={len(results_cross or [])}, merge={len(results)}"
             )
         else:
             results = []
@@ -1355,33 +1360,6 @@ def chat_completions():
                     else:
                         item["type"] = "text"
                     logger.warning(f"[CLEAN] 消息[{i}] content[{j}] 缺少type字段，已推断为 {item['type']}")
-        # DeepSeek 不接受 content 为数组格式（只接受字符串）
-        # 其他模型（OpenAI GPT-4o、Claude 等）原生支持 content 数组
-        # 使用 _selected_model 变量判断（注意：此变量在消息清洗之后才定义，
-        # 所以这里用环境变量或默认值来判断）
-        _need_flatten = 'deepseek' in os.getenv('GAI_MODEL', 'deepseek-v4-pro').lower()
-        if isinstance(content, list) and _need_flatten:
-            has_image = any(isinstance(item, dict) and item.get("type") == "image_url" for item in content)
-            if has_image:
-                # DeepSeek 不支持 image_url，移除图片元素，只保留 text
-                text_parts = []
-                for item in content:
-                    if isinstance(item, dict) and item.get("type") == "text":
-                        text_parts.append(item.get("text", ""))
-                    elif isinstance(item, str):
-                        text_parts.append(item)
-                msg["content"] = "\n".join(text_parts) if text_parts else "用户发送了一张图片，但当前模型不支持图片输入。"
-                logger.info(f"[CLEAN] 消息[{i}] 图片元素已移除，仅保留文本（DeepSeek 不支持图片）")
-            else:
-                text_parts = []
-                for item in content:
-                    if isinstance(item, dict) and item.get("type") == "text":
-                        text_parts.append(item.get("text", ""))
-                    elif isinstance(item, str):
-                        text_parts.append(item)
-                msg["content"] = "\n".join(text_parts)
-                logger.info(f"[CLEAN] 消息[{i}] 纯文本数组已合并为字符串（DeepSeek 兼容）")
-
     # 修复多模态消息：API 要求 content 数组中每个 text 元素都不能为空
     for i, msg in enumerate(final_messages):
         content = msg.get("content")
@@ -1418,7 +1396,7 @@ def chat_completions():
             logger.info(f"[IMG-DEBUG] index={i}, role={msg.get('role')}, types={types}")
 
     # 历史消息截断：保留 system + 最近 N 条消息，防止 token 爆炸
-    MAX_HISTORY_MESSAGES = 40  # 最近 40 条消息（约 20 轮对话）
+    MAX_HISTORY_MESSAGES = 80  # 最近 80 条消息（约 40 轮对话）
     MAX_HISTORY_CHARS = 30000  # 历史消息总字符上限
     if len(final_messages) > MAX_HISTORY_MESSAGES + 1:  # +1 是 system
         trimmed = final_messages[1:-(MAX_HISTORY_MESSAGES)]
@@ -1467,6 +1445,57 @@ def chat_completions():
         logger.info(f"[ROUTE] 简单问题，使用轻量模型: {GAI_MODEL_LITE}")
 
     api_params = {"model": _selected_model, "messages": final_messages}
+    # ---------- 图片 / 视觉模型智能路由 ----------
+    # 检测用户消息中是否包含 image_url
+    _final_has_image = False
+    for _msg in final_messages:
+        _c = _msg.get("content")
+        if isinstance(_c, list):
+            for _item in _c:
+                if isinstance(_item, dict) and _item.get("type") == "image_url":
+                    _final_has_image = True
+                    break
+        if _final_has_image:
+            break
+    if _final_has_image:
+        # 有图片 -> 切换到视觉模型
+        logger.info(f"[VISION] 检测到图片，切换到视觉模型 {GAI_MODEL_VISION}（原: {_selected_model}）")
+        _selected_model = GAI_MODEL_VISION
+        # system prompt 中注入视觉能力提示
+        _vision_note = (
+            "\n\n【视觉能力已激活】你同时具有文本和图片处理能力。"
+            "如果用户上传了图片，请仔细观察并理解图片内容（包括但不限于：图解、公式截图、手写笔记、图表、代码截图等），"
+            "然后结合几何论知识回答问题。对于图片中的公式，尝试用 LaTeX 转写；对于手写内容，尽力辨认后给出回答。"
+        )
+        final_messages[0]["content"] = final_messages[0]["content"] + _vision_note
+        # 重新路由到视觉模型的提供商
+        _vision_base_url, _vision_api_key = get_provider_for_model(_selected_model)
+        base_url, api_key = _vision_base_url, _vision_api_key
+        client = openai.OpenAI(api_key=api_key, base_url=base_url)
+        logger.info(f"[VISION] 路由到: {base_url}, 模型: {_selected_model}")
+        # 更新 api_params 中的模型名称
+        api_params["model"] = _selected_model
+        # 检查切换后的模型是否真正支持 image_url
+        _is_vision_model = get_provider_for_model(_selected_model)[0]  # 获取 base_url
+        # DeepSeek 系列和部分模型不接受 image_url 格式，只接受 text
+        _vision_supports_image = not any(p in _selected_model.lower() for p in ['deepseek', 'qwen', 'glm', 'gemini-1.5', 'claude-3-haiku', 'claude-3-sonnet'])
+        if not _vision_supports_image:
+            # 模型不支持 image_url -> 移除图片元素，保留文本，切回原模型
+            logger.warning(f'[VISION] 模型 {_selected_model} 不支持 image_url，将移除图片元素并切回原模型 ' + api_params.get('model', GAI_MODEL))
+            _selected_model = api_params.get("model", GAI_MODEL)
+            for _vi_msg in final_messages:
+                _c = _vi_msg.get("content")
+                if isinstance(_c, list):
+                    _text_parts = []
+                    for _item in _c:
+                        if isinstance(_item, dict) and _item.get("type") == "text":
+                            _text_parts.append(_item.get("text", ""))
+                        elif isinstance(_item, str):
+                            _text_parts.append(_item)
+                    _vi_msg["content"] = "\n".join(_text_parts)
+            logger.info(f"[VISION] 已移除 image_url，保留文本，使用模型 {_selected_model}")
+        else:
+            logger.info(f"[VISION] 模型 {_selected_model} 支持 image_url，保持图片")
     # 仅当模型支持 function calling 时才注入工具定义
     # DeepSeek、OpenAI、Qwen、GLM 等主流模型均支持
     _model_lower = _selected_model.lower()
@@ -1475,6 +1504,8 @@ def chat_completions():
         api_params["tools"] = ARTICLE_TOOLS
     else:
         logger.info(f"[ROUTE] 模型 {_selected_model} 可能不支持 function calling，跳过工具注入")
+    if _final_has_image:
+        logger.info(f"[VISION] 视觉模型 {_selected_model}，保留 tools 参数")
 
     # DeepSeek 兼容：仅在 DeepSeek 模型时处理 reasoning_content
     # 其他模型（OpenAI/Anthropic/Qwen/GLM）不使用此字段
@@ -1510,6 +1541,12 @@ def chat_completions():
     # 中间层使用自有工具定义（ARTICLE_TOOLS），不透传 Open WebUI 的 tools 参数
     # 原因：中间层代理模式下，工具调用在中间层内部完成，Open WebUI 不需要感知
     # 透传 Open WebUI 的标准参数
+    # 默认启用深度思考（DeepSeek reasoning_effort）
+    if 'reasoning_effort' not in data:
+        api_params['reasoning_effort'] = 'high'
+    elif data['reasoning_effort']:
+        api_params['reasoning_effort'] = data['reasoning_effort']
+
     for key in ('temperature', 'max_tokens', 'top_p', 'stop', 'frequency_penalty', 'presence_penalty', 'tool_choice', 'stream_options', 'response_format', 'user'):
         if key in data:
             api_params[key] = data[key]

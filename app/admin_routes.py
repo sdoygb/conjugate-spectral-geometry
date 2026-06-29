@@ -302,27 +302,33 @@ def admin_logs():
 def admin_restart():
     """
     重启中间层服务。
-    通过 launchctl 或直接 kill 进程实现。
+    优先用 launchctl unload/load 重启（macOS launchd 管理）；
+    否则用 kill + 重新启动进程。
     """
     import subprocess
     try:
-        # 找到当前进程 PID
         my_pid = os.getpid()
-        # 用 launchctl 重启（如果是 launchd 管理的）
         plist_path = os.path.expanduser('~/Library/LaunchAgents/com.geometryai.server.plist')
         if os.path.exists(plist_path):
-            subprocess.Popen(['launchctl', 'kickstart', '-k', 'gui/$(id -u)/com.geometryai.server'],
-                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            return jsonify({"success": True, "message": "服务正在重启..."})
+            # macOS launchd 管理：unload 终止进程 + load 重新拉起
+            subprocess.Popen(
+                ['bash', '-c',
+                 f'launchctl unload "{plist_path}" && sleep 1 && launchctl load -w "{plist_path}"'],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            )
+            logger.info("[ADMIN] 通过 launchctl unload/load 触发重启")
+            return jsonify({"success": True, "message": "服务正在重启（launchctl）..."})
         else:
-            # 非 launchd 管理，用 os.execv 重启自身
+            # 非 launchd 管理，kill 当前进程后重新启动
             import sys
             python = sys.executable
-            # 延迟重启，先返回响应
-            subprocess.Popen([
-                'bash', '-c',
-                f'sleep 1 && kill {my_pid} && cd {_config_module.PROJECT_ROOT} && {python} server.py'
-            ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            server_py = os.path.join(_config_module.PROJECT_ROOT, 'server.py')
+            subprocess.Popen(
+                ['bash', '-c',
+                 f'sleep 2 && kill {my_pid} && cd {_config_module.PROJECT_ROOT} && {python} {server_py}'],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            )
+            logger.info(f"[ADMIN] 非 launchd 模式，通过 kill+restart 触发重启")
             return jsonify({"success": True, "message": "服务正在重启..."})
     except Exception as e:
         logger.error(f"[ADMIN] 重启失败: {e}")
