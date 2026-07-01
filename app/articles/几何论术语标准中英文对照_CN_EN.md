@@ -1,6 +1,6 @@
 # 几何论术语标准中英文对照
 
-> **版本**：260701.9（二次修订）  
+> **版本**：260701.9  
 > **用途**：几何论全部术语在此统一。任何新文章引入术语前必须先在本表登记。  
 > **语言**：中文 / English  
 > **更新规则**：见 §11 维护规则
@@ -12,176 +12,133 @@
 > 公理 = 理论的全部自由输入。几何论有三条公理，无第四条。
 
 | 中文 | 英文 | 公式 / 陈述 | 出处 |
-|:---|:---|:---|:---|
-| 公理1（圆拓扑公理） | Axiom 1 (Circle Topology Axiom) | $D = S^1 \setminus \{p_0, p_*\}$，$D_\pm \cong (0,1)$ | 0.0.3 §2.1; 0.0.6 §1 |
-| 公理2（边界极限公理） | Axiom 2 (Boundary Limit Axiom) | $S: D \to (0,+\infty)$ 连续，$\lim_{p_0}S=0$，$\lim_{p_*}S=+\infty$ | 0.0.3 §2.2; 0.0.6 §1 |
-| 公理3（全息屏编码公理/完备性约束） | Axiom 3 (Holographic Screen Encoding Axiom / Completeness Constraint) | $\theta_M + \theta_C + \theta_I = 90^\circ$；$T\Sigma = \mathcal{M}^3 \oplus \mathcal{C}^3 \oplus \mathcal{I}^3$ | 0.0.6 §3.1; 0.0.7 §3 |
-
-**角度记法等价声明**：$\theta_1 \equiv \theta_M$，$\theta_2 \equiv \theta_C$，$\theta_3 \equiv \theta_I$。$\theta_1,\theta_2,\theta_3$ 为 0.0.6–0.0.7 所用几何记法；$\theta_M,\theta_C,\theta_I$ 为 0.1 引入的物理化记法。
+|---|---|---|---|
+| 公理1（角度和） | Axiom 1 (Angle Sum) | $\theta_M + \theta_C + \theta_I = 90^\circ$ | 0.0.3 §2 |
+| 公理2（作用量和） | Axiom 2 (Action Sum) | $S = \sum \frac{1}{\sin^2\theta_i} + \sum_{i<j} \frac{1}{\sin\theta_i\sin\theta_j}$ | 0.0.3 §2 |
+| 公理3（质量-角度耦合） | Axiom 3 (Mass-Angle Coupling) | $m = K \sin^3\theta_M$ | 0.0.3 §2 |
 
 ---
 
 ## §2 场与空间
 
-| 中文 | 英文 | 定义 | 出处 |
-|:---|:---|:---|:---|
-| M场（物质扇区） | M-Field (Matter Sector) | 三分切丛的 $\mathcal{M}$ 分量，$\dim=3$，软模基态 | 0.0.7 §3; 0.1 §1.2 |
-| C场（因果扇区） | C-Field (Causal Sector) | 三分切丛的 $\mathcal{C}$ 分量，$\dim=3$，腰边耦合结构，零锥 | 0.0.7 §3; 0.1 §1.2 |
-| I场（信息扇区） | I-Field (Information Sector) | 三分切丛的 $\mathcal{I}$ 分量，$\dim=3$，信息/相位通道 | 0.0.7 §3; 0.1 §1.2 |
-| 三分切丛 | Trial Section Bundle | $T\Sigma = \mathcal{M}^3 \oplus \mathcal{C}^3 \oplus \mathcal{I}^3$，全息屏 $\Sigma$ 上的三维向量丛直和分解 | 0.0.7 §3 |
-| 全息屏 | Holographic Screen | 二维约束流形 $\Sigma = \{(\theta_M,\theta_C,\theta_I) \mid \theta_M+\theta_C+\theta_I=90^\circ\}$ | 0.0.6 §3 |
-| 完备性平面 | Completeness Plane | $\theta_M + \theta_C + \theta_I = 90^\circ$ 确定的二维平面 | 0.0.6 §3 |
-| CIM相 | CIM Phase | 因果-信息-物质三扇区耦合相，标准模型/广义相对论/弦论为其低能有效场论近似 | 0.0.7 §5 |
-| 约束流形 | Constrained Manifold | 完备性约束确定的二维子流形 | 0.1 §3.3 |
-| 约束乘积球面 | Constrained Product Sphere (CPS) | $M(a) = S^3(a_1) \times S^3(a_2) \times S^3(a_3)$，$\Lambda = a_1^2 : a_2^2 : a_3^2 = 3 : 1 : k_0$ | 0.0.5 定义 3.1 |
-| 圆盘域 | Disk Domain | $D = S^1 \setminus \{p_0, p_*\}$，激发态参数空间 | 0.0.3 §2.1 |
-| 量纲桥 | Dimensional Bridge | 几何单位制 ↔ SI 单位制的七级递推映射 | 0.3.1 §2–§8 |
-| 几何单位制 | Geometric Unit System | 以 $\ell_0$ 为内禀长度单位的量纲体系 | 0.0.7 §5; 0.1 §7 |
-| 扇区投影强度角 | Sector Projection Strength Angle | $\theta_i$ 的几何含义——扇区 $i$ 在完备性平面上的投影强度 | 0.0.6 §3 |
-| 软/硬模 | Soft/Hard Mode | Hessian 约束截面小/大本征值对应的振动模 | 0.1 §3.4 |
-| 源模 | Source Mode | $\mathcal{M}$ 扇区软模基态激发（电子） | 0.1 §2.1 |
-| 传播模 | Propagation Mode | $\mathcal{C}$ 扇区零锥结构（光子） | 0.1 §2.1 |
-| 约束乘积球面类 | CPS Class | 0.0.5 的定义 + 定理集合。**不是公理体系** | 0.0.5 定义 3.1 |
+| 中文 | 英文 | 公式 / 陈述 | 出处 |
+|---|---|---|---|
+| 信息场 | Information Field $\mathcal{I}$ | $\mathcal{I}(x,t)$，满足热方程 | 0.4 §2 |
+| 因果场 | Causal Field $\mathcal{C}$ | 动力学变量，与 $\mathcal{I}$ 耦合 | 0.5 §3 |
+| 物质场 | Matter Field $\mathcal{M}$ | 激发态在切丛上的表示 | 0.0.5 §3 |
+| 约束乘积球面 | Constrained Product Spheres | $M(a)=S^3(a)\times S^3(a/\sqrt{3})\times S^3(a/\sqrt{6})$ | 0.0.5 定义3.1 |
+| 10方几何空间 | 10-direction Geometric Space $\mathcal{T}$ | 具有三分切丛结构、全息屏编码、谱刚性的约束乘积球面族 | 0.0.7 §5.4 |
+| 全息屏 | Holographic Screen $\Sigma$ | 能量-信息编码边界 | 0.0.6 §3 |
+| 三分切丛 | Tripartite Tangent Bundle | $T\mathcal{T} = T\mathcal{M} \oplus T\mathcal{C} \oplus T\mathcal{I}$ | 0.0.6 §2 |
+| 谱三元组 | Spectral Triple | $(\mathcal{A}, \mathcal{H}, D)$，非交换几何构造 | 0.0.5 §7 |
+| 上同调层 | Cohomological Layer | $H^k$ 隐喻，区分严格数学与识别层 | 0.0.6 §5 |
 
 ---
 
 ## §3 核心映射 ℰ
 
-| 中文 | 英文 | 定义 | 出处 |
-|:---|:---|:---|:---|
-| 单一核心映射 ℰ | Unique Core Mapping ℰ | 三分切丛的 $\mathcal{M}$-$\mathcal{C}$ 腰边耦合结构对应电磁相互作用。是理论中**唯一的物理识别映射** | 0.1 §1.3 声明 2.1; §2.1 |
-| ℰ 映射锚点 | ℰ Mapping Anchor | 概念名称。ℰ 映射作为几何论中物理识别的唯一锚定点——理论通过 ℰ 将三公理定义的几何对象与电磁现象对应，其余物理映射（质量、光速等）均为 ℰ 的导出项。**ℰ 不是第四条公理** | 0.1 §1.3, §2.1, §2.2; 0.0.7 摘要 |
-| 腰边耦合 | Waist-Edge Coupling | $\mathcal{M}$ 与 $\mathcal{C}$ 扇区在约束流形上的耦合结构，参数 $w$ | 0.6.3 §2 |
-| 质量映射 | Mass Mapping | $m = K \sin^3\theta_M$。**ℰ 的导出项 2.2.2**，不是独立映射，不是公理 | 0.1 §2.2 导出项 2.2.2 |
-| 精细结构识别 | Fine-Structure Identification | $S = S_e = 137.035999084$ 识别为 $\alpha^{-1}$。ℰ 对全息屏作用量的物理读出 | 0.1 §2.2 导出项 2.2.1 |
-| 物理识别点（裸基准点） | Physical Identification Point (Bare Reference Point) | $(\theta_M^0, \theta_C^0, \theta_I^0) = (57.93^\circ, 26.16^\circ, 5.91^\circ)$，ℰ + 公理3 联立唯一解 | 0.1 定理 3.1 |
+> ℰ 是几何论物理识别的唯一锚点。质量、光速等均为其导出项，不是第四条公理。
 
-**关于 ℰ 的诚实标注**：ℰ 不是第四条公理，而是物理识别规则——它说明三公理所定义的几何对象中，哪一部分对应于物理世界中的电磁现象（0.1 §2.1）。
-
-**关于 c **：光速 $c$ 是 ℰ 的导出项 2.2.3——几何单位制与 SI 之间的量纲桥接口，由 ℰ 映射导出。不是外部锚点。**真正锚定为 ℰ 映射及其导出物**（如 $S_e$、物理识别点等）。
+| 中文 | 英文 | 公式 / 陈述 | 出处 |
+|---|---|---|---|
+| ℰ 映射（量纲桥） | ℰ-map (Dimensional Bridge) | $\mathcal{E}: \text{几何量} \to \text{物理量}$ | 0.3.1 §4 |
+| ℰ 映射锚点 | ℰ-map Anchor | ℰ 映射的固定点：$c = 2.99792458 \times 10^8$ m/s 为唯一外部输入 | 0.3.1 §4 |
+| 物理特征长度 $\chi_L$ | Physical Characteristic Length | $\chi_L = 1.509 \times 10^{-10}$ m（由几何 $\chi_L(\ell_0) \approx 1.983$ 经 ℰ 映射量纲桥转换） | 0.3.1 §4, 0.0.7 §7.3 |
+| 物理特征时间 $\chi_T$ | Physical Characteristic Time | $\chi_T = 3.616 \times 10^{-17}$ s | 0.3.1 §4 |
 
 ---
 
 ## §4 定理
 
-> **定理定义**：有明确陈述 + 完整证明。以下为定理级的独立条目。
-
-| 中文 | 英文 | 陈述 | 出处 |
-|:---|:---|:---|:---|
-| 六项作用量公式 | Six-Term Action Formula | $S(\theta) = \sum 1/\sin^2\theta_i + \sum_{i<j} 1/(\sin\theta_i \sin\theta_j)$，公理3的数学推论 | 0.0.6 定理 4.4 |
-| 物理识别点存在唯一性 | Existence & Uniqueness of Physical Identification Point | ℰ + 公理3 联立系统在有序扇区规范内有唯一解 | 0.1 定理 3.1 |
-| 桥接函数唯一性 | Uniqueness of Bridge Function | $\Phi(S)$ 在给定边界条件下唯一 | 0.1.1 定理 2.1 |
-| 桥接函数标准形 | Bridge Function Standard Form | $S(a)=c_2(a^2/\ell_0^2+\ell_0^2/a^2)+c_0$（$2c_2+c_0=24$）是满足 (C1)–(C3) 的唯一标准形族；归一化条件后 $c_2=12$, $c_0=0$，得 $S=12(a^2/\ell_0^2+\ell_0^2/a^2)$。**注：定义 5.2 与定理 5.3 共享此名——定义 5.2 为框架的显式输入，定理 5.3 为其在解析函数类中的唯一性证明** | 0.0.7 定义 5.2, 定理 5.3 |
-| 信息场衰减定理 | Information Field Decay Theorem | 信息场沿全息屏的衰减律 | 0.4.1 定理 1 |
-| C-I 联合 Hessian 定理 | C-I Joint Hessian Theorem | $\mathcal{C}$-$\mathcal{I}$ 跨扇区 Hessian 结构 | 0.6.4 定理 1 |
-| 腰边耦合选择定则 | Waist-Edge Coupling Selection Rule | $\mathcal{M}$-$\mathcal{C}$ 腰边耦合的允许模式 | 0.6.3 定理 2 |
-| 颜色单态定理 | Color Singlet Theorem | 夸克扇区 SU(3) 颜色单态条件 | 0.8.6 定理 2.1 |
-| 物理相空间维数定理 | Physical Phase Space Dimension Theorem | 物理相空间维数 = $N-1$ | 0.8.6 §4 |
-| N 体谱加性定理 | N-Body Spectral Additivity Theorem | N 体系统的谱加性 | 0.1 定理 5.3 |
-| 渗透结构定理 | Percolation Structure Theorem | 渗透矩阵 $2\times2$ 对称形式 | 0.1 定理 4.1 |
-| 跨扇区耦合定理 | Cross-Sector Coupling Theorem | 跨扇区耦合的 $H^W$ 矩阵 | 0.1 定理 4.2 |
+| 中文 | 英文 | 公式 / 陈述 | 出处 |
+|---|---|---|---|
+| 谱刚性定理 | Spectral Rigidity Theorem | 约束乘积球面上 Laplace 谱唯一确定尺度因子 $a$ | 0.0.5 定理4.1 |
+| 桥接函数标准形 | Bridging Function Standard Form | $S = 12(a^2/\ell_0^2 + \ell_0^2/a^2)$，由 (C1)–(C3) 加归一化条件唯一确定 | 0.0.7 定理5.3, 定义5.2 |
+| 值域协调定理 | Range Compatibility Theorem | 六项作用量值域与抽象几何量值域严格相容 | 0.0.7 定理4.1 |
+| 互锁常数唯一性定理 | Interlocking Constants Uniqueness Theorem | $(\Lambda, k_0, \ell_0) = (3, 2, V_{\text{unit}}^{-1/9})$ 唯一确定 | 0.0.7 定理7.1–7.2 |
+| 自举封闭定理 | Bootstrap Closure Theorem | 10方几何空间所有数学结构构成封闭链条 | 0.0.7 定理7.3 |
+| 信息场热方程 | Information Field Heat Equation | $\partial_t \mathcal{I} = \chi_T \Delta \mathcal{I}$ | 0.4 定理2.1 |
+| 信息场衰减定理 | Information Field Attenuation Theorem | 上饱和稳态 $\theta_I \sim 72.53^\circ$ | 0.4.1 |
+| 三分切丛置换群刚性定理 | Tripartite Bundle Permutation Group Rigidity Theorem | $S_3$ 是置换群的唯一选择 | 0.0.7 定理2.0' |
 
 ---
 
 ## §5 常数与参数
 
-| 中文 | 英文 | 值 | 出处 |
-|:---|:---|:---|:---|
-| 光速 | Speed of Light | $c = 2.99792458 \times 10^8$ m/s | ℰ 导出项 2.2.3（SI 单位制接口，由 ℰ 映射导出） |
-| 精细结构常数 | Fine Structure Constant | $\alpha = 1/S_e = 1/137.035999084$ | 0.0.7 命题 4.4; 0.1 导出项 2.2.1 |
-| K | K | $839.758793$ keV | 0.3.1 定理 9.1; 0.3.3 §2 |
-| S_e | S_e | $137.035999084$ | 0.0.7 命题 4.4 |
-| Λ | Λ | $3$ | 0.0.7 §3 |
-| k0 | k0 | $2$ | 0.0.7 §3 |
-| λ1_eff | λ1_eff | $391.05$ | 0.4 §3 |
-| λ2_eff | λ2_eff | $59324.3$ | 0.4 §3 |
-| χ_L | χ_L | $1.509 \times 10^{-10}$ m（物理特征长度）；几何 $\chi_L(\ell_0) \approx 1.983$ | 0.3.1 §4; 0.0.7 §7.3 注 7.2 |
-| χ_T | χ_T | $3.616 \times 10^{-17}$ s | 0.3.1 §5 |
-| Γ_geo | Γ_geo | $5.75 \times 10^{-23}$ | 0.4.2 §2 |
-| τ_dec | τ_dec | $\sim 7.28$ 日 | 0.4.2 §2 |
-| ℓ_0 | ℓ_0 | $V_{\text{unit}}^{-1/9} \approx 0.5991$（谱几何单位锚点，无量纲） | 0.0.7 定理 7.2 |
+| 中文 | 英文 | 值 / 表达式 | 出处 |
+|---|---|---|---|
+| 互锁常数 $\Lambda$ | Interlocking Constant | $\Lambda = \Lambda(S_3) = 3$ | 0.0.3 §3 |
+| 互锁常数 $k_0$ | Interlocking Constant | $k_0 = k_0(S_3) = 2$ | 0.0.3 §3 |
+| 标度常数 $\ell_0$ | Scale Constant | $\ell_0 = V_{\text{unit}}^{-1/9} \approx 0.5991$（几何单位，无量纲） | 0.0.7 定理7.2 |
+| 精细结构常数倒数 $S_e$ | Inverse Fine-Structure Constant | $S_e = 137.035999084$（锁定值） | 0.0.3 §5 |
+| 有效耦合 $\lambda_1^{\text{eff}}$ | Effective Coupling | 391.05 | 0.0.3 §5 |
+| 有效耦合 $\lambda_2^{\text{eff}}$ | Effective Coupling | 59324.3 | 0.0.3 §5 |
+| 质量标度 $K$ | Mass Scale | $K = 839.758793$ keV | 0.0.3 §5 |
+| 几何衰减宽度 $\Gamma_{\text{geo}}$ | Geometric Decay Width | $5.75 \times 10^{-23}$ | 0.4.1 |
+| 几何特征长度 $\chi_L(\ell_0)$ | Geometric Characteristic Length | $\approx 1.983$（无量纲，纯几何量） | 0.0.7 §7.3 |
+| Wodzicki 留数 | Wodzicki Residue | $\mathrm{Res}_W(D^{-9}) = 512\pi^4 V/105$ | 0.0.7 §7.3 |
 
 ---
 
 ## §6 粒子与扇区
 
 | 中文 | 英文 | 定义 | 出处 |
-|:---|:---|:---|:---|
-| 轻子扇区 | Lepton Sector | $e, \mu, \tau$ + 中微子。电子 $\theta_M$ 由 ℰ + 公理3 联立解出；$\mu, \tau$ 由角度递推关系确定 | 0.6.7 §1 |
-| 夸克扇区 | Quark Sector | $u,d,s,c,b,t$。约束结构定理级，数值依赖外部质量输入 | 0.8.6 §1; 27 §5 |
-| 带电轻子 | Charged Leptons | $e, \mu, \tau$，质量由 ℰ（$S=S_e$）+ 公理3 确定 | 0.6.7 §2 |
-| 中微子 | Neutrinos | $\nu_1, \nu_2, \nu_3$，质量由跷跷板机制几何实现确定 | 7 §3 |
-| 光子 | Photon | $\theta_M \to 0$，零质量（退耦假设依赖） | 0.6.8 §3 |
-| 上型夸克 | Up-type Quarks | $u, c, t$。质量由公理3 + 外部 $\theta_M$ 输入 | 27 §4 |
-| 下型夸克 | Down-type Quarks | $d, s, b$。质量由公理3 + 外部 $\theta_M$ 输入 | 27 §4 |
-| 弱混合角 | Weak Mixing Angle | $\theta_W \approx 28.7^\circ$ | 6 §2 |
-| PMNS矩阵 | PMNS Matrix | 中微子混合矩阵，$\theta_{13}\approx 8.7^\circ$, $\theta_{23}\approx 45^\circ$, $\theta_{12}\approx 33.7^\circ$ | 7 §5 |
-| CKM矩阵 | CKM Matrix | 夸克混合矩阵，约束结构由完备性平面旋转分解确定 | 8 §5 |
-| 色荷 | Color Charge | C场在夸克扇区的 SU(3) 表示 | 0.8.6 §2 |
+|---|---|---|---|
+| 物质扇区 | Matter Sector ($M$) | $\theta_M$ 主导，带电轻子质量层级 | 0.0.3 §4 |
+| 因果扇区 | Causal Sector ($C$) | $\theta_C$ 主导，中微子质量与振荡 | 0.0.3 §4, 7 |
+| 信息扇区 | Information Sector ($I$) | $\theta_I$ 主导，场动力学 | 0.0.3 §4, 0.4 |
+| 角度锁定 | Angle Locking | $\theta_M=30^\circ, \theta_C=30^\circ, \theta_I=30^\circ$（对称点） | 0.0.3 定理3.1 |
+| 上饱和稳态 | Upper Saturation Steady State | $\theta_I \approx 72.53^\circ$（信息场演化终态） | 0.4.1 |
 
 ---
 
 ## §7 角度与几何量
 
 | 中文 | 英文 | 定义 | 出处 |
-|:---|:---|:---|:---|
-| θ_M | θ_M | 源角——M场在完备性平面上的角分量。0.0.6–0.0.7 中记为 $\theta_1$ | 0.0.3 §2; 0.0.7 §3; 0.1 §1.2 |
-| θ_C | θ_C | 腰边耦合角——C场在完备性平面上的角分量。0.0.6–0.0.7 中记为 $\theta_2$ | 0.0.3 §2; 0.0.7 §3; 0.1 §1.2 |
-| θ_I | θ_I | 信息角——I场在完备性平面上的角分量。0.0.6–0.0.7 中记为 $\theta_3$ | 0.0.3 §2; 0.0.7 §3; 0.1 §1.2 |
-| θ₁,θ₂,θ₃ | θ₁,θ₂,θ₃ | 扇区投影强度角（几何记法），$\theta_1\equiv\theta_M$, $\theta_2\equiv\theta_C$, $\theta_3\equiv\theta_I$ | 0.0.6 §3; 0.0.7 §3; 术语表 §1 |
-| θ_I 上饱和 | θ_I Upper Saturation | $\theta_I \to 72.53^\circ$，信息场最大容载 | 0.4.2 §3 |
-| S(θ) | S(θ) | 六项作用量总和：$S = \sum 1/\sin^2\theta_i + \sum_{i<j} 1/(\sin\theta_i\sin\theta_j)$ | 0.0.6 §4.2 |
-| sinθ_M | sinθ_M | 源模振幅 | 0.0.6 §4 |
-| sinθ_C | sinθ_C | 腰边耦合振幅 | 0.0.6 §4 |
-| sinθ_I | sinθ_I | 信息模振幅 | 0.0.6 §4 |
-| 完备性约束 | Completeness Constraint | $\theta_M + \theta_C + \theta_I = 90^\circ$（公理3的子句） | 0.0.6 §3.1 |
-| 谱间隙 | Spectral Gap | 约束乘积球面上 Laplace-Beltrami 的本征值间隙 | 0.0.5 §2 |
-| 耦合常数 | Coupling Constant | $\sin\theta_M\sin\theta_C$ 交叉项，对应相互作用强度 | 0.6.3 §2 |
+|---|---|---|---|
+| 物质角 $\theta_M$ | Matter Angle | 公理1变量之一 | 0.0.3 §2 |
+| 因果角 $\theta_C$ | Causal Angle | 公理1变量之一 | 0.0.3 §2 |
+| 信息角 $\theta_I$ | Information Angle | 公理1变量之一 | 0.0.3 §2 |
+| eta 参数 | Eta Parameter | $\eta = 51.27^\circ$，当前演化状态 | 0.4.1 |
 
 ---
 
 ## §8 概念名称（非定理）
 
-以下条目在文章库中曾被误称为"定理"，但实际它们不是独立定理——而是对一组约束/推导/性质的打包命名。使用时不得加"定理"后缀。
+> 以下为概念名称，不加"定理"后缀。
 
-| 中文 | 英文 | 实际性质 | 出处 |
-|:---|:---|:---|:---|
-| 九素互扼 | Nine-Element Mutual Suppression | 概念名称。指公理1–3 + 三互锁常数 + 三工具层定理相互锁定的逻辑网络（见 0.0.7 定理 6.1 的六个环节 A–F'）。打包了多个约束条件，不是独立定理。**禁止加"定理"后缀** | 0.0.7 §6.2; 0.3.5（文件名含此词，文章内容无）；8号 §3.3 引用 |
-| 谱刚性 | Spectral Rigidity | 概念名称。在 0.0.5 §5 中有严格的数学定理（约束乘积球面上前三个 Laplace 特征值唯一确定等距类），但应用文章中引用"谱刚性"时通常泛指"角度谱的离散性约束"，与 0.0.5 定理不同义。不得混用 | 0.0.5 §5（数学定理）；0.6.7 §2（泛指角度谱约束） |
+| 中文 | 英文 | 说明 | 出处 |
+|---|---|---|---|
+| 九素互扼 | Nine-Element Mutual Constraint | 公理—常数—工具层之间的超定锁定结构（打包了多个约束条件，非独立定理） | 0.0.7 §6.2 |
+| 全息屏编码条件 | Holographic Encoding Condition | 能量-信息在全息屏上的编码约束 | 0.0.6 §3 |
+| CIM 相 | CIM Phase | 标准模型/广义相对论/弦论作为低能有效场论近似 | 0.2 §1 |
 
 ---
 
 ## §9 构造性概念（诚实标注）
 
-以下概念不是定理，而是构造性假设、方向性探索、或定理的外推——使用时必须诚实标注其状态。
+> 以下为构造性概念，非严格定理。在文章中使用时必须加「诚实标注」。
 
-| 中文 | 英文 | 状态 | 出处 |
-|:---|:---|:---|:---|
-| 退耦假设 | Decoupling Assumption | 构造性假设——光子 $\theta_M \to 0$ 时与 M 场退耦。非定理 | 0.6.8 §3 |
-| 引力扩展映射 | Gravitational Extended Mapping | 构造性组合——$\mathcal{E}_G = \mathcal{E} \circ \text{InfoField}$（经信息场复合得到），0.1 电磁核心映射原始范围之外 | 10 §1.1 |
-| 信息场热方程 | Information Field Heat Equation | 构造性推广——信息场沿全息屏的热扩散模型 | 0.4.2 §2 |
-| 辛系数框架 | Symplectic Coefficient Framework | 构造性框架——夸克扇区 SU(3) 辛商构造，首阶量子修正 $\lesssim 2$ keV | 0.8.6 §3 |
-| 夸克质量外部输入 | Quark Mass External Input | 外部输入——夸克质量当前由 PDG 公布值反推 θ_M，ℰ 映射内生确定尚未完成 | 27 §5 |
-| Hessian锚点 | Hessian Anchor | 概念——$S$ 等值面的 Hessian 极小点，对应 $S_0 = 137$ | 0.0.7 §4 |
-| 0.0.5 约束乘积球面类 | 0.0.5 CPS Class | **定义类**——0.0.5 包含定义 3.1（约束乘积球面）、定理（谱刚性、特征值排序）。**从未声称自己是公理**。在 0.0.7 §5.4 中曾被误称为"公理体系二"，已于 260701.7 修正 | 0.0.5 定义 3.1; 0.0.7 §5.4 |
+| 中文 | 英文 | 说明 | 出处 |
+|---|---|---|---|
+| 桥接函数标准形（定义5.2） | Bridging Function Standard Form | 原称"桥接公理"，但非公理（几何论只有三条公理）。标准化为 $S=12(a^2/\ell_0^2+\ell_0^2/a^2)$，归一化条件为构造性假设 | 0.0.7 定义5.2, 5.2' |
+| $\ell_0$ 的物理涌现 | Emergence of $\ell_0$ | $\ell_0$ 是谱几何单位锚点，与实验长度尺度的匹配属于条件性命题层 | 0.0.7 §7.3 |
+| $\hbar$ 数值涌现 | Emergence of $\hbar$ | $\hbar$ 从几何量经 ℰ 映射涌现，属于条件性命题 | 0.3.1 |
 
 ---
 
 ## §10 禁用词清单
 
-以下表述在多篇文章中曾出现，属于概念错误或混淆，**禁止在任何新文章中使用**。
+> 以下术语不得在任何新文章中使用。审核已有文章时发现即修正。
 
-| 禁用词 | 为何禁用 | 正确表述 |
-|:---|:---|:---|
-| 电子锚定 | 电子 $\theta_M$ 来自 ℰ 映射 + 公理3 联立系统，不是独立"锚定"概念 | ℰ 映射 + 公理3 联立确定电子 $\theta_M$ |
-| PDG 锚定 | 夸克 $\theta_M$ 由外部质量输入反推，不是几何论内生"锚定" | 夸克 $\theta_M$ 由外部质量输入反推 |
-| 公理体系二 | 0.0.5 从未声称自己是公理。在 0.0.7 §5.4 中曾被误用，已于 260701.7 修正 | 约束乘积球面类（0.0.5 定义 3.1） |
-| 三公理（含质量映射） | 公理只有三条：圆拓扑 + 边界极限 + 全息屏编码。质量映射是 ℰ 的导出项 2.2.2，不是公理 | 三公理体系 + ℰ 导出项（$m = K\sin^3\theta_M$） |
-| 完备性约束 + 六项作用量 + 质量映射 = 三公理 | 严重混淆。六项作用量是公理3的数学推论，质量映射是 ℰ 的导出项——都不是公理 | 见 §1 公理体系 |
-| 九素互扼定理 | 不是定理。0.3.5 全文无此词。0.0.7 §6.2 中定理 6.1 陈述为"九素互扼"（不加"定理"后缀），但节标题旧版本误写为"九素互扼定理"，已于 260701.9 修正 | 九素互扼（不加"定理"） |
-| 谱刚性定理（在应用文章中） | 0.0.5 §5 有数学定理，但应用文章中的"谱刚性"是另一概念——泛指角度谱离散性。混用导致混淆 | 谱刚性（不加"定理"），如引用 0.0.5 定理则注明出处 |
-| 唯一锚点 c / 单一锚点 c / 外部锚点 c / 光速锚点 | c 是 ℰ 的导出项 2.2.3，不是理论锚点。锚定来自 ℰ 映射及其导出物。**所有变体（单一锚点、外部锚点、光速锚点）均禁用，此处统一登记** | ℰ 映射导出光速 c（量纲桥 SI 接口，由 ℰ 导出项 2.2.3 给出） |
-| 桥接公理 | 0.0.7 定义 5.2 的旧称——暗示第四条公理，与三公理体系冲突。已于 260701.9 修正为"桥接函数标准形" | 桥接函数标准形（0.0.7 定义 5.2, 定理 5.3） |
+| 禁用词 | 替代词 | 为何禁用 |
+|---|---|---|
+| 桥接公理 | 桥接函数标准形 | 几何论只有三条公理，暗示第四公理会造成体系混淆 |
+| 九素互扼定理 | 九素互扼 | 九素互扼是概念名称，打包了多个约束条件，不是独立定理 |
+| 公理4 / 第四公理 | （无替代，不存在） | 几何论公理体系严格限于三条 |
+| 唯一锚点 c / 单一锚点 c / 外部锚点 c / 光速锚点 | ℰ 映射锚点 | 所有变体均禁用，此处统一登记。c 不是"公理"，是 ℰ 映射的唯一外部固定点 |
+| $S_3$ 矩映射 | $S_3$ 外尔房破缺坐标 | $S_3$ 是有限群，$\mu$ 不是连续李群作用的标准矩映射 |
+| 面积量子化（在0.0.7语境） | 面积分割关系（条件性命题） | 不自洽，已降格为条件性命题 |
 
 ---
 
@@ -212,4 +169,11 @@
 
 ### §11.5 版本号
 - 格式：`YYMMDD.N`（如 260701.9）
-- 本次修改（260701.9 二次修订）：合并 §10 重复的 c 锚点条目（"单一锚点（指 c）"与"唯一锚点 c / … / 光速锚点"为同一概念的不同变体表述，已合并为一行）；更新 §5 ℓ₀ 值加入数值评估 $\approx 0.5991$、χ_L 条目加入几何值；修订单行锚点表述
+- 版本号不含括号说明，不含修订摘要，不含工作痕迹
+- 所有修改记录归 git commit message，不写入文章正文
+
+### §11.6 文章写作原则
+- **禁止工作痕迹**：文章中不得出现"旧版本曾用""已删除""已修正""修订说明""本次修改"等修改历史记录
+- **禁止版本考古**：注记中不得引用旧版本公式或叙述"此前版本中……"
+- 推导过程自洽呈现，历史归 git
+- 附录中不得设"修订历史"章节
