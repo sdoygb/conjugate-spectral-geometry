@@ -1,6 +1,6 @@
 # 几何论术语标准中英文对照
 
-> **版本**：260704.2  
+> **版本**：260704.3  
 > **用途**：几何论全部术语在此统一。任何新文章引入术语前必须先在本表登记。  
 > **语言**：中文 / English  
 > **更新规则**：见 §11 维护规则  
@@ -88,12 +88,12 @@
 | 中文 | 英文 | 公式 / 陈述 | 出处 |
 |---|---|---|---|
 | 谱刚性定理 | Spectral Rigidity Theorem | 约束乘积球面上 Laplace 谱唯一确定尺度因子 $a$ | 0.0.5 定理4.1 |
-| 桥接函数标准形 | Bridging Function Standard Form | $S = 12(a^2/\ell_0^2 + \ell_0^2/a^2)$，由 (C1)–(C3) 加归一化条件唯一确定 | 0.0.7 定理5.3, 定义5.2 |
+| 桥接函数标准形 | Bridging Function Standard Form | → 见 §9 构造性概念。归一化条件为构造性假设，非公理亦非独立定理 | — |
 | 值域协调定理 | Range Compatibility Theorem | 六项作用量值域与抽象几何量值域严格相容 | 0.0.7 定理4.1 |
 | 互锁常数唯一性定理 | Interlocking Constants Uniqueness Theorem | $(\Lambda, k_0, \ell_0) = (3, 2, V_{\text{unit}}^{-1/9})$ 唯一确定 | 0.0.7 定理7.1–7.2 |
 | 自举封闭定理 | Bootstrap Closure Theorem | 10方几何空间所有数学结构构成封闭链条 | 0.0.7 定理7.3 |
 | 信息场热方程 | Information Field Heat Equation | $\partial_t \mathcal{I} = \chi_T \Delta \mathcal{I}$ | 0.4 定理2.1 |
-| 信息场衰减定理 | Information Field Attenuation Theorem | 上饱和稳态 $\theta_I \sim 72.53^\circ$ | 0.4.1 |
+| 信息场衰减定理 | Information Field Attenuation Theorem | 信息场随 $\theta_I$ 增大而单调衰减，终态为 §6 上饱和稳态 $\theta_I \sim 72.53^\circ$ | 0.4.1 |
 | 三分切丛置换群刚性定理 | Tripartite Bundle Permutation Group Rigidity Theorem | $S_3$ 是置换群的唯一选择 | 0.0.7 定理2.0' |
 | 质量-角度耦合定理 | Mass-Angle Coupling Theorem | $m = K \sin^3\theta_M$（由公理1–3及约束乘积球面构造导出，非公理） | 0.1 §2.2.2, 0.0.3 §5 |
 | 光子零质量定理 | Photon Zero Mass Theorem | $m_\gamma = K \sin^3(0^\circ) = 0$，光子零质量是质量映射定理在 $\theta_M=0^\circ$ 的直接推论 | 0.6.8 §2 |
@@ -168,14 +168,13 @@
 | 因果扇区 | Causal Sector ($C$) | $\theta_C$ 主导，中微子质量与振荡 | 0.0.6 §3.3, 7 |
 | 信息扇区 | Information Sector ($I$) | $\theta_I$ 主导，场动力学 | 0.0.6 §3.3, 0.4 |
 | 夸克扇区 | Quark Sector | 夸克在约束乘积球面上的几何表示，含量子化方案（0.8.6）和 CKM 混合（8号） | 0.8.6, 8号 |
-| 角度锁定 | Angle Locking | $\theta_M=30^\circ, \theta_C=30^\circ, \theta_I=30^\circ$（对称点，公理3的直接推论） | 0.0.6 §3.1 |
-| 上饱和稳态 | Upper Saturation Steady State | $\theta_I \approx 72.53^\circ$（信息场演化终态） | 0.4.1 |
+| 零态 | Zero State | 总宇宙的初始对称态，$\theta_M=\theta_C=\theta_I=30^\circ$，$S=24$，公理3完备性约束的直接推论（旧称「角度锁定 Angle Locking」，已废弃） | 33号 §2, 0.0.6 §3.1 |
+| 上饱和稳态 | Upper Saturation Steady State | $\theta_I \approx 72.53^\circ$，信息场衰减定理（§4）的终态 | 0.4.1 |
 | 倒伏相 | Lodging Phase | 中微子质量谱的高端截断相，由因果场几何约束决定 | 7号 §3 |
 | 三阶段相变 | Three-Stage Phase Transition | 信息场编码的物质界-中间界-信息界三阶段循环相变 | 31号 §1 |
 | 物质界收缩时间 | Material Realm Contraction Time | 宇宙物质界的几何收缩时间尺度 | 46号 §1 |
 | 黑洞冻结极限构型 | Black Hole Freezing Limit Configuration | $(\theta_M, \theta_C, \theta_I) = (45^\circ, 45^\circ, 0^+)$，信息场冻结极限 $\theta_I \to 0^+$ 的稳定构型 | 14号 §1, 16号 §1.1 |
 | 物质界几何约束构型 | Material Realm Geometric Constraint Configuration | $(\theta_M, \theta_C, \theta_I) = (57.93^\circ, 26.16^\circ, 5.91^\circ)$，电子基态的三界配置，物质界特有的角度构型 | 22号 摘要, 0.0.3 §5 |
-| 零态 | Zero State | 总宇宙的初始对称态，$\theta_M=\theta_C=\theta_I=30^\circ$，$S=24$ | 33号 §2 |
 | 区域生成 | Region Genesis | 零态失衡后沿 $\eta$ 方向（因果方向）平移回归的创世推进机制 | 33号 §3 |
 
 ---
@@ -256,7 +255,7 @@
 
 | 中文 | 英文 | 说明 | 出处 |
 |---|---|---|---|
-| 桥接函数标准形（定义5.2） | Bridging Function Standard Form | 原称"桥接公理"，但非公理（几何论只有三条公理）。标准化为 $S=12(a^2/\ell_0^2+\ell_0^2/a^2)$，归一化条件为构造性假设 | 0.0.7 定义5.2, 5.2' |
+| 桥接函数标准形（定义5.2） | Bridging Function Standard Form | 原称"桥接公理"，但非公理（几何论只有三条公理）。标准化为 $S=12(a^2/\ell_0^2+\ell_0^2/a^2)$，归一化条件为构造性假设。§4 定理列表中保留交叉引用条目指向本节 | 0.0.7 定义5.2, 5.2' |
 | $\ell_0$ 的物理涌现 | Emergence of $\ell_0$ | $\ell_0$ 是谱几何单位锚点，与实验长度尺度的匹配属于条件性命题层 | 0.0.7 §7.3 |
 | $\hbar$ 数值涌现 | Emergence of $\hbar$ | $\hbar$ 作为几何量的导出值，非基本常数 | 0.3.1 §5 |
 | Hopf 假设（度量等价部分） | Hopf Hypothesis (Metric Equivalence) | 公理3的三分切丛结构中，Hopf纤维化的**度量等价** $r_{\mathcal{M}} = r_\Sigma$ 部分仍为假设（0.3.6 假设4.0）。拓扑部分已升级为定理（见 §4 Hopf纤维化定理（拓扑部分）） | 0.3.6 假设4.0, 0.3.8 §1 |
@@ -320,6 +319,12 @@
 - `[260704]` **系统提示「公理3：质量公式」与术语表 §4 不兼容**：系统提示称「公理3：m = K * sin^3 theta_M」，术语表 §4 质量-角度耦合定理明确标注「由公理1–3及约束乘积球面构造导出，非公理」。→ 术语表为权威源；质量公式是定理，不是公理。几何论只有三条公理（圆拓扑、边界极限、全息屏编码条件）。
 
 - `[260704]` **系统提示「九素互扼定理」与术语表 §8 不兼容**：系统提示称「关键定理：九素互扼定理」，术语表 §8 标注九素互扼为概念名称「属超定锁定结构，非独立定理」。→ 术语表为权威源。九素互扼是公理—常数—工具层之间的超定锁定结构的概念包，涉及多个定理的交叉约束，不是一个孤立的定理。
+
+- `[260704.3]` **桥接函数标准形 §4（定理）vs §9（构造性概念）标签冲突**：此前 §4 列为定理条目「由 (C1)–(C3) 加归一化条件唯一确定」，§9 列为构造性概念「归一化条件为构造性假设」。两者对同一公式的认知地位矛盾。→ 统一为构造性概念：§4 删除定理级条目，替换为交叉引用「→ 见 §9 构造性概念。归一化条件为构造性假设，非公理亦非独立定理」；§9 保留完整描述并标注 §4 引用指向本节。
+
+- `[260704.3]` **角度锁定 vs 零态：同一配置两个名称**：此前 §6 中「角度锁定」和「零态」均指向 $\theta_M=\theta_C=\theta_I=30^\circ$，为同一角度配置的两个独立条目。→ 统一为「零态」（Zero State），废弃「角度锁定」。零态条目吸收角度锁定的描述（公理3完备性约束的直接推论），标注旧称已废弃。
+
+- `[260704.3]` **信息场衰减定理与上饱和稳态的交叉引用缺失**：此前 §4「信息场衰减定理」描述仅写「上饱和稳态 $\theta_I \sim 72.53^\circ$」，§6「上饱和稳态」描述仅写「信息场演化终态」，双方未建立交叉引用。两者是定理与结论的关系（定理描述衰减过程，稳态是终态），非同一概念的二名。→ 保留两个条目，各自添加交叉引用：§4 定理标注「终态为 §6 上饱和稳态」；§6 稳态标注「信息场衰减定理（§4）的终态」。
 
 ### §11.3 定理标签使用
 
