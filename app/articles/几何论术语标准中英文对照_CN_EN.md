@@ -63,6 +63,13 @@
 | 信息场共振条纹 | Information Field Resonance Fringes | 因果场相位节点在信息场中激发的共振条纹，对应经络线 | 40号 §2.4 |
 | 几何Navier-Stokes映射 | Geometric Navier-Stokes Mapping | 将物质界流映射至Navier-Stokes方程的几何构造 | 30号 §2.3 |
 | 边界层（几何定义） | Boundary Layer (Geometric) | 信息场退相干深度在约束截面边界处的几何定义，厚度 $\delta_{BL} \approx 8.6$ mm | 30号 §4.1 |
+| I场空间扩散时间 | I-Field Spatial Diffusion Time | $\tau_I^{\text{spatial}} = N_{\text{info}} \cdot \Delta\tau_{\text{step}}$，当前 $\sim 3\times10^{17}$ 年（完全冻结），$N_1=6000$ 时仅 $\sim 1$ 周 | 50号 §3 |
+| I场扩散冻结 | I-Field Diffusion Freezing | I场空间扩散随 $N_{\text{info}}$ 增长而线性减速，在 $N_{\text{info}} \sim 10^6\text{--}10^7$ 时扩散时间超过宇宙年龄——空间非均匀性被冻入 | 50号 §4 |
+| 冻结临界点 | Freezing Critical Point | $N_{\text{info}}^{\text{freeze}} \approx 1.1\times10^9$，$t_{\text{freeze}} \approx 1700$ 年，I场扩散冻结完成，原初扰动谱由此确定 | 50号 §8 |
+| 编码时间 | Encoding Time | $\Delta t_{k\to k+1} = N_k \cdot \Delta\tau_{\text{step}}$，七级递推每级的物理时间由编码步长 $\Delta\tau_{\text{step}} \sim 10^2$ s 和当前顶点数 $N_k$ 确定 | 50号 §5.6 |
+| I场编码密度 | I-Field Encoding Density | $\rho_{\text{info}} = N_{\text{info}} / V_{\text{holo}}$，决定有效温度 $kT_{\text{eff}} = \sqrt{\rho_{\text{info}}} \cdot E_{\text{Planck}}$ | 52号 §2 |
+| C扇区共凝结 | C-Sector Co-condensation | 核子在C扇区的联合锁定构型，锁定曲率 $\kappa_{\text{lock}}$ 决定核结合能 | 52号 §3 |
+| 几何引力增强 | Geometric Gravity Enhancement | $G_{\text{eff}} = G_{9D}\sqrt{1+a_0/a_N}$，在低加速度环境下引力被I场硬模相干泄漏增强 | 54号 §5 |
 
 ---
 
@@ -140,6 +147,20 @@
 | 因果角锁定定理 | Causal Angle Locking Theorem | 电子-缪子 $\theta_C$-共享联合截面上，驻点条件强制 $\theta_C^{(2)} = \theta_C^0 = 26.16^\circ$ | 24号 §4.3 |
 | $\theta_M^{(2)}$ 对称性解析论证 | $\theta_M^{(2)}$ Symmetry Analytic Proof | $\theta_M^{(2)} = (90^\circ - \theta_C^0)/2 = 31.92^\circ$（无耦合极限），含 $W_{12}$ 耦合修正后 $\approx 31.94^\circ$，由 $S$ 函数全排列对称性严格导出 | 24号 §4.4 |
 | $C_n$ 独立于驻点条件定理 | $C_n$ Independence from Stationarity Theorem | 质量标度 $C_n$ 不进入联合截面驻点条件，由全息屏层级嵌套独立确定 | 24号 §5.1 |
+| 三代起源定理 | Three-Generation Origin Theorem | $N_{\text{gen}} = 3$ 是截面类型的代数和穷举结果：三扇区 $\to$ 三种截面类型（$\theta_C$-共享、M-同步、$\theta_I$-共享），其中 $\theta_I$-共享物理不可行 + 裸截面为第一代 $\to$ 恰好三代。推论 6.3b：$N_{\text{gen}} = 3 - 1 + 1 = 3$ | 0.6.7 §6.4 |
+| I场扩散冻结定理 | I-Field Diffusion Freezing Theorem | $\tau_I^{\text{spatial}} = N_{\text{info}} \cdot \Delta\tau_{\text{step}}$，$N_1$ 时 $\sim 1$ 周 $\to$ 早期宇宙天生均匀，视界问题自动消解 | 50号 §3 |
+| $N_{\text{info}}(t)$ 函数定理 | $N_{\text{info}}(t)$ Function Theorem | 七级递推在 $t_7 \approx 850$ 年内完成，此后 $N_{\text{info}}(t>t_7) = N_7(t/t_7)^2$（$\beta=2$ 精炼幂律） | 50号 §5.6 |
+| 原初扰动谱定理 | Primordial Perturbation Spectrum Theorem | $A_s = 1/N_{\text{info}}^{\text{freeze}} \approx 9.1\times10^{-10}$（零参数，与 Planck $2.10\times10^{-9}$ 差因子 2.3），$n_s \approx 0.97$，$r \ll 0.01$ | 50号 §8 |
+| 重子数几何定理 | Baryon Number Geometric Theorem | $B = \frac{1}{3} w_{\theta_C}$，$\theta_C$ 截面拓扑缠绕数 $w$ 决定重子数：夸克 $B=1/3$（$w=1$），轻子 $B=0$，重子 $B=1$（$w=3$） | 51号 §3 |
+| Sakharov三条件几何翻译定理 | Sakharov Three Conditions Geometric Translation Theorem | B破坏 = 约束流形在 $\text{N}_2\to\text{N}_3$ 相变边界的拓扑扇区瞬时连通；C/CP破坏 = $\theta_C$ 截面旋转复相位 $\delta_{\text{CP}}\approx 1.20$ rad（8号）；热非平衡 = 递推乘子跳变 $\varepsilon=5.56$（50号） | 51号 §2–§6 |
+| 氘瓶颈定理 | Deuterium Bottleneck Theorem | 氘核 C扇区共凝结门槛 $\kappa_{\text{deuteron}} \approx 0.056$ MeV，当 $kT_{\text{eff}}$ 低于此值时空背景波动不足以撕开C扇区锁定 | 52号 §4 |
+| ⁴He丰度几何定理 | ⁴He Abundance Geometric Theorem | $Y_p^{\text{geo}} \approx 0.25$，零参数，与观测 $0.245\pm0.003$ 一致——核子数 2:2 几何对称性的直接输出 | 52号 §5 |
+| 中微子绝对质量标度定理 | Neutrino Absolute Mass Scale Theorem | $m_1 \approx 0.0286$ eV, $m_2 \approx 0.0297$ eV, $m_3 \approx 0.0581$ eV，$\Sigma m_\nu \approx 0.118\text{--}0.122$ eV。二重态分裂源于倒伏相截断角 $\theta_M^{\text{cutoff}} \approx 5.74^\circ$ 的有限性 | 53号 §4–§5 |
+| 统一几何定理（暗物质替代） | Unified Geometric Theorem (Dark Matter Replacement) | I³多尺度相干泄漏解释暗物质四条独立支柱：星系旋转曲线（$a^2=a_N^2+a_N a_0$）、子弹星系团（I场渗透峰冻结）、CMB第三峰（$a_0/a_N^{\text{pert}} \approx 14$ $\to$ 增强 3.83 倍）、大尺度结构（$G_{\text{eff}}$ 增长 $\alpha\approx 1.44$ $\to$ $\sigma_8\approx 0.75$） | 54号 §6 |
+| 混合角层级定理 | Mixing Angle Hierarchy Theorem | $\theta_{13} \ll \theta_{12} \lesssim \theta_{23}$ 由 Hessian 谱和 M-C 交换的定性结构唯一确定，不依赖数值拟合 | 55号 §10 |
+| 无磁单极子结论 | No Magnetic Monopole Conclusion | 约束流形 $S$ 为 2-单纯形 $\to$ 可缩 $\to$ $\pi_2(S)=0$ $\to$ $H^2(S;\mathbb{Z})=0$ $\to$ 所有 U(1) 丛平凡 $\to$ $\nabla\cdot\mathbf{B}=0$ 处处成立。狄拉克量子化条件 $eg=n/2$ 反转：不是磁荷存在则电荷量子化，而是 $\theta_C$ 纤维化单值性要求电荷量子化 | 56号 §3–§5 |
+| 电弱 crossover 定理 | Electroweak Crossover Theorem | 电弱"相变"不存在——只有平滑 crossover。质量来自软模曲率恢复力，非真空期望值 $\to$ 无可破缺的对称性；$\theta_M$ 随 $N_{\text{info}}$ 平滑演化 | 4号 §5.3 |
+| 强 CP 拓扑冻结定理 | Strong CP Topological Freezing Theorem | $\bar{\theta}=0$ 是结构强制的：U(1)_A 手征转动 = ℐ 扇区全局 $\theta_I$ 平移，$\tilde{S}_{\text{total}}$ 在 U(1) 作用下单调（P0/CG-1），公理 1 真空标记 $\to$ U(1) 完全冻结 $\to$ $\bar{\theta}=0$。零参数，轴子不存在 | 5号 §5.5 |
 
 ---
 
@@ -177,6 +198,19 @@
 | 21cm线频率 | 21cm Line Frequency | $\nu_{21} = 1421.61\ \text{MHz}$，几何推导偏差 $+0.08\%$ | 1号 §4.6 |
 | 裸弱混合角 $\sin^2\theta_W^{\text{bare}}$ | Bare Weak Mixing Angle | $0.23109$（凝聚相投影-耦合导出值） | 6号 §3.2, §4.2 |
 | 物理弱混合角 $\sin^2\theta_W^{\text{phys}}$ | Physical Weak Mixing Angle | $0.23124$（Berry 相位反馈修正后），与 PDG $0.23122 \pm 0.00003$ 偏差 $2\times10^{-5}$ | 6号 §4.3 |
+| 递推乘子 $r_k$ | Recursion Multipliers | $(r_1, r_2, r_3, r_4, r_5, r_6) = (6, 33.3, 10, 10, 1.125, 2)$，七级递推的逐级信息顶点数乘子 | 50号 §5.3 |
+| 编码步长 $\Delta\tau_{\text{step}}$ | Encoding Step | $\sim 10^2$ s，单顶点的平均信息编码时间 | 50号 §5.6 |
+| 冻结信息数 $N_{\text{info}}^{\text{freeze}}$ | Freezing Information Number | $\approx 1.1\times10^9$，I场扩散冻结完成时的全息屏顶点数 | 50号 §8 |
+| 冻结时间 $t_{\text{freeze}}$ | Freezing Time | $\approx 1700$ 年，自 $t=0$ 至 I场扩散冻结完成的物理时间 | 50号 §8 |
+| 精炼幂律指数 $\beta$ | Refinement Power Law Exponent | $\beta = 2$，七级递推完成后 $N_{\text{info}} \propto t^\beta$ 的精炼阶段幂律指数 | 50号 §5.6 |
+| 非平衡度 $\varepsilon$ | Non-Equilibrium Degree | $\varepsilon = r_2/r_1 - 1 = 5.56$，$\text{N}_2\to\text{N}_3$ 递推跳变提供的热非平衡强度 | 51号 §6 |
+| 冻结温度 $T_{\text{freeze}}^{\text{BBN}}$ | BBN Freeze Temperature | $\approx 0.79$ MeV，$n \leftrightarrow p$ 转换冻结的有效温度 | 52号 §4 |
+| 中微子质量和 $\Sigma m_\nu$ | Neutrino Mass Sum | $\approx 0.118\text{--}0.122$ eV | 53号 §5 |
+| $\theta_{12}$ (PMNS) | $\theta_{12}$ (PMNS) | $\approx 33.0^\circ$（零参数，实验 $33.4^\circ$，偏差 $-1.2\%$） | 55号 §6 |
+| 第三峰增强因子 | Third Peak Enhancement Factor | $\approx 3.83$，$a_0/a_N^{\text{pert}} \approx 14$ 的几何增强替代暗物质粒子效应 | 54号 §7 |
+| 修正引力增长因子 $\alpha$ | Modified Gravity Growth Factor | $\alpha \approx 1.44$，$G_{\text{eff}}$ 增强使结构增长加速 | 54号 §8 |
+| $\sigma_8$ (几何论) | $\sigma_8$ (Geometric) | $\approx 0.75$（零参数，Planck $0.81\pm0.01$，偏差 $\sim 7\%$） | 54号 §8 |
+| 声学视界 $r_s$ (几何论) | Sound Horizon $r_s$ (Geometric) | $\approx 147$ Mpc（共动），由 $N_{\text{info}}(t)$ 膨胀历史解析推导 | 54号 §9 |
 
 ---
 
