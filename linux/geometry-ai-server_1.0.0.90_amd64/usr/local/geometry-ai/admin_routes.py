@@ -5,6 +5,7 @@ admin_routes.py — Geometry AI Server 管理后台路由
 
 import os
 import json
+import functools
 import logging
 from flask import Blueprint, render_template, request, jsonify, Response
 
@@ -16,6 +17,19 @@ admin_bp = Blueprint('admin', __name__)
 PROJECT_ROOT = _config_module.PROJECT_ROOT
 _LOG_DIR = _config_module._LOG_DIR
 logger = _config_module.logger
+
+
+def require_admin(f):
+    """简单的 admin 认证：通过环境变量 GAI_ADMIN_TOKEN 或默认 token 验证"""
+    @functools.wraps(f)
+    def decorated(*args, **kwargs):
+        token = os.getenv('GAI_ADMIN_TOKEN', 'geometry-ai-admin')
+        auth = request.headers.get('Authorization', '')
+        query_token = request.args.get('token', '')
+        if auth == f'Bearer {token}' or query_token == token:
+            return f(*args, **kwargs)
+        return jsonify({"error": "未授权访问", "code": 401}), 401
+    return decorated
 
 
 def _find_env_file():
@@ -65,8 +79,8 @@ def _write_env_file(filepath, config):
     """
     # 已知的配置键（只更新这些键，保留其他内容）
     known_keys = {
-        'KIMI_API_KEY', 'KIMI_BASE_URL', 'KIMI_MODEL', 'KIMI_MODEL_LITE',
-        'KIMI_MODEL_VISION', 'KIMI_EMBEDDING_MODEL', 'GT_EMBEDDING_MODE',
+        'GAI_API_KEY', 'GAI_BASE_URL', 'GAI_MODEL', 'GAI_MODEL_LITE',
+        'GAI_MODEL_VISION', 'GAI_EMBEDDING_MODEL', 'GT_EMBEDDING_MODE',
         'GT_LOCAL_EMBEDDING_MODEL', 'EXTRA_MODELS',
     }
 
@@ -135,11 +149,54 @@ def _mask_api_key(key):
 
 @admin_bp.route('/admin')
 def admin_page():
-    """渲染管理页面"""
-    return render_template('admin.html')
+    """渲染管理页面（未认证时显示登录表单）"""
+    token = os.getenv('GAI_ADMIN_TOKEN', 'geometry-ai-admin')
+    auth = request.headers.get('Authorization', '')
+    query_token = request.args.get('token', '')
+    if auth == f'Bearer {token}' or query_token == token:
+        return render_template('admin.html')
+    # 未认证，显示登录表单
+    login_html = '''<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Geometry AI 管理后台 - 登录</title>
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f5f5f5; }
+.card { background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.1); padding: 40px; width: 360px; }
+h2 { margin: 0 0 20px; color: #333; text-align: center; }
+input[type=password] { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box; margin-bottom: 16px; }
+button { width: 100%; padding: 10px; background: #4a90d9; color: #fff; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; }
+button:hover { background: #357abd; }
+.error { color: #e74c3c; font-size: 13px; text-align: center; margin-bottom: 12px; display: none; }
+</style>
+</head>
+<body>
+<div class="card">
+<h2>Geometry AI 管理后台</h2>
+<p class="error" id="error">Token 不正确，请重试</p>
+<form id="loginForm">
+<input type="password" id="tokenInput" placeholder="请输入 Admin Token" autofocus>
+<button type="submit">登 录</button>
+</form>
+</div>
+<script>
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var t = document.getElementById('tokenInput').value.trim();
+    if (t) { window.location.href = '/admin?token=' + encodeURIComponent(t); }
+});
+if (new URLSearchParams(window.location.search).get('error') === '1') {
+    document.getElementById('error').style.display = 'block';
+}
+</script>
+</body>
+</html>'''
+    return Response(login_html, mimetype='text/html; charset=utf-8')
 
 
 @admin_bp.route('/admin/config', methods=['GET'])
+@require_admin
 def admin_get_config():
     """
     读取 .env 配置文件，返回 JSON 格式的配置。
@@ -149,8 +206,8 @@ def admin_get_config():
     config = _parse_env_file(env_path)
 
     # 对 API Key 进行脱敏
-    if 'KIMI_API_KEY' in config:
-        config['KIMI_API_KEY'] = _mask_api_key(config['KIMI_API_KEY'])
+    if 'GAI_API_KEY' in config:
+        config['GAI_API_KEY'] = _mask_api_key(config['GAI_API_KEY'])
 
     # 标记 API Key 是否已脱敏
     config['_api_key_masked'] = True
@@ -160,6 +217,7 @@ def admin_get_config():
 
 
 @admin_bp.route('/admin/config', methods=['POST'])
+@require_admin
 def admin_save_config():
     """
     保存 .env 配置文件。
@@ -168,7 +226,7 @@ def admin_save_config():
     data = request.get_json(force=True, silent=True) or {}
 
     # 验证必要字段
-    required_fields = ['KIMI_API_KEY', 'KIMI_BASE_URL', 'KIMI_MODEL']
+    required_fields = ['GAI_API_KEY', 'GAI_BASE_URL', 'GAI_MODEL']
     for field in required_fields:
         value = data.get(field, '').strip()
         if not value:
@@ -178,13 +236,13 @@ def admin_save_config():
             }), 400
 
     # 如果 API Key 是脱敏值（包含 ***），说明用户没有修改，跳过
-    api_key = data.get('KIMI_API_KEY', '').strip()
+    api_key = data.get('GAI_API_KEY', '').strip()
     if '***' in api_key:
         # 保留原始值，从 .env 文件读取
         env_path = _find_env_file()
         original = _parse_env_file(env_path)
-        if 'KIMI_API_KEY' in original:
-            data['KIMI_API_KEY'] = original['KIMI_API_KEY']
+        if 'GAI_API_KEY' in original:
+            data['GAI_API_KEY'] = original['GAI_API_KEY']
 
     # 查找或创建 .env 文件路径
     env_path = _find_env_file()
@@ -212,6 +270,7 @@ def admin_save_config():
 
 
 @admin_bp.route('/admin/logs')
+@require_admin
 def admin_logs():
     """
     返回最近的日志内容（纯文本）。
@@ -239,30 +298,37 @@ def admin_logs():
 
 
 @admin_bp.route('/admin/restart', methods=['POST'])
+@require_admin
 def admin_restart():
     """
     重启中间层服务。
-    通过 launchctl 或直接 kill 进程实现。
+    优先用 launchctl unload/load 重启（macOS launchd 管理）；
+    否则用 kill + 重新启动进程。
     """
     import subprocess
     try:
-        # 找到当前进程 PID
         my_pid = os.getpid()
-        # 用 launchctl 重启（如果是 launchd 管理的）
         plist_path = os.path.expanduser('~/Library/LaunchAgents/com.geometryai.server.plist')
         if os.path.exists(plist_path):
-            subprocess.Popen(['launchctl', 'kickstart', '-k', 'gui/$(id -u)/com.geometryai.server'],
-                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            return jsonify({"success": True, "message": "服务正在重启..."})
+            # macOS launchd 管理：unload 终止进程 + load 重新拉起
+            subprocess.Popen(
+                ['bash', '-c',
+                 f'launchctl unload "{plist_path}" && sleep 1 && launchctl load -w "{plist_path}"'],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            )
+            logger.info("[ADMIN] 通过 launchctl unload/load 触发重启")
+            return jsonify({"success": True, "message": "服务正在重启（launchctl）..."})
         else:
-            # 非 launchd 管理，用 os.execv 重启自身
+            # 非 launchd 管理，kill 当前进程后重新启动
             import sys
             python = sys.executable
-            # 延迟重启，先返回响应
-            subprocess.Popen([
-                'bash', '-c',
-                f'sleep 1 && kill {my_pid} && cd {_config_module.PROJECT_ROOT} && {python} server.py'
-            ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            server_py = os.path.join(_config_module.PROJECT_ROOT, 'server.py')
+            subprocess.Popen(
+                ['bash', '-c',
+                 f'sleep 2 && kill {my_pid} && cd {_config_module.PROJECT_ROOT} && {python} {server_py}'],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            )
+            logger.info(f"[ADMIN] 非 launchd 模式，通过 kill+restart 触发重启")
             return jsonify({"success": True, "message": "服务正在重启..."})
     except Exception as e:
         logger.error(f"[ADMIN] 重启失败: {e}")

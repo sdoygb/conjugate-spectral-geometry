@@ -69,10 +69,12 @@ class TeachingSystem:
         logger.info("[TEACH] 教学系统已初始化（仅 ChromaDB 存储）")
 
     def add_correction(self, wrong: str, correct: str, reason: str = "",
-                       context: str = "", session_id: str = "") -> Dict[str, Any]:
+                       context: str = "", session_id: str = "",
+                       article_id: str = "", trust: float = 0.5) -> Dict[str, Any]:
         """
         添加一条纠正记录。
         存入 ChromaDB corrections 集合。
+        如果提供了 article_id 且 trust >= 0.5，自动回写到 articles 集合。
         """
         result = {
             "success": False,
@@ -83,14 +85,17 @@ class TeachingSystem:
             result["error"] = "wrong 和 correct 字段不能为空"
             return result
 
-        # 存入 ChromaDB
-        chroma_ok = self.vector_kb.add_correction(
+        # 存入 ChromaDB（add_correction 现在返回 Dict）
+        chroma_result = self.vector_kb.add_correction(
             wrong=wrong, correct=correct, reason=reason,
-            context=context, session_id=session_id
+            context=context, session_id=session_id,
+            article_id=article_id, trust=trust
         )
-        result["success"] = chroma_ok
-        if not chroma_ok:
-            result["error"] = "ChromaDB 写入失败"
+        result["success"] = chroma_result.get("success", False)
+        if not result["success"]:
+            result["error"] = chroma_result.get("error", "ChromaDB 写入失败")
+        else:
+            result["article_rewrite"] = chroma_result.get("article_rewrite")
 
         return result
 
@@ -376,6 +381,7 @@ def build_system_prompt(
     articles_content: str,
     metrics: Dict[str, float],
     index_empty: bool,
+               search_no_result: bool = False,
     uploaded_files_content: str = "",
     teaching_section: str = "",
     msg_count: int = 0,
@@ -384,12 +390,12 @@ def build_system_prompt(
     """
     v10 增强：新增 teaching_section、msg_count、recent_chats 参数。
     """
-    # 新对话提醒（deepseek-v4-pro 上下文128K，约可容纳30轮对话）
+    # 新对话提醒（deepseek-v4-pro 上下文128K，优化后约可容纳50+轮对话）
     new_chat_hint = ""
-    if msg_count >= 30:
-        new_chat_hint = f"\n\n【重要提醒】当前对话已有 {msg_count} 条用户消息，上下文接近上限，如果感觉回答质量下降或出现幻觉，建议开一个新对话。\n"
-    elif msg_count >= 45:
-        new_chat_hint = f"\n\n【提示】当前对话已有 {msg_count} 条消息，如在合理使用范围内可继续，若感觉回答变差则建议开新对话。\n"
+    if msg_count >= 50:
+        new_chat_hint = f"\n\n【提示】当前对话已有 {msg_count} 条用户消息，如感觉回答变差则建议开新对话。\n"
+    elif msg_count >= 40:
+        new_chat_hint = f"\n\n【提醒】当前对话已有 {msg_count} 条用户消息，上下文逐渐接近上限，重要问题建议开新对话以保证质量。\n"
     index_warning = ""
     if index_empty:
         index_warning = """\n\n【索引状态警告】
@@ -399,6 +405,13 @@ def build_system_prompt(
 3. 访问 /v1/files 查看已上传文件
 4. 或 POST /v1/upload 上传新文件
 5. 或 POST /v1/vector/rebuild 重建向量索引
+"""
+    elif search_no_result:
+        index_warning = """\n\n【搜索提示】
+本次向量检索未命中相关文章。这可能是因为：
+1. 用户的问题与知识库文章关联度较低——直接用你的知识回答即可。
+2. 关键词太短或太泛——可以尝试用 search_knowledge 换更具体的关键词再搜一次。
+3. 文章确实不包含相关内容——不要逐篇 view_article 扫描，这非常低效。
 """
 
     uploaded_section = ""
@@ -464,10 +477,12 @@ def build_system_prompt(
 【工具使用规则】
 - write_article：用户要求写入文章时，必须调用 write_article 工具实际写入。调用成功后才能说"已写入"。禁止在没有调用工具的情况下声称"已写入""已生成""已保存"。写入成功后，在回复中告诉用户文章已保存，并提供工具返回的预览链接（Markdown格式[点击预览](URL)）。
 - write_article 分段写入：当文章内容超过 30000 字符时，必须分段调用 write_article。第一次调用使用 mode=write 写入前半部分，后续调用使用 mode=append 追加剩余部分。每次调用内容控制在 25000-30000 字符以内。最后一段 append 完成后，告知用户文章已完整保存。
-- vector_search：主动向量语义搜索。用自然语言描述要找的内容，返回最相关的文章片段和文件名。适用于查找特定概念/定理在哪些文章中出现、跨文章主题汇总、审核时查找相关引用。可以换不同查询词多次搜索覆盖不同角度。
-- view_article：读取完整文章内容。**必须使用 vector_search 或【参考资料】中显示的文件名**，不要自己编造。limit 建议 3000-5000，offset 用于跳到指定位置。
+- edit_article 局部修改：**修改已有文章中的若干处措辞/公式/段落时，必须优先使用 edit_article，不要用 write_article 全文重写**。edit_article 只需传入 old_text（要替换的原始文本）和 new_text（替换后文本），服务端会自动：①归档完整原文件 ②执行替换 ③更新向量索引 ④git提交。支持一次调用中提交多个替换（replacements数组）。old_text 必须精确匹配原文（包括空格和换行），建议先 view_article 确认原文内容。无论文章多大都不受 token 限制。
+- vector_search：主动向量语义搜索。用自然语言描述你要找的内容，返回最相关的文章片段和文件名。适用于：查找特定概念/定理/公式在哪些文章中出现、跨文章主题汇总、审核时查找相关引用。可以换不同查询词多次搜索覆盖不同角度。
+- list_articles：轻量列出所有文章的编号、标题和摘要（每篇约1行）。**当你需要了解文章全貌、查找某主题属于哪篇文章、确认文章编号时，优先用此工具**。一次调用就能看到全部文章概览，不要用 view_article 逐篇查看。
+- view_article：读取文章片段（默认5000字符/次）。**首次读取时会自动显示章节目录，之后可用 section 参数按章节名直接跳转**（如 section="公理3"），比 offset 更高效。只在已经确定要查看哪篇文章的具体内容时才使用。每次对话不宜超过5次。
 - personal_write：重要信息可以写入个人数据库。
-- 参考资料已通过向量语义检索自动注入下方【参考资料】区域（基于当前问题的被动检索）。你还可以用 vector_search 主动搜索其他角度的内容。
+- 参考资料已通过向量语义检索自动注入下方【参考资料】区域（基于当前问题的被动检索）。**优先使用这些参考资料回答，不要重复用 view_article 去看已经在参考资料中出现的内容**。只有在参考资料明确不够时，才用 vector_search 换角度搜索，或 view_article 查看具体段落。
 - 禁止幻觉：不确定的答案直接说"我不确定"，不要编造。**不要声称某篇文章不存在**——先用 vector_search 或编号前缀搜索确认。
 - 教学反馈工具（可选，在适当时机使用）：
   - teach_correction：当你发现之前的回答中有事实错误，或文章内容需要纠正时，调用此工具记录错误和正确内容。这会帮助你在后续对话中避免同样的错误。

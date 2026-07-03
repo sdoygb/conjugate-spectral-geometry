@@ -1,0 +1,55 @@
+#!/bin/bash
+set -e
+APP_DIR="/usr/local/geometry-ai"
+echo ""
+echo "  ========================================================="
+echo "      Geometry AI Server - Ubuntu 全自动安装"
+echo "  ========================================================="
+echo ""
+
+# 1. 创建 .env
+if [ ! -f "$APP_DIR/.env" ]; then
+    cp "$APP_DIR/.env.example" "$APP_DIR/.env" 2>/dev/null || true
+    echo "  [提示] 请编辑 $APP_DIR/.env 填入 API Key"
+fi
+
+# 2. 安装 Python 依赖
+echo "[1/5] 安装 Python 依赖..."
+python3 -m pip install --upgrade pip -q 2>/dev/null || true
+python3 -m pip install -i https://mirrors.aliyun.com/pypi/simple/ -r "$APP_DIR/requirements.txt" 2>&1 | tail -1
+echo "  [ok] 依赖安装完成"
+
+# 3. 数据目录
+echo "[2/5] 准备数据目录..."
+mkdir -p "$APP_DIR/articles" "$APP_DIR/chroma_db" "$APP_DIR/logs"
+chmod 755 "$APP_DIR/articles" "$APP_DIR/chroma_db" "$APP_DIR/logs"
+echo "  [ok] 数据目录已创建"
+
+# 4. systemd
+echo "[3/5] 注册 systemd 服务..."
+systemctl daemon-reload
+systemctl enable geometry-ai
+systemctl start geometry-ai
+echo "  [ok] systemd 服务已注册"
+echo "  等待服务启动..."
+for i in $(seq 1 15); do
+    if curl -s http://localhost:5000/health >/dev/null 2>&1; then
+        echo "  [ok] Geometry AI Server 已启动 (端口 5000)"
+        break
+    fi
+    sleep 2
+done
+
+# 5. 完成
+echo ""
+echo "  ========================================================="
+echo "  [ok] 安装完成!"
+echo "  ========================================================="
+echo ""
+echo "  管理页面: http://localhost:5000/admin"
+echo "  健康检查: http://localhost:5000/health"
+echo "  配置文件: $APP_DIR/.env"
+echo ""
+echo "  状态: sudo systemctl status geometry-ai"
+echo "  日志: sudo journalctl -u geometry-ai -f"
+echo "  卸载: sudo apt remove geometry-ai-server"

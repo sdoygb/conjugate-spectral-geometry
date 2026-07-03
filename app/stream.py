@@ -111,8 +111,11 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
     request_model = api_params.get("model", GAI_MODEL)
     base_url, api_key = get_provider_for_model(request_model)
     client = openai.OpenAI(api_key=api_key, base_url=base_url)
-    max_tool_rounds = 15
+    max_tool_rounds = 25
     seen_calls = set()  # 防止重复调用
+    _total_tool_calls = {}  # 全局累计工具调用次数（跨轮次）
+    _total_tool_input_tokens = 0  # 全局累计工具结果 token 数（估算）
+    _total_view_chars = 0  # 全局累计 view_article 读取的原始文章字符数
     _resp_id = f"chatcmpl-{hashlib.md5(str(time.time()).encode()).hexdigest()[:12]}"
     _created = int(time.time())
     _model = data.get('model', GAI_MODEL)
@@ -477,6 +480,48 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
             assistant_msg["reasoning_content"] = collected_reasoning
         final_messages.append(assistant_msg)
 
+        # 防止模型疯狂调用工具：每轮最多执行 5 个 tool_calls
+        max_calls_per_round = 5
+        # 统计同一工具的累计调用次数，超过阈值后只返回摘要
+        _tool_call_counts = {}
+        for tc_info in tool_calls_list:
+            fn = tc_info["function"]["name"]
+            _tool_call_counts[fn] = _tool_call_counts.get(fn, 0) + 1
+        # 累加到全局计数器
+        for fn, cnt in _tool_call_counts.items():
+            _total_tool_calls[fn] = _total_tool_calls.get(fn, 0) + cnt
+        # 动态限制 view_article：大文章（已读>100K字符）不限制，小文章限制 15 次
+        _view_count = _total_tool_calls.get("view_article", 0)
+        if _total_view_chars > 100000:
+            _view_limit = 999  # 大文章放开
+        else:
+            _view_limit = 15
+        if _view_count > _view_limit:
+            logger.warning(f"[TOOL] view_article 全局累计 {_view_count} 次（已读 {_total_view_chars} 字符，限制 {_view_limit} 次），本轮跳过所有 view_article")
+            new_tool_calls_list = []
+            for tc_info in tool_calls_list:
+                if tc_info["function"]["name"] == "view_article":
+                    final_messages.append({
+                        "role": "tool",
+                        "tool_call_id": tc_info["id"],
+                        "content": "提示：你已浏览了足够的文章，请直接基于已有信息回答用户问题，不要再继续查看文章。"
+                    })
+                else:
+                    new_tool_calls_list.append(tc_info)
+            tool_calls_list = new_tool_calls_list
+
+        # 限制每轮执行数量
+        if len(tool_calls_list) > max_calls_per_round:
+            skipped = tool_calls_list[max_calls_per_round:]
+            tool_calls_list = tool_calls_list[:max_calls_per_round]
+            for tc_info in skipped:
+                final_messages.append({
+                    "role": "tool",
+                    "tool_call_id": tc_info["id"],
+                    "content": "提示：本轮工具调用数量已达上限，请精简你的请求，直接回答用户问题。"
+                })
+            logger.warning(f"[TOOL] 每轮限制 {max_calls_per_round} 个调用，跳过 {len(skipped)} 个")
+
         for tc_info in tool_calls_list:
             func_name = tc_info["function"]["name"]
             try:
@@ -493,6 +538,7 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                     "content": f"警告：此工具调用与之前重复，已跳过。请直接使用之前的结果回答，不要再调用工具。"
                 })
                 continue
+            # 先加入集合（防止并发重复），失败后移除允许重试
             seen_calls.add(call_sig)
 
             logger.info(f"[TOOL] 执行: {func_name}({list(func_args.keys())})")
@@ -509,12 +555,33 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                     result = None
             if not result:
                 result = f"工具 {func_name} 执行失败，请尝试其他方式获取信息。"
-            logger.info(f"[TOOL] 结果: {result[:150]}...")
+            # 如果结果包含"不存在"或"错误"或"失败"，允许 AI 用相同参数重试
+            if result and ("不存在" in result or result.startswith("错误") or "执行失败" in result):
+                seen_calls.discard(call_sig)
+                logger.info(f"[TOOL] 工具返回错误，已从去重集合移除，允许重试: {func_name}")
+            # Token 节省：工具结果累计估算
+            _total_tool_input_tokens += int(len(result) * 1.5)
+            # 追踪 view_article 读取的原始文章大小（从返回文本中提取）
+            if func_name == "view_article" and "(共" in result:
+                import re as _re_vc
+                m = _re_vc.search(r'共(\d+)字符', result)
+                if m:
+                    _total_view_chars += int(m.group(1))
+            logger.info(f"[TOOL] 结果: {result[:150]}... (累计工具结果约 {_total_tool_input_tokens} token, view_article累计 {_total_view_chars} 字符)")
             final_messages.append({
                 "role": "tool",
                 "tool_call_id": tc_info["id"],
                 "content": result
             })
+
+            # Token 预算保护：如果工具结果累计超过 80000 token，
+            # 在下一个 tool 消息中注入提示，要求模型尽快回答
+            if _total_tool_input_tokens > 80000 and _total_tool_calls.get(func_name, 0) <= 1:
+                final_messages.append({
+                    "role": "user",
+                    "content": "【系统提示】工具调用已消耗大量上下文，请基于已有信息直接回答用户，不要再调用工具。"
+                })
+                logger.warning(f"[TOOL] Token 预算 {_total_tool_input_tokens} 已超 80000，注入停止提示")
 
     # 超过轮数限制，强制要求模型直接回答 -- 真正流式
     logger.warning(f"[TOOL] 超过 {max_tool_rounds} 轮，强制生成文本回复")

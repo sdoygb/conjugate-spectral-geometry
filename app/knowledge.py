@@ -65,10 +65,123 @@ class APIEmbeddingFunction:
             return [[0.0] * 1536]
 
 
-class SiliconFlowEmbeddingFunction:
-    """使用 SiliconFlow 免费 API 的中文 Embedding（BAAI/bge-large-zh-v1.5, 1024维）"""
+# ==================== BM25 关键词检索（叠加在 ChromaDB 向量检索之上） ====================
 
-    def __init__(self, api_key: str = "", model: str = "BAAI/bge-large-zh-v1.5"):
+class BM25Searcher:
+    """
+    轻量级 BM25 关键词检索器，用于补充 ChromaDB 向量检索。
+    在 build_index 时同步构建倒排索引，search 时与向量结果 RRF 融合。
+    """
+
+    def __init__(self):
+        self.inverted_index = {}    # {token: {chunk_id: tf}}
+        self.doc_lengths = {}       # {chunk_id: token_count}
+        self.chunk_count = 0
+        self.avg_dl = 0.0
+        self._initialized = False
+        self._jieba_loaded = False
+
+    def _ensure_jieba(self):
+        """延迟加载 jieba，避免 import 时触发词典加载"""
+        if not self._jieba_loaded:
+            try:
+                import jieba
+                # 添加几何论领域自定义词典
+                _dict_path = os.path.join(os.path.dirname(__file__), 'jieba_dict.txt')
+                if os.path.exists(_dict_path):
+                    jieba.load_userdict(_dict_path)
+                self._jieba_loaded = True
+            except ImportError:
+                logger.warning("[BM25] jieba 未安装，关键词检索不可用")
+
+    def _tokenize(self, text: str) -> list:
+        """分词并过滤停用词"""
+        if not self._jieba_loaded:
+            return []
+        import jieba
+        # 搜索模式下分词更细粒度
+        words = jieba.cut_for_search(text)
+        # 过滤单字和常见停用词
+        stopwords = {'的', '了', '是', '在', '有', '和', '与', '为', '被', '把',
+                     '到', '从', '对', '上', '下', '中', '不', '也', '而', '就',
+                     '能', '会', '可以', '这', '那', '它', '他', '她', '我们',
+                     '其', '所', '以', '等', '个', '一', '之', '或', '但', '则'}
+        return [w.strip() for w in words if len(w.strip()) > 1 and w.strip() not in stopwords]
+
+    def build_index(self, chunks_data: list):
+        """
+        构建倒排索引。chunks_data: [{'id': chunk_id, 'text': chunk_text}, ...]
+        """
+        self._ensure_jieba()
+        if not self._jieba_loaded:
+            return
+
+        self.inverted_index = {}
+        self.doc_lengths = {}
+        self.chunk_count = 0
+
+        for chunk in chunks_data:
+            chunk_id = chunk['id']
+            text = chunk.get('text', '')
+            tokens = self._tokenize(text)
+
+            if not tokens:
+                continue
+
+            # 计算词频
+            tf = {}
+            for t in tokens:
+                tf[t] = tf.get(t, 0) + 1
+
+            self.doc_lengths[chunk_id] = len(tokens)
+            for word, freq in tf.items():
+                if word not in self.inverted_index:
+                    self.inverted_index[word] = {}
+                self.inverted_index[word][chunk_id] = freq
+
+        self.chunk_count = len(self.doc_lengths)
+        self.avg_dl = sum(self.doc_lengths.values()) / self.chunk_count if self.chunk_count > 0 else 1.0
+        self._initialized = True
+        logger.info(f"[BM25] 索引构建完成: {self.chunk_count} chunks, {len(self.inverted_index)} unique tokens")
+
+    def search(self, query: str, top_k: int = 20) -> list:
+        """
+        BM25 评分检索。返回 [(chunk_id, score), ...] 按分数降序。
+        """
+        if not self._initialized or not self._jieba_loaded:
+            return []
+
+        tokens = self._tokenize(query)
+        if not tokens:
+            return []
+
+        scores = {}
+        N = self.chunk_count
+        k1 = 1.5   # BM25 参数
+        b = 0.75   # BM25 参数
+
+        for word in tokens:
+            if word not in self.inverted_index:
+                continue
+            df = len(self.inverted_index[word])
+            idf = math.log((N - df + 0.5) / (df + 0.5) + 1.0)
+
+            for chunk_id, tf in self.inverted_index[word].items():
+                dl = self.doc_lengths.get(chunk_id, 1)
+                tf_norm = (tf * (k1 + 1)) / (tf + k1 * (1 - b + b * dl / self.avg_dl))
+                scores[chunk_id] = scores.get(chunk_id, 0.0) + idf * tf_norm
+
+        return sorted(scores.items(), key=lambda x: x[1], reverse=True)[:top_k]
+
+    @property
+    def initialized(self):
+        return self._initialized
+
+
+class SiliconFlowEmbeddingFunction:
+    """使用 SiliconFlow 免费 API 的中文 Embedding（BAAI/bge-m3, 1024维, 8192 tokens）"""
+
+    def __init__(self, api_key: str = "", model: str = "BAAI/bge-m3"):
         self.client = openai.OpenAI(
             api_key=api_key or "not-needed",
             base_url="https://api.siliconflow.cn/v1"
@@ -87,8 +200,8 @@ class SiliconFlowEmbeddingFunction:
             t = t.replace('\x00', '').replace('\r', '')
             import re as _re
             t = _re.sub(r'\s+', ' ', t).strip()
-            if len(t) > 500:
-                t = t[:500]
+            if len(t) > 2000:
+                t = t[:2000]
             cleaned.append(t)
         # 逐条发送（最稳定，避免批次中某条有问题导致整批失败）
         for i, text in enumerate(cleaned):
@@ -109,8 +222,8 @@ class SiliconFlowEmbeddingFunction:
         text = text.replace('\x00', '').replace('\r', '')
         import re as _re
         text = _re.sub(r'\s+', ' ', text).strip()
-        if len(text) > 500:
-            text = text[:500]
+        if len(text) > 2000:
+            text = text[:2000]
         try:
             resp = self.client.embeddings.create(model=self.model, input=[text])
             return [d.embedding for d in resp.data]
@@ -193,6 +306,9 @@ class VectorKnowledgeBase:
         self._antipatterns_count = 0
         self._patches_count = 0
         self._dim_stale_collections = set()  # 维度过期的集合名，不参与搜索
+        self.bm25_searcher = BM25Searcher()  # BM25 关键词检索器
+        self._last_index_mtime = 0.0  # 记录上次索引时最新的文件修改时间
+        self._articles_dir = ""  # articles 目录路径
 
         # 根据配置选择 embedding function
         # 强制使用 SiliconFlow 1024 维，不允许回退到 ChromaDB 默认 384 维
@@ -469,8 +585,7 @@ class VectorKnowledgeBase:
                 diag["errors"].append(f"读取失败 {fname}: {e}")
                 continue
 
-            match = re.match(r'([\d\.]+|AI-\d+)', fname)
-            article_id = match.group(1) if match else fname
+            article_id = fname
             file_chunks = self.smart_chunk(content, article_id, fname)
             all_chunks.extend(file_chunks)
             diag["files_indexed"] += 1
@@ -502,7 +617,8 @@ class VectorKnowledgeBase:
                 "fname": chunk['fname'],
                 "start": chunk['start'],
                 "end": chunk['end'],
-                "source": "articles"
+                "source": "articles",
+                "chunk_id": chunk_id,
             })
 
         # 预检查：用第一批测试 embedding 可用性
@@ -547,6 +663,24 @@ class VectorKnowledgeBase:
             f"[VECTOR] 索引完成: {diag['files_indexed']} 个文件, "
             f"{self._articles_count} 个文本块"
         )
+
+        # 构建 BM25 倒排索引（用于关键词检索补充）
+        bm25_chunks = []
+        if all_ids and all_documents:
+            for i, cid in enumerate(all_ids):
+                bm25_chunks.append({'id': cid, 'text': all_documents[i] if i < len(all_documents) else ''})
+        if bm25_chunks:
+            self.bm25_searcher.build_index(bm25_chunks)
+            diag["bm25_indexed"] = self.bm25_searcher.chunk_count
+
+        # 重放所有有效纠正到新索引
+        replay = self._replay_all_corrections()
+        diag["corrections_replayed"] = replay
+
+        # 记录当前最新的文件修改时间
+        self._articles_dir = articles_dir
+        self._update_index_mtime(articles_dir)
+
         return diag
 
     def index_single_file(self, filepath: str) -> None:
@@ -571,8 +705,7 @@ class VectorKnowledgeBase:
             logger.error(f"[VECTOR] 读取文件失败 {fname}: {e}")
             return
 
-        match = re.match(r'([\d\.]+|AI-\d+)', fname)
-        article_id = match.group(1) if match else fname
+        article_id = fname
 
         # 先删除该文件的旧索引
         try:
@@ -587,18 +720,21 @@ class VectorKnowledgeBase:
         if not chunks:
             return
 
+        fname_hash = hashlib.md5(fname.encode()).hexdigest()[:6]
         ids = []
         documents = []
         metadatas = []
         for i, chunk in enumerate(chunks):
-            chunk_id = f"{fname}_{i}"
+            chunk_id = f"art_{article_id}_{fname_hash}_{chunk['start']}_{chunk['end']}"
             ids.append(chunk_id)
             documents.append(chunk['text'])
             metadatas.append({
                 "article_id": chunk.get('article_id', article_id),
                 "fname": chunk.get('fname', fname),
                 "start": chunk.get('start', 0),
-                "end": chunk.get('end', 0)
+                "end": chunk.get('end', 0),
+                "source": "articles",
+                "chunk_id": chunk_id,
             })
 
         try:
@@ -607,8 +743,115 @@ class VectorKnowledgeBase:
             )
             self._articles_count = self.articles_collection.count()
             logger.info(f"[VECTOR] 增量索引: {fname} ({len(chunks)} 块), 总计 {self._articles_count} 块")
+
+            # 同步更新 BM25 倒排索引
+            self._update_bm25_for_file(fname, ids, documents)
+            # 更新文件修改时间戳
+            if self._articles_dir:
+                self._update_index_mtime(self._articles_dir)
         except Exception as e:
             logger.error(f"[VECTOR] 增量索引失败 {fname}: {e}")
+
+    def _update_bm25_for_file(self, fname: str, chunk_ids: list, chunk_docs: list) -> None:
+        """
+        文件变更后重建 BM25 倒排索引。
+        由于 BM25 不存 fname 映射，无法精确移除旧 chunk 的 token，
+        所以直接从 ChromaDB 全量重建（纯内存操作，3000 chunks 约 3-5 秒）。
+        """
+        if not self.bm25_searcher._jieba_loaded:
+            return
+        try:
+            all_data = self.articles_collection.get(include=['documents'])
+            bm25_chunks = []
+            for i, cid in enumerate(all_data['ids']):
+                bm25_chunks.append({
+                    'id': cid,
+                    'text': all_data['documents'][i] if i < len(all_data['documents']) else ''
+                })
+            self.bm25_searcher.build_index(bm25_chunks)
+            logger.info(f"[BM25] 全量重建完成: {self.bm25_searcher.chunk_count} chunks")
+        except Exception as e:
+            logger.debug(f"[BM25] 重建失败: {e}")
+
+    def _update_index_mtime(self, articles_dir: str) -> None:
+        """扫描 articles_dir 下所有文件，记录最新的修改时间"""
+        try:
+            valid_exts = ('.md', '.txt', '.py', '.tex', '.rst', '.markdown')
+            max_mtime = 0.0
+            for fname in os.listdir(articles_dir):
+                if fname.endswith(valid_exts) and os.path.isfile(os.path.join(articles_dir, fname)):
+                    mt = os.path.getmtime(os.path.join(articles_dir, fname))
+                    if mt > max_mtime:
+                        max_mtime = mt
+            self._last_index_mtime = max_mtime
+        except Exception:
+            pass
+
+    def check_and_sync_stale(self) -> int:
+        """
+        检查 articles 目录中是否有比索引更新的文件。
+        如果有，自动增量索引这些文件并重建 BM25。
+        返回同步的文件数。
+        """
+        if not self._initialized or not self._articles_dir:
+            return 0
+        try:
+            valid_exts = ('.md', '.txt', '.py', '.tex', '.rst', '.markdown')
+            stale_files = []
+            for fname in os.listdir(self._articles_dir):
+                fpath = os.path.join(self._articles_dir, fname)
+                if fname.endswith(valid_exts) and os.path.isfile(fpath):
+                    if os.path.getmtime(fpath) > self._last_index_mtime:
+                        stale_files.append(fpath)
+
+            if not stale_files:
+                return 0
+
+            synced = 0
+            for fpath in stale_files:
+                self.index_single_file(fpath)
+                synced += 1
+
+            # 重建 BM25（index_single_file 内部已调用，但多文件场景确保一次）
+            if synced > 1:
+                self._update_bm25_for_file(f"batch_{synced}_files", [], [])
+
+            self._update_index_mtime(self._articles_dir)
+            logger.info(f"[VECTOR] 自动同步了 {synced} 个变更文件")
+            return synced
+        except Exception as e:
+            logger.debug(f"[VECTOR] 检查文件变更失败: {e}")
+            return 0
+
+    def _expand_query_synonyms(self, query: str) -> List[str]:
+        """
+        利用 TERM_SYNONYMS 对查询进行同义词扩展，生成变体查询。
+        例如："精细结构常数 alpha" -> 扩展 "精细结构常数 s_e", "精细结构常数 137"
+        """
+        from config import TERM_SYNONYMS
+        expanded = [query]
+        replacements = []
+
+        for term, syns in TERM_SYNONYMS.items():
+            if term in query:
+                # 每个同义词生成一个变体
+                for s in syns:
+                    if s not in query:
+                        variant = query.replace(term, f"{term} {s}")
+                        replacements.append((term, s, variant))
+            else:
+                for s in syns:
+                    if s in query.lower():
+                        variant = query.replace(s, f"{term} {s}")
+                        replacements.append((s, term, variant))
+                        break
+
+        # 最多生成 3 个变体，避免过多 API 调用
+        for _, _, variant in replacements[:3]:
+            if variant not in expanded:
+                expanded.append(variant)
+
+        return expanded
 
     def search(self, query: str, top_k: int = 15, include_personal: bool = False) -> List[Dict[str, Any]]:
         """
@@ -617,6 +860,7 @@ class VectorKnowledgeBase:
         每个结果包含 text, source, metadata 等信息。
         增加了 article_id 精确匹配：当向量搜索找不到或用户询问特定编号时，
         尝试按 article_id 或 fname 精确匹配。
+        每次搜索前自动检查文件变更并同步索引。
         """
         if not self._initialized:
             return []
@@ -646,8 +890,117 @@ class VectorKnowledgeBase:
                             'distance': dist,
                             'label': f"文章库: {meta.get('fname', '未知')} ({meta.get('article_id', '?')})"
                         })
+
+                # 同义词扩展查询：用 TERM_SYNONYMS 扩展 query，补充召回
+                expanded_queries = self._expand_query_synonyms(query)
+                for eq in expanded_queries:
+                    if eq == query:
+                        continue
+                    try:
+                        eq_results = self.articles_collection.query(
+                            query_texts=[eq], n_results=min(5, n_articles)
+                        )
+                        if eq_results and eq_results['documents']:
+                            existing_ids = set()
+                            for r in results:
+                                mid = r.get('metadata', {}).get('chunk_id', '')
+                                if mid:
+                                    existing_ids.add(mid)
+                            for i, doc in enumerate(eq_results['documents'][0]):
+                                meta = eq_results['metadatas'][0][i] if eq_results['metadatas'] else {}
+                                cid = meta.get('chunk_id', '')
+                                if cid not in existing_ids:
+                                    dist = eq_results['distances'][0][i] if eq_results['distances'] else 0.0
+                                    results.append({
+                                        'text': doc,
+                                        'source': 'articles',
+                                        'metadata': meta,
+                                        'distance': dist,
+                                        'label': f"[同义词扩展] 文章库: {meta.get('fname', '未知')} ({meta.get('article_id', '?')})"
+                                    })
+                                    existing_ids.add(cid)
+                    except Exception as e:
+                        logger.debug(f"[VECTOR] 同义词扩展查询失败: {e}")
+
         except Exception as e:
             logger.error(f"[VECTOR] articles 检索失败: {e}")
+
+        # BM25 关键词检索补充 + RRF 融合
+        if self.bm25_searcher.initialized:
+            try:
+                bm25_hits = self.bm25_searcher.search(query, top_k=min(top_k * 2, 20))
+                if bm25_hits:
+                    # 收集已有 chunk ids（用于去重）
+                    existing_chunk_ids = set()
+                    for r in results:
+                        eid = r.get('metadata', {}).get('chunk_id', '')
+                        if eid:
+                            existing_chunk_ids.add(eid)
+
+                    # BM25 分数归一化：将 BM25 分数映射到距离区间 [0.2, 0.6]
+                    # 分数越高 → 距离越小（越相关）
+                    bm25_scores_raw = [score for _, score in bm25_hits]
+                    bm25_min = min(bm25_scores_raw) if bm25_scores_raw else 0
+                    bm25_max = max(bm25_scores_raw) if bm25_scores_raw else 1
+                    bm25_range = bm25_max - bm25_min if bm25_max > bm25_min else 1.0
+
+                    # 从 ChromaDB 获取 BM25 命中的 chunk 文本和 metadata
+                    bm25_ids = [cid for cid, _ in bm25_hits if cid not in existing_chunk_ids]
+                    if bm25_ids:
+                        chroma_data = self.articles_collection.get(ids=bm25_ids, include=['documents', 'metadatas'])
+                        for i, cid in enumerate(chroma_data['ids']):
+                            meta = chroma_data['metadatas'][i] if chroma_data['metadatas'] else {}
+                            doc = chroma_data['documents'][i] if chroma_data['documents'] else ''
+                            # 找到 BM25 分数并归一化为距离
+                            bm25_score = 0.0
+                            for hid, hscore in bm25_hits:
+                                if hid == cid:
+                                    bm25_score = hscore
+                                    break
+                            # 归一化：最高分 -> 0.2，最低分 -> 0.6
+                            norm_score = (bm25_score - bm25_min) / bm25_range
+                            bm25_distance = 0.6 - 0.4 * norm_score  # 范围 [0.2, 0.6]
+
+                            results.append({
+                                'text': doc,
+                                'source': 'articles',
+                                'metadata': meta,
+                                'distance': round(bm25_distance, 4),
+                                'label': f"[BM25] 文章库: {meta.get('fname', '未知')} ({meta.get('article_id', '?')})",
+                                'bm25_score': round(bm25_score, 2),
+                            })
+                            existing_chunk_ids.add(cid)
+
+                    # RRF 融合：重新排序所有 articles 结果
+                    articles_results = [r for r in results if r.get('source') == 'articles']
+                    non_articles = [r for r in results if r.get('source') != 'articles']
+
+                    # 按 distance 排序后计算 RRF 分数
+                    rrf_k = 60
+                    rrf_scores = {}
+                    sorted_arts = sorted(articles_results, key=lambda x: x.get('distance', 999))
+                    for rank, r in enumerate(sorted_arts):
+                        cid = r.get('metadata', {}).get('chunk_id', id(r))
+                        rrf_scores[cid] = rrf_scores.get(cid, 0) + 1.0 / (rrf_k + rank + 1)
+
+                    # 更新 _rrf_score
+                    for r in articles_results:
+                        cid = r.get('metadata', {}).get('chunk_id', id(r))
+                        r['_rrf_score'] = rrf_scores.get(cid, 0)
+
+                    # 按来源优先级 + RRF 分数排序
+                    def _hybrid_sort_key(r):
+                        is_bm25 = 0 if r.get('label', '').startswith('[BM25]') else 1
+                        is_exact = 0 if r.get('label', '').startswith('[精确匹配]') else 1
+                        is_syn = 0 if r.get('label', '').startswith('[同义词扩展]') else 1
+                        rrf = r.get('_rrf_score', 0)
+                        # RRF 分数越高越好（取负值用升序）
+                        return (is_exact, -rrf, is_bm25, is_syn, r.get('distance', 999))
+
+                    results = sorted(articles_results, key=_hybrid_sort_key) + non_articles
+
+            except Exception as e:
+                logger.debug(f"[BM25] 检索或融合失败: {e}")
 
         # 当向量搜索没结果，或用户明显在找特定编号时，尝试精确匹配
         if target_id and self.articles_collection and self.articles_count > 0:
@@ -790,6 +1143,43 @@ class VectorKnowledgeBase:
             logger.error(f"[VECTOR] antipatterns 检索失败: {e}")
             return []
 
+    def update_filename_in_metadata(self, old_filename: str, new_filename: str) -> int:
+        """
+        文件重命名后，更新向量索引中所有引用该文件名的 metadata。
+        返回更新的文档数量。
+        """
+        if not self._initialized:
+            return 0
+        updated = 0
+        for coll_name, coll in [
+            ('articles', self.collection),
+        ]:
+            if not coll or coll_name in self._dim_stale_collections:
+                continue
+            try:
+                all_data = coll.get(include=['metadatas'])
+                ids_to_update = []
+                metas_to_update = []
+                docs_to_update = []
+                if all_data and all_data['metadatas']:
+                    for i, meta in enumerate(all_data['metadatas']):
+                        if meta.get('fname') == old_filename:
+                            meta['fname'] = new_filename
+                            ids_to_update.append(all_data['ids'][i])
+                            metas_to_update.append(meta)
+                            docs_to_update.append(all_data['documents'][i])
+                if ids_to_update:
+                    coll.update(
+                        ids=ids_to_update,
+                        metadatas=metas_to_update,
+                        documents=docs_to_update,
+                    )
+                    updated += len(ids_to_update)
+                    logger.info(f"[VECTOR] 已更新 {len(ids_to_update)} 条记录的 fname: {old_filename} -> {new_filename}")
+            except Exception as e:
+                logger.error(f"[VECTOR] 更新 fname 失败 ({coll_name}): {e}")
+        return updated
+
     def search_patches(self, query: str, top_k: int = 5) -> List[Dict[str, Any]]:
         """
         v10 新增：从 patches 集合检索与当前查询相关的知识补丁。
@@ -840,23 +1230,11 @@ class VectorKnowledgeBase:
                     break
 
             if r['source'] == 'learned':
-                header = (
-                    f"\n{'='*50}\n"
-                    f"[学习记忆] 质量分:{r['metadata'].get('quality_score', '?')} "
-                    f"距离:{r['distance']:.4f}\n"
-                    f"{'='*50}\n"
-                )
+                header = f"[记忆 score:{r['metadata'].get('quality_score', '?')} dist:{r['distance']:.3f}]"
             else:
                 meta = r['metadata']
                 fname = meta.get('fname', '')
-                header = (
-                    f"\n{'='*50}\n"
-                    f"文章: {meta.get('article_id', '?')} ({fname}) "
-                    f"位置:{meta.get('start', '?')}-{meta.get('end', '?')} "
-                    f"距离:{r['distance']:.4f}"
-                )
-                if fname:
-                    header += f"\n完整文章: [点击预览](http://localhost:5000/preview/{fname})"
+                header = f"[{meta.get('article_id', '?')} @{meta.get('start', '?')}-{meta.get('end', '?')} dist:{r['distance']:.3f}]"
 
             contents.append(header + text)
             total_chars += len(header) + len(text)
@@ -1012,14 +1390,20 @@ class VectorKnowledgeBase:
     # ==================== v10 新增：教学集合操作 ====================
 
     def add_correction(self, wrong: str, correct: str, reason: str = "",
-                       context: str = "", session_id: str = "") -> bool:
+                       context: str = "", session_id: str = "",
+                       article_id: str = "", trust: float = 0.5) -> Dict[str, Any]:
         """
         v10 新增：添加一条纠正记录到 corrections 集合。
+        如果提供了 article_id 且 trust >= 0.5，自动回写到 articles 集合。
         """
+        result = {"success": False, "article_rewrite": None, "correction_id": None}
+
         if not self._initialized:
-            return False
+            result["error"] = "向量库未初始化"
+            return result
         if not wrong or not correct:
-            return False
+            result["error"] = "wrong 和 correct 不能为空"
+            return result
 
         doc = f"错误: {wrong}\n正确: {correct}\n原因: {reason or '未提供'}"
         doc_id = f"corr_{hashlib.md5(doc.encode()).hexdigest()[:16]}_{int(time.time())}"
@@ -1034,20 +1418,366 @@ class VectorKnowledgeBase:
                     "wrong": wrong[:1000],
                     "correct": correct[:2000],
                     "reason": reason[:1000],
-                    "trust_level": 0.5,
+                    "trust_level": round(min(max(trust, 0.0), 1.0), 2),
                     "applied_count": 0,
                     "created_at": now,
                     "session_id": session_id[:64] if session_id else "",
+                    "article_id": article_id[:100] if article_id else "",
                 }]
             )
             self._corrections_count = self.corrections_collection.count()
             logger.info(
                 f"[TEACH-CORRECT] 纠正已存入 | corrections总数={self._corrections_count}"
             )
-            return True
+            result["success"] = True
+            result["correction_id"] = doc_id
+
+            # 自动回写到 articles 集合
+            if article_id and trust >= 0.5:
+                rewrite = self._apply_correction_to_articles(
+                    wrong, correct, reason, article_id, trust, doc_id
+                )
+                result["article_rewrite"] = rewrite
+                if rewrite.get("applied"):
+                    logger.info(
+                        f"[TEACH-CORRECT] 自动回写成功 | article_id={article_id} | "
+                        f"updated={rewrite.get('chunks_updated', 0)}"
+                    )
+
+            return result
         except Exception as e:
             logger.error(f"[TEACH-CORRECT] 存入纠正失败: {e}")
-            return False
+            result["error"] = str(e)
+            return result
+
+    def _apply_correction_to_articles(self, wrong: str, correct: str, reason: str,
+                                        article_id: str, trust: float,
+                                        correction_id: str) -> Dict[str, Any]:
+        """
+        将纠正回写到 articles 集合中匹配的 chunk。
+        只在 chunk 文本中找到 wrong 子串时才替换，避免误操作。
+        替换前自动保存回滚快照到 patches 集合。
+        """
+        result = {"applied": False, "article_id": article_id, "chunks_updated": 0}
+
+        if not self._initialized or not self.articles_collection:
+            result["reason"] = "articles 集合不可用"
+            return result
+        if not article_id:
+            result["reason"] = "未指定 article_id"
+            return result
+        if trust < 0.5:
+            result["reason"] = f"trust_level {trust:.2f} 不足 0.5"
+            return result
+
+        try:
+            # 查找该 article_id 下的所有 chunk
+            existing = self.articles_collection.get(
+                where={"article_id": article_id},
+                include=["documents", "metadatas"]
+            )
+
+            if not existing or not existing['ids']:
+                result["reason"] = f"articles 中未找到 article_id={article_id}"
+                return result
+
+            update_ids = []
+            update_docs = []
+            update_metas = []
+            # 回滚快照：记录修改前的 chunk id、原文、原 metadata
+            rollback_chunks = []
+
+            for idx, chunk_id in enumerate(existing['ids']):
+                chunk_text = existing['documents'][idx] if idx < len(existing['documents']) else ""
+                chunk_meta = existing['metadatas'][idx] if idx < len(existing['metadatas']) else {}
+
+                if wrong not in chunk_text:
+                    continue
+
+                # 保存回滚快照（修改前的原始数据）
+                rollback_chunks.append({
+                    "id": chunk_id,
+                    "document": chunk_text,
+                    "metadata": dict(chunk_meta),
+                })
+
+                # 执行替换（只替换第一次出现）
+                new_text = chunk_text.replace(wrong, correct, 1)
+                update_ids.append(chunk_id)
+                update_docs.append(new_text)
+
+                # 记录纠正历史到 metadata
+                corr_ids = chunk_meta.get("correction_ids", "")
+                if corr_ids:
+                    corr_ids = f"{corr_ids},{correction_id}"
+                else:
+                    corr_ids = correction_id
+                chunk_meta["correction_ids"] = corr_ids
+                chunk_meta["_corrected_at"] = datetime.now().isoformat()
+                update_metas.append(chunk_meta)
+
+            if not update_ids:
+                result["reason"] = f"article_id={article_id} 下没有 chunk 包含错误文本"
+                return result
+
+            # 保存回滚快照到 patches 集合
+            self._save_rollback_snapshot(correction_id, article_id, wrong, correct,
+                                         reason, rollback_chunks)
+
+            # 批量更新（ChromaDB update 会自动重新计算 embedding）
+            for batch_start in range(0, len(update_ids), 500):
+                batch_ids = update_ids[batch_start:batch_start + 500]
+                batch_docs = update_docs[batch_start:batch_start + 500]
+                batch_metas = update_metas[batch_start:batch_start + 500]
+                self.articles_collection.update(
+                    ids=batch_ids, documents=batch_docs, metadatas=batch_metas
+                )
+
+            self._articles_count = self.articles_collection.count()
+
+            # 记录 patch 日志
+            self.add_patch(
+                topic=f"[自动回写] article_id={article_id} 纠正: {wrong[:50]}",
+                content=f"将 '{wrong[:200]}' 替换为 '{correct[:200]}'。"
+                       f"原因: {reason[:200]}。"
+                       f"涉及 chunk 数: {len(update_ids)}。"
+                       f"correction_id: {correction_id}",
+                source="auto_correction_rewrite"
+            )
+
+            result["applied"] = True
+            result["chunks_updated"] = len(update_ids)
+            result["correction_id"] = correction_id
+            logger.info(
+                f"[CORRECTION-REWRITE] 回写完成 | article_id={article_id} | "
+                f"updated={len(update_ids)} chunks | snapshot saved"
+            )
+            return result
+
+        except Exception as e:
+            logger.error(f"[CORRECTION-REWRITE] 回写失败: {e}")
+            result["reason"] = str(e)
+            return result
+
+    def _save_rollback_snapshot(self, correction_id: str, article_id: str,
+                                  wrong: str, correct: str, reason: str,
+                                  chunks: List[Dict]) -> None:
+        """保存回滚快照到 patches 集合，用于后续撤销纠正。"""
+        if not self._initialized or not self.patches_collection or not chunks:
+            return
+
+        snapshot_id = f"rollback_{correction_id}"
+        now = datetime.now().isoformat()
+
+        # ChromaDB metadata 只支持简单类型，将 chunks 序列化为 JSON 字符串
+        import json as _json
+        chunks_json = _json.dumps(chunks, ensure_ascii=False)
+
+        snapshot_doc = (
+            f"回滚快照 | correction_id={correction_id} | article_id={article_id}\n"
+            f"原文: {wrong[:300]}\n"
+            f"改为: {correct[:300]}\n"
+            f"原因: {reason[:300]}\n"
+            f"涉及 chunk 数: {len(chunks)}"
+        )
+
+        try:
+            # 如果已有同 correction_id 的快照，先删除
+            try:
+                self.patches_collection.delete(ids=[snapshot_id])
+            except Exception:
+                pass
+
+            self.patches_collection.add(
+                ids=[snapshot_id],
+                documents=[snapshot_doc],
+                metadatas=[{
+                    "type": "rollback_snapshot",
+                    "correction_id": correction_id,
+                    "article_id": article_id,
+                    "wrong_preview": wrong[:200],
+                    "correct_preview": correct[:200],
+                    "chunk_count": len(chunks),
+                    "chunks_json": chunks_json[:50000],  # ChromaDB metadata 值长度限制
+                    "created_at": now,
+                }]
+            )
+            self._patches_count = self.patches_collection.count()
+            logger.info(
+                f"[ROLLBACK-SNAPSHOT] 快照已保存 | correction_id={correction_id} | "
+                f"chunks={len(chunks)}"
+            )
+        except Exception as e:
+            logger.error(f"[ROLLBACK-SNAPSHOT] 保存快照失败: {e}")
+
+    def rollback_correction(self, correction_id: str) -> Dict[str, Any]:
+        """
+        回滚一个纠正：从 patches 集合取出快照，还原 articles chunk 到修改前的状态。
+        """
+        result = {"success": False, "correction_id": correction_id, "chunks_restored": 0}
+
+        if not self._initialized or not self.patches_collection or not self.articles_collection:
+            result["error"] = "向量库未初始化"
+            return result
+
+        try:
+            # 从 patches 取出快照
+            snapshot_id = f"rollback_{correction_id}"
+            snapshot = self.patches_collection.get(
+                ids=[snapshot_id],
+                include=["documents", "metadatas"]
+            )
+
+            if not snapshot or not snapshot['ids']:
+                result["error"] = f"未找到 correction_id={correction_id} 的回滚快照"
+                return result
+
+            meta = snapshot['metadatas'][0]
+            chunks_json = meta.get("chunks_json", "")
+            article_id = meta.get("article_id", "")
+
+            if not chunks_json:
+                result["error"] = "快照数据为空"
+                return result
+
+            import json as _json
+            chunks = _json.loads(chunks_json)
+
+            if not chunks:
+                result["error"] = "快照中无 chunk 数据"
+                return result
+
+            # 还原每个 chunk
+            restore_ids = []
+            restore_docs = []
+            restore_metas = []
+
+            for chunk in chunks:
+                chunk_id = chunk["id"]
+                original_text = chunk["document"]
+                original_meta = chunk["metadata"]
+
+                # 从 correction_ids 中移除当前 correction_id
+                corr_ids_str = original_meta.get("correction_ids", "")
+                if corr_ids_str:
+                    corr_id_list = [cid.strip() for cid in corr_ids_str.split(",") if cid.strip()]
+                    corr_id_list = [cid for cid in corr_id_list if cid != correction_id]
+                    original_meta["correction_ids"] = ",".join(corr_id_list) if corr_id_list else ""
+                else:
+                    original_meta["correction_ids"] = ""
+
+                # 清除 corrected_at 如果没有其他纠正
+                if not original_meta.get("correction_ids"):
+                    original_meta.pop("_corrected_at", None)
+
+                restore_ids.append(chunk_id)
+                restore_docs.append(original_text)
+                restore_metas.append(original_meta)
+
+            # 批量还原
+            for batch_start in range(0, len(restore_ids), 500):
+                batch_ids = restore_ids[batch_start:batch_start + 500]
+                batch_docs = restore_docs[batch_start:batch_start + 500]
+                batch_metas = restore_metas[batch_start:batch_start + 500]
+                self.articles_collection.update(
+                    ids=batch_ids, documents=batch_docs, metadatas=batch_metas
+                )
+
+            self._articles_count = self.articles_collection.count()
+
+            # 删除快照（已消费）
+            self.patches_collection.delete(ids=[snapshot_id])
+            self._patches_count = self.patches_collection.count()
+
+            # 从 corrections 集合中标记为已回滚
+            try:
+                corr_record = self.corrections_collection.get(
+                    ids=[correction_id],
+                    include=["documents", "metadatas"]
+                )
+                if corr_record and corr_record['ids']:
+                    corr_meta = corr_record['metadatas'][0]
+                    corr_meta["rolled_back"] = "true"
+                    corr_meta["rolled_back_at"] = datetime.now().isoformat()
+                    self.corrections_collection.update(
+                        ids=[correction_id],
+                        metadatas=[corr_meta]
+                    )
+            except Exception as e:
+                logger.warning(f"[ROLLBACK] 标记 correction 回滚状态失败: {e}")
+
+            # 记录 patch 日志
+            self.add_patch(
+                topic=f"[回滚] article_id={article_id} correction_id={correction_id}",
+                content=f"已回滚纠正，还原了 {len(restore_ids)} 个 chunk 到修改前状态。",
+                source="correction_rollback"
+            )
+
+            result["success"] = True
+            result["chunks_restored"] = len(restore_ids)
+            result["article_id"] = article_id
+            logger.info(
+                f"[ROLLBACK] 回滚完成 | correction_id={correction_id} | "
+                f"article_id={article_id} | restored={len(restore_ids)} chunks"
+            )
+            return result
+
+        except Exception as e:
+            logger.error(f"[ROLLBACK] 回滚失败: {e}")
+            result["error"] = str(e)
+            return result
+
+    def _replay_all_corrections(self) -> Dict[str, Any]:
+        """
+        重放所有 trust >= 0.5 且有 article_id 的纠正记录到 articles 集合。
+        在 build_index 重建索引后调用，确保纠正不丢失。
+        """
+        result = {"replayed": 0, "skipped": 0, "failed": 0}
+
+        if not self._initialized or not self.corrections_collection:
+            return result
+
+        try:
+            all_corrections = self.corrections_collection.get(include=["documents", "metadatas"])
+            if not all_corrections or not all_corrections['ids']:
+                return result
+
+            for idx, corr_id in enumerate(all_corrections['ids']):
+                meta = all_corrections['metadatas'][idx] if idx < len(all_corrections['metadatas']) else {}
+                doc = all_corrections['documents'][idx] if idx < len(all_corrections['documents']) else ""
+
+                article_id = meta.get("article_id", "")
+                trust = float(meta.get("trust_level", 0.5))
+
+                if not article_id or trust < 0.5:
+                    result["skipped"] += 1
+                    continue
+
+                wrong = meta.get("wrong", "")
+                correct = meta.get("correct", "")
+                reason = meta.get("reason", "")
+
+                if not wrong or not correct:
+                    result["skipped"] += 1
+                    continue
+
+                rewrite = self._apply_correction_to_articles(
+                    wrong, correct, reason, article_id, trust, corr_id
+                )
+                if rewrite.get("applied"):
+                    result["replayed"] += 1
+                else:
+                    result["skipped"] += 1
+
+            logger.info(
+                f"[CORRECTION-REPLAY] 重放完成 | replayed={result['replayed']} | "
+                f"skipped={result['skipped']} | failed={result['failed']}"
+            )
+        except Exception as e:
+            logger.error(f"[CORRECTION-REPLAY] 重放失败: {e}")
+            result["failed"] = 1
+
+        return result
 
     def add_antipattern(self, pattern: str, description: str = "",
                         severity: str = "medium") -> bool:

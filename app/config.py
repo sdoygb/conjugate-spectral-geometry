@@ -152,9 +152,11 @@ if not OPENWEBUI_UPLOAD_DIR or not os.path.exists(OPENWEBUI_UPLOAD_DIR):
 # Open WebUI 数据库路径（用于查询历史对话）
 OPENWEBUI_DB_PATH = os.getenv('OPENWEBUI_DB_PATH', '')
 if not OPENWEBUI_DB_PATH:
-    # 自动查找
+    # 自动查找（0.9.5+ 数据库在包目录内）
     for candidate in [
+        '/usr/local/lib/python3.11/site-packages/open_webui/data/webui.db',
         os.path.expanduser('~/openwebui/data/webui.db'),
+        os.path.expanduser('~/open-webui/data/webui.db'),
         '/app/backend/data/webui.db',
         '/var/lib/docker/volumes/open-webui/_data/webui.db',
         os.path.expanduser('~/openwebui/venv/lib/python3.11/site-packages/open_webui/data/webui.db'),

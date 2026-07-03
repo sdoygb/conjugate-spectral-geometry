@@ -781,6 +781,8 @@ def write_file(filename):
 
 
 @app.route('/v1/models', methods=['GET'])
+@app.route('/openai/models', methods=['GET'])
+@app.route('/openai/models/<path:_dummy>', methods=['GET'])  # 0.9.5 兼容：/openai/models/0 等
 def list_models():
     def _model_entry(mid):
         owner = "deepseek" if "deepseek" in mid.lower() else "openai" if "gpt" in mid.lower() else "system"
@@ -936,12 +938,38 @@ def teach_correct():
     reason = data.get('reason', '').strip()
     context = data.get('context', '').strip()
     session_id = data.get('session_id', '').strip()
+    article_id = data.get('article_id', '').strip()
+    trust = float(data.get('trust', 0.5))
 
     result = teaching_system.add_correction(
         wrong=wrong, correct=correct, reason=reason,
-        context=context, session_id=session_id
+        context=context, session_id=session_id,
+        article_id=article_id, trust=trust
     )
 
+    status_code = 200 if result["success"] else 400
+    return jsonify(result), status_code
+
+
+@app.route('/v1/teach/rollback', methods=['POST'])
+def teach_rollback():
+    """
+    回滚 API：撤销一个纠正对 articles 向量集合的修改。
+    请求体：
+    {
+        "correction_id": "corr_xxx"  （从 teach_correct 返回的 correction_id）
+    }
+    """
+    if not vector_kb or not vector_kb.is_initialized:
+        return openai_error("向量库未初始化")
+
+    data = request.get_json(force=True)
+    correction_id = data.get('correction_id', '').strip()
+
+    if not correction_id:
+        return openai_error("correction_id 不能为空", err_type="invalid_request_error", status=400)
+
+    result = vector_kb.rollback_correction(correction_id)
     status_code = 200 if result["success"] else 400
     return jsonify(result), status_code
 
@@ -1203,7 +1231,8 @@ def chat_completions():
                 articles_content = f"【本次检索命中以下文章】\n{fname_list}\n\n{articles_content}"
         if not articles_content:
             logger.info(f"[VECTOR] 检索无结果: query='{clean_query[:80]}...', search='{search_query[:80]}', top_k={MAX_CHUNKS_PER_QUERY}, total_docs={vector_kb.total_docs}")
-    index_empty = not articles_content
+    index_empty = not vector_kb.is_initialized or vector_kb.articles_count == 0
+    search_no_result = not articles_content and vector_kb.is_initialized and vector_kb.articles_count > 0
 
     # v10 新增：从 corrections 和 patches 检索相关教学数据
     teaching_section = ""
@@ -1258,7 +1287,7 @@ def chat_completions():
     system_prompt = build_system_prompt(
         eta_before, stage, strategy, max_eta, markers,
         loaded_chunks, articles_content, pre_metrics,
-        index_empty, "", teaching_section, msg_count, recent_chats_summary
+        index_empty, search_no_result, "", teaching_section, msg_count, recent_chats_summary
     )
 
     # 过滤掉空消息和中间层注入的文件消息（避免历史中残留的文件内容被重复处理）
@@ -1541,12 +1570,13 @@ def chat_completions():
     # 中间层使用自有工具定义（ARTICLE_TOOLS），不透传 Open WebUI 的 tools 参数
     # 原因：中间层代理模式下，工具调用在中间层内部完成，Open WebUI 不需要感知
     # 透传 Open WebUI 的标准参数
-    # 默认启用深度思考（DeepSeek reasoning_effort）
-    if 'reasoning_effort' not in data:
-        api_params['reasoning_effort'] = 'high'
-    elif data['reasoning_effort']:
-        api_params['reasoning_effort'] = data['reasoning_effort']
-
+    # 默认启用深度思考（仅 DeepSeek 模型需要 reasoning_effort 参数）
+    _is_deepseek_model = 'deepseek' in _selected_model.lower() if '_selected_model' in dir() else 'deepseek' in os.getenv('GAI_MODEL', '').lower()
+    if _is_deepseek_model:
+        if 'reasoning_effort' not in data:
+            api_params['reasoning_effort'] = 'high'
+        elif data['reasoning_effort']:
+            api_params['reasoning_effort'] = data['reasoning_effort']
     for key in ('temperature', 'max_tokens', 'top_p', 'stop', 'frequency_penalty', 'presence_penalty', 'tool_choice', 'stream_options', 'response_format', 'user'):
         if key in data:
             api_params[key] = data[key]
@@ -1600,14 +1630,14 @@ def chat_completions():
         )
     else:
         # 多模型路由
-        req_model = request_model or GAI_MODEL
+        req_model = data.get('model') or GAI_MODEL
         base_url, api_key = get_provider_for_model(req_model)
         client = openai.OpenAI(api_key=api_key, base_url=base_url)
         try:
             # 质量门控 - 如果AI回复偏离几何论，自动重试
             # v10 增强：反模式检测触发重试时，在prompt中注入反模式警告
             # 工具调用链（非流式）——处理 KIMI 等模型的 function calling
-            MAX_TOOL_CHAIN = 5
+            MAX_TOOL_CHAIN = 8
             for _tc_round in range(MAX_TOOL_CHAIN):
                 resp = client.chat.completions.create(**api_params)
                 _tc_content = resp.choices[0].message.content or ""

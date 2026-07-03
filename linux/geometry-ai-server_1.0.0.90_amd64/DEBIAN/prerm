@@ -1,0 +1,8 @@
+#!/bin/bash
+set -e
+echo "[卸载] 停止并移除服务..."
+systemctl stop geometry-ai 2>/dev/null || true
+systemctl disable geometry-ai 2>/dev/null || true
+rm -f /etc/systemd/system/geometry-ai.service
+systemctl daemon-reload
+echo "[卸载] 完成"

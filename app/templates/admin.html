@@ -635,6 +635,7 @@
             <button class="navbar-tab" data-panel="knowledge">知识库</button>
             <button class="navbar-tab" data-panel="files">文章管理</button>
             <button class="navbar-tab" data-panel="teach">教学系统</button>
+            <button class="navbar-tab" data-panel="git">版本管理</button>
             <button class="navbar-tab" data-panel="logs">日志</button>
         </div>
     </nav>
@@ -950,6 +951,86 @@
 
 
 
+        <!-- ==================== 版本管理面板（Git） ==================== -->
+        <div class="panel" id="panel-git">
+            <div class="panel-title">文章目录版本管理 (Git)</div>
+
+            <div class="card">
+                <div class="card-title">仓库状态</div>
+                <div class="status-grid" id="gitStatus">
+                    <div class="status-item">
+                        <div>
+                            <div class="status-label">分支</div>
+                            <div class="status-value" id="gitBranch">加载中...</div>
+                        </div>
+                    </div>
+                    <div class="status-item">
+                        <div>
+                            <div class="status-label">目录总纲版本</div>
+                            <div class="status-value" id="gitVersion">加载中...</div>
+                        </div>
+                    </div>
+                    <div class="status-item">
+                        <div>
+                            <div class="status-label">文章总数</div>
+                            <div class="status-value" id="gitArticlesCount">--</div>
+                        </div>
+                    </div>
+                    <div class="status-item">
+                        <div>
+                            <div class="status-label">最新提交</div>
+                            <div class="status-value" id="gitLastCommit" style="font-size:13px;font-family:monospace;">--</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top:12px;">
+                    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                        <span style="font-size:13px;color:#999;">未提交变更：</span>
+                        <span id="gitChangesAdded" style="font-size:13px;color:#4caf50;">新增 0</span>
+                        <span id="gitChangesModified" style="font-size:13px;color:#ff9800;">修改 0</span>
+                        <span id="gitChangesDeleted" style="font-size:13px;color:#f44336;">删除 0</span>
+                    </div>
+                    <div id="gitChangesDetail" style="margin-top:8px;max-height:150px;overflow-y:auto;font-size:12px;color:#999;font-family:monospace;background:#1a1a1a;padding:8px;border-radius:4px;"></div>
+                </div>
+            </div>
+
+            <div class="card" id="gitCommitSection">
+                <div class="card-title">一键操作</div>
+                <div style="margin-bottom:16px;padding:12px;background:#1a1a1a;border-radius:6px;border-left:3px solid #4a9eff;">
+                    <div style="font-weight:bold;color:#4a9eff;margin-bottom:4px;">Git 提交</div>
+                    <div style="font-size:13px;color:#999;margin-bottom:12px;">
+                        自动检测 articles/ 下的变更 → 更新目录总纲版本号 → add → commit。
+                        版本号规则：同一天递增小数位（260630.1 → 260630.2），跨天重置（260630.8 → 260701.1）。
+                    </div>
+                    <div id="gitCommitResult" style="margin-bottom:8px;font-size:13px;"></div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="btnGitCommit" onclick="gitCommit()">
+                            ▶ 提交文章变更
+                        </button>
+                        <button class="btn btn-secondary" onclick="refreshGitStatus()">刷新状态</button>
+                    </div>
+                </div>
+
+                <div style="margin-bottom:8px;padding:12px;background:#1a1a1a;border-radius:6px;border-left:3px solid #4caf50;">
+                    <div style="font-weight:bold;color:#4caf50;margin-bottom:4px;">推送到远程</div>
+                    <div style="font-size:13px;color:#999;margin-bottom:12px;">
+                        将已提交的变更推送到远程仓库（如 GitHub）。需要先配置远程仓库地址。
+                    </div>
+                    <div id="gitPushResult" style="margin-bottom:8px;font-size:13px;"></div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="btnGitPush" onclick="gitPush()">
+                            ▲ 推送到远程
+                        </button>
+                    </div>
+                </div>
+
+                <div style="padding:12px;background:#1a1a1a;border-radius:6px;border-left:3px solid #9c27b0;">
+                    <div style="font-weight:bold;color:#9c27b0;margin-bottom:4px;">提交历史</div>
+                    <div id="gitLog" style="margin-top:8px;max-height:240px;overflow-y:auto;"></div>
+                </div>
+            </div>
+        </div>
+
         <!-- ==================== 日志面板 ==================== -->
         <div class="panel" id="panel-logs">
             <div class="panel-title">系统日志</div>
@@ -1143,6 +1224,7 @@
                     case 'knowledge': loadKnowledge(); break;
                     case 'files': loadFiles(); break;
                     case 'teach': loadTeachData(); break;
+                    case 'git': refreshGitStatus(); break;
                     case 'logs': loadLogs(); break;
                 }
             });
@@ -1154,32 +1236,39 @@
          * 重启中间层服务
          */
         async function restartService() {
-            showConfirm('重启服务', '确定要重启中间层服务吗？重启期间聊天将暂时不可用。', async function() {
+            showConfirm('重启服务', '确定要重启中间层服务吗？重启期间聊天将暂时不可用，管理页面也会断开。', async function() {
                 try {
                     showLoading();
-                    await apiRequest('/admin/restart', { method: 'POST' });
-                    showToast('服务正在重启，请等待约5秒...', 'warning', 5000);
-                    // 轮询等待服务恢复
-                    var retry = 0;
-                    var timer = setInterval(async function() {
-                        retry++;
-                        try {
-                            await fetch('/health');
-                            clearInterval(timer);
-                            hideLoading();
-                            showToast('服务已重启成功', 'success');
-                            refreshHealth();
-                        } catch (e) {
-                            if (retry > 15) {
-                                clearInterval(timer);
-                                hideLoading();
-                                showToast('重启超时，请手动检查', 'error');
+                    var data = await apiRequest('/admin/restart', { method: 'POST' });
+                    if (data.success) {
+                        showToast('服务正在重启，请等待约5秒...', 'warning', 5000);
+                        hideLoading();
+                        // 轮询等待服务恢复
+                        var retry = 0;
+                        var timer = setInterval(async function() {
+                            retry++;
+                            try {
+                                var resp = await fetch('/health?t=' + Date.now());
+                                if (resp.ok) {
+                                    clearInterval(timer);
+                                    showToast('✅ 服务已重启成功', 'success');
+                                    refreshHealth();
+                                }
+                            } catch (e) {
+                                // 服务还没起来，继续等待
                             }
-                        }
+                            if (retry > 30) {
+                                clearInterval(timer);
+                                showToast('重启超时（30秒），请手动刷新页面检查', 'warning', 8000);
+                            }
                     }, 1000);
+                    } else {
+                        hideLoading();
+                        showToast('重启失败: ' + (data.error || '未知错误'), 'error');
+                    }
                 } catch (e) {
                     hideLoading();
-                    showToast('重启失败: ' + e.message, 'error');
+                    showToast('重启请求失败: ' + e.message, 'error');
                 }
             });
         }
@@ -1559,6 +1648,155 @@
                     hideLoading();
                 }
             });
+        }
+
+        /* ==================== 版本管理面板（Git） ==================== */
+
+        /**
+         * 刷新 Git 状态
+         */
+        async function refreshGitStatus() {
+            try {
+                var data = await apiRequest('/admin/git/status');
+
+                if (!data.success) {
+                    document.getElementById('gitBranch').textContent = '❌ ' + (data.error || '未知错误');
+                    return;
+                }
+
+                document.getElementById('gitBranch').textContent = data.branch || '--';
+                document.getElementById('gitVersion').textContent = 'v' + (data.version || '--');
+                document.getElementById('gitArticlesCount').textContent = data.articles_count || 0;
+                document.getElementById('gitLastCommit').textContent = data.last_commit || '--';
+
+                // 变更统计
+                var ch = data.changes || {};
+                document.getElementById('gitChangesAdded').textContent = '新增 ' + (ch.added || 0);
+                document.getElementById('gitChangesModified').textContent = '修改 ' + (ch.modified || 0);
+                document.getElementById('gitChangesDeleted').textContent = '删除 ' + (ch.deleted || 0);
+
+                // 变更详情
+                var detailEl = document.getElementById('gitChangesDetail');
+                if (ch.details && ch.details.length > 0) {
+                    detailEl.textContent = ch.details.slice(0, 30).join('\n');
+                    detailEl.style.display = 'block';
+                } else {
+                    detailEl.textContent = '（无未提交变更）';
+                }
+
+                // 加载提交历史
+                loadGitLog();
+
+            } catch (e) {
+                document.getElementById('gitBranch').textContent = '连接失败';
+                showToast('获取 Git 状态失败: ' + e.message, 'error');
+            }
+        }
+
+        /**
+         * 加载 Git 提交历史
+         */
+        async function loadGitLog() {
+            try {
+                var data = await apiRequest('/admin/git/log');
+                var logEl = document.getElementById('gitLog');
+                logEl.innerHTML = '';
+
+                if (!data.commits || data.commits.length === 0) {
+                    logEl.innerHTML = '<div class="empty-state"><p>暂无提交记录</p></div>';
+                    return;
+                }
+
+                data.commits.forEach(function(c) {
+                    var div = document.createElement('div');
+                    div.style.cssText = 'padding:4px 0;border-bottom:1px solid #333;font-size:13px;' +
+                        'display:flex;align-items:center;gap:8px;';
+                    var hashSpan = document.createElement('span');
+                    hashSpan.style.cssText = 'color:#4a9eff;font-family:monospace;font-size:12px;';
+                    hashSpan.textContent = c.hash;
+                    var msgSpan = document.createElement('span');
+                    msgSpan.style.cssText = 'color:#ccc;';
+                    msgSpan.textContent = c.message;
+                    div.appendChild(hashSpan);
+                    div.appendChild(msgSpan);
+                    logEl.appendChild(div);
+                });
+
+            } catch (e) {
+                document.getElementById('gitLog').innerHTML = '<div style="color:#f44336;font-size:13px;">加载失败: ' + e.message + '</div>';
+            }
+        }
+
+        /**
+         * 一键 Git 提交
+         */
+        async function gitCommit() {
+            var btn = document.getElementById('btnGitCommit');
+            var resultEl = document.getElementById('gitCommitResult');
+
+            btn.disabled = true;
+            btn.textContent = '⏳ 正在提交...';
+            resultEl.innerHTML = '';
+
+            try {
+                var data = await apiRequest('/admin/git/commit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (data.success) {
+                    resultEl.innerHTML = '<div style="color:#4caf50;">✅ ' + data.message + '</div>' +
+                        '<div style="color:#999;font-size:13px;margin-top:4px;font-family:monospace;">' +
+                        data.commit.hash + ' ' + data.commit.message + '</div>' +
+                        '<div style="color:#4a9eff;font-size:13px;margin-top:4px;">版本号: v' + data.summary.version +
+                        ' | 共 ' + data.summary.total_articles + ' 篇文章</div>';
+                    showToast('✅ Git 提交成功！', 'success');
+                    // 刷新状态
+                    setTimeout(refreshGitStatus, 500);
+                } else {
+                    resultEl.innerHTML = '<div style="color:#f44336;">❌ ' + (data.error || '提交失败') + '</div>';
+                    showToast('提交失败: ' + (data.error || '未知错误'), 'error');
+                }
+            } catch (e) {
+                resultEl.innerHTML = '<div style="color:#f44336;">❌ 请求失败: ' + e.message + '</div>';
+                showToast('请求失败: ' + e.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '▶ 一键提交';
+            }
+        }
+
+        /**
+         * 推送到远程
+         */
+        async function gitPush() {
+            var btn = document.getElementById('btnGitPush');
+            var resultEl = document.getElementById('gitPushResult');
+
+            btn.disabled = true;
+            btn.textContent = '⏳ 正在推送...';
+            resultEl.innerHTML = '';
+
+            try {
+                var data = await apiRequest('/admin/git/push', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (data.success) {
+                    resultEl.innerHTML = '<div style="color:#4caf50;">✅ ' + data.message + '</div>';
+                    showToast('✅ 推送成功！', 'success');
+                } else {
+                    resultEl.innerHTML = '<div style="color:#f44336;">❌ ' + (data.error || '推送失败') + '</div>';
+                    showToast('推送失败: ' + (data.error || '未知错误'), 'error');
+                }
+            } catch (e) {
+                resultEl.innerHTML = '<div style="color:#f44336;">❌ 请求失败: ' + e.message + '</div>';
+                showToast('请求失败: ' + e.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '▲ 推送到远程';
+            }
         }
 
         /* ==================== 教学系统面板 ==================== */

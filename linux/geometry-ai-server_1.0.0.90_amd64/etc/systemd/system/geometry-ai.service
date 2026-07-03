@@ -1,0 +1,17 @@
+[Unit]
+Description=Geometry AI Server
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/usr/local/geometry-ai
+ExecStart=/usr/bin/python3 /usr/local/geometry-ai/server.py
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

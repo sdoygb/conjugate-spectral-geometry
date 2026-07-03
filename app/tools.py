@@ -211,7 +211,7 @@ ARTICLE_TOOLS = [
         "type": "function",
         "function": {
             "name": "view_article",
-            "description": "查看文章完整内容。仅在向量检索提供的片段不够、需要阅读完整文章时使用。向量检索已自动注入相关片段到【参考资料】区域，大多数情况下无需调用此工具。文件名可从参考资料中的文章标签获取。",
+            "description": "查看文章内容。每次默认读取前3000字符。如果用户要求阅读大文章全文，请分多次调用：先读前3000字符（offset=0,limit=3000），再读下一段（offset=3000,limit=3000），依此类推，直到读完。大多数情况下向量检索已自动注入相关片段到【参考资料】区域，无需调用此工具。",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -221,16 +221,43 @@ ARTICLE_TOOLS = [
                     },
                     "limit": {
                         "type": "integer",
-                        "description": "可选，读取的字符数（默认0=全部）。大文章建议设5000避免token浪费。",
-                        "default": 0
+                        "description": "每次读取的字符数，默认5000。大文章请分批读取，每批5000字符。",
+                        "default": 5000
                     },
                     "offset": {
                         "type": "integer",
-                        "description": "可选，从第N个字符开始读取（默认0=从头开始）。用于查看文章末尾部分，如offset=20000表示从第2万字开始读。",
+                        "description": "从第N个字符开始读取（默认0=从头开始）。例如：第一批offset=0，第二批offset=3000，第三批offset=6000。",
                         "default": 0
+                    },
+                    "section": {
+                        "type": "string",
+                        "description": "按章节名跳转（推荐方式）。传入章节关键词，如 section='公理3' 会自动定位到包含'公理3'的 ## 或 ### 标题处读取。比用 offset 更精确，不需要知道字符位置。首次读取时会自动显示章节目录和各章节的 offset。"
                     }
                 },
                 "required": ["filename"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "list_articles",
+            "description": "列出所有文章的编号、标题和摘要。当你需要了解文章全貌（如查找特定主题的文章、确认文章编号、浏览文章结构）时，优先用此工具而不是逐篇 view_article。返回内容轻量（每篇约1行），不会消耗大量token。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "filter": {
+                        "type": "string",
+                        "description": "可选，筛选关键词。如 '应用' 只显示应用篇（编号>=1），'0.8' 只显示 0.8.x 系列，'量子' 只显示标题含量子的文章。留空返回全部。"
+                    },
+                    "lang": {
+                        "type": "string",
+                        "description": "可选，语言筛选：'CN' 只显示中文，'EN' 只显示英文，留空显示全部。",
+                        "default": "",
+                        "enum": ["CN", "EN", ""]
+                    }
+                },
+                "required": []
             }
         }
     },
@@ -279,6 +306,41 @@ ARTICLE_TOOLS = [
                     }
                 },
                 "required": ["filename", "content"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "edit_article",
+            "description": "局部修改文章：指定旧文本和新文本，服务端自动替换。先归档完整原文件，再执行替换。适用于修改已有文章中的若干处措辞、公式、段落，不需要输出整篇文章。支持多次替换（传入数组）。替换完成后自动更新向量索引和 git。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "filename": {
+                        "type": "string",
+                        "description": "要修改的文件名，如 '0.3.1_量纲桥_CN_260701.1.md'"
+                    },
+                    "replacements": {
+                        "type": "array",
+                        "description": "替换规则列表，每项包含 old_text（要被替换的原始文本，必须精确匹配）和 new_text（替换后的新文本）。原文件中所有出现的位置都会被替换。如果 old_text 在文件中出现多次但你只想替换其中一部分，请在 old_text 中包含足够的上下文以唯一确定位置。",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "old_text": {
+                                    "type": "string",
+                                    "description": "文件中的原始文本（必须精确匹配，包括空格和换行）"
+                                },
+                                "new_text": {
+                                    "type": "string",
+                                    "description": "替换后的新文本"
+                                }
+                            },
+                            "required": ["old_text", "new_text"]
+                        }
+                    }
+                },
+                "required": ["filename", "replacements"]
             }
         }
     },
@@ -379,14 +441,14 @@ ARTICLE_TOOLS = [
         "type": "function",
         "function": {
             "name": "manage_articles",
-            "description": "管理文章的子目录操作：归档旧版文章到 archive/ 子目录、查看归档、创建子目录。注意：只在用户明确要求归档/管理文章时才使用。",
+            "description": "管理文章的文件操作：归档旧版文章到 archive/ 子目录、查看归档、创建子目录、移动/重命名/删除文件。注意：只在用户明确要求归档/管理文章时才使用。",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "action": {
                         "type": "string",
-                        "enum": ["archive", "list_archive", "create_dir", "move", "delete"],
-                        "description": "操作类型：archive(归档到archive/)、list_archive(查看归档)、create_dir(创建子目录)、move(移动文件)、delete(删除文件)"
+                        "enum": ["archive", "list_archive", "create_dir", "move", "rename", "delete"],
+                        "description": "操作类型：archive(归档到archive/)、list_archive(查看归档)、create_dir(创建子目录)、move(移动到子目录)、rename(重命名文件)、delete(删除文件)"
                     },
                     "filename": {
                         "type": "string",
@@ -559,6 +621,44 @@ def _auto_git_commit(filename: str, content: str) -> str:
         return f"(git commit 异常: {str(e)[:60]})"
 
 
+def _cleanup_stale_article(vector_kb, new_filename: str) -> None:
+    """
+    写入新文章后，清理向量库中同编号前缀（如 '27_'、'0.6.8_'）但不同 fname 的旧版本 chunk。
+    例如：写入 27_重子光子比_CN_260626.6.md 时，清理旧的 27_夸克质量谱的几何框架_CN.md 的 chunk。
+    """
+    if not vector_kb or not vector_kb.is_initialized or not vector_kb.articles_collection:
+        return
+    import re
+    _log = logging.getLogger(__name__)
+    try:
+        # 从新文件名提取编号前缀（如 '27'、'0.6.8'、'目录'）
+        m = re.match(r'^((?:\d+(?:\.\d+)*|[^\d_]{2,}))_', new_filename)
+        if not m:
+            return
+        prefix = m.group(1)
+
+        # 查找向量库中同前缀但不同 fname 的 chunk
+        col = vector_kb.articles_collection
+        all_meta = col.get(include=['metadatas'])
+        stale_fnames = set()
+        for meta in all_meta['metadatas']:
+            fn = meta.get('fname', '')
+            if fn != new_filename:
+                m2 = re.match(r'^((?:\d+(?:\.\d+)*|[^\d_]{2,}))_', fn)
+                if m2 and m2.group(1) == prefix:
+                    stale_fnames.add(fn)
+
+        # 删除旧 fname 的 chunk
+        for stale_fn in stale_fnames:
+            try:
+                col.delete(where={"fname": stale_fn})
+                _log.info(f"[VECTOR] 清理旧版本 chunk: {stale_fn} (被 {new_filename} 替代)")
+            except Exception as e:
+                _log.debug(f"[VECTOR] 清理旧版本失败 {stale_fn}: {e}")
+    except Exception as e:
+        _log.debug(f"[VECTOR] 清理旧版本检查失败: {e}")
+
+
 def _article_sort_key(filename: str):
     """按文章编号排序：0.0.1 < 0.1 < 1 < 10 < 目录"""
     import re
@@ -585,9 +685,106 @@ def _git_push() -> str:
         return f"push 异常: {str(e)[:60]}"
 
 
+def _extract_toc(content: str, filename: str, total: int) -> str:
+    """从文章内容中提取章节目录（## 和 ### 标题），附带字符偏移。"""
+    import re as _re_toc
+    lines = content.split('\n')
+    entries = []
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+        if stripped.startswith('## ') or stripped.startswith('### '):
+            # 计算此行在原文中的字符偏移
+            char_offset = sum(len(lines[j]) + 1 for j in range(i))
+            entries.append((char_offset, stripped))
+    if not entries:
+        return ""
+    toc_lines = ["【章节目录】（可用 section 参数按章节名跳转，如 section=\"公理\"）"]
+    for offset, title in entries[:30]:  # 最多显示 30 个章节
+        prefix = "  " if title.startswith("###") else ""
+        toc_lines.append(f"{prefix}- {title} (offset={offset})")
+    if len(entries) > 30:
+        toc_lines.append(f"  ...共 {len(entries)} 个章节")
+    return "\n".join(toc_lines)
+
+
+def _list_articles(arguments: Dict[str, Any]) -> str:
+    """
+    轻量列出文章编号+标题+摘要。每篇约1行，总消耗约50行。
+    filter: 关键词筛选
+    lang: CN/EN/空
+    """
+    import re as _re_la
+    articles_dir = os.path.join(UPLOAD_FOLDER) if not os.path.isdir(UPLOAD_FOLDER) else UPLOAD_FOLDER
+    if not os.path.isdir(articles_dir):
+        return "文章目录不存在"
+
+    filter_kw = arguments.get("filter", "").strip().lower()
+    lang_filter = arguments.get("lang", "").strip().upper()
+
+    entries = []
+    seen_nums = set()  # 同一编号只取 CN 优先
+
+    for f in sorted(os.listdir(articles_dir)):
+        if not f.endswith('.md') or f.startswith('目录_总览') or f.startswith('.') or f.startswith('search_') or f.startswith('hidden_') or f.startswith('Mathematical_') or f.startswith('十方') or f.startswith('README'):
+            continue
+        m = _re_la.match(r'^([\d.]+)_(.+)_(CN|EN)_[\d.]+\.md$', f)
+        if not m:
+            continue
+        num = m.group(1)
+        title_part = m.group(2).replace('_', ' ')
+        lang = m.group(3)
+
+        # 语言筛选
+        if lang_filter and lang != lang_filter:
+            continue
+
+        # 去重：同一编号优先 CN
+        if num in seen_nums:
+            continue
+        if lang_filter != "EN":
+            seen_nums.add(num)
+
+        # 关键词筛选
+        if filter_kw:
+            if filter_kw not in num.lower() and filter_kw not in title_part.lower():
+                continue
+
+        # 读取标题（首行）和摘要（第二行或前100字符）
+        filepath = os.path.join(articles_dir, f)
+        title = title_part
+        summary = ""
+        try:
+            with open(filepath, 'r', encoding='utf-8') as fh:
+                first_line = fh.readline().strip()
+                if first_line.startswith('# '):
+                    title = first_line[2:].strip()
+                # 摘要：取第二行到第五行中非空的内容
+                for _ in range(4):
+                    line = fh.readline().strip()
+                    if line and not line.startswith('#') and not line.startswith('|') and not line.startswith('---'):
+                        summary = line[:120]
+                        break
+        except:
+            pass
+
+        lang_tag = f"[{lang}] " if lang == "EN" else ""
+        entries.append(f"| {num} | {lang_tag}{title} | {summary} |")
+
+    if not entries:
+        hint = f"未找到匹配文章 (filter='{filter_kw}', lang='{lang_filter}')。共 {len(os.listdir(articles_dir))} 个文件。"
+        return hint
+
+    header = "| 编号 | 标题 | 摘要 |\n|------|------|------|"
+    result = header + "\n" + "\n".join(entries)
+    result += f"\n\n共 {len(entries)} 篇文章。如需查看具体内容，请用 view_article（默认3000字符/次）。"
+    return result
+
+
 def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> str:
     """执行工具调用并返回结果文本。"""
     try:
+        if name == "list_articles":
+            return _list_articles(arguments)
         if name == "vector_search":
             query = arguments.get("query", "")
             top_k = min(arguments.get("top_k", 8), 20)
@@ -611,7 +808,7 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
 
         elif name == "view_article":
             filename = arguments.get("filename", "")
-            limit = int(arguments.get("limit", 0) or 0)
+            limit = int(arguments.get("limit", 5000) or 5000)
             offset = int(arguments.get("offset", 0) or 0)
             try:
                 fpath = _safe_path(filename)
@@ -652,13 +849,38 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
             with open(fpath, 'r', encoding='utf-8') as f:
                 content = f.read()
             total = len(content)
+
+            # 新增参数 section：按章节名跳转（自动扫描 ## 标题）
+            section_name = arguments.get("section", "").strip()
+            if section_name:
+                import re as _re_sec
+                # 找包含 section_name 的 ## 或 ### 标题行
+                for i, line in enumerate(content.split('\n')):
+                    if (line.startswith('## ') or line.startswith('### ')) and section_name in line:
+                        # 计算该标题的字符偏移
+                        offset = content.index(line)
+                        # 从该位置开始读 limit 字符
+                        section_content = content[offset:offset + (limit or 5000)]
+                        if limit and len(section_content) > limit:
+                            section_content = section_content[:limit] + "\n...[截断]"
+                        # 找下一章节标题位置，提示剩余内容
+                        next_section_pos = content.find('\n## ', offset + 10)
+                        return f"文件: {filename} (共{total}字符) | 章节: {line.strip()}\n位置: {offset}-{offset+len(section_content)}\n{section_content}"
+                return f"未找到包含 '{section_name}' 的章节。\n可用章节：\n" + _extract_toc(content, filename, total)
+
+            # 当 limit=0 且 offset=0 时（首次打开），自动附加章节目录
+            # 如果 limit > 0 且 offset == 0，说明是默认 3000 字符读取，也附加目录
+            toc = ""
+            if (not limit and not offset) or (limit and not offset):
+                toc = "\n" + _extract_toc(content, filename, total)
+
             # 应用offset和limit
             if offset and offset > 0:
                 content = content[offset:]
             if limit and limit > 0 and len(content) > limit:
                 content = content[:limit] + f"\n...[截断]"
             pos_info = f"位置: {offset}-{min(offset + (limit or total), total)}"
-            return f"文件: {filename} (共{total}字符, {pos_info})\n{content}"
+            return f"文件: {filename} (共{total}字符, {pos_info})\n{toc}\n{content}"
 
         elif name == "write_article":
             filename = arguments.get("filename", "")
@@ -680,25 +902,43 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                 return f"已追加到 {filename}（当前共 {total_chars} 字符）。如还有剩余内容，请继续用 mode=append 调用。全部写完后，向量索引和 git 提交将自动完成。"
             else:
                 # 覆盖写入模式（默认）
+                # 截断检测：如果原文件 > 100KB，新内容不到原文件的 50%，警告并拒绝
+                if os.path.exists(fpath):
+                    _old_size = os.path.getsize(fpath)
+                    _new_size = len(content.encode('utf-8'))
+                    if _old_size > 100000 and _new_size < _old_size * 0.5:
+                        return (f"错误：截断保护触发。原文件 {_old_size//1024}KB，"
+                                f"新内容仅 {_new_size//1024}KB（不足原文件的 50%）。\n"
+                                f"请检查是否需要分段写入（mode=append）。\n"
+                                f"如果是小修改，请确认 content 包含完整的文章内容。\n"
+                                f"写入已取消，原文件未受影响。")
+
                 # 自动归档旧版（如果同名文件已存在）
                 archive_msg = ""
                 if os.path.exists(fpath):
+                    import shutil as _shutil
+                    import time as _time2
                     archive_dir = os.path.join(UPLOAD_FOLDER, "archive")
                     os.makedirs(archive_dir, exist_ok=True)
-                    archive_path = os.path.join(archive_dir, filename)
-                    if os.path.exists(archive_path):
-                        import time as _time2
-                        ts = _time2.strftime("%Y%m%d_%H%M%S")
-                        stem, ext = os.path.splitext(filename)
-                        archive_path = os.path.join(archive_dir, f"{stem}_{ts}{ext}")
-                    import shutil as _shutil
-                    _shutil.move(fpath, archive_path)
-                    archive_msg = f"（旧版已归档到 archive/）"
+                    # 始终加时间戳后缀，避免任何覆盖或目录化问题
+                    ts = _time2.strftime("%Y%m%d_%H%M%S")
+                    stem, ext = os.path.splitext(filename)
+                    archive_path = os.path.join(archive_dir, f"{stem}_{ts}{ext}")
+                    # 用 copy2 + remove 替代 shutil.move（move 在目标已存在时会变成目录）
+                    try:
+                        _shutil.copy2(fpath, archive_path)
+                        os.remove(fpath)
+                        archive_msg = f"（旧版已归档到 archive/{stem}_{ts}{ext}）"
+                    except Exception as _arch_e:
+                        archive_msg = f"（归档失败: {_arch_e}，旧文件仍保留）"
                 with open(fpath, 'w', encoding='utf-8') as f:
                     f.write(content)
                 # 只索引新写入的文件（增量索引，不重建全部）
                 if vector_kb and vector_kb.is_initialized:
                     vector_kb.index_single_file(fpath)
+                    # 清理向量库中同 article_id 的旧版本文件 chunk
+                    # （当新文件名和旧文件名不同时，index_single_file 不会清理旧的）
+                    _cleanup_stale_article(vector_kb, filename)
                 # 自动 git commit（版本管理）
                 _git_result = _auto_git_commit(filename, content)
                 try:
@@ -707,6 +947,96 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                     preview_host = "localhost:5000"
                 preview_url = f"http://{preview_host}/preview/{filename}"
                 return f"已写入 {filename} ({len(content)} 字符)，向量索引已更新。{archive_msg}{_git_result}\n\n【重要】请务必在回复中告诉用户文章已保存，并将以下预览链接以Markdown格式提供给用户：[点击预览文章]({preview_url})"
+
+        elif name == "edit_article":
+            # 局部修改文章：先归档完整原文件，再执行替换
+            filename = arguments.get("filename", "")
+            replacements = arguments.get("replacements", [])
+            if not filename:
+                return "错误：缺少文件名"
+            if not replacements or not isinstance(replacements, list):
+                return "错误：缺少 replacements 参数，或格式不正确（需要数组）"
+            os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+            try:
+                fpath = _safe_path(filename)
+            except ValueError as e:
+                return f"错误：{e}"
+
+            if not os.path.exists(fpath):
+                return f"错误：文件 {filename} 不存在，请先用 write_article 创建"
+
+            # 第一步：归档完整原文件
+            import shutil as _shutil
+            import time as _time2
+            archive_dir = os.path.join(UPLOAD_FOLDER, "archive")
+            os.makedirs(archive_dir, exist_ok=True)
+            ts = _time2.strftime("%Y%m%d_%H%M%S")
+            stem, ext = os.path.splitext(filename)
+            archive_path = os.path.join(archive_dir, f"{stem}_{ts}{ext}")
+            try:
+                _shutil.copy2(fpath, archive_path)
+                archive_msg = f"（完整原文件已归档到 archive/{stem}_{ts}{ext}）"
+            except Exception as _arch_e:
+                archive_msg = f"（归档失败: {_arch_e}）"
+
+            # 第二步：读取文件并执行替换
+            try:
+                with open(fpath, 'r', encoding='utf-8') as f:
+                    file_content = f.read()
+            except Exception as e:
+                return f"错误：读取文件失败: {e}"
+
+            original_size = len(file_content)
+            replacement_details = []
+            total_chars_added = 0
+            total_chars_removed = 0
+
+            for i, rep in enumerate(replacements):
+                old_text = rep.get("old_text", "")
+                new_text = rep.get("new_text", "")
+                if not old_text:
+                    replacement_details.append(f"  #{i+1}: 跳过（old_text 为空）")
+                    continue
+                count = file_content.count(old_text)
+                if count == 0:
+                    replacement_details.append(f"  #{i+1}: 未找到匹配文本（前50字符: ...{old_text[:50]}...）")
+                else:
+                    file_content = file_content.replace(old_text, new_text)
+                    total_chars_added += len(new_text)
+                    total_chars_removed += len(old_text) * count
+                    replacement_details.append(f"  #{i+1}: 替换 {count} 处（-{len(old_text)*count}字符 +{len(new_text)*count}字符）")
+
+            # 第三步：写回文件
+            try:
+                with open(fpath, 'w', encoding='utf-8') as f:
+                    f.write(file_content)
+            except Exception as e:
+                return f"错误：写入文件失败: {e}"
+
+            new_size = len(file_content)
+
+            # 第四步：更新向量索引
+            if vector_kb and vector_kb.is_initialized:
+                vector_kb.index_single_file(fpath)
+
+            # 第五步：git commit
+            _git_result = _auto_git_commit(filename, file_content)
+
+            try:
+                preview_host = _request.host
+            except RuntimeError:
+                preview_host = "localhost:5000"
+            preview_url = f"http://{preview_host}/preview/{filename}"
+
+            detail_str = "\n".join(replacement_details)
+            size_change = new_size - original_size
+            size_str = f"+{size_change}" if size_change >= 0 else str(size_change)
+            return (
+                f"已修改 {filename}（{original_size} -> {new_size} 字符，{size_str}）。{archive_msg}\n"
+                f"替换详情:\n{detail_str}\n"
+                f"向量索引已更新。{_git_result}\n\n"
+                f"【重要】请务必在回复中告诉用户文章已修改，并将以下预览链接以Markdown格式提供给用户：[点击预览文章]({preview_url})"
+            )
 
         elif name == "personal_read":
             # 读取个人数据库
@@ -1011,11 +1341,52 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                     return f"错误：{e}"
                 if not os.path.exists(fpath):
                     return f"文件 '{filename}' 不存在"
-                target_dir = os.path.join(UPLOAD_FOLDER, target)
-                os.makedirs(target_dir, exist_ok=True)
-                target_path = os.path.join(target_dir, filename)
-                _shutil2.move(fpath, target_path)
-                return f"已移动: {filename} -> {target}/"
+                # 智能判断：target 以 .md 结尾则为重命名+移动，否则为移动到子目录
+                if target.endswith('.md'):
+                    # 目标是文件名：重命名（保持在当前目录）
+                    target_path = os.path.join(UPLOAD_FOLDER, target)
+                    os.makedirs(os.path.dirname(target_path), exist_ok=True)
+                    _shutil2.move(fpath, target_path)
+                    # 更新向量索引中的文件名引用
+                    try:
+                        vector_kb = getattr(sys.modules.get('knowledge'), 'vector_kb', None)
+                        if vector_kb:
+                            vector_kb.update_filename_in_metadata(filename, target)
+                    except Exception:
+                        pass
+                    return f"已重命名: {filename} -> {target}"
+                else:
+                    # 目标是目录名：移动到子目录
+                    target_dir = os.path.join(UPLOAD_FOLDER, target)
+                    os.makedirs(target_dir, exist_ok=True)
+                    target_path = os.path.join(target_dir, os.path.basename(filename))
+                    _shutil2.move(fpath, target_path)
+                    return f"已移动: {filename} -> {target}/"
+
+            elif action == "rename":
+                if not filename or not target:
+                    return "错误：缺少文件名和新名称"
+                try:
+                    fpath = _safe_path(filename)
+                    new_path = _safe_path(target)
+                except ValueError as e:
+                    return f"错误：{e}"
+                if not os.path.exists(fpath):
+                    return f"文件 '{filename}' 不存在"
+                os.makedirs(os.path.dirname(new_path), exist_ok=True)
+                _shutil2.move(fpath, new_path)
+                # 更新向量索引：删除旧文件名的 chunk，重建新文件名的 chunk
+                index_msg = ""
+                if vector_kb and vector_kb.is_initialized:
+                    try:
+                        # 先删除旧 fname 的所有 chunk
+                        vector_kb.articles_collection.delete(where={"fname": filename})
+                        # 再对新文件做增量索引
+                        vector_kb.index_single_file(new_path)
+                        index_msg = "，向量索引已更新"
+                    except Exception as _idx_e:
+                        index_msg = f"，向量索引更新失败: {_idx_e}"
+                return f"已重命名: {filename} -> {target}{index_msg}"
 
             elif action == "delete":
                 if not filename:
@@ -1027,10 +1398,17 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                 if not os.path.exists(fpath):
                     return f"文件 '{filename}' 不存在"
                 os.remove(fpath)
-                return f"已删除: {filename}"
+                # 同步删除向量索引
+                if vector_kb and vector_kb.is_initialized:
+                    try:
+                        vector_kb.articles_collection.delete(where={"fname": filename})
+                        vector_kb._articles_count = vector_kb.articles_collection.count()
+                    except Exception:
+                        pass
+                return f"已删除: {filename}，向量索引已同步"
 
             else:
-                return f"未知操作: {action}，支持: archive/list_archive/create_dir/move/delete"
+                return f"未知操作: {action}，支持: archive/list_archive/create_dir/move/rename/delete"
 
         # ====== 互联网搜索 ======
         elif name == "web_search":
