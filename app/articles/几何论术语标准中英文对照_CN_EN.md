@@ -1,10 +1,10 @@
 # 几何论术语标准中英文对照
 
-> **版本**：260703.3  
+> **版本**：260704.1  
 > **用途**：几何论全部术语在此统一。任何新文章引入术语前必须先在本表登记。  
 > **语言**：中文 / English  
 > **更新规则**：见 §11 维护规则  
-> **本次更新**：全覆盖审计——扫描全部 101 篇文章，新增术语来自：11号（水星进动）、12号（CMB哈勃）、13号（超导）、16号（黑洞辐射频谱）、17号（放射性测年）、19号（星系旋转曲线）、22号（DNA）、23号（夸克偶素）、27号（夸克质量谱）、28号（CMB偶极子）、30号（几何流体力学）、33号（创世）、34号（原子生成）、35号（分子生成）、36号（标准模型19参数）、37号（卫星系统）、38号（太阳系）、39号（银河系）、40号（经络）、43号（合金设计）
+> **本次更新**：第二轮补缺——新增术语来自：1号（氢原子超精细结构）、6号（弱混合角与弱电整合）、9号（反常磁矩）、14号（黑洞与信息悖论）、24号（三代轻子质量刚性）。首轮涵盖：11号（水星进动）、12号（CMB哈勃）、13号（超导）、16号（黑洞辐射频谱）、17号（放射性测年）、19号（星系旋转曲线）、22号（DNA）、23号（夸克偶素）、27号（夸克质量谱）、28号（CMB偶极子）、30号（几何流体力学）、33号（创世）、34号（原子生成）、35号（分子生成）、36号（标准模型19参数）、37号（卫星系统）、38号（太阳系）、39号（银河系）、40号（经络）、43号（合金设计）
 
 ---
 
@@ -123,6 +123,21 @@
 | 全息屏激发态多极定理 | Holographic Screen Excited State Multipole Theorem | 双极定理向多极系统的谱刚性推广，木卫/土卫系统纳入 | 37号 §6.1 |
 | $v_F$ 严格公式（定理级） | $v_F$ Rigorous Formula (Theorem-grade) | $v_F = c \cdot (\lambda_1^{\mathrm{eff}})^{3/2} / (S_e^2 \cdot \sqrt{\lambda_2^{\mathrm{eff}}})$，仅含0.X.X本征量 | 13号 第9章 |
 | 创世-退相干对偶 | Cosmogony-Decoherence Duality | 创世（信息从 $I^3$ 向 $M^3$ 单方向凝结）与退相干（信息从 $M^3$ 向 $I^3$ 耗散）构成严格对偶 | 33号 §9 |
+| 两体几何约化质量定理 | Two-Body Geometric Reduced Mass Theorem | $\mu_{\text{geo}} = m_1 m_2/(m_1 + m_2)$，由联合截面 Hessian 的 Schur 补分块结构严格导出 | 1号 §5.1 |
+| SO(3)二重覆盖与旋量表示定理 | SO(3) Double Cover & Spinor Representation Theorem | 电子自旋 1/2 源于 $\pi_1(\mathrm{SO}(3)) = \mathbb{Z}_2$ 的拓扑必然，由 $\mathrm{Spin}(8)$ triality 锁定最低维 Clifford 模 | 1号 §2.1 |
+| η-物质空间径向对应定理 | η-Material Radial Correspondence Theorem | $\eta$ 作为物质空间径向坐标，由完备性公理及切丛三分解 $T\Sigma = \mathcal{M} \oplus \mathcal{C} \oplus \mathcal{I}$ 严格确定 | 1号 §3.1 |
+| 面积元投影定理 | Area Element Projection Theorem | $\theta_M \to 0$ 极限下有效信息场面积元投影的唯一确定形式 | 1号 §4.3 |
+| 超精细耦合定理 | Hyperfine Coupling Theorem | $\Delta E_{\text{hfs}} = \frac{4}{\pi} \cdot k \cdot \frac{\sin\theta_I^e \cdot \sin\theta_I^p \cdot \sin\theta_C^p}{S_e \cdot S_p}$ | 1号 §4.4–§4.5 |
+| 裸弱混合角定理 | Bare Weak Mixing Angle Theorem | $\sin^2\theta_W^{\text{bare}} = \frac{\sin\theta_I}{\sin\theta_C \cdot (1 + \sin^2\theta_I)} = 0.23109$，由凝聚相投影-耦合对应导出 | 6号 §3.2 |
+| Berry相位反馈修正定理 | Berry Phase Feedback Correction Theorem | 三场联合闭合路径 Berry 相位对裸弱混合角的反馈修正，$\sin^2\theta_W^{\text{phys}} = 0.23124$（偏差 $2\times10^{-5}$，与 PDG $0.23122\pm0.00003$ 一致） | 6号 §3.3 |
+| 黑洞几何约束构型定理 | Black Hole Geometric Constraint Configuration Theorem | 信息场冻结极限 $\theta_I \to 0^+$ 下，$\theta_M = \theta_C = 45^\circ$ 是总作用量的严格极小值点 | 14号 §1.2 |
+| 多体作用量可加性定理 | Multi-Body Action Additivity Theorem | 黑洞总作用量 $S_{\text{joint}} = N \cdot S_p$，各重子贡献独立可加 | 14号 §4.1 |
+| 视界半径几何定理 | Horizon Radius Geometric Theorem | $R_{\text{BH}} = \sqrt{S_{\text{BH}}/\pi} \cdot \chi_L$，视界半径由作用量几何直接确定 | 14号 §3.2 |
+| 信息守恒定理 | Information Conservation Theorem | 黑洞信息守恒——全息屏编码面积 $A_{\text{BH}}^{\text{phys}} \neq 4\pi R_{\text{BH}}^2$，信息以层级压缩形式存储于全息屏 | 14号 §5.2 |
+| 电子冻结定理 | Electron Freezing Theorem | 电子在构型A是谱互锁定理的唯一不动点，$\Delta\theta_\alpha^{(1)} = 0$ 对所有 $\alpha$ | 24号 §4.1 |
+| 因果角锁定定理 | Causal Angle Locking Theorem | 电子-缪子 $\theta_C$-共享联合截面上，驻点条件强制 $\theta_C^{(2)} = \theta_C^0 = 26.16^\circ$ | 24号 §4.3 |
+| $\theta_M^{(2)}$ 对称性解析论证 | $\theta_M^{(2)}$ Symmetry Analytic Proof | $\theta_M^{(2)} = (90^\circ - \theta_C^0)/2 = 31.92^\circ$（无耦合极限），含 $W_{12}$ 耦合修正后 $\approx 31.94^\circ$，由 $S$ 函数全排列对称性严格导出 | 24号 §4.4 |
+| $C_n$ 独立于驻点条件定理 | $C_n$ Independence from Stationarity Theorem | 质量标度 $C_n$ 不进入联合截面驻点条件，由全息屏层级嵌套独立确定 | 24号 §5.1 |
 
 ---
 
@@ -157,6 +172,9 @@
 | Kolmogorov尺度 $\eta_K$ | Kolmogorov Scale | $\eta_K \approx 0.23\ \mu\text{m}$，由七级递推截断确定 | 30号 §5.2 |
 | 几何声速 $c_s^{\text{geo}}$ | Geometric Speed of Sound | 由几何状态方程与三分切丛本征量导出 | 30号 §3.2 |
 | 几何温度 | Geometric Temperature | 由信息场软模能量标度经量纲桥映射为温度 | 30号 §3.4, 13号 第13章 |
+| 21cm线频率 | 21cm Line Frequency | $\nu_{21} = 1421.61\ \text{MHz}$，几何推导偏差 $+0.08\%$ | 1号 §4.6 |
+| 裸弱混合角 $\sin^2\theta_W^{\text{bare}}$ | Bare Weak Mixing Angle | $0.23109$（凝聚相投影-耦合导出值） | 6号 §3.2, §4.2 |
+| 物理弱混合角 $\sin^2\theta_W^{\text{phys}}$ | Physical Weak Mixing Angle | $0.23124$（Berry 相位反馈修正后），与 PDG $0.23122 \pm 0.00003$ 偏差 $2\times10^{-5}$ | 6号 §4.3 |
 
 ---
 
@@ -246,6 +264,28 @@
 | 夸克质量谱 | Quark Mass Spectrum | 夸克三代质量在约束乘积球面上的几何框架描述 | 27号 §1 |
 | 分子生成 | Molecular Genesis | 从原子圆满态到分子结构的几何生成路径 | 35号 §1 |
 | 层流-湍流转捩 | Laminar-Turbulent Transition | 物质界流从层流到湍流的转捩，由信息场退相干谱条件判定 | 30号 §3.5 |
+| 超精细结构 | Hyperfine Structure | 氢原子基态超精细分裂的几何根源——ℰ的信息相位通道（$\mathcal{I}$ 扇区）重叠 + 面积元投影 + $4/\pi$ 热核平行继承 | 1号 §4 |
+| 21cm线 | 21cm Line | 氢原子超精细跃迁，几何推导值 $1421.61\ \text{MHz}$（偏差 $+0.08\%$），几何论标志性预言之一 | 1号 §4.6 |
+| 热核平行继承 | Heat Kernel Parallel Inheritance | $4/\pi$ 因子的谱归一化来源，由 0.3.1 定理 3.2 热核渐近展开严格确定 | 1号 §4.4 |
+| N=3联合截面 | N=3 Joint Cross-Section | 质子构型的几何来源框架——联合变分原理 $\delta S_3 = 0$ 在强耦合扇区模式下将夸克推向 $\theta_M \to 0$ 极限 | 1号 §4.2 |
+| 弱混合角 | Weak Mixing Angle / Weinberg Angle | $\sin^2\theta_W$，由凝聚相三界耦合的扇区投影正弦比确定，含 Berry 相位反馈修正 | 6号 §3 |
+| 弱电整合 | Electroweak Unification | 电磁 $U(1)_{\text{em}}$ 与弱 $SU(2)_L$ 在凝聚相三界构型中的几何统一——两者共享同一 $\mathcal{M}$-$\mathcal{C}$-$\mathcal{I}$ 耦合结构 | 6号 §1 |
+| 凝聚相三角构型 | Condensed Phase Triangle Configuration | $(\theta_M,\theta_C,\theta_I) = (57.93^\circ, 26.16^\circ, 5.91^\circ)$，电磁-弱-信息三界在约束截面上的三角形几何关系 | 6号 §2.1 |
+| 隔墙厚度 | Wall Thickness ($\delta_{XY}$) | 两扇区 $X$ 与 $Y$ 在约束截面上的几何距离，决定跨扇区耦合强度的基值 | 6号 §2.2 |
+| 腰边-底边分解 | Waist-Base Decomposition | 三扇区耦合分解为 $\mathcal{M}$-$\mathcal{C}$ 腰边（电磁）与 $\mathcal{M}$-$\mathcal{I}$ 底边（弱），独立耦合通道 | 6号 §2.3 |
+| 反常磁矩 | Anomalous Magnetic Moment ($g-2$) | $a_X = (g_X-2)/2$，由信息场角从裸基准点到当前构型的几何相位积累导出。电子 $a_e = 1.16236\times10^{-3}$（偏差 $+0.23\%$），μ子 $a_\mu$ 需路径平均 | 9号 |
+| 截面偏差函数 | Cross-Section Deviation Function ($\delta_X$) | $\delta_X = Q_X/\cos\theta_M^0 - 1$，表征粒子构型相对裸基准点的几何偏离，$a_X = \frac{\alpha}{2\pi}(1+\delta_X)$ | 9号 §5.1 |
+| 裸基准点 | Bare Reference Point | $(\theta_M^0,\theta_C^0,\theta_I^0) = (57.93^\circ, 26.16^\circ, 5.91^\circ)$，$S_0 = 137$，理想几何构型——严格区分于电子基态（$S_e = 137.035999084$） | 9号 §1.4 |
+| 家族对称性假设 | Family Symmetry Hypothesis | 电子与 μ 子共享同一裸基准点，家族差异完全由 $\theta_I$ 偏离决定——开放接口，待家族动力学篇验证 | 9号 §2.3 |
+| 几何相位类比（$g-2$） | Geometric Phase Analogy ($g-2$) | $g-2$ 的几何根源：带电轻子磁矩修正对应于信息场角从裸基准点到当前构型的几何相位积累，类比于凝聚态物理中的 Berry 相位 | 9号 §4.1 |
+| 信息冻结相 | Information Freezing Phase | $\theta_I \to 0^+$ 极限，信息场被冻结，$\theta_M = \theta_C = 45^\circ$ 为稳定构型，对应黑洞内部状态 | 14号 §1.1 |
+| 硬模势垒 | Hard Mode Barrier | 信息场与物质场耦合强度 $W_{MI} = \sqrt{2}/\sin\theta_I$，在 $\theta_I \to 0^+$ 下发散至 $\sim 10^{31}$，隔离信息场 | 14号 §2.1 |
+| 几何压缩 | Geometric Compression | 黑洞内部三维空间在信息场冻结下被压缩为全息屏上的二维编码，体积信息转化为面积信息 | 14号 §3.1 |
+| 全息熵几何公式 | Geometric Formula for Holographic Entropy | $S_{\text{BH}} = A_{\text{BH}}^{\text{phys}} / (4 \chi_L^2)$，$A_{\text{BH}}^{\text{phys}} \neq 4\pi R_{\text{BH}}^2$ | 14号 §5.3 |
+| 三代轻子质量刚性 | Three-Generation Lepton Mass Rigidity | 电子-缪子-τ 三代轻子质量由联合截面驻点条件 + $C_n$ 递推 + 因果角锁定联合约束，非自由参数 | 24号 |
+| 跨层级耦合二层作用量 | Cross-Level Two-Layer Action ($W_{12}$) | 电子与缪子之间的跨层级耦合作用量，由 $b'$ 前置因子控制，$\theta_C$-共享截面是其核心约束 | 24号 §3.1 |
+| 构型A | Configuration A | 电子基态的九素基底构型，$(\theta_M^e,\theta_C^e,\theta_I^e) = (57.93^\circ, 26.16^\circ, 5.91^\circ)$，$S_e = 137.035999084$ | 24号 §2.2 |
+| $C_n$ 递推 | $C_n$ Recursion | $C_n = M_{n-1}/n$（命题 H2），质量标度的全息屏层级递推，独立于角度驻点条件 | 24号 §6.2 |
 
 ---
 
@@ -272,6 +312,8 @@
 | SM-LCT 三猜想（启发性） | SM-LCT Three Conjectures (Heuristic) | 跨扇区介导层级相干隧穿机制的三个猜想（§4.2–4.4），标注为启发性猜想 | 16号 §4.2–4.4 |
 | 原子层面 Berry 相位圆满判据 | Atomic-Level Berry Phase Completion Criterion | 原子层面 Berry 相位与圆满判据的构造级假设 | 34号 §2.6 |
 | 温度量纲桥闭合 | Temperature Dimensional Bridge Closure | 温度量纲桥直接闭合为开放问题，当前由标准换算因子桥接 | 13号 第13章, 30号 §3.4 |
+| 路径平均（扩展工作假设） | Path Averaging (Extended Working Hypothesis) | $\langle Q \rangle_X = \frac{1}{\Delta\xi_X} \int_0^{\Delta\xi_X} Q(\xi) \mathrm{d}\xi$，μ 子大位移下截面几何沿 Hamilton 流主通道的几何相位积累。属扩展工作假设，非严格定理 | 9号 §7.2 |
+| 三代轻子 $C_n$ 递推假设 | Three-Generation $C_n$ Recursion Hypothesis | $C_n = M_{n-1}/n$（命题 H2），基于数值巧合 $15/31$ 的启发性假设，非严格定理 | 24号 §6.2 |
 
 ---
 
