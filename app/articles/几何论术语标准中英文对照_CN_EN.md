@@ -379,6 +379,10 @@
 | 温度量纲桥闭合 | Temperature Dimensional Bridge Closure | 温度量纲桥直接闭合为开放问题，当前由标准换算因子桥接 | 13号 第13章, 30号 §3.4 |
 | 路径平均（扩展工作假设） | Path Averaging (Extended Working Hypothesis) | $\langle Q \rangle_X = \frac{1}{\Delta\xi_X} \int_0^{\Delta\xi_X} Q(\xi) \mathrm{d}\xi$，μ 子大位移下截面几何沿 Hamilton 流主通道的几何相位积累。属扩展工作假设，非严格定理 | 9号 §7.2 |
 | 三代轻子 $C_n$ 递推假设 | Three-Generation $C_n$ Recursion Hypothesis | $C_n = M_{n-1}/n$（命题 H2），基于数值巧合 $15/31$ 的启发性假设，非严格定理 | 24号 §6.2 |
+| $(c_1+c_2)/2=5$ 启发性识别 | $(c_1+c_2)/2=5$ Heuristic Identification | $c_1+c_2 \approx 10.306$ $\to$ 平均 $\approx 5.153$ 接近整数 5（偏差 $+3.1\%$）——3% 不应是巧合，可能反映深层结构，但九素互扼严格证明链待 0.0.7 扩展。**诚实标注：启发性识别，非定理** | 53号 §4 |
+| 全迹路线失败 | Full-Trace Route Failure | 尝试证明 $\operatorname{tr}(H^{\text{eff}})/H_{MM}^0 = 10$，但在构型A处的直接计算给出 $\sim 1900$，证伪了迹守恒假设。已诚实记录，避免后续研究走入同一死胡同 | 53号 §4 |
+| CMB第三峰增强（命题级） | CMB Third Peak Enhancement (Proposition-grade) | $a_0/a_N^{\text{pert}} \approx 14$ $\to$ 扰动引力增强 $\sim 3.7$ 倍 $\to$ 第三峰增强。结构层已定位，量级正确，但精确到与 Planck 逐峰对比需玻尔兹曼代码（工具缺口） | 54号 §7 |
+| 大尺度结构增长（命题级） | Large-Scale Structure Growth (Proposition-grade) | $G_{\text{eff}} = G_{9D}\sqrt{1+a_0/a_N}$ 增强 $\alpha\approx 1.44$ $\to$ $\sigma_8\approx 0.75$（Planck $0.81\pm0.01$，偏差 $\sim 7\%$）。$G_{\text{eff}}(t)$ 完整时间演化待算（E2工具缺口） | 54号 §8 |
 
 ---
 
