@@ -230,6 +230,9 @@
 | 黑洞冻结极限构型 | Black Hole Freezing Limit Configuration | $(\theta_M, \theta_C, \theta_I) = (45^\circ, 45^\circ, 0^+)$，信息场冻结极限 $\theta_I \to 0^+$ 的稳定构型 | 14号 §1, 16号 §1.1 |
 | 物质界几何约束构型 | Material Realm Geometric Constraint Configuration | $(\theta_M, \theta_C, \theta_I) = (57.93^\circ, 26.16^\circ, 5.91^\circ)$，电子基态的三界配置，物质界特有的角度构型 | 22号 摘要, 0.0.3 §5 |
 | 区域生成 | Region Genesis | 零态失衡后沿 $\eta$ 方向（因果方向）平移回归的创世推进机制 | 33号 §3 |
+| 粒子凝结 | Particle Condensation | 粒子在因果推进经过其特征构型时从I场信息中凝结生成，时间由 $t_{\text{phys}}^p = \chi_T \sqrt{\lambda_1^{\text{eff}}} (\eta_{\text{init}} - \eta_p)$ 确定 | 50号 §7 |
+| 凝结序列 | Condensation Sequence | 粒子按质量排序的凝结时间序列——更重粒子凝结于更早时间（更大的 $\eta$ 偏离），自然形成"先重后轻" | 50号 §7 |
+| 相区结构 | Phase Zone Structure | 七级递推的三个相区：相区 I（N₁→N₃，剧烈膨胀，乘子 6 $\to$ 33）、相区 II（N₃→N₅，有序重组，乘子 10 $\to$ 10）、相区 III（N₅→N₇，趋于饱和，乘子 1.1 $\to$ 2） | 50号 §5.3 |
 
 ---
 
@@ -245,6 +248,12 @@
 | 因果推进步长 $\delta\eta$ | Causal Advancement Step | $\delta\eta = 1/\sqrt{\lambda_1^{\text{eff}}}$，创世推进的因果方向步长 | 33号 §3.1 |
 | 度规-作用量协调关系 | Metric-Action Coordination Relation | $g'_{MM}$、$g'_{CC}$ 与 $S'(0) = -2073.919082\ \text{rad}^{-1}$ 的协调关系，由六项作用量定义与公理3完备性约束导出 | 11号 §3.1 |
 | 硬方向 $\xi$ | Hard Direction | 约束截面上 Hessian 大本征值 $\lambda_2^{\text{eff}}$ 的方向，被冻结 | 33号 §3.1, 0.5 §3 |
+| 截面类型 | Cross-Section Type | 联合截面的三种几何类型：$\theta_C$-共享（最刚 Hessian 方向）、M-同步（次刚方向）、$\theta_I$-共享（软模，物理不可行） | 0.6.7 §6.4 |
+| 拓扑扇区连通 | Topological Sector Connection | 约束流形在相变边界的扇区瞬时连通——B破坏的几何根源，势垒在相变瞬间不存在 | 51号 §3 |
+| $\theta_C$ 截面拓扑缠绕数 | $\theta_C$ Cross-Section Topological Winding Number ($w$) | 夸克 $w=1$（单 $\theta_C$ 截面），重子 $w=3$（三夸克），轻子 $w=0$（无 $\theta_C$ 参与） | 51号 §3 |
+| 倒伏相截断角 | Lodging Phase Cutoff Angle | $\theta_M^{\text{cutoff}} \approx 5.74^\circ$，M扇区与因果场的约束边界——截断角的有限性是中微子二重态分裂的几何根源 | 53号 §3 |
+| M-C交换 | M-C Exchange | PMNS混合的几何根源：弱顶点中带电轻子的 $\theta_M$ 和 $\theta_C$ 互换 $\to$ 中微子味基的 $(\theta_M, \theta_C)$ 坐标 | 55号 §5 |
+| 味空间坐标 | Flavor Space Coordinates | 中微子味本征态在 M-C 交换后的 $(\theta_M, \theta_C)$ 平面中的几何表示 | 55号 §4 |
 
 ---
 
@@ -325,6 +334,23 @@
 | 跨层级耦合二层作用量 | Cross-Level Two-Layer Action ($W_{12}$) | 电子与缪子之间的跨层级耦合作用量，由 $b'$ 前置因子控制，$\theta_C$-共享截面是其核心约束 | 24号 §3.1 |
 | 构型A | Configuration A | 电子基态的九素基底构型，$(\theta_M^e,\theta_C^e,\theta_I^e) = (57.93^\circ, 26.16^\circ, 5.91^\circ)$，$S_e = 137.035999084$ | 24号 §2.2 |
 | $C_n$ 递推 | $C_n$ Recursion | $C_n = M_{n-1}/n$（命题 H2），质量标度的全息屏层级递推，独立于角度驻点条件 | 24号 §6.2 |
+| I³多尺度相干泄漏 | I³ Multi-Scale Coherent Leakage | 信息场硬模 $\lambda_2^{\text{eff}}$ 在多个物理尺度上的相干泄漏，导致 $a_0$ 跨越 5 个数量级的四种观测窗口（星系旋转曲线、子弹星系团、CMB第三峰、大尺度结构） | 54号 §6 |
+| 纯重子宇宙 | Pure Baryon Universe | 无暗物质粒子的几何修正宇宙——星系旋转曲线平坦化、CMB第三峰增强、大尺度结构增长均由 I³ 多尺度相干泄漏提供 | 54号 §1 |
+| 参数空间拓扑缺陷 | Parameter Space Topological Defect | 约束流形参数空间中的 Berry 曲率奇点（类似 Weyl 半金属），不是实空间中的自由磁荷 | 56号 §4 |
+| 有效磁单极子 | Effective Magnetic Monopole | 参数空间拓扑缺陷的物理效应类比，$\pi_2(S)=0$ 确保实空间无自由磁单极子 | 56号 §4 |
+| 约束流形可缩性 | Contractibility of Constrained Manifold | 约束流形 $S$ 为 2-单纯形 $\to$ 可缩 $\to$ $\pi_2(S)=0$ $\to$ $H^2(S;\mathbb{Z})=0$ $\to$ 所有 U(1) 丛平凡 | 56号 §3 |
+| 原初扰动冻结 | Primordial Perturbation Freezing | I场在小 $N_{\text{info}}$ 下快速扩散均匀化 $\to$ 早期宇宙均匀；$N_{\text{info}}$ 增长 $\to$ 扩散冻结 $\to$ 非均匀性被保留为结构种子 | 50号 §4 |
+| Sakharov条件几何翻译 | Geometric Translation of Sakharov Conditions | 重子生成三条件的几何论统一翻译——B破坏 = 拓扑扇区连通，C/CP破坏 = $\theta_C$ 截面挠率，热非平衡 = 递推乘子跳变 | 51号 §2 |
+| B破坏拓扑机制 | Topological B Violation Mechanism | 约束流形的扇区连通只在相变边界打开——今日宇宙 B破坏率 $\sim 10^{-110}$ s⁻¹（宇宙寿命内概率 $\sim 10^{-92}$），解释质子稳定性 | 51号 §3 |
+| 递推膨胀 | Recursive Expansion | 宇宙膨胀的几何驱动——七级递推乘子序列（6 $\to$ 33 $\to$ 10 $\to$ 10 $\to$ 1.1 $\to$ 2）的自然展开，不需要暴脹子或慢滚势能 | 50号 §5 |
+| 氘瓶颈几何机制 | Deuterium Bottleneck Geometric Mechanism | C扇区共凝结的最小曲率门槛——非偶然数值巧合，是约束流形上多核子构型的结构必然 | 52号 §4 |
+| ⁷Be几何不稳定性 | ⁷Be Geometric Instability | ⁷Be（$J^P=3/2^-$，质量数=7）处于 $N_{\text{info}}^{\text{deut}}$ 时的几何稳定性边界以下 $\to$ ⁷Li问题在几何论中自然消失 | 52号 §7 |
+| 倒伏相不完全 | Incomplete Lodging Phase | 精确倒伏相极限（$\theta_M \to 0$）下三个中微子完全简并——可观测的二重态分裂（$m_2/m_1 \approx 1.038$）完全来自截断角的有限性 | 53号 §3 |
+| 平均度规近似 | Average Metric Approximation | PMNS混合角的零阶近似——在 $(\theta_M, \theta_C)$ 平面上使用带电轻子平均度规，$\theta_{12} \approx 33.0^\circ$（偏差 $-1.2\%$） | 55号 §6 |
+| 非均匀度规修正 | Non-Uniform Metric Correction | 超出平均度规的局域度规变化——解释 $\theta_{23}$ 和 $\theta_{13}$ 残余偏差的方向（🟡 开放） | 55号 §10 |
+| 电弱平滑 crossover | Electroweak Smooth Crossover | $\theta_M$ 随 $N_{\text{info}}$ 平滑演化 $\to$ 质量平滑演化 $\to$ 无对称性破缺相变，与格点结果一致（$m_H \gtrsim 72$ GeV 时为 crossover） | 4号 §5.3 |
+| 强 CP 拓扑冻结 | Strong CP Topological Freezing | U(1)_A 手征转动 = ℐ 扇区全局 $\theta_I$ 平移，公理 1 真空标记强制冻结 $\to$ $\bar{\theta}=0$。与 CKM $\delta_{\text{CP}}$ 严格区分：前者 ℐ 扇区冻结，后者 M-C 挠率 | 5号 §5.5 |
+| θ̄=0 结构强制 | θ̄=0 Structural Enforcement | $\bar{\theta}=0$ 是定理非巧合——零参数，零新粒子，轴子不存在 | 5号 §5.5 |
 
 ---
 
