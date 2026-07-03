@@ -1,6 +1,6 @@
 # 几何论术语标准中英文对照
 
-> **版本**：260704.1  
+> **版本**：260704.2  
 > **用途**：几何论全部术语在此统一。任何新文章引入术语前必须先在本表登记。  
 > **语言**：中文 / English  
 > **更新规则**：见 §11 维护规则  
@@ -97,6 +97,8 @@
 | 三分切丛置换群刚性定理 | Tripartite Bundle Permutation Group Rigidity Theorem | $S_3$ 是置换群的唯一选择 | 0.0.7 定理2.0' |
 | 质量-角度耦合定理 | Mass-Angle Coupling Theorem | $m = K \sin^3\theta_M$（由公理1–3及约束乘积球面构造导出，非公理） | 0.1 §2.2.2, 0.0.3 §5 |
 | 光子零质量定理 | Photon Zero Mass Theorem | $m_\gamma = K \sin^3(0^\circ) = 0$，光子零质量是质量映射定理在 $\theta_M=0^\circ$ 的直接推论 | 0.6.8 §2 |
+| 边界分离定理 | Boundary Separation Theorem | 完备性平面 $\mathcal{P}$ 的M扇区边界 $\partial\mathcal{P}_M$ 将构型空间划分为两个互不相交的几何类——正则模式（$\theta_M>0$, $S<\infty$, $S=S_e$ 约束适用）与边界模式（$\theta_M=0$, $S=\infty$, $S=S_e$ 约束不适用）。光子属于边界模式 | 0.6.3 §4.5 |
+| 光子自旋-1选择定则 | Photon Spin-1 Selection Rule | 光子自旋-1由双路径锁定：主路径——定理2的TT条件导出守恒矢量流 $J_\nu=\nabla^\mu h_{\mu\nu}^{(0)}=0$，$h_{\mu\nu}^{(0)}$ 可由矢量场 $A_\mu$ 表示，自旋-0被无迹条件代数排除，自旋-2归属因果场（非M-C耦合产物）；辅路径——M-C腰边退化极限 $\theta_M,\theta_C\to 0$ 下SO(2)剩余对称性 $\to$ U(1)表示论 $\to$ 螺旋度 $n=\pm 1$。辅路径排除法含构造性加固 | 0.6.8 §7 |
 | Hopf纤维化定理（拓扑部分） | Hopf Fibration Theorem (Topological) | 公理3的三分切丛结构可提升为 $S^3 \to S^2$ Hopf纤维化的完整拓扑描述（0.3.6 定理4.3）。**注意**：度量等价 $r_{\mathcal{M}} = r_\Sigma$ 部分仍为假设（见 §9 Hopf假设） | 0.3.6 §2–§4 |
 | 扇区约化定理 | Sector Reduction Theorem | 三扇区耦合在约束截面上可约化为低维有效描述 | 0.3.7 定理9.5 |
 | G1定理 | G1 Theorem | 因果场第一几何不变量 $G_1$ 的系统性诊断与闭合 | 0.3.7 §4 |
@@ -264,6 +266,9 @@
 | 夸克质量谱 | Quark Mass Spectrum | 夸克三代质量在约束乘积球面上的几何框架描述 | 27号 §1 |
 | 分子生成 | Molecular Genesis | 从原子圆满态到分子结构的几何生成路径 | 35号 §1 |
 | 层流-湍流转捩 | Laminar-Turbulent Transition | 物质界流从层流到湍流的转捩，由信息场退相干谱条件判定 | 30号 §3.5 |
+| 边界模式 | Boundary Mode | $\theta_M=0$, $S=\infty$ 的构型类，M-C腰边耦合在完备性平面M扇区边界上的退化极限。光子为其代表。S=S_e约束不适用于边界模式 | 0.6.3 §4.5 |
+| 正则模式 | Regular Mode | $\theta_M>0$, $S<\infty$ 的构型类，所有有质量粒子（电子、夸克等）属于正则模式。S=S_e约束适用 | 0.6.3 §4.5 |
+| 腰边SO(2)剩余对称性 | Waist-Edge SO(2) Residual Symmetry | M-C腰边在退化极限 $\theta_M,\theta_C\to 0$（同时 $\theta_I\to 90^\circ$）下，腰边切空间保持二维，其等距群为SO(2)≅U(1)，是光子内部对称群的几何起源 | 0.6.8 §7.2 |
 | 超精细结构 | Hyperfine Structure | 氢原子基态超精细分裂的几何根源——ℰ的信息相位通道（$\mathcal{I}$ 扇区）重叠 + 面积元投影 + $4/\pi$ 热核平行继承 | 1号 §4 |
 | 21cm线 | 21cm Line | 氢原子超精细跃迁，几何推导值 $1421.61\ \text{MHz}$（偏差 $+0.08\%$），几何论标志性预言之一 | 1号 §4.6 |
 | 热核平行继承 | Heat Kernel Parallel Inheritance | $4/\pi$ 因子的谱归一化来源，由 0.3.1 定理 3.2 热核渐近展开严格确定 | 1号 §4.4 |
