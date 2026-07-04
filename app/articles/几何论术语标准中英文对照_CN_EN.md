@@ -1,6 +1,6 @@
 # 几何论术语标准中英文对照
 
-> **版本**：260703.4  
+> **版本**：260704.1  
 > **用途**：几何论全部术语在此统一。任何新文章引入术语前必须先在本表登记。  
 > **语言**：中文 / English  
 > **更新规则**：见 §11 维护规则  
@@ -161,6 +161,12 @@
 | 无磁单极子结论 | No Magnetic Monopole Conclusion | 约束流形 $S$ 为 2-单纯形 $\to$ 可缩 $\to$ $\pi_2(S)=0$ $\to$ $H^2(S;\mathbb{Z})=0$ $\to$ 所有 U(1) 丛平凡 $\to$ $\nabla\cdot\mathbf{B}=0$ 处处成立。狄拉克量子化条件 $eg=n/2$ 反转：不是磁荷存在则电荷量子化，而是 $\theta_C$ 纤维化单值性要求电荷量子化 | 56号 §3–§5 |
 | 电弱 crossover 定理 | Electroweak Crossover Theorem | 电弱"相变"不存在——只有平滑 crossover。质量来自软模曲率恢复力，非真空期望值 $\to$ 无可破缺的对称性；$\theta_M$ 随 $N_{\text{info}}$ 平滑演化 | 4号 §5.3 |
 | 强 CP 拓扑冻结定理 | Strong CP Topological Freezing Theorem | $\bar{\theta}=0$ 是结构强制的：U(1)_A 手征转动 = ℐ 扇区全局 $\theta_I$ 平移，$\tilde{S}_{\text{total}}$ 在 U(1) 作用下单调（P0/CG-1），公理 1 真空标记 $\to$ U(1) 完全冻结 $\to$ $\bar{\theta}=0$。零参数，轴子不存在 | 5号 §5.5 |
+| 三代起源拓扑定理 | Three-Generation Origin Topological Theorem | $N_{\text{gen}} = \dim(\Delta^2) + 1 = 3$。$S_3$ 迷向子群穷举：$\{e\}$（电子，三角全不等）、$S_2^{IM}$（缪子）、$S_2^{CI}$（τ子）、$S_2^{MC}$（梯度流不可达）、$S_3/A_3$（重心，非粒子构型）。第四代无处可去——所有五种 $S_3$ 子群类型已穷举完毕 | 57号 §4 |
+| 自由色荷拓扑禁止定理 | Free Color Charge Topological Forbiddance Theorem | 自由色荷对应约束流形顶点 $(90^\circ,0,0)$，$1/\sin^2 0^\circ \to \infty$ $\to$ $S \to \infty$ $\to$ $E \to \infty$。禁闭是拓扑的（顶点奇点），不是动力学的（不需要 $\alpha_s$ 跑动） | 58号 §3 |
+| MW 色约化定理 | MW Color Reduction Theorem | Marsden-Weinstein 约化：$N=1$ $\to$ 0D 相空间（无动力学），$N=2$ $\to$ 1D（离散束缚态），$N=3$ $\to$ 2D（可传播）。色单态是唯一可传播构型 | 58号 §4–§6 |
+| 引力统一定理 | Gravity Unification Theorem | 引力的三个几何表达——因果场动力学 $\Lambda_\xi$（0.5）、裸引力耦合 $G_{9D}$（10号）、宏观有效引力 $G_{\text{eff}}$（54号）——是约束流形 $\Delta^2$ 上同一 Hessian 谱 $(\lambda_1,\lambda_2)$ 的三个投影。转换不需要任何额外假设 | 59号 §6 |
+| $\theta_M$ 冻结定理 | $\theta_M$ Freezing Theorem | $\theta_M^e = 57.93^\circ$（$S_3$ 完全破缺），$\theta_M^\mu = \theta_M^\tau = 31.94^\circ$（$S_2$ 对称性恢复）。$S_2^{IM}$ 和 $S_2^{CI}$ 线共享同一 $\theta_M$ 值——约束梯度流 + $S_3$ 迷向子群的联合几何必然。9号工作假设「三代共享 $\theta_M$」由本定理替代 | 60号 §4–§5 |
+| Berry 相位路径定理（缪子） | Berry Phase Path Theorem (Muon) | $H_{tn}^\mu = -405 \neq 0$ $\to$ 缪子不完全在 $S_2^{IM}$ 线上（$\Delta\theta = 0.04^\circ$）$\to$ 约束梯度流与 $S_2$ 对称性竞争导致交叉 Hessian 非零。$a_\mu^{\text{B}} = 1.17(6) \times 10^{-3}$（命题，10% 误差） | 62号 §3–§6 |
 
 ---
 
@@ -211,6 +217,9 @@
 | 修正引力增长因子 $\alpha$ | Modified Gravity Growth Factor | $\alpha \approx 1.44$，$G_{\text{eff}}$ 增强使结构增长加速 | 54号 §8 |
 | $\sigma_8$ (几何论) | $\sigma_8$ (Geometric) | $\approx 0.75$（零参数，Planck $0.81\pm0.01$，偏差 $\sim 7\%$） | 54号 §8 |
 | 声学视界 $r_s$ (几何论) | Sound Horizon $r_s$ (Geometric) | $\approx 147$ Mpc（共动），由 $N_{\text{info}}(t)$ 膨胀历史解析推导 | 54号 §9 |
+| 缪子质量增强因子 $f_\mu$ | Muon Mass Enhancement Factor | $f_\mu = 2\pi(S_e - 2) = 848.46$（偏差 $+0.02\%$）。$S_e-2$：两个对称化扇区退化为一个有效自由度，有效编码容量减 2；$2\pi$：Berry 相位拓扑周期 | 60号 §6.9 |
+| 缪子有效耦合 $Q_\mu^{\text{eff}}$ | Muon Effective Coupling | $0.812$（沿 $S_2^{IM}$ 路径的 Berry 联络加权平均），决定 $a_\mu$ 的截面几何因子 | 62号 §5 |
+| 缪子反常磁矩 $a_\mu^{\text{B}}$（方案 B） | Muon $g-2$ (Scheme B) | $1.17(6) \times 10^{-3}$（命题级，$\sim 10\%$ 误差），以 $\theta_M^\mu = 31.94^\circ$ 重算 | 62号 §6 |
 
 ---
 
@@ -254,6 +263,7 @@
 | 倒伏相截断角 | Lodging Phase Cutoff Angle | $\theta_M^{\text{cutoff}} \approx 5.74^\circ$，M扇区与因果场的约束边界——截断角的有限性是中微子二重态分裂的几何根源 | 53号 §3 |
 | M-C交换 | M-C Exchange | PMNS混合的几何根源：弱顶点中带电轻子的 $\theta_M$ 和 $\theta_C$ 互换 $\to$ 中微子味基的 $(\theta_M, \theta_C)$ 坐标 | 55号 §5 |
 | 味空间坐标 | Flavor Space Coordinates | 中微子味本征态在 M-C 交换后的 $(\theta_M, \theta_C)$ 平面中的几何表示 | 55号 §4 |
+| 缪子构型 | Muon Configuration | $(\theta_M, \theta_C, \theta_I) = (31.94^\circ, 26.16^\circ, 31.90^\circ)$，$S_2^{IM}$ 线上（$\theta_M \approx \theta_I$），$\theta_C$-共享截面驻点。偏离精确对称线仅 $0.04^\circ$ | 60号 §4, 62号 §3 |
 
 ---
 
@@ -383,6 +393,8 @@
 | 全迹路线失败 | Full-Trace Route Failure | 尝试证明 $\operatorname{tr}(H^{\text{eff}})/H_{MM}^0 = 10$，但在构型A处的直接计算给出 $\sim 1900$，证伪了迹守恒假设。已诚实记录，避免后续研究走入同一死胡同 | 53号 §4 |
 | CMB第三峰增强（命题级） | CMB Third Peak Enhancement (Proposition-grade) | $a_0/a_N^{\text{pert}} \approx 14$ $\to$ 扰动引力增强 $\sim 3.7$ 倍 $\to$ 第三峰增强。结构层已定位，量级正确，但精确到与 Planck 逐峰对比需玻尔兹曼代码（工具缺口） | 54号 §7 |
 | 大尺度结构增长（命题级） | Large-Scale Structure Growth (Proposition-grade) | $G_{\text{eff}} = G_{9D}\sqrt{1+a_0/a_N}$ 增强 $\alpha\approx 1.44$ $\to$ $\sigma_8\approx 0.75$（Planck $0.81\pm0.01$，偏差 $\sim 7\%$）。$G_{\text{eff}}(t)$ 完整时间演化待算（E2工具缺口） | 54号 §8 |
+| 缪子反常磁矩方案 B 闭合（命题级） | Muon $g-2$ Scheme B Closure (Proposition-grade) | $a_\mu^{\text{B}} = 1.17(6) \times 10^{-3}$，含简谐近似 + 路径面积估算（各 $\sim 10\%$）。形式化完整（Berry 联络 $\to$ 曲率 $\to$ 有效耦合 $\to$ $a_\mu$），精度待 D1（非简谐修正）、D2（外场耦合常数）、D3（路径精确参数化）提升 | 62号 §6 |
+| $f_\mu$ 增强因子的 $W_{12}$ 路线排除 | $W_{12}$ Route Exclusion for $f_\mu$ Enhancement | $W_{12}$（联合截面 Fisher 编码容量耦合 $= -5.15$）在任何合理定义下不足以承载 $f_\mu \sim 849$ 的增强。正确路线 $f_\mu = 2\pi(S_e-2)$ 不需要 $W_{12}$——联合截面 Hessian 中 M-C 交叉项被 $1/a' \sim 3.4\times10^{-5}$ 天然压制 | 63号（已并入 60号 §6.9.4） |
 
 ---
 
