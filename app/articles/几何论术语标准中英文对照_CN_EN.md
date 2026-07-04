@@ -361,6 +361,11 @@
 | 电弱平滑 crossover | Electroweak Smooth Crossover | $\theta_M$ 随 $N_{\text{info}}$ 平滑演化 $\to$ 质量平滑演化 $\to$ 无对称性破缺相变，与格点结果一致（$m_H \gtrsim 72$ GeV 时为 crossover） | 4号 §5.3 |
 | 强 CP 拓扑冻结 | Strong CP Topological Freezing | U(1)_A 手征转动 = ℐ 扇区全局 $\theta_I$ 平移，公理 1 真空标记强制冻结 $\to$ $\bar{\theta}=0$。与 CKM $\delta_{\text{CP}}$ 严格区分：前者 ℐ 扇区冻结，后者 M-C 挠率 | 5号 §5.5 |
 | θ̄=0 结构强制 | θ̄=0 Structural Enforcement | $\bar{\theta}=0$ 是定理非巧合——零参数，零新粒子，轴子不存在 | 5号 §5.5 |
+| $S_3$ 迷向子群 | $S_3$ Isotropy Subgroup | 约束流形 $\Delta^2$ 上 $S_3$ 对称性的五种迷向子群类型：$\{e\}$（三角全不等 → 电子）、$S_2^{IM}$（$\theta_M \approx \theta_I$ → 缪子）、$S_2^{CI}$（$\theta_C \approx \theta_I$ → τ子）、$S_2^{MC}$（梯度流不可达）、$S_3/A_3$（重心 → 非粒子构型）。穷举完毕，第四代无处可去 | 57号 §3 |
+| 梯度流不可达 | Gradient Flow Inaccessibility | $S_2^{MC}$（$\theta_M \approx \theta_C$）被约束梯度流单调性（$d\theta_I/d\tau > 0$）排除——不是数学上不可能，是物理上不可达。$\theta_I$ 是演化方向，永远不可能成为被 $\theta_M \approx \theta_C$ 孤立的角 | 57号 §3.4 |
+| 顶点奇点 | Vertex Singularity | 约束流形顶点 $(90^\circ, 0, 0)$ 处 $S$-泛函的 $1/\sin^2 0^\circ$ 发散——自由色荷被拓扑禁止的根源。奇点不是正则化失败，是几何结构的必然输出 | 58号 §3 |
+| Hessian 谱三投影 | Hessian Spectrum Triple Projection | $\lambda_1, \lambda_2$ 两个 Hessian 本征值分别投影为三个独立物理表达：因果场动力学 $\Lambda_\xi = -\frac{1}{2}\log(\lambda_2/\lambda_1)$（0.5）、裸引力耦合 $G_{9D} \propto \sqrt{\lambda_1/\lambda_2}$（10号）、宏观有效引力 $G_{\text{eff}} = G_{9D}\sqrt{1+a_0/a_N}$（54号）。万物皆几何的最后一块拼图 | 59号 §2–§6 |
+| $S_2$ 对称性恢复 | $S_2$ Symmetry Restoration | μ 子和 τ 子落在 $S_2$ 线上（两个角相等），电子是唯一 $S_3$ 完全破缺的粒子。对称性恢复是质量增强因子 $f_\mu = 2\pi(S_e-2)$ 的几何根源——每退化一个扇区，有效编码容量减 1 | 60号 §6.9 |
 
 ---
 
