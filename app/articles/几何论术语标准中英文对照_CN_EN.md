@@ -10,15 +10,25 @@
 
 ## §1 公理体系
 
-> 公理 = 理论的全部自由输入。几何论有三条公理，无第四条。
+> 公理 = 理论的全部自由输入。几何论有两套公理体系：**0.0.0《零与谱》**为最底层（本体前提 + 结构公理 + 编码公理），**0.0.3–0.0.7** 在此基础上构建（圆拓扑 + 边界极限 + 全息屏编码条件）。两套体系互补，不可混淆编号。
 >
 > **⚠️ 注意**：早期文章 0.0.7（十方几何空间）使用旧公理编号：公理1=角度和 θ_M+θ_C+θ_I=90°、公理2=作用量和 S=Σ1/sin²θ_i+…。旧编号与下表不兼容。阅读 0.0.7 时请将「公理1」理解为「公理3 完备性约束」、「公理2」理解为「作用量定义」。0.0.7 修订版将统一编号。
 
+### 0.0.0《零与谱》底层体系
+
 | 中文 | 英文 | 公式 / 陈述 | 出处 |
 |---|---|---|---|
-| 公理1（圆拓扑） | Axiom 1 (Circle Topology) | $D = S^1 \setminus \{p_0, p_*\}$，激发态参数空间由圆去掉真空点 $p_0$ 与退化点 $p_*$ 得到，含两个开区间分支 $D_\pm$ | 0.0.3 §2.1 |
-| 公理2（边界极限） | Axiom 2 (Boundary Limit) | $S: D \to (0,+\infty)$ 在每个分支 $D_\pm$ 上连续，$\lim_{x\to p_0}S(x)=0$（真空极限），$\lim_{x\to p_*}S(x)=+\infty$（退化极限） | 0.0.3 §2.2 |
-| 公理3（全息屏编码条件） | Axiom 3 (Holographic Screen Encoding Condition) | 在三分切丛 $TM(a)=\mathcal{M}\oplus\mathcal{C}\oplus\mathcal{I}$ 的每个 $\mathbb{R}^9$ 纤维中，存在二维全息屏 $\Sigma$，三个扇区投影强度角 $\theta_1,\theta_2,\theta_3\in(0^\circ,90^\circ)$ 满足 $\theta_1+\theta_2+\theta_3=90^\circ$ | 0.0.6 §3.1 |
+| 本体前提 1.1（零维源点 S₃ 对称性） | Ontological Premise 1.1 (Zero-Dimensional Source Point S₃ Symmetry) | 零维源点 $\mathcal Z$ 携带对称群 $S_3$。$S_3$ 的正规子群链 $\{e\}\subset A_3\subset S_3$ 提供最简三层层级，阶数为 $1:3:6$ | 0.0.0 §1 |
+| 结构公理 2.1（群阶—尺度平方反比规则） | Structural Axiom 2.1 (Group Order – Scale-Squared Inverse Rule) | 若某一层几何由剩余对称性 $H$ 控制，则其特征长度平方与 $|H|^{-1}$ 成正比：$R^2\propto 1/|H|$。以 $S_3$ 三层阶数 $1,3,6$ 为基准，半径比为 $1:1/\sqrt{3}:1/\sqrt{6}$ | 0.0.0 §2.2 |
+| 编码公理 5.1（最简线性编码规范） | Encoding Axiom 5.1 (Minimal Linear Encoding Convention) | 三个扇区向二维全息屏的投影强度角 $\theta_1,\theta_2,\theta_3\in(0^\circ,90^\circ)$ 满足 $\theta_1+\theta_2+\theta_3=90^\circ$ | 0.0.0 §5.3 |
+
+### 0.0.3–0.0.7 公理体系
+
+| 中文 | 英文 | 公式 / 陈述 | 出处 |
+|---|---|---|---|
+| 公理1（圆拓扑） | Axiom 1 (Circle Topology) | $D = S^1 \setminus \{p_0, p_*\}$，激发态参数空间由圆去掉真空点 $p_0$ 与退化点 $p_*$ 得到，含两个开区间分支 $D_\pm$。**独立于 0.0.0 的本体前提与结构公理** | 0.0.3 §2.1 |
+| 公理2（边界极限） | Axiom 2 (Boundary Limit) | $S: D \to (0,+\infty)$ 在每个分支 $D_\pm$ 上连续，$\lim_{x\to p_0}S(x)=0$（真空极限），$\lim_{x\to p_*}S(x)=+\infty$（退化极限）。**独立于 0.0.0 的本体前提与结构公理** | 0.0.3 §2.2 |
+| 公理3（全息屏编码条件） | Axiom 3 (Holographic Screen Encoding Condition) | 在三分切丛 $TM(a)=\mathcal{M}\oplus\mathcal{C}\oplus\mathcal{I}$ 的每个 $\mathbb{R}^9$ 纤维中，存在二维全息屏 $\Sigma$，三个扇区投影强度角 $\theta_1,\theta_2,\theta_3\in(0^\circ,90^\circ)$ 满足 $\theta_1+\theta_2+\theta_3=90^\circ$。**与 0.0.0 编码公理 5.1 等价** | 0.0.6 §3.1, 0.0.0 §5.3 |
 
 ---
 
