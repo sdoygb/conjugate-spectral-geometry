@@ -193,6 +193,8 @@
 
 | 中文 | 英文 | 值 / 表达式 | 出处 |
 |---|---|---|---|
+| 零态谱权重 | Zero-State Spectral Weight | $6:2:1$，由 $S_3$ 群代数 $\mathbb{C}[S_3]$ 左理想维数确定，是约束乘积球面三层尺度结构（$1:1/\sqrt{3}:1/\sqrt{6}$）的群论源头 | 0.0.0 §2 |
+| 六项代价函数最小值 $S_{\min}$ | Six-Term Cost Function Minimum | $S_{\min}=24$，在对称点 $\theta_1=\theta_2=\theta_3=30^\circ$ 取得，约束定义域上唯一全局严格最小值 | 0.0.0 §5.6 |
 | 互锁常数 $\Lambda$ | Interlocking Constant | $\Lambda = \Lambda(S_3) = 3$ | 0.0.3 §3 |
 | 互锁常数 $k_0$ | Interlocking Constant | $k_0 = k_0(S_3) = 2$ | 0.0.3 §3 |
 | 标度常数 $\ell_0$ | Scale Constant | $\ell_0 = V_{\text{unit}}^{-1/9} \approx 0.5991$（几何单位，无量纲） | 0.0.7 定理7.2 |
