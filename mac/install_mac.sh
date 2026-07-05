@@ -332,6 +332,10 @@ PLISTEOF
         <string>https://hf-mirror.com</string>
         <key>SENTENCE_TRANSFORMERS_HOME</key>
         <string>$INSTALL_DIR/models_cache</string>
+        <key>WEBUI_NAME</key>
+        <string>Geometry AI</string>
+        <key>WEBUI_SECRET_KEY</key>
+        <string>geometryai-auto-generated-$(date +%Y%m%d)-secret</string>
     </dict>
 </dict>
 </plist>

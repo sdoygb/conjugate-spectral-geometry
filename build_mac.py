@@ -157,7 +157,18 @@ Geometry AI Server - macOS 安装说明
 
 def create_zip():
     """打包为 zip（内部带 GeometryAI-Mac-Build/ 目录前缀）"""
-    zip_name = f"GeometryAI-Mac-Build.zip"
+    # 从 version.py 读取版本号
+    version = "unknown"
+    version_file = PROJECT_ROOT / "app" / "version.py"
+    if version_file.exists():
+        for vl in version_file.read_text(encoding="utf-8").splitlines():
+            if vl.strip().startswith("VERSION"):
+                version = vl.split(chr(34))[1]
+                break
+
+
+    """打包为 zip（内部带 GeometryAI-Mac-Build/ 目录前缀）"""
+    zip_name = f"GeometryAI-Mac-Build-v{version}.zip"
     zip_path = PROJECT_ROOT / zip_name
     folder_name = "GeometryAI-Mac-Build"
 

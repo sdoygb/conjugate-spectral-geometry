@@ -1019,7 +1019,36 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                     continue
                 count = file_content.count(old_text)
                 if count == 0:
-                    replacement_details.append(f"  #{i+1}: 未找到匹配文本（前50字符: ...{old_text[:50]}...）")
+                    # 模糊匹配：清理空白差异后重试
+                    import re as _re
+                    def _normalize_ws(s):
+                        return _re.sub(r'[ \t]+', ' ', _re.sub(r'\r\n', '\n', s.strip()))
+                    norm_old = _normalize_ws(old_text)
+                    # 在文件中逐行归一化后搜索
+                    norm_content = _normalize_ws(file_content)
+                    fuzzy_count = norm_content.count(norm_old)
+                    if fuzzy_count > 0:
+                        # 找到模糊匹配位置，在原始文件中定位并替换
+                        # 策略：取 old_text 的第一行和最后几行作为锚点
+                        old_lines = old_text.strip().split('\n')
+                        first_line = old_lines[0].strip()
+                        last_line = old_lines[-1].strip() if len(old_lines) > 1 else ""
+                        # 在原文中找到包含第一行和最后一行的区域
+                        first_pos = file_content.find(first_line)
+                        if first_pos >= 0 and last_line:
+                            search_region = file_content[first_pos:first_pos+len(old_text)+200]
+                            last_pos_in_region = search_region.rfind(last_line)
+                            if last_pos_in_region >= 0:
+                                actual_end = first_pos + last_pos_in_region + len(last_line)
+                                actual_old = file_content[first_pos:actual_end]
+                                file_content = file_content[:first_pos] + new_text + file_content[actual_end:]
+                                total_chars_added += len(new_text)
+                                total_chars_removed += len(actual_old)
+                                replacement_details.append(f"  #{i+1}: 模糊匹配替换 1 处（原{len(actual_old)}字符 -> 新{len(new_text)}字符）")
+                                continue
+                        replacement_details.append(f"  #{i+1}: 未找到匹配文本（前50字符: ...{old_text[:50]}...）")
+                    else:
+                        replacement_details.append(f"  #{i+1}: 未找到匹配文本（前50字符: ...{old_text[:50]}...）")
                 else:
                     file_content = file_content.replace(old_text, new_text)
                     total_chars_added += len(new_text)
