@@ -295,6 +295,15 @@
 
 | 中文 | 英文 | 说明 | 出处 |
 |---|---|---|---|
+| 本体前提 | Ontological Premise | 0.0.0 的最底层输入：零维源点 $\mathcal Z$ 携带 $S_3$ 对称性。不是公理，而是几何论唯一不可约减的本体起点 | 0.0.0 §1, §6.1 |
+| 结构公理 | Structural Axiom | 0.0.0 的几何实现规则：群阶—尺度平方反比规则，由此得到半径比 $1:1/\sqrt{3}:1/\sqrt{6}$ | 0.0.0 §2.2, §6.1 |
+| 编码公理 | Encoding Axiom | 0.0.0 的编码规范：二维全息屏上 $\theta_1+\theta_2+\theta_3=90^\circ$。与 0.0.6 公理3等价 | 0.0.0 §5.3, §6.1 |
+| 群阶—尺度平方反比规则 | Group Order – Scale-Squared Inverse Rule | $R^2\propto 1/|H|$：剩余对称性子群的阶数越大，对应几何尺度的平方越小。是结构公理 2.1 的核心内容，非标准群论定理 | 0.0.0 §2.2 |
+| 最简线性编码规范 | Minimal Linear Encoding Convention | $\theta_1+\theta_2+\theta_3=90^\circ$：三扇区投影强度角在二维全息屏上的最简无冗余线性编码。是编码公理 5.1 的核心内容 | 0.0.0 §5.3 |
+| 六项无量纲代价函数 | Six-Term Dimensionless Cost Function $S$ | $S=\sum 1/\sin^2\theta_i + \sum_{i<j} 1/(\sin\theta_i\sin\theta_j)$：满足 $S_3$ 置换对称、二体截断原则与面积倒数标度的无量纲几何代价函数。在 $30^\circ$ 对称点取得唯一全局最小值 24 | 0.0.0 §5.5–§5.6 |
+| 严格凸性 | Strict Convexity | 六项代价函数 $S$ 在约束定义域 $D_\theta$ 上严格凸，保证唯一全局极小值点的存在性与可计算性 | 0.0.0 §5.6 |
+| 二体截断原则 | Two-Body Truncation Principle | 代价函数只保留单扇区项（$1/\sin^2\theta_i$）与成对耦合项（$1/(\sin\theta_i\sin\theta_j)$），不引入三体及以上耦合项。是最简编码原则的自然延伸 | 0.0.0 §5.5 |
+| 模空间 | Moduli Space | 约束乘积球面 $M(a)$ 的唯一连续自由度是整体尺度 $a\in(0,\infty)$，模空间同胚于 $(0,\infty)$。$a\to0^+$ 时结构收缩回零维源点 | 0.0.0 §4.3 |
 | 九素互扼 | Nine-Element Mutual Constraint | 公理—常数—工具层之间的超定锁定结构，涉及公理1–3、谱刚性定理、互锁常数唯一性定理、自举封闭定理的交叉约束。属超定锁定结构，非独立定理 | 0.0.7 §6.2 |
 | 全息屏编码条件 | Holographic Encoding Condition | 公理3的简称：三分切丛 TM(a)=ℳ⊕𝒞⊕ℐ，存在二维全息屏 Σ，θ₁+θ₂+θ₃=90° | 0.0.6 §3 |
 | CIM 相 | CIM Phase | 标准模型/广义相对论/弦论作为低能有效场论近似 | 0.2 §1 |
