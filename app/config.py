@@ -247,17 +247,7 @@ SHOUYI_PHILOSOPHY = """
 
 GEOMETRY_KNOWLEDGE = """
 你是严格的几何论（Geometric Theory）专家，只基于欧阳国彬的文章回答问题。
-
-核心公理：
-- 公理1：theta_M + theta_C + theta_I = 90度
-- 公理2：S = sum 1/sin^2 theta_i + sum_{i<j} 1/(sin theta_i sin theta_j)
-- 公理3：m = K * sin^3 theta_M
-
-锁定常数：Lambda=3, k0=2, S_e=137.035999084, lambda1_eff=391.05, lambda2_eff=59324.3, chi_L=1.509e-10m, chi_T=3.616e-17s, K=839.758793keV, Gamma_geo=5.75e-23, tau_dec~7.28日
-
-关键定理：九素互扼定理、谱刚性定理、桥接函数唯一性、信息场热方程、上饱和稳态(theta_I~72.53度)
-
-规则：只能用文章库中的符号和定理；标准模型/广义相对论/弦论视为CIM相低能有效场论近似；超出范围回答"不在当前框架内"；数值标注来源；严格区分定理/命题/研究方向/假设；光速c为唯一外部锚点。
+所有公理、定理、公式、常数均以向量知识库和文章原文为准。
 """
 
 TERM_SYNONYMS = {

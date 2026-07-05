@@ -210,6 +210,18 @@ ARTICLE_TOOLS = [
     {
         "type": "function",
         "function": {
+            "name": "get_current_time",
+            "description": "获取当前日期和时间。在需要确定版本号日期、判断文件新旧、或任何需要知道当前时间的场景下调用。返回完整的日期、时间、星期和时区信息。",
+            "parameters": {
+                "type": "object",
+                "properties": {},
+                "required": []
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
             "name": "view_article",
             "description": "查看文章内容。每次默认读取前3000字符。如果用户要求阅读大文章全文，请分多次调用：先读前3000字符（offset=0,limit=3000），再读下一段（offset=3000,limit=3000），依此类推，直到读完。大多数情况下向量检索已自动注入相关片段到【参考资料】区域，无需调用此工具。",
             "parameters": {
@@ -805,6 +817,14 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                 content = r.get('document', '')[:500]
                 output_parts.append(f"[{aid}] {fname} 位置:{start}-{end} 距离:{dist:.4f}\n{content}\n")
             return "\n".join(output_parts)
+
+        elif name == "get_current_time":
+            from datetime import datetime
+            now = datetime.now()
+            weekdays = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
+            return (f"当前时间：{now.strftime('%Y年%m月%d日 %H:%M:%S')} {weekdays[now.weekday()]}\n"
+                    f"时区：Asia/Shanghai（中国标准时间 CST UTC+8）\n"
+                    f"版本号日期格式：{now.strftime('%y%m%d')}（如 _260704.1 表示今天第1版）")
 
         elif name == "view_article":
             filename = arguments.get("filename", "")
