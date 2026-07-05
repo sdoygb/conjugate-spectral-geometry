@@ -270,6 +270,7 @@
 
 | 中文 | 英文 | 定义 | 出处 |
 |---|---|---|---|
+| 投影强度角 | Projection Intensity Angle $\theta_i$ | 扇区向二维全息屏 $\Sigma$ 投影的强度角，$\theta_i\in(0^\circ,90^\circ)$。单扇区投影面积元比例 $\propto\sin^2\theta_i$，双扇区联合投影 $\propto\sin\theta_i\sin\theta_j$ | 0.0.0 §5.4 |
 | 物质角 $\theta_M$ | Matter Angle | 公理3中物质扇区向全息屏 $\Sigma$ 的投影强度角 | 0.0.6 §3.3 |
 | 因果角 $\theta_C$ | Causal Angle | 公理3中因果扇区向全息屏 $\Sigma$ 的投影强度角 | 0.0.6 §3.3 |
 | 信息角 $\theta_I$ | Information Angle | 公理3中信息扇区向全息屏 $\Sigma$ 的投影强度角 | 0.0.6 §3.3 |
