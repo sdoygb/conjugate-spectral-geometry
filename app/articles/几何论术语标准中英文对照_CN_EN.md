@@ -109,7 +109,7 @@
 | 中文 | 英文 | 公式 / 陈述 | 出处 |
 |---|---|---|---|
 | 三分切丛定理 | Tripartite Tangent Bundle Theorem | $TM(a)=\mathcal M\oplus\mathcal C\oplus\mathcal I$，三个 $S^3$ 因子切丛的拉回，每个纤维同构于 $\mathbb R^3$。三扇区在数学地位上完全等价，$S_3$ 置换诱导切丛分解的自同构 | 0.0.6 §2 |
-| 球面维度锁定定理 | Sphere Dimension Locking Theorem | 在二维全息屏编码原则下，要求投影角具有 Hopf 型来源并优先保留简洁群结构，则球面维度 $D=3$ 是唯一兼容解（$D=1$ 缺乏连续二维编码能力，$D=7$ 及更高候选基空间维度与结构复杂度超出最简编码原则） | 0.0.0 §3 |
+| 球面维度锁定定理 | Sphere Dimension Locking Theorem | 在二维全息屏编码原则下，要求投影角具有 Hopf 型来源并优先保留简洁群结构，则球面维度 $D=3$ 是唯一兼容解（$D=1$ 缺乏连续二维编码能力，$D=7$ 及更高候选基空间维度与结构复杂度超出最简编码原则） | 0.3.6 §1.2 |
 | 值域定理与严格凸性 | Range Theorem & Strict Convexity | 六项代价函数 $S$ 在约束定义域 $D_\theta=\{(\theta_1,\theta_2,\theta_3)\mid\theta_i>0,\;\theta_1+\theta_2+\theta_3=90^\circ\}$ 上严格凸，值域为 $[24,+\infty)$，唯一全局严格最小值点为 $\theta_1=\theta_2=\theta_3=30^\circ$，$S_{\min}=24$ | 0.0.6 §4.4 |
 | 模空间一维性引理 | Moduli Space One-Dimensionality Lemma | 约束乘积球面 $M(a)$ 的连续模空间由单一尺度参数 $a\in(0,\infty)$ 参数化，同胚于 $(0,\infty)$ | 0.0.5 §3.2 |
 | 谱刚性定理 | Spectral Rigidity Theorem | 约束乘积球面上 Laplace 谱唯一确定尺度因子 $a$ | 0.0.5 定理4.1 |
