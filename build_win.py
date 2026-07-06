@@ -142,12 +142,42 @@ if errorlevel 1 (
 echo   等待服务启动...
 timeout /t 10 /nobreak >nul
 
-:: Step 5: 重建索引
-echo [5/6] 重建知识库索引...
+:: Step 5: 安装 Open WebUI
+echo [5/7] 安装 Open WebUI...
+where open-webui >nul 2>&1
+if errorlevel 1 (
+    echo   安装 open-webui (可能需要几分钟)...
+    %PYTHON% -m pip install open-webui -q 2>nul
+)
+where open-webui >nul 2>&1
+if errorlevel 1 (
+    echo   [!] Open WebUI 安装失败，可手动执行: pip install open-webui
+) else (
+    echo   [ok] Open WebUI 已安装
+    :: 注册 Open WebUI 为 NSSM 服务
+    where nssm >nul 2>&1
+    if not errorlevel 1 (
+        nssm install OpenWebUI open-webui serve --port 8080
+        nssm set OpenWebUI AppDirectory "%APP_DIR%"
+        nssm set OpenWebUI DisplayName "Open WebUI"
+        nssm set OpenWebUI Start SERVICE_AUTO_START
+        nssm set OpenWebUI AppEnvironmentExtra OPENAI_API_BASE_URLS=http://localhost:5000/v1
+        nssm set OpenWebUI AppEnvironmentExtra OPENAI_API_KEYS=%DEEPSEEK_KEY%
+        nssm set OpenWebUI AppEnvironmentExtra WEBUI_NAME=Geometry AI
+        nssm start OpenWebUI
+        echo   [ok] Open WebUI 服务已注册 (端口 8080)
+    ) else (
+        start "" open-webui serve --port 8080
+        echo   [ok] Open WebUI 已启动
+    )
+)
+
+:: Step 6: 重建索引
+echo [6/7] 重建知识库索引...
 curl -s -X POST http://localhost:5000/v1/vector/rebuild >nul 2>&1
 echo   [ok] 索引重建请求已发送
 
-:: Step 6: 完成
+:: Step 7: 完成
 echo.
 echo  =========================================================
 echo  [ok] 安装完成！
