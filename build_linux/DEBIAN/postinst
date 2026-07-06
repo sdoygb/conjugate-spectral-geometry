@@ -1,0 +1,9 @@
+#!/bin/bash
+set -e
+APP_DIR="/usr/local/geometry-ai"
+if [ ! -f "$APP_DIR/.env" ]; then
+    cp "$APP_DIR/.env.example" "$APP_DIR/.env" 2>/dev/null || true
+fi
+mkdir -p "$APP_DIR/chroma_db" "$APP_DIR/logs"
+chmod 755 "$APP_DIR/chroma_db" "$APP_DIR/logs"
+echo "Geometry AI Server 已安装，请运行: sudo bash /usr/local/geometry-ai/install.sh"
