@@ -90,7 +90,7 @@ def generate_scripts():
     fix_index.write_text(
         '#!/bin/bash\n'
         '# Geometry AI Server - 索引重建脚本\n'
-        'set -e\n'
+        '# 不用 set -e，apt 等命令可能返回非零但实际成功\n'
         '\n'
         'if [ "$EUID" -ne 0 ]; then\n'
         '    echo "[!] 请使用 sudo 运行: sudo bash fix_index.sh"\n'
@@ -142,7 +142,7 @@ def generate_scripts():
     install_sh.write_text(
         '#!/bin/bash\n'
         '# Geometry AI Server - Ubuntu 安装脚本 v' + version + '\n'
-        'set -e\n'
+        '# 不用 set -e，apt 等命令可能返回非零但实际成功\n'
         '\n'
         'if [ "$EUID" -ne 0 ]; then\n'
         '    echo "[!] 请使用 sudo 运行: sudo bash install.sh"\n'
@@ -160,32 +160,61 @@ def generate_scripts():
         '\n'
         'read -p "  输入 DeepSeek API Key (必填): " DEEPSEEK_KEY\n'
         'read -p "  输入 SiliconFlow API Key (可选,直接回车跳过): " SILICONFLOW_KEY\n'
-        '\n'
-        '# Step 1: Python\n'
-        'echo "[1/5] 检查 Python 环境..."\n'
+        '# Step 1: Python 3.11+\n'
+        'echo "[1/6] 检查 Python 环境（需要 3.11+）..."\n'
         'PYTHON=""\n'
-        'for cmd in python3.13 python3.12 python3.11 python3.10 python3; do\n'
+        'MIN_VER=11\n'
+        'for cmd in python3.13 python3.12 python3.11; do\n'
         '    if command -v "$cmd" &>/dev/null; then\n'
-        '        ver=$($cmd -c "import sys; print(sys.version_info.major .sys.version_info.minor)" 2>/dev/null)\n'
-        '        if [ "${ver%%.*}" = "3" ] && [ "${ver##*.}" -ge 10 ] 2>/dev/null; then\n'
+        '        ver=$($cmd -c "import sys; v=sys.version_info; print(str(v.major)+chr(46)+str(v.minor))" 2>/dev/null)\n'
+        '        if [ "${ver%%.*}" = "3" ] && [ "${ver##*.}" -ge "$MIN_VER" ]; then\n'
         '            PYTHON="$cmd"\n'
         '            break\n'
         '        fi\n'
         '    fi\n'
         'done\n'
         'if [ -z "$PYTHON" ]; then\n'
+        '    echo "  当前 Python 版本过低，尝试安装 Python 3.11..."\n'
         '    export DEBIAN_FRONTEND=noninteractive\n'
-        '    apt-get update -qq 2>/dev/null\n'
-        '    apt-get install -y python3 python3-pip 2>/dev/null || true\n'
-        '    PYTHON="python3"\n'
+        '    apt-get update\n'
+        '    apt-get install -y software-properties-common\n'
+        '    add-apt-repository -y ppa:deadsnakes/ppa 2>/dev/null\n'
+        '    apt-get update\n'
+        '    apt-get install -y python3.11 python3.11-pip python3.11-venv python3.11-dev\n'
+        '    if ! command -v python3.11 &>/dev/null; then\n'
+        '        echo "  PPA 安装失败，尝试从源码编译 Python 3.11..."\n'
+        '        apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-compat-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev\n'
+        '        cd /tmp\n'
+        '        wget -q https://www.python.org/ftp/python/3.11.9/Python-3.11.9.tgz\n'
+        '        tar xzf Python-3.11.9.tgz\n'
+        '        cd Python-3.11.9\n'
+        '        ./configure --prefix=/usr/local --enable-optimizations --with-ensurepip=install > /dev/null 2>&1\n'
+        '        make -j$(nproc) > /dev/null 2>&1\n'
+        '        make altinstall > /dev/null 2>&1\n'
+        '        cd /tmp\n'
+        '        rm -rf Python-3.11.9 Python-3.11.9.tgz\n'
+        '    fi\n'
+        '    if command -v python3.11 &>/dev/null; then\n'
+        '        PYTHON="python3.11"\n'
+        '        echo "  [ok] Python 3.11 安装成功"\n'
+        '    else\n'
+        '        echo "[!] Python 3.11 安装失败"\n'
+        '        echo "    请手动安装: https://docs.python.org/3/using/unix.html#building-python"\n'
+        '        exit 1\n'
+        '    fi\n'
         'fi\n'
         'PYTHON_PATH="$(command -v $PYTHON)"\n'
-        'echo "  Python: $PYTHON ($($PYTHON --version 2>&1))"\n'
+        'PY_VER=$($PYTHON -c "import sys; print(str(sys.version_info.major)+chr(46)+str(sys.version_info.minor))")\n'
+        'echo "  Python: $PYTHON $PY_VER ($PYTHON_PATH)"\n'
+        'if [ "${PY_VER##*.}" -lt "$MIN_VER" ]; then\n'
+        '    echo "[!] 需要 Python 3.11+，当前 $PY_VER"\n'
+        '    exit 1\n'
+        'fi\n'
         '\n'
         '# Step 2: 复制文件\n'
-        'echo "[2/5] 安装程序文件..."\n'
+        'echo "[2/6] 安装程序文件..."\n'
         'rm -rf "$APP_DIR" 2>/dev/null || true\n'
-        'cp -r "$SCRIPT_DIR/usr/local/geometry-ai" "/usr/local/"\n'
+        'cp -r "$SCRIPT_DIR/app" "$APP_DIR"\n'
         'mkdir -p "$APP_DIR/chroma_db" "$APP_DIR/logs"\n'
         'chmod -R 755 "$APP_DIR"\n'
         '\n'
@@ -200,7 +229,7 @@ def generate_scripts():
         'echo "  [ok] 文件已安装到 $APP_DIR"\n'
         '\n'
         '# Step 3: pip 依赖\n'
-        'echo "[3/5] 安装 Python 依赖..."\n'
+        'echo "[3/6] 安装 Python 依赖..."\n'
         'MIRRORS="https://mirrors.aliyun.com/pypi/simple/ https://pypi.tuna.tsinghua.edu.cn/simple/"\n'
         'for mirror in $MIRRORS; do\n'
         '    $PYTHON -m pip install -i $mirror -r "$APP_DIR/requirements.txt" -q 2>/dev/null && break\n'
@@ -208,7 +237,7 @@ def generate_scripts():
         'echo "  [ok] 依赖安装完成"\n'
         '\n'
         '# Step 4: systemd 服务\n'
-        'echo "[4/5] 注册 systemd 服务..."\n'
+        'echo "[4/6] 注册 systemd 服务..."\n'
         'cat > /etc/systemd/system/geometry-ai.service << SERVICEEOF\n'
         '[Unit]\n'
         'Description=Geometry AI Server\n'
@@ -242,7 +271,7 @@ def generate_scripts():
         'done\n'
         '\n'
         '# Step 5: 重建索引\n'
-        'echo "[5/5] 重建知识库索引..."\n'
+        'echo "[6/6] 重建知识库索引..."\n'
         'ARTICLE_COUNT=$(find "$APP_DIR/articles" -maxdepth 1 -name \'*.md\' | wc -l)\n'
         'echo "  文章文件数: $ARTICLE_COUNT"\n'
         'if [ "$ARTICLE_COUNT" -gt 0 ]; then\n'
@@ -272,8 +301,82 @@ def generate_scripts():
         encoding="utf-8"
     )
     install_sh.chmod(install_sh.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP)
+
+    # uninstall.sh
+    uninstall_sh = build_root / "uninstall.sh"
+    uninstall_sh.write_text(
+        '#!/bin/bash\n'
+        '# Geometry AI Server - Ubuntu 卸载脚本 v' + version + '\n'
+        '# 不用 set -e，apt 等命令可能返回非零但实际成功\n'
+        '\n'
+        'APP_DIR="/usr/local/geometry-ai"\n'
+        '\n'
+        'echo ""\n'
+        'echo "  ========================================================="\n'
+        'echo "      Geometry AI Server v' + version + ' - 卸载"\n'
+        'echo "  ========================================================="\n'
+        'echo ""\n'
+        '\n'
+        'if [ "$EUID" -ne 0 ]; then\n'
+        '    echo "[!] 请使用 sudo 运行: sudo bash uninstall.sh"\n'
+        '    exit 1\n'
+        'fi\n'
+        '\n'
+        'echo "[1/4] 停止服务..."\n'
+        'systemctl stop geometry-ai 2>/dev/null || true\n'
+        'systemctl disable geometry-ai 2>/dev/null || true\n'
+        'echo "  [ok] 服务已停止"\n'
+        '\n'
+        'echo "[2/4] 删除 systemd 服务文件..."\n'
+        'rm -f /etc/systemd/system/geometry-ai.service\n'
+        'systemctl daemon-reload\n'
+        'echo "  [ok] systemd 已清理"\n'
+        '\n'
+        'echo "[3/4] 卸载 pip 依赖..."\n'
+        'if [ -f "$APP_DIR/requirements.txt" ]; then\n'
+        '    echo "  以下依赖将被卸载:"\n'
+        '    cat "$APP_DIR/requirements.txt"\n'
+        '    read -p "  确认卸载这些 pip 包？(y/N): " CONFIRM_PIP\n'
+        '    if [ "$CONFIRM_PIP" = "y" ] || [ "$CONFIRM_PIP" = "Y" ]; then\n'
+        '        pip3 uninstall -y -r "$APP_DIR/requirements.txt" 2>/dev/null || true\n'
+        '        echo "  [ok] pip 依赖已卸载"\n'
+        '    else\n'
+        '        echo "  跳过 pip 依赖卸载"\n'
+        '    fi\n'
+        'else\n'
+        '    echo "  跳过（未找到 requirements.txt）"\n'
+        'fi\n'
+        '\n'
+        'read -p "是否删除向量数据库和日志？(y/N): " CONFIRM_DATA\n'
+        'if [ "$CONFIRM_DATA" = "y" ] || [ "$CONFIRM_DATA" = "Y" ]; then\n'
+        '    rm -rf "$APP_DIR/chroma_db" 2>/dev/null || true\n'
+        '    rm -rf "$APP_DIR/logs" 2>/dev/null || true\n'
+        '    rm -rf "$APP_DIR/models_cache" 2>/dev/null || true\n'
+        '    echo "  [ok] 运行时数据已删除"\n'
+        'else\n'
+        '    echo "  保留运行时数据"\n'
+        'fi\n'
+        '\n'
+        'read -p "是否删除整个安装目录 $APP_DIR？(y/N): " CONFIRM_DIR\n'
+        'if [ "$CONFIRM_DIR" = "y" ] || [ "$CONFIRM_DIR" = "Y" ]; then\n'
+        '    rm -rf "$APP_DIR"\n'
+        '    echo "  [ok] 安装目录已删除"\n'
+        'else\n'
+        '    echo "  保留安装目录"\n'
+        'fi\n'
+        '\n'
+        'echo ""\n'
+        'echo "  ========================================================="\n'
+        'echo "  [ok] 卸载完成！"\n'
+        'echo "  ========================================================="\n'
+        'echo ""\n',
+        encoding="utf-8"
+    )
+    uninstall_sh.chmod(uninstall_sh.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP)
+
     print("  + install.sh (路由已修复为 /v1/vector/rebuild)")
     print("  + fix_index.sh (路由已修复为 /v1/vector/rebuild)")
+    print("  + uninstall.sh")
 
 def create_deb():
     """创建 DEBIAN 控制文件"""
@@ -321,23 +424,43 @@ def create_deb():
     print(f"  + DEBIAN/control (版本 {version})")
 
 def create_zip():
-    """打包为 zip"""
+    """打包为 zip（扁平结构，install.sh 在根目录）"""
     version = get_version()
     zip_name = f"geometry-ai-server_ubuntu_v{version}_amd64.zip"
     zip_path = PROJECT_ROOT / zip_name
+    prefix = f"geometry-ai-server_{version}_amd64"
 
     import zipfile
     with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
-        for file in sorted(BUILD_DIR.rglob("*")):
+        app_build = BUILD_DIR / "usr" / "local" / "geometry-ai"
+
+        # install.sh、fix_index.sh 放在根目录
+        for script in ["install.sh", "fix_index.sh", "uninstall.sh"]:
+            sp = app_build / script
+            if sp.exists():
+                zf.write(sp, f"{prefix}/{script}")
+                print(f"  + {script} (根目录)")
+
+        # DEBIAN/ 放在根目录（供 dpkg-deb 构建用）
+        deb_dir = BUILD_DIR / "DEBIAN"
+        if deb_dir.exists():
+            for f in sorted(deb_dir.rglob("*")):
+                if f.is_file():
+                    zf.write(f, f"{prefix}/DEBIAN/{f.name}")
+
+        # 程序文件放在 app/ 子目录
+        for file in sorted(app_build.rglob("*")):
             if file.is_file():
-                # 跳过 __pycache__
                 if "__pycache__" in str(file) or file.suffix == ".pyc":
                     continue
-                arcname = f"geometry-ai-server_{version}_amd64/{file.relative_to(BUILD_DIR)}"
-                zf.write(file, arcname)
+                if file.name == ".DS_Store":
+                    continue
+                rel = file.relative_to(app_build)
+                zf.write(file, f"{prefix}/app/{rel}")
 
     size = zip_path.stat().st_size
     print(f"\n  打包完成: {zip_name} ({size/1024/1024:.1f} MB)")
+    print(f"  安装方式: unzip {zip_name} && sudo bash {prefix}/install.sh")
 
 def build():
     print(f"=== Geometry AI Linux 构建器 v{get_version()} ===\n")

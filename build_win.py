@@ -1,203 +1,270 @@
 #!/usr/bin/env python3
-"""
-Geometry AI Server - Windows 安装包构建脚本
-用法: python3 build_win.py
-"""
-import os
-import sys
-import shutil
-import zipfile
+"""Windows 全自动安装包构建脚本"""
+import shutil, os
 from pathlib import Path
-from datetime import datetime
 
-PROJECT_ROOT = Path(__file__).parent.resolve()
+PROJECT_ROOT = Path(__file__).parent
+APP_DIR = PROJECT_ROOT / "app"
 BUILD_DIR = PROJECT_ROOT / "build_win"
-WIN_DIR = PROJECT_ROOT / "windows"
 
-# Python 源码文件
-PY_FILES = [
+PYTHON_FILES = [
     "server.py", "config.py", "knowledge.py", "models.py",
     "prompts.py", "tools.py", "stream.py", "admin_routes.py",
     "share_routes.py", "auto_teach.py", "start.py", "version.py",
 ]
 
-# 数据目录
-DATA_DIRS = ["articles", "chroma_db", "templates"]
+def get_version():
+    vf = APP_DIR / "version.py"
+    for line in vf.read_text(encoding="utf-8").splitlines():
+        if line.strip().startswith("VERSION"):
+            return line.split('"')[1]
+    return "unknown"
 
-# Python 依赖
-REQUIREMENTS = [
-    "openai", "flask", "flask-cors", "chromadb", "python-dotenv", "pymysql",
-]
-
-
-def copy_app_files():
-    """复制应用文件到 build_win/app/"""
-    app_dir = BUILD_DIR / "app"
-    app_dir.mkdir(parents=True, exist_ok=True)
-
-    print("[复制] Python 源码文件 -> build_win/app/")
-    for py_file in PY_FILES:
-        src = PROJECT_ROOT / py_file
-        dst = app_dir / py_file
+def copy_source():
+    app_target = BUILD_DIR / "app"
+    app_target.mkdir(parents=True, exist_ok=True)
+    for f in PYTHON_FILES:
+        src = APP_DIR / f
         if src.exists():
-            shutil.copy2(src, dst)
-            print(f"  {py_file}")
-        else:
-            print(f"  [跳过] {py_file} (不存在)")
-
-    print("[复制] 数据目录 -> build_win/app/")
-    for data_dir in DATA_DIRS:
-        src = PROJECT_ROOT / data_dir
-        dst = app_dir / data_dir
+            shutil.copy2(src, app_target / f)
+            print(f"  + {f}")
+    for d in ["articles", "templates"]:
+        src = APP_DIR / d
+        dst = app_target / d
         if src.exists():
-            shutil.copytree(src, dst, dirs_exist_ok=True)
-            print(f"  {data_dir}/")
-        else:
-            print(f"  [跳过] {data_dir}/ (不存在)")
+            if dst.exists():
+                shutil.rmtree(dst)
+            shutil.copytree(src, dst)
+            count = sum(1 for _ in dst.rglob("*") if _.is_file())
+            print(f"  + {d}/ ({count} files)")
+    for f in ["requirements.txt", ".env.example"]:
+        src = APP_DIR / f
+        if src.exists():
+            shutil.copy2(src, app_target / f)
 
-    # 复制配置文件
-    env_example = PROJECT_ROOT / ".env.example"
-    if env_example.exists():
-        shutil.copy2(env_example, app_dir / ".env.example")
-        print("[复制] .env.example")
+def generate_scripts():
+    version = get_version()
+    V = version  # shorthand
 
+    # install.bat
+    (BUILD_DIR / "install.bat").write_text(
+r"""@echo off
+chcp 65001 >nul 2>&1
+echo.
+echo  =========================================================
+echo      Geometry AI Server - Windows 安装
+echo  =========================================================
+echo.
 
-def copy_win_scripts():
-    """复制 windows/ 目录下的脚本到 build_win/"""
-    print("[复制] Windows 脚本 -> build_win/")
-    for f in WIN_DIR.iterdir():
-        if f.is_file():
-            shutil.copy2(f, BUILD_DIR / f.name)
-            print(f"  {f.name}")
+:: 检查管理员权限
+net session >nul 2>&1 || (
+    echo [!] 请右键"以管理员身份运行"
+    pause
+    exit /b 1
+)
 
+set "APP_DIR=%ProgramFiles%\GeometryAI"
+set "SCRIPT_DIR=%~dp0"
 
-def generate_requirements():
-    """生成 requirements.txt"""
-    req_file = BUILD_DIR / "app" / "requirements.txt"
-    print("[生成] requirements.txt")
-    with open(req_file, "w", encoding="utf-8") as f:
-        f.write("# Geometry AI Server - Python 依赖\n")
-        f.write(f"# 生成时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
-        for req in REQUIREMENTS:
-            f.write(f"{req}\n")
+set /p DEEPSEEK_KEY="  输入 DeepSeek API Key (必填): "
+set /p SILICONFLOW_KEY="  输入 SiliconFlow API Key (可选,直接回车跳过): "
+echo.
 
+:: Step 1: Python 3.11+
+echo [1/6] 检查 Python 环境...
+set "PYTHON="
+for %%V in (3.13 3.12 3.11) do (
+    where python%%V >nul 2>&1 && (
+        set "PYTHON=python%%V"
+        goto :found_python
+    )
+)
+where python >nul 2>&1 && (
+    for /f "tokens=2 delims= " %%V in ('python --version 2^>^&1') do (
+        set "PYTHON=python"
+        goto :found_python
+    )
+)
+:found_python
+if "%PYTHON%"=="" (
+    echo [!] 未找到 Python 3.11+
+    echo     请从 https://www.python.org/downloads/ 下载安装
+    echo     安装时勾选 "Add Python to PATH"
+    pause
+    exit /b 1
+)
+for /f "tokens=2" %%V in ('%PYTHON% --version 2^>^&1') do echo   Python: %PYTHON% %%V
 
-def generate_readme():
-    """生成安装说明"""
-    readme_file = BUILD_DIR / "README.txt"
-    print("[生成] README.txt")
-    content = """\
-============================================================
-Geometry AI Server - Windows 安装说明
-============================================================
+:: Step 2: 安装文件
+echo [2/6] 安装程序文件...
+if exist "%APP_DIR%" rd /s /q "%APP_DIR%"
+xcopy "%SCRIPT_DIR%app" "%APP_DIR%\\" /E /I /Q /Y >nul
+mkdir "%APP_DIR%\chroma_db" 2>nul
+mkdir "%APP_DIR%\logs" 2>nul
+echo   [ok] 文件已安装到 %APP_DIR%
 
-【全自动安装】
-  1. 解压 GeometryAI-Win-Build.zip 到任意目录
-  2. 双击 install_win.bat
-  3. 脚本会自动：检查 Python、安装依赖、配置 API Key、注册开机自启
-  4. 首次运行需要输入 API Key（在 https://platform.deepseek.com 获取）
+:: 写入 .env
+copy "%APP_DIR%\.env.example" "%APP_DIR%\.env" >nul
+if not "%DEEPSEEK_KEY%"=="" (
+    powershell -Command "(gc '%APP_DIR%\.env') -replace 'GAI_API_KEY=在此', 'GAI_API_KEY=%DEEPSEEK_KEY%' | sc '%APP_DIR%\.env'"
+)
+if not "%SILICONFLOW_KEY%"=="" (
+    powershell -Command "(gc '%APP_DIR%\.env') -replace 'SILICONFLOW_API_KEY=', 'SILICONFLOW_API_KEY=%SILICONFLOW_KEY%' | sc '%APP_DIR%\.env'"
+)
 
-【手动安装】
-  如果全自动安装失败，请按以下步骤操作：
+:: Step 3: pip 依赖
+echo [3/6] 安装 Python 依赖...
+%PYTHON% -m pip install --upgrade pip -q 2>nul
+%PYTHON% -m pip install -r "%APP_DIR%\requirements.txt" -q 2>nul
+echo   [ok] 依赖安装完成
 
-一、环境要求
-------------
-- Windows 10/11
-- Python 3.11+（安装时勾选 "Add Python to PATH"）
+:: Step 4: 注册服务
+echo [4/6] 注册 Windows 服务...
+sc stop GeometryAI >nul 2>&1
+sc delete GeometryAI >nul 2>&1
 
-二、安装依赖
-------------
-  cd app
-  pip install -r requirements.txt
+:: 优先用 NSSM，否则用注册表启动项
+where nssm >nul 2>&1
+if errorlevel 1 (
+    echo   使用注册表启动项方式...
+    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v GeometryAI /t REG_SZ /d "%PYTHON% %APP_DIR%\server.py" /f >nul
+    echo   [ok] 已添加注册表启动项
+    start "" /D "%APP_DIR%" %PYTHON% server.py
+) else (
+    nssm install GeometryAI "%PYTHON%" "%APP_DIR%\server.py"
+    nssm set GeometryAI AppDirectory "%APP_DIR%"
+    nssm set GeometryAI DisplayName "Geometry AI Server"
+    nssm set GeometryAI Start SERVICE_AUTO_START
+    nssm start GeometryAI
+    echo   [ok] NSSM 服务已注册
+)
 
-三、配置
---------
-  复制 .env.example 为 .env，填入 API Key
+echo   等待服务启动...
+timeout /t 10 /nobreak >nul
 
-四、启动
---------
-  python server.py
+:: Step 5: 重建索引
+echo [5/6] 重建知识库索引...
+curl -s -X POST http://localhost:5000/v1/vector/rebuild >nul 2>&1
+echo   [ok] 索引重建请求已发送
 
-五、开机自启（可选）
-------------------
-  运行 install_win.bat 会自动配置
-  或手动将 start_server.bat 放到启动文件夹：
-  Win+R 输入 shell:startup
+:: Step 6: 完成
+echo.
+echo  =========================================================
+echo  [ok] 安装完成！
+echo  =========================================================
+echo.
+echo   管理页面: http://localhost:5000/admin
+echo   健康检查: http://localhost:5000/health
+echo   配置文件: %APP_DIR%\.env
+echo.
+echo   服务管理: sc start/stop GeometryAI 或 nssm start/stop GeometryAI
+echo   卸载: 运行 uninstall.bat
+echo.
+pause
+""", encoding="utf-8")
+    print("  + install.bat")
 
-【管理界面】
-  http://localhost:5000/admin
+    # fix_index.bat
+    (BUILD_DIR / "fix_index.bat").write_text(
+r"""@echo off
+chcp 65001 >nul 2>&1
+echo [1] 检查服务状态...
+curl -s http://localhost:5000/health >nul 2>&1
+if errorlevel 1 (
+    echo [!] 服务未运行，请先启动服务
+    pause
+    exit /b 1
+)
+echo   [ok] 服务运行中
+echo [2] 触发索引重建...
+curl -s -X POST http://localhost:5000/v1/vector/rebuild
+echo.
+echo   [ok] 索引重建请求已发送
+echo   刷新管理页面: http://localhost:5000/admin
+pause
+""", encoding="utf-8")
+    print("  + fix_index.bat")
 
-【聊天界面】
-  http://localhost:8080
+    # uninstall.bat
+    (BUILD_DIR / "uninstall.bat").write_text(
+r"""@echo off
+chcp 65001 >nul 2>&1
+echo.
+echo      Geometry AI Server - 卸载
+echo.
 
-  首次打开需要：
-  1. 创建管理员账号（注册）
-  2. 登录后，点击左下角头像 → Settings（设置）
-  3. 左侧选 Connections（连接）
-  4. 确认 OpenAI API 连接：
-     - URL: http://localhost:5000/v1
-     - Key: 随便填（如 sk-123）
-  5. 回到聊天页面，点左上角模型下拉框
-  6. 选择 deepseek-v4-pro（主力模型）或 deepseek-v4-flash（快速模型）
-  7. 开始聊天！
+set "APP_DIR=%ProgramFiles%\GeometryAI"
 
-【停止服务】
-  双击 uninstall_win.bat
+echo [1/4] 停止服务...
+nssm stop GeometryAI >nul 2>&1
+nssm remove GeometryAI confirm >nul 2>&1
+sc stop GeometryAI >nul 2>&1
+sc delete GeometryAI >nul 2>&1
+reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v GeometryAI /f >nul 2>&1
+echo   [ok] 服务已停止
 
-【卸载】
-  1. 双击 uninstall_win.bat
-  2. 删除安装目录
-"""
-    with open(readme_file, "w", encoding="utf-8") as f:
-        f.write(content)
+set /p CONFIRM="是否删除运行时数据？(y/N): "
+if /i "%CONFIRM%"=="y" (
+    rd /s /q "%APP_DIR%\chroma_db" 2>nul
+    rd /s /q "%APP_DIR%\logs" 2>nul
+    echo   [ok] 运行时数据已删除
+)
 
+set /p CONFIRM2="是否删除整个安装目录？(y/N): "
+if /i "%CONFIRM2%"=="y" (
+    rd /s /q "%APP_DIR%"
+    echo   [ok] 安装目录已删除
+)
+
+echo.
+echo [ok] 卸载完成
+pause
+""", encoding="utf-8")
+    print("  + uninstall.bat")
 
 def create_zip():
-    """打包为 zip（内部带 GeometryAI-Win-Build/ 目录前缀）"""
-    zip_name = "GeometryAI-Win-Build.zip"
+    version = get_version()
+    zip_name = f"GeometryAI-Win-Build-v{version}.zip"
     zip_path = PROJECT_ROOT / zip_name
-    folder_name = "GeometryAI-Win-Build"
+    prefix = f"GeometryAI-Win-Build-v{version}"
 
-    print(f"\n[打包] 创建 {zip_name} ...")
-    with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
-        for file_path in BUILD_DIR.rglob("*"):
-            if file_path.is_file():
-                arcname = Path(folder_name) / file_path.relative_to(BUILD_DIR)
-                zf.write(file_path, arcname)
+    import zipfile
+    with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
+        for script in ["install.bat", "fix_index.bat", "uninstall.bat"]:
+            sp = BUILD_DIR / script
+            if sp.exists():
+                zf.write(sp, f"{prefix}/{script}")
+                print(f"  + {script}")
+        app_build = BUILD_DIR / "app"
+        for file in sorted(app_build.rglob("*")):
+            if file.is_file():
+                if "__pycache__" in str(file) or file.suffix == ".pyc":
+                    continue
+                if file.name == ".DS_Store":
+                    continue
+                rel = file.relative_to(app_build)
+                zf.write(file, f"{prefix}/app/{rel}")
 
-    size_mb = zip_path.stat().st_size / (1024 * 1024)
-    print(f"[完成] 打包完成: {zip_path} ({size_mb:.1f} MB)")
+    size = zip_path.stat().st_size
+    print(f"\n  打包完成: {zip_name} ({size/1024/1024:.1f} MB)")
+    print(f"  安装: 解压后右键 install.bat -> 以管理员身份运行")
 
-
-def main():
-    print("=" * 60)
-    print("Geometry AI Server - Windows 安装包构建")
-    print(f"构建时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print("=" * 60)
-    print()
-
-    # 清理旧构建
+def build():
+    print(f"=== Geometry AI Windows 构建器 v{get_version()} ===\n")
     if BUILD_DIR.exists():
         shutil.rmtree(BUILD_DIR)
-    BUILD_DIR.mkdir(parents=True, exist_ok=True)
+    BUILD_DIR.mkdir(parents=True)
 
-    copy_app_files()
-    copy_win_scripts()
-    generate_requirements()
-    generate_readme()
+    print("[1/3] 复制源码...")
+    copy_source()
+
+    print("\n[2/3] 生成安装脚本...")
+    generate_scripts()
+
+    print("\n[3/3] 打包 zip...")
     create_zip()
 
-    print()
-    print("=" * 60)
-    print("构建完成！")
-    print()
-    print("安装方式:")
-    print("  1. 解压 GeometryAI-Win-Build.zip")
-    print("  2. 双击 install_win.bat")
-    print("  3. 输入 API Key")
-    print("  4. 等待安装完成，浏览器自动打开管理界面")
-    print("=" * 60)
-
+    print("\n=== 构建完成 ===")
 
 if __name__ == "__main__":
-    main()
+    build()
