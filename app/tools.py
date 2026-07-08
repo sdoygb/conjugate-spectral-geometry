@@ -567,6 +567,102 @@ ARTICLE_TOOLS = [
                 "required": ["topic", "content"]
             }
         }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "submit_to_master",
+            "description": "提交候选公式到主库AI进行圆满验证。本地自检通过后调用此工具，主库AI会独立从公理重推导验证。返回提交ID，可用 check_master_status 查询验证结果。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "formula_name": {
+                        "type": "string",
+                        "description": "公式名称/标题，如'光子零质量定理'"
+                    },
+                    "formula_content": {
+                        "type": "string",
+                        "description": "公式的数学表达式和完整说明"
+                    },
+                    "derivation_chain": {
+                        "type": "string",
+                        "description": "推导链，标注每步引用的公理/定理和角度参数(θ_M, θ_C, θ_I)。格式：步骤1: 从公理X出发...；步骤2: ..."
+                    },
+                    "external_anchors": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "外部锚点列表。唯一合法值: 'ℰ'（单一物理映射）。Born规则、物理识别点等不是独立假设，必须从ℰ推导入库后才能用。如果推导用了ℰ映射，填[\"ℰ\"]；纯数学推导填[]。",
+                        "default": []
+                    },
+                    "topology_class": {
+                        "type": "string",
+                        "enum": ["A0", "A1"],
+                        "description": "拓扑分类（必填）。A0=局部代数命题（Berry相位=0，如代数恒等式、群论计算、微积分命题）。A1=整体拓扑命题（Berry相位=2π，如叶空间拓扑、Hopf纤维化、Euler类等需要整体几何结构的定理）。A1类定理不允许依赖外部物理输入。"
+                    },
+                    "local_berry_phase": {
+                        "type": "number",
+                        "description": "本地自检的Berry相位值（弧度），如果已知"
+                    },
+                    "local_n_value": {
+                        "type": "integer",
+                        "description": "本地自检的n值（1=初圆满, 2=中圆满, 3=上圆满）"
+                    }
+                },
+                "required": ["formula_name", "formula_content", "derivation_chain", "topology_class"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "check_master_status",
+            "description": "查询主库验证状态。提交公式后，用此工具查询验证结果（通过/依赖不足/驳回）和主库真理层数量。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "submission_id": {
+                        "type": "string",
+                        "description": "提交时返回的ID（可选，不填则只查询主库状态和真理层数量）"
+                    }
+                },
+                "required": []
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "withdraw_submission",
+            "description": "撤回你提交到主库的候选公式。只能撤回你自己提交的公式，不能撤回其他AI的提交。只能撤回未入库的公式（pending/waiting/processing状态），已通过验证入库的公式不可撤回。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "submission_id": {
+                        "type": "string",
+                        "description": "要撤回的提交ID（submit_to_master返回的ID）"
+                    }
+                },
+                "required": ["submission_id"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "sync_master_truth",
+            "description": "从主库同步已验证的绝对真理到本地。同步后，这些已验证公式可以在推导中作为合法起点引用。建议在开始推导新公式前先同步一次。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "force": {
+                        "type": "boolean",
+                        "description": "是否强制同步（忽略时间间隔），默认false",
+                        "default": False
+                    }
+                },
+                "required": []
+            }
+        }
     }
 ]
 
@@ -1508,6 +1604,263 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
             if result["success"]:
                 return f"已记录知识补丁：{topic[:60]}"
             return f"知识补丁记录失败: {result.get('error', '未知错误')}"
+
+        elif name == "submit_to_master":
+            # 提交候选公式到主库AI验证
+            try:
+                from master_client import get_master_client
+                client = get_master_client()
+                if not client.is_available:
+                    return "主库AI不可用（MASTER_AI_URL未配置或requests未安装），无法提交。本地推导结果仍然有效。"
+
+                formula_name = arguments.get("formula_name", "")
+                formula_content = arguments.get("formula_content", "")
+                derivation_chain = arguments.get("derivation_chain", "")
+
+                # 本地自检结果
+                local_verification = {}
+                if "local_berry_phase" in arguments:
+                    local_verification["berry_phase"] = arguments["local_berry_phase"]
+                if "local_n_value" in arguments:
+                    local_verification["n_value"] = arguments["local_n_value"]
+                    local_verification["is_consummated"] = arguments["local_n_value"] >= 1
+                    levels = {1: "初圆满", 2: "中圆满", 3: "上圆满"}
+                    local_verification["level"] = levels.get(arguments["local_n_value"], "未知")
+
+                # 外部锚点（L2桥接假设）
+                external_anchors = arguments.get("external_anchors", [])
+
+                # 拓扑分类（必填）
+                topology_class = arguments.get("topology_class", "")
+                if topology_class not in ("A0", "A1"):
+                    return {
+                        "error": f"topology_class必须为A0或A1，收到: {topology_class}",
+                        "hint": "A0=局部代数(Berry相位=0), A1=整体拓扑(Berry相位=2π)",
+                    }
+
+                submission_id = client.submit_formula(
+                    formula_name=formula_name,
+                    formula_content=formula_content,
+                    derivation_chain=derivation_chain,
+                    local_verification=local_verification,
+                    external_anchors=external_anchors,
+                    topology_class=topology_class,
+                )
+
+                if submission_id:
+                    return (
+                        f"✓ 候选公式已提交到主库AI验证\n"
+                        f"  公式: {formula_name}\n"
+                        f"  提交ID: {submission_id}\n"
+                        f"  状态: 待验证\n"
+                        f"  \n"
+                        f"  主库AI将进行三重检查:\n"
+                        f"  1. Berry回路闭合检测\n"
+                        f"  2. §9.6证伪条件检查\n"
+                        f"  3. 独立推导复现\n"
+                        f"  \n"
+                        f"  使用 check_master_status 工具查询验证结果。"
+                    )
+                else:
+                    return f"提交失败: 无法连接主库AI ({client.url})"
+            except Exception as e:
+                return f"提交到主库失败: {e}"
+
+        elif name == "check_master_status":
+            # 查询主库验证状态
+            try:
+                from master_client import get_master_client
+                client = get_master_client()
+                if not client.is_available:
+                    return "主库AI不可用"
+
+                submission_id = arguments.get("submission_id", "")
+
+                if submission_id:
+                    # 查询特定提交的状态
+                    result = client.check_submission(submission_id)
+                    if result is None:
+                        return f"未找到提交ID: {submission_id}"
+
+                    status = result.get("status", "unknown")
+                    status_map = {
+                        "pending": "⏳ 待验证",
+                        "promoted": "✓ 验证通过，已入库",
+                        "rejected": "✗ 验证未通过",
+                        "dependency_gap": "⚠ 依赖不足（需要补全前置定理）",
+                        "waiting_dependencies": "⏸ 等待依赖（已达最大重试）",
+                        "duplicate": "⊘ 重复提交",
+                    }
+                    status_text = status_map.get(status, status)
+
+                    formula_name = result.get("formula_name", "")
+                    output = f"提交ID: {submission_id}\n"
+                    output += f"公式: {formula_name}\n"
+                    output += f"状态: {status_text}\n"
+
+                    # 显示三重检查结果摘要
+                    vs = result.get("verification_summary", {})
+                    if vs:
+                        output += f"\n--- 三重检查结果 ---\n"
+                        berry_passed = vs.get("berry_passed", False)
+                        berry_skipped = vs.get("berry_skipped", False)
+                        berry_level = vs.get("berry_check", "")
+                        berry_n = vs.get("berry_n_value", 0)
+                        if berry_skipped:
+                            output += "阶段1 Berry回路: ⊙ 跳过（推导链缺少角度参数，由独立推导验证）\n"
+                        else:
+                            output += f"阶段1 Berry回路: {'✓ 通过' if berry_passed else '✗ 未通过'}"
+                            if berry_level:
+                                output += f" ({berry_level}, n={berry_n})"
+                            output += "\n"
+
+                        falsify_passed = vs.get("falsification_passed", False)
+                        output += f"阶段2 证伪检查: {'✓ 通过' if falsify_passed else '✗ 未通过'}\n"
+
+                        if vs.get("derivation_skipped", False):
+                            output += "阶段3 独立推导: ⊙ 跳过（LLM不可用）\n"
+                        else:
+                            deriv_ok = vs.get("derivation_reproduced", False)
+                            output += f"阶段3 独立推导: {'✓ 复现成功' if deriv_ok else '✗ 复现失败'}\n"
+
+                        # 如果推导依赖了外部假设，显示警告
+                        used = vs.get("used_anchors", [])
+                        if used and deriv_ok:
+                            output += f"⚠ 推导依赖外部假设: {', '.join(used)}（非绝对真理，已驳回）\n"
+
+                    # 显示驳回原因
+                    if status == "rejected":
+                        reason = result.get("rejection_reason", "")
+                        if reason:
+                            output += f"\n驳回原因: {reason[:300]}\n"
+
+                    # 显示依赖缺口
+                    elif status == "dependency_gap" or status == "waiting_dependencies":
+                        gap = result.get("dependency_gap", {})
+                        if isinstance(gap, str):
+                            import json as _json
+                            try:
+                                gap = _json.loads(gap)
+                            except:
+                                gap = {}
+                        missing = gap.get("missing_dependencies", [])
+                        if missing:
+                            output += f"\n缺失依赖 ({len(missing)} 项):\n"
+                            for i, dep in enumerate(missing, 1):
+                                output += f"  {i}. {dep}\n"
+                        guidance = gap.get("guidance", "")
+                        if guidance:
+                            output += f"\n指导建议: {guidance}\n"
+
+                    # 显示主库消息
+                    message = result.get("message", "")
+                    if message:
+                        output += f"\n主库消息: {message[:300]}\n"
+
+                    elif status == "promoted":
+                        output += "\n公式已通过验证，成为绝对真理。\n"
+
+                    return output
+                else:
+                    # 不带 submission_id 时，列出所有提交的状态摘要
+                    result = client._get("/v1/master/pending", timeout=10)
+                    if result is None:
+                        return "无法获取主库状态"
+
+                    pending_list = result.get("pending", [])
+                    if not pending_list:
+                        return "主库待验证队列为空"
+
+                    output = f"主库提交记录 ({len(pending_list)} 条):\n\n"
+                    for item in pending_list:
+                        sid = item.get("submission_id", "")
+                        name = item.get("formula_name", "?")[:30]
+                        st = item.get("status", "?")
+                        status_emoji = {
+                            "pending": "⏳",
+                            "promoted": "✓",
+                            "rejected": "✗",
+                            "dependency_gap": "⚠",
+                            "waiting_dependencies": "⏸",
+                            "duplicate": "⊘",
+                        }.get(st, "?")
+                        output += f"  {status_emoji} {sid}  {name:30s}  {st}\n"
+
+                    # 主库统计
+                    master_status = client.get_master_status()
+                    if master_status:
+                        ms = master_status.get("master_db", {})
+                        output += f"\n主库统计: 已验证={ms.get('master_formulas_count',0)} 待验证={ms.get('pending_count',0)} 存疑={ms.get('suspended_count',0)}\n"
+                        output += f"调度器: {'运行中' if master_status.get('scheduler_running') else '停止'}\n"
+
+                    return output
+            except Exception as e:
+                return f"查询主库状态失败: {e}"
+
+        elif name == "withdraw_submission":
+            # 撤回已提交的候选公式
+            try:
+                from master_client import get_master_client
+                client = get_master_client()
+                if not client.is_available:
+                    return "主库AI不可用，无法撤回"
+
+                submission_id = arguments.get("submission_id", "")
+                if not submission_id:
+                    return "错误: 必须提供 submission_id"
+
+                result = client.withdraw_submission(submission_id)
+                if result is None:
+                    return f"撤回失败: 无法连接主库AI"
+
+                status = result.get("status", "")
+                if status == "withdrawn":
+                    formula_name = result.get("formula_name", "")
+                    prev_status = result.get("previous_status", "")
+                    return (
+                        f"✓ 撤回成功\n"
+                        f"  公式: {formula_name}\n"
+                        f"  提交ID: {submission_id}\n"
+                        f"  原状态: {prev_status}\n"
+                        f"  \n"
+                        f"  该提交已从主库pending队列中移除。"
+                    )
+                else:
+                    message = result.get("message", "未知原因")
+                    return (
+                        f"✗ 撤回失败\n"
+                        f"  提交ID: {submission_id}\n"
+                        f"  原因: {message}"
+                    )
+            except Exception as e:
+                return f"撤回失败: {e}"
+
+        elif name == "sync_master_truth":
+            # 从主库同步真理层
+            try:
+                from master_client import get_master_client
+                client = get_master_client()
+                if not client.is_available:
+                    return "主库AI不可用，无法同步真理层"
+
+                force = arguments.get("force", False)
+                formulas = client.fetch_truth(knowledge_base=vector_kb, force=force)
+
+                if formulas:
+                    names = [f.get("formula_name", "?") for f in formulas]
+                    return (
+                        f"✓ 真理层同步完成\n"
+                        f"  已验证绝对真理: {len(formulas)} 个\n"
+                        f"  公式列表: {', '.join(names[:10])}{'...' if len(names) > 10 else ''}\n"
+                        f"  \n"
+                        f"  这些已验证公式已存入本地 master_truth collection，\n"
+                        f"  可以在推导中作为合法起点引用。\n"
+                        f"  主库只接受绝对真理——不依赖任何未验证外部假设。"
+                    )
+                else:
+                    return "主库真理层为空（尚无已验证公式），或同步失败"
+            except Exception as e:
+                return f"同步真理层失败: {e}"
 
         else:
             return f"未知工具: {name}"

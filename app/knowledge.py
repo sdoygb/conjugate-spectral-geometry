@@ -300,6 +300,7 @@ class VectorKnowledgeBase:
         self.corrections_collection = None
         self.antipatterns_collection = None
         self.patches_collection = None
+        self.master_truth_collection = None  # 主库下发的已验证真理（只读）
         self._initialized = False
         self._articles_count = 0
         self._learned_count = 0
@@ -436,6 +437,7 @@ class VectorKnowledgeBase:
                 ("antipatterns", "反模式库"),
                 ("patches", "教学知识补丁"),
                 ("personal", "个人数据：性格、感情、想法、记忆"),
+                ("master_truth", "主库下发的已验证真理（只读，不可修改）"),
             ]
 
             for col_name, col_desc in collections_config:
@@ -1093,6 +1095,50 @@ class VectorKnowledgeBase:
                 logger.error(f"[VECTOR] personal 检索失败: {e}")
 
         return results[:top_k * 2]
+
+    def search_master_truth(self, query: str, top_k: int = 5) -> List[Dict[str, Any]]:
+        """
+        从主库真理层检索已验证公式（只读，不可修改）。
+
+        这些公式是经过主库AI三重检查验证的"绝对真理"，
+        可以作为推导的合法起点引用。
+        """
+        if not self._initialized or not self.master_truth_collection:
+            return []
+        try:
+            count = self.master_truth_collection.count()
+            if count == 0:
+                return []
+            n = min(top_k, count)
+            results = self.master_truth_collection.query(
+                query_texts=[query],
+                n_results=n
+            )
+            truths = []
+            if results and results['documents']:
+                for i, doc in enumerate(results['documents'][0]):
+                    meta = results['metadatas'][0][i] if results['metadatas'] else {}
+                    dist = results['distances'][0][i] if results['distances'] else 0.0
+                    truths.append({
+                        'text': doc,
+                        'source': 'master_truth',
+                        'metadata': meta,
+                        'distance': dist,
+                        'label': f"[绝对真理] {meta.get('formula_name', '未知')} (已验证)"
+                    })
+            return truths
+        except Exception as e:
+            logger.error(f"[VECTOR] master_truth 检索失败: {e}")
+            return []
+
+    def get_master_truth_count(self) -> int:
+        """获取主库真理层数量"""
+        if not self._initialized or not self.master_truth_collection:
+            return 0
+        try:
+            return self.master_truth_collection.count()
+        except Exception:
+            return 0
 
 
     def search_corrections(self, query: str, top_k: int = 5) -> List[Dict[str, Any]]:

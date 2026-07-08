@@ -1798,12 +1798,18 @@ if __name__ == '__main__':
     import subprocess as _sp
     _port = 5000
     try:
-        _port_pid = _sp.check_output(['lsof', '-ti', f':{_port}'], stderr=_sp.DEVNULL).decode().strip()
-        if _port_pid:
-            logger.warning(f"[STARTUP] 端口 {_port} 被占用，正在清理旧进程 PID={_port_pid}...")
-            os.kill(int(_port_pid.split('\n')[0]), 9)
-            time.sleep(1)
-    except (_sp.CalledProcessError, FileNotFoundError, ProcessLookupError):
+        _current_pid = os.getpid()
+        _port_pids = _sp.check_output(['lsof', '-ti', f':{_port}'], stderr=_sp.DEVNULL).decode().strip().split('\n')
+        for _pid_str in _port_pids:
+            _pid_str = _pid_str.strip()
+            if _pid_str and int(_pid_str) != _current_pid:
+                logger.warning(f"[STARTUP] 端口 {_port} 被占用，正在清理旧进程 PID={_pid_str}...")
+                try:
+                    os.kill(int(_pid_str), 9)
+                    time.sleep(2)
+                except ProcessLookupError:
+                    pass
+    except (_sp.CalledProcessError, FileNotFoundError, ProcessLookupError, ValueError):
         pass
 
     app.run(host='0.0.0.0', port=_port, debug=False)

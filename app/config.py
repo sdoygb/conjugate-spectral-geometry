@@ -210,6 +210,19 @@ TEACH_ANTIPATTERN_SIMILARITY_THRESHOLD = float(os.getenv('TEACH_ANTIPATTERN_SIMI
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+# ------------------------------------------------------------------
+# 主库AI 连接配置
+# ------------------------------------------------------------------
+# 主库AI 地址（本机或远程）
+# 本机: http://localhost:5001
+# 远程: http://192.168.3.9:5001
+MASTER_AI_URL = os.getenv('MASTER_AI_URL', 'http://localhost:5001')
+MASTER_AI_TOKEN = os.getenv('MASTER_AI_TOKEN', 'master-ai-verify')
+# 真理同步间隔（秒），默认1小时
+MASTER_TRUTH_SYNC_INTERVAL = int(os.getenv('MASTER_TRUTH_SYNC_INTERVAL', '3600'))
+# 是否在启动时自动同步真理层
+MASTER_AUTO_SYNC = os.getenv('MASTER_AUTO_SYNC', 'true').lower() == 'true'
+
 # 对话记录 SQLite 数据库路径
 CONVERSATIONS_DB_PATH = os.path.join(PROJECT_ROOT, 'conversations.db')
 
