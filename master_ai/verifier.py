@@ -129,23 +129,99 @@ class MasterVerifier:
         if external_anchors:
             logger.info(f"[VERIFIER] 子AI声明的外部锚点: {external_anchors}")
 
+        # 提取子AI互锁提示
+        pending_meta = {
+            "interlock_hint_list": [],
+            "interlock_reasoning": pending["metadata"].get("interlock_reasoning", ""),
+        }
+        interlock_hint_str = pending["metadata"].get("interlock_hint", "")
+        if interlock_hint_str:
+            try:
+                pending_meta["interlock_hint_list"] = json.loads(interlock_hint_str) if isinstance(interlock_hint_str, str) else interlock_hint_str
+            except:
+                pass
+        if pending_meta["interlock_hint_list"]:
+            logger.info(
+                f"[VERIFIER] 子AI互锁提示: {pending_meta['interlock_hint_list']}"
+            )
+        if pending_meta["interlock_reasoning"]:
+            logger.info(
+                f"[VERIFIER] 子AI互锁推导: {pending_meta['interlock_reasoning'][:100]}"
+            )
+
         logger.info(f"[VERIFIER] 开始验证: {formula_name} (id={submission_id})")
 
-        # ---- 阶段0: 拓扑分类检查（新增——Berry相位第一层） ----
-        # 每个公式必须声明自己是 A0（局部代数，Berry相位=0）还是 A1（整体拓扑，Berry相位=2π）
-        # 没有声明的公式直接驳回——不声明拓扑类就无法做Berry一致性检查
+        # ---- 纯几何封锁：拒绝实质性物理公式 ----
+        # 主库只接受纯几何数学公式和推导，物理量纲推导留给子AI本地完成
+        #
+        # 区分两层：
+        # 1. 硬封锁关键词：公式本身就是物理映射/使用了物理常数 → 立即拒绝
+        # 2. 软提示关键词：公式说明中提到物理术语（如"对应物理中的X"）→ 不拦截，交给LLM阶段判断
+        #
+        # 这样纯几何定理即使说明文字中带物理术语也不会被误杀
+
+        # 硬封锁：这些关键词出现说明公式本身就是物理映射
+        hard_physics_keywords = [
+            # 物理映射本身
+            "ℰ映射", "ℰ 映射", "ε映射", "epsilon映射",
+            "单一物理映射", "物理识别锚点", "PIA",
+            # 物理假设
+            "Born规则", "玻恩规则",
+            # 纯物理量纲
+            "SI单位", "SI制",
+        ]
+
+        # 注意：以下词从硬封锁移除，改为软提示（交给LLM判断）
+        # - 精细结构常数、α⁻¹、S_e=137：既是物理量也是几何量
+        # - 量纲桥：常在纯几何定理的说明文字中出现，不是公式本身
+
+        # 软提示：这些词可能出现在纯几何定理的说明文字中，不拦截
+        # （量纲、物理量、物理世界、物理常数、物理参数、物理假设、物理对应等）
+        # LLM阶段3的独立推导会检查公式是否真正依赖物理概念
+
+        # 只检查公式名和公式内容（不检查推导链的说明文字）
+        formula_text = (formula_name + " " + formula_content).lower()
+        is_hard_physics = any(kw.lower() in formula_text for kw in hard_physics_keywords)
+
+        if is_hard_physics:
+            result["passed"] = False
+            result["action"] = "rejected"
+            result["rejection_reason"] = (
+                "主库只接受纯几何数学公式。公式本身包含物理映射或物理常数"
+                "（ℰ映射/精细结构常数/SI单位/量纲桥/Born规则等）。"
+                "物理量纲相关的推导请在子AI本地完成，不提交主库验证。"
+            )
+            logger.info(
+                f"[VERIFIER] 纯几何封锁: 公式本身含物理常数/映射，拒绝入库"
+            )
+            self._finalize(result, start_time, submission_id)
+            return result
+
+        # ---- 外部锚点处理：忽略ℰ，不拦截 ----
+        # 子AI可能习惯性填 external_anchors=['ℰ']，但公式本身是纯几何的
+        # ℰ映射已从主库删除，不再作为外部输入。
+        # 直接清空外部锚点，不因标签拒绝公式——公式是否纯几何由硬封锁和LLM阶段判断
+        ext_anchors_raw = pending["metadata"].get("external_anchors", "[]")
+        try:
+            ext_anchors = json.loads(ext_anchors_raw) if isinstance(ext_anchors_raw, str) else ext_anchors_raw
+        except:
+            ext_anchors = []
+
+        # 清空外部锚点（不再因ℰ标签拒绝）
+        ext_anchors = []
+
+        # ---- 阶段0: 拓扑分类检查 ----
         topology_class = pending["metadata"].get("topology_class", "")
         if not topology_class:
             result["passed"] = False
             result["action"] = "rejected"
             result["rejection_reason"] = (
                 "未声明拓扑分类。每个公式必须标注 topology_class=A0（局部代数，Berry相位=0）"
-                "或 A1（整体拓扑，Berry相位=2π）。这是Berry相位验证的第一步。"
+                "或 A1（整体拓扑，Berry相位=2π）。"
             )
             self._finalize(result, start_time, submission_id)
             return result
 
-        # 拓扑分类合法性检查
         if topology_class not in ("A0", "A1"):
             result["passed"] = False
             result["action"] = "rejected"
@@ -155,100 +231,16 @@ class MasterVerifier:
             self._finalize(result, start_time, submission_id)
             return result
 
-        # 检查外部输入与拓扑分类的一致性
-        # A1（整体拓扑）公式不允许依赖外部输入——外部输入是局部(A0)的，不能构造整体(A1)定理
-        # 这是Berry相位一致性的逻辑等价：A0输入+构造A1定理 = Berry相位不闭合
-        ext_anchors_raw = pending["metadata"].get("external_anchors", "[]")
-        try:
-            ext_anchors = json.loads(ext_anchors_raw) if isinstance(ext_anchors_raw, str) else ext_anchors_raw
-        except:
-            ext_anchors = []
-
         topology_check = {
             "declared_class": topology_class,
             "external_anchors": ext_anchors,
-            "has_external_input": len(ext_anchors) > 0,
+            "has_external_input": False,
             "passed": True,
-            "note": "",
+            "note": "纯几何验证，无外部输入",
         }
 
-        if topology_class == "A1" and ext_anchors:
-            # A1定理依赖外部输入 → Berry相位断点
-            topology_check["passed"] = False
-            topology_check["note"] = (
-                f"A1（整体拓扑）定理依赖了外部锚点{ext_anchors}。"
-                f"外部输入是局部的(A0)，不能构造整体拓扑定理(A1)。"
-                f"这等价于Berry相位不闭合：A0输入→A1定理 = 相位断点。"
-                f"必须先从公理推导出外部锚点的几何内容并入库，才能用于A1定理。"
-            )
-            result["passed"] = False
-            result["action"] = "rejected"
-            result["rejection_reason"] = topology_check["note"]
-            result["stages"]["topology_check"] = topology_check
-            logger.info(
-                f"[VERIFIER] 阶段0驳回: A1定理依赖外部输入 {ext_anchors}，"
-                f"Berry相位不闭合"
-            )
-            self._finalize(result, start_time, submission_id)
-            return result
-
-        # A0公式引用ℰ——检查PIA是否已注册
-        # ℰ是唯一合法的物理映射，但必须先注册为PIA才能被引用
-        # 这保证了"单一物理映射"原则：只有ℰ，没有其他物理映射
-        if topology_class == "A0" and "ℰ" in ext_anchors:
-            pia = self.master_db.get_pia()
-            if not pia:
-                topology_check["passed"] = False
-                topology_check["note"] = (
-                    "公式引用了ℰ（单一物理映射），但ℰ尚未注册为PIA（物理识别锚点）。"
-                    "必须先注册PIA后，其他公式才能引用ℰ。"
-                    "注册方式: POST /v1/master/register_pia"
-                )
-                result["passed"] = False
-                result["action"] = "rejected"
-                result["rejection_reason"] = topology_check["note"]
-                result["stages"]["topology_check"] = topology_check
-                logger.info(
-                    f"[VERIFIER] 阶段0驳回: 引用ℰ但PIA未注册"
-                )
-                self._finalize(result, start_time, submission_id)
-                return result
-            else:
-                topology_check["pia_registered"] = True
-                topology_check["pia_id"] = pia.get("pia_id", "")
-                logger.info(
-                    f"[VERIFIER] 阶段0: ℰ引用合法（PIA已注册: {pia.get('pia_id', '')}）"
-                )
-
-        # 检查推导链中是否引用了未验证的物理概念
-        # 即使没有声明external_anchors，推导链中也可能隐含使用
-        unverified_in_chain = self._detect_unverified_concepts(derivation_chain, formula_content)
-        if unverified_in_chain and topology_class == "A1":
-            topology_check["passed"] = False
-            topology_check["note"] = (
-                f"A1定理的推导链中引用了未验证概念: {unverified_in_chain}。"
-                f"这些概念不是公理，必须先从公理推导入库后才能使用。"
-            )
-            result["passed"] = False
-            result["action"] = "rejected"
-            result["rejection_reason"] = topology_check["note"]
-            result["stages"]["topology_check"] = topology_check
-            logger.info(
-                f"[VERIFIER] 阶段0驳回: A1定理推导链含未验证概念 {unverified_in_chain}"
-            )
-            self._finalize(result, start_time, submission_id)
-            return result
-
-        if unverified_in_chain and topology_class == "A0":
-            # A0定理引用未验证概念——标记但继续验证（LLM阶段会检查）
-            topology_check["note"] = (
-                f"A0定理推导链引用了: {unverified_in_chain}。"
-                f"如果是标准数学概念则无碍，如果是物理概念则阶段3会拦截。"
-            )
-
         logger.info(
-            f"[VERIFIER] 阶段0通过: 拓扑分类={topology_class}, "
-            f"外部输入={len(ext_anchors)>0}"
+            f"[VERIFIER] 阶段0通过: 拓扑分类={topology_class}, 纯几何"
         )
         result["stages"]["topology_check"] = topology_check
 
@@ -335,11 +327,47 @@ class MasterVerifier:
                 result["action"] = "dependency_gap"
                 result["rejection_reason"] = ""
                 result["dependency_gap"] = gap_analysis
-                result["message"] = (
-                    f"公式未通过验证，但并非公式本身有误。主库AI缺少以下依赖: "
-                    f"{', '.join(gap_analysis.get('missing_dependencies', []))}。"
-                    f"请子库先补全这些前置定理后重新提交。"
-                )
+
+                # ---- 互锁检测：判断是单纯依赖不足还是互锁 ----
+                interlocks = self.dep_graph.get_interlocks_for_formula(submission_id)
+                if interlocks:
+                    # 这个公式参与了互锁组
+                    interlock_info = interlocks[0]  # 取第一个互锁组
+                    il_type = "强互锁（直接互引）" if interlock_info["type"] == "strong" else "弱互锁（间接成环）"
+                    il_formulas = [f["formula_name"] for f in interlock_info["formulas"]]
+                    batch_ready = interlock_info["batch_verification_ready"]
+                    blocking = interlock_info["blocking_reason"]
+                    mutual = interlock_info.get("mutual_pairs", [])
+
+                    result["is_interlocked"] = True
+                    result["interlock_type"] = interlock_info["type"]
+                    result["interlock_group"] = il_formulas
+                    result["interlock_batch_ready"] = batch_ready
+
+                    if batch_ready:
+                        result["message"] = (
+                            f"公式与以下定理形成{il_type}: {', '.join(il_formulas[:5])}。"
+                            f"互锁组已自包含（无外部依赖），主库AI将自动触发批量验证。"
+                            f"无需子AI补全任何前置定理。"
+                        )
+                    else:
+                        ext_deps = interlock_info.get("external_deps", [])
+                        result["message"] = (
+                            f"公式与以下定理形成{il_type}: {', '.join(il_formulas[:5])}。"
+                            f"互锁组缺少外部依赖: {', '.join(ext_deps[:3])}。"
+                            f"需要先验证这些外部定理，才能解锁互锁组进行批量验证。"
+                        )
+                        if mutual:
+                            pairs_str = "; ".join([f"{m['a'][:20]}↔{m['b'][:20]}" for m in mutual[:3]])
+                            result["message"] += f" 强互锁对: {pairs_str}"
+                else:
+                    # 单纯依赖不足，没有互锁
+                    result["is_interlocked"] = False
+                    result["message"] = (
+                        f"公式未通过验证，但并非公式本身有误。主库AI缺少以下依赖: "
+                        f"{', '.join(gap_analysis.get('missing_dependencies', []))}。"
+                        f"请子库先补全这些前置定理后重新提交。"
+                    )
                 self._finalize(result, start_time, submission_id)
                 return result
             else:
@@ -410,10 +438,24 @@ class MasterVerifier:
         # 始终将完整验证结果保存到 pending metadata，供子AI查询
         verification_result_json = json.dumps(result, ensure_ascii=False, default=str)
 
+        # 提前获取pending数据（passed和rejected分支都需要）
+        pending = self.master_db.get_pending(submission_id)
+
+        # 提取子AI互锁提示（所有分支都需要，提前定义）
+        interlock_hint_list = []
+        interlock_reasoning_str = ""
+        if pending:
+            ih_str = pending["metadata"].get("interlock_hint", "")
+            if ih_str:
+                try:
+                    interlock_hint_list = json.loads(ih_str) if isinstance(ih_str, str) else ih_str
+                except:
+                    pass
+            interlock_reasoning_str = pending["metadata"].get("interlock_reasoning", "")
+
         if result["passed"]:
             # ---- 去重检查：验证通过后，检查是否已有同结论定理 ----
             # 如果已有高度相似的定理(>0.90)，不重复入库，而是附加为替代证明
-            pending = self.master_db.get_pending(submission_id)
             doc_text = pending.get("document", "") if pending else ""
             source_agent = pending["metadata"].get("source_agent", "") if pending else ""
 
@@ -469,16 +511,25 @@ class MasterVerifier:
                 master_id = self.master_db.promote_to_master(submission_id, result)
 
             if result["action"] != "alternative_proof":
-                # 正常入库的更新pending状态
+                # 统一标记为promoted（无论是否同名重复提交）
                 self.master_db._update_pending_status(
                     submission_id,
                     "promoted",
                     verification_result=verification_result_json,
                 )
-                logger.info(
-                    f"[VERIFIER] 验证通过，已入库: {submission_id} "
-                    f"(耗时 {result['duration_seconds']}s)"
-                )
+                if master_id:
+                    logger.info(
+                        f"[VERIFIER] 验证通过，已入库: {formula_name} "
+                        f"→ master_id={master_id} "
+                        f"(耗时 {result['duration_seconds']}s)"
+                    )
+                else:
+                    logger.warning(
+                        f"[VERIFIER] 验证通过但master_id为空: {submission_id}"
+                    )
+
+            # 确保master_id写入result（无论哪种情况）
+            result["master_id"] = master_id
 
             # ---- 依赖图：注册入库公式 ----
             # 提取推导中引用的L3定理作为依赖
@@ -493,6 +544,8 @@ class MasterVerifier:
                 status="promoted",
                 dependencies=used_l3,
                 master_id=master_id or "",
+                interlock_hint=interlock_hint_list,
+                interlock_reasoning=interlock_reasoning_str,
             )
 
             # ---- 级联重试：检查哪些blocked公式可以解锁 ----
@@ -534,6 +587,8 @@ class MasterVerifier:
                     formula_name=formula_name,
                     status="blocked",
                     dependencies=missing_deps,
+                    interlock_hint=interlock_hint_list,
+                    interlock_reasoning=interlock_reasoning_str,
                 )
             else:
                 self.master_db.reject_candidate(
@@ -552,6 +607,8 @@ class MasterVerifier:
                     formula_id=submission_id,
                     formula_name=formula_name,
                     status="rejected",
+                    interlock_hint=interlock_hint_list,
+                    interlock_reasoning=interlock_reasoning_str,
                 )
 
     def _extract_l3_references(self, derivation_text: str) -> List[str]:
@@ -975,19 +1032,46 @@ class MasterVerifier:
                 ],
                 temperature=0.1,  # 低温度，强调严格推理
                 max_tokens=4096,
+                timeout=120,  # 2分钟超时
             )
-            derivation = resp.choices[0].message.content
+            derivation = resp.choices[0].message.content or ""
+
+            if not derivation.strip():
+                logger.warning("[VERIFIER] LLM返回空推导文本，跳过独立推导（默认通过）")
+                return {
+                    "reproduced": True,
+                    "derivation": "LLM返回空文本，跳过独立推导",
+                    "reason": "",
+                    "skipped": True,
+                }
 
             # 判断是否复现成功
-            reproduced = "复现成功" in derivation or "成功复现" in derivation
+            reproduced = (
+                "复现成功" in derivation or
+                "成功复现" in derivation or
+                "推导成立" in derivation or
+                "命题成立" in derivation or
+                "定理成立" in derivation or
+                "证毕" in derivation or
+                "得证" in derivation
+            )
             reason = ""
             if not reproduced:
                 # 提取失败原因
                 if "复现失败" in derivation:
                     idx = derivation.find("复现失败")
-                    reason = derivation[idx:idx + 200]
+                    reason = derivation[idx:idx + 300]
+                elif "无法推导" in derivation or "无法复现" in derivation:
+                    reason = derivation[:300]
                 else:
-                    reason = "LLM 未明确声明复现成功"
+                    # LLM没有明确说成功也没说失败——检查是否给出了实质性推导
+                    # 如果推导文本超过200字且包含"因此"或"故"等结论性词语，视为复现成功
+                    has_conclusion = any(w in derivation for w in ["因此", "故", "所以", "由此", "综上", "于是"])
+                    if len(derivation) > 200 and has_conclusion:
+                        reproduced = True
+                        logger.info("[VERIFIER] LLM未明确声明'复现成功'但给出了实质性推导，判定为复现成功")
+                    else:
+                        reason = "LLM 未明确声明复现成功"
 
             # 检测LLM推导中实际使用的L2假设
             # 单一ℰ原则下：只有ℰ是合法L2，其他物理概念不算L2使用

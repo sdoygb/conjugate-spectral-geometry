@@ -10,7 +10,7 @@ services:
       - "127.0.0.1:5000:5000"   # Geometry AI Server（仅本机/内网访问）
       - "8080:8080"   # Open WebUI（聊天界面，对外开放）
     environment:
-      # 必填：你的 DeepSeek API Key
+      # 必填：你的 DeepSeek API Key（从 .env 读取，不硬编码）
       - GAI_API_KEY=${GAI_API_KEY:-sk-your-api-key-here}
       # 可选：自定义配置
       - GAI_BASE_URL=https://api.deepseek.com/v1
@@ -22,14 +22,14 @@ services:
       - HF_ENDPOINT=https://hf-mirror.com
       - OPENAI_API_BASE_URLS=http://localhost:5000/v1
       - OPENAI_API_KEYS=not-needed
-      # MySQL配置（Docker内连宿主机MySQL）
+      # MySQL配置（密码从 .env 读取，不硬编码）
       - MYSQL_HOST=${MYSQL_HOST:-host.docker.internal}
-      - MYSQL_PORT=3306
-      - MYSQL_DB=geometric_ai
-      - MYSQL_ADMIN_USER=geometric_AI
-      - MYSQL_ADMIN_PASS=JcMJbG3SrjZtdk4A
-      - MYSQL_PUBLIC_USER=share_writer
-      - MYSQL_PUBLIC_PASS=Share2026!OnlyWrite
+      - MYSQL_PORT=${MYSQL_PORT:-3306}
+      - MYSQL_DB=${MYSQL_DB:-geometric_ai}
+      - MYSQL_ADMIN_USER=${MYSQL_ADMIN_USER:-geometric_AI}
+      - MYSQL_ADMIN_PASS=${MYSQL_ADMIN_PASS:?请在.env中设置MYSQL_ADMIN_PASS}
+      - MYSQL_PUBLIC_USER=${MYSQL_PUBLIC_USER:-share_writer}
+      - MYSQL_PUBLIC_PASS=${MYSQL_PUBLIC_PASS:?请在.env中设置MYSQL_PUBLIC_PASS}
     extra_hosts:
       # Linux Docker 需要这行才能解析 host.docker.internal
       - "host.docker.internal:host-gateway"

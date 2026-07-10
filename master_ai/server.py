@@ -59,6 +59,12 @@ def init_services():
     logger.info("[SERVER] 初始化主库AI服务...")
     master_db = MasterDatabase()
     verifier = MasterVerifier(master_db=master_db)
+
+    # 与真理库同步：确保所有已入库真理都注册到依赖图
+    synced = verifier.dep_graph.sync_with_master_db(master_db.master_collection)
+    if synced > 0:
+        logger.info(f"[SERVER] 依赖图与真理库同步: 新增 {synced} 个映射")
+
     logger.info("[SERVER] 主库AI服务初始化完成")
 
 
@@ -76,7 +82,7 @@ _verify_lock = threading.Lock()  # 确保同一时间只验证一个公式
 _retry_counts: Dict[str, int] = {}  # submission_id → 重试次数
 
 # 并行worker配置
-NUM_WORKERS = int(os.getenv('MASTER_VERIFY_WORKERS', '3'))  # 并行验证worker数
+NUM_WORKERS = int(os.getenv('MASTER_VERIFY_WORKERS', '10'))  # 并行验证worker数
 _worker_locks = [threading.Lock() for _ in range(NUM_WORKERS)]  # 每个worker一个锁
 _worker_threads: List[threading.Thread] = []
 _last_promote_time = time.time()  # 上次有公式入库的时间
@@ -159,6 +165,7 @@ def _trigger_cascade_retry():
 def _try_cycle_verification():
     """
     当waiting_dependencies积压时，自动触发环路检测和批量验证。
+    同时检测互锁组——比环路更精确的关系判断。
     """
     global _last_cycle_check_time
 
@@ -175,7 +182,26 @@ def _try_cycle_verification():
         if len(waiting) < 3:
             return  # 积压不够多，不值得检测环路
 
-        logger.info(f"[SCHEDULER] 🔍 waiting积压({len(waiting)}个)，触发环路检测")
+        logger.info(f"[SCHEDULER] 🔍 waiting积压({len(waiting)}个)，触发互锁+环路检测")
+
+        # 先检测互锁（比环路更精确的分类）
+        interlocks = verifier.dep_graph.detect_interlocks()
+        if interlocks:
+            for il in interlocks:
+                il_type = "强互锁" if il["type"] == "strong" else "弱互锁"
+                names = [f["formula_name"][:30] for f in il["formulas"]]
+                batch_ready = il["batch_verification_ready"]
+                mutual = il.get("mutual_pairs", [])
+                logger.info(
+                    f"[SCHEDULER] 🔒 {il_type}组 {il['interlock_id']} "
+                    f"({il['size']}个公式): {names[:3]}"
+                    f"{' | 批量验证就绪' if batch_ready else ' | 阻塞: ' + il['blocking_reason'][:60]}"
+                )
+                if mutual:
+                    for m in mutual[:2]:
+                        logger.info(
+                            f"[SCHEDULER]   互锁对: {m['a'][:25]} ↔ {m['b'][:25]}"
+                        )
 
         # 检测环路
         cycles = verifier.dep_graph.detect_cycles()
@@ -272,28 +298,37 @@ def _worker_loop(worker_id: int):
                 continue
 
             try:
-                # 原子地取一个pending公式
+                # 原子地取一个pending公式（按优先级排序）
                 with _dispatch_lock:
-                    pending_list = master_db.list_pending(limit=500)
-                    pending_items = [p for p in pending_list if p.get("status") == "pending"]
+                    # 使用优先级排序的列表
+                    pending_items = master_db.list_pending_by_priority(limit=500)
 
                     if not pending_items:
-                        # 没有pending了——检查是否需要环路验证和自查
-                        if worker_id == 0:  # 只让worker-0做
+                        # 没有pending了——触发优先级验证、环路验证和自查
+                        if worker_id == 0:
+                            master_db.verify_priority_claims()
                             _try_cycle_verification()
                             _try_self_audit()
                         time.sleep(AUTO_VERIFY_INTERVAL)
                         continue
 
-                    # 取第一个pending
+                    # 取第一个（优先级最高的）
                     next_item = pending_items[0]
                     sub_id = next_item["submission_id"]
                     formula_name = next_item.get("formula_name", "未知")
+                    priority = next_item.get("verified_priority", "false") == "true"
+                    deps = next_item.get("dependents_count", "0")
 
                     # 立即标记为processing，防止其他worker重复取
                     master_db._update_pending_status(sub_id, "processing")
 
-                logger.info(f"[WORKER-{worker_id}] 开始验证: {formula_name} (id={sub_id})")
+                if priority:
+                    logger.info(
+                        f"[WORKER-{worker_id}] ⭐ 优先验证: {formula_name} "
+                        f"(id={sub_id}, 被{deps}个公式依赖)"
+                    )
+                else:
+                    logger.info(f"[WORKER-{worker_id}] 开始验证: {formula_name} (id={sub_id})")
 
                 # 执行验证（不持有_dispatch_lock，允许其他worker并行取公式）
                 _verify_one(sub_id, formula_name)
@@ -417,6 +452,9 @@ def submit():
     local_verification = data.get("local_verification")
     external_anchors = data.get("external_anchors", [])
     topology_class = data.get("topology_class", "")  # A0 或 A1
+    priority_hint = data.get("priority_hint", False)  # 优先验证提示
+    interlock_hint = data.get("interlock_hint", [])  # 子AI互锁提示
+    interlock_reasoning = data.get("interlock_reasoning", "")  # 子AI互锁推导说明
 
     if not formula_name or not formula_content:
         return jsonify({"error": "缺少 formula_name 或 formula_content"}), 400
@@ -434,7 +472,29 @@ def submit():
         local_verification=local_verification,
         external_anchors=external_anchors,
         topology_class=topology_class,
+        priority_hint=priority_hint,
+        interlock_hint=interlock_hint,
+        interlock_reasoning=interlock_reasoning,
     )
+
+    # 检查提交后的实际状态（可能是duplicate）
+    pending = master_db.get_pending(submission_id)
+    actual_status = pending["metadata"].get("status", "pending") if pending else "pending"
+
+    if actual_status == "duplicate":
+        duplicate_of = pending["metadata"].get("duplicate_of", "")
+        duplicate_sim = pending["metadata"].get("duplicate_similarity", "")
+        # 查找已有定理的名称
+        existing = master_db.master_collection.get(ids=[duplicate_of], include=["metadatas"])
+        existing_name = existing["metadatas"][0].get("formula_name", "") if existing["ids"] else ""
+        return jsonify({
+            "submission_id": submission_id,
+            "status": "duplicate",
+            "message": f"精确重复，已拒收。与已入库定理「{existing_name}」相似度={duplicate_sim}（master_id={duplicate_of}）。",
+            "duplicate_of": duplicate_of,
+            "duplicate_of_name": existing_name,
+            "duplicate_similarity": duplicate_sim,
+        })
 
     return jsonify({
         "submission_id": submission_id,
@@ -616,6 +676,7 @@ def formula_detail(formula_id: str):
 
     return jsonify({
         "master_id": formula_id,
+        "permanent_number": meta.get("permanent_number", ""),
         "formula_name": meta.get("formula_name", ""),
         "document": result["documents"][0],
         "status": meta.get("status", ""),
@@ -804,6 +865,35 @@ def self_audit():
     return jsonify(result)
 
 
+@app.route("/v1/master/verify_priority", methods=["POST"])
+def verify_priority():
+    """手动触发优先级声明验证"""
+    if not _check_auth():
+        return jsonify({"error": "unauthorized"}), 401
+    result = master_db.verify_priority_claims()
+    return jsonify(result)
+
+
+@app.route("/v1/master/interlocks", methods=["GET"])
+def interlocks():
+    """查看互锁组检测摘要"""
+    if not _check_auth():
+        return jsonify({"error": "unauthorized"}), 401
+    return jsonify(verifier.dep_graph.get_interlock_summary())
+
+
+@app.route("/v1/master/force_promote_pia", methods=["POST"])
+def force_promote_pia():
+    """
+    [已禁用] PIA强制入库已关闭。
+    主库现在只接受纯几何数学公式，不接受任何物理映射。
+    物理推导请在子AI本地完成。
+    """
+    return jsonify({
+        "error": "PIA强制入库已禁用。主库只接受纯几何数学公式，物理映射不再入库。"
+    }), 403
+
+
 @app.route("/v1/master/merge", methods=["POST"])
 def merge_theorems():
     """手动合并两个重复定理"""
@@ -859,45 +949,13 @@ def get_pia():
 @app.route("/v1/master/register_pia", methods=["POST"])
 def register_pia():
     """
-    注册物理识别锚点（PIA）。
-
-    全局只允许一个PIA。注册后锁死，不再接受新的物理映射。
-    这保证了框架的"单一物理映射"原则。
-
-    请求体:
-    {
-        "pia_id": "ℰ",
-        "name": "单一物理映射",
-        "geometric_content": "S_e=137.036，六项作用量Dixmier迹极值",
-        "physical_identification": "S_e ↦ α⁻¹（精细结构常数倒数）",
-        "geometric_theorem_id": "master_xxx"  // 可选，对应的几何定理
-    }
+    [已禁用] PIA注册已关闭。
+    主库现在只接受纯几何数学公式，不接受任何物理映射。
     """
-    if not _check_auth():
-        return jsonify({"error": "unauthorized"}), 401
-
-    data = request.get_json()
-    pia_id = data.get("pia_id", "")
-    name = data.get("name", "")
-    geometric_content = data.get("geometric_content", "")
-    physical_identification = data.get("physical_identification", "")
-    geometric_theorem_id = data.get("geometric_theorem_id", "")
-
-    if not pia_id or not name:
-        return jsonify({"error": "缺少 pia_id 或 name"}), 400
-
-    result = master_db.register_pia(
-        pia_id=pia_id,
-        name=name,
-        geometric_content=geometric_content,
-        physical_identification=physical_identification,
-        geometric_theorem_id=geometric_theorem_id,
-    )
-
-    if result["success"]:
-        return jsonify(result), 201
-    else:
-        return jsonify(result), 409
+    return jsonify({
+        "error": "PIA注册已禁用。主库只接受纯几何数学公式，物理映射不再入库。"
+                 "物理推导请在子AI本地完成。"
+    }), 403
 
 
 @app.route("/v1/master/annotate_source", methods=["POST"])

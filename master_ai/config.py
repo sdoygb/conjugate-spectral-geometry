@@ -80,9 +80,9 @@ GAI_API_KEY = os.getenv('GAI_API_KEY', '')
 GAI_BASE_URL = os.getenv('GAI_BASE_URL', 'https://api.deepseek.com/v1')
 
 # 主库AI使用的验证模型（可以与本地 Agent 不同，强调严格推理）
-MASTER_VERIFY_MODEL = os.getenv('MASTER_VERIFY_MODEL', 'deepseek-v4-pro')
+MASTER_VERIFY_MODEL = os.getenv('MASTER_VERIFY_MODEL', 'deepseek-v4-flash')
 # 主库AI的推导模型（独立重推导时使用，可以更强）
-MASTER_DERIVE_MODEL = os.getenv('MASTER_DERIVE_MODEL', 'deepseek-v4-pro')
+MASTER_DERIVE_MODEL = os.getenv('MASTER_DERIVE_MODEL', 'deepseek-v4-flash')
 
 # SiliconFlow embedding（与本地一致，1024维）
 SILICONFLOW_API_KEY = os.getenv('SILICONFLOW_API_KEY', '')

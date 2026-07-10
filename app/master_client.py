@@ -186,6 +186,7 @@ class MasterClient:
                     documents=[formula.get("document", "")],
                     metadatas=[{
                         "master_id": formula.get("master_id", ""),
+                        "permanent_number": str(formula.get("permanent_number", 0)),
                         "formula_name": formula.get("formula_name", ""),
                         "verified_at": formula.get("verified_at", ""),
                         "source": "master_ai",  # 标记来源
@@ -244,7 +245,10 @@ class MasterClient:
         local_verification: Optional[Dict] = None,
         external_anchors: Optional[List[str]] = None,
         topology_class: str = "A0",
-    ) -> Optional[str]:
+        priority_hint: bool = False,
+        interlock_hint: Optional[List[str]] = None,
+        interlock_reasoning: str = "",
+    ) -> Optional[Dict[str, Any]]:
         """
         提交候选公式到主库待验证队列。
 
@@ -276,13 +280,25 @@ class MasterClient:
             "local_verification": local_verification or {},
             "external_anchors": external_anchors or [],
             "topology_class": topology_class,
+            "priority_hint": priority_hint,
+            "interlock_hint": interlock_hint or [],
+            "interlock_reasoning": interlock_reasoning,
         }
 
         result = self._post("/v1/master/submit", data, timeout=15)
         if result and "submission_id" in result:
             sub_id = result["submission_id"]
-            logger.info(f"[MASTER-CLIENT] 候选公式已提交: {formula_name} → {sub_id}")
-            return sub_id
+            status = result.get("status", "pending")
+            message = result.get("message", "")
+            logger.info(f"[MASTER-CLIENT] 候选公式已提交: {formula_name} → {sub_id} (status={status})")
+            return {
+                "submission_id": sub_id,
+                "status": status,
+                "message": message,
+                "duplicate_of": result.get("duplicate_of", ""),
+                "duplicate_of_name": result.get("duplicate_of_name", ""),
+                "duplicate_similarity": result.get("duplicate_similarity", ""),
+            }
 
         logger.warning(f"[MASTER-CLIENT] 提交失败: {formula_name}")
         return None

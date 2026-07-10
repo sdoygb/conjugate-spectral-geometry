@@ -303,6 +303,51 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
         final_messages.clear()
         final_messages.extend(_clean_msgs)
 
+        # 修复 tool_calls 完整性：确保每个 assistant 的 tool_calls 后面
+        # 都有对应的 tool 响应消息。如果缺失，移除 tool_calls 避免API 400错误
+        _fixed_msgs = []
+        _pending_tc_ids = set()
+        for _idx, _msg in enumerate(final_messages):
+            if _msg.get("role") == "assistant" and _msg.get("tool_calls"):
+                _tc_ids = {tc.get("id") for tc in _msg["tool_calls"] if tc.get("id")}
+                # 检查后续消息中是否有对应的 tool 响应
+                _has_all_responses = True
+                for _tc_id in _tc_ids:
+                    _found = False
+                    for _j in range(_idx + 1, len(final_messages)):
+                        if final_messages[_j].get("role") == "tool" and final_messages[_j].get("tool_call_id") == _tc_id:
+                            _found = True
+                            break
+                    if not _found:
+                        _has_all_responses = False
+                        break
+                if not _has_all_responses:
+                    # 移除 tool_calls，保留 content
+                    _msg_copy = {k: v for k, v in _msg.items() if k != "tool_calls"}
+                    if not _msg_copy.get("content"):
+                        _msg_copy["content"] = ""
+                    logger.warning(f"[TOOL] 移除不完整的 tool_calls（缺少tool响应），assistant消息保留为纯文本")
+                    _fixed_msgs.append(_msg_copy)
+                    continue
+            # 移除孤立的 tool 响应消息（没有对应 assistant tool_calls 的）
+            if _msg.get("role") == "tool":
+                _tc_id = _msg.get("tool_call_id")
+                _has_matching_call = False
+                for _j in range(len(_fixed_msgs) - 1, -1, -1):
+                    _prev = _fixed_msgs[_j]
+                    if _prev.get("role") == "assistant" and _prev.get("tool_calls"):
+                        if _tc_id in {tc.get("id") for tc in _prev["tool_calls"] if tc.get("id")}:
+                            _has_matching_call = True
+                            break
+                    if _prev.get("role") == "user":
+                        break
+                if not _has_matching_call:
+                    logger.warning(f"[TOOL] 移除孤立的 tool 响应消息 (tool_call_id={_tc_id})")
+                    continue
+            _fixed_msgs.append(_msg)
+        final_messages.clear()
+        final_messages.extend(_fixed_msgs)
+
         # 第一轮用流式调用，逐 token 透传（创建副本避免修改原始参数）
         round_params = {**api_params, "stream": True}
         stream = None
@@ -464,6 +509,12 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
 
         # 构建 tool_calls 列表
         tool_calls_list = [collected_tool_calls[i] for i in sorted(collected_tool_calls.keys())]
+
+        # 确保每个 tool_call 都有非空 id（API要求 tool_call_id 必须匹配）
+        for i, tc in enumerate(tool_calls_list):
+            if not tc.get("id"):
+                tc["id"] = f"call_{uuid.uuid4().hex[:12]}"
+                logger.warning(f"[TOOL] 为 tool_call[{i}] 补充缺失的id: {tc['id']}")
 
         # 中间轮次不向客户端发送 tool_calls（防止 Open WebUI 停止渲染后续内容）
         # 只在 Open WebUI 作为真正的 tool 循环代理时才发送 tool_calls + finish_reason

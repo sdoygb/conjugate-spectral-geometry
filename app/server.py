@@ -1456,6 +1456,46 @@ def chat_completions():
         total_chars -= len(json.dumps(removed, ensure_ascii=False))
     if len(final_messages) < len(clean_messages) + 1:
         logger.info(f"[TRIM] 历史消息字符截断: {total_chars} 字符, {len(final_messages)-1} 条")
+
+    # ---- 修复 tool_calls 完整性（截断后可能导致tool_calls和tool响应不匹配）----
+    # 1. assistant有tool_calls但后面缺tool响应 → 移除tool_calls
+    # 2. 孤立的tool响应（没有对应assistant tool_calls）→ 移除
+    _fixed = []
+    for _i, _msg in enumerate(final_messages):
+        if _msg.get("role") == "assistant" and _msg.get("tool_calls"):
+            _tc_ids = {tc.get("id") for tc in _msg["tool_calls"] if tc.get("id")}
+            _has_all = True
+            for _tcid in _tc_ids:
+                _found = any(
+                    final_messages[_j].get("role") == "tool" and final_messages[_j].get("tool_call_id") == _tcid
+                    for _j in range(_i + 1, len(final_messages))
+                )
+                if not _found:
+                    _has_all = False
+                    break
+            if not _has_all:
+                _msg_copy = {k: v for k, v in _msg.items() if k != "tool_calls"}
+                if not _msg_copy.get("content"):
+                    _msg_copy["content"] = ""
+                logger.warning(f"[CLEAN] 移除不完整tool_calls（截断导致缺tool响应）")
+                _fixed.append(_msg_copy)
+                continue
+        if _msg.get("role") == "tool":
+            _tcid = _msg.get("tool_call_id")
+            _has_match = False
+            for _j in range(len(_fixed) - 1, -1, -1):
+                _prev = _fixed[_j]
+                if _prev.get("role") == "assistant" and _prev.get("tool_calls"):
+                    if _tcid in {tc.get("id") for tc in _prev["tool_calls"] if tc.get("id")}:
+                        _has_match = True
+                        break
+                if _prev.get("role") == "user":
+                    break
+            if not _has_match:
+                logger.warning(f"[CLEAN] 移除孤立tool响应 (id={_tcid})")
+                continue
+        _fixed.append(_msg)
+    final_messages = _fixed
     # 模型路由：简单问题用轻量模型节省 token
     _requested_model = data.get('model', '')
     _selected_model = GAI_MODEL

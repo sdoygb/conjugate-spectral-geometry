@@ -12,6 +12,7 @@ import os
 import json
 import hashlib
 import time
+import threading
 from datetime import datetime
 from typing import Dict, List, Optional, Any, Tuple
 
@@ -51,9 +52,73 @@ class MasterDatabase:
         self.suspended_set = set()        # 被标记存疑的公式ID
         self._initialized = False
         self._embedding_fn = None
+        # 全局写锁：串行化所有ChromaDB写入，防止SQLite "database is locked"
+        self._write_lock = threading.Lock()
+
+        # 永久编号计数器文件（原子递增，永不回收）
+        self._seq_file = os.path.join(self.persist_dir, "master_seq.json")
 
         self._init_embedding()
         self._init_db()
+        self._init_seq()
+
+    def _write(self, collection, operation: str, *args, **kwargs):
+        """
+        串行化ChromaDB写入操作。所有写操作（add/update/delete/upsert）
+        必须通过此方法执行，防止多worker并发写入导致SQLite锁冲突。
+
+        读取操作不需要串行化，可以直接调用collection.get/query。
+        """
+        with self._write_lock:
+            method = getattr(collection, operation)
+            return method(*args, **kwargs)
+
+    def _init_seq(self):
+        """初始化永久编号计数器。为已有公式补编号。"""
+        if not os.path.exists(self._seq_file):
+            # 首次启动：扫描已有公式，按verified_at排序分配编号
+            all_truth = self.master_collection.get(include=["metadatas"]) if self.master_collection else {"ids": [], "metadatas": []}
+            existing_nums = []
+            max_num = 0
+            for mid, meta in zip(all_truth.get("ids", []), all_truth.get("metadatas", [])):
+                num = meta.get("permanent_number")
+                if num is not None:
+                    try:
+                        n = int(num)
+                        existing_nums.append((mid, n))
+                        if n > max_num:
+                            max_num = n
+                    except (ValueError, TypeError):
+                        pass
+
+            if not existing_nums and all_truth.get("ids"):
+                # 没有任何编号：按入库顺序分配
+                sorted_items = []
+                for mid, meta in zip(all_truth["ids"], all_truth["metadatas"]):
+                    verified_at = meta.get("verified_at", "")
+                    sorted_items.append((mid, verified_at))
+                sorted_items.sort(key=lambda x: x[1])
+
+                for i, (mid, _) in enumerate(sorted_items, 1):
+                    meta = all_truth["metadatas"][all_truth["ids"].index(mid)]
+                    meta["permanent_number"] = str(i)
+                    self._write(self.master_collection, 'update', ids=[mid], metadatas=[meta])
+                max_num = len(sorted_items)
+                logger.info(f"[MASTER-DB] 为 {max_num} 条已有公式分配永久编号 1-{max_num}")
+
+            with open(self._seq_file, 'w') as f:
+                json.dump({"next_number": max_num + 1}, f)
+            logger.info(f"[MASTER-DB] 永久编号计数器初始化: next={max_num + 1}")
+
+    def _next_seq(self) -> int:
+        """原子递增并返回下一个永久编号。调用方必须已持有 _write_lock 或在单线程上下文中。"""
+        with open(self._seq_file, 'r') as f:
+            data = json.load(f)
+        num = data["next_number"]
+        data["next_number"] = num + 1
+        with open(self._seq_file, 'w') as f:
+            json.dump(data, f)
+        return num
 
     def _init_embedding(self):
         """初始化 SiliconFlow embedding（与本地一致，1024维）"""
@@ -127,6 +192,9 @@ class MasterDatabase:
         local_verification: Optional[Dict] = None,
         external_anchors: Optional[List[str]] = None,
         topology_class: str = "A0",
+        priority_hint: bool = False,
+        interlock_hint: Optional[List[str]] = None,
+        interlock_reasoning: str = "",
     ) -> str:
         """
         本地 Agent 提交候选公式到待验证队列。
@@ -192,7 +260,8 @@ class MasterDatabase:
                         "duplicate_of": existing_id,
                         "duplicate_similarity": str(round(best_similarity, 4)),
                     }
-                    self.pending_collection.add(
+                    self._write(
+                        self.pending_collection, 'add',
                         ids=[submission_id],
                         documents=[doc_text],
                         metadatas=[metadata],
@@ -221,12 +290,18 @@ class MasterDatabase:
             "external_anchors": json.dumps(external_anchors or [], ensure_ascii=False),
             "topology_class": topology_class,
             "suspected_duplicate_of": suspected_duplicate_of,
+            "priority_hint": str(priority_hint).lower(),
+            "verified_priority": "false",  # 主库验证后的实际优先级
+            "dependents_count": "0",  # 有多少pending公式依赖这个
+            "interlock_hint": json.dumps(interlock_hint or [], ensure_ascii=False),
+            "interlock_reasoning": interlock_reasoning or "",
         }
 
         # 存储完整内容到 metadata 的 json 字段
         doc_text = f"【公式】{formula_name}\n\n{formula_content}\n\n【推导链】\n{derivation_chain}"
 
-        self.pending_collection.add(
+        self._write(
+            self.pending_collection, 'add',
             ids=[submission_id],
             documents=[doc_text],
             metadatas=[metadata],
@@ -248,15 +323,24 @@ class MasterDatabase:
             "metadata": result["metadatas"][0],
         }
 
-    def list_pending(self, limit: int = 500) -> List[Dict[str, Any]]:
-        """列出所有待验证的候选公式（含验证结果摘要）"""
+    def list_pending(self, limit: int = 500, include_archived: bool = False) -> List[Dict[str, Any]]:
+        """列出所有待验证的候选公式（含验证结果摘要）
+
+        Args:
+            limit: 最大返回数
+            include_archived: 是否包含已归档/已撤回的记录（默认不包含）
+        """
         result = self.pending_collection.get(
             include=["metadatas"],
             limit=limit
         )
         items = []
+        hidden_statuses = {"archived", "withdrawn"} if not include_archived else set()
         for i, mid in enumerate(result["ids"]):
             meta = result["metadatas"][i]
+            status = meta.get("status", "pending")
+            if status in hidden_statuses:
+                continue
             item = {
                 "submission_id": mid,
                 "formula_name": meta.get("formula_name", ""),
@@ -265,6 +349,9 @@ class MasterDatabase:
                 "status": meta.get("status", "pending"),
                 "submitted_at": meta.get("submitted_at", ""),
                 "processed_at": meta.get("processed_at", ""),
+                "priority_hint": meta.get("priority_hint", "false") == "true",
+                "verified_priority": meta.get("verified_priority", "false") == "true",
+                "dependents_count": int(meta.get("dependents_count", "0")),
             }
             # 包含外部锚点
             anchors_str = meta.get("external_anchors", "")
@@ -276,6 +363,13 @@ class MasterDatabase:
             # 包含驳回原因
             if meta.get("rejection_reason"):
                 item["rejection_reason"] = meta["rejection_reason"]
+            # 包含重复信息
+            if meta.get("duplicate_of"):
+                item["duplicate_of"] = meta["duplicate_of"]
+                item["duplicate_similarity"] = meta.get("duplicate_similarity", "")
+            # 包含替代证明信息
+            if meta.get("suspected_duplicate_of"):
+                item["suspected_duplicate_of"] = meta["suspected_duplicate_of"]
             # 包含依赖缺口
             if meta.get("dependency_gap"):
                 try:
@@ -298,13 +392,145 @@ class MasterDatabase:
                         "dependency_gap": stages.get("dependency_gap_analysis", {}).get("is_dependency_gap", False),
                         "missing_dependencies": stages.get("dependency_gap_analysis", {}).get("missing_dependencies", []),
                         "action": vr.get("action", ""),
+                        "master_id": vr.get("master_id", ""),
                         "message": vr.get("message", ""),
                         "used_anchors": vr.get("used_anchors", []),
+                        "is_interlocked": vr.get("is_interlocked", False),
+                        "interlock_type": vr.get("interlock_type", ""),
+                        "interlock_group": vr.get("interlock_group", []),
+                        "interlock_batch_ready": vr.get("interlock_batch_ready", False),
                     }
                 except:
                     pass
             items.append(item)
         return items
+
+    def verify_priority_claims(self) -> Dict[str, Any]:
+        """
+        验证所有声明了priority_hint的公式，检查它们是否真的被大量pending公式依赖。
+
+        对每个priority_hint=true的pending公式：
+        1. 取其formula_name
+        2. 在所有其他pending公式的推导链中搜索是否引用了这个名称
+        3. 如果被≥2个公式引用，verified_priority=true
+        4. 更新dependents_count
+
+        Returns:
+            {"verified": int, "rejected": int, "details": [...]}
+        """
+        all_pending = self.pending_collection.get(include=["metadatas", "documents"])
+        if not all_pending["ids"]:
+            return {"verified": 0, "rejected": 0, "details": []}
+
+        # 收集所有pending公式的名称和推导链
+        all_names = []
+        all_chains = []
+        for i, meta in enumerate(all_pending["metadatas"]):
+            all_names.append(meta.get("formula_name", ""))
+            all_chains.append(all_pending["documents"][i] if all_pending["documents"] else "")
+
+        verified_count = 0
+        rejected_count = 0
+        details = []
+
+        for i, meta in enumerate(all_pending["metadatas"]):
+            if meta.get("priority_hint", "false") != "true":
+                continue
+
+            sub_id = all_pending["ids"][i]
+            formula_name = meta.get("formula_name", "")
+
+            # 在其他pending公式的推导链中搜索这个名称
+            # 取formula_name的关键部分（去掉版本号、序号等）
+            search_name = formula_name.split("（")[0].split("(")[0].strip()
+            if len(search_name) < 3:
+                search_name = formula_name
+
+            dependents = 0
+            for j, chain in enumerate(all_chains):
+                if i == j:
+                    continue  # 跳过自己
+                if search_name in chain or formula_name in chain:
+                    dependents += 1
+
+            # 更新metadata
+            is_verified = dependents >= 2
+            meta["dependents_count"] = str(dependents)
+            meta["verified_priority"] = str(is_verified).lower()
+
+            self._write(
+                self.pending_collection, 'update',
+                ids=[sub_id],
+                metadatas=[meta],
+            )
+
+            if is_verified:
+                verified_count += 1
+                logger.info(
+                    f"[MASTER-DB] 优先级验证通过: {formula_name} "
+                    f"(被{dependents}个pending公式依赖)"
+                )
+            else:
+                rejected_count += 1
+                logger.info(
+                    f"[MASTER-DB] 优先级声明无效: {formula_name} "
+                    f"(仅被{dependents}个pending公式依赖，需≥2)"
+                )
+
+            details.append({
+                "submission_id": sub_id,
+                "formula_name": formula_name,
+                "dependents_count": dependents,
+                "verified": is_verified,
+            })
+
+        logger.info(
+            f"[MASTER-DB] 优先级验证完成: {verified_count}个通过, "
+            f"{rejected_count}个无效"
+        )
+
+        return {
+            "verified": verified_count,
+            "rejected": rejected_count,
+            "details": details,
+        }
+
+    def list_pending_by_priority(self, limit: int = 500) -> List[Dict[str, Any]]:
+        """
+        按优先级排序列出待验证公式。
+
+        排序规则：
+        1. verified_priority=true 的最优先
+        2. priority_hint=true 但未验证的次之
+        3. 普通公式按提交时间排序
+
+        包含状态：
+        - pending: 从未验证过
+        - dependency_gap: 之前因依赖不足被卡，可能现在依赖已满足
+        不包含：processing（正在验证）、promoted（已入库）、rejected（已拒绝）、archived、withdrawn
+        rejected的公式不重新拾取，避免worker空转
+        """
+        items = self.list_pending(limit=limit)
+        # 只返回可重新验证的状态
+        retryable_statuses = {"pending", "dependency_gap"}
+        pending_items = [item for item in items if item.get("status") in retryable_statuses]
+
+        def priority_score(item):
+            verified = item.get("verified_priority", "false") == "true"
+            hinted = item.get("priority_hint", "false") == "true"
+            deps = int(item.get("dependents_count", "0"))
+            status = item.get("status", "")
+            # pending最优先，dependency_gap次之，rejected最后
+            status_order = {"pending": 0, "dependency_gap": 1, "rejected": 2}.get(status, 3)
+            if verified:
+                return (0, status_order, -deps)
+            elif hinted:
+                return (1, status_order, -deps)
+            else:
+                return (2, status_order, 0)
+
+        pending_items.sort(key=priority_score)
+        return pending_items
 
     # ==================== 验证入库 ====================
 
@@ -335,10 +561,15 @@ class MasterDatabase:
         # 检查是否已存在（同名公式不重复入库）
         existing = self.master_collection.get(ids=[master_id], include=["metadatas"])
         if existing["ids"]:
-            logger.warning(f"[MASTER-DB] 公式已存在: {formula_name} (id={master_id})，跳过重复入库")
-            # 更新待验证状态为 duplicate
-            self._update_pending_status(submission_id, "duplicate")
-            return ""
+            logger.info(
+                f"[MASTER-DB] 同名公式已入库: {formula_name} (id={master_id})，返回已有master_id"
+            )
+            # 同名但验证通过 → 标记为promoted（与首次入库一致）
+            self._update_pending_status(
+                submission_id, "promoted",
+                verification_result=verification_result_json,
+            )
+            return master_id
 
         # 组装主库记录
         # 提取Berry角度数据用于长期积累
@@ -350,6 +581,7 @@ class MasterDatabase:
 
         master_metadata = {
             "master_id": master_id,
+            "permanent_number": str(self._next_seq()),  # 永久编号，一入库不回收
             "formula_name": formula_name,
             "source_agent": pending["metadata"].get("source_agent", ""),
             "verified_at": datetime.now().isoformat(),
@@ -369,7 +601,8 @@ class MasterDatabase:
             "berry_closure": "pending",  # pending / closed / broken
         }
 
-        self.master_collection.add(
+        self._write(
+            self.master_collection, 'add',
             ids=[master_id],
             documents=[pending["document"]],
             metadatas=[master_metadata],
@@ -416,7 +649,8 @@ class MasterDatabase:
         for k, v in extra.items():
             meta[k] = v if not isinstance(v, dict) else json.dumps(v, ensure_ascii=False)
         # ChromaDB 的 update
-        self.pending_collection.update(
+        self._write(
+            self.pending_collection, 'update',
             ids=[submission_id],
             metadatas=[meta],
         )
@@ -441,6 +675,7 @@ class MasterDatabase:
                 continue
             items.append({
                 "master_id": mid,
+                "permanent_number": int(meta.get("permanent_number", "0")) if meta.get("permanent_number") else 0,
                 "formula_name": meta.get("formula_name", ""),
                 "document": result["documents"][i],
                 "verified_at": meta.get("verified_at", ""),
@@ -542,7 +777,8 @@ class MasterDatabase:
             "locked": "true",  # 注册后锁死
         }
 
-        self.pia_collection.add(
+        self._write(
+            self.pia_collection, 'add',
             ids=[pia_id],
             documents=[f"PIA: {name}\n几何内容: {geometric_content}\n物理识别: {physical_identification}"],
             metadatas=[metadata],
@@ -583,6 +819,101 @@ class MasterDatabase:
         """检查PIA是否已注册（用于验证器判断ℰ是否合法）"""
         return self.get_pia() is not None
 
+    def force_promote_pia(self) -> Dict[str, Any]:
+        """
+        将已注册的PIA（ℰ映射）强制入库为绝对真理。
+
+        ℰ是物理世界与几何理论的唯一映射——语义声明，不是可验证的数学命题。
+        它通过PIA注册流程登记，不需要通过三层验证协议。
+        入库后永久锁死，不再接受任何新的物理映射或物理假设。
+
+        Returns:
+            {"success": bool, "master_id": str, "message": str}
+        """
+        pia = self.get_pia()
+        if not pia:
+            return {
+                "success": False,
+                "message": "PIA尚未注册，无法入库",
+            }
+
+        pia_id = pia["pia_id"]
+        formula_name = f"ℰ 映射（{pia['name']}）"
+
+        # 检查是否已入库
+        master_id = f"master_pia_{pia_id}"
+        existing = self.master_collection.get(ids=[master_id], include=["metadatas"])
+        if existing["ids"]:
+            logger.info(f"[MASTER-DB] PIA已入库: {formula_name} (id={master_id})")
+            return {
+                "success": True,
+                "master_id": master_id,
+                "message": f"ℰ映射已入库为绝对真理 (id={master_id})",
+            }
+
+        # 组装主库记录——PIA的特殊记录
+        master_metadata = {
+            "master_id": master_id,
+            "formula_name": formula_name,
+            "source_agent": "pia_registration",
+            "verified_at": datetime.now().isoformat(),
+            "verification_result": json.dumps({
+                "passed": True,
+                "action": "pia_force_promoted",
+                "message": "PIA语义声明，直接入库，不经三层验证",
+                "stages": {
+                    "topology_check": {"passed": True, "note": "PIA不参与拓扑分类"},
+                    "berry_check": {"skipped": True, "note": "PIA是语义声明，不适用Berry检查"},
+                    "falsification": {"skipped": True, "note": "PIA是语义声明，不适用证伪检查"},
+                    "independent_derivation": {"skipped": True, "note": "PIA是语义声明，不经推导复现"},
+                },
+            }, ensure_ascii=False),
+            "status": "verified",
+            "original_submission": "",
+            "topology_class": "PIA",
+            "berry_status": "pia_anchor",
+            "berry_phase": "0",
+            "berry_n_value": "0",
+            "berry_path_points": "[]",
+            "source_trace": "[]",
+            "source_risk_level": "clean",
+            "berry_closure": "closed",
+            "is_pia": "true",
+            "pia_id": pia_id,
+            "pia_locked": "true",
+            "pia_physical_identification": pia.get("physical_identification", ""),
+            "pia_geometric_content": pia.get("geometric_content", ""),
+        }
+
+        doc_text = (
+            f"【PIA物理识别锚点】{formula_name}\n\n"
+            f"【几何内容】{pia.get('geometric_content', '')}\n\n"
+            f"【物理识别】{pia.get('physical_identification', '')}\n\n"
+            f"【性质】语义声明，不经数学验证。"
+            f"这是框架中唯一允许的几何→物理映射，入库后永久锁死。"
+        )
+
+        self._write(
+            self.master_collection, 'add',
+            ids=[master_id],
+            documents=[doc_text],
+            metadatas=[master_metadata],
+        )
+
+        logger.info(
+            f"[MASTER-DB] PIA强制入库: {formula_name} (id={master_id})。"
+            f"物理映射已永久锁死。"
+        )
+
+        return {
+            "success": True,
+            "master_id": master_id,
+            "message": (
+                f"ℰ映射已入库为绝对真理 (id={master_id})。"
+                f"物理映射已永久锁死——以后不再接受任何新的物理映射或物理假设。"
+            ),
+        }
+
     # ==================== 替代证明 & 定期自查 ====================
 
     def add_alternative_proof(
@@ -621,7 +952,7 @@ class MasterDatabase:
         meta["alternative_proofs"] = json.dumps(existing_proofs, ensure_ascii=False)
         meta["proof_count"] = str(len(existing_proofs) + 1)  # +1 for original
 
-        self.master_collection.update(ids=[master_id], metadatas=[meta])
+        self._write(self.master_collection, 'update', ids=[master_id], metadatas=[meta])
 
         logger.info(
             f"[MASTER-DB] 替代证明附加: {meta.get('formula_name', '')} "
@@ -833,10 +1164,10 @@ class MasterDatabase:
         })
         meta_into["merge_history"] = json.dumps(merge_history, ensure_ascii=False)
 
-        self.master_collection.update(ids=[into_id], metadatas=[meta_into])
+        self._write(self.master_collection, 'update', ids=[into_id], metadatas=[meta_into])
 
         # 删除被合并的定理
-        self.master_collection.delete(ids=[from_id])
+        self._write(self.master_collection, 'delete', ids=[from_id])
 
         logger.info(
             f"[MASTER-DB] 定理合并: {meta_from.get('formula_name', '')} ({from_id}) → "
@@ -883,7 +1214,8 @@ class MasterDatabase:
         meta["berry_closure"] = berry_closure
         meta["source_audited_at"] = datetime.now().isoformat()
 
-        self.master_collection.update(
+        self._write(
+            self.master_collection, 'update',
             ids=[master_id],
             metadatas=[meta],
         )
@@ -955,7 +1287,7 @@ class MasterDatabase:
         meta["status"] = "suspended"
         meta["suspended_at"] = datetime.now().isoformat()
         meta["suspend_reason"] = reason
-        self.master_collection.update(ids=[master_id], metadatas=[meta])
+        self._write(self.master_collection, 'update', ids=[master_id], metadatas=[meta])
         self.suspended_set.add(master_id)
         logger.warning(f"[MASTER-DB] 公式标记存疑: {master_id} | 原因: {reason}")
         return True
@@ -975,10 +1307,34 @@ class MasterDatabase:
 
     def get_status(self) -> Dict[str, Any]:
         """获取主库状态摘要"""
+        # 统计各状态的pending记录数
+        pending_total = 0  # 全部记录
+        pending_active = 0  # 不含archived/withdrawn
+        pending_by_status = {}  # 按状态分
+        if self.pending_collection:
+            all_pending = self.pending_collection.get(include=["metadatas"])
+            for meta in all_pending.get("metadatas", []):
+                status = meta.get("status", "pending")
+                pending_total += 1
+                pending_by_status[status] = pending_by_status.get(status, 0) + 1
+                if status not in ("archived", "withdrawn"):
+                    pending_active += 1
+
+        # 真正"待验证"的 = pending + processing + dependency_gap + rejected
+        # 不含 promoted（已入库）、archived、withdrawn
+        waiting_verification = sum(
+            pending_by_status.get(s, 0)
+            for s in ("pending", "processing", "dependency_gap", "rejected",
+                      "waiting_dependencies", "duplicate", "alternative_proof")
+        )
+
         return {
             "initialized": self._initialized,
             "master_formulas_count": self.master_count,
-            "pending_count": self.pending_collection.count() if self.pending_collection else 0,
+            "pending_count": waiting_verification,  # 真正待验证的
+            "pending_active": pending_active,  # 全部活跃记录（含promoted）
+            "pending_total": pending_total,  # 全部记录（含archived/withdrawn）
+            "pending_by_status": pending_by_status,  # 按状态明细
             "suspended_count": len(self.suspended_set),
             "embedding_ready": self._embedding_fn is not None,
         }

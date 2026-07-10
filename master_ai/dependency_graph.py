@@ -42,9 +42,70 @@ class DependencyGraph:
         self._name_to_master: Dict[str, str] = {}
         # 历史重试记录
         self._retry_history: List[Dict] = []
+        # 边来源记录：detect_cycles时填充，供detect_interlocks使用
+        self._edge_sources: Dict[tuple, str] = {}
 
         if persist_path and os.path.exists(persist_path):
             self._load()
+
+    def sync_with_master_db(self, master_collection) -> int:
+        """
+        与真理库同步：将所有已入库真理注册到_name_to_master映射。
+
+        问题是：很多真理通过历史验证入库，但依赖图可能被重置或未持久化，
+        导致_name_to_master只有很少的条目。验证器查依赖时找不到已入库的定理，
+        误判为"依赖缺失"。
+
+        此方法在主库启动时调用，确保所有真理都注册到依赖图。
+
+        Args:
+            master_collection: ChromaDB的master_collection对象
+
+        Returns:
+            新增的映射数量
+        """
+        all_truth = master_collection.get(include=["metadatas"])
+        added = 0
+        for meta in all_truth["metadatas"]:
+            name = meta.get("formula_name", "")
+            master_id = meta.get("master_id", "")
+            if not name or not master_id:
+                continue
+
+            # 注册全名
+            if name not in self._name_to_master:
+                self._name_to_master[name] = master_id
+                added += 1
+
+            # 注册简称（去掉括号部分）
+            short_name = name.split("（")[0].split("(")[0].strip()
+            if short_name and short_name not in self._name_to_master:
+                self._name_to_master[short_name] = master_id
+                added += 1
+
+            # 同时确保节点也注册了
+            if master_id not in self._nodes:
+                self._nodes[master_id] = {
+                    "formula_id": master_id,
+                    "formula_name": name,
+                    "status": "promoted",
+                    "dependencies": [],
+                    "master_id": master_id,
+                    "updated_at": datetime.now().isoformat(),
+                    "interlock_hint": [],
+                    "interlock_reasoning": "",
+                }
+
+        if added > 0:
+            self._rebuild_reverse()
+            self._save()
+            logger.info(
+                f"[DEP-GRAPH] 与真理库同步完成: 新增 {added} 个名称映射, "
+                f"总计 {len(self._name_to_master)} 个映射, "
+                f"{len(self._nodes)} 个节点"
+            )
+
+        return added
 
     # ==================== 注册 ====================
 
@@ -55,6 +116,8 @@ class DependencyGraph:
         status: str = "pending",
         dependencies: Optional[List[str]] = None,
         master_id: str = "",
+        interlock_hint: Optional[List[str]] = None,
+        interlock_reasoning: str = "",
     ):
         """
         注册或更新一个公式节点。
@@ -65,6 +128,8 @@ class DependencyGraph:
             status: promoted / blocked / pending / rejected
             dependencies: 依赖的前置定理名称列表
             master_id: 如果已入库，对应的 master_id
+            interlock_hint: 子AI提供的互锁提示（认为与本公式互锁的定理名）
+            interlock_reasoning: 子AI的互锁推导说明
         """
         old = self._nodes.get(formula_id, {})
         old_deps = set(old.get("dependencies", []))
@@ -78,6 +143,9 @@ class DependencyGraph:
             "dependencies": list(new_deps),
             "master_id": master_id,
             "updated_at": datetime.now().isoformat(),
+            # 子AI互锁提示
+            "interlock_hint": interlock_hint or [],
+            "interlock_reasoning": interlock_reasoning or "",
         }
 
         # 如果已入库，注册名称映射
@@ -377,20 +445,58 @@ class DependencyGraph:
         """
         # 构建邻接表：公式A → 公式B（A依赖B）
         # 通过名称模糊匹配建立边
+        # 同时纳入子AI的互锁提示作为额外边
         adj: Dict[str, Set[str]] = defaultdict(set)
+        # 记录边的来源：结构检测 vs 子AI提示
+        self._edge_sources: Dict[tuple, str] = {}  # (A, B) → "structural" | "sub_ai_hint"
         node_ids = list(self._nodes.keys())
 
         for fid, node in self._nodes.items():
             deps = node.get("dependencies", [])
             for dep in deps:
                 dep_short = dep.split("（")[0].split("(")[0].strip().lower()
+                if len(dep_short) < 3:
+                    continue  # 依赖名太短，跳过（避免假阳性）
                 # 在所有节点中找匹配的
                 for other_fid, other_node in self._nodes.items():
                     if other_fid == fid:
                         continue
                     other_short = other_node.get("formula_name", "").split("（")[0].split("(")[0].strip().lower()
-                    if dep_short in other_short or other_short in dep_short:
+                    if len(other_short) < 3:
+                        continue  # 节点名太短，跳过
+                    # 只允许长名包含短名，不允许短名包含长名
+                    # 避免两个短名互相"包含"
+                    if len(dep_short) >= len(other_short):
+                        if other_short in dep_short:
+                            adj[fid].add(other_fid)
+                    else:
+                        if dep_short in other_short:
+                            adj[fid].add(other_fid)
+                            self._edge_sources[(fid, other_fid)] = "structural"
+
+        # 纳入子AI互锁提示作为额外边
+        # 如果子AI说公式A与公式B互锁，则建立A→B和B→A的双向边
+        for fid, node in self._nodes.items():
+            hints = node.get("interlock_hint", [])
+            if not hints:
+                continue
+            for hint_name in hints:
+                hint_short = hint_name.split("（")[0].split("(")[0].strip().lower()
+                if len(hint_short) < 3:
+                    continue
+                # 在所有节点中找匹配的
+                for other_fid, other_node in self._nodes.items():
+                    if other_fid == fid:
+                        continue
+                    other_short = other_node.get("formula_name", "").split("（")[0].split("(")[0].strip().lower()
+                    if len(other_short) < 3:
+                        continue
+                    if hint_short in other_short or other_short in hint_short:
+                        # 子AI提示的互锁：建立双向边
                         adj[fid].add(other_fid)
+                        adj[other_fid].add(fid)
+                        self._edge_sources[(fid, other_fid)] = "sub_ai_hint"
+                        self._edge_sources[(other_fid, fid)] = "sub_ai_hint"
 
         # Tarjan SCC 算法
         index_counter = [0]
@@ -513,6 +619,212 @@ class DependencyGraph:
                     "unsatisfied_external_deps": c["unsatisfied_external_deps"][:3],
                 }
                 for c in cycles
+            ],
+        }
+
+    def detect_interlocks(self) -> List[Dict[str, Any]]:
+        """
+        检测互锁定理——比环路更强的关系判断。
+
+        互锁的定义：
+        - 强互锁（mutual）：A的推导链引用B，B的推导链也引用A。
+          两者谁也离不开谁，必须作为整体批量验证。
+        - 弱互锁（cyclic）：A→B→C→A，形成长度≥3的环。
+          虽然不是直接互引，但整体无法拆开单独验证。
+        - 互锁+外部依赖：互锁组还缺少组外的定理，
+          需要外部定理先入库才能解锁整个互锁组。
+
+        与detect_cycles的区别：
+        - detect_cycles只找SCC（有环就报）
+        - detect_interlocks进一步分类：
+          * 哪些是直接互引（强互锁）
+          * 哪些是间接成环（弱互锁）
+          * 互锁组是否自包含（可以立即批量验证）
+          * 互锁组的外部依赖是什么（需要先验证什么）
+
+        Returns:
+            互锁组列表，每个包含:
+            {
+                "interlock_id": str,
+                "type": "strong" | "weak",  # 强互锁=直接互引, 弱互锁=间接成环
+                "formulas": [...],
+                "mutual_pairs": [(A, B), ...],  # 强互锁的直接互引对
+                "external_deps": [...],  # 组外依赖
+                "is_self_contained": bool,  # 无外部依赖→可立即批量验证
+                "batch_verification_ready": bool,  # 是否可以立即批量验证
+                "blocking_reason": str,  # 如果不能批量验证，原因是什么
+            }
+        """
+        # 复用detect_cycles的SCC检测
+        cycles = self.detect_cycles()
+
+        interlocks = []
+        for i, cycle in enumerate(cycles):
+            scc_ids = [f["formula_id"] for f in cycle["formulas"]]
+
+            # 检测强互锁对（直接互引）
+            mutual_pairs = []
+            for fid_a in scc_ids:
+                node_a = self._nodes.get(fid_a, {})
+                name_a = node_a.get("formula_name", "")
+                deps_a = node_a.get("dependencies", [])
+                name_a_short = name_a.split("（")[0].split("(")[0].strip().lower()
+
+                if len(name_a_short) < 3:
+                    continue  # 名称太短，跳过（避免假阳性）
+
+                for fid_b in scc_ids:
+                    if fid_a >= fid_b:
+                        continue  # 避免重复
+                    node_b = self._nodes.get(fid_b, {})
+                    name_b = node_b.get("formula_name", "")
+                    deps_b = node_b.get("dependencies", [])
+                    name_b_short = name_b.split("（")[0].split("(")[0].strip().lower()
+
+                    if len(name_b_short) < 3:
+                        continue  # 名称太短，跳过
+
+                    # A引用B 且 B引用A → 强互锁
+                    a_refs_b = any(
+                        len(d.split("（")[0].split("(")[0].strip().lower()) >= 3
+                        and name_b_short in d.split("（")[0].split("(")[0].strip().lower()
+                        for d in deps_a
+                    )
+                    b_refs_a = any(
+                        len(d.split("（")[0].split("(")[0].strip().lower()) >= 3
+                        and name_a_short in d.split("（")[0].split("(")[0].strip().lower()
+                        for d in deps_b
+                    )
+
+                    if a_refs_b and b_refs_a:
+                        mutual_pairs.append((fid_a, fid_b))
+
+            # 判断互锁类型
+            interlock_type = "strong" if mutual_pairs else "weak"
+
+            # 外部依赖
+            external_deps = cycle.get("unsatisfied_external_deps", [])
+            is_self_contained = cycle.get("is_self_contained", False)
+
+            # 判断是否可以立即批量验证
+            batch_ready = is_self_contained
+            blocking_reason = ""
+            if not batch_ready:
+                if external_deps:
+                    blocking_reason = (
+                        f"互锁组缺少外部依赖: {', '.join(external_deps[:3])}。"
+                        f"需要先验证这些定理，才能解锁互锁组进行批量验证。"
+                    )
+                else:
+                    blocking_reason = "互锁组状态异常，无法批量验证"
+
+            # 收集子AI互锁提示和推导说明
+            sub_ai_hints = []
+            sub_ai_reasonings = []
+            has_sub_ai_hint = False
+            for fid in scc_ids:
+                node = self._nodes.get(fid, {})
+                hints = node.get("interlock_hint", [])
+                reasoning = node.get("interlock_reasoning", "")
+                if hints:
+                    has_sub_ai_hint = True
+                    sub_ai_hints.extend(hints)
+                if reasoning:
+                    sub_ai_reasonings.append({
+                        "formula": node.get("formula_name", ""),
+                        "reasoning": reasoning,
+                    })
+
+            # 检测哪些边来自子AI提示
+            sub_ai_edges = []
+            for fid_a in scc_ids:
+                for fid_b in scc_ids:
+                    if fid_a != fid_b and self._edge_sources.get((fid_a, fid_b)) == "sub_ai_hint":
+                        sub_ai_edges.append({
+                            "from": self._nodes.get(fid_a, {}).get("formula_name", fid_a),
+                            "to": self._nodes.get(fid_b, {}).get("formula_name", fid_b),
+                        })
+
+            interlocks.append({
+                "interlock_id": f"interlock_{i}",
+                "type": interlock_type,
+                "size": len(scc_ids),
+                "formulas": cycle["formulas"],
+                "mutual_pairs": [
+                    {
+                        "a": self._nodes.get(a, {}).get("formula_name", a),
+                        "b": self._nodes.get(b, {}).get("formula_name", b),
+                    }
+                    for a, b in mutual_pairs
+                ],
+                "external_deps": external_deps,
+                "is_self_contained": is_self_contained,
+                "batch_verification_ready": batch_ready,
+                "blocking_reason": blocking_reason,
+                # 子AI互锁信息
+                "has_sub_ai_hint": has_sub_ai_hint,
+                "sub_ai_hints": list(set(sub_ai_hints)),
+                "sub_ai_reasonings": sub_ai_reasonings,
+                "sub_ai_edges": sub_ai_edges,
+            })
+
+        if interlocks:
+            strong = sum(1 for il in interlocks if il["type"] == "strong")
+            weak = len(interlocks) - strong
+            ready = sum(1 for il in interlocks if il["batch_verification_ready"])
+            logger.info(
+                f"[DEP-GRAPH] 检测到 {len(interlocks)} 个互锁组"
+                f"（强互锁={strong}, 弱互锁={weak}, 可批量验证={ready}）"
+            )
+
+        return interlocks
+
+    def get_interlocks_for_formula(self, formula_id: str) -> List[Dict[str, Any]]:
+        """
+        查询某个公式参与的互锁组。
+
+        用于验证器在公式被阻塞时判断：
+        - 是单纯的依赖不足（等待某个定理入库）
+        - 还是互锁（需要批量验证才能解决）
+
+        Returns:
+            该公式参与的所有互锁组
+        """
+        all_interlocks = self.detect_interlocks()
+        related = []
+        for il in all_interlocks:
+            for f in il["formulas"]:
+                if f["formula_id"] == formula_id:
+                    related.append(il)
+                    break
+        return related
+
+    def get_interlock_summary(self) -> Dict[str, Any]:
+        """获取互锁检测摘要"""
+        interlocks = self.detect_interlocks()
+        return {
+            "total_interlocks": len(interlocks),
+            "strong_interlocks": sum(1 for il in interlocks if il["type"] == "strong"),
+            "weak_interlocks": sum(1 for il in interlocks if il["type"] == "weak"),
+            "batch_ready": sum(1 for il in interlocks if il["batch_verification_ready"]),
+            "formulas_in_interlocks": sum(il["size"] for il in interlocks),
+            "interlocks": [
+                {
+                    "interlock_id": il["interlock_id"],
+                    "type": il["type"],
+                    "size": il["size"],
+                    "batch_ready": il["batch_verification_ready"],
+                    "mutual_pairs": il["mutual_pairs"],
+                    "formulas": [f["formula_name"] for f in il["formulas"]],
+                    "blocking_reason": il["blocking_reason"],
+                    "external_deps": il["external_deps"][:3],
+                    # 子AI互锁信息
+                    "has_sub_ai_hint": il.get("has_sub_ai_hint", False),
+                    "sub_ai_hints": il.get("sub_ai_hints", []),
+                    "sub_ai_reasonings": il.get("sub_ai_reasonings", []),
+                    "sub_ai_edges": il.get("sub_ai_edges", []),
+                }
+                for il in interlocks
             ],
         }
 

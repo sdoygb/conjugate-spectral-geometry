@@ -572,32 +572,32 @@ ARTICLE_TOOLS = [
         "type": "function",
         "function": {
             "name": "submit_to_master",
-            "description": "提交候选公式到主库AI进行圆满验证。本地自检通过后调用此工具，主库AI会独立从公理重推导验证。返回提交ID，可用 check_master_status 查询验证结果。",
+            "description": "提交候选公式到主库AI进行圆满验证。主库只接受纯几何数学公式和推导过程。物理量纲相关的推导（如ℰ映射、物理常数、SI单位等）不要提交主库，请在本地完成。本地自检通过后调用此工具，主库AI会独立从公理重推导验证。返回提交ID，可用 check_master_status 查询验证结果。",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "formula_name": {
                         "type": "string",
-                        "description": "公式名称/标题，如'光子零质量定理'"
+                        "description": "公式名称/标题，如'定理4.1：全息屏相容三元组'"
                     },
                     "formula_content": {
                         "type": "string",
-                        "description": "公式的数学表达式和完整说明"
+                        "description": "公式的数学表达式和完整说明。注意：只包含纯几何数学内容，不要包含物理量纲、物理常数或物理映射。"
                     },
                     "derivation_chain": {
                         "type": "string",
-                        "description": "推导链，标注每步引用的公理/定理和角度参数(θ_M, θ_C, θ_I)。格式：步骤1: 从公理X出发...；步骤2: ..."
+                        "description": "推导链，标注每步引用的公理/定理和角度参数(θ_M, θ_C, θ_I)。格式：步骤1: 从公理X出发...；步骤2: ...。注意：只能引用已入库的几何定理，不能引用物理概念。"
                     },
                     "external_anchors": {
                         "type": "array",
                         "items": {"type": "string"},
-                        "description": "外部锚点列表。唯一合法值: 'ℰ'（单一物理映射）。Born规则、物理识别点等不是独立假设，必须从ℰ推导入库后才能用。如果推导用了ℰ映射，填[\"ℰ\"]；纯数学推导填[]。",
+                        "description": "[已封禁] 外部锚点不再接受。主库只接受纯几何推导，不依赖任何外部物理输入。固定填[]。",
                         "default": []
                     },
                     "topology_class": {
                         "type": "string",
                         "enum": ["A0", "A1"],
-                        "description": "拓扑分类（必填）。A0=局部代数命题（Berry相位=0，如代数恒等式、群论计算、微积分命题）。A1=整体拓扑命题（Berry相位=2π，如叶空间拓扑、Hopf纤维化、Euler类等需要整体几何结构的定理）。A1类定理不允许依赖外部物理输入。"
+                        "description": "拓扑分类（必填）。A0=局部代数命题（Berry相位=0，如代数恒等式、群论计算、微积分命题）。A1=整体拓扑命题（Berry相位=2π，如叶空间拓扑、Hopf纤维化、Euler类等需要整体几何结构的定理）。"
                     },
                     "local_berry_phase": {
                         "type": "number",
@@ -606,6 +606,21 @@ ARTICLE_TOOLS = [
                     "local_n_value": {
                         "type": "integer",
                         "description": "本地自检的n值（1=初圆满, 2=中圆满, 3=上圆满）"
+                    },
+                    "priority_hint": {
+                        "type": "boolean",
+                        "description": "优先验证提示。如果这个定理是很多其他定理的前置依赖，设为true。主库AI会验证此声明：检查pending队列中有多少公式在推导链中引用了这个定理名，如果确实被大量引用则提前验证。",
+                        "default": False
+                    },
+                    "interlock_hint": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "子AI提供的互锁提示。列出子AI认为与本定理互锁的定理名称（即本定理的推导引用了它们，它们的推导也引用了本定理，或形成间接环路）。主库AI会验证此提示：检查依赖图中是否确实存在互锁关系，并参考子AI的互锁推导过程来判断是否需要批量验证。",
+                        "default": []
+                    },
+                    "interlock_reasoning": {
+                        "type": "string",
+                        "description": "子AI对互锁关系的推导说明。解释为什么认为这些定理互锁，以及互锁组应该作为整体验证的理由。主库AI在做批量验证判断时会参考这段推导。"
                     }
                 },
                 "required": ["formula_name", "formula_content", "derivation_chain", "topology_class"]
@@ -650,7 +665,7 @@ ARTICLE_TOOLS = [
         "type": "function",
         "function": {
             "name": "sync_master_truth",
-            "description": "从主库同步已验证的绝对真理到本地。同步后，这些已验证公式可以在推导中作为合法起点引用。建议在开始推导新公式前先同步一次。",
+            "description": "从主库同步已验证的绝对真理到本地。每个真理公式有唯一永久编号（#1, #2, #3...），同步后会显示编号列表。同步后可在推导中用编号#N引用已验证定理作为合法起点。建议在开始推导新公式前先同步一次。",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -1638,6 +1653,13 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                         "hint": "A0=局部代数(Berry相位=0), A1=整体拓扑(Berry相位=2π)",
                     }
 
+                # 优先验证提示
+                priority_hint = arguments.get("priority_hint", False)
+
+                # 互锁提示
+                interlock_hint = arguments.get("interlock_hint", [])
+                interlock_reasoning = arguments.get("interlock_reasoning", "")
+
                 submission_id = client.submit_formula(
                     formula_name=formula_name,
                     formula_content=formula_content,
@@ -1645,22 +1667,56 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                     local_verification=local_verification,
                     external_anchors=external_anchors,
                     topology_class=topology_class,
+                    priority_hint=priority_hint,
+                    interlock_hint=interlock_hint,
+                    interlock_reasoning=interlock_reasoning,
                 )
 
                 if submission_id:
-                    return (
-                        f"✓ 候选公式已提交到主库AI验证\n"
-                        f"  公式: {formula_name}\n"
-                        f"  提交ID: {submission_id}\n"
-                        f"  状态: 待验证\n"
-                        f"  \n"
-                        f"  主库AI将进行三重检查:\n"
-                        f"  1. Berry回路闭合检测\n"
-                        f"  2. §9.6证伪条件检查\n"
-                        f"  3. 独立推导复现\n"
-                        f"  \n"
-                        f"  使用 check_master_status 工具查询验证结果。"
-                    )
+                    # submit_formula现在返回dict
+                    if isinstance(submission_id, dict):
+                        sid = submission_id.get("submission_id", "")
+                        status = submission_id.get("status", "pending")
+                        message = submission_id.get("message", "")
+                        dup_name = submission_id.get("duplicate_of_name", "")
+                        dup_sim = submission_id.get("duplicate_similarity", "")
+
+                        if status == "duplicate":
+                            return (
+                                f"⊘ 重复提交，已拒收\n"
+                                f"  公式: {formula_name}\n"
+                                f"  提交ID: {sid}\n"
+                                f"  状态: 精确重复\n"
+                                f"  重复定理: {dup_name}\n"
+                                f"  相似度: {dup_sim}\n"
+                                f"  \n"
+                                f"  {message}"
+                            )
+                        else:
+                            return (
+                                f"✓ 候选公式已提交到主库AI验证\n"
+                                f"  公式: {formula_name}\n"
+                                f"  提交ID: {sid}\n"
+                                f"  状态: 待验证\n"
+                                f"  \n"
+                                f"  主库AI将进行三重检查:\n"
+                                f"  0. 拓扑分类检查（A0/A1 + Berry一致性）\n"
+                                f"  1. Berry回路闭合检测\n"
+                                f"  2. §9.6证伪条件检查\n"
+                                f"  3. 独立推导复现\n"
+                                f"  \n"
+                                f"  使用 check_master_status 工具查询验证结果。"
+                            )
+                    else:
+                        # 兼容旧格式（直接返回ID字符串）
+                        return (
+                            f"✓ 候选公式已提交到主库AI验证\n"
+                            f"  公式: {formula_name}\n"
+                            f"  提交ID: {submission_id}\n"
+                            f"  状态: 待验证\n"
+                            f"  \n"
+                            f"  使用 check_master_status 工具查询验证结果。"
+                        )
                 else:
                     return f"提交失败: 无法连接主库AI ({client.url})"
             except Exception as e:
@@ -1685,11 +1741,15 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                     status = result.get("status", "unknown")
                     status_map = {
                         "pending": "⏳ 待验证",
+                        "processing": "🔄 验证中",
                         "promoted": "✓ 验证通过，已入库",
                         "rejected": "✗ 验证未通过",
                         "dependency_gap": "⚠ 依赖不足（需要补全前置定理）",
                         "waiting_dependencies": "⏸ 等待依赖（已达最大重试）",
-                        "duplicate": "⊘ 重复提交",
+                        "duplicate": "⊘ 重复提交（与已入库定理高度相似，提交时即拒收）",
+                        "alternative_proof": "✓ 验证通过，附加为替代证明",
+                        "archived": "📦 已归档（旧版本，有新版替代或已过期）",
+                        "withdrawn": "🚫 已撤回",
                     }
                     status_text = status_map.get(status, status)
 
@@ -1732,10 +1792,33 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                     if status == "rejected":
                         reason = result.get("rejection_reason", "")
                         if reason:
-                            output += f"\n驳回原因: {reason[:300]}\n"
+                            output += f"\n驳回原因: {reason[:500]}\n"
+                        # 也显示拓扑检查详情
+                        vs = result.get("verification_summary", {})
+                        if vs:
+                            action = vs.get("action", "")
+                            if action:
+                                output += f"验证动作: {action}\n"
+
+                    # 显示重复信息
+                    elif status == "duplicate":
+                        dup_of = result.get("duplicate_of", "")
+                        dup_sim = result.get("duplicate_similarity", "")
+                        if dup_of:
+                            output += f"\n重复定理ID: {dup_of}\n"
+                        if dup_sim:
+                            output += f"相似度: {dup_sim}\n"
+                        output += "该提交与已入库定理精确重复，未进入验证流程。\n"
+
+                    # 显示替代证明信息
+                    elif status == "alternative_proof":
+                        vs = result.get("verification_summary", {})
+                        output += f"\n该公式验证通过，但与已入库定理高度相似，已附加为替代证明。\n"
+                        if vs.get("action"):
+                            output += f"动作: {vs['action']}\n"
 
                     # 显示依赖缺口
-                    elif status == "dependency_gap" or status == "waiting_dependencies":
+                    elif status in ("dependency_gap", "waiting_dependencies"):
                         gap = result.get("dependency_gap", {})
                         if isinstance(gap, str):
                             import json as _json
@@ -1752,13 +1835,32 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                         if guidance:
                             output += f"\n指导建议: {guidance}\n"
 
+                        # 显示互锁信息
+                        vs = result.get("verification_summary", {})
+                        if vs.get("is_interlocked"):
+                            il_type = vs.get("interlock_type", "")
+                            il_group = vs.get("interlock_group", [])
+                            il_ready = vs.get("interlock_batch_ready", False)
+                            type_label = "强互锁（直接互引）" if il_type == "strong" else "弱互锁（间接成环）"
+                            output += f"\n🔒 互锁状态: {type_label}\n"
+                            output += f"  互锁组: {', '.join(il_group[:5])}\n"
+                            if il_ready:
+                                output += f"  批量验证就绪: 是（主库AI将自动批量验证）\n"
+                            else:
+                                output += f"  批量验证就绪: 否（需先验证外部依赖）\n"
+
                     # 显示主库消息
                     message = result.get("message", "")
                     if message:
                         output += f"\n主库消息: {message[:300]}\n"
 
                     elif status == "promoted":
-                        output += "\n公式已通过验证，成为绝对真理。\n"
+                        vs = result.get("verification_summary", {})
+                        mid = vs.get("master_id", "")
+                        if mid:
+                            output += f"\n✓ 公式已通过验证，成为绝对真理。\n  master_id: {mid}\n"
+                        else:
+                            output += "\n公式已通过验证，成为绝对真理。\n"
 
                     return output
                 else:
@@ -1847,16 +1949,20 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                 formulas = client.fetch_truth(knowledge_base=vector_kb, force=force)
 
                 if formulas:
-                    names = [f.get("formula_name", "?") for f in formulas]
-                    return (
-                        f"✓ 真理层同步完成\n"
-                        f"  已验证绝对真理: {len(formulas)} 个\n"
-                        f"  公式列表: {', '.join(names[:10])}{'...' if len(names) > 10 else ''}\n"
-                        f"  \n"
-                        f"  这些已验证公式已存入本地 master_truth collection，\n"
-                        f"  可以在推导中作为合法起点引用。\n"
-                        f"  主库只接受绝对真理——不依赖任何未验证外部假设。"
-                    )
+                    lines = [f"✓ 真理层同步完成",
+                             f"  已验证绝对真理: {len(formulas)} 个",
+                             f"  公式列表（带永久编号）:"]
+                    for f in formulas[:15]:
+                        num = f.get("permanent_number", 0)
+                        name = f.get("formula_name", "?")
+                        lines.append(f"    #{num}  {name}")
+                    if len(formulas) > 15:
+                        lines.append(f"    ... 共 {len(formulas)} 个")
+                    lines.append("")
+                    lines.append("  这些已验证公式已存入本地 master_truth collection，")
+                    lines.append("  可以在推导中作为合法起点引用（用永久编号#N引用）。")
+                    lines.append("  主库只接受绝对真理——不依赖任何未验证外部假设。")
+                    return "\n".join(lines)
                 else:
                     return "主库真理层为空（尚无已验证公式），或同步失败"
             except Exception as e:
