@@ -42,9 +42,11 @@ def copy_source():
         if src.exists():
             if dst.exists():
                 shutil.rmtree(dst)
-            shutil.copytree(src, dst)
+            # 排除 archive/ 子目录（历史备份文件，不需要打包）
+            ignore_patterns = shutil.ignore_patterns("archive", "__pycache__", "*.pyc", ".DS_Store")
+            shutil.copytree(src, dst, ignore=ignore_patterns)
             count = sum(1 for _ in dst.rglob("*") if _.is_file())
-            print(f"  + {d}/ ({count} 文件)")
+            print(f"  + {d}/ ({count} 文件, 已排除 archive/)")
 
     # 复制 requirements.txt
     req = APP_DIR / "requirements.txt"
@@ -218,26 +220,43 @@ def generate_scripts():
         'mkdir -p "$APP_DIR/chroma_db" "$APP_DIR/logs"\n'
         'chmod -R 755 "$APP_DIR"\n'
         '\n'
-        '# 写入 .env\n'
+        '# 写入 .env（不修改模板文件 .env.example）\n'
+        'cp "$APP_DIR/.env.example" "$APP_DIR/.env"\n'
         'if [ -n "$DEEPSEEK_KEY" ]; then\n'
-        '    sed -i "s|GAI_API_KEY=在此|GAI_API_KEY=$DEEPSEEK_KEY|" "$APP_DIR/.env.example"\n'
+        '    sed -i "s|GAI_API_KEY=在此|GAI_API_KEY=$DEEPSEEK_KEY|" "$APP_DIR/.env"\n'
         'fi\n'
         'if [ -n "$SILICONFLOW_KEY" ]; then\n'
-        '    sed -i "s|SILICONFLOW_API_KEY=|SILICONFLOW_API_KEY=$SILICONFLOW_KEY|" "$APP_DIR/.env.example"\n'
+        '    sed -i "s|SILICONFLOW_API_KEY=在此|SILICONFLOW_API_KEY=$SILICONFLOW_KEY|" "$APP_DIR/.env"\n'
         'fi\n'
-        'cp "$APP_DIR/.env.example" "$APP_DIR/.env"\n'
         'echo "  [ok] 文件已安装到 $APP_DIR"\n'
         '\n'
         '# Step 3: pip 依赖\n'
         'echo "[3/6] 安装 Python 依赖..."\n'
         'MIRRORS="https://mirrors.aliyun.com/pypi/simple/ https://pypi.tuna.tsinghua.edu.cn/simple/"\n'
+        'PIP_OK=0\n'
         'for mirror in $MIRRORS; do\n'
-        '    $PYTHON -m pip install -i $mirror -r "$APP_DIR/requirements.txt" -q 2>/dev/null && break\n'
+        '    if $PYTHON -m pip install -i $mirror -r "$APP_DIR/requirements.txt" -q 2>/dev/null; then\n'
+        '        PIP_OK=1\n'
+        '        break\n'
+        '    fi\n'
         'done\n'
+        'if [ "$PIP_OK" -eq 0 ]; then\n'
+        '    echo "[!] pip 依赖安装失败，尝试默认源..."\n'
+        '    if ! $PYTHON -m pip install -r "$APP_DIR/requirements.txt" -q; then\n'
+        '        echo "[!] 所有镜像源均失败，请手动安装:"\n'
+        '        echo "    $PYTHON -m pip install -r $APP_DIR/requirements.txt"\n'
+        '        exit 1\n'
+        '    fi\n'
+        'fi\n'
         'echo "  [ok] 依赖安装完成"\n'
         '\n'
         '# Step 4: systemd 服务\n'
         'echo "[4/6] 注册 systemd 服务..."\n'
+        '# 创建非特权用户运行服务\n'
+        'if ! id -u geometry-ai &>/dev/null; then\n'
+        '    useradd -r -s /usr/sbin/nologin -d "$APP_DIR" geometry-ai\n'
+        'fi\n'
+        'chown -R geometry-ai:geometry-ai "$APP_DIR"\n'
         'cat > /etc/systemd/system/geometry-ai.service << SERVICEEOF\n'
         '[Unit]\n'
         'Description=Geometry AI Server\n'
@@ -245,7 +264,8 @@ def generate_scripts():
         '\n'
         '[Service]\n'
         'Type=simple\n'
-        'User=root\n'
+        'User=geometry-ai\n'
+        'Group=geometry-ai\n'
         'WorkingDirectory=$APP_DIR\n'
         'ExecStart=$PYTHON_PATH $APP_DIR/server.py\n'
         'Restart=always\n'
@@ -308,6 +328,8 @@ def generate_scripts():
         '# Step 5.5: 注册 Open WebUI systemd 服务\n'
         'echo "[6/7] 注册 Open WebUI 服务..."\n'
         'if [ -n "$WEBUI_BIN" ] && [ "$WEBUI_BIN" != "" ]; then\n'
+        '    # 生成随机密钥\n'
+        '    WEBUI_SECRET=$(python3 -c "import secrets; print(secrets.token_hex(32))" 2>/dev/null || openssl rand -hex 32 2>/dev/null || echo "fallback-$(date +%s)-$$")\n'
         '    cat > /etc/systemd/system/open-webui.service << WEBUIEOF\n'
         '[Unit]\n'
         'Description=Open WebUI\n'
@@ -315,7 +337,8 @@ def generate_scripts():
         '\n'
         '[Service]\n'
         'Type=simple\n'
-        'User=root\n'
+        'User=geometry-ai\n'
+        'Group=geometry-ai\n'
         'WorkingDirectory=$APP_DIR\n'
         'ExecStart=$WEBUI_BIN serve --port 8080\n'
         'Restart=always\n'
@@ -326,7 +349,7 @@ def generate_scripts():
         'Environment=OPENAI_API_BASE_URLS=http://localhost:5000/v1\n'
         'Environment=OPENAI_API_KEYS=${DEEPSEEK_KEY}\n'
         'Environment=WEBUI_NAME=Geometry AI\n'
-        'Environment=WEBUI_SECRET_KEY=geometryai-auto-secret\n'
+        'Environment=WEBUI_SECRET_KEY=${WEBUI_SECRET}\n'
         '\n'
         '[Install]\n'
         'WantedBy=multi-user.target\n'
@@ -466,7 +489,7 @@ def create_deb():
         f"Section: science\n"
         f"Priority: optional\n"
         f"Architecture: amd64\n"
-        f"Depends: python3 (>= 3.10), python3-pip, systemd\n"
+        f"Depends: python3 (>= 3.11), python3-pip, systemd\n"
         f"Recommends: sqlite3, curl\n"
         f"Maintainer: Geometry AI <support@geometry-ai.org>\n"
         f"Description: Geometry AI Server - Geometric Theory AI\n"

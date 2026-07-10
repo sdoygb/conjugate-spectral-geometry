@@ -21,19 +21,19 @@ APP_DIR="$INSTALL_DIR/app"
 SERVICE_USER="${SUDO_USER:-root}"
 
 # ============================================================
-# Step 1: 确保 Python 3.10+ 可用
+# Step 1: 确保 Python 3.11+ 可用
 # ============================================================
 echo "[1/6] 准备 Python 3.11 环境..."
 
 PYTHON=""
 
-# 先找系统已有的 Python 3.10+
-for cmd in python3.13 python3.12 python3.11 python3.10; do
+# 先找系统已有的 Python 3.11+
+for cmd in python3.13 python3.12 python3.11; do
     if command -v "$cmd" &>/dev/null; then
         ver=$($cmd -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null)
         major=${ver%%.*}
         minor=${ver##*.}
-        if [ "$major" -eq 3 ] && [ "$minor" -ge 10 ]; then
+        if [ "$major" -eq 3 ] && [ "$minor" -ge 11 ]; then
             PYTHON="$cmd"
             break
         fi
@@ -41,7 +41,7 @@ for cmd in python3.13 python3.12 python3.11 python3.10; do
 done
 
 if [ -z "$PYTHON" ]; then
-    echo "  系统未安装 Python 3.10+，正在自动安装..."
+    echo "  系统未安装 Python 3.11+，正在自动安装..."
 
     if command -v apt-get &>/dev/null; then
         # Ubuntu/Debian
@@ -81,33 +81,38 @@ if [ -z "$PYTHON" ]; then
             fi
         fi
 
-        # 尝试方法3: 用系统自带的 python3（3.10+ 也可以）
+        # 尝试方法3: 用系统自带的 python3（检查是否 3.11+）
         if [ -z "$PYTHON" ]; then
             echo "  deadsnakes 不可用，检查系统自带 Python..."
             if command -v python3 &>/dev/null; then
                 SYS_VER=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null)
                 SYS_MAJOR=$(echo "$SYS_VER" | cut -d. -f1)
                 SYS_MINOR=$(echo "$SYS_VER" | cut -d. -f2)
-                if [ "$SYS_MAJOR" -eq 3 ] && [ "$SYS_MINOR" -ge 10 ]; then
-                    echo "  使用系统 Python $SYS_VER（满足最低要求 3.10+）"
+                if [ "$SYS_MAJOR" -eq 3 ] && [ "$SYS_MINOR" -ge 11 ]; then
+                    echo "  使用系统 Python $SYS_VER（满足要求 3.11+）"
                     PYTHON="python3"
                 fi
             fi
         fi
 
-        # 尝试方法4: 用 pyenv 编译安装
+        # 尝试方法4: 从源码编译安装 Python 3.11（不使用 pyenv.run，直接下载官方源码）
         if [ -z "$PYTHON" ]; then
-            echo "  系统无合适 Python，正在用 pyenv 编译安装 3.11（需要几分钟）..."
-            apt-get install -y make build-essential libssl-dev zlib1g-dev \
-                libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
-                libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev 2>/dev/null
-            curl -sSL https://pyenv.run 2>/dev/null | bash
-            export PYENV_ROOT="$HOME/.pyenv"
-            export PATH="$PYENV_ROOT/bin:$PATH"
-            eval "$(pyenv init -)" 2>/dev/null
-            pyenv install 3.11 2>/dev/null
-            pyenv global 3.11 2>/dev/null
-            PYTHON="$PYENV_ROOT/shims/python3"
+            echo "  系统无合适 Python，从源码编译 Python 3.11（需要几分钟）..."
+            apt-get install -y build-essential zlib1g-dev libncurses5-dev \
+                libgdbm-compat-dev libnss3-dev libssl-dev libreadline-dev \
+                libffi-dev libsqlite3-dev wget libbz2-dev xz-utils 2>/dev/null
+            cd /tmp
+            wget -q https://www.python.org/ftp/python/3.11.9/Python-3.11.9.tgz
+            tar xzf Python-3.11.9.tgz
+            cd Python-3.11.9
+            ./configure --prefix=/usr/local --enable-optimizations --with-ensurepip=install > /dev/null 2>&1
+            make -j$(nproc) > /dev/null 2>&1
+            make altinstall > /dev/null 2>&1
+            cd /tmp
+            rm -rf Python-3.11.9 Python-3.11.9.tgz
+            if command -v python3.11 &>/dev/null; then
+                PYTHON="python3.11"
+            fi
         fi
 
     elif command -v dnf &>/dev/null; then
@@ -129,7 +134,7 @@ if [ -z "$PYTHON" ]; then
         PYTHON="python3.11"
 
     else
-        echo "[!] 无法识别的包管理器，请手动安装 Python 3.10+"
+        echo "[!] 无法识别的包管理器，请手动安装 Python 3.11+"
         echo "    Ubuntu/Debian: sudo apt-get install python3.11"
         echo "    Fedora: sudo dnf install python3.11"
         echo "    其他: https://www.python.org/downloads/"
@@ -139,7 +144,7 @@ fi
 
 # 验证 Python 可用
 if ! command -v "$PYTHON" &>/dev/null; then
-    echo "[!] Python 安装失败，请手动安装 Python 3.10+ 后重试"
+    echo "[!] Python 安装失败，请手动安装 Python 3.11+ 后重试"
     exit 1
 fi
 
@@ -147,8 +152,8 @@ PY_VER=$($PYTHON -c "import sys; print(f'{sys.version_info.major}.{sys.version_i
 PY_MAJOR=$($PYTHON -c "import sys; print(sys.version_info.major)" 2>/dev/null)
 PY_MINOR=$($PYTHON -c "import sys; print(sys.version_info.minor)" 2>/dev/null)
 
-if [ "$PY_MAJOR" -lt 3 ] || [ "$PY_MINOR" -lt 10 ]; then
-    echo "[!] Python 版本过低 ($PY_VER)，需要 3.10+"
+if [ "$PY_MAJOR" -lt 3 ] || [ "$PY_MINOR" -lt 11 ]; then
+    echo "[!] Python 版本过低 ($PY_VER)，需要 3.11+"
     echo "    请手动安装: sudo apt-get install python3.11"
     exit 1
 fi
