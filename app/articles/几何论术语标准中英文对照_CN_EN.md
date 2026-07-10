@@ -206,22 +206,24 @@
 
 ## §5 常数与参数
 
+> **重要说明**：所有核心数值（$S_e$, $K$, $\lambda_1^{\text{eff}}$, $\lambda_2^{\text{eff}}$, 三角度）现均由谱刚性 + 自举闭环唯一导出（见 0.1 §3），无需任何外部经验输入。旧出处（0.0.3 等）为首次发现的记载，非外部锚定来源。
+
 | 中文 | 英文 | 值 / 表达式 | 出处 |
 |---|---|---|---|
-| 零态谱权重 | Zero-State Spectral Weight | $6:2:1$，由 $S_3$ 群代数 $\mathbb{C}[S_3]$ 左理想维数确定，是约束乘积球面三层尺度结构（$1:1/\sqrt{3}:1/\sqrt{6}$）的群论源头 | 0.0.0 §2 |
-| 六项代价函数最小值 $S_{\min}$ | Six-Term Cost Function Minimum | $S_{\min}=24$，在对称点 $\theta_1=\theta_2=\theta_3=30^\circ$ 取得，约束定义域上唯一全局严格最小值 | 0.0.0 §5.6 |
 | 互锁常数 $\Lambda$ | Interlocking Constant | $\Lambda = \Lambda(S_3) = 3$ | 0.0.3 §3 |
 | 互锁常数 $k_0$ | Interlocking Constant | $k_0 = k_0(S_3) = 2$ | 0.0.3 §3 |
 | 标度常数 $\ell_0$ | Scale Constant | $\ell_0 = V_{\text{unit}}^{-1/9} \approx 0.5991$（几何单位，无量纲） | 0.0.7 定理7.2 |
-| 精细结构常数倒数 $S_e$ | Inverse Fine-Structure Constant | $S_e = 137.035999084$（锁定值） | 0.0.3 §5 |
-| 有效耦合 $\lambda_1^{\text{eff}}$ | Effective Coupling | 391.05 | 0.0.3 §5 |
-| 有效耦合 $\lambda_2^{\text{eff}}$ | Effective Coupling | 59324.3 | 0.0.3 §5 |
-| 质量标度 $K$ | Mass Scale | $K = 839.758793$ keV | 0.0.3 §5 |
+| 中心值 $S_0$ | Central Value $S_0$ | $S_0 = 96.727$，桥接函数 $S(a)$ 在 $a=\ell_0$ 处的取值，由标准形 (C1)–(C3) + 归一化条件唯一确定 | 0.1 §3.3 |
+| 精细结构常数倒数 $S_e$ | Inverse Fine-Structure Constant | $S_e = 137.035999084$（谱互锁精确值） | 0.1 §3.4 |
+| Hessian 谱间隙 $\Lambda_H$ | Hessian Spectral Gap | 大本征值与小本征值之比 $\Lambda_H \approx 150$，由六项代价函数 Hessian 矩阵谱刚性导出 | 0.1 §3.2 |
+| 有效耦合 $\lambda_1^{\text{eff}}$ | Effective Coupling | 391.05 | 0.1 §3.4 |
+| 有效耦合 $\lambda_2^{\text{eff}}$ | Effective Coupling | 59324.3 | 0.1 §3.4 |
+| 质量标度 $K$ | Mass Scale | $K = 839.758793$ keV | 0.1 §3.6 |
 | 几何衰减宽度 $\Gamma_{\text{geo}}$ | Geometric Decay Width | $5.75 \times 10^{-23}$ | 0.4.1 |
 | 几何特征长度 $\chi_L(\ell_0)$ | Geometric Characteristic Length | $\approx 1.983$（无量纲，纯几何量） | 0.0.7 §7.3 |
 | Wodzicki 留数 | Wodzicki Residue | $\mathrm{Res}_W(D^{-9}) = 512\pi^4 V/105$ | 0.0.7 §7.3 |
 | 几何因子 $C_{\text{geo}}$ | Geometric Factor $C_{\text{geo}}$ | 信息场与几何结构耦合的无量纲因子，由约束截面谱决定 | 0.4.6 §1 |
-| $\hbar_{\text{eff}}$ | Effective $\hbar$ | 几何论中 $\hbar$ 作为导出值，含三路交叉验证（Wodzicki留数/ℰ映射/C_m） | 0.8.4 §2 |
+| $\hbar_{\text{eff}}$ | Effective $\hbar$ | 几何论中 $\hbar$ 作为导出值，含三路交叉验证（Wodzicki留数/后验匹配/C_m） | 0.8.4 §2 |
 | 退化时间 $\tau_{\text{dec}}$ | Decay Time | $\tau_{\text{dec}} \sim 7.28$ 日（中子衰变的几何特征时间） | 0.0.3 §5, 25号 |
 | 质量-作用量映射常数 $k$ | Mass-Action Mapping Constant | $k = 3.728940$ keV，将作用量差分映射为跃迁能量 | 16号 §2.1 |
 | 相对梯度 $\Delta$ | Relative Gradient | $\Delta \equiv g'_{MM}/g_{MM} - g'_{CC}/g_{CC} = 0.509945$，$\mathbb{R}^9$ 几何引力的内禀驱动力 | 11号 §3.2 |
