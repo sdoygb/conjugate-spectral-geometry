@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>卷8 · 交叉应用 | 几何论</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+<style>
+:root {
+    --bg: #fafaf9; --text: #1c1b1a; --text-secondary: #6b6a68;
+    --accent: #2d5a8e; --accent-light: #e8f0f8; --border: #e0dfdd;
+    --nav-bg: #f2f1ef; --nav-hover: #e8e7e5;
+    --hint-bg: #f0f7ee; --hint-border: #4a7c59;
+    --placeholder-bg: #f9f9f8; --placeholder-border: #dddcd9;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.8; font-size: 16px;
+}
+h1, h2, h3, h4 { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif; font-weight: 600; line-height: 1.4; color: var(--text); }
+h1 { font-size: 2.0em; margin: 0 0 0.5em 0; padding-bottom: 0.3em; border-bottom: 2px solid var(--accent); }
+h2 { font-size: 1.4em; margin: 1.8em 0 0.6em 0; padding-bottom: 0.25em; border-bottom: 1px solid var(--border); }
+p { margin: 0.6em 0; }
+ul, ol { margin: 0.5em 0 0.5em 1.5em; }
+#app { display: flex; min-height: 100vh; }
+#nav { width: 280px; background: var(--nav-bg); border-right: 1px solid var(--border); padding: 1.5em 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; flex-shrink: 0; }
+#nav .nav-title { padding: 0 1.2em 1em 1.2em; font-size: 1.3em; font-weight: 700; color: var(--accent); border-bottom: 1px solid var(--border); margin-bottom: 0.8em; }
+#nav .nav-title small { display: block; font-size: 0.65em; font-weight: 400; color: var(--text-secondary); margin-top: 0.2em; }
+#nav a { display: block; padding: 0.4em 1.2em 0.4em 1.8em; text-decoration: none; color: var(--text); font-size: 0.9em; border-left: 3px solid transparent; }
+#nav a:hover { background: var(--nav-hover); }
+#nav a.active { background: var(--accent-light); border-left-color: var(--accent); color: var(--accent); font-weight: 500; }
+#nav .nav-section { font-size: 0.75em; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-secondary); padding: 0.8em 1.2em 0.2em 1.2em; font-weight: 600; }
+#nav .nav-ch { font-size: 0.82em; padding-left: 2.2em !important; }
+#main { flex: 1; max-width: 860px; margin: 0 auto; padding: 2.5em 2em 4em 2em; }
+.breadcrumb { font-size: 0.85em; color: var(--text-secondary); margin-bottom: 1.5em; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.placeholder { border: 1px dashed var(--placeholder-border); background: var(--placeholder-bg); border-radius: 8px; padding: 2em 1.5em; margin: 1.5em 0; text-align: center; color: var(--text-secondary); }
+.placeholder .icon { font-size: 2em; margin-bottom: 0.4em; }
+.placeholder p { margin: 0.3em 0; font-size: 0.92em; }
+.placeholder .src { font-size: 0.82em; color: #999; margin-top: 0.8em; }
+.dep-hint { border-left: 4px solid var(--hint-border); background: var(--hint-bg); padding: 0.8em 1.2em; margin: 1em 0; border-radius: 0 6px 6px 0; font-size: 0.88em; }
+.dep-hint strong { color: var(--hint-border); }
+@media (max-width: 768px) { #nav { display: none; } #main { padding: 1.5em 1em; max-width: 100%; } }
+.katex { font-size: 1.05em !important; }
+</style>
+</head>
+<body>
+<div id="app">
+    <nav id="nav">
+        <div class="nav-title">几何论<small>从三条公理到物理常数的唯一推导</small></div>
+        <div class="nav-section">卷0 · 导读与总图</div>
+        <a href="../vol0/index.html">卷0 导读与总图</a>
+        <div class="nav-section" style="margin-top:1em;">卷1 · 公理与本体论</div>
+        <a href="../vol1/index.html">卷1 公理与本体论</a>
+        <div class="nav-section" style="margin-top:1em;">卷2 · 数学结构</div>
+        <a href="../vol2/index.html">卷2 数学结构</a>
+        <div class="nav-section" style="margin-top:1em;">卷3 · 谱几何与数值输出</div>
+        <a href="../vol3/index.html">卷3 谱几何与数值输出</a>
+        <div class="nav-section" style="margin-top:1em;">卷4 · 三场动力学</div>
+        <a href="../vol4/index.html">卷4 三场动力学</a>
+        <div class="nav-section" style="margin-top:1em;">卷5 · 量子化</div>
+        <a href="../vol5/index.html">卷5 量子化</a>
+        <div class="nav-section" style="margin-top:1em;">卷6 · 粒子物理</div>
+        <a href="../vol6/index.html">卷6 粒子物理</a>
+        <div class="nav-section" style="margin-top:1em;">卷7 · 宇宙学与引力</div>
+        <a href="../vol7/index.html">卷7 宇宙学与引力</a>
+        <div class="nav-section" style="margin-top:1em;">卷8 · 交叉应用</div>
+        <a href="#ch01" class="active">8.1 化学：共价键的几何解释</a>
+        <a href="#ch02" class="nav-ch">8.2 生命与编码</a>
+        <a href="#ch03" class="nav-ch">8.3 时间感知与意识</a>
+        <a href="#ch04" class="nav-ch">8.4 宇宙拓扑与哲学</a>
+        <a href="#ch05" class="nav-ch">8.5 工程：计算工具</a>
+        <a href="#ch06" class="nav-ch">8.6 未探索的方向</a>
+        <div class="nav-section" style="margin-top:1em;">附录</div>
+        <a href="../volA/index.html">卷A 附录</a>
+    </nav>
+    <div id="main">
+        <div class="breadcrumb"><a href="../vol0/index.html">几何论</a><span>/</span>卷8 · 交叉应用</div>
+        <div class="dep-hint">
+            <strong>在递进链中的位置</strong>：<strong>交叉科学 ⬅️</strong>（延伸应用，全书末卷）<br>
+            <strong>互锁关系</strong>：递进结构。本章各节之间相对独立，可按兴趣跳跃阅读。<br>
+            <strong>前置依赖</strong>：卷3 §3.8（互锁闭环）；卷4 §4.11（时间标度分离）；卷6 §6.4（规范群起源）
+        </div>
+        <h1 id="ch01">8.1 化学：共价键的几何解释</h1>
+        <div class="placeholder">
+            <div class="icon">✎</div>
+            <p><strong>本章尚未撰写</strong></p>
+            <p>内容：键长全息屏接触定理、周期律的几何根源。化学键的几何论分析。</p>
+            <div class="src">素材来源：21（几何论与人性）；62（跨学科/综合）</div>
+        </div>
+        <h2 id="ch02">8.2 生命与编码</h2>
+        <div class="placeholder">
+            <div class="icon">✎</div>
+            <p><strong>本章尚未撰写</strong></p>
+            <p>内容：生命系统的信息几何、熵的几何论诠释。编码过程的几何结构。</p>
+            <div class="src">素材来源：22（宇宙早期→生命）；25（文明度量·劫）</div>
+        </div>
+        <h2 id="ch03">8.3 时间感知与意识</h2>
+        <div class="placeholder">
+            <div class="icon">✎</div>
+            <p><strong>本章尚未撰写</strong></p>
+            <p>内容：因果场时间标度分离与时间感知的几何基础。意识的时间结构。</p>
+            <div class="src">素材来源：36, 45（几何论与认知）</div>
+        </div>
+        <h2 id="ch04">8.4 宇宙拓扑与哲学</h2>
+        <div class="placeholder">
+            <div class="icon">✎</div>
+            <p><strong>本章尚未撰写</strong></p>
+            <p>内容：宇宙学原理的几何再审视、存在论含义。几何论的哲学外延。</p>
+            <div class="src">素材来源：26, 28, 32, 45（几何论哲学系列）</div>
+        </div>
+        <h2 id="ch05">8.5 工程：计算工具</h2>
+        <div class="placeholder">
+            <div class="icon">✎</div>
+            <p><strong>本章尚未撰写</strong></p>
+            <p>内容：实用几何论计算框架、常数生成器使用方法。读者可自行验证几何论数值的工具。</p>
+            <div class="src">素材来源：29, 30（实用计算工具）</div>
+        </div>
+        <h2 id="ch06">8.6 未探索的方向</h2>
+        <div class="placeholder">
+            <div class="icon">✎</div>
+            <p><strong>本章尚未撰写</strong></p>
+            <p>内容：尚未被几何论覆盖的物理领域的开放问题。已知局限、待研究方向和优先级。</p>
+            <div class="src">素材来源：综合</div>
+        </div>
+        <div style="margin-top:3em; padding-top:1.5em; border-top:1px solid var(--border); font-size:0.85em; color:var(--text-secondary); text-align:center;">
+            《几何论》卷8 · 交叉应用 &mdash; 框架版本 260711.1
+        </div>
+    </div>
+</div>
+</body>
+</html>
