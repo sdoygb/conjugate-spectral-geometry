@@ -20,8 +20,13 @@
     --nav-hover: #e8e7e5;
     --hint-bg: #f0f7ee;
     --hint-border: #4a7c59;
-    --placeholder-bg: #f9f9f8;
-    --placeholder-border: #dddcd9;
+    --def-bg: #fef8ec;
+    --def-border: #d4a843;
+    --thm-bg: #f4f7fc;
+    --thm-border: #2d5a8e;
+    --cor-bg: #f8f0f8;
+    --cor-border: #8e4a8e;
+    --proof-bg: #f8f8f7;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
@@ -52,16 +57,24 @@ li { margin: 0.3em 0; }
 .breadcrumb a { color: var(--accent); text-decoration: none; }
 .breadcrumb a:hover { text-decoration: underline; }
 .breadcrumb span { margin: 0 0.3em; }
-.placeholder { border: 1px dashed var(--placeholder-border); background: var(--placeholder-bg); border-radius: 8px; padding: 2em 1.5em; margin: 1.5em 0; text-align: center; color: var(--text-secondary); }
-.placeholder .icon { font-size: 2em; margin-bottom: 0.4em; }
-.placeholder p { margin: 0.3em 0; font-size: 0.92em; }
-.placeholder .src { font-size: 0.82em; color: #999; margin-top: 0.8em; }
 .dep-hint { border-left: 4px solid var(--hint-border); background: var(--hint-bg); padding: 0.8em 1.2em; margin: 1em 0; border-radius: 0 6px 6px 0; font-size: 0.88em; }
 .dep-hint strong { color: var(--hint-border); }
+.def-box { border-left: 4px solid var(--def-border); background: var(--def-bg); padding: 0.8em 1.2em; margin: 1em 0; border-radius: 0 6px 6px 0; }
+.def-box strong { color: #8a6a20; }
+.thm-box { border-left: 4px solid var(--thm-border); background: var(--thm-bg); padding: 0.8em 1.2em; margin: 1em 0; border-radius: 0 6px 6px 0; }
+.thm-box strong { color: var(--accent); }
+.cor-box { border-left: 4px solid var(--cor-border); background: var(--cor-bg); padding: 0.8em 1.2em; margin: 1em 0; border-radius: 0 6px 6px 0; }
+.cor-box strong { color: var(--cor-border); }
+.proof-box { border-left: 4px solid #ccc; background: var(--proof-bg); padding: 0.8em 1.2em; margin: 0.8em 0 1.2em 0; border-radius: 0 6px 6px 0; font-size: 0.92em; }
+.proof-box .qed { text-align: right; font-size: 1.1em; color: #999; }
 table { width: 100%; border-collapse: collapse; margin: 1em 0; font-size: 0.92em; }
 th, td { border: 1px solid var(--border); padding: 0.5em 0.8em; text-align: left; }
 th { background: var(--nav-bg); font-weight: 600; }
 tr:nth-child(even) { background: #f8f8f7; }
+.nav-hint { border-left: 4px solid var(--accent); background: var(--accent-light); padding: 0.8em 1.2em; margin: 1em 0; border-radius: 0 6px 6px 0; }
+.nav-hint strong { color: var(--accent); }
+.loop-note { border-left: 4px solid #c0392b; background: #fdf2f2; padding: 0.8em 1.2em; margin: 1em 0; border-radius: 0 6px 6px 0; font-size: 0.9em; }
+.loop-note strong { color: #c0392b; }
 @media (max-width: 768px) { #nav { display: none; } #main { padding: 1.5em 1em; max-width: 100%; } }
 .katex { font-size: 1.05em !important; }
 </style>
@@ -76,12 +89,12 @@ tr:nth-child(even) { background: #f8f8f7; }
         <a href="../vol1/index.html">卷1 公理与本体论</a>
         <div class="nav-section" style="margin-top:1em;">卷2 · 数学结构</div>
         <a href="#ch01" class="active">2.1 激发态参数空间</a>
-        <a href="#ch02" class="nav-ch">2.2 滑移、腰边、腰尖算子</a>
-        <a href="#ch03" class="nav-ch">2.3 乘积球面类</a>
+        <a href="#ch02" class="nav-ch">2.2 三分切丛上的算子代数</a>
+        <a href="#ch03" class="nav-ch">2.3 约束乘积球面</a>
         <a href="#ch04" class="nav-ch">2.4 全息屏与10方空间</a>
-        <a href="#ch05" class="nav-ch">2.5 谱刚性</a>
+        <a href="#ch05" class="nav-ch">2.5 谱刚性定理</a>
         <a href="#ch06" class="nav-ch">2.6 循环依赖消解</a>
-        <a href="#ch07" class="nav-ch">2.7 约束截面：基本构造与数学性质</a>
+        <a href="#ch07" class="nav-ch">2.7 约束截面：基本构造</a>
         <div class="nav-section" style="margin-top:1em;">其他各卷</div>
         <a href="../vol3/index.html">卷3 谱几何与数值输出</a>
         <a href="../vol4/index.html">卷4 三场动力学</a>
@@ -95,62 +108,192 @@ tr:nth-child(even) { background: #f8f8f7; }
         <div class="breadcrumb"><a href="../vol0/index.html">几何论</a><span>/</span>卷2 · 数学结构</div>
         <div class="dep-hint">
             <strong>在递进链中的位置</strong>：公理 → <strong>数学结构 ⬅️</strong> → 谱几何 → 场 → 应用<br>
-            <strong>互锁关系</strong>：§2.5（谱刚性）与§2.6（循环依赖消解）构成局部互锁，建议连读。<br>
+            <strong>互锁关系</strong>：§2.5（谱刚性）与§2.6（循环依赖消解）构成局部互锁，建议连读。§2.5与卷3的谱单位选择定理形成跨卷互锁。<br>
             <strong>前置依赖</strong>：卷1（全部）；卷0 §0.4
         </div>
+
         <h1 id="ch01">2.1 激发态参数空间</h1>
-        <div class="placeholder">
-            <div class="icon">✎</div>
-            <p><strong>本章尚未撰写</strong></p>
-            <p>内容：激发态参数空间的拓扑结构、维数、度规。从公理1（S¹拓扑）出发构建完整的激发态参数空间，定义其上的自然度规和联络。</p>
-            <div class="src">素材来源：0.0.3 §3-5</div>
+        <p>激发态参数空间是几何论所有定量分析的基础。本章建立其拓扑结构与分析性质，证明存在性定理和值域定理，为后续的谱几何和数值输出提供严格的数学基础。</p>
+        <p>设基本标量条件 $S_{\text{total}}=0$ 定义真空态。激发态对应真空附近偏离该标量条件的几何构型。我们不预设任何物理模型，通过两条公理建立参数空间的拓扑与分析性质。</p>
+
+        <h2>2.1.1 公理1：圆拓扑公理</h2>
+        <div class="def-box">
+            <strong>公理1（圆拓扑公理）</strong> 激发态参数空间 $D$ 由一维紧致连通流形 $S^1$（圆）去掉两个不同点 $p_0$ 与 $p_*$ 得到：
+            $$D = S^1 \setminus \{p_0, p_*\}, \qquad p_0 \neq p_*$$
+            去掉的两点分别称为<strong>真空点</strong>（$p_0$）与<strong>退化点</strong>（$p_*$）。由此，$D$ 由两个连通分支组成：
+            $$D_+ \cong (0,1), \qquad D_- \cong (0,1)$$
+            每个分支同胚于开区间。参数 $x \in D_\pm$ 标记激发态。
         </div>
-        <h2 id="ch02">2.2 滑移、腰边、腰尖算子</h2>
-        <div class="placeholder">
-            <div class="icon">✎</div>
-            <p><strong>本章尚未撰写</strong></p>
-            <p>内容：三分切丛上的基本算子代数——滑移算子、腰边耦合算子、腰尖算子的定义、对易关系、谱性质。</p>
-            <div class="src">素材来源：0.0.5</div>
+        <p>公理1的几何直观：一维参数空间意味着激发态由一个单一自由度描述——在几何论中，这个自由度最终会被锁定为整体尺度因子 $a$ 或与之等价的谱几何量。两个分支 $D_\pm$ 对应两种可能的"方向"（尺度增大或减小），而 $p_0$ 与 $p_*$ 分别是真空极限和退化极限的不可达边界。</p>
+
+        <div class="thm-box">
+            <strong>引理 2.1（分支的拓扑结构）</strong> 设 $S^1$ 为标准单位圆 $\{e^{i\phi} \mid \phi \in [0,2\pi)\}$。去掉两点 $p_0=e^{i\phi_0}$ 与 $p_*=e^{i\phi_*}$（不妨设 $0\leq \phi_0 < \phi_* < 2\pi$），则 $S^1\setminus\{p_0,p_*\}$ 恰有两个连通分支：
+            $$D_+ = \{e^{i\phi} \mid \phi_0 < \phi < \phi_*\}, \quad D_- = \{e^{i\phi} \mid \phi_* < \phi < \phi_0+2\pi\}.$$
+            每个分支作为 $S^1$ 的子空间拓扑，均同胚于开区间 $(0,1)$。
         </div>
-        <h2 id="ch03">2.3 乘积球面类 Wⁿ_{m,k}(S^p)</h2>
-        <div class="placeholder">
-            <div class="icon">✎</div>
-            <p><strong>本章尚未撰写</strong></p>
-            <p>内容：乘积球面类的定义、构造、分类定理。这是谱几何的核心研究对象，也是约束截面理论的基础空间。</p>
-            <div class="src">素材来源：0.0.7</div>
+        <div class="proof-box">
+            <strong>证明。</strong> 考虑标准覆叠映射 $\pi: \mathbb{R} \to S^1$, $\pi(\phi)=e^{i\phi}$。在 $\mathbb{R}$ 上，$\pi^{-1}(S^1\setminus\{p_0,p_*\}) = \mathbb{R}\setminus\{\phi_0+2k\pi, \phi_*+2k\pi \mid k\in\mathbb{Z}\}$。该集合的每个连通分支均为开区间 $(\phi_0+2k\pi, \phi_*+2k\pi)$ 或 $(\phi_*+2k\pi, \phi_0+2(k+1)\pi)$。由于 $\pi$ 在长度为 $2\pi$ 的区间上的限制是同胚，这些开区间在 $S^1$ 中的像恰为 $D_+$ 与 $D_-$。每个开区间同胚于 $(0,1)$。 $\square$
+            <div class="qed">∎</div>
         </div>
-        <h2 id="ch04">2.4 全息屏与10方空间</h2>
-        <div class="placeholder">
-            <div class="icon">✎</div>
-            <p><strong>本章尚未撰写</strong></p>
-            <p>内容：屏几何、10方分解、编码条件展开。全息屏的几何构造，10方空间的坐标系统和分解定理。</p>
-            <div class="src">素材来源：0.0.8</div>
+
+        <h2>2.1.2 公理2：边界极限公理</h2>
+        <div class="def-box">
+            <strong>公理2（边界极限公理，偏移量修正版）</strong> 在参数空间 $D$ 上存在公理化几何量 $S_{\text{axiom}}: D \to (0,+\infty)$，满足：
+            <ol>
+                <li><strong>连续性</strong>：$S_{\text{axiom}}$ 在每个连通分支 $D_\pm$ 上连续；</li>
+                <li><strong>真空极限</strong>：当 $x$ 沿任一分支逼近 $p_0$ 时，$\displaystyle \lim_{x \to p_0} S_{\text{axiom}}(x) = 0$；</li>
+                <li><strong>退化极限</strong>：当 $x$ 沿任一分支逼近 $p_*$ 时，$\displaystyle \lim_{x \to p_*} S_{\text{axiom}}(x) = +\infty$。</li>
+            </ol>
         </div>
-        <h2 id="ch05">2.5 谱刚性</h2>
-        <div class="placeholder">
-            <div class="icon">✎</div>
-            <p><strong>本章尚未撰写</strong></p>
-            <p>内容：Hessian谱的刚性条件、谱间隙定理。谱刚性是全书最关键的数学工具之一，是连接谱几何与数值输出的桥梁。与§2.6互锁。</p>
-            <div class="src">素材来源：0.0.9 §3-5; 0.1 §3.2</div>
+        <p><strong>偏移量修正</strong>：$S_{\text{axiom}}$ 是公理层面的抽象几何量。在具体实现中（见卷3 §3.1），$S_{\text{axiom}}$ 通过六项代价函数 $S$ 的偏移实现：$S_{\text{axiom}}(\theta) = S(\theta) - 24$。真空点 $p_0$ 对应角度构型 $\theta^* = (30^\circ,30^\circ,30^\circ)$，此时 $S_{\text{axiom}} = 0$ 而 $S = 24$（$S$ 的全局最小值）。</p>
+
+        <h2>2.1.3 严格单调性假设</h2>
+        <div class="def-box">
+            <strong>定义 2.1'（严格单调性假设）</strong> 设 $S_{\text{axiom}}$ 在 $D_\pm$ 上严格单调。这<strong>不是</strong>从公理1–2推出的定理，而是框架的<strong>构造性假设</strong>。其引入等价于要求 $S_{\text{axiom}}$ 构成 $D_\pm$ 的一个全局坐标函数。
         </div>
-        <h2 id="ch06">2.6 循环依赖消解</h2>
-        <div class="placeholder">
-            <div class="icon">✎</div>
-            <p><strong>本章尚未撰写</strong></p>
-            <p>内容：谱单位选择 ↔ 谱刚性互锁的形式处理。严格证明互锁不是循环论证，而是可以通过迭代收敛唯一确定的。</p>
-            <div class="src">素材来源：0.0.9 §6; 63号 §4-6</div>
+        <p>严格单调性无法仅从公理1–2的拓扑与分析性质推导。它需要额外的构造性输入（具体函数的选定），因此独立为构造性假设以准确反映其逻辑地位。</p>
+
+        <h2>2.1.4 值域定理</h2>
+        <div class="thm-box">
+            <strong>定理 2.1（值域）</strong> 在公理1与公理2下，$S_{\text{axiom}}$ 在每个连通分支 $D_\pm$ 上的值域为 $S_{\text{axiom}}(D_\pm) = (0, +\infty)$。
         </div>
-        <h2 id="ch07">2.7 约束截面：基本构造与数学性质</h2>
-        <div class="placeholder">
-            <div class="icon">✎</div>
-            <p><strong>本章尚未撰写</strong></p>
-            <p>内容：约束截面的数学定义、基本构造和性质。从乘积球面类到约束截面的系统性构造。【注意：本卷仅讨论纯数学构造；约束截面在三场耦合中的应用见卷4 §4.9。】</p>
-            <div class="src">素材来源：0.2.1–0.2.7</div>
+        <div class="proof-box">
+            <strong>证明。</strong> 由公理1，$D_\pm \cong (0,1)$ 是连通集。由公理2，$S_{\text{axiom}}$ 在 $D_\pm$ 上连续，故像集 $S_{\text{axiom}}(D_\pm)$ 是 $\mathbb{R}$ 中的连通子集，即区间。由真空极限，$\inf S_{\text{axiom}}(D_\pm) = 0$；由退化极限，$\sup S_{\text{axiom}}(D_\pm) = +\infty$。由于 $p_0, p_* \notin D$，端点 $0$ 与 $+\infty$ 均不可达。因此 $S_{\text{axiom}}(D_\pm) = (0, +\infty)$。 $\square$
+            <div class="qed">∎</div>
         </div>
-        <div style="margin-top:3em; padding-top:1.5em; border-top:1px solid var(--border); font-size:0.85em; color:var(--text-secondary); text-align:center;">
-            《几何论》卷2 · 数学结构 &mdash; 框架版本 260711.1
+        <p>连通性论证的详细展开：假设 $S(D_+)$ 不是区间，则存在 $\alpha < \beta < \gamma$ 使得 $\alpha,\gamma \in S(D_+)$ 但 $\beta \notin S(D_+)$。令 $U = S^{-1}((-\infty, \beta))$ 与 $V = S^{-1}((\beta, +\infty))$，则 $U,V$ 为 $D_+$ 中不相交开集且 $U\cup V = D_+$，与 $D_+$ 连通矛盾。</p>
+
+        <h2>2.1.5 存在性定理</h2>
+        <div class="thm-box">
+            <strong>定理 2.2（存在性）</strong> 对任意给定的正数 $S_0 > 0$，在每个分支 $D_+$ 与 $D_-$ 上各至少存在一个激发态 $x_+ \in D_+$ 与 $x_- \in D_-$，使得 $S_{\text{axiom}}(x_+) = S_{\text{axiom}}(x_-) = S_0$。
         </div>
-    </div>
-</div>
-</body>
-</html>
+        <div class="proof-box">
+            <strong>证明。</strong> 由定理2.1，$S_{\text{axiom}}(D_\pm) = (0, +\infty)$。对任意 $S_0 > 0$，$S_0 \in (0, +\infty)$，故 $S_{\text{axiom}}^{-1}(S_0) \cap D_\pm \neq \varnothing$。 $\square$
+            <div class="qed">∎</div>
+        </div>
+        <p>存在性定理具有重要的方法论意义：它保证对任意想要的 $S_0$ 值，总存在一个激发态使其等于该值。结合严格单调性假设，这个存在性可以加强为唯一存在性。</p>
+
+        <div class="thm-box">
+            <strong>定理 2.3（严格单调性）</strong> 在公理1、公理2及定义2.1'（严格单调性假设）下，$S_{\text{axiom}}$ 在每个连通分支 $D_\pm$ 上必为严格单调函数。通过固定分支定向，可设 $S_{\text{axiom}}$ 严格递增。
+        </div>
+        <div class="proof-box">
+            <strong>证明。</strong> $D_\pm\cong(0,1)$ 为区间。由定义2.1'的严格单调性假设，$S_{\text{axiom}}$ 在 $D_\pm$ 上严格单调。结合边界极限，$S_{\text{axiom}}$ 在定向下必严格递增。 $\square$
+            <div class="qed">∎</div>
+        </div>
+
+        <div class="cor-box">
+            <strong>推论 2.1（原像唯一性）</strong> 对任意 $S_0>0$，原像集 $S_{\text{axiom}}^{-1}(S_0)\cap D_\pm$ 为单点集。
+        </div>
+        <div class="proof-box">
+            <strong>证明。</strong> 由定理2.3的严格单调性直接成立。 $\square$
+            <div class="qed">∎</div>
+        </div>
+
+        <p style="margin-top:1.5em;"><strong>从本章到后续章节的桥梁</strong>：激发态参数空间 $D$ 提供了抽象的"参数—几何量"框架。在卷2.3中，我们将看到这个抽象框架在约束乘积球面上的具体实现——尺度因子 $a$ 扮演参数 $x$ 的角色，而六项作用量 $S(a)$ 是实现 $S_{\text{axiom}}$ 的具体函数。在卷3中，这个框架将导出谱单位选择和 $S_e$ 的数值锁定。</p>
+        <p style="font-size:0.88em; color:var(--text-secondary);">详细来源：0.0.3 §2–§3</p>
+
+        <h1 id="ch02">2.2 三分切丛上的算子代数</h1>
+        <p>本章建立在三分切丛 $TM = \mathcal{M} \oplus \mathcal{C} \oplus \mathcal{I}$（见卷1 §1.2）上的基本算子代数——滑移算子、腰边耦合算子、腰尖算子的定义、对易关系和谱性质。这套算子代数是全息屏动力学和谱几何分析的核心工具。</p>
+
+        <h2>2.2.1 三分切丛的算子结构</h2>
+        <p>三分切丛 $TM = \mathcal{M} \oplus \mathcal{C} \oplus \mathcal{I}$ 的三个扇区各自对应 $S^3$ 因子的切空间。在各扇区内定义三类基本算子：</p>
+        <ul>
+            <li><strong>滑移算子（Shift Operator）</strong>：作用于扇区内，改变激发级次；</li>
+            <li><strong>腰边耦合算子（M-C Coupling Operator）</strong>：在 $\mathcal{M}$ 和 $\mathcal{C}$ 扇区之间交换信息；</li>
+            <li><strong>腰尖算子（Apex Operator）</strong>：连接 $\mathcal{I}$ 扇区与其他扇区。</li>
+        </ul>
+        <p>三类算子并非独立定义——它们从 $S_3$ 置换对称性和约束乘积球面的谱结构中涌现。</p>
+
+        <h2>2.2.2 互锁函数的群论来源</h2>
+        <div class="thm-box">
+            <strong>引理 2.2（三分切丛置换群的刚性）</strong> 设 $TM = \mathcal{M} \oplus \mathcal{C} \oplus \mathcal{I}$ 为三分切丛，$G$ 为其扇区置换对称群。若 $G$ 在三个扇区上的作用忠实且可迁，并包含任意两扇区对换，则 $G \cong S_3$，且 $S_3$ 是满足此条件的唯一有限群。
+        </div>
+        <div class="proof-box">
+            <strong>证明。</strong> 三个对象的忠实置换群必为 $S_3$ 的子群。可迁性要求轨道大小为 $3$，故 $|G| \geq 3$。$S_3$ 的可迁子群仅有 $A_3 \cong \mathbb{Z}_3$（循环）与 $S_3$ 本身。若要求包含对换（奇置换），则 $A_3$ 不足，唯一可能为 $S_3$。 $\square$
+            <div class="qed">∎</div>
+        </div>
+
+        <div class="def-box">
+            <strong>定义 2.2（互锁函数与紧致函数）</strong> 设 $G$ 为有限群，定义：
+            <ul>
+                <li><strong>互锁函数</strong> $\Lambda(G) := |\text{Conj}(G)|$（共轭类数，等于 $G$ 的不可约复表示数）；</li>
+                <li><strong>紧致函数</strong> $k_0(G) := [G : N_{\max}]$（极大正规子群的指数）。</li>
+            </ul>
+        </div>
+
+        <div class="thm-box">
+            <strong>命题 2.1</strong> 对于三分切丛 $TM = \mathcal{M} \oplus \mathcal{C} \oplus \mathcal{I}$ 的置换对称群 $G = S_3$：
+            $$\Lambda(S_3) = 3, \quad k_0(S_3) = 2.$$
+        </div>
+        <div class="proof-box">
+            <strong>证明。</strong> $S_3$ 的共轭类分解为：恒等元 $\{e\}$（1个）、对换 $\{(12),(13),(23)\}$（3个）、3-循环 $\{(123),(132)\}$（2个），共3个共轭类，故 $\Lambda(S_3)=3$。$S_3$ 的正规子群只有 $\{e\}$ 与 $A_3 \cong \mathbb{Z}_3$（交错子群）。极大正规子群为 $A_3$，指数 $[S_3 : A_3] = 6/3 = 2$，故 $k_0(S_3)=2$。 $\square$
+            <div class="qed">∎</div>
+        </div>
+        <p>$\Lambda=3$ 和 $k_0=2$ 不是人为设定的自由参数——它们是群论函数在 $S_3$ 上的必然取值。若三分切丛具有 $S_4$ 置换对称性（四扇区结构），则 $\Lambda(S_4)=5$，$k_0(S_4)=2$，那将是一个不同的理论体系。</p>
+
+        <p style="margin-top:1.5em;"><strong>后续引用</strong>：互锁常数 $(\Lambda,k_0)=(3,2)$ 将贯穿全书——它们在2.3节确定约束乘积球面的半径比，在卷3的第谱分析中决定特征值比值，在卷3的谱单位选择定理中参与锁定 $S_e$。</p>
+        <p style="font-size:0.88em; color:var(--text-secondary);">详细来源：0.0.5 §1–§2；0.0.7 §2</p>
+
+        <h1 id="ch03">2.3 约束乘积球面</h1>
+        <p>在公理体系和三分切丛算子代数的基础上，本章构造全书最核心的几何对象——<strong>约束乘积球面</strong>（Constrained Product Sphere, CPS）。它是谱几何的研究对象，是数值输出的来源。</p>
+
+        <h2>2.3.1 约束乘积球面的定义</h2>
+        <p>由命题2.1，三分切丛置换群 $S_3$ 的群论函数输出为 $\Lambda=3,\;k_0=2$。为了将这些离散整数转化为几何尺度，引入尺度比实现规则。</p>
+
+        <div class="def-box">
+            <strong>构造假设 3.0（尺度比实现规则）</strong> 若某一层几何由剩余对称性 $H$ 控制，则其特征长度平方与 $|H|^{-1}$ 成正比（等价于与谱权重 $w_H=[S_3:H]$ 成正比，整体归一化后）。以 $S_3$ 正规子群链 $\{e\}\lhd A_3\lhd S_3$ 的三层阶数倒数比为
+            $$\frac{1}{|\{e\}|}:\frac{1}{|A_3|}:\frac{1}{|S_3|}=1:\frac13:\frac16=6:2:1.$$
+            取倒数平方根并归一化，得三个球面因子的半径比
+            $$R_1 : R_2 : R_3 = 1 : \frac{1}{\sqrt{3}} : \frac{1}{\sqrt{6}}.$$
+        </div>
+
+        <div class="def-box">
+            <strong>定义 2.3（约束乘积球面）</strong> 称九维闭流形（紧致、无边界）
+            $$M(a) = S^3(a) \times S^3(a/\sqrt{3}) \times S^3(a/\sqrt{6})$$
+            在配备乘积度量 $g = g_a \oplus g_{a/\sqrt{3}} \oplus g_{a/\sqrt{6}}$ 时，构成一个<strong>约束乘积球面</strong>。记
+            $$b = \frac{a}{\sqrt{3}}, \quad c = \frac{a}{\sqrt{6}}.$$
+            由 $k_0 = 2 > 1$ 可知尺度排序 $a > b > c$ 严格成立。
+        </div>
+        <p>其中 $\ell_0 > 0$ 为第三互锁常数（标度常数），由谱单位选择定理与基态条件 $S_{\min}=24$ 联合锁定（见卷3 §3.4）。</p>
+
+        <h2>2.3.2 模空间的参数化</h2>
+        <div class="thm-box">
+            <strong>定理 2.4（模空间参数化）</strong> 在互锁常数 $(\Lambda,k_0)=(3,2)$ 锁定时，约束乘积球面类 $\{M(a)\}_{a>0}$ 的模空间与 $(0,\infty)$ 同胚，$a$ 是唯一的连续自由度。
+        </div>
+        <div class="proof-box">
+            <strong>证明。</strong> 乘积度量由三个因子球面的半径 $(a,b,c)$ 决定。约束条件 $b=a/\sqrt{\Lambda}=a/\sqrt{3}$、$c=a/\sqrt{\Lambda k_0}=a/\sqrt{6}$ 将 $(a,b,c)$ 压缩至一维子流形 $(0,\infty)_a$。不同的 $a$ 给出不等距的度量——体积 $V(a)\propto a^9$ 严格单调。故模空间同胚于 $(0,\infty)$。 $\square$
+            <div class="qed">∎</div>
+        </div>
+
+        <div class="thm-box">
+            <strong>定理 2.4'（第一特征值坐标化）</strong> 在构造规则3.0与互锁常数锁定的前提下，谱映射
+            $$\sigma_1: (0,\infty) \to (0,\infty), \quad a \mapsto \lambda_1^\Delta(a) = \frac{3}{a^2}$$
+            是微分同胚。第一非零 Laplace 特征值 $\lambda_1^\Delta$ 本身构成约束乘积球面类模空间 $\{M(a)\}_{a>0}$ 的<strong>全局坐标</strong>。
+        </div>
+        <div class="proof-box">
+            <strong>证明。</strong> $\sigma_1$ 连续、严格单调递减，且 $\lim_{a\to 0^+}\sigma_1(a)=+\infty$，$\lim_{a\to+\infty}\sigma_1(a)=0$。故 $\sigma_1$ 为同胚；又 $\sigma_1'(a)=-6/a^3\neq 0$，逆映射光滑，故为微分同胚。 $\square$
+            <div class="qed">∎</div>
+        </div>
+
+        <h2>2.3.3 前三个非零特征值</h2>
+        <div class="thm-box">
+            <strong>定理 2.5（前三个非零特征值）</strong> 对约束乘积球面 $M(a)$，其前三个非零 Laplace–Beltrami 特征值为：
+            $$\lambda_1^\Delta = \frac{3}{a^2}, \quad \lambda_2^\Delta = \frac{8}{a^2}, \quad \lambda_3^\Delta = \frac{9}{a^2}.$$
+            特征值比值 $\lambda_2^\Delta/\lambda_1^\Delta = 8/3$ 与 $\lambda_3^\Delta/\lambda_1^\Delta = \Lambda = 3$ 是与 $a$ 无关的普适常数，构成约束乘积球面类的<strong>谱特征签名</strong>。
+        </div>
+        <div class="proof-box">
+            <strong>证明。</strong> 对 $S^3(R)$，$p$ 阶球面谐波对应的 Laplace 特征值为 $p(p+2)/R^2$。乘积流形的特征值为各因子特征值之和。候选模式：
+            <ul>
+                <li>$(1,0,0)$：$3/a^2$</li>
+                <li>$(2,0,0)$：$8/a^2$</li>
+                <li>$(0,1,0)$：$3/(a^2/\Lambda)=3\Lambda/a^2=9/a^2$</li>
+                <li>$(0,0,1)$：$3/(a^2/(\Lambda k_0))=3\Lambda k_0/a^2=18/a^2$</li>
+            </ul>
+            由 $\Lambda=3>8/3$，有 $8/a^2<9/a^2<12/a^2<18/a^2$，故前三个非零特征值恰为 $3/a^2,\;8/a^2,\;9/a^2$。 $\square$
+            <div class="qed">∎</div>
+        </div>
+        <p>若某乘积球面的前两个非零特征值比值不为 $8/3$，则它不属于此约束类。这一特征签名为谱刚性的成立提供了前提条件。</p>
+
+        <p style="margin-top:1.5em;"><strong>后续引用</strong>：$M(a)$ 是全书最重要的几何舞台——在卷2.4中它在全息屏上诱导辛结构和Kähler结构；在卷2.5中其谱刚性被严格证明；在卷3中它以 $S_{\min}=24$ 和 $S_e$ 的数值输出为全书核心奠定了数学基础。</p>
+        <p style="font-size:0.88em; color:var(--text-secondary);">详细来源：0.0.5 §3–§4；0.0.7 §2</p>
+</div></div></body></html>
