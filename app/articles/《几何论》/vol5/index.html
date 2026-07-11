@@ -3,133 +3,500 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>卷5 · 量子化 | 几何论</title>
+<title>卷五 · 量子化 | 几何论</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
 <style>
-:root {
-    --bg: #fafaf9; --text: #1c1b1a; --text-secondary: #6b6a68;
-    --accent: #2d5a8e; --accent-light: #e8f0f8; --border: #e0dfdd;
-    --nav-bg: #f2f1ef; --nav-hover: #e8e7e5;
-    --hint-bg: #f0f7ee; --hint-border: #4a7c59;
-    --placeholder-bg: #f9f9f8; --placeholder-border: #dddcd9;
-}
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
-    background: var(--bg); color: var(--text); line-height: 1.8; font-size: 16px;
-}
-h1, h2, h3, h4 { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif; font-weight: 600; line-height: 1.4; color: var(--text); }
-h1 { font-size: 2.0em; margin: 0 0 0.5em 0; padding-bottom: 0.3em; border-bottom: 2px solid var(--accent); }
-h2 { font-size: 1.4em; margin: 1.8em 0 0.6em 0; padding-bottom: 0.25em; border-bottom: 1px solid var(--border); }
-p { margin: 0.6em 0; }
-ul, ol { margin: 0.5em 0 0.5em 1.5em; }
-#app { display: flex; min-height: 100vh; }
-#nav { width: 280px; background: var(--nav-bg); border-right: 1px solid var(--border); padding: 1.5em 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; flex-shrink: 0; }
-#nav .nav-title { padding: 0 1.2em 1em 1.2em; font-size: 1.3em; font-weight: 700; color: var(--accent); border-bottom: 1px solid var(--border); margin-bottom: 0.8em; }
-#nav .nav-title small { display: block; font-size: 0.65em; font-weight: 400; color: var(--text-secondary); margin-top: 0.2em; }
-#nav a { display: block; padding: 0.4em 1.2em 0.4em 1.8em; text-decoration: none; color: var(--text); font-size: 0.9em; border-left: 3px solid transparent; }
-#nav a:hover { background: var(--nav-hover); }
-#nav a.active { background: var(--accent-light); border-left-color: var(--accent); color: var(--accent); font-weight: 500; }
-#nav .nav-section { font-size: 0.75em; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-secondary); padding: 0.8em 1.2em 0.2em 1.2em; font-weight: 600; }
-#nav .nav-ch { font-size: 0.82em; padding-left: 2.2em !important; }
-#main { flex: 1; max-width: 860px; margin: 0 auto; padding: 2.5em 2em 4em 2em; }
-.breadcrumb { font-size: 0.85em; color: var(--text-secondary); margin-bottom: 1.5em; }
-.breadcrumb a { color: var(--accent); text-decoration: none; }
-.placeholder { border: 1px dashed var(--placeholder-border); background: var(--placeholder-bg); border-radius: 8px; padding: 2em 1.5em; margin: 1.5em 0; text-align: center; color: var(--text-secondary); }
-.placeholder .icon { font-size: 2em; margin-bottom: 0.4em; }
-.placeholder p { margin: 0.3em 0; font-size: 0.92em; }
-.placeholder .src { font-size: 0.82em; color: #999; margin-top: 0.8em; }
-.dep-hint { border-left: 4px solid var(--hint-border); background: var(--hint-bg); padding: 0.8em 1.2em; margin: 1em 0; border-radius: 0 6px 6px 0; font-size: 0.88em; }
-.dep-hint strong { color: var(--hint-border); }
-table { width: 100%; border-collapse: collapse; margin: 1em 0; font-size: 0.92em; }
-th, td { border: 1px solid var(--border); padding: 0.5em 0.8em; }
-th { background: var(--nav-bg); font-weight: 600; }
-@media (max-width: 768px) { #nav { display: none; } #main { padding: 1.5em 1em; max-width: 100%; } }
-.katex { font-size: 1.05em !important; }
+:root{--bg:#fafaf9;--bg-card:#fff;--text:#1c1b1a;--text-secondary:#6b6a68;--accent:#2d5a8e;--accent-light:#e8f0f8;--border:#e0dfdd;--nav-bg:#f2f1ef;--nav-hover:#e8e7e5;--theorem-border:#2d5a8e;--theorem-bg:#f4f7fb;--def-border:#b8860b;--def-bg:#fdf8ee;--hint-bg:#f0f7ee;--hint-border:#4a7c59}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+h1,h2,h3,h4{font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;font-weight:600;line-height:1.4;color:var(--text)}
+h1{font-size:2.0em;margin:0 0 .5em 0;padding-bottom:.3em;border-bottom:2px solid var(--accent)}
+h2{font-size:1.4em;margin:1.8em 0 .6em 0;padding-bottom:.25em;border-bottom:1px solid var(--border)}
+h3{font-size:1.15em;margin:1.4em 0 .4em 0}
+h4{font-size:1.0em;margin:1em 0 .3em 0;font-weight:600}
+p{margin:.6em 0}
+ul,ol{margin:.5em 0 .5em 1.5em}
+li{margin:.3em 0}
+#app{display:flex;min-height:100vh}
+#nav{width:280px;background:var(--nav-bg);border-right:1px solid var(--border);padding:1.5em 0;position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0}
+#nav .nav-title{padding:0 1.2em 1em 1.2em;font-size:1.3em;font-weight:700;color:var(--accent);border-bottom:1px solid var(--border);margin-bottom:.8em}
+#nav .nav-title small{display:block;font-size:.65em;font-weight:400;color:var(--text-secondary);margin-top:.2em}
+#nav a{display:block;padding:.4em 1.2em .4em 1.8em;text-decoration:none;color:var(--text);font-size:.9em;border-left:3px solid transparent;transition:all .15s}
+#nav a:hover{background:var(--nav-hover)}
+#nav a.active{background:var(--accent-light);border-left-color:var(--accent);color:var(--accent);font-weight:500}
+#nav .nav-section{font-size:.75em;text-transform:uppercase;letter-spacing:.08em;color:var(--text-secondary);padding:.8em 1.2em .2em 1.2em;font-weight:600}
+#main{flex:1;max-width:860px;margin:0 auto;padding:2.5em 2em 4em 2em}
+.breadcrumb{font-size:.85em;color:var(--text-secondary);margin-bottom:1.5em;padding-bottom:.5em;border-bottom:1px solid var(--border)}
+.breadcrumb a{color:var(--accent);text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+.nav-hint{background:var(--hint-bg);border-left:4px solid var(--hint-border);padding:.8em 1em;margin:1em 0;border-radius:0 4px 4px 0;font-size:.92em}
+.theorem-box{background:var(--theorem-bg);border-left:4px solid var(--theorem-border);padding:.8em 1em;margin:1em 0;border-radius:0 4px 4px 0}
+.definition-box{background:var(--def-bg);border-left:4px solid var(--def-border);padding:.8em 1em;margin:1em 0;border-radius:0 4px 4px 0}
+.interlock-notice{background:#fef9ef;border-left:4px solid #d69e2e;padding:.8em 1em;margin:1.2em 0;border-radius:0 4px 4px 0}
+.interlock-notice h3{color:#b8860b;font-size:1em;margin:0 0 .3em 0}
+.chapter-end{margin-top:2.5em;padding-top:1em;border-top:1px solid var(--border);font-size:.92em;color:var(--text-secondary)}
+.chapter-end h3{font-size:1em;color:var(--text)}
+.data-table{width:100%;border-collapse:collapse;margin:1em 0;font-size:.92em}
+.data-table th,.data-table td{border:1px solid var(--border);padding:.4em .6em;text-align:left}
+.data-table th{background:var(--nav-bg);font-weight:600}
+.data-table tr:nth-child(even){background:#f9f9f8}
+.constant-table{width:100%;border-collapse:collapse;margin:1em 0;font-size:.88em}
+.constant-table th,.constant-table td{border:1px solid var(--border);padding:.35em .5em;text-align:left}
+.constant-table th{background:var(--nav-bg);font-weight:600}
+.constant-table tr:nth-child(even){background:#f9f9f8}
+.derivation-chain{text-align:center;margin:1.2em 0;font-size:.95em;line-height:2.2}
+blockquote{border-left:3px solid var(--border);padding:.3em .8em;margin:.6em 0;color:var(--text-secondary);font-style:italic}
+.volume-intro{font-size:1em;line-height:1.8;margin:.8em 0}
+@media(max-width:768px){#nav{display:none}#main{padding:1.5em 1em 3em 1em}}
 </style>
 </head>
 <body>
 <div id="app">
-    <nav id="nav">
-        <div class="nav-title">几何论<small>从三条公理到物理常数的唯一推导</small></div>
-        <div class="nav-section">卷0 · 导读与总图</div>
-        <a href="../vol0/index.html">卷0 导读与总图</a>
-        <div class="nav-section" style="margin-top:1em;">卷1 · 公理与本体论</div>
-        <a href="../vol1/index.html">卷1 公理与本体论</a>
-        <div class="nav-section" style="margin-top:1em;">卷2 · 数学结构</div>
-        <a href="../vol2/index.html">卷2 数学结构</a>
-        <div class="nav-section" style="margin-top:1em;">卷3 · 谱几何与数值输出</div>
-        <a href="../vol3/index.html">卷3 谱几何与数值输出</a>
-        <div class="nav-section" style="margin-top:1em;">卷4 · 三场动力学</div>
-        <a href="../vol4/index.html">卷4 三场动力学</a>
-        <div class="nav-section" style="margin-top:1em;">卷5 · 量子化</div>
-        <a href="#ch01" class="active">5.1 几何量子化纲领</a>
-        <a href="#ch02" class="nav-ch">5.2 形变量子化</a>
-        <a href="#ch03" class="nav-ch">5.3 ℏ_eff 桥接</a>
-        <a href="#ch04" class="nav-ch">5.4 Berry相位与拓扑分类</a>
-        <a href="#ch05" class="nav-ch">5.5 量子修正与经典极限</a>
-        <a href="#ch06" class="nav-ch">5.6 完整量子结构</a>
-        <div class="nav-section" style="margin-top:1em;">其他各卷</div>
-        <a href="../vol6/index.html">卷6 粒子物理</a>
-        <a href="../vol7/index.html">卷7 宇宙学与引力</a>
-        <a href="../vol8/index.html">卷8 交叉应用</a>
-        <a href="../volA/index.html">卷A 附录</a>
-    </nav>
-    <div id="main">
-        <div class="breadcrumb"><a href="../vol0/index.html">几何论</a><span>/</span>卷5 · 量子化</div>
-        <div class="dep-hint">
-            <strong>在递进链中的位置</strong>：场动力学 → <strong>量子化 ⬅️</strong> → 应用<br>
-            <strong>互锁关系</strong>：递进结构，逐章阅读即可。§5.4（Berry相位与拓扑分类）与主库A0/A1验证协议相关联。<br>
-            <strong>前置依赖</strong>：卷4 §4.8（三场完全耦合）；卷2 §2.2（算子代数）
-        </div>
-        <h1 id="ch01">5.1 几何量子化纲领</h1>
-        <div class="placeholder">
-            <div class="icon">✎</div>
-            <p><strong>本章尚未撰写</strong></p>
-            <p>内容：从经典几何结构到量子结构的路线图。几何量子化的动机、总体框架、与主流量子化方案的比较。</p>
-            <div class="src">素材来源：0.8.0–0.8.1</div>
-        </div>
-        <h2 id="ch02">5.2 形变量子化</h2>
-        <div class="placeholder">
-            <div class="icon">✎</div>
-            <p><strong>本章尚未撰写</strong></p>
-            <p>内容：星积、Moyal积、非交换几何框架。形变量子化的严格数学构造，与几何论算子代数的兼容性。</p>
-            <div class="src">素材来源：0.8.2–0.8.4</div>
-        </div>
-        <h2 id="ch03">5.3 ℏ_eff 桥接</h2>
-        <div class="placeholder">
-            <div class="icon">✎</div>
-            <p><strong>本章尚未撰写</strong></p>
-            <p>内容：几何论与量子力学的参数桥接。ℏ_eff 的几何定义、与普朗克常数的后验匹配。</p>
-            <div class="src">素材来源：0.8.5</div>
-        </div>
-        <h2 id="ch04">5.4 Berry相位与拓扑分类</h2>
-        <div class="placeholder">
-            <div class="icon">✎</div>
-            <p><strong>本章尚未撰写</strong></p>
-            <p>内容：A0/A1拓扑分类、紧致零化子、Berry相位的几何起源。量子态的拓扑分类与主库验证协议的几何基础。</p>
-            <div class="src">素材来源：0.8.6–0.8.7</div>
-        </div>
-        <h2 id="ch05">5.5 量子修正与经典极限</h2>
-        <div class="placeholder">
-            <div class="icon">✎</div>
-            <p><strong>本章尚未撰写</strong></p>
-            <p>内容：经典极限定理、星积→辛流形约化。从几何量子结构回复经典力学的完整路线。</p>
-            <div class="src">素材来源：0.8.8</div>
-        </div>
-        <h2 id="ch06">5.6 完整量子结构</h2>
-        <div class="placeholder">
-            <div class="icon">✎</div>
-            <p><strong>本章尚未撰写</strong></p>
-            <p>内容：量子态空间、观测量的几何构造。几何论的完整量子结构框架汇总。</p>
-            <div class="src">素材来源：0.8.0–0.8.8 综合</div>
-        </div>
-        <div style="margin-top:3em; padding-top:1.5em; border-top:1px solid var(--border); font-size:0.85em; color:var(--text-secondary); text-align:center;">
-            《几何论》卷5 · 量子化 &mdash; 框架版本 260711.1
-        </div>
-    </div>
+<div id="nav">
+<div class="nav-title">几何论<small>从三条公理到物理常数的唯一推导</small></div>
+<div class="nav-section">卷五 · 量子化</div>
+<a href="#ch5-1">§5.1 M场量子化概述</a>
+<a href="#ch5-2">§5.2 扩展相空间</a>
+<a href="#ch5-3">§5.3 Dirac约束量子化</a>
+<a href="#ch5-4">⬤ §5.4 形变量子化</a>
+<a href="#ch5-5">⬤ §5.5 ℏ_eff桥接与三路交叉验证</a>
+<a href="#ch5-6">§5.6 量子修正预言合集</a>
+<a href="#ch5-7">§5.7 夸克扇区量子化</a>
+<div class="nav-section" style="margin-top:1.5em;">其他各卷</div>
+<a href="../vol0/index.html">卷零 · 导读与总图</a>
+<a href="../vol1/index.html">卷一 · 公理与本体论</a>
+<a href="../vol2/index.html">卷二 · 数学结构</a>
+<a href="../vol3/index.html">卷三 · 谱几何与数值输出</a>
+<a href="../vol4/index.html">卷四 · 三场动力学</a>
+<a class="active" href="../vol5/index.html">卷五 · 量子化</a>
+<a href="../vol6/index.html">卷六 · 粒子物理</a>
+<a href="../vol7/index.html">卷七 · 宇宙学与天体物理</a>
+<a href="../vol8/index.html">卷八 · 交叉科学</a>
+<a href="../volA/index.html">卷A · 附录</a>
 </div>
+<div id="main">
+<div class="breadcrumb"><a href="../index.html">几何论</a> / 卷五：量子化</div>
+<div class="nav-hint"><strong>依赖提示</strong>：卷五直接依赖卷三（谱几何与数值输出）和卷四（三场动力学——特别是M场动力学 0.6.X 和三场完全耦合 0.6.9）。建议先完成卷三和卷四。</div>
+
+<h1>卷五：量子化</h1>
+
+<p class="volume-intro">这是全书的<strong>量子化卷</strong>。从经典M场梯度流出发，经过三路并行量子化方案（扩展相空间A、Dirac约束B、形变量子化C），完成ℏ_eff桥接和三路交叉验证，输出首阶量子修正预言合集，并推广至夸克扇区。整个过程中不引入外部量子化假设——量子结构从几何论的经典框架内涌现。</p>
+
+<p class="volume-intro"><strong>核心结论</strong>：三条独立量子化路径在首阶给出相同的量子修正公式 $\Delta E_0 = K \cdot \frac{\hbar_{\text{eff}}}{2A} \cdot \text{tr}_{\text{phys}}(H^{1/2})$。氘核结合能量子修正 $\Delta E_{\text{bind}}^{\text{q}} \approx 0.13 \pm 0.07$ keV。M场量子化闭合度约70%。</p>
+
+<!-- ======= §5.1 ======= -->
+<h2 id="ch5-1">§5.1 M场量子化概述</h2>
+<p><strong>来源</strong>：0.8.0</p>
+
+<p>三场绝热消除定理（0.6.9）已闭合并锁定M场动力学的经典层次：$V_{\text{eff}}(\theta_M)$ 的二阶展开给出质量参数 $\Gamma_M = 5.75 \times 10^{-23}$ eV。然而，这是经典场论层次的动力学——M场的量子涨落、零點能、量子隧穿修正等尚未纳入。</p>
+
+<p>几何论中"量子"一词出现在三处：</p>
+<ol>
+<li>0.2.3 §5 的Kontsevich星积形变量子化框架（研究框架级）</li>
+<li>0.2.3 §6 的Toeplitz量子化（研究框架级）</li>
+<li>0.2.3 定理4.5中无量纲有效量子参数 $\hbar_{\text{eff}} = 1/N_1 \approx 0.000524$（定理级）</li>
+</ol>
+
+<h3>前置资产盘点</h3>
+
+<div class="theorem-box">
+<p><strong>定理 5.1（约束截面辛形式，0.2.1 定理3.5.1）</strong></p>
+<p>在约束截面 $\Sigma = \{(\theta_M,\theta_C,\theta_I): \theta_M+\theta_C+\theta_I=90^\circ\}$ 上，辛形式简化为</p>
+<p>$$\omega|_\Sigma = A(\theta_M,\theta_C)\, d\theta_M \wedge d\theta_C$$</p>
+<p>其中 $A(\theta_M,\theta_C) = \displaystyle\sum_{i\in\{M,C,I\}} \frac{1}{\sin^2\theta_i}$。辛形式的非退化性由 $A \neq 0$ 保证。</p>
+</div>
+
+<div class="theorem-box">
+<p><strong>定理 5.2（渗透约束松弛中的 ℏ_eff，0.2.3 定理4.5）</strong></p>
+<p>有效量子参数为</p>
+<p>$$\hbar_{\text{eff}} = \frac{1}{N_1} \equiv \frac{\pi}{6000} \approx 0.000524 \quad (\text{无量纲})$$</p>
+<p>其中 $N_1 = 6000/\pi$ 是首级渗透截面数。</p>
+</div>
+
+<h3>量纲桥参数总表</h3>
+<table class="constant-table">
+<thead><tr><th>参数</th><th>符号</th><th>值</th><th>来源</th></tr></thead>
+<tbody>
+<tr><td>精细结构常数</td><td>$S_e$</td><td>$137.035999084$</td><td>0.3.5 定理2.1</td></tr>
+<tr><td>有效层级标度</td><td>$\lambda_1^{\text{eff}}$</td><td>$391.05$ MeV</td><td>0.3.1 定理3.1</td></tr>
+<tr><td>全尺度比</td><td>$\lambda_2^{\text{eff}}$</td><td>$59324.3$ MeV</td><td>0.3.1 定理3.2</td></tr>
+<tr><td>长度量纲桥</td><td>$\chi_L$</td><td>$1.509 \times 10^{-10}$ m</td><td>0.3.2 定理4.1</td></tr>
+<tr><td>时间量纲桥</td><td>$\chi_T$</td><td>$3.616 \times 10^{-17}$ s</td><td>0.3.2 定理4.2</td></tr>
+<tr><td>质量桥</td><td>$K$</td><td>$839.758793$ keV</td><td>0.3.3 命题2.1</td></tr>
+<tr><td>M场质量参数</td><td>$\Gamma_M$</td><td>$5.75 \times 10^{-23}$ eV</td><td>0.6.9 定理4</td></tr>
+<tr><td>有效量子参数</td><td>$\hbar_{\text{eff}}$</td><td>$\pi/6000 \approx 5.24\times10^{-4}$</td><td>0.2.3 定理4.5</td></tr>
+</tbody>
+</table>
+
+<h3>核心困难：法向-切向冲突</h3>
+
+<div class="theorem-box">
+<p><strong>定理 5.3（法向-切向冲突）</strong></p>
+<p>设 $\Sigma$ 为约束截面，$T\Sigma$ 为其切空间，$N\Sigma$ 为其法丛。则：</p>
+<p>(i) 辛形式 $\omega|_\Sigma$ 仅在 $T\Sigma$ 上有定义——它只能配对切方向的运动。</p>
+<p>(ii) M场梯度流 $\partial_\tau\theta_M = -\Gamma_M \partial S/\partial\theta_M$ 沿 $S$ 的法方向运动，不在 $T\Sigma$ 内。</p>
+<p>(iii) 辛流 $\{\theta_M, S\} = A^{-1}\partial S/\partial\theta_C$ 保持在 $S$ 的等值面内，与梯度流正交。</p>
+<p>因此，M场梯度流在原始相空间 $(\Sigma, \omega|_\Sigma)$ 上不是哈密顿流。</p>
+</div>
+
+<h3>三条出路</h3>
+<table class="data-table">
+<thead><tr><th>出路</th><th>核心策略</th><th>根本困难</th><th>可行性</th><th>文章</th></tr></thead>
+<tbody>
+<tr><td><strong>A</strong></td><td>扩展相空间：引入 $s,p_s$ 为浴自由度</td><td>需构造 $\Pi_S$ 的严格动力学</td><td>中</td><td>0.8.1</td></tr>
+<tr><td><strong>B</strong></td><td>Dirac约束量子化：未约化相空间</td><td>真动量映射未完全构造</td><td>中–低</td><td>0.8.2</td></tr>
+<tr><td><strong>C</strong></td><td>形变量子化：量子化 $S$ 的代数结构</td><td>星积自然恢复辛流而非梯度流</td><td><strong>中–高</strong></td><td>0.8.3</td></tr>
+</tbody>
+</table>
+
+<p>方案C优先的理由：与现有资产最兼容（0.2.3已建立Kontsevich星积框架），可最早产出可检验预言（首阶WKB量子修正仅需已知Hessian谱），且概念上最干净——形变量子化不要求动力学是哈密顿的。</p>
+
+<div class="nav-hint">
+<p><strong>推导链</strong>：三场绝热消除（0.6.9）→ 经典相空间骨架 → ℏ_eff参数 → 法向-切向冲突 → 三路并行方案 → 0.8.1/0.8.2/0.8.3</p>
+<p><strong>延伸阅读</strong>：0.8.0 §1–§5（完整问题定位）；0.2.1 §3.5（约束截面辛结构）；0.2.3 §4（渗透约束松弛）</p>
+</div>
+
+<!-- ======= §5.2 ======= -->
+<h2 id="ch5-2">§5.2 扩展相空间：法向辛结构与梯度流的哈密顿嵌入</h2>
+<p><strong>来源</strong>：0.8.1</p>
+
+<p>出路A的核心操作：将作用量 $S$ 从势函数提升为构型空间坐标 $s$，引入共轭法向动量 $\Pi_S$，构造扩展辛形式 $\omega_{\text{ext}}$，在扩展相空间中将M场梯度流嵌入为哈密顿流。</p>
+
+<h3>扩展辛形式</h3>
+<div class="definition-box">
+<p><strong>定义 5.1（扩展相空间）</strong></p>
+<p>定义扩展构型空间 $\mathcal{Q}_{\text{ext}} = \{(\theta_M,\theta_C,s)\}$，其中 $s$ 参数化作用量值。物理子空间由约束 $\phi \equiv s - S(\theta_M,\theta_C) \approx 0$ 定义。</p>
+</div>
+
+<div class="theorem-box">
+<p><strong>定理 5.4（扩展辛形式）</strong></p>
+<p>在余切丛 $T^*\mathcal{Q}_{\text{ext}}$ 上，典范辛形式为</p>
+<p>$$\omega_{\text{ext}} = d\theta_M \wedge dp_M + d\theta_C \wedge dp_C + ds \wedge dp_s$$</p>
+<p>该形式非退化且满足Jacobi恒等式——扩展相空间是合法的辛流形。</p>
+</div>
+
+<h3>约束的Dirac分类</h3>
+<div class="theorem-box">
+<p><strong>定理 5.5（约束分类）</strong></p>
+<p>在扩展相空间中，$\phi = s - S$ 与完备性约束 $\chi \equiv \theta_M+\theta_C+\theta_I-90^\circ$ 联合构成<strong>第二类约束对</strong>，在非对称点处约束矩阵非退化。</p>
+</div>
+
+<h3>梯度流的恢复</h3>
+<div class="definition-box">
+<p><strong>构造 5.1（扩展哈密顿量）</strong></p>
+<p>$$H_{\text{ext}} = \frac{p_s^2}{2M_s} + s + H_{\text{int}}(\theta_M,\theta_C,s,p_M,p_C,p_s)$$</p>
+<p>其中 $H_{\text{int}}$ 编码系统-浴耦合。在 $\Gamma_M \to 0$（强过阻尼）极限和浴迹追踪后，约束面上的有效动力学退化为梯度流。</p>
+</div>
+
+<h3>正则量子化</h3>
+<p>在约束面上，Dirac括号量子化给出：</p>
+<p>$$[\hat{\theta}_M, \hat{p}_M] = i\hbar_{\text{eff}}, \quad [\hat{s}, \hat{p}_s] = i\hbar_{\text{eff}}$$</p>
+<p>约束条件 $\hat{\phi}|\psi\rangle = 0$ 将物理态限定在 $S$ 的本征空间。</p>
+
+<div class="nav-hint">
+<p><strong>推导链</strong>：梯度流非哈密顿本质 → 扩展构型空间 → 扩展辛形式 → Dirac约束分析 → Bateman型浴耦合 → 正则量子化</p>
+<p><strong>延伸阅读</strong>：0.8.1 §3–§6（完整构造）；0.8.1 附录A（浴耦合Bateman型构造）</p>
+</div>
+
+<!-- ======= §5.3 ======= -->
+<h2 id="ch5-3">§5.3 Dirac约束量子化：未约化相空间</h2>
+<p><strong>来源</strong>：0.8.2</p>
+
+<p>出路B的核心策略：不同于出路A引入额外自由度，出路B在<strong>未约化相空间</strong>（6维）中进行Dirac分析——回到完备性约束 $\phi_1$ 和 $S$ 等值面约束 $\phi_2$ 的原始结构。</p>
+
+<h3>约束分类</h3>
+<div class="theorem-box">
+<p><strong>定理 5.6（未约化空间约束分类）</strong></p>
+<p>在未约化相空间 $T^*\mathcal{Q}_{\text{full}} \cong T^*((0,90^\circ)^3)$（6维）中：</p>
+<p>$$\phi_1 = \theta_M+\theta_C+\theta_I-90^\circ \quad\text{（完备性约束）}$$</p>
+<p>$$\phi_2 = S - S_{\text{target}} \quad\text{（$S$ 等值面约束）}$$</p>
+<p>两者均为<strong>第一类约束</strong>（$\{\phi_1,\phi_2\}=0$ 恒成立——因 $\phi_1,\phi_2$ 均不含动量），各生成一个规范自由度。经规范固定后的物理自由度为2，与约束截面 $\Sigma$ 的维数一致。</p>
+</div>
+
+<h3>U(1)动量映射的构造</h3>
+<div class="definition-box">
+<p><strong>构造 5.2（U(1)动量映射候选）</strong></p>
+<p>动量映射 $\mu: T^*\mathcal{Q}_{\text{full}} \to \mathfrak{u}(1)^* \cong \mathbb{R}$ 的显式候选：</p>
+<p>$$\mu = p_M + p_C + p_I$$</p>
+<p>该候选满足 $\iota_{\xi_{U(1)}}\omega_{\text{can}} = d\mu$，且 $\mu^{-1}(0)$ 是U(1)-不变的。</p>
+</div>
+
+<h3>量子等价性</h3>
+<div class="theorem-box">
+<p><strong>命题 5.7（Dirac括号量子化与出路C的等价性）</strong></p>
+<p>在适当的规范固定下，Dirac括号量子化的物理Hilbert空间与出路C的星积本征值方程解空间同构。两者在 $\hbar_{\text{eff}} \to 0$ 极限下给出相同的首阶量子修正。</p>
+</div>
+
+<div class="nav-hint">
+<p><strong>推导链</strong>：未约化相空间 → Dirac-Bergmann约束分类 → 第一类约束代数 → U(1)动量映射 → Marsden-Weinstein约化 → Dirac括号量子化</p>
+<p><strong>延伸阅读</strong>：0.8.2 §3–§6（完整约束分析和量子化）；0.8.2 附录A（约束矩阵显式计算）</p>
+</div>
+
+<!-- ======= §5.4 ======= -->
+<h2 id="ch5-4">§5.4 形变量子化：M场量子谱与梯度流桥接</h2>
+<p><strong>来源</strong>：0.8.3</p>
+
+<div class="interlock-notice">
+<h3>⬤ 出路C——本文最推荐的量子化路径</h3>
+<p>出路C的战略优势在于：它量子化的是代数结构（泊松括号→星积对易子），而非运动方程。这绕开了M场梯度流非哈密顿的根本阻塞。</p>
+</div>
+
+<p>方案C2的核心逻辑：<strong>不量子化梯度流动力学。量子化 $S$ 的谱。梯度流视为谱间耗散弛豫的经典极限。</strong></p>
+
+<h3>星积本征值方程</h3>
+<div class="definition-box">
+<p><strong>定义 5.2（星积本征值方程）</strong></p>
+<p>在局部Darboux片 $(U\subset\Sigma, \omega|_\Sigma)$ 上，Kontsevich星积的本征值问题为</p>
+<p>$$S \star_{\hbar} \psi_n = s_n \psi_n$$</p>
+<p>其中 $\hbar = \hbar_{\text{eff}} = \pi/6000$ 为形变参数。星积满足结合律和经典极限 $\lim_{\hbar\to0}(f\star g - g\star f)/(i\hbar) = \{f,g\}$。</p>
+</div>
+
+<div class="theorem-box">
+<p><strong>命题 5.8（谱的离散性）</strong></p>
+<p>星积本征值方程 $S \star_{\hbar} \psi_n = s_n \psi_n$ 在约束截面 $\Sigma$ 上有离散谱。这是因为：</p>
+<p>(i) $S$ 在 $\Sigma$ 上具有紧的等值面（由 $S$ 在边界处发散保证）；</p>
+<p>(ii) 辛形式 $\omega|_\Sigma$ 非退化；</p>
+<p>(iii) $\hbar_{\text{eff}} > 0$ 形变参数引入有效"紧致化"。</p>
+</div>
+
+<h3>首阶WKB量子修正</h3>
+<div class="theorem-box">
+<p><strong>命题 5.9（首阶WKB量子修正公式）</strong></p>
+<p>自由全局极小值的零點能量子修正：</p>
+<p>$$\Delta s_0 = \frac{\hbar_{\text{eff}}}{2A} \cdot \text{tr}(H^{1/2})$$</p>
+<p>其中 $A = \sum_i 1/\sin^2\theta_i$ 为完整辛系数，$H$ 为约束截面上的有效 $2\times2$ Hessian。数值结果：</p>
+<p>$$\Delta s_0^{\text{free}} = 2.19 \times 10^{-2} \quad (\text{无量纲})$$</p>
+<p>对应的物理零點能：$\Delta E_0^{\text{free}} = K \cdot \Delta s_0^{\text{free}} \approx 1.54$ keV。</p>
+</div>
+
+<h3>梯度流-星积桥接</h3>
+<div class="theorem-box">
+<p><strong>定理 5.10（经典极限：星积对易子→辛流）</strong></p>
+<p>$$\lim_{\hbar\to0} \frac{[f,g]_\star}{i\hbar} = \{f,g\}$$</p>
+<p>星积对易子在经典极限下恢复的是辛流 $\{\theta_M, S\} = A^{-1}\partial S/\partial\theta_C$，而非梯度流 $\partial_\tau\theta_M = -\Gamma_M\partial S/\partial\theta_M$。两者方向正交——辛流沿 $S$ 等值面的切方向，梯度流沿法方向。</p>
+</div>
+
+<div class="definition-box">
+<p><strong>命题 5.11（梯度流作为谱间耗散弛豫）</strong></p>
+<p>梯度流对应于系统在量子稳态谱 $\{s_n\}$ 之间的<strong>慢速耗散跃迁</strong>：</p>
+<p>$$\partial_\tau s \approx -\Gamma_{\text{eff}} \cdot (s - s_{\text{target}})$$</p>
+<p>其中 $\Gamma_{\text{eff}}$ 是谱间弛豫率。量子层次给出稳态谱，经典层次描述谱间跃迁——两者在时间标度分离下自洽共存。</p>
+</div>
+
+<div class="nav-hint">
+<p><strong>推导链</strong>：Kontsevich星积框架 → 星积本征值方程 → 谱离散性 → WKB展开 → 零點能公式 → 梯度流-星积桥接 → 氘核预言</p>
+<p><strong>延伸阅读</strong>：0.8.3 §2–§5（完整推导）；0.2.3 §5（Kontsevich星积框架）；0.6.9（三场绝热消除）</p>
+</div>
+
+<!-- ======= §5.5 ======= -->
+<h2 id="ch5-5">§5.5 ℏ_eff桥接与三路交叉验证</h2>
+<p><strong>来源</strong>：0.8.4</p>
+
+<div class="interlock-notice">
+<h3>⬤ 枢纽章——闭合两大致命分歧</h3>
+<p>本章完成三重任务：闭合 $ℏ_{\text{eff}}$（无量纲）与物理 $ℏ$ 的桥接；对三路量子化方案进行定量交叉验证；修正0.8.3中因辛系数定义不一致导致的数值偏差。</p>
+</div>
+
+<h3>ℏ_eff桥接定理</h3>
+<div class="theorem-box">
+<p><strong>定理 5.12（ℏ_eff桥接定理的精化）</strong></p>
+<p>无量纲 ℏ_eff 与物理 ℏ 之间的精确转换关系：</p>
+<p>$$\hbar_{\text{phys}}^{\text{eff}} = A_{\text{geo}} \cdot \hbar_{\text{eff}}$$</p>
+<p>其中 $A_{\text{geo}} = K\chi_T = 839.758793\ \text{keV} \times 3.616 \times 10^{-17}\ \text{s}$ 为几何作用量标度，$\hbar_{\text{eff}} = \pi/6000$ 为渗透约束松弛参数。两者的物理分工：</p>
+<ul>
+<li>$\hbar_{\text{eff}}$ 控制 <strong>几何论内部的</strong> 量子涨落强度（无量纲，源于渗透约束松弛）</li>
+<li>$\hbar_{\text{phys}}^{\text{eff}}$ 控制 <strong>可观测的</strong> 量子修正量级（有量纲，$10^{-3}\ \text{eV}$ 量级）</li>
+<li>物理 ℏ = $6.582\times10^{-16}$ eV·s 是第三种普朗克常数——$O(1)$ 量级的观测者世界常数</li>
+</ul>
+</div>
+
+<h3>辛系数的正确定理</h3>
+<div class="theorem-box">
+<p><strong>定理 5.13（辛系数A的正确定理）</strong></p>
+<p>在约束截面 $\Sigma$ 上，WKB量子修正公式中的 $A$ 应为完整辛形式系数</p>
+<p>$$A = \sum_{i\in\{M,C,I\}} \frac{1}{\sin^2\theta_i}$$</p>
+<p>（0.2.1 定理3.5.1），而非局部Darboux近似 $H_{MC} = 3.41$ rad⁻²。</p>
+<p>关键构型处的 $A$ 值：</p>
+<table class="constant-table" style="width:auto;">
+<thead><tr><th>构型</th><th>$A$ (rad⁻²)</th></tr></thead>
+<tbody>
+<tr><td>裸基准点 $P_0$</td><td>100.83</td></tr>
+<tr><td>自由极小值 $(30^\circ,30^\circ,30^\circ)$</td><td>12.00</td></tr>
+<tr><td>缪子构型 $(31.94^\circ,26.16^\circ,31.90^\circ)$</td><td>12.29</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>三路交叉验证：$\mathcal{N}=2$ 谐振子基准</h3>
+<p>在自由全局极小值 $(30^\circ,30^\circ,30^\circ)$ 的线性化谐振子近似下，三路给出相同的基态零點能：</p>
+
+<table class="data-table">
+<thead><tr><th>路径</th><th>公式</th><th>$\Delta E_0$</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>C（形变量子化）</td><td>$\frac{\hbar_{\text{eff}}}{2A}\text{tr}(H^{1/2})$</td><td>1.54 keV</td><td>✅ 正确</td></tr>
+<tr><td>B（Dirac约束）</td><td>$\frac{\hbar_{\text{eff}}}{2A}\text{tr}(H^{1/2})$</td><td>1.54 keV</td><td>✅ 正确</td></tr>
+<tr><td>A（扩展相空间）</td><td>$\frac{\hbar_{\text{eff}}}{2\sqrt{A}}\text{tr}(H^{1/2})$</td><td>0.74 keV（缪子处）</td><td>⚠️ 因子 $1/\sqrt{A}$ 被裁决为过度近似</td></tr>
+</tbody>
+</table>
+
+<div class="theorem-box">
+<p><strong>裁决（O8.4.2闭合）</strong></p>
+<p>在缪子构型处三路独立数值计算：出路C和B给出 $\Delta E_0^{\mu} \approx 0.21$ keV（$1/A$ 因子），出路A给出 $\Delta E_0^{\mu} \approx 0.74$ keV（$1/\sqrt{A}$ 因子）。分歧 $\sim 3.5$ 倍——<strong>裁决出路A的 $1/\sqrt{A}$ 因子为Darboux对齐假设下的过度近似，出路C/B的 $1/A$ 公式为正确形式。</strong></p>
+</div>
+
+<h3>统一量子修正公式</h3>
+<div class="theorem-box">
+<p><strong>定理 5.14（统一的首阶量子修正公式）</strong></p>
+<p>三路共享的首阶量子修正公式：</p>
+<p>$$\Delta s_0 = \frac{\hbar_{\text{eff}}}{2A} \cdot \text{tr}(H^{1/2})$$</p>
+<p>经A修正后，氘核结合能的量子修正收窄为 $\Delta E_{\text{bind}}^{\text{q}} \approx 0.08$–$0.30$ keV。</p>
+</div>
+
+<div class="nav-hint">
+<p><strong>推导链</strong>：ℏ_eff桥接 → 辛系数A的识别 → $\mathcal{N}=2$谐振子基准 → 三路独立计算 → 裁决 → 统一公式 → 数值更新</p>
+<p><strong>延伸阅读</strong>：0.8.4 §1–§6（完整推导）；0.8.4 附录A（完整辛系数数值表）；0.8.4 附录B（Darboux坐标变换）</p>
+</div>
+
+<!-- ======= §5.6 ======= -->
+<h2 id="ch5-6">§5.6 量子修正预言合集</h2>
+<p><strong>来源</strong>：0.8.5</p>
+
+<p>0.8系列收官之作。闭合O8.4.2（WKB因子裁决）、O8.4.3（联合截面辛系数），汇总全部量子修正预言。</p>
+
+<h3>O8.4.2闭合：缪子构型三路裁决</h3>
+<p>缪子构型 $(31.94^\circ, 26.16^\circ, 31.90^\circ)$ 处三路独立数值计算（$\theta_C$-共享，来自24号定理5.7）：</p>
+
+<p>完整辛系数：</p>
+<p>$$A_{\mu} = \frac{1}{\sin^2 31.94^\circ} + \frac{1}{\sin^2 26.16^\circ} + \frac{1}{\sin^2 31.90^\circ} = 12.291\ \text{rad}^{-2}$$</p>
+
+<p>约束截面有效Hessian（$2\times2$，消去 $\theta_I$）：</p>
+<p>$$H|_\Sigma = \begin{pmatrix} 203.17 & 101.80 \\ 101.80 & 375.13 \end{pmatrix}\ \text{rad}^{-2}$$</p>
+<p>本征值：$\lambda_1^{\text{eff}} = 155.89\ \text{rad}^{-2},\ \lambda_2^{\text{eff}} = 422.41\ \text{rad}^{-2}$</p>
+
+<p><strong>裁决</strong>：出路C/B的 $1/A$ 公式为正确形式，出路A的 $1/\sqrt{A}$ 因子需修订。</p>
+
+<h3>O8.4.3闭合：联合截面辛系数</h3>
+<div class="theorem-box">
+<p><strong>命题 5.15（联合截面辛系数）</strong></p>
+<p>$N$粒子联合截面的辛形式 $\omega_{\text{joint}}$ 的有效辛系数：</p>
+<p>在 $\theta_C$-共享截面上：$A_{\text{joint}}^{(N)} = N \cdot A_{\text{single}}$（线性标度）</p>
+<p>在M-同步截面上：各粒子辛形式近似解耦，$A_{\text{joint}}^{(N)} \approx \bigoplus_{k} A_k$</p>
+<p>氘核（$N=2$，$\theta_C$-共享）：$A_{\text{deut}} \approx 25.9\ \text{rad}^{-2}$</p>
+<p>由此：$\Delta E_{\text{bind}}^{\text{q}} \approx 0.13 \pm 0.07$ keV</p>
+</div>
+
+<h3>预言总表</h3>
+<table class="constant-table">
+<thead><tr><th>编号</th><th>预言</th><th>数值</th><th>验证可能性</th><th>层级</th></tr></thead>
+<tbody>
+<tr><td>Q1</td><td>自由真空零點能</td><td>1.54 keV</td><td>间接（背景能量）</td><td>命题</td></tr>
+<tr><td>Q2</td><td>氘核结合能量子修正</td><td>$0.13 \pm 0.07$ keV</td><td>中期（高精度测量）</td><td>构造性命题</td></tr>
+<tr><td>Q3</td><td>$S$ 激发态间距</td><td>$\sim 2.8$ keV</td><td>近期（原子/分子谱）</td><td>构造性命题</td></tr>
+<tr><td>Q4</td><td>缪子零點能</td><td>$\sim 0.21$ keV</td><td>长期</td><td>构造性命题</td></tr>
+<tr><td>Q5</td><td>τ子零點能</td><td>$\sim 0.19$ keV</td><td>不可行</td><td>方向性</td></tr>
+<tr><td>Q6</td><td>反常磁矩二阶星积修正</td><td>方向性（符号预测）</td><td>与实验对比</td><td>方向性</td></tr>
+<tr><td>Q7</td><td>核子质量量子修正</td><td>$\sim 1.7$ keV（质子）</td><td>远低于实验精度</td><td>构造性命题</td></tr>
+</tbody>
+</table>
+
+<h3>实验对比路线图</h3>
+<table class="data-table">
+<thead><tr><th>时间尺度</th><th>最现实目标</th><th>实验接触点</th></tr></thead>
+<tbody>
+<tr><td>近期</td><td>$S$ 激发态的原子/分子对应（Q3）</td><td>高分辨率谱学</td></tr>
+<tr><td>中期</td><td>氘核结合能精密测量（Q2）</td><td>离子阱 + 频率梳</td></tr>
+<tr><td>长期</td><td>缪子零點能（Q4）</td><td>缪子反常磁矩实验</td></tr>
+</tbody>
+</table>
+
+<div class="nav-hint">
+<p><strong>推导链</strong>：WKB因子裁决 → 联合截面辛系数 → 预言总表 → 实验对比路线图 → P0-21闭合评估（~70%）</p>
+<p><strong>延伸阅读</strong>：0.8.5 §2–§6（完整预言和评估）；0.8.5 附录A-C（详细计算）</p>
+</div>
+
+<!-- ======= §5.7 ======= -->
+<h2 id="ch5-7">§5.7 夸克扇区量子化</h2>
+<p><strong>来源</strong>：0.8.6</p>
+
+<p>夸克扇区的约束结构与M场有本质差异——M场在2D辛截面上量子化，夸克在N体联合截面上量子化，SU(3)颜色约束替代完备性约束成为量子化的核心结构。</p>
+
+<table class="data-table">
+<thead><tr><th>特征</th><th>M场（轻子/核子）</th><th>夸克扇区</th></tr></thead>
+<tbody>
+<tr><td>约束类型</td><td>完备性（单粒子）</td><td>完备性 + M-同步 + SU(3)颜色</td></tr>
+<tr><td>粒子数</td><td>1（独立粒子）</td><td>N≥2（联合截面）</td></tr>
+<tr><td>渐近态</td><td>存在（电子、质子…）</td><td>不存在（禁闭）</td></tr>
+<tr><td>相空间</td><td>2D，辛秩2</td><td>N维，辛秩2</td></tr>
+<tr><td>量子化对象</td><td>单个粒子在$S$曲面上的运动</td><td>联合系统的集体模式</td></tr>
+</tbody>
+</table>
+
+<h3>约束金字塔</h3>
+<div class="theorem-box">
+<p><strong>定理 5.16（夸克联合截面的物理相空间维数）</strong></p>
+<p>在完备性 + M-同步 + $\tilde{S}_{\text{total}} +$ U(1)冻结的完整约束链下，N夸克联合截面的物理相空间维数为</p>
+<p>$$\dim\mathcal{P}_{\text{phys}}^{(N)} = N - 1$$</p>
+<p>N=2（介子 $q\bar{q}$）：$\dim = 1$（0维辛流形——离散谱）</p>
+<p>N=3（重子 $qqq$）：$\dim = 2$（可量子化为1个量子自由度）</p>
+</div>
+
+<h3>颜色单态的量子实现</h3>
+<div class="theorem-box">
+<p><strong>定理 5.17（颜色单态量子投影）</strong></p>
+<p>经典U(1)冻结在量子层面体现为Hilbert空间的限制——仅保留 $\sum \theta_I^{(i)} = N\theta_{I0}$ 的态。SU(3)单态条件是此约束的群论推论（5号定理2.2，已封闭）。</p>
+</div>
+
+<h3>首阶量子修正</h3>
+<div class="definition-box">
+<p><strong>命题 5.18（重子首阶量子修正）</strong></p>
+<p>对于N=3重子：</p>
+<p>$$\Delta E_0^{\text{baryon}} \approx 1.7\ \text{keV} \quad (\text{质子构型 } \theta_M \approx 57.93^\circ)$$</p>
+<p>相比质子质量938 MeV为 $\sim 1.8\times10^{-6}$——当前不可直接检验，但验证了5/23号文章忽略量子修正的合理性。对N=2介子，物理自由度为0（离散谱），量子修正不适用连续WKB公式。</p>
+</div>
+
+<h3>O8.5.2闭合评估</h3>
+<table class="data-table">
+<thead><tr><th>成就</th><th>层级</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td>约束结构分析</td><td>**定理级**</td><td>约束金字塔完整确定</td></tr>
+<tr><td>Marsden-Weinstein约化</td><td>**构造性命题**</td><td>辛约化框架确定</td></tr>
+<tr><td>颜色单态量子实现</td><td>**定理级**</td><td>5号定理2.2的量子推论</td></tr>
+<tr><td>首阶量子修正</td><td>**构造性命题**</td><td>数值不确定度±50%</td></tr>
+<tr><td>闭合度</td><td>**~60%**</td><td>全量子场论推广为O8.6.1</td></tr>
+</tbody>
+</table>
+
+<div class="nav-hint">
+<p><strong>推导链</strong>：联合截面约束金字塔 → Dirac分类 → Marsden-Weinstein约化 → 有效辛系数 → 颜色单态投影 → 首阶量子修正 → 与强子谱对比</p>
+<p><strong>延伸阅读</strong>：0.8.6 §2–§6（完整推导）；5号（强相互作用联合截面）；0.3.9（联合截面谱理论）</p>
+</div>
+
+<!-- ======= 章末 ======= -->
+<div class="chapter-end">
+<h3>章末注</h3>
+<p>卷五完成了M场量子化的三条独立路径构建、交叉验证和预言输出。核心成就：</p>
+<ul>
+<li><strong>三路首阶等价性</strong>：扩展相空间(A)、Dirac约束(B)、形变量子化(C)在首阶给出相同的量子修正公式</li>
+<li><strong>ℏ_eff桥接</strong>：闭合了无量纲渗透参数 $\pi/6000$ 与物理Planck常数的转换关系</li>
+<li><strong>WKB因子裁决</strong>：$1/A$ 公式胜出，$1/\sqrt{A}$ 被裁决为过度近似</li>
+<li><strong>预言合集</strong>：7项可检验量子修正预言，最高优先级为 $S$ 激发态间距（$\sim 2.8$ keV）</li>
+<li><strong>夸克扇区推广</strong>：约束金字塔和颜色单态量子实现已完成（闭合度~60%）</li>
+</ul>
+<p><strong>M场量子化总体闭合度：约70%</strong>——首阶量子修正公式（定理级）、三路首阶等价性（命题级）、WKB因子裁决（定理级）、联合截面辛系数（构造性命题）。剩余 $O(\hbar_{\text{eff}}^2)$ 高阶等价性和全量子场论推广为长期开放问题。</p>
+<p><strong>延伸阅读</strong>：← <a href="../vol4/index.html">卷四：三场动力学</a> | <a href="../vol6/index.html">卷六：粒子物理 →</a></p>
+</div>
+
+</div>
+</div>
+<script>
+// 平滑滚动 + 侧边栏高亮
+document.querySelectorAll('#nav a[href^="#"]').forEach(function(a){
+a.addEventListener('click',function(e){e.preventDefault();var t=document.querySelector(this.getAttribute('href'));if(t){t.scrollIntoView({behavior:'smooth',block:'start'});window.history.pushState(null,null,this.getAttribute('href'));}})});
+window.addEventListener('scroll',function(){var n=document.querySelectorAll('#nav a[href^="#"]');var s=window.scrollY+120;n.forEach(function(a){var t=document.querySelector(a.getAttribute('href'));if(t){var o=t.offsetTop,c=o+t.offsetHeight;a.classList.toggle('active',s>=o&&s<c);}})});
+// 首次加载时高亮
+setTimeout(function(){var h=window.location.hash;if(h){var t=document.querySelector(h);if(t)t.scrollIntoView({behavior:'auto',block:'start'});}},100);
+</script>
 </body>
 </html>
