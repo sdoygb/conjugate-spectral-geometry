@@ -567,7 +567,7 @@ class MasterDatabase:
             # 同名但验证通过 → 标记为promoted（与首次入库一致）
             self._update_pending_status(
                 submission_id, "promoted",
-                verification_result=verification_result_json,
+                verification_result=json.dumps(verification_result, ensure_ascii=False, default=str),
             )
             return master_id
 
@@ -745,27 +745,7 @@ class MasterDatabase:
         Returns:
             {"success": bool, "message": str, "locked": bool}
         """
-        # 检查是否已有PIA注册
-        existing = self.pia_collection.get(include=["metadatas"])
-        if existing["ids"]:
-            # 已有PIA——锁死，不允许新增
-            existing_meta = existing["metadatas"][0]
-            return {
-                "success": False,
-                "message": (
-                    f"PIA已锁死。已注册: {existing_meta.get('pia_id', '')} "
-                    f"({existing_meta.get('name', '')})。"
-                    f"框架只允许单一物理映射，不再接受新的PIA注册。"
-                ),
-                "locked": True,
-                "existing": {
-                    "pia_id": existing_meta.get("pia_id", ""),
-                    "name": existing_meta.get("name", ""),
-                    "registered_at": existing_meta.get("registered_at", ""),
-                },
-            }
-
-        # 注册新PIA
+        # 注册新PIA（允许多个PIA注册，不再单次锁死）
         metadata = {
             "pia_id": pia_id,
             "name": name,
@@ -774,7 +754,6 @@ class MasterDatabase:
             "geometric_theorem_id": geometric_theorem_id,
             "registered_at": datetime.now().isoformat(),
             "status": "active",
-            "locked": "true",  # 注册后锁死
         }
 
         self._write(

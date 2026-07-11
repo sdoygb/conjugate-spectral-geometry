@@ -59,8 +59,7 @@ def generate_scripts():
     version = get_version()
 
     scripts = {
-        "install.sh": INSTALL_SH_TEMPLATE,
-        "upgrade.sh": UPGRADE_SH_TEMPLATE,
+        "setup.sh": SETUP_SH_TEMPLATE,
         "uninstall.sh": UNINSTALL_SH_TEMPLATE,
         "fix-index.sh": FIX_INDEX_SH_TEMPLATE,
     }
@@ -88,12 +87,13 @@ def build():
     generate_scripts()
 
     print("\n[3/3] 打包 zip...")
-    zip_name = f"geometry-ai-server_linux_v{version}.zip"
+    folder_name = f"geometry-ai-server"
+    zip_name = f"{folder_name}_linux_v{version}.zip"
     zip_path = PROJECT_ROOT / zip_name
-    prefix = f"geometry-ai-server_{version}"
+    prefix = folder_name
 
     with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
-        for script in ["install.sh", "upgrade.sh", "uninstall.sh", "fix-index.sh"]:
+        for script in ["setup.sh", "uninstall.sh", "fix-index.sh"]:
             sp = BUILD_DIR / script
             if sp.exists():
                 zf.write(sp, f"{prefix}/{script}")
@@ -110,178 +110,171 @@ def build():
 
     size = zip_path.stat().st_size / (1024 * 1024)
     print(f"\n  打包完成: {zip_name} ({size:.1f} MB)")
-    print(f"  安装: unzip {zip_name} && cd {prefix} && sudo bash install.sh")
+    print(f"  安装: unzip {zip_name} && cd {prefix} && sudo bash setup.sh")
 
 
-# ─── Template: install.sh ─────────────────────────────────────
-INSTALL_SH_TEMPLATE = """#!/bin/bash
-# Geometry AI Server v{VERSION} - Linux 全自动安装
-set -euo pipefail
+# ─── Template: setup.sh（智能安装/升级）─────────────────────
+SETUP_SH_TEMPLATE = """#!/bin/bash
+# ==============================================================================
+# GeometryAI 子AI 智能安装/升级脚本
+# 自动检测：有旧版则升级，无旧版则全新安装
+#
+# 用法:
+#   sudo bash setup.sh                    # 安装到 /opt/geometry-ai
+#   sudo bash setup.sh /home/user/my-ai   # 指定目录（升级或安装）
+#   sudo INSTALL_DIR=/home/user/my-ai bash setup.sh  # 同上
+# ==============================================================================
 
-RED='\\033[0;31m'; GREEN='\\033[0;32m'; CYAN='\\033[0;36m'; NC='\\033[0m'
-info()  { echo -e "${GREEN}[✓]${NC} $1"; }
-warn()  { echo -e "${CYAN}[→]${NC} $1"; }
-error() { echo -e "${RED}[✗]${NC} $1"; }
+set -e
 
-echo ""
-echo "  Geometry AI Server v{VERSION} - Linux 全自动安装"
-echo "  ================================================"
-echo ""
-
-if [ "$EUID" -ne 0 ]; then error "请使用 sudo 运行"; exit 1; fi
-
+# ==================== 配置区 ====================
+SERVICE_NAME="geometry-ai"
+MASTER_AI_URL="http://192.168.1.2:5001"
+MASTER_AI_TOKEN="master-ai-verify"
+SUB_AI_PORT=5000
+PYTHON_VERSION="python3"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-APP_DIR="/usr/local/geometry-ai"
-SERVICE_USER="geometry-ai"
 
-# ── 1. Python 3.11+ ──
-warn "[1/7] 检查 Python 环境（需要 3.11+）..."
-PYTHON=""
-for cmd in python3.13 python3.12 python3.11; do
-    if command -v "$cmd" &>/dev/null; then
-        ver=$($cmd -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null)
-        major=${ver%%.*}; minor=${ver##*.}
-        if [ "$major" -eq 3 ] && [ "$minor" -ge 11 ]; then PYTHON="$cmd"; break; fi
+# 安装目录：优先用命令行参数，其次自动检测，最后默认值
+INSTALL_DIR="${1:-}"
+
+# ==================== 颜色输出 ====================
+RED='\\033[0;31m'; GREEN='\\033[0;32m'; YELLOW='\\033[1;33m'; BLUE='\\033[0;34m'; NC='\\033[0m'
+info()  { echo -e "${GREEN}[✓]${NC} $1"; }
+warn()  { echo -e "${YELLOW}[!]${NC} $1"; }
+error() { echo -e "${RED}[✗]${NC} $1"; }
+step()  { echo -e "${BLUE}>>>${NC} $1"; }
+
+if [ "$EUID" -ne 0 ]; then exec sudo bash "$0" "$@"; fi
+
+# ==================== 自动检测旧版目录 ====================
+if [ -z "$INSTALL_DIR" ]; then
+    step "搜索旧版安装..."
+    if systemctl cat "$SERVICE_NAME" &>/dev/null; then
+        SVC_DIR=$(systemctl cat "$SERVICE_NAME" 2>/dev/null | grep "WorkingDirectory=" | head -1 | cut -d= -f2)
+        if [ -n "$SVC_DIR" ] && [ -f "$SVC_DIR/server.py" ]; then
+            INSTALL_DIR="$SVC_DIR"; info "从systemd检测到: $INSTALL_DIR"
+        fi
     fi
-done
-
-if [ -z "$PYTHON" ]; then
-    warn "Python 3.11+ 未安装，正在自动安装..."
-    export DEBIAN_FRONTEND=noninteractive
-    apt-get update -qq && apt-get install -y -qq software-properties-common 2>/dev/null || true
-    add-apt-repository -y ppa:deadsnakes/ppa 2>/dev/null && apt-get update -qq || true
-    apt-get install -y -qq python3.11 python3.11-pip python3.11-venv python3.11-dev 2>/dev/null || {
-        warn "PPA 失败，从源码编译 Python 3.11..."
-        apt-get install -y -qq build-essential zlib1g-dev libncurses5-dev libgdbm-compat-dev \\
-            libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev
-        cd /tmp
-        wget -q https://www.python.org/ftp/python/3.11.9/Python-3.11.9.tgz
-        tar xzf Python-3.11.9.tgz && cd Python-3.11.9
-        ./configure --prefix=/usr/local --enable-optimizations --with-ensurepip=install >/dev/null 2>&1
-        make -j$(nproc) >/dev/null 2>&1 && make altinstall >/dev/null 2>&1
-        cd /tmp && rm -rf Python-3.11.9 Python-3.11.9.tgz
-    }
-    PYTHON="python3.11"
-fi
-
-command -v "$PYTHON" >/dev/null || { error "Python 安装失败"; exit 1; }
-PY_VER=$($PYTHON -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
-info "Python $PY_VER ($(command -v $PYTHON))"
-
-# ── 2. 安装文件 ──
-warn "[2/7] 安装程序文件..."
-rm -rf "$APP_DIR"
-mkdir -p "$APP_DIR" "$APP_DIR/chroma_db" "$APP_DIR/logs"
-cp -r "$SCRIPT_DIR/app"/* "$APP_DIR/"
-info "文件已安装到 $APP_DIR"
-
-# ── 3. 虚拟环境 + 依赖 ──
-warn "[3/7] 创建虚拟环境并安装依赖..."
-$PYTHON -m venv "$APP_DIR/venv"
-source "$APP_DIR/venv/bin/activate"
-pip install --upgrade pip -q
-
-MIRRORS=("https://pypi.tuna.tsinghua.edu.cn/simple" "https://mirrors.aliyun.com/pypi/simple/" "https://pypi.org/simple")
-INSTALLED=0
-for m in "${MIRRORS[@]}"; do
-    if pip install -i "$m" -r "$APP_DIR/requirements.txt" -q 2>/dev/null; then
-        INSTALLED=1; break
+    if [ -z "$INSTALL_DIR" ]; then
+        for candidate in /opt/geometry-ai /opt/geometry_ai /home/*/geometry-ai /home/*/app /srv/geometry-ai /usr/local/geometry-ai; do
+            for dir in $candidate; do
+                if [ -d "$dir" ] && [ -f "$dir/server.py" ] && [ -f "$dir/master_client.py" ]; then
+                    INSTALL_DIR="$dir"; info "搜索到旧版: $INSTALL_DIR"; break 2
+                fi
+            done
+        done
     fi
-done
-if [ "$INSTALLED" -eq 0 ]; then
-    pip install -r "$APP_DIR/requirements.txt" -q || {
-        error "依赖安装失败，手动执行: pip install -r $APP_DIR/requirements.txt"
-        exit 1
-    }
+    if [ -z "$INSTALL_DIR" ]; then
+        INSTALL_DIR="/opt/geometry-ai"
+        warn "未找到旧版，将全新安装到: $INSTALL_DIR"
+    fi
 fi
-info "依赖安装完成"
 
-# ── 4. 配置 API Key ──
-warn "[4/7] 配置 API Key..."
-if [ -f "$APP_DIR/.env" ] && ! grep -q "GAI_API_KEY=在此" "$APP_DIR/.env" 2>/dev/null; then
-    info "已有配置，跳过"
+echo ""; echo "  目标目录: $INSTALL_DIR"; echo "  主库AI:   $MASTER_AI_URL"; echo ""
+
+# ==================== 检测模式 ====================
+IS_UPGRADE=false
+if [ -d "$INSTALL_DIR" ] && [ -f "$INSTALL_DIR/server.py" ]; then
+    IS_UPGRADE=true; step "检测到旧版 → 升级模式"
 else
-    cp "$APP_DIR/.env.example" "$APP_DIR/.env"
-    read -p "  输入 DeepSeek API Key (必填): " DEEPSEEK_KEY
-    read -p "  输入 SiliconFlow API Key (可选): " SILICONFLOW_KEY
-    sed -i "s|GAI_API_KEY=在此|GAI_API_KEY=$DEEPSEEK_KEY|" "$APP_DIR/.env"
-    [ -n "$SILICONFLOW_KEY" ] && sed -i "s|SILICONFLOW_API_KEY=|SILICONFLOW_API_KEY=$SILICONFLOW_KEY|" "$APP_DIR/.env"
-    info "配置已保存"
+    step "未检测到旧版 → 全新安装模式"
 fi
 
-# ── 5. 防火墙 ──
-warn "[5/7] 配置防火墙..."
-if command -v ufw &>/dev/null; then
-    ufw allow 5000/tcp comment 'Geometry AI Server' >/dev/null 2>&1 || true
-    ufw allow 8080/tcp comment 'Geometry AI WebUI' >/dev/null 2>&1 || true
-    info "UFW 规则已添加"
-elif command -v firewall-cmd &>/dev/null; then
-    firewall-cmd --permanent --add-port=5000/tcp >/dev/null 2>&1 || true
-    firewall-cmd --permanent --add-port=8080/tcp >/dev/null 2>&1 || true
-    firewall-cmd --reload >/dev/null 2>&1 || true
-    info "firewalld 规则已添加"
-else
-    warn "未检测到防火墙工具，跳过"
-fi
+# ==================== 全新安装 ====================
+if [ "$IS_UPGRADE" = false ]; then
+    step "1/6 检查系统环境..."
+    PKG_MGR=""
+    if command -v apt-get &>/dev/null; then PKG_MGR="apt"
+    elif command -v dnf &>/dev/null; then PKG_MGR="dnf"
+    elif command -v yum &>/dev/null; then PKG_MGR="yum"
+    else error "不支持的发行版"; exit 1
+    fi
+    info "包管理器: $PKG_MGR"
 
-# ── 6. systemd 服务 ──
-warn "[6/7] 注册 systemd 服务..."
-id -u "$SERVICE_USER" &>/dev/null || useradd -r -s /usr/sbin/nologin -d "$APP_DIR" "$SERVICE_USER"
-chown -R "$SERVICE_USER:$SERVICE_USER" "$APP_DIR"
+    step "2/6 安装系统依赖..."
+    case $PKG_MGR in
+        apt) apt-get update -qq; apt-get install -y -qq python3 python3-pip python3-venv curl git 2>/dev/null ;;
+        dnf|yum) $PKG_MGR install -y -q python3 python3-pip curl git 2>/dev/null ;;
+    esac
+    info "系统依赖安装完成"
 
-cat > /etc/systemd/system/geometry-ai.service << EOFSVC
+    step "3/6 部署文件..."
+    mkdir -p "$INSTALL_DIR"
+    SRC="$SCRIPT_DIR/app"
+    for f in server.py config.py master_client.py knowledge.py models.py prompts.py tools.py stream.py admin_routes.py share_routes.py version.py start.py auto_teach.py; do
+        [ -f "$SRC/$f" ] && cp "$SRC/$f" "$INSTALL_DIR/"
+    done
+    for f in jieba_dict.txt requirements.txt; do
+        [ -f "$SRC/$f" ] && cp "$SRC/$f" "$INSTALL_DIR/"
+    done
+    for d in articles templates; do
+        [ -d "$SRC/$d" ] && cp -r "$SRC/$d" "$INSTALL_DIR/"
+    done
+    info "文件部署完成"
+
+    step "4/6 创建虚拟环境并安装依赖..."
+    $PYTHON_VERSION -m venv "$INSTALL_DIR/venv"
+    "$INSTALL_DIR/venv/bin/pip" install --upgrade pip -q
+    "$INSTALL_DIR/venv/bin/pip" install -r "$INSTALL_DIR/requirements.txt" -q 2>&1 | tail -3
+    info "依赖安装完成"
+
+    step "5/6 生成配置..."
+    cat > "$INSTALL_DIR/.env" << ENVEOF
+MASTER_AI_URL=$MASTER_AI_URL
+MASTER_AI_TOKEN=$MASTER_AI_TOKEN
+GAI_API_KEY=在此填入你的DeepSeek API Key
+GAI_BASE_URL=https://api.deepseek.com/v1
+GAI_MODEL=deepseek-v4-pro
+GAI_MODEL_LITE=deepseek-v4-flash
+GAI_EMBEDDING_MODEL=deepseek-v4-flash
+SILICONFLOW_API_KEY=
+GAI_EMBEDDING_MODE=siliconflow
+ENVEOF
+    info "配置文件已生成: $INSTALL_DIR/.env"
+    info "请编辑 $INSTALL_DIR/.env 填入你的 GAI_API_KEY"
+
+    step "6/6 注册服务并启动..."
+    cat > "/etc/systemd/system/${SERVICE_NAME}.service" << SVCEOF
 [Unit]
-Description=Geometry AI Server
-After=network.target
+Description=Geometry AI Sub-Agent
+After=network-online.target
+Wants=network-online.target
 [Service]
 Type=simple
-User=$SERVICE_USER
-Group=$SERVICE_USER
-WorkingDirectory=$APP_DIR
-ExecStart=$APP_DIR/venv/bin/python $APP_DIR/server.py
+WorkingDirectory=${INSTALL_DIR}
+ExecStart=${INSTALL_DIR}/venv/bin/python3 server.py
 Restart=always
-RestartSec=5
-StandardOutput=journal
-StandardError=journal
+RestartSec=10
 Environment=PYTHONUNBUFFERED=1
+Environment=MASTER_AI_URL=${MASTER_AI_URL}
+Environment=MASTER_AI_TOKEN=${MASTER_AI_TOKEN}
+LimitNOFILE=65536
 [Install]
 WantedBy=multi-user.target
-EOFSVC
+SVCEOF
+    systemctl daemon-reload; systemctl enable "$SERVICE_NAME"; systemctl start "$SERVICE_NAME"
+    info "子AI服务已启动"
 
-systemctl daemon-reload
-systemctl enable geometry-ai
-systemctl start geometry-ai
-info "systemd 服务已注册"
-
-warn "  等待服务启动..."
-for i in $(seq 1 15); do
-    if curl -s http://localhost:5000/health >/dev/null 2>&1; then
-        info "Geometry AI Server 已启动 (端口 5000)"
-        break
+    # 安装 Open WebUI
+    if ! "$INSTALL_DIR/venv/bin/python3" -c "import open_webui" 2>/dev/null; then
+        PIP_MIRROR=""
+        for m in "https://mirrors.aliyun.com/pypi/simple/" "https://pypi.tuna.tsinghua.edu.cn/simple" "https://pypi.org/simple"; do
+            if curl -s --max-time 3 "$m" >/dev/null 2>&1; then PIP_MIRROR="-i $m"; break; fi
+        done
+        "$INSTALL_DIR/venv/bin/pip" install torch --index-url https://download.pytorch.org/whl/cpu -q 2>&1 | tail -3 || true
+        "$INSTALL_DIR/venv/bin/pip" install $PIP_MIRROR open-webui -q 2>&1 | tail -3 || true
     fi
-    sleep 2
-done
-
-# ── 7. Open WebUI ──
-warn "[7/7] 安装 Open WebUI..."
-if $PYTHON -c "import open_webui" 2>/dev/null; then
-    info "Open WebUI 已安装"
-else
-    $PYTHON -m pip install --disable-pip-version-check -i https://pypi.tuna.tsinghua.edu.cn/simple open-webui -q 2>/dev/null || \
-    $PYTHON -m pip install open-webui -q 2>/dev/null || true
-fi
-
-if $PYTHON -c "import open_webui" 2>/dev/null; then
-    WEBUI_SECRET=$($PYTHON -c "import secrets; print(secrets.token_hex(32))")
-    cat > /etc/systemd/system/geometry-ai-webui.service << EOFSVC
+    if "$INSTALL_DIR/venv/bin/python3" -c "import open_webui" 2>/dev/null; then
+        WEBUI_SECRET=$("$INSTALL_DIR/venv/bin/python3" -c "import secrets; print(secrets.token_hex(32))")
+        cat > "/etc/systemd/system/${SERVICE_NAME}-webui.service" << SVCEOF
 [Unit]
 Description=Geometry AI WebUI (Open WebUI)
-After=network.target geometry-ai.service
+After=network.target ${SERVICE_NAME}.service
 [Service]
 Type=simple
-User=$SERVICE_USER
-Group=$SERVICE_USER
-ExecStart=$APP_DIR/venv/bin/python -m open_webui serve
+WorkingDirectory=${INSTALL_DIR}
+ExecStart=${INSTALL_DIR}/venv/bin/python3 -m open_webui serve
 Restart=always
 RestartSec=5
 Environment=OPENAI_API_BASE_URLS=http://localhost:5000/v1
@@ -291,129 +284,169 @@ Environment=WEBUI_NAME=Geometry AI
 Environment=WEBUI_PORT=8080
 [Install]
 WantedBy=multi-user.target
-EOFSVC
-    systemctl daemon-reload
-    systemctl enable geometry-ai-webui
-    systemctl start geometry-ai-webui
-    info "Open WebUI 已启动 (端口 8080)"
-else
-    warn "Open WebUI 安装跳过，可手动: pip install open-webui"
-fi
-
-# ── 完成 ──
-echo ""
-echo "  ================================================"
-echo "  [OK] 安装完成！"
-echo "  ================================================"
-echo ""
-echo "  管理面板: http://localhost:5000/admin"
-echo "  聊天界面: http://localhost:8080"
-echo "  配置文件: $APP_DIR/.env"
-echo ""
-echo "  状态: sudo systemctl status geometry-ai"
-echo "  日志: sudo journalctl -u geometry-ai -f"
-echo "  升级: sudo bash $APP_DIR/../upgrade.sh"
-echo "  卸载: sudo bash $SCRIPT_DIR/uninstall.sh"
-echo ""
-"""
-
-# ─── Template: upgrade.sh ─────────────────────────────────────
-UPGRADE_SH_TEMPLATE = """#!/bin/bash
-# Geometry AI Server v{VERSION} - 升级脚本（保留配置和数据）
-set -euo pipefail
-
-RED='\\033[0;31m'; GREEN='\\033[0;32m'; CYAN='\\033[0;36m'; NC='\\033[0m'
-info()  { echo -e "${GREEN}[✓]${NC} $1"; }
-warn()  { echo -e "${CYAN}[→]${NC} $1"; }
-error() { echo -e "${RED}[✗]${NC} $1"; }
-
-echo ""
-echo "  Geometry AI Server v{VERSION} - 升级"
-echo "  ================================================"
-echo ""
-
-if [ "$EUID" -ne 0 ]; then exec sudo bash "$0" "$@"; fi
-
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-APP_DIR="/usr/local/geometry-ai"
-SERVICE_USER="geometry-ai"
-
-# ── 1. 检查旧版 ──
-warn "[1/5] 检查现有安装..."
-if [ ! -d "$APP_DIR" ]; then
-    error "未找到旧版安装 ($APP_DIR)，请先运行 install.sh"
-    exit 1
-fi
-if [ ! -d "$APP_DIR/venv" ]; then
-    error "未找到虚拟环境 ($APP_DIR/venv)，请先运行 install.sh"
-    exit 1
-fi
-info "发现旧版安装: $APP_DIR"
-
-# ── 2. 备份 + 停止 ──
-warn "[2/5] 备份配置并停止服务..."
-[ -f "$APP_DIR/.env" ] && cp "$APP_DIR/.env" "$APP_DIR/.env.upgrade-bak"
-systemctl stop geometry-ai-webui 2>/dev/null || true
-systemctl stop geometry-ai 2>/dev/null || true
-sleep 2
-info "已停止旧服务，.env 已备份为 .env.upgrade-bak"
-
-# ── 3. 更新源码 ──
-warn "[3/5] 更新源码文件..."
-# 保留: venv/ .env chroma_db/ logs/ conversations.db
-for item in "$APP_DIR"/*; do
-    name=$(basename "$item")
-    case "$name" in
-        venv|.env|chroma_db|logs|conversations.db|.env.upgrade-bak)
-            ;;
-        *)
-            rm -rf "$item"
-            ;;
-    esac
-done
-
-cp -r "$SCRIPT_DIR/app"/* "$APP_DIR/"
-chown -R "$SERVICE_USER:$SERVICE_USER" "$APP_DIR"
-info "源码已更新"
-
-# ── 4. 更新依赖 ──
-warn "[4/5] 更新 Python 依赖..."
-source "$APP_DIR/venv/bin/activate"
-pip install --upgrade pip -q
-MIRRORS=("https://pypi.tuna.tsinghua.edu.cn/simple" "https://mirrors.aliyun.com/pypi/simple/" "https://pypi.org/simple")
-for m in "${MIRRORS[@]}"; do
-    if pip install -i "$m" -r "$APP_DIR/requirements.txt" -q 2>/dev/null; then
-        break
+SVCEOF
+        systemctl daemon-reload; systemctl enable "${SERVICE_NAME}-webui" 2>/dev/null; systemctl start "${SERVICE_NAME}-webui" 2>/dev/null || true
+        info "Open WebUI 已启动 (端口 8080)"
     fi
-done
-info "依赖已更新"
 
-# ── 5. 重启服务 ──
-warn "[5/5] 重启服务..."
-systemctl daemon-reload
-systemctl start geometry-ai
-sleep 5
-if curl -s http://localhost:5000/health >/dev/null 2>&1; then
-    info "Geometry AI Server 已启动"
-    systemctl start geometry-ai-webui 2>/dev/null || true
-    info "升级完成！"
+# ==================== 升级 ====================
 else
-    warn "服务启动中，请稍后检查: sudo journalctl -u geometry-ai -f"
+    step "1/4 备份..."
+    [ -f "$INSTALL_DIR/.env" ] && cp "$INSTALL_DIR/.env" "$INSTALL_DIR/.env.backup"
+    systemctl stop "$SERVICE_NAME" 2>/dev/null || true
+    info "已备份 .env 并停止服务"
+
+    step "2/4 更新源码..."
+    SRC="$SCRIPT_DIR/app"
+    for f in server.py config.py master_client.py knowledge.py models.py prompts.py tools.py stream.py admin_routes.py share_routes.py version.py start.py auto_teach.py; do
+        [ -f "$SRC/$f" ] && cp "$SRC/$f" "$INSTALL_DIR/"
+    done
+    for f in requirements.txt; do
+        [ -f "$SRC/$f" ] && cp "$SRC/$f" "$INSTALL_DIR/"
+    done
+    if [ -d "$SRC/articles" ]; then
+        rm -rf "$INSTALL_DIR/articles_old" 2>/dev/null
+        mv "$INSTALL_DIR/articles" "$INSTALL_DIR/articles_old" 2>/dev/null || true
+        cp -r "$SRC/articles" "$INSTALL_DIR/"
+        info "知识库已更新（旧版备份在articles_old/）"
+    fi
+    [ -d "$SRC/templates" ] && cp -r "$SRC/templates" "$INSTALL_DIR/"
+    info "源码更新完成"
+
+    step "3/4 检查依赖..."
+    PIP="$INSTALL_DIR/venv/bin/pip"
+    if [ ! -d "$INSTALL_DIR/venv" ]; then
+        python3 -m venv "$INSTALL_DIR/venv"
+        "$PIP" install --upgrade pip -q
+    fi
+    # 带超时的 pip 安装（1分钟超时，防止网络卡死）
+    timeout 60 "$PIP" install --default-timeout=30 -r "$INSTALL_DIR/requirements.txt" 2>&1 || {
+        warn "pip安装超时或失败，重试一次..."
+        timeout 60 "$PIP" install --default-timeout=60 -i https://pypi.tuna.tsinghua.edu.cn/simple -r "$INSTALL_DIR/requirements.txt" 2>&1 || {
+            warn "pip安装失败，可手动执行: $PIP install -r $INSTALL_DIR/requirements.txt"
+            info "继续启动服务..."
+        }
+    }
+    info "依赖检查完成"
+
+    step "4/4 恢复配置并启动..."
+    if [ -f "$INSTALL_DIR/.env" ]; then
+        info "配置文件已存在: $INSTALL_DIR/.env"
+    elif [ -f "$INSTALL_DIR/.env.backup" ]; then
+        if ! grep -q "MASTER_AI_URL" "$INSTALL_DIR/.env.backup"; then
+            echo "" >> "$INSTALL_DIR/.env.backup"
+            echo "MASTER_AI_URL=$MASTER_AI_URL" >> "$INSTALL_DIR/.env.backup"
+            echo "MASTER_AI_TOKEN=$MASTER_AI_TOKEN" >> "$INSTALL_DIR/.env.backup"
+        fi
+        mv "$INSTALL_DIR/.env.backup" "$INSTALL_DIR/.env"
+        info "已从备份恢复.env"
+    else
+        # 没有 .env 也没有备份 → 生成新的
+        warn "未找到 .env 或备份，生成默认配置..."
+        cat > "$INSTALL_DIR/.env" << ENVEOF
+MASTER_AI_URL=$MASTER_AI_URL
+MASTER_AI_TOKEN=$MASTER_AI_TOKEN
+GAI_API_KEY=在此填入你的DeepSeek API Key
+GAI_BASE_URL=https://api.deepseek.com/v1
+GAI_MODEL=deepseek-v4-pro
+GAI_MODEL_LITE=deepseek-v4-flash
+GAI_EMBEDDING_MODEL=deepseek-v4-flash
+SILICONFLOW_API_KEY=
+GAI_EMBEDDING_MODE=siliconflow
+ENVEOF
+        info "已生成默认配置: $INSTALL_DIR/.env"
+        warn "请编辑 $INSTALL_DIR/.env 填入 GAI_API_KEY"
+    fi
+    info "配置文件: $INSTALL_DIR/.env"
+    # 重写 systemd 服务文件（确保使用 venv）
+    cat > "/etc/systemd/system/${SERVICE_NAME}.service" << SVCEOF
+[Unit]
+Description=Geometry AI Sub-Agent
+After=network-online.target
+Wants=network-online.target
+[Service]
+Type=simple
+WorkingDirectory=${INSTALL_DIR}
+ExecStart=${INSTALL_DIR}/venv/bin/python3 server.py
+Restart=always
+RestartSec=10
+Environment=PYTHONUNBUFFERED=1
+Environment=MASTER_AI_URL=${MASTER_AI_URL}
+Environment=MASTER_AI_TOKEN=${MASTER_AI_TOKEN}
+LimitNOFILE=65536
+[Install]
+WantedBy=multi-user.target
+SVCEOF
+    systemctl daemon-reload
+    systemctl start "$SERVICE_NAME"
+    info "子AI服务已重启"
+
+    # 安装/更新 Open WebUI
+    PIP_MIRROR=""
+    for m in "https://mirrors.aliyun.com/pypi/simple/" "https://pypi.tuna.tsinghua.edu.cn/simple" "https://pypi.org/simple"; do
+        if curl -s --max-time 3 "$m" >/dev/null 2>&1; then PIP_MIRROR="-i $m"; break; fi
+    done
+    if ! "$INSTALL_DIR/venv/bin/python3" -c "import open_webui" 2>/dev/null; then
+        "$INSTALL_DIR/venv/bin/pip" install torch --index-url https://download.pytorch.org/whl/cpu -q 2>&1 | tail -3 || true
+        "$INSTALL_DIR/venv/bin/pip" install $PIP_MIRROR open-webui -q 2>&1 | tail -3 || true
+    fi
+    if "$INSTALL_DIR/venv/bin/python3" -c "import open_webui" 2>/dev/null; then
+        WEBUI_SECRET=$("$INSTALL_DIR/venv/bin/python3" -c "import secrets; print(secrets.token_hex(32))")
+        cat > "/etc/systemd/system/${SERVICE_NAME}-webui.service" << SVCEOF
+[Unit]
+Description=Geometry AI WebUI (Open WebUI)
+After=network.target ${SERVICE_NAME}.service
+[Service]
+Type=simple
+WorkingDirectory=${INSTALL_DIR}
+ExecStart=${INSTALL_DIR}/venv/bin/python3 -m open_webui serve
+Restart=always
+RestartSec=5
+Environment=OPENAI_API_BASE_URLS=http://localhost:5000/v1
+Environment=OPENAI_API_KEYS=not-needed
+Environment=WEBUI_SECRET_KEY=$WEBUI_SECRET
+Environment=WEBUI_NAME=Geometry AI
+Environment=WEBUI_PORT=8080
+[Install]
+WantedBy=multi-user.target
+SVCEOF
+        systemctl daemon-reload; systemctl enable "${SERVICE_NAME}-webui" 2>/dev/null; systemctl start "${SERVICE_NAME}-webui" 2>/dev/null || true
+        info "Open WebUI 已启动 (端口 8080)"
+    fi
 fi
+
+# ==================== 健康检查 ====================
+echo ""; sleep 5
+if curl -s --max-time 10 "http://localhost:$SUB_AI_PORT/health" | grep -q "ok"; then
+    info "健康检查通过!"
+else
+    warn "服务启动中... journalctl -u $SERVICE_NAME -f"
+fi
+
 echo ""
-echo "  保留的配置:"
-echo "    .env         → 你的 API Key 和设置（已额外备份为 .env.upgrade-bak）"
-echo "    venv/        → Python 虚拟环境"
-echo "    chroma_db/   → 向量数据库"
-echo "    logs/        → 历史日志"
-echo "    conversations.db → 对话记录"
+if curl -s --max-time 5 "$MASTER_AI_URL/health" | grep -q "ok"; then
+    info "主库AI连接正常 ($MASTER_AI_URL)"
+else
+    warn "无法连接主库AI ($MASTER_AI_URL)"
+fi
+
 echo ""
-echo "  回滚:"
-echo "    sudo systemctl stop geometry-ai"
-echo "    cp $APP_DIR/.env.upgrade-bak $APP_DIR/.env"
-echo "    重新运行旧版 install.sh"
+echo "=========================================="
+if [ "$IS_UPGRADE" = true ]; then
+    echo -e "${GREEN}  GeometryAI 子AI 升级完成!${NC}"
+else
+    echo -e "${GREEN}  GeometryAI 子AI 安装完成!${NC}"
+fi
+echo "=========================================="
 echo ""
-"""
+echo "  安装目录:   $INSTALL_DIR"
+echo "  配置文件:   $INSTALL_DIR/.env"
+echo "  主库AI:     $MASTER_AI_URL"
+echo "  子AI端口:   $SUB_AI_PORT"
+echo "  WebUI:      http://localhost:8080"
+echo "  服务: systemctl status $SERVICE_NAME"
+echo """
+
 
 # ─── Template: uninstall.sh ───────────────────────────────────
 UNINSTALL_SH_TEMPLATE = """#!/bin/bash
@@ -480,7 +513,7 @@ FIX_INDEX_SH_TEMPLATE = """#!/bin/bash
 # Geometry AI Server - 知识库索引重建
 APP_DIR="/usr/local/geometry-ai"
 if [ ! -f "$APP_DIR/.env" ]; then
-    echo "[!] 未找到配置文件，请先运行 install.sh"
+    echo "[!] 未找到配置文件，请先运行 setup.sh"
     exit 1
 fi
 if ! systemctl is-active --quiet geometry-ai; then

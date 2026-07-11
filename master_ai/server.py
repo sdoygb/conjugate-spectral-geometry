@@ -73,7 +73,7 @@ def init_services():
 # 调度器配置
 AUTO_VERIFY_ENABLED = os.getenv('AUTO_VERIFY_ENABLED', 'true').lower() == 'true'
 AUTO_VERIFY_INTERVAL = int(os.getenv('AUTO_VERIFY_INTERVAL', '10'))  # 检查间隔（秒）
-AUTO_VERIFY_MAX_RETRIES = int(os.getenv('AUTO_VERIFY_MAX_RETRIES', '1'))  # 依赖不足的最大重试次数
+AUTO_VERIFY_MAX_RETRIES = int(os.getenv('AUTO_VERIFY_MAX_RETRIES', '5'))  # 依赖不足的最大重试次数
 
 # 调度器状态
 _scheduler_thread = None
@@ -86,6 +86,7 @@ NUM_WORKERS = int(os.getenv('MASTER_VERIFY_WORKERS', '10'))  # 并行验证worke
 _worker_locks = [threading.Lock() for _ in range(NUM_WORKERS)]  # 每个worker一个锁
 _worker_threads: List[threading.Thread] = []
 _last_promote_time = time.time()  # 上次有公式入库的时间
+_last_waiting_retry_time = 0.0  # 上次重试waiting_dependencies的时间
 _cycle_check_cooldown = 600  # 环路检测冷却时间（秒）
 _last_cycle_check_time = 0.0  # 上次环路检测时间
 _dispatch_lock = threading.Lock()  # 取公式时的原子锁，防止多worker取到同一个
@@ -160,6 +161,37 @@ def _trigger_cascade_retry():
             logger.info(f"[SCHEDULER] 🔄 级联重试: {retry_count}个waiting公式重置为pending")
     except Exception as e:
         logger.error(f"[SCHEDULER] 级联重试异常: {e}")
+
+
+def _try_waiting_retry():
+    """
+    定期重试waiting_dependencies中的公式（每5分钟）。
+    不依赖新定理入库触发——即使没有新定理，也定期检查依赖是否已被满足。
+    """
+    global _last_waiting_retry_time
+
+    now = time.time()
+    if now - _last_waiting_retry_time < 300:  # 5分钟冷却
+        return
+    _last_waiting_retry_time = now
+
+    try:
+        pending_list = master_db.list_pending(limit=500)
+        waiting = [p for p in pending_list if p.get("status") == "waiting_dependencies"]
+        if not waiting:
+            return
+
+        retry_count = 0
+        for item in waiting:
+            sub_id = item["submission_id"]
+            master_db._update_pending_status(sub_id, "pending")
+            _retry_counts.pop(sub_id, None)
+            retry_count += 1
+
+        if retry_count > 0:
+            logger.info(f"[SCHEDULER] 🔄 定期重试: {retry_count}个waiting公式重置为pending")
+    except Exception as e:
+        logger.error(f"[SCHEDULER] 定期重试异常: {e}")
 
 
 def _try_cycle_verification():
@@ -300,6 +332,23 @@ def _worker_loop(worker_id: int):
             try:
                 # 原子地取一个pending公式（按优先级排序）
                 with _dispatch_lock:
+                    # 定期重置卡在processing超过10分钟的公式（运行中崩溃恢复）
+                    if worker_id == 0:
+                        try:
+                            all_pending = master_db.pending_collection.get(include=['metadatas'])
+                            now = time.time()
+                            for pid, meta in zip(all_pending['ids'], all_pending['metadatas']):
+                                if meta.get('status') == 'processing':
+                                    started = float(meta.get('processing_started_at', 0) or 0)
+                                    if started and now - started > 600:
+                                        meta['status'] = 'pending'
+                                        meta.pop('processing_started_at', None)
+                                        master_db._write(master_db.pending_collection, 'update',
+                                                         ids=[pid], metadatas=[meta])
+                                        logger.warning(f"[WORKER-0] 重置超时processing: {meta.get('formula_name','')[:40]} (卡住{int(now-started)}s)")
+                        except Exception as e:
+                            logger.warning(f"[WORKER-0] 超时检查异常: {e}")
+
                     # 使用优先级排序的列表
                     pending_items = master_db.list_pending_by_priority(limit=500)
 
@@ -309,6 +358,8 @@ def _worker_loop(worker_id: int):
                             master_db.verify_priority_claims()
                             _try_cycle_verification()
                             _try_self_audit()
+                            # 定期重试waiting_dependencies（每5分钟）
+                            _try_waiting_retry()
                         time.sleep(AUTO_VERIFY_INTERVAL)
                         continue
 
@@ -321,6 +372,16 @@ def _worker_loop(worker_id: int):
 
                     # 立即标记为processing，防止其他worker重复取
                     master_db._update_pending_status(sub_id, "processing")
+                    # 记录开始时间，用于超时检测
+                    try:
+                        all_p = master_db.pending_collection.get(ids=[sub_id], include=['metadatas'])
+                        if all_p['metadatas']:
+                            m = all_p['metadatas'][0]
+                            m['processing_started_at'] = str(time.time())
+                            master_db._write(master_db.pending_collection, 'update',
+                                             ids=[sub_id], metadatas=[m])
+                    except Exception:
+                        pass
 
                 if priority:
                     logger.info(
@@ -353,6 +414,23 @@ def start_scheduler():
         logger.info("[SCHEDULER] 自动验证已禁用 (AUTO_VERIFY_ENABLED=false)")
         return
     _scheduler_running = True
+
+    # 启动前重置卡在processing的公式（重启/崩溃后恢复）
+    try:
+        all_pending = verifier.master_db.pending_collection.get(include=['metadatas'])
+        reset_count = 0
+        for pid, meta in zip(all_pending['ids'], all_pending['metadatas']):
+            if meta.get('status') == 'processing':
+                meta['status'] = 'pending'
+                verifier.master_db._write(
+                    verifier.master_db.pending_collection, 'update',
+                    ids=[pid], metadatas=[meta]
+                )
+                reset_count += 1
+        if reset_count:
+            logger.info(f"[SCHEDULER] 重置 {reset_count} 条 processing → pending（崩溃恢复）")
+    except Exception as e:
+        logger.warning(f"[SCHEDULER] 重置processing失败: {e}")
 
     # 启动多个worker
     for i in range(NUM_WORKERS):
@@ -458,11 +536,6 @@ def submit():
 
     if not formula_name or not formula_content:
         return jsonify({"error": "缺少 formula_name 或 formula_content"}), 400
-
-    if topology_class not in ("A0", "A1"):
-        return jsonify({
-            "error": "必须声明 topology_class: A0（局部代数，Berry相位=0）或 A1（整体拓扑，Berry相位=2π）"
-        }), 400
 
     submission_id = master_db.submit_candidate(
         formula_name=formula_name,
@@ -628,9 +701,12 @@ def pending():
         return jsonify({"error": "unauthorized"}), 401
 
     limit = int(request.args.get("limit", "500"))
+    pending_list = master_db.list_pending(limit=limit)
+    still_pending = [p for p in pending_list if p.get("status") in ("pending", "processing", "waiting_dependencies", "alternative_proof")]
     return jsonify({
-        "pending": master_db.list_pending(limit=limit),
-        "count": master_db.pending_collection.count() if master_db.pending_collection else 0,
+        "pending": pending_list,
+        "count": len(pending_list),
+        "pending_count": len(still_pending),
     })
 
 
@@ -644,7 +720,7 @@ def truth():
     if not _check_auth():
         return jsonify({"error": "unauthorized"}), 401
 
-    limit = int(request.args.get("limit", "100"))
+    limit = int(request.args.get("limit", "9999"))
     formulas = verifier.get_truth_layer(limit=limit)
     return jsonify({
         "formulas": formulas,

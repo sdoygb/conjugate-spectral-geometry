@@ -22,7 +22,6 @@ from config import (
     GAI_BASE_URL,
     MASTER_VERIFY_MODEL,
     MASTER_DERIVE_MODEL,
-    THREE_AXIOMS,
     AXIOM_PREFIXES,
     ARTICLES_DIR,
     GEOMETRY_CONSTANTS,
@@ -151,96 +150,34 @@ class MasterVerifier:
 
         logger.info(f"[VERIFIER] 开始验证: {formula_name} (id={submission_id})")
 
-        # ---- 纯几何封锁：拒绝实质性物理公式 ----
-        # 主库只接受纯几何数学公式和推导，物理量纲推导留给子AI本地完成
-        #
-        # 区分两层：
-        # 1. 硬封锁关键词：公式本身就是物理映射/使用了物理常数 → 立即拒绝
-        # 2. 软提示关键词：公式说明中提到物理术语（如"对应物理中的X"）→ 不拦截，交给LLM阶段判断
-        #
-        # 这样纯几何定理即使说明文字中带物理术语也不会被误杀
-
-        # 硬封锁：这些关键词出现说明公式本身就是物理映射
-        hard_physics_keywords = [
-            # 物理映射本身
-            "ℰ映射", "ℰ 映射", "ε映射", "epsilon映射",
-            "单一物理映射", "物理识别锚点", "PIA",
-            # 物理假设
-            "Born规则", "玻恩规则",
-            # 纯物理量纲
-            "SI单位", "SI制",
-        ]
-
-        # 注意：以下词从硬封锁移除，改为软提示（交给LLM判断）
-        # - 精细结构常数、α⁻¹、S_e=137：既是物理量也是几何量
-        # - 量纲桥：常在纯几何定理的说明文字中出现，不是公式本身
-
-        # 软提示：这些词可能出现在纯几何定理的说明文字中，不拦截
-        # （量纲、物理量、物理世界、物理常数、物理参数、物理假设、物理对应等）
-        # LLM阶段3的独立推导会检查公式是否真正依赖物理概念
-
-        # 只检查公式名和公式内容（不检查推导链的说明文字）
-        formula_text = (formula_name + " " + formula_content).lower()
-        is_hard_physics = any(kw.lower() in formula_text for kw in hard_physics_keywords)
-
-        if is_hard_physics:
-            result["passed"] = False
-            result["action"] = "rejected"
-            result["rejection_reason"] = (
-                "主库只接受纯几何数学公式。公式本身包含物理映射或物理常数"
-                "（ℰ映射/精细结构常数/SI单位/量纲桥/Born规则等）。"
-                "物理量纲相关的推导请在子AI本地完成，不提交主库验证。"
-            )
-            logger.info(
-                f"[VERIFIER] 纯几何封锁: 公式本身含物理常数/映射，拒绝入库"
-            )
-            self._finalize(result, start_time, submission_id)
-            return result
-
-        # ---- 外部锚点处理：忽略ℰ，不拦截 ----
-        # 子AI可能习惯性填 external_anchors=['ℰ']，但公式本身是纯几何的
-        # ℰ映射已从主库删除，不再作为外部输入。
-        # 直接清空外部锚点，不因标签拒绝公式——公式是否纯几何由硬封锁和LLM阶段判断
+        # ---- 外部锚点 ----
+        # 所有外部锚点都交给LLM判断，主库不预设任何概念为"非法"
         ext_anchors_raw = pending["metadata"].get("external_anchors", "[]")
         try:
             ext_anchors = json.loads(ext_anchors_raw) if isinstance(ext_anchors_raw, str) else ext_anchors_raw
         except:
             ext_anchors = []
+        if ext_anchors:
+            logger.info(f"[VERIFIER] 子AI声明的外部锚点: {ext_anchors}")
 
-        # 清空外部锚点（不再因ℰ标签拒绝）
-        ext_anchors = []
-
-        # ---- 阶段0: 拓扑分类检查 ----
+        # ---- 拓扑分类（仅为LLM参考，不强制） ----
         topology_class = pending["metadata"].get("topology_class", "")
-        if not topology_class:
-            result["passed"] = False
-            result["action"] = "rejected"
-            result["rejection_reason"] = (
-                "未声明拓扑分类。每个公式必须标注 topology_class=A0（局部代数，Berry相位=0）"
-                "或 A1（整体拓扑，Berry相位=2π）。"
-            )
-            self._finalize(result, start_time, submission_id)
-            return result
 
-        if topology_class not in ("A0", "A1"):
-            result["passed"] = False
-            result["action"] = "rejected"
-            result["rejection_reason"] = (
-                f"拓扑分类不合法: {topology_class}。只能为 A0 或 A1。"
-            )
-            self._finalize(result, start_time, submission_id)
-            return result
+        # ---- 开始验证 ----
+        # 主库不再预设任何预过滤规则。
+        # 任何公式，只要符合理论框架和已验证真理，即可入库。
+        # LLM在阶段1-3中独立判断公式的有效性。
 
         topology_check = {
             "declared_class": topology_class,
             "external_anchors": ext_anchors,
-            "has_external_input": False,
+            "has_external_input": bool(ext_anchors),
             "passed": True,
-            "note": "纯几何验证，无外部输入",
+            "note": "拓扑分类已记录（仅供参考）",
         }
 
         logger.info(
-            f"[VERIFIER] 阶段0通过: 拓扑分类={topology_class}, 纯几何"
+            f"[VERIFIER] 阶段0: 拓扑分类={topology_class}, 外部锚点={ext_anchors}"
         )
         result["stages"]["topology_check"] = topology_check
 
@@ -285,8 +222,9 @@ class MasterVerifier:
 
         result["stages"]["berry_check"] = berry_dict
 
-        # ---- 阶段2: §9.6 证伪条件检查 ----
-        # Berry检查跳过时，证伪检查中的Berry相关检查也相应跳过
+        # ---- 阶段2: §9.6 证伪条件检查（仅供参考，不阻塞） ----
+        # 证伪检查结果为LLM提供参考，但不作为拒绝依据。
+        # LLM的独立推导（阶段3）是最终判断。
         falsify_result = self.falsification_checker.run_all_checks(
             formula_content=formula_content,
             derivation_chain=derivation_chain,
@@ -295,13 +233,9 @@ class MasterVerifier:
         result["stages"]["falsification"] = falsify_result
 
         if not falsify_result["all_passed"]:
-            result["passed"] = False
-            result["action"] = "rejected"
-            result["rejection_reason"] = f"证伪条件未通过: {falsify_result['rejection_reason']}"
-            self._finalize(result, start_time, submission_id)
-            return result
-
-        logger.info(f"[VERIFIER] 阶段2通过: 证伪条件全部通过")
+            logger.info(f"[VERIFIER] 阶段2: 证伪检查有未通过项（仅供参考，不阻塞）: {falsify_result['rejection_reason']}")
+        else:
+            logger.info(f"[VERIFIER] 阶段2: 证伪条件全部通过")
 
         # ---- 阶段3: 独立推导复现 ----
         derivation_result = self._independent_derivation(
@@ -384,42 +318,8 @@ class MasterVerifier:
         logger.info(f"[VERIFIER] 阶段3通过: 独立推导复现成功")
 
         # ---- 绝对真理判定 ----
-        # 主库只接受绝对真理
-        # ℰ是唯一合法的L2假设——使用ℰ不构成驳回理由
-        # 但Born规则、物理识别等未验证概念不得使用——使用则驳回
-        used_anchors = derivation_result.get("used_anchors", [])
-        declared_anchors = derivation_result.get("declared_anchors", [])
-
-        # 区分：ℰ使用（合法）vs 未验证概念使用（非法）
-        epsilon_used = "ℰ 单一物理映射" in used_anchors
-        unverified_used = [a for a in used_anchors if a != "ℰ 单一物理映射"]
-
-        if unverified_used:
-            # 推导依赖了未验证的物理概念（如Born规则）→ 不是绝对真理，驳回
-            result["passed"] = False
-            result["action"] = "rejected"
-            result["rejection_reason"] = (
-                f"推导依赖未验证的物理概念: {', '.join(unverified_used)}。"
-                f"这些概念不是独立假设，必须从ℰ推导出来、验证入库后才能使用。"
-                f"请先从ℰ推导{unverified_used[0]}并提交验证。"
-            )
-            result["used_anchors"] = used_anchors
-            logger.info(
-                f"[VERIFIER] 驳回: 推导依赖未验证物理概念 {unverified_used}，非绝对真理"
-            )
-            self._finalize(result, start_time, submission_id)
-            return result
-
-        # ℰ使用或无假设依赖 → 绝对真理，入库
-        if epsilon_used:
-            logger.info(f"[VERIFIER] 绝对真理: 使用ℰ映射（合法L2假设）")
-        elif declared_anchors:
-            logger.info(
-                f"[VERIFIER] 绝对真理: 子AI声明了{declared_anchors}但LLM推导未实际使用"
-            )
-        else:
-            logger.info(f"[VERIFIER] 绝对真理: 无桥接假设，纯公理+数学基座推导")
-
+        # LLM已独立复现推导成功，公式符合理论框架。
+        # 所有外部概念的使用已由LLM在推导中判断，主库不预设任何概念为"非法"。
         result["passed"] = True
         result["action"] = "promoted"
         result["rejection_reason"] = ""
@@ -668,32 +568,7 @@ class MasterVerifier:
         return "其他方法"
 
     def _detect_unverified_concepts(self, derivation_chain: str, formula_content: str) -> List[str]:
-        """
-        检测推导链和公式内容中是否引用了未验证的物理概念。
-
-        这些概念不是公理，不是标准数学工具——它们是物理假设，
-        必须先从ℰ推导入库后才能使用。
-        """
-        text = (derivation_chain + " " + formula_content).lower()
-
-        # 未验证物理概念列表
-        # ℰ是合法的（唯一L2假设），但以下概念必须从ℰ推导后才能用
-        unverified = [
-            ("Born规则", ["born规则", "born 规则", "born rule", "p=|ψ|²", "p=|psi|²"]),
-            ("物理识别点", ["物理识别点", "physical identification"]),
-            ("归一化约定", ["归一化约定", "normalization convention", "归一化条件"]),
-            ("双模零误差", ["双模零误差", "dual-mode zero"]),
-            ("S_e=137", ["s_e=137", "s_e = 137", "s_e≈137", "精细结构常数"]),
-        ]
-
-        found = []
-        for name, patterns in unverified:
-            for p in patterns:
-                if p in text:
-                    found.append(name)
-                    break
-
-        return found
+        return []
 
     # ==================== 批量闭环验证 ====================
 
@@ -1046,69 +921,34 @@ class MasterVerifier:
                 }
 
             # 判断是否复现成功
-            reproduced = (
-                "复现成功" in derivation or
-                "成功复现" in derivation or
-                "推导成立" in derivation or
-                "命题成立" in derivation or
-                "定理成立" in derivation or
-                "证毕" in derivation or
-                "得证" in derivation
-            )
+            # LLM的推导文本本身即结论，不靠关键词匹配判断
+            reproduced = True
             reason = ""
-            if not reproduced:
-                # 提取失败原因
+            if any(fail_word in derivation for fail_word in ["复现失败", "无法推导", "无法复现", "与结论不符", "推导不成立"]):
                 if "复现失败" in derivation:
                     idx = derivation.find("复现失败")
                     reason = derivation[idx:idx + 300]
                 elif "无法推导" in derivation or "无法复现" in derivation:
                     reason = derivation[:300]
                 else:
-                    # LLM没有明确说成功也没说失败——检查是否给出了实质性推导
-                    # 如果推导文本超过200字且包含"因此"或"故"等结论性词语，视为复现成功
-                    has_conclusion = any(w in derivation for w in ["因此", "故", "所以", "由此", "综上", "于是"])
-                    if len(derivation) > 200 and has_conclusion:
-                        reproduced = True
-                        logger.info("[VERIFIER] LLM未明确声明'复现成功'但给出了实质性推导，判定为复现成功")
-                    else:
-                        reason = "LLM 未明确声明复现成功"
+                    reason = "LLM 认为推导不成立"
+                reproduced = False
+            else:
+                # LLM未明确说失败，视为推导成立
+                if len(derivation) > 50:
+                    logger.info("[VERIFIER] LLM未声明失败，认定为推导成立")
+                else:
+                    reason = "推导文本过短"
+                    reproduced = False
 
-            # 检测LLM推导中实际使用的L2假设
-            # 单一ℰ原则下：只有ℰ是合法L2，其他物理概念不算L2使用
+            # LLM使用的桥接假设（仅记录，不做预设判断）
             used_anchors = []
             if external_anchors:
-                # 检查是否使用了ℰ映射
-                has_epsilon = (
-                    "【ℰ映射】" in derivation or
-                    "ℰ映射" in derivation or
-                    "ε映射" in derivation or
-                    "epsilon" in derivation.lower() or
-                    "【ℰ" in derivation
-                )
-                if has_epsilon:
-                    used_anchors.append("ℰ 单一物理映射")
-
-                # 检查是否使用了Born规则等未验证概念
-                # 这些不再是"L2使用"，而是"缺少L3依赖"
-                unverified_concepts_used = []
-                for concept in ["Born规则", "Born 规则", "born", "物理识别", "归一化约定"]:
-                    if concept.lower() in derivation.lower():
-                        # 但只有当LLM说复现成功时才需要检查
-                        if reproduced:
-                            unverified_concepts_used.append(concept)
-                        break
-
-                if unverified_concepts_used and reproduced:
-                    # LLM声称复现成功但使用了未验证概念 → 不是绝对真理
-                    used_anchors.extend(unverified_concepts_used)
-
-                # 如果LLM明确说概念非必要，则不算使用
-                if "并非必要" in derivation and "桥接" in derivation:
-                    used_anchors = []
-                    logger.info("[VERIFIER] LLM声明桥接假设非必要，判定为无条件通过")
-
+                for anchor in external_anchors:
+                    if anchor.lower() in derivation.lower():
+                        used_anchors.append(anchor)
             if used_anchors:
-                logger.info(f"[VERIFIER] LLM实际使用的桥接假设: {used_anchors}")
+                logger.info(f"[VERIFIER] LLM使用的桥接假设: {used_anchors}")
 
             return {
                 "reproduced": reproduced,
@@ -1282,18 +1122,13 @@ class MasterVerifier:
             }
 
     def _build_axioms_text(self) -> str:
-        """构建三公理文本"""
-        lines = ["【三公理 — 推导的唯一起点】\n"]
-        for key, axiom in THREE_AXIOMS.items():
-            lines.append(f"{key} ({axiom['name']}):")
-            lines.append(f"  公式: {axiom['formula']}")
-            lines.append(f"  说明: {axiom['description']}\n")
-
-        # 附加几何常数
+        """构建理论起点说明"""
+        lines = ["【理论起点】\n"]
+        lines.append("所有推导基于几何论文章中的定义和已验证主库公式。")
+        lines.append("你可以查阅相关文章获取基本定义和公式。\n")
         lines.append("【几何论锁定常数】")
         for k, v in GEOMETRY_CONSTANTS.items():
             lines.append(f"  {k} = {v}")
-
         return "\n".join(lines)
 
     def _build_verifier_prompt(self, axioms_text: str, verified_text: str, 

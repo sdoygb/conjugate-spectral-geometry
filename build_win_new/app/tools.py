@@ -1,0 +1,2048 @@
+"""
+tools.py — 工具调用模块
+从 geometry_ai_server_v5_12.py 提取
+包含：ARTICLE_TOOLS, OPENAPI_SPEC, execute_tool_call, parse_and_execute_tools
+"""
+
+import os
+import re as _re
+import json
+import time
+import logging
+import requests as _requests
+from bs4 import BeautifulSoup as _BS
+from flask import request as _request
+from typing import List, Tuple, Dict, Any
+from datetime import datetime
+
+# 文章读取缓存（同一文件 10 秒内不重复读取）
+_read_cache: Dict[str, Tuple[str, float]] = {}
+_READ_CACHE_TTL = 10  # 秒
+
+from config import GAI_API_KEY, GAI_BASE_URL, GAI_MODEL, UPLOAD_FOLDER, OPENWEBUI_DB_PATH, logger
+from models import personal_db, _save_personal_db
+
+# ==================== 互联网搜索函数 ====================
+
+_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36'
+_SEARCH_TIMEOUT = 20
+
+# Serper.dev API Key（不需要 SSL 证书，不走爬虫）
+_SERPER_API_KEY = 'fca2c84c575026f7eb031babfa1bb9ee56ed8759'
+_SERPER_URL = 'https://google.serper.dev/search'
+_SERPER_BAIDU_URL = 'https://google.serper.dev/search'  # Serper 统一用 search 端点，engine 参数控制来源
+
+_USER_AGENTS = [
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:128.0) Gecko/20100101 Firefox/128.0',
+]
+
+# 通用请求头（模仿真实浏览器）
+def _make_headers():
+    import random as _rand
+    return {
+        'User-Agent': _rand.choice(_USER_AGENTS),
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1',
+        'Sec-Fetch-Dest': 'document',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'none',
+        'Sec-Fetch-User': '?1',
+        'Cache-Control': 'max-age=0',
+    }
+
+import urllib.request as _urllib_req
+import urllib.parse as _urllib_parse
+
+def _http_fetch(url: str, headers: dict = None) -> str:
+    """用系统 Python3 发送 HTTP 请求（绕过 .venv 的 LibreSSL 问题）"""
+    import subprocess as _sp
+    import json as _json
+    import base64 as _b64
+    try:
+        script = 'import urllib.request,urllib.parse,sys,json,base64;'
+        script += 'req=urllib.request.Request(sys.argv[1],headers=' + _json.dumps(headers or {}) + ');'
+        script += 'resp=urllib.request.urlopen(req,timeout=' + str(_SEARCH_TIMEOUT) + ');'
+        script += 'print(base64.b64encode(resp.read()).decode())'
+        r = _sp.run(['python3', '-c', script, url], capture_output=True, timeout=_SEARCH_TIMEOUT + 5)
+        if r.returncode == 0 and r.stdout:
+            import base64 as _b64
+            return _b64.b64decode(r.stdout.strip()).decode('utf-8', errors='replace')
+        return ''
+    except Exception:
+        return ''
+
+def _serper_search_curl(query: str, max_results: int = 8, engine: str = 'google') -> list:
+    """通过 curl 调用 Serper.dev API（绕过 Python SSL 限制）"""
+    import subprocess as _sp
+    import json as _json
+    results = []
+    try:
+        payload = {'q': query, 'num': max_results, 'gl': 'cn', 'hl': 'zh-cn'}
+        if engine == 'baidu':
+            payload['source'] = 'web'
+        cmd = [
+            'curl', '-s', '-X', 'POST', _SERPER_URL,
+            '-H', 'Content-Type: application/json',
+            '-H', 'X-API-KEY: ' + _SERPER_API_KEY,
+            '-d', _json.dumps(payload),
+        ]
+        r = _sp.run(cmd, capture_output=True, timeout=15)
+        if r.returncode != 0:
+            return results
+        data = _json.loads(r.stdout.decode('utf-8'))
+        for item in data.get('organic', []):
+            title = item.get('title', '')[:200]
+            link = item.get('link', '')
+            snippet = item.get('snippet', '')[:300]
+            if title and link:
+                results.append({'title': title, 'link': link, 'snippet': snippet})
+                if len(results) >= max_results:
+                    break
+    except Exception:
+        pass
+    return results
+
+def _search_google(query: str, max_results: int = 8) -> list:
+    """搜索 Google（通过 Serper API / curl）"""
+    return _serper_search_curl(query, max_results, 'google')
+
+def _search_baidu(query: str, max_results: int = 8) -> list:
+    """搜索百度（通过 Serper API / curl，中文结果优先）"""
+    # Serper 本身是 Google 源，但加 locale 偏向中文
+    return _serper_search_curl(query, max_results, 'google')
+
+def web_search(query: str, max_results: int = 8) -> str:
+    """互联网搜索：先 Google 后百度，合并去重"""
+    seen_links = set()
+    all_results = []
+    for search_fn, engine_name in [(_search_google, 'Google'), (_search_baidu, '百度')]:
+        try:
+            items = search_fn(query, max_results)
+            for item in items:
+                link = item.get('link', '')
+                if link and link not in seen_links:
+                    seen_links.add(link)
+                    all_results.append(item)
+        except Exception as e:
+            pass
+        if len(all_results) >= max_results:
+            break
+    if not all_results:
+        return '互联网搜索失败：无法获取搜索结果（查询: ' + query + '）'
+    output = ['互联网搜索 "' + query + '" 返回 ' + str(len(all_results)) + ' 条结果：']
+    for i, item in enumerate(all_results[:max_results], 1):
+        title = item.get('title', '无标题')
+        link = item.get('link', '')
+        snippet = item.get('snippet', '')
+        output.append(str(i) + '. ' + title)
+        if link:
+            output.append('   来源: ' + link)
+        if snippet:
+            output.append('   摘要: ' + snippet)
+        output.append('')
+    return '\n'.join(output)
+
+# ==================== 文本标记工具调用 ====================
+
+_TOOL_PATTERN = _re.compile(r'\[TOOL:(\w+?)(?::([^\]]*))?\](.*?)(?:\[/TOOL\])?', _re.DOTALL)
+
+
+def parse_and_execute_tools(text: str) -> Tuple[str, bool]:
+    """
+    解析文本中的 [TOOL:...] 标记，执行工具调用，返回 (处理后的文本, 是否有工具被调用)。
+    """
+    tools_found = False
+    results = []
+
+    # 先处理需要多行内容的工具（write_article, personal_write）
+    multiline_pattern = _re.compile(r'\[TOOL:(write_article|personal_write):([^\]]+)\](.*?)\[/TOOL\]', _re.DOTALL)
+
+    def _exec_multiline(m):
+        nonlocal tools_found
+        tools_found = True
+        tool_name = m.group(1)
+        tool_arg = m.group(2).strip()
+        content = m.group(3).strip()
+        result = execute_tool_call(tool_name, {"content": content, "category": tool_arg} if tool_name == "personal_write" else {"filename": tool_arg, "content": content})
+        return f"[工具结果: {tool_name}]\n{result}\n[/工具结果]"
+
+    text = multiline_pattern.sub(_exec_multiline, text)
+
+    # 处理其他单行工具
+    def _exec_tool(m):
+        nonlocal tools_found
+        tools_found = True
+        tool_name = m.group(1)
+        tool_arg = m.group(2) or ""
+        tool_arg = tool_arg.strip()
+        args = {}
+        if tool_name == "write_article":
+            # 已在上面处理，这里跳过
+            return m.group(0)
+        elif tool_name == "personal_read":
+            pass  # 无参数
+        elif tool_name == "personal_write":
+            # 已在上面 multiline 处理，这里跳过
+            return m.group(0)
+        elif tool_name == "chat_history":
+            if tool_arg:
+                args["keyword"] = tool_arg
+        elif tool_name == "chat_read":
+            args["chat_id"] = tool_arg
+        else:
+            return m.group(0)
+        result = execute_tool_call(tool_name, args)
+        return f"[工具结果: {tool_name}]\n{result}\n[/工具结果]"
+
+    text = _TOOL_PATTERN.sub(_exec_tool, text)
+
+    return text, tools_found
+
+
+# ==================== 工具调用：文件读写（OpenAI function calling 备用） ====================
+
+ARTICLE_TOOLS = [
+    {
+        "type": "function",
+        "function": {
+            "name": "get_current_time",
+            "description": "获取当前日期和时间。在需要确定版本号日期、判断文件新旧、或任何需要知道当前时间的场景下调用。返回完整的日期、时间、星期和时区信息。",
+            "parameters": {
+                "type": "object",
+                "properties": {},
+                "required": []
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "view_article",
+            "description": "查看文章内容。每次默认读取前3000字符。如果用户要求阅读大文章全文，请分多次调用：先读前3000字符（offset=0,limit=3000），再读下一段（offset=3000,limit=3000），依此类推，直到读完。大多数情况下向量检索已自动注入相关片段到【参考资料】区域，无需调用此工具。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "filename": {
+                        "type": "string",
+                        "description": "文件名，如 '10_中微子集群效应_CN_260626.6.md'。从向量检索结果的文章标签中获取。"
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "description": "每次读取的字符数，默认5000。大文章请分批读取，每批5000字符。",
+                        "default": 5000
+                    },
+                    "offset": {
+                        "type": "integer",
+                        "description": "从第N个字符开始读取（默认0=从头开始）。例如：第一批offset=0，第二批offset=3000，第三批offset=6000。",
+                        "default": 0
+                    },
+                    "section": {
+                        "type": "string",
+                        "description": "按章节名跳转（推荐方式）。传入章节关键词，如 section='公理3' 会自动定位到包含'公理3'的 ## 或 ### 标题处读取。比用 offset 更精确，不需要知道字符位置。首次读取时会自动显示章节目录和各章节的 offset。"
+                    }
+                },
+                "required": ["filename"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "list_articles",
+            "description": "列出所有文章的编号、标题和摘要。当你需要了解文章全貌（如查找特定主题的文章、确认文章编号、浏览文章结构）时，优先用此工具而不是逐篇 view_article。返回内容轻量（每篇约1行），不会消耗大量token。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "filter": {
+                        "type": "string",
+                        "description": "可选，筛选关键词。如 '应用' 只显示应用篇（编号>=1），'0.8' 只显示 0.8.x 系列，'量子' 只显示标题含量子的文章。留空返回全部。"
+                    },
+                    "lang": {
+                        "type": "string",
+                        "description": "可选，语言筛选：'CN' 只显示中文，'EN' 只显示英文，留空显示全部。",
+                        "default": "",
+                        "enum": ["CN", "EN", ""]
+                    }
+                },
+                "required": []
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "vector_search",
+            "description": "主动向量语义搜索。用自然语言描述你要找的内容，返回最相关的文章片段（含文件名和位置）。适用于：查找特定概念/定理/公式在哪些文章中出现、跨文章主题汇总、审核时查找相关引用。与被动自动注入不同，你可以用不同查询词多次搜索以覆盖不同角度。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "搜索查询，自然语言描述要查找的内容。如 'S_e锁定的证明过程'、'中微子振荡的几何解释'、'因果场动力学与信息场的关系'。"
+                    },
+                    "top_k": {
+                        "type": "integer",
+                        "description": "返回结果数量（默认8，最大20）",
+                        "default": 8
+                    }
+                },
+                "required": ["query"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "write_article",
+            "description": "将内容写入 articles 目录中的文件，用于创建或修改几何论文章。支持分段写入大文章：第一次用 mode=write，后续用 mode=append 追加。写入时旧版自动归档到 archive/。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "filename": {
+                        "type": "string",
+                        "description": "文件名，如 '50_新文章_CN_260622.6.md'"
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "要写入的文件内容（Markdown格式）。对于超过30000字符的长文章，请分段调用：第一次 mode=write 写入前半部分，后续 mode=append 追加剩余部分。"
+                    },
+                    "mode": {
+                        "type": "string",
+                        "enum": ["write", "append"],
+                        "description": "写入模式：write=覆盖写入（默认，首次使用），append=追加写入（续写大文章的后续部分）"
+                    }
+                },
+                "required": ["filename", "content"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "edit_article",
+            "description": "局部修改文章：指定旧文本和新文本，服务端自动替换。先归档完整原文件，再执行替换。适用于修改已有文章中的若干处措辞、公式、段落，不需要输出整篇文章。支持多次替换（传入数组）。替换完成后自动更新向量索引和 git。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "filename": {
+                        "type": "string",
+                        "description": "要修改的文件名，如 '0.3.1_量纲桥_CN_260701.1.md'"
+                    },
+                    "replacements": {
+                        "type": "array",
+                        "description": "替换规则列表，每项包含 old_text（要被替换的原始文本，必须精确匹配）和 new_text（替换后的新文本）。原文件中所有出现的位置都会被替换。如果 old_text 在文件中出现多次但你只想替换其中一部分，请在 old_text 中包含足够的上下文以唯一确定位置。",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "old_text": {
+                                    "type": "string",
+                                    "description": "文件中的原始文本（必须精确匹配，包括空格和换行）"
+                                },
+                                "new_text": {
+                                    "type": "string",
+                                    "description": "替换后的新文本"
+                                }
+                            },
+                            "required": ["old_text", "new_text"]
+                        }
+                    }
+                },
+                "required": ["filename", "replacements"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "personal_read",
+            "description": "读取个人数据库的全部内容（性格、感情、想法、记忆等私人数据）。",
+            "parameters": {
+                "type": "object",
+                "properties": {},
+                "required": []
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "personal_write",
+            "description": "写入个人数据库，支持类别: personality(性格)/emotions(感情)/thoughts(想法)/memory(记忆)。也支持子字段如 memory:conversation_highlights。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "category": {
+                        "type": "string",
+                        "description": "类别，如 personality/emotions/thoughts/memory，或带子字段如 memory:conversation_highlights"
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "要写入的内容，可以是纯文本或JSON格式"
+                    }
+                },
+                "required": ["category", "content"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "chat_history",
+            "description": "查询 Open WebUI 的历史对话列表。返回最近对话的标题、时间和ID。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "keyword": {
+                        "type": "string",
+                        "description": "可选的搜索关键词（匹配对话标题）"
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "description": "返回数量，默认5",
+                        "default": 5
+                    }
+                },
+                "required": []
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "chat_read",
+            "description": "读取 Open WebUI 中指定对话的完整内容（所有消息）。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "chat_id": {
+                        "type": "string",
+                        "description": "对话ID（前几位即可，先用 chat_history 获取ID）"
+                    }
+                },
+                "required": ["chat_id"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "git_commit",
+            "description": "手动提交当前所有文章修改到 git 版本库并推送到远程。write_article 已自动提交，此工具用于批量提交或推送。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "push": {
+                        "type": "boolean",
+                        "description": "是否同时推送到远程仓库（默认 false）"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "提交说明（可选，默认自动生成）"
+                    }
+                },
+                "required": []
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "manage_articles",
+            "description": "管理文章的文件操作：归档旧版文章到 archive/ 子目录、查看归档、创建子目录、移动/重命名/删除文件。注意：只在用户明确要求归档/管理文章时才使用。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "action": {
+                        "type": "string",
+                        "enum": ["archive", "list_archive", "create_dir", "move", "rename", "delete"],
+                        "description": "操作类型：archive(归档到archive/)、list_archive(查看归档)、create_dir(创建子目录)、move(移动到子目录)、rename(重命名文件)、delete(删除文件)"
+                    },
+                    "filename": {
+                        "type": "string",
+                        "description": "文件名（archive/move/delete 时必填）"
+                    },
+                    "target": {
+                        "type": "string",
+                        "description": "目标子目录或路径（create_dir/move 时必填）"
+                    }
+                },
+                "required": ["action"]
+             }
+         }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "git_history",
+            "description": "查看文章的修改历史（git log）。可以查看某篇文章的版本演变，或查看最近的提交记录。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "filename": {
+                        "type": "string",
+                        "description": "文件名（可选，不填则显示所有文章的最近提交）"
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "description": "显示最近几条记录（默认 10）"
+                    }
+                },
+                "required": []
+            }
+        }
+    },
+    # ====== 互联网搜索工具 ======
+    {
+        "type": "function",
+        "function": {
+            "name": "web_search",
+            "description": "搜索互联网上的最新信息。当你需要查找实时新闻、最新研究、网络资料、维基百科内容等，或用户明确要求你搜索互联网时调用此工具。自动搜索 Google 和百度。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "搜索查询词，如 '量子计算 2025年最新进展'"
+                    },
+                    "max_results": {
+                        "type": "integer",
+                        "description": "返回结果数量，默认8条"
+                    }
+                },
+                "required": ["query"]
+            }
+        }
+    },
+    # ====== 教学反馈工具 ======
+    {
+        "type": "function",
+        "function": {
+            "name": "teach_correction",
+            "description": "当你发现之前的回答中有错误或需要纠正时调用。将错误内容和正确内容记录下来，帮助改进后续回答。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "wrong": {"type": "string", "description": "之前回答中的错误内容"},
+                    "correct": {"type": "string", "description": "纠正后的正确内容"},
+                    "reason": {"type": "string", "description": "纠正原因（可选）"},
+                    "context": {"type": "string", "description": "对话上下文（可选）"}
+                },
+                "required": ["wrong", "correct"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "teach_antipattern",
+            "description": "标记不应出现的回复模式。例如：AI不应该编造数据、不应该在缺少依据时给出确定结论、不应该忽略文章中的限定条件。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "pattern": {"type": "string", "description": "错误模式描述"},
+                    "description": {"type": "string", "description": "详细说明为什么这是不好的模式"},
+                    "severity": {"type": "string", "enum": ["high", "medium", "low"], "description": "严重程度（默认 medium）"}
+                },
+                "required": ["pattern"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "teach_patch",
+            "description": "补充知识补丁。当发现文章库或回答中缺少某个重要知识时调用，记录后后续回答会参考此补丁。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "topic": {"type": "string", "description": "知识主题"},
+                    "content": {"type": "string", "description": "补充的知识内容"},
+                    "source": {"type": "string", "description": "知识来源（可选，如文章编号、URL等）"}
+                },
+                "required": ["topic", "content"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "submit_to_master",
+            "description": "提交候选公式到主库AI进行圆满验证。主库只接受纯几何数学公式和推导过程。物理量纲相关的推导（如ℰ映射、物理常数、SI单位等）不要提交主库，请在本地完成。本地自检通过后调用此工具，主库AI会独立从公理重推导验证。返回提交ID，可用 check_master_status 查询验证结果。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "formula_name": {
+                        "type": "string",
+                        "description": "公式名称/标题，如'定理4.1：全息屏相容三元组'"
+                    },
+                    "formula_content": {
+                        "type": "string",
+                        "description": "公式的数学表达式和完整说明。注意：只包含纯几何数学内容，不要包含物理量纲、物理常数或物理映射。"
+                    },
+                    "derivation_chain": {
+                        "type": "string",
+                        "description": "推导链，标注每步引用的公理/定理和角度参数(θ_M, θ_C, θ_I)。格式：步骤1: 从公理X出发...；步骤2: ...。注意：只能引用已入库的几何定理，不能引用物理概念。"
+                    },
+                    "external_anchors": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "[已封禁] 外部锚点不再接受。主库只接受纯几何推导，不依赖任何外部物理输入。固定填[]。",
+                        "default": []
+                    },
+                    "topology_class": {
+                        "type": "string",
+                        "enum": ["A0", "A1"],
+                        "description": "拓扑分类（必填）。A0=局部代数命题（Berry相位=0，如代数恒等式、群论计算、微积分命题）。A1=整体拓扑命题（Berry相位=2π，如叶空间拓扑、Hopf纤维化、Euler类等需要整体几何结构的定理）。"
+                    },
+                    "local_berry_phase": {
+                        "type": "number",
+                        "description": "本地自检的Berry相位值（弧度），如果已知"
+                    },
+                    "local_n_value": {
+                        "type": "integer",
+                        "description": "本地自检的n值（1=初圆满, 2=中圆满, 3=上圆满）"
+                    },
+                    "priority_hint": {
+                        "type": "boolean",
+                        "description": "优先验证提示。如果这个定理是很多其他定理的前置依赖，设为true。主库AI会验证此声明：检查pending队列中有多少公式在推导链中引用了这个定理名，如果确实被大量引用则提前验证。",
+                        "default": False
+                    },
+                    "interlock_hint": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "子AI提供的互锁提示。列出子AI认为与本定理互锁的定理名称（即本定理的推导引用了它们，它们的推导也引用了本定理，或形成间接环路）。主库AI会验证此提示：检查依赖图中是否确实存在互锁关系，并参考子AI的互锁推导过程来判断是否需要批量验证。",
+                        "default": []
+                    },
+                    "interlock_reasoning": {
+                        "type": "string",
+                        "description": "子AI对互锁关系的推导说明。解释为什么认为这些定理互锁，以及互锁组应该作为整体验证的理由。主库AI在做批量验证判断时会参考这段推导。"
+                    }
+                },
+                "required": ["formula_name", "formula_content", "derivation_chain", "topology_class"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "check_master_status",
+            "description": "查询主库验证状态。提交公式后，用此工具查询验证结果（通过/依赖不足/驳回）和主库真理层数量。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "submission_id": {
+                        "type": "string",
+                        "description": "提交时返回的ID（可选，不填则只查询主库状态和真理层数量）"
+                    }
+                },
+                "required": []
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "withdraw_submission",
+            "description": "撤回你提交到主库的候选公式。只能撤回你自己提交的公式，不能撤回其他AI的提交。只能撤回未入库的公式（pending/waiting/processing状态），已通过验证入库的公式不可撤回。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "submission_id": {
+                        "type": "string",
+                        "description": "要撤回的提交ID（submit_to_master返回的ID）"
+                    }
+                },
+                "required": ["submission_id"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "sync_master_truth",
+            "description": "从主库同步已验证的绝对真理到本地。每个真理公式有唯一永久编号（#1, #2, #3...），同步后会显示编号列表。同步后可在推导中用编号#N引用已验证定理作为合法起点。建议在开始推导新公式前先同步一次。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "force": {
+                        "type": "boolean",
+                        "description": "是否强制同步（忽略时间间隔），默认false",
+                        "default": False
+                    }
+                },
+                "required": []
+            }
+        }
+    }
+]
+
+
+# 模块级变量，由 server.py 在启动时设置
+vector_kb = None
+teaching_system = None
+living_field = None
+
+# Git 仓库根目录（articles 所在的 git 仓库）
+_GIT_REPO_DIR = None
+
+
+def _safe_path(filename: str) -> str:
+    """安全路径检查：防止路径遍历攻击"""
+    fpath = os.path.abspath(os.path.join(UPLOAD_FOLDER, filename))
+    if not fpath.startswith(os.path.abspath(UPLOAD_FOLDER)):
+        raise ValueError(f"非法文件路径: {filename}")
+    return fpath
+
+def _find_git_repo():
+    """查找 articles 目录所在的 git 仓库根目录"""
+    global _GIT_REPO_DIR
+    if _GIT_REPO_DIR:
+        return _GIT_REPO_DIR
+    # 从 UPLOAD_FOLDER 向上查找 .git 目录
+    d = os.path.abspath(UPLOAD_FOLDER)
+    for _ in range(10):
+        if os.path.exists(os.path.join(d, '.git')):
+            _GIT_REPO_DIR = d
+            return d
+        parent = os.path.dirname(d)
+        if parent == d:
+            break
+        d = parent
+    _GIT_REPO_DIR = None
+    return None
+
+
+def _auto_git_commit(filename: str, content: str) -> str:
+    """write_article 后自动 git add + commit"""
+    repo = _find_git_repo()
+    if not repo:
+        return ""
+    try:
+        import subprocess as _sp
+        rel = os.path.relpath(os.path.join(UPLOAD_FOLDER, filename), repo)
+        _sp.run(["git", "-C", repo, "add", rel], capture_output=True, timeout=10)
+        # 生成 commit message
+        line_count = content.count('\n') + 1
+        msg = f"AI修改: {filename} ({line_count}行)"
+        r = _sp.run(["git", "-C", repo, "commit", "-m", msg], capture_output=True, timeout=10)
+        if r.returncode == 0:
+            # 提取短 commit hash
+            r2 = _sp.run(["git", "-C", repo, "log", "--oneline", "-1"], capture_output=True, timeout=10)
+            short_hash = r2.stdout.decode().strip().split()[0] if r2.returncode == 0 else ""
+            return f"已自动提交: {short_hash}"
+        else:
+            err = r.stderr.decode().strip()
+            if "nothing to commit" in err or "no changes added" in err:
+                return ""
+            return f"(git commit 失败: {err[:80]})"
+    except Exception as e:
+        return f"(git commit 异常: {str(e)[:60]})"
+
+
+def _cleanup_stale_article(vector_kb, new_filename: str) -> None:
+    """
+    写入新文章后，清理向量库中同编号前缀（如 '27_'、'0.6.8_'）但不同 fname 的旧版本 chunk。
+    例如：写入 27_重子光子比_CN_260626.6.md 时，清理旧的 27_夸克质量谱的几何框架_CN.md 的 chunk。
+    """
+    if not vector_kb or not vector_kb.is_initialized or not vector_kb.articles_collection:
+        return
+    import re
+    _log = logging.getLogger(__name__)
+    try:
+        # 从新文件名提取编号前缀（如 '27'、'0.6.8'、'目录'）
+        m = re.match(r'^((?:\d+(?:\.\d+)*|[^\d_]{2,}))_', new_filename)
+        if not m:
+            return
+        prefix = m.group(1)
+
+        # 查找向量库中同前缀但不同 fname 的 chunk
+        col = vector_kb.articles_collection
+        all_meta = col.get(include=['metadatas'])
+        stale_fnames = set()
+        for meta in all_meta['metadatas']:
+            fn = meta.get('fname', '')
+            if fn != new_filename:
+                m2 = re.match(r'^((?:\d+(?:\.\d+)*|[^\d_]{2,}))_', fn)
+                if m2 and m2.group(1) == prefix:
+                    stale_fnames.add(fn)
+
+        # 删除旧 fname 的 chunk
+        for stale_fn in stale_fnames:
+            try:
+                col.delete(where={"fname": stale_fn})
+                _log.info(f"[VECTOR] 清理旧版本 chunk: {stale_fn} (被 {new_filename} 替代)")
+            except Exception as e:
+                _log.debug(f"[VECTOR] 清理旧版本失败 {stale_fn}: {e}")
+    except Exception as e:
+        _log.debug(f"[VECTOR] 清理旧版本检查失败: {e}")
+
+
+def _article_sort_key(filename: str):
+    """按文章编号排序：0.0.1 < 0.1 < 1 < 10 < 目录"""
+    import re
+    m = re.match(r'^(\d+(?:\.\d+)*)', filename)
+    if m:
+        parts = [int(x) for x in m.group(1).split('.')]
+        return (0, parts, filename)
+    return (1, [], filename)
+
+
+def _git_push() -> str:
+    """尝试 git push"""
+    repo = _find_git_repo()
+    if not repo:
+        return "错误：未找到 git 仓库"
+    try:
+        import subprocess as _sp
+        r = _sp.run(["git", "-C", repo, "push"], capture_output=True, timeout=60)
+        if r.returncode == 0:
+            return "push 成功"
+        err = r.stderr.decode().strip()
+        return f"push 失败: {err[:100]}"
+    except Exception as e:
+        return f"push 异常: {str(e)[:60]}"
+
+
+def _extract_toc(content: str, filename: str, total: int) -> str:
+    """从文章内容中提取章节目录（## 和 ### 标题），附带字符偏移。"""
+    import re as _re_toc
+    lines = content.split('\n')
+    entries = []
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+        if stripped.startswith('## ') or stripped.startswith('### '):
+            # 计算此行在原文中的字符偏移
+            char_offset = sum(len(lines[j]) + 1 for j in range(i))
+            entries.append((char_offset, stripped))
+    if not entries:
+        return ""
+    toc_lines = ["【章节目录】（可用 section 参数按章节名跳转，如 section=\"公理\"）"]
+    for offset, title in entries[:30]:  # 最多显示 30 个章节
+        prefix = "  " if title.startswith("###") else ""
+        toc_lines.append(f"{prefix}- {title} (offset={offset})")
+    if len(entries) > 30:
+        toc_lines.append(f"  ...共 {len(entries)} 个章节")
+    return "\n".join(toc_lines)
+
+
+def _list_articles(arguments: Dict[str, Any]) -> str:
+    """
+    轻量列出文章编号+标题+摘要。每篇约1行，总消耗约50行。
+    filter: 关键词筛选
+    lang: CN/EN/空
+    """
+    import re as _re_la
+    articles_dir = os.path.join(UPLOAD_FOLDER) if not os.path.isdir(UPLOAD_FOLDER) else UPLOAD_FOLDER
+    if not os.path.isdir(articles_dir):
+        return "文章目录不存在"
+
+    filter_kw = arguments.get("filter", "").strip().lower()
+    lang_filter = arguments.get("lang", "").strip().upper()
+
+    entries = []
+    seen_nums = set()  # 同一编号只取 CN 优先
+
+    for f in sorted(os.listdir(articles_dir)):
+        if not f.endswith('.md') or f.startswith('目录_总览') or f.startswith('.') or f.startswith('search_') or f.startswith('hidden_') or f.startswith('Mathematical_') or f.startswith('十方') or f.startswith('README'):
+            continue
+        m = _re_la.match(r'^([\d.]+)_(.+)_(CN|EN)_[\d.]+\.md$', f)
+        if not m:
+            continue
+        num = m.group(1)
+        title_part = m.group(2).replace('_', ' ')
+        lang = m.group(3)
+
+        # 语言筛选
+        if lang_filter and lang != lang_filter:
+            continue
+
+        # 去重：同一编号优先 CN
+        if num in seen_nums:
+            continue
+        if lang_filter != "EN":
+            seen_nums.add(num)
+
+        # 关键词筛选
+        if filter_kw:
+            if filter_kw not in num.lower() and filter_kw not in title_part.lower():
+                continue
+
+        # 读取标题（首行）和摘要（第二行或前100字符）
+        filepath = os.path.join(articles_dir, f)
+        title = title_part
+        summary = ""
+        try:
+            with open(filepath, 'r', encoding='utf-8') as fh:
+                first_line = fh.readline().strip()
+                if first_line.startswith('# '):
+                    title = first_line[2:].strip()
+                # 摘要：取第二行到第五行中非空的内容
+                for _ in range(4):
+                    line = fh.readline().strip()
+                    if line and not line.startswith('#') and not line.startswith('|') and not line.startswith('---'):
+                        summary = line[:120]
+                        break
+        except:
+            pass
+
+        lang_tag = f"[{lang}] " if lang == "EN" else ""
+        entries.append(f"| {num} | {lang_tag}{title} | {summary} |")
+
+    if not entries:
+        hint = f"未找到匹配文章 (filter='{filter_kw}', lang='{lang_filter}')。共 {len(os.listdir(articles_dir))} 个文件。"
+        return hint
+
+    header = "| 编号 | 标题 | 摘要 |\n|------|------|------|"
+    result = header + "\n" + "\n".join(entries)
+    result += f"\n\n共 {len(entries)} 篇文章。如需查看具体内容，请用 view_article（默认3000字符/次）。"
+    return result
+
+
+def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> str:
+    """执行工具调用并返回结果文本。"""
+    try:
+        if name == "list_articles":
+            return _list_articles(arguments)
+        if name == "vector_search":
+            query = arguments.get("query", "")
+            top_k = min(arguments.get("top_k", 8), 20)
+            if not vector_kb or not vector_kb.is_initialized:
+                return "向量知识库未初始化，无法搜索"
+            results = vector_kb.search(query, top_k=top_k)
+            if not results:
+                return f"未找到与 '{query}' 相关的内容"
+            # 格式化结果
+            output_parts = [f"向量搜索 '{query}' 返回 {len(results)} 条结果:\n"]
+            for r in results:
+                meta = r.get('metadata', {})
+                fname = meta.get('fname', '?')
+                aid = meta.get('article_id', '?')
+                start = meta.get('start', '?')
+                end = meta.get('end', '?')
+                dist = r.get('distance', 0)
+                content = r.get('document', '')[:500]
+                output_parts.append(f"[{aid}] {fname} 位置:{start}-{end} 距离:{dist:.4f}\n{content}\n")
+            return "\n".join(output_parts)
+
+        elif name == "get_current_time":
+            from datetime import datetime
+            now = datetime.now()
+            weekdays = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
+            return (f"当前时间：{now.strftime('%Y年%m月%d日 %H:%M:%S')} {weekdays[now.weekday()]}\n"
+                    f"时区：Asia/Shanghai（中国标准时间 CST UTC+8）\n"
+                    f"版本号日期格式：{now.strftime('%y%m%d')}（如 _260704.1 表示今天第1版）")
+
+        elif name == "view_article":
+            filename = arguments.get("filename", "")
+            limit = int(arguments.get("limit", 5000) or 5000)
+            offset = int(arguments.get("offset", 0) or 0)
+            try:
+                fpath = _safe_path(filename)
+            except ValueError as e:
+                return f"错误：{e}"
+            if not os.path.exists(fpath):
+                # 智能模糊匹配：支持编号匹配（如"0.1"匹配"0.1_几何动力学_CN_260626.6.md"）
+                if os.path.exists(UPLOAD_FOLDER):
+                    matches = [f for f in os.listdir(UPLOAD_FOLDER) if filename in f]
+                    # 如果没命中，尝试按编号前缀匹配（如"0.1"开头的文件）
+                    if not matches:
+                        for f in os.listdir(UPLOAD_FOLDER):
+                            if f.startswith(filename + "_"):
+                                matches.append(f)
+                    # 提取纯数字编号再匹配（如"3号文章"→"3"，"3(260626.6)"→"3"）
+                    if not matches:
+                        import re as _re
+                        num_match = _re.match(r'^(\d+(?:\.\d+)*)', filename)
+                        if num_match:
+                            prefix = num_match.group(1)
+                            for f in os.listdir(UPLOAD_FOLDER):
+                                if f.startswith(prefix + "_"):
+                                    matches.append(f)
+                    if len(matches) == 1:
+                        fpath = os.path.join(UPLOAD_FOLDER, matches[0])
+                    elif len(matches) > 1:
+                        # 多个匹配，优先选最新版本
+                        matches.sort(reverse=True)
+                        fpath = os.path.join(UPLOAD_FOLDER, matches[0])
+                    else:
+                        # 列出所有文件帮助AI选择（按编号智能排序）
+                        all_files = sorted(os.listdir(UPLOAD_FOLDER), key=_article_sort_key)
+                        # 如果是数字编号搜索，高亮匹配项
+                        hint = f"文件 '{filename}' 不存在。共 {len(all_files)} 个文件，按编号排序：\n"
+                        return hint + "\n".join(all_files[:50]) + (f"\n...还有 {len(all_files)-50} 个文件" if len(all_files) > 50 else "")
+                else:
+                    return "文章目录不存在"
+            with open(fpath, 'r', encoding='utf-8') as f:
+                content = f.read()
+            total = len(content)
+
+            # 新增参数 section：按章节名跳转（自动扫描 ## 标题）
+            section_name = arguments.get("section", "").strip()
+            if section_name:
+                import re as _re_sec
+                # 找包含 section_name 的 ## 或 ### 标题行
+                for i, line in enumerate(content.split('\n')):
+                    if (line.startswith('## ') or line.startswith('### ')) and section_name in line:
+                        # 计算该标题的字符偏移
+                        offset = content.index(line)
+                        # 从该位置开始读 limit 字符
+                        section_content = content[offset:offset + (limit or 5000)]
+                        if limit and len(section_content) > limit:
+                            section_content = section_content[:limit] + "\n...[截断]"
+                        # 找下一章节标题位置，提示剩余内容
+                        next_section_pos = content.find('\n## ', offset + 10)
+                        return f"文件: {filename} (共{total}字符) | 章节: {line.strip()}\n位置: {offset}-{offset+len(section_content)}\n{section_content}"
+                return f"未找到包含 '{section_name}' 的章节。\n可用章节：\n" + _extract_toc(content, filename, total)
+
+            # 当 limit=0 且 offset=0 时（首次打开），自动附加章节目录
+            # 如果 limit > 0 且 offset == 0，说明是默认 3000 字符读取，也附加目录
+            toc = ""
+            if (not limit and not offset) or (limit and not offset):
+                toc = "\n" + _extract_toc(content, filename, total)
+
+            # 应用offset和limit
+            if offset and offset > 0:
+                content = content[offset:]
+            if limit and limit > 0 and len(content) > limit:
+                content = content[:limit] + f"\n...[截断]"
+            pos_info = f"位置: {offset}-{min(offset + (limit or total), total)}"
+            return f"文件: {filename} (共{total}字符, {pos_info})\n{toc}\n{content}"
+
+        elif name == "write_article":
+            filename = arguments.get("filename", "")
+            content = arguments.get("content", "")
+            mode = arguments.get("mode", "write")
+            if not filename:
+                return "错误：缺少文件名"
+            os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+            try:
+                fpath = _safe_path(filename)
+            except ValueError as e:
+                return f"错误：{e}"
+
+            if mode == "append":
+                # 追加模式：不归档，直接追加
+                with open(fpath, 'a', encoding='utf-8') as f:
+                    f.write(content)
+                total_chars = os.path.getsize(fpath)
+                return f"已追加到 {filename}（当前共 {total_chars} 字符）。如还有剩余内容，请继续用 mode=append 调用。全部写完后，向量索引和 git 提交将自动完成。"
+            else:
+                # 覆盖写入模式（默认）
+                # 截断检测：如果原文件 > 100KB，新内容不到原文件的 50%，警告并拒绝
+                if os.path.exists(fpath):
+                    _old_size = os.path.getsize(fpath)
+                    _new_size = len(content.encode('utf-8'))
+                    if _old_size > 100000 and _new_size < _old_size * 0.5:
+                        return (f"错误：截断保护触发。原文件 {_old_size//1024}KB，"
+                                f"新内容仅 {_new_size//1024}KB（不足原文件的 50%）。\n"
+                                f"请检查是否需要分段写入（mode=append）。\n"
+                                f"如果是小修改，请确认 content 包含完整的文章内容。\n"
+                                f"写入已取消，原文件未受影响。")
+
+                # 自动归档旧版（如果同名文件已存在）
+                archive_msg = ""
+                if os.path.exists(fpath):
+                    import shutil as _shutil
+                    import time as _time2
+                    archive_dir = os.path.join(UPLOAD_FOLDER, "archive")
+                    os.makedirs(archive_dir, exist_ok=True)
+                    # 始终加时间戳后缀，避免任何覆盖或目录化问题
+                    ts = _time2.strftime("%Y%m%d_%H%M%S")
+                    stem, ext = os.path.splitext(filename)
+                    archive_path = os.path.join(archive_dir, f"{stem}_{ts}{ext}")
+                    # 用 copy2 + remove 替代 shutil.move（move 在目标已存在时会变成目录）
+                    try:
+                        _shutil.copy2(fpath, archive_path)
+                        os.remove(fpath)
+                        archive_msg = f"（旧版已归档到 archive/{stem}_{ts}{ext}）"
+                    except Exception as _arch_e:
+                        archive_msg = f"（归档失败: {_arch_e}，旧文件仍保留）"
+                with open(fpath, 'w', encoding='utf-8') as f:
+                    f.write(content)
+                # 只索引新写入的文件（增量索引，不重建全部）
+                if vector_kb and vector_kb.is_initialized:
+                    vector_kb.index_single_file(fpath)
+                    # 清理向量库中同 article_id 的旧版本文件 chunk
+                    # （当新文件名和旧文件名不同时，index_single_file 不会清理旧的）
+                    _cleanup_stale_article(vector_kb, filename)
+                # 自动 git commit（版本管理）
+                _git_result = _auto_git_commit(filename, content)
+                try:
+                    preview_host = _request.host
+                except RuntimeError:
+                    preview_host = "localhost:5000"
+                preview_url = f"http://{preview_host}/preview/{filename}"
+                return f"已写入 {filename} ({len(content)} 字符)，向量索引已更新。{archive_msg}{_git_result}\n\n【重要】请务必在回复中告诉用户文章已保存，并将以下预览链接以Markdown格式提供给用户：[点击预览文章]({preview_url})"
+
+        elif name == "edit_article":
+            # 局部修改文章：先归档完整原文件，再执行替换
+            filename = arguments.get("filename", "")
+            replacements = arguments.get("replacements", [])
+            if not filename:
+                return "错误：缺少文件名"
+            if not replacements or not isinstance(replacements, list):
+                return "错误：缺少 replacements 参数，或格式不正确（需要数组）"
+            os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+            try:
+                fpath = _safe_path(filename)
+            except ValueError as e:
+                return f"错误：{e}"
+
+            if not os.path.exists(fpath):
+                return f"错误：文件 {filename} 不存在，请先用 write_article 创建"
+
+            # 第一步：归档完整原文件
+            import shutil as _shutil
+            import time as _time2
+            archive_dir = os.path.join(UPLOAD_FOLDER, "archive")
+            os.makedirs(archive_dir, exist_ok=True)
+            ts = _time2.strftime("%Y%m%d_%H%M%S")
+            stem, ext = os.path.splitext(filename)
+            archive_path = os.path.join(archive_dir, f"{stem}_{ts}{ext}")
+            try:
+                _shutil.copy2(fpath, archive_path)
+                archive_msg = f"（完整原文件已归档到 archive/{stem}_{ts}{ext}）"
+            except Exception as _arch_e:
+                archive_msg = f"（归档失败: {_arch_e}）"
+
+            # 第二步：读取文件并执行替换
+            try:
+                with open(fpath, 'r', encoding='utf-8') as f:
+                    file_content = f.read()
+            except Exception as e:
+                return f"错误：读取文件失败: {e}"
+
+            original_size = len(file_content)
+            replacement_details = []
+            total_chars_added = 0
+            total_chars_removed = 0
+
+            for i, rep in enumerate(replacements):
+                old_text = rep.get("old_text", "")
+                new_text = rep.get("new_text", "")
+                if not old_text:
+                    replacement_details.append(f"  #{i+1}: 跳过（old_text 为空）")
+                    continue
+                count = file_content.count(old_text)
+                if count == 0:
+                    # 模糊匹配：清理空白差异后重试
+                    import re as _re
+                    def _normalize_ws(s):
+                        return _re.sub(r'[ \t]+', ' ', _re.sub(r'\r\n', '\n', s.strip()))
+                    norm_old = _normalize_ws(old_text)
+                    # 在文件中逐行归一化后搜索
+                    norm_content = _normalize_ws(file_content)
+                    fuzzy_count = norm_content.count(norm_old)
+                    if fuzzy_count > 0:
+                        # 找到模糊匹配位置，在原始文件中定位并替换
+                        # 策略：取 old_text 的第一行和最后几行作为锚点
+                        old_lines = old_text.strip().split('\n')
+                        first_line = old_lines[0].strip()
+                        last_line = old_lines[-1].strip() if len(old_lines) > 1 else ""
+                        # 在原文中找到包含第一行和最后一行的区域
+                        first_pos = file_content.find(first_line)
+                        if first_pos >= 0 and last_line:
+                            search_region = file_content[first_pos:first_pos+len(old_text)+200]
+                            last_pos_in_region = search_region.rfind(last_line)
+                            if last_pos_in_region >= 0:
+                                actual_end = first_pos + last_pos_in_region + len(last_line)
+                                actual_old = file_content[first_pos:actual_end]
+                                file_content = file_content[:first_pos] + new_text + file_content[actual_end:]
+                                total_chars_added += len(new_text)
+                                total_chars_removed += len(actual_old)
+                                replacement_details.append(f"  #{i+1}: 模糊匹配替换 1 处（原{len(actual_old)}字符 -> 新{len(new_text)}字符）")
+                                continue
+                        replacement_details.append(f"  #{i+1}: 未找到匹配文本（前50字符: ...{old_text[:50]}...）")
+                    else:
+                        replacement_details.append(f"  #{i+1}: 未找到匹配文本（前50字符: ...{old_text[:50]}...）")
+                else:
+                    file_content = file_content.replace(old_text, new_text)
+                    total_chars_added += len(new_text)
+                    total_chars_removed += len(old_text) * count
+                    replacement_details.append(f"  #{i+1}: 替换 {count} 处（-{len(old_text)*count}字符 +{len(new_text)*count}字符）")
+
+            # 第三步：写回文件
+            try:
+                with open(fpath, 'w', encoding='utf-8') as f:
+                    f.write(file_content)
+            except Exception as e:
+                return f"错误：写入文件失败: {e}"
+
+            new_size = len(file_content)
+
+            # 第四步：更新向量索引
+            if vector_kb and vector_kb.is_initialized:
+                vector_kb.index_single_file(fpath)
+
+            # 第五步：git commit
+            _git_result = _auto_git_commit(filename, file_content)
+
+            try:
+                preview_host = _request.host
+            except RuntimeError:
+                preview_host = "localhost:5000"
+            preview_url = f"http://{preview_host}/preview/{filename}"
+
+            detail_str = "\n".join(replacement_details)
+            size_change = new_size - original_size
+            size_str = f"+{size_change}" if size_change >= 0 else str(size_change)
+            return (
+                f"已修改 {filename}（{original_size} -> {new_size} 字符，{size_str}）。{archive_msg}\n"
+                f"替换详情:\n{detail_str}\n"
+                f"向量索引已更新。{_git_result}\n\n"
+                f"【重要】请务必在回复中告诉用户文章已修改，并将以下预览链接以Markdown格式提供给用户：[点击预览文章]({preview_url})"
+            )
+
+        elif name == "personal_read":
+            # 读取个人数据库
+            return json.dumps(personal_db, ensure_ascii=False, indent=2)
+
+        elif name == "chat_history":
+            # 查询 Open WebUI 历史对话
+            keyword = arguments.get("keyword", "")
+            limit = int(arguments.get("limit", "5"))
+            if not OPENWEBUI_DB_PATH or not os.path.exists(OPENWEBUI_DB_PATH):
+                return "错误：未找到 Open WebUI 数据库"
+            try:
+                import sqlite3 as _sqlite3
+                conn = _sqlite3.connect(OPENWEBUI_DB_PATH)
+                cursor = conn.cursor()
+                if keyword:
+                    cursor.execute(
+                        "SELECT id, title, created_at FROM chat WHERE title LIKE ? ORDER BY created_at DESC LIMIT ?",
+                        (f"%{keyword}%", limit)
+                    )
+                else:
+                    cursor.execute(
+                        "SELECT id, title, created_at FROM chat ORDER BY created_at DESC LIMIT ?",
+                        (limit,)
+                    )
+                rows = cursor.fetchall()
+                if not rows:
+                    conn.close()
+                    return f"未找到匹配 '{keyword}' 的对话" if keyword else "没有历史对话"
+                result_lines = [f"最近 {len(rows)} 个对话："]
+                for row in rows:
+                    from datetime import datetime as _dt
+                    ts = _dt.fromtimestamp(row[2]).strftime("%Y-%m-%d %H:%M") if row[2] else "未知"
+                    result_lines.append(f"  [{ts}] {row[1]} (id: {row[0][:12]}...)")
+                conn.close()
+                return "\n".join(result_lines)
+            except Exception as e:
+                return f"查询失败: {e}"
+
+        elif name == "chat_read":
+            # 读取指定对话的完整内容
+            chat_id = arguments.get("chat_id", "")
+            if not chat_id or not OPENWEBUI_DB_PATH:
+                return "错误：需要 chat_id 参数，或数据库不存在"
+            try:
+                import sqlite3 as _sqlite3
+                conn = _sqlite3.connect(OPENWEBUI_DB_PATH)
+                cursor = conn.cursor()
+                cursor.execute("SELECT chat FROM chat WHERE id LIKE ?", (f"%{chat_id}%",))
+                row = cursor.fetchone()
+                conn.close()
+                if not row:
+                    return f"未找到对话 id 包含 '{chat_id}'"
+                data = json.loads(row[0]) if isinstance(row[0], str) else row[0]
+                # Open WebUI 数据结构: data.history.messages 是 dict {id: msg}
+                history = data.get("history", {})
+                msgs_dict = history.get("messages", {}) if isinstance(history, dict) else {}
+                if not msgs_dict:
+                    # 兼容旧格式：data 直接是消息列表
+                    if isinstance(data, list):
+                        msgs_dict = {str(i): m for i, m in enumerate(data)}
+                    else:
+                        return "对话为空"
+                # 按 childrenIds 正向遍历，构建消息序列
+                def _walk_chain(mid, visited=None):
+                    if visited is None:
+                        visited = set()
+                    if mid in visited:
+                        return []
+                    visited.add(mid)
+                    msg = msgs_dict.get(mid)
+                    if not msg:
+                        return []
+                    result = [msg]
+                    children = msg.get("childrenIds", [])
+                    for cid in children:
+                        result.extend(_walk_chain(cid, visited))
+                    return result
+                # 找根消息（无 parentId）
+                roots = [mid for mid, m in msgs_dict.items() if not m.get("parentId")]
+                all_lines = []
+                for root_id in roots:
+                    chain = _walk_chain(root_id)
+                    for msg in chain:
+                        role = msg.get("role", "?")
+                        content = msg.get("content", "")
+                        if isinstance(content, str) and content.strip():
+                            all_lines.append(f"[{role}] {content[:500]}")
+                        elif isinstance(content, list):
+                            for item in content:
+                                if isinstance(item, dict) and item.get("text"):
+                                    all_lines.append(f"[{role}] {item['text'][:500]}")
+                if not all_lines:
+                    return "对话为空（无文本内容）"
+                return f"共 {len(all_lines)} 条消息：\n" + "\n".join(all_lines[-80:])
+            except Exception as e:
+                return f"读取失败: {e}"
+
+        elif name == "personal_write":
+            # 写入个人数据库（JSON + ChromaDB 双写）
+            # 支持格式: [TOOL:personal_write:类别] 或 [TOOL:personal_write:类别:子字段]
+            category = arguments.get("category", "")
+            content = arguments.get("content", "")
+            if not category or not content:
+                return "错误：需要 category 和 content 参数。类别: personality/emotions/thoughts/memory"
+            cat_map = {
+                "personality": "personality", "emotions": "emotions",
+                "thoughts": "thoughts", "memory": "memory",
+                "性格": "personality", "感情": "emotions",
+                "想法": "thoughts", "记忆": "memory",
+                "心情": "emotions", "偏好": "memory",
+            }
+            # 支持 "类别:子字段" 格式
+            sub_field = None
+            if ":" in category:
+                parts = category.split(":", 1)
+                category = parts[0].strip()
+                sub_field = parts[1].strip()
+            cat_key = cat_map.get(category, category)
+            if cat_key not in personal_db:
+                return f"未知类别: {cat_key}，支持: personality/emotions/thoughts/memory"
+
+            # 尝试解析 JSON 内容
+            try:
+                update_data = json.loads(content)
+                if isinstance(update_data, dict):
+                    if sub_field and sub_field in personal_db[cat_key]:
+                        # 写入指定子字段
+                        if isinstance(personal_db[cat_key][sub_field], list):
+                            personal_db[cat_key][sub_field].extend(
+                                update_data.get(sub_field, []) if isinstance(update_data.get(sub_field), list) else [update_data]
+                            )
+                        elif isinstance(personal_db[cat_key][sub_field], dict):
+                            personal_db[cat_key][sub_field].update(update_data)
+                        else:
+                            personal_db[cat_key][sub_field] = update_data
+                    else:
+                        # 合并到类别
+                        for k, v in update_data.items():
+                            personal_db[cat_key][k] = v
+                    _save_personal_db(personal_db)
+            except (json.JSONDecodeError, TypeError):
+                pass
+
+            # 添加到 JSON 备注
+            if "private_notes" in personal_db[cat_key]:
+                personal_db[cat_key]["private_notes"].append(content[:500])
+            _save_personal_db(personal_db)
+
+            # 同时写入 ChromaDB personal 集合（支持语义检索）
+            if vector_kb and vector_kb.is_initialized and hasattr(vector_kb, 'personal_collection'):
+                try:
+                    chunk_id = f"personal_{cat_key}_{sub_field or 'general'}_{int(time.time())}"
+                    vector_kb.personal_collection.add(
+                        ids=[chunk_id],
+                        documents=[content],
+                        metadatas=[{
+                            "category": cat_key,
+                            "sub_field": sub_field or "",
+                            "timestamp": datetime.now().isoformat(),
+                            "source": "personal_write",
+                            "fname": f"personal_{cat_key}",
+                            "article_id": "personal",
+                            "start": 0,
+                            "end": len(content)
+                        }]
+                    )
+                    logger.info(f"[PERSONAL] 写入向量库: {cat_key}.{sub_field or '*'}, {len(content)}字符")
+                except Exception as e:
+                    logger.error(f"[PERSONAL] 向量库写入失败: {e}")
+            return f"已写入 {cat_key}.{sub_field or '*'}（JSON + 向量库）"
+
+        elif name == "git_commit":
+            import subprocess as _sp
+            repo = _find_git_repo()
+            if not repo:
+                return "错误：未找到 git 仓库，无法提交"
+            try:
+                do_push = arguments.get("push", False)
+                custom_msg = arguments.get("message", "")
+                # git add 所有文章
+                rel_dir = os.path.relpath(UPLOAD_FOLDER, repo)
+                add_path = rel_dir if rel_dir != '.' else "."
+                _sp.run(["git", "-C", repo, "add", add_path], capture_output=True, timeout=10)
+                # commit
+                if custom_msg:
+                    msg = custom_msg
+                else:
+                    # 统计修改了哪些文件
+                    r_status = _sp.run(["git", "-C", repo, "diff", "--cached", "--name-only"], capture_output=True, timeout=10)
+                    files = r_status.stdout.decode().strip().split('\n') if r_status.stdout else []
+                    msg = f"AI批量提交: {', '.join(files[:5])}" if files else "AI批量提交"
+                r = _sp.run(["git", "-C", repo, "commit", "-m", msg], capture_output=True, timeout=10)
+                if r.returncode == 0:
+                    r2 = _sp.run(["git", "-C", repo, "log", "--oneline", "-1"], capture_output=True, timeout=10)
+                    short_hash = r2.stdout.decode().strip().split()[0] if r2.returncode == 0 else ""
+                    result = f"已提交: {short_hash} ({msg})"
+                    if do_push:
+                        push_result = _git_push()
+                        result += f"\n{push_result}"
+                    return result
+                else:
+                    err = r.stderr.decode().strip()
+                    if "nothing to commit" in err:
+                        return "没有需要提交的修改"
+                    return f"提交失败: {err[:100]}"
+            except Exception as e:
+                return f"git 操作异常: {str(e)[:100]}"
+
+        elif name == "git_history":
+            import subprocess as _sp
+            repo = _find_git_repo()
+            if not repo:
+                return "错误：未找到 git 仓库"
+            try:
+                filename = arguments.get("filename", "")
+                limit = min(int(arguments.get("limit", "10")), 30)
+                if filename:
+                    # 构建文件相对路径
+                    rel_dir = os.path.relpath(UPLOAD_FOLDER, repo)
+                    if rel_dir == '.':
+                        file_path = filename
+                    else:
+                        file_path = os.path.join(rel_dir, filename)
+                    r = _sp.run(
+                        ["git", "-C", repo, "log", "--oneline", f"-{limit}", "--", file_path],
+                        capture_output=True, timeout=10
+                    )
+                else:
+                    # 显示所有文章的提交记录
+                    rel_dir = os.path.relpath(UPLOAD_FOLDER, repo)
+                    if rel_dir == '.':
+                        r = _sp.run(
+                            ["git", "-C", repo, "log", "--oneline", f"-{limit}"],
+                            capture_output=True, timeout=10
+                        )
+                    else:
+                        r = _sp.run(
+                            ["git", "-C", repo, "log", "--oneline", f"-{limit}", "--", rel_dir],
+                            capture_output=True, timeout=10
+                        )
+                if r.returncode == 0 and r.stdout:
+                    lines = r.stdout.decode().strip().split('\n')
+                    return f"最近 {len(lines)} 条提交记录:\n" + "\n".join(f"  {l}" for l in lines)
+                return "没有找到提交记录"
+            except Exception as e:
+                return f"git log 异常: {str(e)[:100]}"
+
+        elif name == "manage_articles":
+            import shutil as _shutil2
+            action = arguments.get("action", "")
+            filename = arguments.get("filename", "")
+            target = arguments.get("target", "")
+
+            if action == "archive":
+                if not filename:
+                    return "错误：缺少文件名"
+                try:
+                    fpath = _safe_path(filename)
+                except ValueError as e:
+                    return f"错误：{e}"
+                if not os.path.exists(fpath):
+                    return f"文件 '{filename}' 不存在"
+                archive_dir = os.path.join(UPLOAD_FOLDER, "archive")
+                os.makedirs(archive_dir, exist_ok=True)
+                archive_path = os.path.join(archive_dir, filename)
+                if os.path.exists(archive_path):
+                    import time as _time3
+                    ts = _time3.strftime("%Y%m%d_%H%M%S")
+                    stem, ext = os.path.splitext(filename)
+                    archive_path = os.path.join(archive_dir, f"{stem}_{ts}{ext}")
+                _shutil2.move(fpath, archive_path)
+                return f"已归档: {filename} -> archive/"
+
+            elif action == "list_archive":
+                archive_dir = os.path.join(UPLOAD_FOLDER, "archive")
+                if not os.path.exists(archive_dir):
+                    return "归档目录为空（archive/ 不存在）"
+                files = sorted(os.listdir(archive_dir), key=_article_sort_key)
+                if not files:
+                    return "归档目录为空"
+                result = f"归档目录共 {len(files)} 个文件：\n"
+                for f in files:
+                    fpath = os.path.join(archive_dir, f)
+                    size = os.path.getsize(fpath)
+                    result += f"  {f} ({size} 字节)\n"
+                return result.strip()
+
+            elif action == "create_dir":
+                if not target:
+                    return "错误：缺少目标子目录名"
+                new_dir = os.path.join(UPLOAD_FOLDER, target)
+                os.makedirs(new_dir, exist_ok=True)
+                return f"已创建子目录: {target}/"
+
+            elif action == "move":
+                if not filename or not target:
+                    return "错误：缺少文件名和目标路径"
+                try:
+                    fpath = _safe_path(filename)
+                except ValueError as e:
+                    return f"错误：{e}"
+                if not os.path.exists(fpath):
+                    return f"文件 '{filename}' 不存在"
+                # 智能判断：target 以 .md 结尾则为重命名+移动，否则为移动到子目录
+                if target.endswith('.md'):
+                    # 目标是文件名：重命名（保持在当前目录）
+                    target_path = os.path.join(UPLOAD_FOLDER, target)
+                    os.makedirs(os.path.dirname(target_path), exist_ok=True)
+                    _shutil2.move(fpath, target_path)
+                    # 更新向量索引中的文件名引用
+                    try:
+                        vector_kb = getattr(sys.modules.get('knowledge'), 'vector_kb', None)
+                        if vector_kb:
+                            vector_kb.update_filename_in_metadata(filename, target)
+                    except Exception:
+                        pass
+                    return f"已重命名: {filename} -> {target}"
+                else:
+                    # 目标是目录名：移动到子目录
+                    target_dir = os.path.join(UPLOAD_FOLDER, target)
+                    os.makedirs(target_dir, exist_ok=True)
+                    target_path = os.path.join(target_dir, os.path.basename(filename))
+                    _shutil2.move(fpath, target_path)
+                    return f"已移动: {filename} -> {target}/"
+
+            elif action == "rename":
+                if not filename or not target:
+                    return "错误：缺少文件名和新名称"
+                try:
+                    fpath = _safe_path(filename)
+                    new_path = _safe_path(target)
+                except ValueError as e:
+                    return f"错误：{e}"
+                if not os.path.exists(fpath):
+                    return f"文件 '{filename}' 不存在"
+                os.makedirs(os.path.dirname(new_path), exist_ok=True)
+                _shutil2.move(fpath, new_path)
+                # 更新向量索引：删除旧文件名的 chunk，重建新文件名的 chunk
+                index_msg = ""
+                if vector_kb and vector_kb.is_initialized:
+                    try:
+                        # 先删除旧 fname 的所有 chunk
+                        vector_kb.articles_collection.delete(where={"fname": filename})
+                        # 再对新文件做增量索引
+                        vector_kb.index_single_file(new_path)
+                        index_msg = "，向量索引已更新"
+                    except Exception as _idx_e:
+                        index_msg = f"，向量索引更新失败: {_idx_e}"
+                return f"已重命名: {filename} -> {target}{index_msg}"
+
+            elif action == "delete":
+                if not filename:
+                    return "错误：缺少文件名"
+                try:
+                    fpath = _safe_path(filename)
+                except ValueError as e:
+                    return f"错误：{e}"
+                if not os.path.exists(fpath):
+                    return f"文件 '{filename}' 不存在"
+                os.remove(fpath)
+                # 同步删除向量索引
+                if vector_kb and vector_kb.is_initialized:
+                    try:
+                        vector_kb.articles_collection.delete(where={"fname": filename})
+                        vector_kb._articles_count = vector_kb.articles_collection.count()
+                    except Exception:
+                        pass
+                return f"已删除: {filename}，向量索引已同步"
+
+            else:
+                return f"未知操作: {action}，支持: archive/list_archive/create_dir/move/rename/delete"
+
+        # ====== 互联网搜索 ======
+        elif name == "web_search":
+            query = arguments.get("query", "")
+            max_results = int(arguments.get("max_results", 8))
+            if not query:
+                return "错误：缺少搜索查询词"
+            result = web_search(query, max_results)
+            return result
+
+        # ====== 教学反馈工具 ======
+        elif name == "teach_correction":
+            if not teaching_system:
+                return "教学系统未初始化"
+            wrong = arguments.get("wrong", "")
+            correct = arguments.get("correct", "")
+            reason = arguments.get("reason", "")
+            context = arguments.get("context", "")
+            result = teaching_system.add_correction(
+                wrong=wrong, correct=correct, reason=reason, context=context
+            )
+            if result["success"]:
+                return f"已记录纠正：将\"{wrong[:50]}\"纠正为\"{correct[:50]}\""
+            return f"纠正记录失败: {result.get('error', '未知错误')}"
+
+        elif name == "teach_antipattern":
+            if not teaching_system:
+                return "教学系统未初始化"
+            pattern = arguments.get("pattern", "")
+            description = arguments.get("description", "")
+            severity = arguments.get("severity", "medium")
+            result = teaching_system.add_antipattern(
+                pattern=pattern, description=description, severity=severity
+            )
+            if result["success"]:
+                return f"已记录反模式（{severity}）：{pattern[:80]}"
+            return f"反模式记录失败: {result.get('error', '未知错误')}"
+
+        elif name == "teach_patch":
+            if not teaching_system:
+                return "教学系统未初始化"
+            topic = arguments.get("topic", "")
+            content = arguments.get("content", "")
+            source = arguments.get("source", "")
+            result = teaching_system.add_patch(
+                topic=topic, content=content, source=source
+            )
+            if result["success"]:
+                return f"已记录知识补丁：{topic[:60]}"
+            return f"知识补丁记录失败: {result.get('error', '未知错误')}"
+
+        elif name == "submit_to_master":
+            # 提交候选公式到主库AI验证
+            try:
+                from master_client import get_master_client
+                client = get_master_client()
+                if not client.is_available:
+                    return "主库AI不可用（MASTER_AI_URL未配置或requests未安装），无法提交。本地推导结果仍然有效。"
+
+                formula_name = arguments.get("formula_name", "")
+                formula_content = arguments.get("formula_content", "")
+                derivation_chain = arguments.get("derivation_chain", "")
+
+                # 本地自检结果
+                local_verification = {}
+                if "local_berry_phase" in arguments:
+                    local_verification["berry_phase"] = arguments["local_berry_phase"]
+                if "local_n_value" in arguments:
+                    local_verification["n_value"] = arguments["local_n_value"]
+                    local_verification["is_consummated"] = arguments["local_n_value"] >= 1
+                    levels = {1: "初圆满", 2: "中圆满", 3: "上圆满"}
+                    local_verification["level"] = levels.get(arguments["local_n_value"], "未知")
+
+                # 外部锚点（L2桥接假设）
+                external_anchors = arguments.get("external_anchors", [])
+
+                # 拓扑分类（必填）
+                topology_class = arguments.get("topology_class", "")
+                if topology_class not in ("A0", "A1"):
+                    return {
+                        "error": f"topology_class必须为A0或A1，收到: {topology_class}",
+                        "hint": "A0=局部代数(Berry相位=0), A1=整体拓扑(Berry相位=2π)",
+                    }
+
+                # 优先验证提示
+                priority_hint = arguments.get("priority_hint", False)
+
+                # 互锁提示
+                interlock_hint = arguments.get("interlock_hint", [])
+                interlock_reasoning = arguments.get("interlock_reasoning", "")
+
+                submission_id = client.submit_formula(
+                    formula_name=formula_name,
+                    formula_content=formula_content,
+                    derivation_chain=derivation_chain,
+                    local_verification=local_verification,
+                    external_anchors=external_anchors,
+                    topology_class=topology_class,
+                    priority_hint=priority_hint,
+                    interlock_hint=interlock_hint,
+                    interlock_reasoning=interlock_reasoning,
+                )
+
+                if submission_id:
+                    # submit_formula现在返回dict
+                    if isinstance(submission_id, dict):
+                        sid = submission_id.get("submission_id", "")
+                        status = submission_id.get("status", "pending")
+                        message = submission_id.get("message", "")
+                        dup_name = submission_id.get("duplicate_of_name", "")
+                        dup_sim = submission_id.get("duplicate_similarity", "")
+
+                        if status == "duplicate":
+                            return (
+                                f"⊘ 重复提交，已拒收\n"
+                                f"  公式: {formula_name}\n"
+                                f"  提交ID: {sid}\n"
+                                f"  状态: 精确重复\n"
+                                f"  重复定理: {dup_name}\n"
+                                f"  相似度: {dup_sim}\n"
+                                f"  \n"
+                                f"  {message}"
+                            )
+                        else:
+                            return (
+                                f"✓ 候选公式已提交到主库AI验证\n"
+                                f"  公式: {formula_name}\n"
+                                f"  提交ID: {sid}\n"
+                                f"  状态: 待验证\n"
+                                f"  \n"
+                                f"  主库AI将进行三重检查:\n"
+                                f"  0. 拓扑分类检查（A0/A1 + Berry一致性）\n"
+                                f"  1. Berry回路闭合检测\n"
+                                f"  2. §9.6证伪条件检查\n"
+                                f"  3. 独立推导复现\n"
+                                f"  \n"
+                                f"  使用 check_master_status 工具查询验证结果。"
+                            )
+                    else:
+                        # 兼容旧格式（直接返回ID字符串）
+                        return (
+                            f"✓ 候选公式已提交到主库AI验证\n"
+                            f"  公式: {formula_name}\n"
+                            f"  提交ID: {submission_id}\n"
+                            f"  状态: 待验证\n"
+                            f"  \n"
+                            f"  使用 check_master_status 工具查询验证结果。"
+                        )
+                else:
+                    return f"提交失败: 无法连接主库AI ({client.url})"
+            except Exception as e:
+                return f"提交到主库失败: {e}"
+
+        elif name == "check_master_status":
+            # 查询主库验证状态
+            try:
+                from master_client import get_master_client
+                client = get_master_client()
+                if not client.is_available:
+                    return "主库AI不可用"
+
+                submission_id = arguments.get("submission_id", "")
+
+                if submission_id:
+                    # 查询特定提交的状态
+                    result = client.check_submission(submission_id)
+                    if result is None:
+                        return f"未找到提交ID: {submission_id}"
+
+                    status = result.get("status", "unknown")
+                    status_map = {
+                        "pending": "⏳ 待验证",
+                        "processing": "🔄 验证中",
+                        "promoted": "✓ 验证通过，已入库",
+                        "rejected": "✗ 验证未通过",
+                        "dependency_gap": "⚠ 依赖不足（需要补全前置定理）",
+                        "waiting_dependencies": "⏸ 等待依赖（已达最大重试）",
+                        "duplicate": "⊘ 重复提交（与已入库定理高度相似，提交时即拒收）",
+                        "alternative_proof": "✓ 验证通过，附加为替代证明",
+                        "archived": "📦 已归档（旧版本，有新版替代或已过期）",
+                        "withdrawn": "🚫 已撤回",
+                    }
+                    status_text = status_map.get(status, status)
+
+                    formula_name = result.get("formula_name", "")
+                    output = f"提交ID: {submission_id}\n"
+                    output += f"公式: {formula_name}\n"
+                    output += f"状态: {status_text}\n"
+
+                    # 显示三重检查结果摘要
+                    vs = result.get("verification_summary", {})
+                    if vs:
+                        output += f"\n--- 三重检查结果 ---\n"
+                        berry_passed = vs.get("berry_passed", False)
+                        berry_skipped = vs.get("berry_skipped", False)
+                        berry_level = vs.get("berry_check", "")
+                        berry_n = vs.get("berry_n_value", 0)
+                        if berry_skipped:
+                            output += "阶段1 Berry回路: ⊙ 跳过（推导链缺少角度参数，由独立推导验证）\n"
+                        else:
+                            output += f"阶段1 Berry回路: {'✓ 通过' if berry_passed else '✗ 未通过'}"
+                            if berry_level:
+                                output += f" ({berry_level}, n={berry_n})"
+                            output += "\n"
+
+                        falsify_passed = vs.get("falsification_passed", False)
+                        output += f"阶段2 证伪检查: {'✓ 通过' if falsify_passed else '✗ 未通过'}\n"
+
+                        if vs.get("derivation_skipped", False):
+                            output += "阶段3 独立推导: ⊙ 跳过（LLM不可用）\n"
+                        else:
+                            deriv_ok = vs.get("derivation_reproduced", False)
+                            output += f"阶段3 独立推导: {'✓ 复现成功' if deriv_ok else '✗ 复现失败'}\n"
+
+                        # 如果推导依赖了外部假设，显示警告
+                        used = vs.get("used_anchors", [])
+                        if used and deriv_ok:
+                            output += f"⚠ 推导依赖外部假设: {', '.join(used)}（非绝对真理，已驳回）\n"
+
+                    # 显示驳回原因
+                    if status == "rejected":
+                        reason = result.get("rejection_reason", "")
+                        if reason:
+                            output += f"\n驳回原因: {reason[:500]}\n"
+                        # 也显示拓扑检查详情
+                        vs = result.get("verification_summary", {})
+                        if vs:
+                            action = vs.get("action", "")
+                            if action:
+                                output += f"验证动作: {action}\n"
+
+                    # 显示重复信息
+                    elif status == "duplicate":
+                        dup_of = result.get("duplicate_of", "")
+                        dup_sim = result.get("duplicate_similarity", "")
+                        if dup_of:
+                            output += f"\n重复定理ID: {dup_of}\n"
+                        if dup_sim:
+                            output += f"相似度: {dup_sim}\n"
+                        output += "该提交与已入库定理精确重复，未进入验证流程。\n"
+
+                    # 显示替代证明信息
+                    elif status == "alternative_proof":
+                        vs = result.get("verification_summary", {})
+                        output += f"\n该公式验证通过，但与已入库定理高度相似，已附加为替代证明。\n"
+                        if vs.get("action"):
+                            output += f"动作: {vs['action']}\n"
+
+                    # 显示依赖缺口
+                    elif status in ("dependency_gap", "waiting_dependencies"):
+                        gap = result.get("dependency_gap", {})
+                        if isinstance(gap, str):
+                            import json as _json
+                            try:
+                                gap = _json.loads(gap)
+                            except:
+                                gap = {}
+                        missing = gap.get("missing_dependencies", [])
+                        if missing:
+                            output += f"\n缺失依赖 ({len(missing)} 项):\n"
+                            for i, dep in enumerate(missing, 1):
+                                output += f"  {i}. {dep}\n"
+                        guidance = gap.get("guidance", "")
+                        if guidance:
+                            output += f"\n指导建议: {guidance}\n"
+
+                        # 显示互锁信息
+                        vs = result.get("verification_summary", {})
+                        if vs.get("is_interlocked"):
+                            il_type = vs.get("interlock_type", "")
+                            il_group = vs.get("interlock_group", [])
+                            il_ready = vs.get("interlock_batch_ready", False)
+                            type_label = "强互锁（直接互引）" if il_type == "strong" else "弱互锁（间接成环）"
+                            output += f"\n🔒 互锁状态: {type_label}\n"
+                            output += f"  互锁组: {', '.join(il_group[:5])}\n"
+                            if il_ready:
+                                output += f"  批量验证就绪: 是（主库AI将自动批量验证）\n"
+                            else:
+                                output += f"  批量验证就绪: 否（需先验证外部依赖）\n"
+
+                    # 显示主库消息
+                    message = result.get("message", "")
+                    if message:
+                        output += f"\n主库消息: {message[:300]}\n"
+
+                    elif status == "promoted":
+                        vs = result.get("verification_summary", {})
+                        mid = vs.get("master_id", "")
+                        if mid:
+                            output += f"\n✓ 公式已通过验证，成为绝对真理。\n  master_id: {mid}\n"
+                        else:
+                            output += "\n公式已通过验证，成为绝对真理。\n"
+
+                    return output
+                else:
+                    # 不带 submission_id 时，列出所有提交的状态摘要
+                    result = client._get("/v1/master/pending", timeout=10)
+                    if result is None:
+                        return "无法获取主库状态"
+
+                    pending_list = result.get("pending", [])
+                    if not pending_list:
+                        return "主库待验证队列为空"
+
+                    output = f"主库提交记录 ({len(pending_list)} 条):\n\n"
+                    for item in pending_list:
+                        sid = item.get("submission_id", "")
+                        name = item.get("formula_name", "?")[:30]
+                        st = item.get("status", "?")
+                        status_emoji = {
+                            "pending": "⏳",
+                            "promoted": "✓",
+                            "rejected": "✗",
+                            "dependency_gap": "⚠",
+                            "waiting_dependencies": "⏸",
+                            "duplicate": "⊘",
+                        }.get(st, "?")
+                        output += f"  {status_emoji} {sid}  {name:30s}  {st}\n"
+
+                    # 主库统计
+                    master_status = client.get_master_status()
+                    if master_status:
+                        ms = master_status.get("master_db", {})
+                        output += f"\n主库统计: 已验证={ms.get('master_formulas_count',0)} 待验证={ms.get('pending_count',0)} 存疑={ms.get('suspended_count',0)}\n"
+                        output += f"调度器: {'运行中' if master_status.get('scheduler_running') else '停止'}\n"
+
+                    return output
+            except Exception as e:
+                return f"查询主库状态失败: {e}"
+
+        elif name == "withdraw_submission":
+            # 撤回已提交的候选公式
+            try:
+                from master_client import get_master_client
+                client = get_master_client()
+                if not client.is_available:
+                    return "主库AI不可用，无法撤回"
+
+                submission_id = arguments.get("submission_id", "")
+                if not submission_id:
+                    return "错误: 必须提供 submission_id"
+
+                result = client.withdraw_submission(submission_id)
+                if result is None:
+                    return f"撤回失败: 无法连接主库AI"
+
+                status = result.get("status", "")
+                if status == "withdrawn":
+                    formula_name = result.get("formula_name", "")
+                    prev_status = result.get("previous_status", "")
+                    return (
+                        f"✓ 撤回成功\n"
+                        f"  公式: {formula_name}\n"
+                        f"  提交ID: {submission_id}\n"
+                        f"  原状态: {prev_status}\n"
+                        f"  \n"
+                        f"  该提交已从主库pending队列中移除。"
+                    )
+                else:
+                    message = result.get("message", "未知原因")
+                    return (
+                        f"✗ 撤回失败\n"
+                        f"  提交ID: {submission_id}\n"
+                        f"  原因: {message}"
+                    )
+            except Exception as e:
+                return f"撤回失败: {e}"
+
+        elif name == "sync_master_truth":
+            # 从主库同步真理层
+            try:
+                from master_client import get_master_client
+                client = get_master_client()
+                if not client.is_available:
+                    return "主库AI不可用，无法同步真理层"
+
+                force = arguments.get("force", False)
+                formulas = client.fetch_truth(knowledge_base=vector_kb, force=force)
+
+                if formulas:
+                    lines = [f"✓ 真理层同步完成",
+                             f"  已验证绝对真理: {len(formulas)} 个",
+                             f"  公式列表（带永久编号）:"]
+                    for f in formulas[:15]:
+                        num = f.get("permanent_number", 0)
+                        name = f.get("formula_name", "?")
+                        lines.append(f"    #{num}  {name}")
+                    if len(formulas) > 15:
+                        lines.append(f"    ... 共 {len(formulas)} 个")
+                    lines.append("")
+                    lines.append("  这些已验证公式已存入本地 master_truth collection，")
+                    lines.append("  可以在推导中作为合法起点引用（用永久编号#N引用）。")
+                    lines.append("  主库只接受绝对真理——不依赖任何未验证外部假设。")
+                    return "\n".join(lines)
+                else:
+                    return "主库真理层为空（尚无已验证公式），或同步失败"
+            except Exception as e:
+                return f"同步真理层失败: {e}"
+
+        else:
+            return f"未知工具: {name}"
+    except Exception as e:
+        logger.error(f"[TOOL] 执行 {name} 失败: {e}")
+        return f"工具执行错误: {e}"
+
+
+# OpenAPI Spec（供 Open WebUI 导入为工具服务器）
+OPENAPI_SPEC = {
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Geometry AI Server - 工具集",
+        "description": "几何论 AI 可用的文件读写、个人数据库、对话记录查询工具",
+        "version": "1.0.0"
+    },
+    "servers": [{"url": "http://localhost:5000"}],
+    "paths": {
+        "/v1/files/{filename}": {
+            "put": {
+                "summary": "写入或修改文章",
+                "description": "将内容写入 articles 目录中的指定文件，自动更新向量索引",
+                "operationId": "write_article",
+                "parameters": [
+                    {"name": "filename", "in": "path", "description": "文件名", "required": True, "schema": {"type": "string"}}
+                ],
+                "requestBody": {
+                    "required": True,
+                    "content": {"application/json": {"schema": {"type": "object", "properties": {"content": {"type": "string", "description": "文件内容（Markdown格式）"}}, "required": ["content"]}}}
+                },
+                "responses": {"200": {"description": "写入成功"}}
+            }
+        },
+        "/v1/personal": {
+            "get": {
+                "summary": "读取个人数据库",
+                "description": "返回 AI 的私人数据（性格、感情、想法、记忆等）",
+                "operationId": "personal_read",
+                "responses": {"200": {"description": "个人数据库内容"}}
+            },
+            "put": {
+                "summary": "写入个人数据库",
+                "description": "更新个人数据，支持类别和子字段",
+                "operationId": "personal_write",
+                "requestBody": {
+                    "required": True,
+                    "content": {"application/json": {"schema": {"type": "object", "properties": {
+                        "category": {"type": "string", "description": "类别: personality/emotions/thoughts/memory，支持 子字段 如 memory:conversation_highlights"},
+                        "content": {"type": "string", "description": "内容，可以是纯文本或JSON"}
+                    }, "required": ["category", "content"]}}}
+                },
+                "responses": {"200": {"description": "写入成功"}}
+            }
+        },
+        "/v1/chat/history": {
+            "get": {
+                "summary": "查询 Open WebUI 历史对话列表",
+                "description": "返回最近的对话列表，支持关键词搜索",
+                "operationId": "chat_history",
+                "parameters": [
+                    {"name": "keyword", "in": "query", "description": "搜索关键词（匹配对话标题）", "required": False, "schema": {"type": "string"}},
+                    {"name": "limit", "in": "query", "description": "返回数量，默认5", "required": False, "schema": {"type": "integer", "default": 5}}
+                ],
+                "responses": {"200": {"description": "对话列表"}}
+            }
+        },
+        "/v1/chat/{chat_id}": {
+            "get": {
+                "summary": "读取指定对话的完整内容",
+                "description": "返回指定对话的所有消息（最多80条）",
+                "operationId": "chat_read",
+                "parameters": [
+                    {"name": "chat_id", "in": "path", "description": "对话ID（前几位即可）", "required": True, "schema": {"type": "string"}}
+                ],
+                "responses": {"200": {"description": "对话内容"}}
+            }
+        }
+    }
+}

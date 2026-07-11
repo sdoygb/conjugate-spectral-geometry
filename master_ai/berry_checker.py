@@ -209,14 +209,14 @@ class BerryPhaseChecker:
                 else:
                     step.theta_I = round(missing_val, 2)
         elif len(known) == 1:
-            # 只知道一个角度，假设对称（θ_M=θ_C）
+            # 只知道一个角度，不假设对称，只记录已知角度
             label, val = known[0]
             if label == 'I':
-                step.theta_M = round((90.0 - val) / 2, 2)
-                step.theta_C = step.theta_M
+                step.theta_I = round(val, 2)
             elif label == 'M':
-                step.theta_C = val
-                step.theta_I = round(90.0 - 2 * val, 2)
+                step.theta_M = round(val, 2)
+            elif label == 'C':
+                step.theta_C = round(val, 2)
 
         return step
 
