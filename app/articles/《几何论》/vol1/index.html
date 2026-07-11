@@ -26,6 +26,10 @@
     --hint-border: #4a7c59;
     --placeholder-bg: #f9f9f8;
     --placeholder-border: #dddcd9;
+    --honest-bg: #fef4e8;
+    --honest-border: #d4833a;
+    --lemma-border: #6b4c8a;
+    --lemma-bg: #f4eff8;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
@@ -53,6 +57,7 @@ li { margin: 0.3em 0; }
 #nav a.active { background: var(--accent-light); border-left-color: var(--accent); color: var(--accent); font-weight: 500; }
 #nav .nav-section { font-size: 0.75em; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-secondary); padding: 0.8em 1.2em 0.2em 1.2em; font-weight: 600; }
 #nav .nav-ch { font-size: 0.82em; padding-left: 2.2em !important; }
+#nav .nav-sub { font-size: 0.78em; padding-left: 3.0em !important; color: var(--text-secondary); }
 #main { flex: 1; max-width: 860px; margin: 0 auto; padding: 2.5em 2em 4em 2em; }
 
 .breadcrumb { font-size: 0.85em; color: var(--text-secondary); margin-bottom: 1.5em; }
@@ -62,11 +67,17 @@ li { margin: 0.3em 0; }
 .dep-hint { border-left: 4px solid var(--hint-border); background: var(--hint-bg); padding: 0.8em 1.2em; margin: 1em 0; border-radius: 0 6px 6px 0; font-size: 0.88em; }
 .dep-hint strong { color: var(--hint-border); }
 
-.theorem { border-left: 4px solid var(--theorem-border); background: var(--theorem-bg); padding: 0.8em 1.2em; margin: 1em 0; border-radius: 0 6px 6px 0; }
-.theorem strong { color: var(--theorem-border); }
+.theorem-box { border-left: 4px solid var(--theorem-border); background: var(--theorem-bg); padding: 0.8em 1.2em; margin: 1em 0; border-radius: 0 6px 6px 0; }
+.theorem-box strong { color: var(--theorem-border); }
 
-.definition { border-left: 4px solid var(--def-border); background: var(--def-bg); padding: 0.8em 1.2em; margin: 1em 0; border-radius: 0 6px 6px 0; }
-.definition strong { color: var(--def-border); }
+.definition-box { border-left: 4px solid var(--def-border); background: var(--def-bg); padding: 0.8em 1.2em; margin: 1em 0; border-radius: 0 6px 6px 0; }
+.definition-box strong { color: var(--def-border); }
+
+.lemma-box { border-left: 4px solid var(--lemma-border); background: var(--lemma-bg); padding: 0.8em 1.2em; margin: 1em 0; border-radius: 0 6px 6px 0; }
+.lemma-box strong { color: var(--lemma-border); }
+
+.honest-box { border-left: 4px solid var(--honest-border); background: var(--honest-bg); padding: 0.8em 1.2em; margin: 1em 0; border-radius: 0 6px 6px 0; font-size: 0.88em; }
+.honest-box strong { color: var(--honest-border); }
 
 table { width: 100%; border-collapse: collapse; margin: 1em 0; font-size: 0.92em; }
 th, td { border: 1px solid var(--border); padding: 0.5em 0.8em; text-align: left; }
@@ -75,6 +86,11 @@ tr:nth-child(even) { background: #f8f8f7; }
 
 .proof-box { border: 1px solid var(--border); border-radius: 6px; padding: 1em 1.2em; margin: 1em 0; background: #fcfcfb; font-size: 0.93em; }
 .proof-box .proof-title { font-weight: 600; color: var(--text-secondary); margin-bottom: 0.4em; font-size: 0.9em; }
+
+.nav-hint { border-left: 4px solid var(--accent); background: var(--accent-light); padding: 0.8em 1.2em; margin: 1em 0; border-radius: 0 6px 6px 0; font-size: 0.88em; }
+.nav-hint strong { color: var(--accent); }
+
+.chapter-end { text-align: center; color: var(--text-secondary); font-size: 0.9em; margin-top: 3em; padding-top: 1em; border-top: 1px solid var(--border); }
 
 @media (max-width: 768px) {
     #nav { display: none; }
@@ -94,12 +110,37 @@ tr:nth-child(even) { background: #f8f8f7; }
         <div class="nav-section">卷0 · 导读与总图</div>
         <a href="../vol0/index.html">卷0 导读与总图</a>
         <div class="nav-section" style="margin-top:1em;">卷1 · 公理与本体论</div>
-        <a href="#ch01" class="active">1.1 角度优先于时空</a>
+        <a href="#ch01">1.1 角度优先于时空</a>
+        <a href="#ch0101" class="nav-sub">1.1.1 本体论声明</a>
+        <a href="#ch0102" class="nav-sub">1.1.2 三个角度的定义</a>
+        <a href="#ch0103" class="nav-sub">1.1.3 时空是导出的</a>
         <a href="#ch02" class="nav-ch">1.2 三分切丛结构</a>
-        <a href="#ch03" class="nav-ch">1.3 三公理陈述</a>
+        <a href="#ch0201" class="nav-sub">1.2.1 正式定义</a>
+        <a href="#ch0202" class="nav-sub">1.2.2 三个扇区与后验命名</a>
+        <a href="#ch0203" class="nav-sub">1.2.3 S₃ 对称性</a>
+        <a href="#ch0204" class="nav-sub">1.2.4 三对偶几何空间</a>
+        <a href="#ch0205" class="nav-sub">1.2.5 扇区势阱与隔墙</a>
+        <a href="#ch0206" class="nav-sub">1.2.6 约束流形上的坐标</a>
+        <a href="#ch03" class="nav-ch">1.3 三公理总览</a>
         <a href="#ch04" class="nav-ch">1.4 公理1：圆拓扑公理</a>
+        <a href="#ch0401" class="nav-sub">1.4.1 公理陈述</a>
+        <a href="#ch0402" class="nav-sub">1.4.2 分支拓扑结构</a>
+        <a href="#ch0403" class="nav-sub">1.4.3 公理1的意义</a>
         <a href="#ch05" class="nav-ch">1.5 公理2：边界极限公理</a>
+        <a href="#ch0501" class="nav-sub">1.5.1 公理陈述</a>
+        <a href="#ch0502" class="nav-sub">1.5.2 值域定理</a>
+        <a href="#ch0503" class="nav-sub">1.5.3 存在性定理</a>
+        <a href="#ch0504" class="nav-sub">1.5.4 严格单调性</a>
         <a href="#ch06" class="nav-ch">1.6 公理3：全息屏编码条件</a>
+        <a href="#ch0601" class="nav-sub">1.6.1 公理陈述</a>
+        <a href="#ch0602" class="nav-sub">1.6.2 投影结构</a>
+        <a href="#ch0603" class="nav-sub">1.6.3 六项作用量</a>
+        <a href="#ch0604" class="nav-sub">1.6.4 极值求解与 S_min=24</a>
+        <a href="#ch0605" class="nav-sub">1.6.5 物理识别点</a>
+        <a href="#ch0606" class="nav-sub">1.6.6 Hessian 结构</a>
+        <a href="#ch0607" class="nav-sub">1.6.7 跨扇区耦合</a>
+        <a href="#ch0608" class="nav-sub">1.6.8 双模零误差</a>
+        <a href="#ch0609" class="nav-sub">1.6.9 公理3的桥梁作用</a>
         <div class="nav-section" style="margin-top:1em;">卷2 · 数学结构</div>
         <a href="../vol2/index.html">卷2 数学结构</a>
         <div class="nav-section" style="margin-top:1em;">卷3 · 谱几何</div>
@@ -126,23 +167,23 @@ tr:nth-child(even) { background: #f8f8f7; }
         <div class="dep-hint">
             <strong>前置依赖：</strong>卷0（导读与总图）提供全理论地图和符号表。本卷不依赖其他卷。
         </div>
-        <div class="dep-hint" style="border-left-color: var(--accent);">
+        <div class="nav-hint">
             <strong>在递进链中的位置：</strong>公理 ← <strong>你在这里</strong> → 数学结构 → 谱几何 → 三场 → 应用
         </div>
-        <div class="dep-hint" style="border-left-color: var(--def-border);">
-            <strong>本卷概述：</strong>卷1建立几何论的全部公理基础和本体论承诺。三条公理在此精确陈述。后续所有数学结构、谱几何数值、场动力学和应用都建立在本卷基础之上。
+        <div class="nav-hint" style="border-left-color: var(--def-border);">
+            <strong>本卷概述：</strong>卷1建立几何论的全部公理基础和本体论承诺。三条公理在此精确陈述，并展开为完整的数理结构。后续所有推导都建立在本卷基础之上。
         </div>
 
-        <!-- ================ 1.1 ================ -->
+        <!-- ===================== 1.1 ===================== -->
         <h2 id="ch01">1.1 角度优先于时空</h2>
 
-        <p>几何论最核心的本体论主张只有一句话：<strong>角度优先于时空。</strong></p>
+        <h3 id="ch0101">1.1.1 本体论声明：角度优先于时空</h3>
 
-        <p>这不是一个方法论声明（"用角度参数化会比较方便"），而是一个存在论声明：角度是基本的，时空是导出的。</p>
+        <p>几何论最核心的本体论主张只有一句话：<strong>角度优先于时空。</strong>这不是一个方法论声明（"用角度参数化会比较方便"），而是一个存在论声明：角度是基本的，时空是导出的。</p>
 
-        <p>具体来说，几何论认为物理实在的原始描述参数是三个角度：</p>
+        <p>具体来说，几何论认为物理实在的原始描述参数是三个角度 $(\theta_M, \theta_C, \theta_I)$，它们在一个二维约束空间中演化。时空距离、时间间隔、质量、能量——所有我们通常视为"物理量"的概念——都是这些角度的导出函数。没有角度，就没有时空。</p>
 
-        <div class="theorem">
+        <div class="theorem-box">
             <strong>本体承诺 1.1（角度本体论）</strong><br>
             物理实在的原始几何参数是三个角度 $(\theta_M, \theta_C, \theta_I)$，它们在一个二维约束空间中演化。时空距离、时间间隔、质量、能量——所有我们通常视为"物理量"的概念——都是这些角度的导出函数。没有角度，就没有时空。
         </div>
@@ -160,19 +201,43 @@ tr:nth-child(even) { background: #f8f8f7; }
 
         <p><strong>为什么要用角度？</strong>角度是比长度更基本的几何量——它们是无量纲的，不依赖单位制，不依赖测量尺度的选择。一个角度就是两条射线之间的比值关系，它本身就是纯数。而长度需要一把尺子，时间需要一个钟——这些依赖外部参考系的工具。</p>
 
-        <p>在几何论中，三个角度的定义如下：</p>
+        <h3 id="ch0102">1.1.2 三个角度的定义</h3>
 
-        <ul>
-            <li><strong>$\theta_M$（物质角）</strong>：三分切丛中 $\mathcal{M}$ 扇区间全息屏的投影角。它的正弦 $\sin\theta_M$ 量化了物质扇区向全息屏投影的有效强度。锁定值：$\theta_M = 57.93^\circ$。</li>
-            <li><strong>$\theta_C$（因果角）</strong>：$\mathcal{C}$ 扇区投影角。决定因果结构的零锥几何。锁定值：$\theta_C = 26.16^\circ$。</li>
-            <li><strong>$\theta_I$（信息角）</strong>：$\mathcal{I}$ 扇区投影角。承载相位/信息通道。锁定值：$\theta_I = 5.91^\circ$。</li>
-        </ul>
+        <p>在几何论中，三个角度定义在三分切丛的纤维上（详见1.2节）：</p>
 
-        <p>这三个角度不是自由参数。公理3给出约束：</p>
-        <p>$$ \theta_M + \theta_C + \theta_I = 90^\circ $$</p>
-        <p>谱刚性定理进一步将每个角度唯一锁定到上述数值（详见卷3）。</p>
+        <div class="definition-box">
+            <strong>定义（三个原始角度）</strong><br>
+            设三分切丛 $TM(a) = \mathcal{M} \oplus \mathcal{C} \oplus \mathcal{I}$，每个扇区 $\mathbb{R}^3$ 纤维向二维全息屏 $\Sigma$ 投影。投影强度由三个角度量化：
+            <ul>
+                <li><strong>$\theta_M$（物质角）</strong>：$\mathcal{M}$ 扇区投影强度角。锁定值 $\theta_M = 57.93^\circ$。</li>
+                <li><strong>$\theta_C$（因果角）</strong>：$\mathcal{C}$ 扇区投影强度角。锁定值 $\theta_C = 26.16^\circ$。</li>
+                <li><strong>$\theta_I$（信息角）</strong>：$\mathcal{I}$ 扇区投影强度角。锁定值 $\theta_I = 5.91^\circ$。</li>
+            </ul>
+            三者满足约束 $\theta_M + \theta_C + \theta_I = 90^\circ$（公理3）。<br>
+            （来源：0.1 §3.1 物理识别点定义；0.0.6 §3 全息屏编码条件）
+        </div>
 
-        <p><strong>"时空是导出的"是什么意思？</strong> 在几何论中，时空不是公理层面的原始结构。四维时空流形——以及定义于其上的度规、联络、曲率——是从三分切丛的角度构型空间中涌现的有效描述。卷4（三场动力学）将展示信息场和因果场如何在角度演化过程中自洽地生成一个有效的四维时空背景。在此之前，读者可将时空理解为"角度结构的投影"，而非相反的"角度生活在时空里"。</p>
+        <p>这三个角度的数值不是自由的——它们由谱刚性定理唯一锁定（卷3）。物质角 $\theta_M = 57.93^\circ$ 由质量公式 $m_e = K\sin^3\theta_M = 510.99895$ keV 确定；因果角 $\theta_C = 26.16^\circ$ 与信息角 $\theta_I = 5.91^\circ$ 由 $S_e = 137.035999084$ 和角度和约束联合确定。</p>
+
+        <p>锁定过程如下（来源：0.1 §3.1）：</p>
+
+        <div class="proof-box">
+            <div class="proof-title">物理识别点联立系统</div>
+            <p>联立以下三个方程求解：</p>
+            <ol>
+                <li>$\theta_M + \theta_C + \theta_I = 90^\circ$（公理3完备性）</li>
+                <li>$S(\theta_M, \theta_C, \theta_I) = S_e = 137.035999084$（精细结构识别）</li>
+                <li>$K\sin^3\theta_M = m_e = 510.99895$ keV（电子质量识别）</li>
+            </ol>
+            <p>数值解（裸基准点，来源0.1 §3.1 定义3.1）：</p>
+            <p>$$\theta_1^0 = 57.9300000000^\circ,\quad \theta_2^0 = 26.1593112467^\circ,\quad \theta_3^0 = 5.9106887533^\circ$$</p>
+            <p>验证：$57.93 + 26.1593112467 + 5.9106887533 = 90.0000000000^\circ$</p>
+            <p>六项作用量计算值：$S_0 = 137.0000000009$，与 $S_e$ 的微小差由跨扇区耦合修正补偿。</p>
+        </div>
+
+        <h3 id="ch0103">1.1.3 "时空是导出的"是什么意思</h3>
+
+        <p>在几何论中，时空不是公理层面的原始结构。四维时空流形——以及定义于其上的度规、联络、曲率——是从三分切丛的角度构型空间中涌现的有效描述。卷4（三场动力学）展示信息场和因果场如何在角度演化过程中自洽地生成一个有效的四维时空背景。在此之前，读者可将时空理解为"角度结构的投影"，而非相反的"角度生活在时空里"。</p>
 
         <p>这一本体论立场决定了整本书的写法：</p>
         <ol>
@@ -182,19 +247,24 @@ tr:nth-child(even) { background: #f8f8f7; }
             <li>最后从角度输出中识别出人们称之为"物理量"的那些数字（卷6-7）。</li>
         </ol>
 
-        <!-- ================ 1.2 ================ -->
+        <!-- ===================== 1.2 ===================== -->
         <h2 id="ch02">1.2 三分切丛结构</h2>
+
+        <h3 id="ch0201">1.2.1 三分切丛的正式定义</h3>
 
         <p>几何论的第二根支柱是<strong>三分切丛</strong>（Triple Split Tangent Bundle）。它是承载三个角度的几何舞台。</p>
 
-        <div class="definition">
+        <div class="definition-box">
             <strong>定义 1.1（三分切丛）</strong><br>
             设 $M(a) = S^3(a) \times S^3(a/\sqrt{\Lambda}) \times S^3(a/\sqrt{\Lambda k_0})$ 为约束乘积球面（其数学结构和谱刚性见卷2）。在 $M(a)$ 上，切丛存在自然的直和分解：
             $$ TM(a) = \mathcal{M} \oplus \mathcal{C} \oplus \mathcal{I} $$
             其中 $\mathcal{M}$、$\mathcal{C}$、$\mathcal{I}$ 分别为三个 $S^3$ 因子切丛的拉回，每个纤维为 $\mathbb{R}^3$。该分解称为<strong>三分切丛</strong>。（来源：0.0.6 §2）
         </div>
 
-        <p><strong>三个扇区的命名</strong>（后验约定，见附录A）：</p>
+        <p>三分切丛不是假设出来的——它是由 $S_3$ 谱展开（0.0.0）和约束乘积球面结构（0.0.5）共同导出的必然几何结构。卷2将展示这一推导的完整数学过程。</p>
+
+        <h3 id="ch0202">1.2.2 三个扇区与后验命名</h3>
+
         <table>
             <tr><th>扇区</th><th>全称</th><th>后验识别</th><th>几何特征</th></tr>
             <tr><td>$\mathcal{M}$</td><td>物质扇区</td><td>电磁相互作用（承载有质量激发）</td><td>软模激发能 $\propto \sin^3\theta_M$</td></tr>
@@ -202,19 +272,94 @@ tr:nth-child(even) { background: #f8f8f7; }
             <tr><td>$\mathcal{I}$</td><td>信息扇区</td><td>弱相互作用/相位通道</td><td>相位模，信息编码</td></tr>
         </table>
 
-        <p><strong>重要说明</strong>：这三个名字（物质、因果、信息）属于<strong>后验命名</strong>——几何论内部不需要这些名字。理论只需要知道存在三个标为 $\mathcal{M},\mathcal{C},\mathcal{I}$ 的 $\mathbb{R}^3$ 纤维，它们在数学上完全等价（$S_3$ 置换对称性），任何标记置换都给出切丛的自同构。只有在与实验对照时，才需要将"$\mathcal{M}$ 扇区的软模激发"识别为"电子"。详见附录A关于命名约定的完整讨论。</p>
+        <div class="honest-box">
+            <strong>诚实性标注：</strong>这三个名字（物质、因果、信息）属于<strong>后验命名</strong>——几何论内部不需要这些名字。理论只需要知道存在三个标为 $\mathcal{M},\mathcal{C},\mathcal{I}$ 的 $\mathbb{R}^3$ 纤维，它们在数学上完全等价（$S_3$ 置换对称性），任何标记置换都给出切丛的自同构。只有在与实验对照时，才需要将"$\mathcal{M}$ 扇区的软模激发"识别为"电子"。
+        </div>
 
         <p><strong>三分切丛的内蕴特征</strong>：</p>
         <ol>
-            <li><strong>$S_3$ 对称性</strong>：三个扇区在数学上完全等价——$\mathcal{M}\oplus\mathcal{C}\oplus\mathcal{I}$ 的直和分解具有 $S_3$ 置换对称性。这是从 $S_3$ 群论根源（0.0.0）继承而来的对称性。</li>
+            <li><strong>$S_3$ 对称性</strong>：三个扇区在数学上完全等价——$\mathcal{M}\oplus\mathcal{C}\oplus\mathcal{I}$ 的直和分解具有 $S_3$ 置换对称性（见1.2.3）。</li>
             <li><strong>全息屏投影</strong>：每个 $\mathbb{R}^3$ 纤维都向一个二维定向子空间 $\Sigma$（全息屏）投影。投影的强度由三个角度 $\theta_M,\theta_C,\theta_I$ 量化。</li>
             <li><strong>角度约束</strong>：三个投影强度角之和固定为 $90^\circ$（公理3），由此导出六项作用量。</li>
         </ol>
 
-        <p>三分切丛不是假设出来的——它是由 $S_3$ 谱展开（0.0.0）和约束乘积球面结构（0.0.5）共同导出的必然几何结构。卷2将展示这一推导的完整数学过程。</p>
+        <h3 id="ch0203">1.2.3 S₃ 对称性与三对偶几何空间</h3>
 
-        <!-- ================ 1.3 ================ -->
-        <h2 id="ch03">1.3 三公理陈述</h2>
+        <p>设六项作用量 $S(\theta_M, \theta_C, \theta_I)$ 和完备性条件 $\theta_M+\theta_C+\theta_I=90^\circ$。考虑指标集 $\{M,C,I\}$ 上的置换群 $S_3$。对任意 $\sigma \in S_3$，六项公式在指标置换下仅发生项的重新排列，其代数和不变；完备性条件对指标置换同样不变。（来源：0.1.1 §1.1）</p>
+
+        <div class="theorem-box">
+            <strong>命题 1.1（S₃ 对称性）</strong><br>
+            联立系统 $(S, \theta_M+\theta_C+\theta_I=90^\circ)$ 在 $S_3$ 作用下不变。
+        </div>
+
+        <div class="proof-box">
+            <div class="proof-title">证明（0.1.1 §1.1）</div>
+            <p>对任意置换 $\sigma \in S_3$，六项公式 $S = \sum_i 1/\sin^2\theta_i + \sum_{i<j} 1/(\sin\theta_i\sin\theta_j)$ 中的六项仅重新排列顺序，代数和不变。完备性条件对指标置换亦不变。故整个联立系统具有 $S_3$ 对称性。$\square$</p>
+        </div>
+
+        <p><strong>推论 1.2</strong>：若 $(a,b,c)$ 是联立系统的解，则 $(b,c,a)$ 与 $(c,a,b)$ 亦为解，且三者的 $S$ 值相等。</p>
+
+        <h3 id="ch0204">1.2.4 三对偶几何空间（0.1.1 §1.2）</h3>
+
+        <p>以电子质量定标 $\theta_M = 57.93^\circ$，代入完备性条件与 $S=137$，联立求解得唯一三元组 $(\theta_M, \theta_C, \theta_I) = (57.93^\circ, 26.16^\circ, 5.91^\circ)$。对该三元组施加 $S_3$ 轮换，得到三个角度构型（来源：0.1.1 §1.2）：</p>
+
+        <table>
+            <tr><th>构型</th><th>$\theta_M$</th><th>$\theta_C$</th><th>$\theta_I$</th><th>命名</th></tr>
+            <tr><td>A（恒等）</td><td>$57.93^\circ$</td><td>$26.16^\circ$</td><td>$5.91^\circ$</td><td>物质界</td></tr>
+            <tr><td>B（轮换一次）</td><td>$26.16^\circ$</td><td>$5.91^\circ$</td><td>$57.93^\circ$</td><td>因果界</td></tr>
+            <tr><td>C（轮换两次）</td><td>$5.91^\circ$</td><td>$57.93^\circ$</td><td>$26.16^\circ$</td><td>信息界</td></tr>
+        </table>
+
+        <p>三构型的 $S$ 值在机器精度内相等（137.0000000009）。</p>
+
+        <p>此外还存在 <strong>镜像构型（解B）</strong>：$(\theta_M,\theta_C,\theta_I) = (57.93^\circ, 5.91^\circ, 26.16^\circ)$，由 $S$ 对 $(\theta_C,\theta_I)$ 的交换对称性在几何上必然存在，被识别为反粒子态/电荷共轭变换（0.1.1 §5.2，属于映射层假设）。</p>
+
+        <h3 id="ch0205">1.2.5 扇区势阱与隔墙结构（0.1.1 §2-3）</h3>
+
+        <p>将 Hessian 曲率解释为势阱边界，角度空间中的活动范围由 Hessian 特征值决定（来源：0.1.1 §2.1）：</p>
+
+        <div class="definition-box">
+            <strong>扇区势阱尺度</strong><br>
+            $$L_M = \frac{1}{\sqrt{H_{MM}}} \approx 0.179\ \text{rad} \approx 10.25^\circ,$$
+            $$L_C = \frac{1}{\sqrt{H_{CC}}} \approx 0.0521\ \text{rad} \approx 2.98^\circ,$$
+            $$L_I = \frac{1}{\sqrt{H_{II}}} \approx 0.00411\ \text{rad} \approx 0.235^\circ.$$
+            势阱体积：$V_{\text{sector}} = L_M \cdot L_C \cdot L_I \approx 3.82 \times 10^{-5}\ \text{rad}^3$。
+        </div>
+
+        <p>边界条件的三重分类（0.1.1 §2.2）：</p>
+        <ul>
+            <li><strong>M（物质场）</strong>：开放边界，物质场可自由演化；</li>
+            <li><strong>C（因果场）</strong>：硬壁边界（$\theta_C \to 0$ 时 $V \to \infty$），因果场被束缚，形成离散能级；</li>
+            <li><strong>I（信息场）</strong>：隧穿边界（有限势垒），信息场可泄漏到邻近扇区。</li>
+        </ul>
+
+        <p><strong>隔墙厚度</strong>定义为 Hessian 交叉项的倒数平方根：$\delta_{XY} = 1/\sqrt{H_{XY}}$（来源：0.1.1 §3.1）。计算结果：</p>
+
+        <table>
+            <tr><th>隔墙</th><th>$H_{XY}$ (rad$^{-2}$)</th><th>$\delta_{XY}$ (rad)</th><th>$\delta_{XY}$ (°)</th></tr>
+            <tr><td>M–C</td><td>3.4145</td><td>0.541</td><td>31.0°</td></tr>
+            <tr><td>M–I</td><td>69.3547</td><td>0.120</td><td>6.88°</td></tr>
+            <tr><td>C–I</td><td>433.1578</td><td>0.0480</td><td>2.75°</td></tr>
+        </table>
+
+        <p>耦合排序：M–C 最弱（隔墙最厚 31.0°），M–I 中等（6.88°），C–I 最强（隔墙最薄 2.75°）。</p>
+
+        <h3 id="ch0206">1.2.6 约束流形上的局部坐标 $(\xi, \eta)$（0.1 §3.3）</h3>
+
+        <p>在约束流形 $\Sigma = \{(\theta_1,\theta_2,\theta_3) \in \mathbb{R}^{3+} \mid \theta_1+\theta_2+\theta_3=90^\circ\}$ 上，选取以裸基准点为中心的局部坐标：</p>
+
+        <div class="definition-box">
+            <strong>定义（$(\xi,\eta)$ 坐标）</strong><br>
+            $$\xi = (\theta_3 - \theta_2) - (\theta_3^0 - \theta_2^0), \quad \eta = (\theta_2 - \theta_1) - (\theta_2^0 - \theta_1^0).$$
+            对应的微分算子：
+            $$\frac{\partial}{\partial\xi} = \frac{\partial}{\partial\theta_3} - \frac{\partial}{\partial\theta_2}, \quad \frac{\partial}{\partial\eta} = \frac{\partial}{\partial\theta_2} - \frac{\partial}{\partial\theta_1}.$$
+            （来源：0.1 §3.3）
+        </div>
+
+        <p>该坐标选取使切方向分别对应 $\theta_3-\theta_2$ 差分方向与 $\theta_2-\theta_1$ 差分方向。"规范性的来源"：基础框架定义 4.1 将 $D_\theta$ 严格定义为二维辛流形，配备标准辛形式 $\omega_\theta = d\theta_1 \wedge d\theta_2$，$(\xi,\eta)$ 坐标可由 Darboux 定理全局标准化（0.1 §3.3）。</p>
+
+        <!-- ===================== 1.3 ===================== -->
+        <h2 id="ch03">1.3 三公理总览</h2>
 
         <p>几何论有且仅有<strong>三条公理</strong>。本卷后续三章分别详述每条公理，此处先以表格总览其核心内容：</p>
 
@@ -253,7 +398,7 @@ tr:nth-child(even) { background: #f8f8f7; }
             <p style="text-align:center;">
                 公理1+2 $\rightarrow$ 公理3 $\rightarrow$ 六项作用量 $S_{\min}=24$ $(30^\circ,30^\circ,30^\circ)$
                 <br>$\downarrow$
-                <br>Hessian 谱间隙 $\Lambda_H\approx150$（卷2 §2.3–2.4）
+                <br>Hessian 谱间隙 $\Lambda_H\approx150$（§1.6.6）
                 <br>$\downarrow$
                 <br>桥接函数 $S(a)=12(a^2/\ell_0^2+\ell_0^2/a^2)$（卷2 §2.7）
                 <br>$\downarrow$
@@ -261,225 +406,5 @@ tr:nth-child(even) { background: #f8f8f7; }
                 <br>$\downarrow$
                 <br>$S_e = 137.035999084$、$m_e = K\sin^3\theta_M = 510.99895$ keV（卷3 §3.5–3.6）
             </p>
-            <p style="font-size:0.85em; color: var(--text-secondary); margin-top:0.5em;">详细推导见卷3，此处仅展示依赖关系。</p>
+            <p style="font-size:0.85em; color: var(--text-secondary); margin-top:0.5em;">详细推导见卷2-3，此处仅展示依赖关系。</p>
         </div>
-
-        <!-- ================ 1.4 ================ -->
-        <h2 id="ch04">1.4 公理1：圆拓扑公理</h2>
-
-        <div class="theorem">
-            <strong>公理1（圆拓扑公理）</strong><br>
-            激发态参数空间 $D$ 由一维紧致连通流形 $S^1$（圆）去掉两个不同点 $p_0$ 与 $p_*$ 得到：
-            $$ D = S^1 \setminus \{p_0, p_*\}, \qquad p_0 \neq p_* $$
-            去掉的两点分别称为<strong>真空点</strong>（$p_0$）与<strong>退化点</strong>（$p_*$）。由此，$D$ 由两个连通分支组成：
-            $$ D_+ \cong (0,1), \qquad D_- \cong (0,1) $$
-            每个分支同胚于开区间。参数 $x \in D_\pm$ 标记激发态。（来源：0.0.3 §2.1）
-        </div>
-
-        <p><strong>直观解释</strong>：为什么是 $S^1$ 去掉两个点？因为一个激发态参数空间最基本的拓扑结构就应该是这样——它有一个"基态"（真空点 $p_0$）和一个"极端"（退化点 $p_*$），到达任何一个都需要无穷大的参数值。两个点把圆切成两个开区间，对称地覆盖了两条通向基态或退化的路径。</p>
-
-        <div class="definition">
-            <strong>引理 2.1（分支的拓扑结构）</strong><br>
-            设 $S^1$ 为标准单位圆 $\{e^{i\phi} \mid \phi \in [0,2\pi)\}$。去掉两点 $p_0=e^{i\phi_0}$ 与 $p_*=e^{i\phi_*}$（$0\leq \phi_0 < \phi_* < 2\pi$），则 $S^1\setminus\{p_0,p_*\}$ 恰有两个连通分支：
-            $$ D_+ = \{e^{i\phi} \mid \phi_0 < \phi < \phi_*\}, \qquad D_- = \{e^{i\phi} \mid \phi_* < \phi < \phi_0+2\pi\} $$
-            每个分支同胚于开区间 $(0,1)$。（来源：0.0.3 §2.1）
-        </div>
-
-        <div class="proof-box">
-            <div class="proof-title">证明概要</div>
-            <p>考虑标准覆叠映射 $\pi: \mathbb{R} \to S^1$, $\pi(\phi)=e^{i\phi}$。在 $\mathbb{R}$ 上，$\pi^{-1}(S^1\setminus\{p_0,p_*\}) = \mathbb{R}\setminus\{\phi_0+2k\pi, \phi_*+2k\pi \mid k\in\mathbb{Z}\}$。该集合的每个连通分支均为开区间。由于 $\pi$ 在长度为 $2\pi$ 的区间上的限制是同胚，这些开区间在 $S^1$ 中的像恰为 $D_+$ 与 $D_-$。每个开区间同胚于 $(0,1)$。$\square$</p>
-        </div>
-
-        <p><strong>公理1的意义</strong>：它提供了几何量 $S(x)$ 定义的拓扑舞台。没有这一步，$S(x)$ 的"在哪儿定义"是不明确的。公理1的回答是：在一个去掉两点的圆上。这个回答本身来自对"激发态参数空间最简拓扑结构"的分析——不是从更基础的第一原理推导，但被论证为"最小自然的非平凡选择"。</p>
-
-        <div class="dep-hint" style="border-left-color: var(--def-border);">
-            <strong>注：</strong>公理1不预设 $p_0$ 和 $p_*$ 的具体角度位置——它只声明存在两个不同的标记点。它们的具体物理识别（$p_0$ = 对称角度构型 $\theta=(30^\circ,30^\circ,30^\circ)$，$p_*$ = 奇异极限 $\theta\to(90^\circ,0^\circ,0^\circ)$ 及其置换）来自公理3的六项作用量结构，由偏移量关系 $S_{\text{axiom}} = S - 24$ 连接。
-        </div>
-
-        <!-- ================ 1.5 ================ -->
-        <h2 id="ch05">1.5 公理2：边界极限公理</h2>
-
-        <div class="theorem">
-            <strong>公理2（边界极限公理，偏移量修正版）</strong><br>
-            在参数空间 $D$ 上存在公理化几何量 $S_{\text{axiom}}: D \to (0,+\infty)$，满足：
-            <ol>
-                <li><strong>连续性</strong>：$S_{\text{axiom}}$ 在每个连通分支 $D_\pm$ 上连续；</li>
-                <li><strong>真空极限</strong>：当 $x$ 沿任一分支逼近 $p_0$ 时，$\displaystyle\lim_{x \to p_0} S_{\text{axiom}}(x) = 0$；</li>
-                <li><strong>退化极限</strong>：当 $x$ 沿任一分支逼近 $p_*$ 时，$\displaystyle\lim_{x \to p_*} S_{\text{axiom}}(x) = +\infty$。</li>
-            </ol>
-            （来源：0.0.3 §2.2）
-        </div>
-
-        <p><strong>偏移量说明</strong>：$S_{\text{axiom}}$ 是公理层面的抽象几何量。在具体实现中，它通过六项代价函数 $S$（来自公理3）的偏移实现：$S_{\text{axiom}}(\theta) = S(\theta) - 24$。真空点 $p_0$ 对应角度构型 $\theta^* = (30^\circ,30^\circ,30^\circ)$，此时 $S_{\text{axiom}}=0$ 而 $S=24$（$S$ 的全局最小值）。</p>
-
-        <p><strong>公理2不要求什么</strong>：它不要求 $S_{\text{axiom}}$ 在 $D_+$ 和 $D_-$ 上具有相同的函数表达式，也不要求 $S_{\text{axiom}}$ 在整个 $D$ 上连续（$p_0$ 和 $p_*$ 不在 $D$ 中）。因此 $S_{\text{axiom}}$ 可以是两个不同分支上的不同函数，只要各自满足边界条件即可。</p>
-
-        <div class="theorem">
-            <strong>定理 2.1（值域定理）</strong><br>
-            在公理1与公理2下，$S_{\text{axiom}}$ 在每个连通分支 $D_\pm$ 上的值域为 $(0, +\infty)$。（来源：0.0.3 §2.4）
-        </div>
-
-        <div class="proof-box">
-            <div class="proof-title">证明</div>
-            <p>由公理1，$D_\pm\cong(0,1)$ 是连通集。由公理2，$S_{\text{axiom}}$ 在 $D_\pm$ 上连续，故像集是 $\mathbb{R}$ 中的连通子集——即区间。由真空极限，$\inf S_{\text{axiom}}(D_\pm) = 0$；由退化极限，$\sup S_{\text{axiom}}(D_\pm) = +\infty$。由于 $p_0,p_*\notin D$，端点0和$+\infty$均不可达。因此像集为 $(0,+\infty)$。$\square$</p>
-        </div>
-
-        <div class="theorem">
-            <strong>定理 2.2（存在性定理）</strong><br>
-            对任意给定的正数 $S_0 > 0$，在每个分支 $D_+$ 与 $D_-$ 上各至少存在一个激发态 $x_+ \in D_+$ 与 $x_- \in D_-$，使得 $S_{\text{axiom}}(x_+) = S_{\text{axiom}}(x_-) = S_0$。（来源：0.0.3 §2.5）
-        </div>
-
-        <div class="proof-box">
-            <div class="proof-title">证明</div>
-            <p>由定理2.1，$S_{\text{axiom}}(D_\pm) = (0,+\infty)$。对任意 $S_0 > 0$，$S_0 \in (0,+\infty)$，故 $S_{\text{axiom}}^{-1}(S_0) \cap D_\pm \neq \varnothing$。$\square$</p>
-        </div>
-
-        <div class="definition">
-            <strong>定义 2.1'（严格单调性假设）</strong><br>
-            若 $S_{\text{axiom}}$ 在 $D_\pm$ 上严格单调，则对任意 $S_0>0$，定理2.2中的 $x_+$ 和 $x_-$ 唯一确定。严格单调性<strong>不是</strong>从公理1-2推出的定理，而是框架的<strong>构造性假设</strong>。其引入等价于要求 $S_{\text{axiom}}$ 构成 $D_\pm$ 的一个全局坐标函数。（来源：0.0.3 §2.3）
-        </div>
-
-        <div class="theorem">
-            <strong>定理 2.3（严格单调性定理）</strong><br>
-            在公理1、公理2及定义2.1'下，$S_{\text{axiom}}$ 在每个连通分支 $D_\pm$ 上必为严格单调函数。（来源：0.0.3 §2.6）
-        </div>
-
-        <div class="proof-box">
-            <div class="proof-title">证明</div>
-            <p>$D_\pm\cong(0,1)$ 为区间。由定义2.1'，$S_{\text{axiom}}$ 在 $D_\pm$ 上严格单调。结合边界极限，它必为严格单调。$\square$</p>
-        </div>
-
-        <p><strong>推论 2.1（原像唯一性）</strong>：对任意 $S_0>0$，原像集 $S_{\text{axiom}}^{-1}(S_0) \cap D_\pm$ 为单点集。</p>
-
-        <div class="dep-hint" style="border-left-color: var(--def-border);">
-            <strong>诚实性标注：</strong>公理2中的严格单调性是一个<strong>假设</strong>（定义2.1'），不是可推导的定理。它在逻辑上等价于要求 $S_{\text{axiom}}$ 构成分支上的全局坐标函数——这个要求在几何论框架中被接受为合理的构造性输入，但读者应当清楚它的假设地位。
-        </div>
-
-        <!-- ================ 1.6 ================ -->
-        <h2 id="ch06">1.6 公理3：全息屏编码条件</h2>
-
-        <p>公理3是三条公理中最"几何"的一条——它将三分切丛向全息屏的投影具体化为角度约束，并由此导出核心的六项作用量。</p>
-
-        <div class="theorem">
-            <strong>公理3（全息屏编码条件）</strong><br>
-            在三分切丛 $TM(a) = \mathcal{M} \oplus \mathcal{C} \oplus \mathcal{I}$ 的每个纤维 $\mathbb{R}^9$ 中，存在一个二维定向子空间 $\Sigma$（称为<strong>全息屏</strong>）。三个三维扇区 $\mathcal{M},\mathcal{C},\mathcal{I}$ 向 $\Sigma$ 的投影强度角 $\theta_M,\theta_C,\theta_I \in (0^\circ,90^\circ)$ 满足：
-            $$ \theta_M + \theta_C + \theta_I = 90^\circ $$
-            各扇区的投影强度由 $\sin\theta_i$ 量化。（来源：0.0.6 §3）
-        </div>
-
-        <p><strong>为什么是和为 $90^\circ$？</strong> 线性约束 $\sum\theta_i = C$ 与立方体 $[0^\circ,90^\circ]^3$ 的交集是二维可达域。当 $C=90^\circ$ 时，顶点 $(90^\circ,0,0)$ 恰在立方体角上，各扇区遍历 $(0^\circ,90^\circ)$ 全区间而无截断。当 $C<90^\circ$ 或 $C>90^\circ$ 时会出现信息截断或非物理态。因此 $90^\circ$ 是二维全息屏完整编码三个扇区信息的最简线性选择。（来源：0.0.6 §3.1注3.0）</p>
-
-        <h3>1.6.1 指向全息屏的投影结构</h3>
-
-        <p>全息屏 $\Sigma$ 配备标准辛形式 $\omega = d\xi \wedge d\eta$（$\xi,\eta$ 为 $\Sigma$ 上的 Darboux 坐标），使 $(\Sigma,\omega)$ 成为辛流形。在二维情况下，$\omega$ 即面积元（来源：0.0.6 §3.2）。</p>
-
-        <p>三个扇区向 $\Sigma$ 的投影强度角 $\theta_i$ 决定了各扇区在 $\Sigma$ 上的面积元比例：</p>
-        <ul>
-            <li><strong>单扇区投影面积元比例</strong>：$\text{Area}(P_{\mathcal{M}}(U_{\mathcal{M}})) = \sin^2\theta_M \cdot dA$，对 $\mathcal{C},\mathcal{I}$ 同理。</li>
-            <li><strong>双扇区联合投影面积元比例</strong>：$\text{Area}(P_{\mathcal{M}}\times P_{\mathcal{C}}) = \sin\theta_M\sin\theta_C \cdot dA$，对其他配对同理。</li>
-        </ul>
-
-        <p>这些比例关系直接导出六项作用量（下一小节）。</p>
-
-        <h3>1.6.2 六项作用量的导出</h3>
-
-        <p>定义投影强度 $u_i = \sin\theta_i$。三个扇区在全息屏上的相互作用通过三对腰边耦合实现，每对贡献的能量正比于投影强度的倒数乘积。加上各扇区自能项，得到：</p>
-
-        <div class="definition">
-            <strong>定义 4.1（六项作用量）</strong><br>
-            $$ S(\theta_M,\theta_C,\theta_I) = \sum_{i}\frac{1}{\sin^2\theta_i} + \sum_{i<j}\frac{1}{\sin\theta_i\sin\theta_j} $$
-            其中 $i,j\in\{M,C,I\}$。（来源：0.0.6 §4.2）
-        </div>
-
-        <p>六项作用量的几何对应关系（0.0.6 表1）：</p>
-        <table>
-            <tr><th>项</th><th>扇区</th><th>几何含义</th><th>后验识别</th></tr>
-            <tr><td>$1/\sin^2\theta_M$</td><td>$\mathcal{M}$ 自能</td><td>物质扇区的自作用能</td><td>电磁自能</td></tr>
-            <tr><td>$1/\sin^2\theta_C$</td><td>$\mathcal{C}$ 自能</td><td>因果扇区的自作用能</td><td>光子传播</td></tr>
-            <tr><td>$1/\sin^2\theta_I$</td><td>$\mathcal{I}$ 自能</td><td>信息扇区的自作用能</td><td>弱耦合基础</td></tr>
-            <tr><td>$1/(\sin\theta_M\sin\theta_C)$</td><td>$\mathcal{M}$-$\mathcal{C}$ 腰边耦合</td><td>物质-因果扇区间交互</td><td>电磁相互作用</td></tr>
-            <tr><td>$1/(\sin\theta_M\sin\theta_I)$</td><td>$\mathcal{M}$-$\mathcal{I}$ 底边耦合</td><td>物质-信息扇区间交互</td><td>弱相互作用</td></tr>
-            <tr><td>$1/(\sin\theta_C\sin\theta_I)$</td><td>$\mathcal{C}$-$\mathcal{I}$ 腰边耦合</td><td>因果-信息扇区间交互</td><td>强相互作用（预备）</td></tr>
-        </table>
-
-        <h3>1.6.3 极值求解与 $S_{\min}=24$</h3>
-
-        <p>使用拉格朗日乘子法处理约束 $\theta_M+\theta_C+\theta_I=90^\circ$：</p>
-        <p>$$ \mathcal{L} = S + \lambda(\theta_M+\theta_C+\theta_I-90^\circ) $$</p>
-
-        <p>对 $\theta_M$ 求偏导：</p>
-        <p>$$ \frac{\partial\mathcal{L}}{\partial\theta_M} = -\frac{2\cos\theta_M}{\sin^3\theta_M} - \frac{\cos\theta_M}{\sin^2\theta_M\sin\theta_C} - \frac{\cos\theta_M}{\sin^2\theta_M\sin\theta_I} + \lambda = 0 $$</p>
-
-        <p>提取公因子 $-\cos\theta_M/\sin^2\theta_M$：</p>
-        <p>$$ -\frac{\cos\theta_M}{\sin^2\theta_M}\left(\frac{2}{\sin\theta_M}+\frac{1}{\sin\theta_C}+\frac{1}{\sin\theta_I}\right) + \lambda = 0 $$</p>
-
-        <p>对 $\theta_C,\theta_I$ 同理。由对称性，极值点处 $\theta_M=\theta_C=\theta_I$。代入约束：</p>
-        <p>$$ 3\theta = 90^\circ \quad\Rightarrow\quad \theta = 30^\circ $$</p>
-
-        <p>代入六项作用量验证（$\sin30^\circ=1/2$）：</p>
-        <p>$$ S = 3\times\frac{1}{(1/2)^2} + 3\times\frac{1}{(1/2)(1/2)} = 3\times4 + 3\times4 = 12+12 = 24 $$</p>
-
-        <div class="theorem">
-            <strong>定理 4.4（基态作用量）</strong><br>
-            六项作用量 $S(\theta_M,\theta_C,\theta_I)$ 的全局极小值为 $S_{\min}=24$，在 $\theta_M=\theta_C=\theta_I=30^\circ$ 处取得。值域为 $[24,+\infty)$。（来源：0.0.6 §4.3）
-        </div>
-
-        <p>该定理是公理3的核心推导成果。$S_{\min}=24$ 是公理2中偏移量关系的来源——它意味着在真空点 $p_0$（对应 $\theta=30^\circ$ 对称构型），$S_{\text{axiom}}=S-24=0$，与公理2的真空极限一致。</p>
-
-        <h3>1.6.4 从公理3到后续推导的桥梁</h3>
-
-        <p>公理3的六项作用量和 $S_{\min}=24$ 是后续所有推导的起点：</p>
-        <ol>
-            <li><strong>Hessian 谱间隙</strong>：在 $(30^\circ,30^\circ,30^\circ)$ 处对 $S$ 取二阶展开，得到 Hessian 矩阵的本征值比 $\Lambda_H\approx150$（卷2 §2.4）。</li>
-            <li><strong>桥接函数</strong>：谱刚性约束下的最简解析形式 $S(a)=12(a^2/\ell_0^2+\ell_0^2/a^2)$（卷2 §2.7）。</li>
-            <li><strong>$S_e$ 锁定</strong>：将锁定角度代入 $S$，经谱互锁修正后得到 $S_e=137.035999084$（卷3 §3.4）。</li>
-            <li><strong>质量公式</strong>：$m=K\sin^3\theta_M$，代入 $K$ 和 $\theta_M$ 得 $m_e=510.99895$ keV（卷3 §3.6）。</li>
-        </ol>
-
-        <p>这三条公理——加上卷2的谱刚性定理——构成了几何论的全部公理基础。后续内容均为推导。没有任何物理常数作为输入进入这个体系。公理只输出结构，不输出数值；数值由后续的谱几何、自举闭环和谱单位选择导出。</p>
-
-        <div class="dep-hint" style="border-left-color: var(--hint-border);">
-            <strong>延伸阅读：</strong>
-            <ul style="margin:0.3em 0 0 1.2em;">
-                <li>公理1-2的完整形式化证明：0.0.3《激发态参数空间的公理化与存在性定理》</li>
-                <li>公理3的完整形式化证明：0.0.6《三分切丛与全息屏的几何结构》</li>
-                <li>三分切丛的 $S_3$ 根源推导：0.0.0《零与谱》</li>
-                <li>约束乘积球面和谱刚性：0.0.5《乘积球面类的谱刚性》</li>
-                <li>桥接函数和10方空间：0.0.7《十方几何空间》</li>
-            </ul>
-        </div>
-
-    </div><!-- /#main -->
-</div><!-- /#app -->
-
-<script>
-// Active section highlighting
-(function() {
-    const links = document.querySelectorAll('#nav a');
-    const sections = [];
-    links.forEach(link => {
-        const href = link.getAttribute('href');
-        if (href && href.startsWith('#ch')) {
-            const id = href.substring(1);
-            const el = document.getElementById(id);
-            if (el) sections.push({ link, el, id });
-        }
-    });
-
-    function updateActive() {
-        let currentId = sections[0]?.id;
-        sections.forEach(({ link, el, id }) => {
-            const rect = el.getBoundingClientRect();
-            if (rect.top <= 120) currentId = id;
-        });
-        sections.forEach(({ link, id }) => {
-            link.classList.toggle('active', id === currentId);
-        });
-    }
-
-    window.addEventListener('scroll', updateActive);
-    updateActive();
-})();
-</script>
-</body>
-</html>
