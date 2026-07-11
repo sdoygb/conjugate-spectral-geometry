@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>§2.3 公理3：全息屏编码条件 · 卷一 · 几何论</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+<style>
+:root {
+  --bg: #f8f7f4; --text: #1a1a1a; --accent: #2d5a8e; --accent2: #b8860b;
+  --border: #d0c8b8; --card-bg: #ffffff; --sidebar-bg: #f0eee8; --muted: #777;
+  --theorem-border: #2d5a8e; --def-border: #b8860b; --proof-bg: #f9f7f0;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: -apple-system, "PingFang SC", "Noto Sans SC", system-ui, sans-serif;
+  background: var(--bg); color: var(--text); line-height: 1.8;
+  display: flex; min-height: 100vh;
+}
+.sidebar {
+  width: 280px; flex-shrink: 0; background: var(--sidebar-bg);
+  border-right: 1px solid var(--border); padding: 2rem 1.2rem;
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+}
+.sidebar h1 { font-size: 1.2rem; color: var(--accent2); margin-bottom: 0.3rem; }
+.sidebar .subtitle { font-size: 0.8rem; color: var(--muted); margin-bottom: 1.5rem; }
+.sidebar nav a {
+  display: block; padding: 0.25rem 0; color: var(--accent);
+  text-decoration: none; font-size: 0.85rem;
+}
+.sidebar nav a:hover { text-decoration: underline; }
+.sidebar .nav-hint {
+  margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border);
+  font-size: 0.75rem; color: var(--muted);
+}
+.sidebar .nav-hint a { color: var(--accent); text-decoration: none; }
+.content {
+  flex: 1; max-width: 800px; margin: 0 auto; padding: 3rem 2rem;
+}
+h1 { font-size: 1.8rem; color: var(--accent2); margin-bottom: 1rem; }
+h2 { font-size: 1.3rem; color: var(--accent); margin: 2rem 0 1rem; padding-bottom: 0.3rem; border-bottom: 1px solid var(--border); }
+h3 { font-size: 1.1rem; color: var(--text); margin: 1.5rem 0 0.8rem; }
+p { margin: 0.8rem 0; text-align: justify; }
+.axiom-box {
+  background: var(--card-bg); border-left: 4px solid var(--accent2);
+  padding: 1rem 1.5rem; margin: 1.5rem 0; border-radius: 0 6px 6px 0;
+}
+.axiom-box .label { font-weight: bold; color: var(--accent2); font-size: 0.9rem; }
+.theorem-box {
+  background: var(--card-bg); border-left: 4px solid var(--theorem-border);
+  padding: 1rem 1.5rem; margin: 1rem 0; border-radius: 0 6px 6px 0;
+}
+.theorem-box .label { font-weight: bold; color: var(--theorem-border); }
+.proof-box {
+  background: var(--proof-bg); border-left: 4px solid var(--border);
+  padding: 1rem 1.5rem; margin: 1rem 0; border-radius: 0 6px 6px 0;
+  font-size: 0.95rem;
+}
+.proof-box .label { font-weight: bold; color: var(--muted); font-style: italic; }
+.def-box {
+  background: var(--card-bg); border-left: 4px solid var(--def-border);
+  padding: 1rem 1.5rem; margin: 1rem 0; border-radius: 0 6px 6px 0;
+}
+.def-box .label { font-weight: bold; color: var(--def-border); }
+.nav-hint-bar {
+  margin-top: 2rem; padding: 1rem 0; border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; font-size: 0.85rem;
+}
+.nav-hint-bar a { color: var(--accent); text-decoration: none; }
+.nav-hint-bar a:hover { text-decoration: underline; }
+.chapter-end {
+  margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border);
+  text-align: center; color: var(--muted); font-size: 0.85rem;
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <h1>⬡ 几何论</h1>
+  <div class="subtitle">卷一 · 公理与数学结构</div>
+  <nav>
+    <a href="index.html">← 卷一首頁</a>
+    <a href="2.1.html" style="margin-top:0.8rem;">§2.1 公理1：圆拓扑公理</a>
+    <a href="2.2.html">§2.2 公理2：边界极限公理</a>
+    <a href="2.3.html" style="font-weight:bold;">§2.3 公理3：全息屏编码条件</a>
+    <a href="3.1.html" style="margin-top:0.8rem;">§3.1 六项作用量</a>
+    <a href="3.2.html">§3.2 Hessian截面</a>
+  </nav>
+  <div class="nav-hint">
+    <a href="/">← 返回首页</a>
+  </div>
+</div>
+
+<div class="content">
+
+<h1>§2.3　公理3：全息屏编码条件</h1>
+
+<p>公理1和公理2建立了一个抽象的"圆上几何量"框架，但没有涉及其中的具体结构。公理3是几何论的<strong>结构公理</strong>——它规定了系统内部的分层结构：空间被分成三个扇区，它们的信息被"投影"到一张二维全息屏上。</p>
+
+<p>这是几何论区别于其他理论的核心所在：<strong>三维扇区 + 二维全息屏 + 投影强度角</strong>。</p>
+
+<hr style="margin:1.5rem 0;border:none;border-top:1px solid var(--border);">
+
+<h2>三分切丛</h2>
+
+<p>首先需要引入三分切丛的概念。考虑约束乘积球面：</p>
+
+$$M(a) = S^3(a) \times S^3(a/\sqrt{3}) \times S^3(a/\sqrt{6})$$
+
+<p>其中 $S^3(r)$ 是半径为 $r$ 的三维球面，$a$ 是一个整体尺度参数。这是一个九维空间（三个三维球面的乘积）。</p>
+
+<div class="theorem-box">
+  <div class="label">命题2.1（三分切丛）</div>
+  <p>在约束乘积球面 $M(a)$ 上，切丛存在自然的直和分解：</p>
+  $$TM(a) = \mathcal{M} \oplus \mathcal{C} \oplus \mathcal{I}$$
+  <p>其中 $\mathcal{M},\mathcal{C},\mathcal{I}$ 分别为三个 $S^3$ 因子切丛的拉回，每个纤维为 $\mathbb{R}^3$。</p>
+</div>
+
+<div class="proof-box">
+  <div class="label">证明</div>
+  <p>乘积流形的切丛等于各因子切丛的直和。由于 $M(a)$ 是三个 $S^3$ 的乘积，结论直接成立。$\square$</p>
+</div>
+
+<p>三个扇区 $\mathcal{M},\mathcal{C},\mathcal{I}$ 具有完全的 $S_3$ 置换对称性——在数学上它们不可区分，任何标记置换都给出切丛的自同构。这意味着在引入进一步的约束之前，物质、因果和信息在几何层面是同一回事。</p>
+
+<hr style="margin:1.5rem 0;border:none;border-top:1px solid var(--border);">
+
+<h2>公理3的陈述</h2>
+
+<div class="axiom-box">
+  <div class="label">公理3（全息屏编码条件）</div>
+  <p>在三分切丛 $TM(a) = \mathcal{M} \oplus \mathcal{C} \oplus \mathcal{I}$ 的每个纤维 $\mathbb{R}^9$ 中，存在二维定向子空间 $\Sigma$（全息屏），三个三维扇区 $\mathcal{M},\mathcal{C},\mathcal{I}$ 向其投影时，投影强度角 $\theta_M,\theta_C,\theta_I \in (0^\circ,90^\circ)$ 满足：</p>
+  $$\theta_M + \theta_C + \theta_I = 90^\circ$$
+  <p>投影强度角 $\theta_i$ 定义为扇区 $\mathcal{M},\mathcal{C},\mathcal{I}$ 的纤维 $\mathbb{R}^3$ 与全息屏 $\Sigma$ 之间的最小夹角。</p>
+</div>
+
+<hr style="margin:1.5rem 0;border:none;border-top:1px solid var(--border);">
+
+<h2>公理3的几何直觉</h2>
+
+<p>设想一个九维空间，它由三个三维空间直和而成。在这个九维空间中存在一张二维平面 $\Sigma$（全息屏）。三个三维空间分别以不同的"角度"倾斜于这张平面。</p>
+
+<p>每个三维空间的"投影强度"由 $\sin\theta_i$ 度量——当 $\theta_i = 90^\circ$ 时，该扇区垂直于全息屏，投影最强；当 $\theta_i = 0^\circ$ 时，该扇区平行于全息屏，投影为零。</p>
+
+<p>三个角度之和恒为 $90^\circ$，这是一个非常强的约束——它意味着三个扇区的投影强度不是独立的：一个扇区的投影增强必然导致其他扇区的投影减弱。</p>
+
+<hr style="margin:1.5rem 0;border:none;border-top:1px solid var(--border);">
+
+<h2>全息屏的几何结构</h2>
+
+<p>公理3不仅给出了角度约束，还隐含了全息屏 $\Sigma$ 的丰富几何结构。</p>
+
+<div class="theorem-box">
+  <div class="label">定理2.1（全息屏相容三元组）</div>
+  <p>在公理3下，全息屏 $\Sigma$ 配备由 $M(a)$ 乘积度量 $g$ 限制得到的诱导度量 $g_\Sigma$，以及由投影结构给定的辛形式 $\omega$。则存在唯一可积近复结构 $J$ 使得 $(\Sigma, g_\Sigma, J, \omega)$ 构成 Kähler 流形。</p>
+</div>
+
+<div class="proof-box">
+  <div class="label">证明（三步骤）</div>
+  <p><strong>步骤1：度量。</strong> $M(a)$ 配备标准乘积度量 $g = g_a \oplus g_{a/\sqrt{3}} \oplus g_{a/\sqrt{6}}$。全息屏 $\Sigma$ 作为 $M(a)$ 的二维子流形，其诱导度量 $g_\Sigma = g|_{T\Sigma}$ 由正交投影确定。</p>
+  <p><strong>步骤2：近复结构。</strong> 公理3暗示了辛形式 $\omega$ 的存在（由 $(\xi,\eta)$ 坐标给出的标准辛形式 $\omega = d\xi \wedge d\eta$）。在二维辛向量空间上，存在唯一近复结构 $J$ 满足 $\omega(\cdot,\cdot)=g_\Sigma(J\cdot,\cdot)$ 且 $J^2=-I$。在二维中，Nijenhuis 张量 $N_J$ 恒为零，故 $J$ 自动可积。</p>
+  <p><strong>步骤3：Kähler 条件。</strong> 由 $(\omega, g_\Sigma, J)$ 构成的相容三元组自动满足 Kähler 条件。在 $\Sigma \cong S^2$ 上，Kähler 结构在同构意义下唯一。$\square$</p>
+</div>
+
+<p>这意味着全息屏 $\Sigma$ 不仅是承载投影的一张"屏"，它自身就是 Kähler 流形——具有复结构、黎曼度量和辛形式的完整几何对象。实际上，$\Sigma$ 同构于 $\mathbb{C}P^1$（即黎曼球面），这是二维中最丰富的几何结构。</p>
+
+<hr style="margin:1.5rem 0;border:none;border-top:1px solid var(--border);">
+
+<h2>三个角度的几何含义</h2>
+
+<p>三个角度 $\theta_M, \theta_C, \theta_I$ 是公理3的核心输出。它们各自对应一个扇区的"投影姿态"：</p>
+
+<ul>
+  <li><strong>$\theta_M$（物质角）</strong>：$\mathcal{M}$ 扇区——对应标准模型中的物质（费米子）的几何源头。在后续的推导中，$\theta_M$ 的锁定值决定了电子质量。</li>
+  <li><strong>$\theta_C$（因果角）</strong>：$\mathcal{C}$ 扇区——对应因果结构（时间、演化、信息传递）的几何源头。</li>
+  <li><strong>$\theta_I$（信息角）</strong>：$\mathcal{I}$ 扇区——对应信息（熵、观测、量子态）的几何源头。</li>
+</ul>
+
+<p>它们的和恒为 $90^\circ$，加上三个扇区之间的 $S_3$ 对称性，构成了后续所有推导的起点。</p>
+
+<hr style="margin:1.5rem 0;border:none;border-top:1px solid var(--border);">
+
+<h2>三公理的逻辑关系</h2>
+
+<p>三条公理各自承担不同角色：</p>
+
+<table style="width:100%;border-collapse:collapse;margin:1rem 0;">
+  <tr style="background:var(--sidebar-bg);">
+    <th style="padding:0.5rem;border:1px solid var(--border);">公理</th>
+    <th style="padding:0.5rem;border:1px solid var(--border);">角色</th>
+    <th style="padding:0.5rem;border:1px solid var(--border);">回答的问题</th>
+  </tr>
+  <tr>
+    <td style="padding:0.5rem;border:1px solid var(--border);">公理1</td>
+    <td style="padding:0.5rem;border:1px solid var(--border);">拓扑公理</td>
+    <td style="padding:0.5rem;border:1px solid var(--border);">参数空间长什么样？</td>
+  </tr>
+  <tr>
+    <td style="padding:0.5rem;border:1px solid var(--border);">公理2</td>
+    <td style="padding:0.5rem;border:1px solid var(--border);">边界公理</td>
+    <td style="padding:0.5rem;border:1px solid var(--border);">几何量在边界处行为如何？</td>
+  </tr>
+  <tr>
+    <td style="padding:0.5rem;border:1px solid var(--border);">公理3</td>
+    <td style="padding:0.5rem;border:1px solid var(--border);">结构公理</td>
+    <td style="padding:0.5rem;border:1px solid var(--border);">系统内部的分层结构是什么？</td>
+  </tr>
+</table>
+
+<p>三条公理都不是从更基础的原则"推导"出来的——它们就是几何论的起点。整部几何论的所有数学定理和物理预言，都从这三条公理出发。</p>
+
+<div class="nav-hint-bar">
+  <a href="2.2.html">← §2.2 公理2：边界极限公理</a>
+  <a href="3.1.html">§3.1 六项作用量的导出与极值求解 →</a>
+</div>
+
+<div class="chapter-end">
+  ⬡ 几何论 · 卷一 · §2.3
+</div>
+
+</div>
+</body>
+</html>
