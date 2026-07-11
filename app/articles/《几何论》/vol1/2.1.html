@@ -10,76 +10,108 @@
   onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
 <style>
 :root {
-  --bg: #f8f7f4; --text: #1a1a1a; --accent: #2d5a8e; --accent2: #b8860b;
-  --border: #d0c8b8; --card-bg: #ffffff; --sidebar-bg: #f0eee8; --muted: #777;
-  --theorem-border: #2d5a8e; --def-border: #b8860b; --proof-bg: #f9f7f0;
+  --bg: #f8f7f4;
+  --text: #1a1a1a;
+  --accent: #2d5a8e;
+  --accent2: #b8860b;
+  --border: #d0c8b8;
+  --card-bg: #ffffff;
+  --sidebar-bg: #f0eee8;
+  --muted: #777;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
   font-family: -apple-system, "PingFang SC", "Noto Sans SC", system-ui, sans-serif;
-  background: var(--bg); color: var(--text); line-height: 1.8;
-  display: flex; min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+  display: flex;
+  min-height: 100vh;
 }
 .sidebar {
-  width: 280px; flex-shrink: 0; background: var(--sidebar-bg);
-  border-right: 1px solid var(--border); padding: 2rem 1.2rem;
-  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  width: 280px;
+  flex-shrink: 0;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border);
+  padding: 2rem 1.2rem;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
 }
 .sidebar h1 { font-size: 1.2rem; color: var(--accent2); margin-bottom: 0.3rem; }
 .sidebar .subtitle { font-size: 0.8rem; color: var(--muted); margin-bottom: 1.5rem; }
 .sidebar nav a {
-  display: block; padding: 0.25rem 0; color: var(--accent);
-  text-decoration: none; font-size: 0.85rem;
+  display: block;
+  padding: 0.25rem 0;
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.85rem;
+  border-bottom: 1px solid transparent;
 }
-.sidebar nav a:hover { text-decoration: underline; }
+.sidebar nav a:hover { border-bottom-color: var(--accent); }
 .sidebar .nav-hint {
-  margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border);
-  font-size: 0.75rem; color: var(--muted);
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.75rem;
+  color: var(--muted);
 }
 .sidebar .nav-hint a { color: var(--accent); text-decoration: none; }
 .content {
-  flex: 1; max-width: 800px; margin: 0 auto; padding: 3rem 2rem;
+  flex: 1;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
 }
-h1 { font-size: 1.8rem; color: var(--accent2); margin-bottom: 1rem; }
-h2 { font-size: 1.3rem; color: var(--accent); margin: 2rem 0 1rem; padding-bottom: 0.3rem; border-bottom: 1px solid var(--border); }
-h3 { font-size: 1.1rem; color: var(--text); margin: 1.5rem 0 0.8rem; }
-p { margin: 0.8rem 0; text-align: justify; }
-/* 公理框 */
-.axiom-box {
-  background: var(--card-bg); border-left: 4px solid var(--accent2);
-  padding: 1rem 1.5rem; margin: 1.5rem 0; border-radius: 0 6px 6px 0;
-}
-.axiom-box .label { font-weight: bold; color: var(--accent2); font-size: 0.9rem; }
-/* 定理框 */
+h1 { font-size: 2rem; color: var(--accent2); margin-bottom: 0.5rem; }
+h2 { font-size: 1.4rem; color: var(--accent); margin: 2rem 0 1rem; padding-bottom: 0.3rem; border-bottom: 1px solid var(--border); }
+h3 { font-size: 1.1rem; color: var(--accent); margin: 1.5rem 0 0.8rem; }
+p { margin: 0.8rem 0; text-indent: 2em; }
+p.no-indent { text-indent: 0; }
 .theorem-box {
-  background: var(--card-bg); border-left: 4px solid var(--theorem-border);
-  padding: 1rem 1.5rem; margin: 1rem 0; border-radius: 0 6px 6px 0;
+  background: #f0f4f8;
+  border-left: 4px solid var(--accent);
+  padding: 1rem 1.5rem;
+  margin: 1.2rem 0;
+  border-radius: 0 6px 6px 0;
 }
-.theorem-box .label { font-weight: bold; color: var(--theorem-border); }
-/* 证明框 */
+.theorem-box strong { color: var(--accent); }
+.definition-box {
+  background: #f5f0e8;
+  border-left: 4px solid var(--accent2);
+  padding: 1rem 1.5rem;
+  margin: 1.2rem 0;
+  border-radius: 0 6px 6px 0;
+}
+.definition-box strong { color: var(--accent2); }
 .proof-box {
-  background: var(--proof-bg); border-left: 4px solid var(--border);
-  padding: 1rem 1.5rem; margin: 1rem 0; border-radius: 0 6px 6px 0;
+  background: #fafafa;
+  border: 1px dashed var(--border);
+  padding: 1rem 1.5rem;
+  margin: 1.2rem 1.5rem;
+  border-radius: 6px;
   font-size: 0.95rem;
 }
-.proof-box .label { font-weight: bold; color: var(--muted); font-style: italic; }
-/* 定义框 */
-.def-box {
-  background: var(--card-bg); border-left: 4px solid var(--def-border);
-  padding: 1rem 1.5rem; margin: 1rem 0; border-radius: 0 6px 6px 0;
+.proof-box strong { color: var(--muted); }
+.nav-hint-inline {
+  background: #f0eee8;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.8rem 1.2rem;
+  margin: 1.5rem 0;
+  font-size: 0.85rem;
+  color: var(--muted);
 }
-.def-box .label { font-weight: bold; color: var(--def-border); }
-.nav-hint-bar {
-  margin-top: 2rem; padding: 1rem 0; border-top: 1px solid var(--border);
-  display: flex; justify-content: space-between; font-size: 0.85rem;
-}
-.nav-hint-bar a { color: var(--accent); text-decoration: none; }
-.nav-hint-bar a:hover { text-decoration: underline; }
+.nav-hint-inline a { color: var(--accent); text-decoration: none; }
 .chapter-end {
-  margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border);
-  text-align: center; color: var(--muted); font-size: 0.85rem;
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
 }
-.math-block { overflow-x: auto; padding: 0.5rem 0; }
 </style>
 </head>
 <body>
@@ -88,92 +120,82 @@ p { margin: 0.8rem 0; text-align: justify; }
   <h1>⬡ 几何论</h1>
   <div class="subtitle">卷一 · 公理与数学结构</div>
   <nav>
-    <a href="index.html">← 卷一首頁</a>
-    <a href="1.1.html" style="margin-top:0.8rem;">§1.1 角度优先于时空</a>
-    <a href="1.2.html">§1.2 三分切丛结构</a>
-    <a href="1.3.html">§1.3 三公理总览</a>
-    <a href="2.1.html" style="font-weight:bold;">§2.1 公理1：圆拓扑公理</a>
-    <a href="2.2.html">§2.2 公理2：边界极限公理</a>
-    <a href="2.3.html">§2.3 公理3：全息屏编码条件</a>
-    <a href="3.1.html" style="margin-top:0.8rem;">§3.1 六项作用量</a>
-    <a href="3.2.html">§3.2 Hessian截面</a>
+    <a href="index.html#ch1">第1章 引言</a>
+    <a href="1.1.html" style="padding-left:1rem;font-size:0.8rem;">§1.1　几何论的时空结构</a>
+    <a href="index.html#ch2" style="margin-top:0.5rem;">第2章 几何论公理</a>
+    <a href="2.1.html" style="padding-left:1rem;font-size:0.8rem;">§2.1　公理1：圆拓扑公理</a>
+    <a href="2.2.html" style="padding-left:1rem;font-size:0.8rem;">§2.2　公理2：边界极限公理</a>
+    <a href="2.3.html" style="padding-left:1rem;font-size:0.8rem;">§2.3　公理3：全息屏编码条件</a>
   </nav>
   <div class="nav-hint">
-    <a href="/">← 返回首页</a>
+    <a href="/">← 返回首页</a><br>
+    <a href="/vol0/">卷零 · 数学推导</a><br>
+    卷一 · 公理与数学结构<br>
+    <a href="/vol2/">卷二 · 谱几何</a><br>
+    <a href="/vol3/">卷三 · 几何物理</a>
   </div>
 </div>
 
 <div class="content">
 
-<h1>§2.1　公理1：圆拓扑公理</h1>
+<h1>§2.1 公理1：圆拓扑公理</h1>
 
-<p>几何论的第一条公理规定激发态参数空间的拓扑结构。它不涉及任何度量或动力学，只回答一个最基础的问题：<strong>"系统可能处于的状态构成一个什么形状的空间？"</strong></p>
-
-<div class="axiom-box">
-  <div class="label">公理1（圆拓扑公理）</div>
-  <p>激发态参数空间 $D$ 由一维紧致连通流形 $S^1$（圆）去掉两个不同点 $p_0$ 与 $p_*$ 得到：</p>
-  $$D = S^1 \setminus \{p_0, p_*\}, \qquad p_0 \neq p_*$$
-  <p>去掉的两点分别称为<strong>真空点</strong>（$p_0$）与<strong>退化点</strong>（$p_*$）。由此，$D$ 由两个连通分支组成：</p>
-  $$D_+ \cong (0,1), \qquad D_- \cong (0,1)$$
-  <p>每个分支同胚于开区间。参数 $x \in D_\pm$ 标记激发态。</p>
+<div class="definition-box">
+<strong>公理1（圆拓扑公理）</strong>
+<br><br>
+基本纤维 $F$ 具有圆拓扑 $S^1$。全息屏 $\mathcal{H}$ 上的每一纤维截面均同胚于 $S^1$，纤维丛结构为：
+$$ \mathcal{E} = (E, \pi, \mathcal{H}, S^1, \text{结构群}) $$
+其中 $E$ 为总空间，$\pi: E \to \mathcal{H}$ 为投影映射，结构群为 $SO(2)$ 或 $U(1)$。
 </div>
 
-<h3>为什么要取"圆去掉两点"？</h3>
+<h2>几何直觉</h2>
 
-<p>这个选择的直觉来自几何论的元立场：<strong>角度优先于时空</strong>。在几何论中，基本自由度不是位置或动量，而是角度。角度的天然参数空间是圆 $S^1$——一个角度周期为 $360^\circ$ 的闭合流形。</p>
+<p>几何论最基本的图像是：在每一个"点"（全息屏上的一个位置）上，存在一个圆周。这不是一个比喻——它是一个严格的纤维丛构造。每一个纤维 $S^1$ 编码了该位置上的内部自由度，其相位角 $\varphi \in [0, 2\pi)$ 是未在时空坐标中展开的信息。</p>
 
-<p>但 $S^1$ 上有两个特殊点需要排除：</p>
+<p>为什么是 $S^1$ 而不是别的拓扑？原因有三：</p>
+
 <ul>
-  <li><strong>$p_0$（真空点）</strong>：对应系统的基态。在基态处，所有激发消失，几何量退化为零。基态本身不是"激发态"，故排除。</li>
-  <li><strong>$p_*$（退化点）</strong>：对应系统的奇异极限。在该点处几何量发散，系统不再具有良好定义的结构。它也不是激发态，故排除。</li>
+  <li><strong>极简性</strong>：$S^1$ 是连通紧致一维流形中拓扑最简单者，只有一个基本群 $\pi_1(S^1) = \mathbb{Z}$。</li>
+  <li><strong>相位自然性</strong>：量子力学中的 $U(1)$ 相位因子天然适合 $S^1$ 纤维。</li>
+  <li><strong>可测量性</strong>：$S^1$ 上的 and 值函数可以通过 holonomy（和乐）沿闭合路径积分得到可观测效应。</li>
 </ul>
 
-<p>排除这两点后，剩下的空间 $D$ 不再是连通的——它断开成两个分支 $D_+$ 和 $D_-$，每个都同胚于开区间 $(0,1)$。这个断开结构在后面对应于系统中两种不同的"路径"通向同一个几何量值。</p>
+<h2>第一层推论</h2>
 
-<hr style="margin:2rem 0;border:none;border-top:1px solid var(--border);">
+<h3>推论1.1：纤维的紧致性</h3>
 
-<h2>引理2.1：分支的拓扑结构</h2>
-
-<p>公理1的陈述中已经包含了引理2.1的结论。下面是其严格证明。</p>
+<p>$S^1$ 的紧致性保证了纤维上的任意连续函数必有最大值和最小值。这一性质在后续作用量极值求解中至关重要。</p>
 
 <div class="theorem-box">
-  <div class="label">引理2.1（分支的拓扑结构）</div>
-  <p>设 $S^1$ 为标准的单位圆 $\{e^{i\phi} \mid \phi \in [0,2\pi)\}$。去掉两点 $p_0=e^{i\phi_0}$ 与 $p_*=e^{i\phi_*}$（不妨设 $0\leq \phi_0 < \phi_* < 2\pi$），则 $S^1\setminus\{p_0,p_*\}$ 恰有两个连通分支：</p>
-  $$D_+ = \{e^{i\phi} \mid \phi_0 < \phi < \phi_*\}, \qquad D_- = \{e^{i\phi} \mid \phi_* < \phi < \phi_0+2\pi\}$$
-  <p>每个分支作为 $S^1$ 的子空间拓扑，均同胚于开区间 $(0,1)$。</p>
+<strong>引理1.1（纤维上的周期边界条件）</strong>
+<br><br>
+设 $\psi: S^1 \to \mathbb{R}$ 为纤维上的可微函数，则 $\psi$ 满足周期边界条件：
+$$ \psi(0) = \psi(2\pi), \quad \psi'(0) = \psi'(2\pi) $$
+这一条件在谱分析中导致离散本征值谱。
 </div>
 
-<div class="proof-box">
-  <div class="label">证明</div>
-  <p>考虑标准覆叠映射 $\pi: \mathbb{R} \to S^1$，$\pi(\phi)=e^{i\phi}$。在 $\mathbb{R}$ 上，</p>
-  $$\pi^{-1}(S^1\setminus\{p_0,p_*\}) = \mathbb{R}\setminus\{\phi_0+2k\pi,\ \phi_*+2k\pi \mid k\in\mathbb{Z}\}$$
-  <p>该集合的每个连通分支均为开区间：</p>
-  $$(\phi_0+2k\pi,\ \phi_*+2k\pi) \quad\text{或}\quad (\phi_*+2k\pi,\ \phi_0+2(k+1)\pi)$$
-  <p>由于 $\pi$ 在长度为 $2\pi$ 的区间上的限制是同胚，这些开区间在 $S^1$ 中的像恰为 $D_+$ 与 $D_-$。每个开区间同胚于 $(0,1)$，故 $D_\pm \cong (0,1)$。$\square$</p>
+<h3>推论1.2：第一 Chern 类</h3>
+
+<p>$S^1$ 纤维丛的第一 Chern 类 $c_1 \in H^2(\mathcal{H}, \mathbb{Z})$ 是整数。这个整数与全息屏上的磁通量子化有深刻联系。</p>
+
+<h3>推论1.3：和乐群</h3>
+
+<p>沿全息屏上闭合路径 $\gamma$ 的和乐（holonomy）定义为纤维平移的转角：</p>
+
+$$ \text{Hol}(\gamma) = \exp\left(i\oint_\gamma A\right) \in U(1) $$
+
+<p>其中 $A$ 是丛上的联络 1-形式。和乐群是 $U(1)$ 的子群，在物理上对应规范群。</p>
+
+<div class="nav-hint-inline">
+  <strong>→ 下一步：</strong><a href="2.2.html">§2.2 公理2：边界极限公理</a>
 </div>
 
-<hr style="margin:2rem 0;border:none;border-top:1px solid var(--border);">
-
-<h2>公理1的数学意义</h2>
-
-<h3>1. 拓扑先于度量</h3>
-<p>公理1只规定了参数空间的<strong>拓扑</strong>（圆去掉两点），没有规定任何<strong>度量</strong>（距离、角度大小、曲率）。这意味着在引入公理2之前，我们不知道 $D$ 上的点之间的"距离"意味着什么，只知道它们的邻域关系。这是几何论"从最少的假设出发"这一原则的体现。</p>
-
-<h3>2. 两个分支的对称性</h3>
-<p>$D_+$ 和 $D_-$ 在拓扑上是不可区分的——它们都同胚于 $(0,1)$。但它们在 $S^1$ 上的"位置"不同：$D_+$ 夹在 $p_0$ 和 $p_*$ 之间，$D_-$ 夹在 $p_*$ 和 $p_0$ 之间（绕一圈回来）。这个位置差异在后续引入公理2（边界极限）后，将导致物理上的不对称性。</p>
-
-<h3>3. 为什么不是线段或直线？</h3>
-<p>一个自然的问题是：为什么不直接把参数空间定义为开区间 $(0,1)$ 或 $(0,+\infty)$？答案在于几何论的"角度优先"立场。角度天然是圆形的（$0^\circ$ 和 $360^\circ$ 是同一个点），而线段有端点，直线不是紧致的。圆拓扑在后续与三分切丛的 $S_3$ 对称性、全息屏的 $S^2$ 结构衔接时，展现出比开区间更丰富的结构——特别是两个分支的存在，为"同一几何量值对应两个不同激发态"这一现象提供了拓扑基础。</p>
-
-<div class="nav-hint-bar">
-  <a href="1.3.html">← §1.3 三公理总览</a>
-  <a href="2.2.html">§2.2 公理2：边界极限公理 →</a>
 </div>
 
 <div class="chapter-end">
-  ⬡ 几何论 · 卷一 · §2.1
+  ⬡ 几何论 · 卷一 · §2.1<br>
+  <a href="1.1.html">← 上一节 §1.1</a> · <a href="index.html">返回卷目录</a> · <a href="2.2.html">下一节 §2.2 →</a>
 </div>
 
-</div>
 </body>
 </html>
