@@ -494,3 +494,333 @@ $$\delta_C \ge 6.32 \times 10^{-6}, \quad \delta_I \ge 2.61 \times 10^{-3}$$
 <!-- 延伸阅读将在卷末统一呈现 -->
 
 <!-- APPEND_HERE -->
+
+<!-- ============================================================ -->
+<!-- 中篇：因果场动力学（续） -->
+<!-- ============================================================ -->
+
+<!-- ======= §4.8 ======= -->
+<h2 id="ch4-8">§4.8 桥接定理</h2>
+
+<h3>4.8.1 桥接定理的定位</h3>
+
+<p>桥接定理是连接信息场动力学和因果场动力学的关键枢纽。它回答的问题是：<em>因果场的遍历覆盖如何确保信息场在全息屏上的均匀解码？</em></p>
+
+<p>从直觉上，这一问题的答案类似于"时间平均等于空间平均"的遍历定理——因果环流在足够长的时间内均匀地访问 $\Sigma$ 上的所有区域，从而保证信息场的局部解码结果与全局谱几何一致。</p>
+
+<h3>4.8.2 谱三元组到密度Liouville的桥接</h3>
+
+<div class="theorem-box">
+<strong>定理 4.13（谱三元组-密度Liouville桥接）</strong>：设 $(A, H, D)$ 为九维谱三元组（0.3.1），$D$ 为Dirac算子。其热核系数 $a_{9/2}(D^2)$ 与密度Liouville生成元 $\mathcal{L}_C$ 的迹满足：
+$$\text{Tr}(e^{-\sigma D^2}) = \int_\Sigma \mathcal{K}_\sigma(\xi,\eta) \, d\mu = \text{Tr}_{\mathcal{X}_C}(e^{\sigma \mathcal{L}_C})$$
+其中 $\mathcal{K}_\sigma$ 为谱三元组的热核，$\text{Tr}_{\mathcal{X}_C}$ 为在密度态空间 $\mathcal{X}_C$ 上的迹。
+
+该等式建立了谱几何（卷三）与密度动力学（卷四）之间的直接数值联系。
+</div>
+
+<p><strong>来源</strong>：0.5.6（谱三元组到密度Liouville的桥接定理）</p>
+
+<h3>4.8.3 C-I双场耦合的桥接定理</h3>
+
+<div class="theorem-box">
+<strong>定理 4.14（C-I双场耦合桥接）</strong>：信息场 $\rho_I$ 的图热扩散与因果场 $\rho_C$ 的Liouville演化通过以下桥接方程耦合：
+$$\frac{\partial \rho_I}{\partial \sigma} = -L_G \rho_I + \alpha_{CI} \cdot \rho_C$$
+$$\frac{\partial \rho_C}{\partial \sigma} = \mathcal{L}_C \rho_C + \beta_{CI} \cdot \nabla_\xi \rho_I$$
+其中 $\alpha_{CI}$ 和 $\beta_{CI}$ 为耦合常数，由交叉算子下界（定理4.12）和量纲桥常数决定。
+</div>
+
+<p>这一耦合方程组是联合稳态 $\rho_{CI}^*$ 的完整动力学基础。在 $\alpha_{CI}, \beta_{CI} \to 0$ 极限下，系统退化为独立的信息场和因果场。</p>
+
+<p><strong>来源</strong>：0.5.7（C-I双场桥接定理）</p>
+
+<h3>4.8.4 覆盖定理的遍历形式</h3>
+
+<div class="theorem-box">
+<strong>定理 4.15（覆盖定理——遍历形式）</strong>：在稳态环流 $T_{\text{ss}}$ 的遍历性和混合性条件下，信息场覆盖层数 $N_{\text{cover}}$ 等于因果场稳态环流的时间平均与空间平均的等价：
+$$N_{\text{cover}} = \lim_{T\to\infty} \frac{1}{T} \int_0^T \rho_I(\sigma) \, d\sigma = \int_\Sigma \rho_I^* \, d\mu$$
+这一等价关系由Birkhoff遍历定理的直接推论保证。
+</div>
+
+<p><strong>物理含义</strong>：覆盖定理保证了信息场在 $\Sigma$ 上的解码结果不依赖于因果环流的初始相位——时间平均等于空间平均，意味着任何局部解码器在长期运行后都会得到相同的全局结果。这是几何论中"观测者无关性"的数学基础。</p>
+
+<p><strong>来源</strong>：0.5 §3（遍历理论框架），0.5 §7（覆盖定理）</p>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- 下篇：M场与完全耦合 -->
+<!-- ============================================================ -->
+<h2 class="part-title">下篇：M场与完全耦合</h2>
+
+<!-- ======= §4.9 ======= -->
+<h2 id="ch4-9">§4.9 约束截面在三场耦合中的应用</h2>
+
+<div class="nav-hint">
+<strong>前置依赖</strong>：本节假设读者已熟悉卷二 §2.7 中约束截面的基本构造与数学性质。本节仅讨论这些构造在三场耦合中的具体应用。
+</div>
+
+<h3>4.9.1 约束截面作为耦合平台</h3>
+
+<p>约束截面 $\Sigma$——二维带边流形，$(\theta_M,\theta_C,\theta_I)$ 在 $\theta_M+\theta_C+\theta_I=90^\circ$ 约束下的子流形——在卷二中被作为纯数学对象处理（§2.7）。在三场动力学中，$\Sigma$ 的角色从被动几何背景升级为主动耦合平台：三个场（M、C、I）在 $\Sigma$ 上的动力学方程通过共享的Hessian度量 $g_{ij}$ 和势函数 $V(\xi,\eta)$ 相互耦合。</p>
+
+<h3>4.9.2 约束截面上的梯度变换</h3>
+
+<p>约束截面 $\Sigma$ 上的几何坐标在三个场之间存在自然的梯度变换关系：</p>
+
+<div class="theorem-box">
+<strong>命题 4.2（梯度变换）</strong>：设 $\nabla_\Sigma$ 为 $\Sigma$ 上的梯度算子。对任意光滑函数 $f \in C^\infty(\Sigma)$，信息场坐标 $(\xi,\eta)$ 与M场坐标 $\theta_M$ 之间的梯度关系为：
+$$\nabla_\Sigma f = \frac{\partial f}{\partial \xi} \hat{\xi} + \frac{\partial f}{\partial \eta} \hat{\eta} = \left(\frac{\partial \theta_M}{\partial \xi} \frac{\partial f}{\partial \theta_M}\right) \hat{\xi} + \left(\frac{\partial \theta_M}{\partial \eta} \frac{\partial f}{\partial \theta_M}\right) \hat{\eta}$$
+其中 $\partial \theta_M/\partial \xi = -1/2$，$\partial \theta_M/\partial \eta = -1/2$（由坐标变换 $\theta_M = 45^\circ - \xi/2 - \eta/2$ 得出）。
+</div>
+
+<p>这一变换是三场耦合的数学基础——一个场中的动力学变量可以通过梯度变换自然地投影到另一个场的动力学方程中。</p>
+
+<h3>4.9.3 约束截面上的三场联合势</h3>
+
+<div class="definition-box">
+<strong>定义 4.6（三场联合势）</strong>：三场在约束截面 $\Sigma$ 上的联合势函数为：
+$$\Phi(\rho_M, \rho_C, \rho_I) = \int_\Sigma \left[\frac{1}{2} g^{ij}\partial_i\rho_M\partial_j\rho_M + \frac{1}{2} g^{ij}\partial_i\rho_C\partial_j\rho_C + \frac{1}{2} g^{ij}\partial_i\rho_I\partial_j\rho_I + \mathcal{V}(\rho_M,\rho_C,\rho_I)\right] d\mu$$
+其中第一项为M场动能，第二项为C场动能，第三项为I场动能，$\mathcal{V}$ 为相互作用势——包含六项作用量 $S(\theta)$ 在密度变量下的展开。
+</div>
+
+<p>联合势 $\Phi$ 的变分给出三场完全耦合的Euler-Lagrange方程（§4.13）。</p>
+
+<p><strong>来源</strong>：0.2.1（约束截面数学结构），0.2.1.1（渗透函数解析框架）</p>
+
+</div>
+
+<!-- ======= §4.10 ======= -->
+<h2 id="ch4-10">§4.10 M场法向几何与质量生成</h2>
+
+<h3>4.10.1 M场的法向几何地位</h3>
+
+<p>在三场中，M场（质量场）具有独特的几何地位：它对应三分切丛 $\mathcal{M}\oplus\mathcal{C}\oplus\mathcal{I}$ 中物质扇区 $\mathcal{M}$ 的动力学，而 $\mathcal{M}$ 方向在约束截面 $\Sigma$ 上是<strong>法向</strong>的——$\mathcal{M} \perp T\Sigma$。这意味着：</p>
+
+<ul>
+<li>C场和I场在 $\Sigma$ 的<strong>切空间</strong> $T\Sigma$ 上演化（由 $(\xi,\eta)$ 坐标描述）</li>
+<li>M场在 $\Sigma$ 的<strong>法丛</strong> $N\Sigma$ 上演化（由 $\theta_M$ 描述，通过 $\theta_M = 90^\circ - \eta$ 连接）</li>
+</ul>
+
+<p>这一法向地位使M场成为三场中唯一直接产生"垂直"运动的场——它不沿 $\Sigma$ 的表面扩散，而是沿法向"升降"，对应质量标度的变化。</p>
+
+<h3>4.10.2 M场梯度流方程</h3>
+
+<div class="theorem-box">
+<strong>定理 4.16（M场梯度流方程）</strong>：M场的基本演化方程为梯度流形式：
+$$\frac{\partial \theta_M}{\partial \tau} = -\Gamma_M \cdot \frac{\partial S}{\partial \theta_M}$$
+其中 $\tau$ 为几何时间，$\Gamma_M$ 为M扇区迁移率（由Hessian软硬模比 $\Lambda_H \approx 150$ 锁定），$\partial S/\partial \theta_M$ 为六项作用量对 $\theta_M$ 的偏导。
+
+梯度流的显式形式（在完备性约束 $\sum\theta_i=90^\circ$ 下展开）为：
+$$\frac{\partial \theta_M}{\partial \tau} = -\Gamma_M \left[ -\frac{2\cos\theta_M}{\sin^3\theta_M} - \frac{\cos(\theta_C)}{\sin\theta_C\sin^2\theta_M} - \frac{\cos(\theta_I)}{\sin\theta_I\sin^2\theta_M} \right]$$
+</div>
+
+<p><strong>诚实性标注</strong>：M场梯度流方程是构造性框架（非独立定理）——其严格化依赖0.6.1–0.6.7的逐项闭合。</p>
+
+<p><strong>来源</strong>：0.6 §3（M场梯度流）</p>
+
+<h3>4.10.3 质量流与守恒律</h3>
+
+<p>M场的梯度流运动自然导出一个质量流——质量密度在空间中的流动：</p>
+
+<div class="definition-box">
+<strong>定义 4.7（质量流）</strong>：质量流密度定义为
+$$J_M = 3K\sin^2\theta_M\cos\theta_M \cdot \nabla\theta_M$$
+其中 $K$ 为质量尺度常数（$K = 839.758793$ keV），$\nabla\theta_M$ 为 $\theta_M$ 在物理空间中的梯度。
+</div>
+
+<div class="theorem-box">
+<strong>定理 4.17（质量连续性方程）</strong>：质量密度 $\rho_M = K\sin^3\theta_M$ 满足连续性方程：
+$$\frac{\partial \rho_M}{\partial \tau} + \nabla \cdot J_M = \mathcal{Q}_M$$
+其中 $\mathcal{Q}_M$ 为源项，由M-C耦合和M-I耦合的相互作用决定。在无耦合（孤立M场）极限下，$\mathcal{Q}_M = 0$，质量守恒。
+</div>
+
+<h3>4.10.4 质量生成的几何机制</h3>
+
+<p>质量生成的几何机制可以概括为：<em>质量是法向（$\mathcal{M}$）偏离对称基态的结果</em>。在对称基态 $\theta^* = (30^\circ,30^\circ,30^\circ)$，$\sin^3\theta_M = \sin^3(30^\circ) = 1/8$，对应的"基准质量"为 $m_0 = K/8 = 104.97$ keV。物理电子质量 $m_e = 510.99895$ keV 对应的 $\theta_M^e = 57.93^\circ$ 显著偏离对称基态，这一偏离由自举闭环（§3.6）唯一锁定。</p>
+
+<p>M场的动力学将 $\theta_M$ 从物理实现点向对称基态驱动——如果不受C场和信息场的耦合约束。然而，C-I耦合和自举闭环的互锁效应将 $\theta_M$ 锁定在 $57.93^\circ$，使系统偏离对称基态，从而"产生"了非零质量。</p>
+
+<p><strong>来源</strong>：0.6.2（质量生成动力学）</p>
+
+</div>
+
+<!-- ======= §4.11 ======= -->
+<h2 id="ch4-11">§4.11 M-C耦合与M-I耦合</h2>
+
+<h3>4.11.1 M-C腰边耦合（电磁核心）</h3>
+
+<p>M-C耦合——即物质扇区和因果扇区的相互作用——对应于物理中的电磁相互作用。在几何论中，这一耦合被称为"腰边耦合"，因为 $\mathcal{M}$ 和 $\mathcal{C}$ 在三分切丛中的相对位置恰如腰围结构的相邻边。</p>
+
+<div class="theorem-box">
+<strong>定理 4.18（M-C腰边耦合结构）</strong>：M-C耦合通过以下方式实现：
+<ul>
+<li><strong>耦合媒介</strong>：腰边耦合算子 $H_{MC}$，在 $\Sigma$ 的切-法分解中连接 $\mathcal{M}$（法向）和 $\mathcal{C}$（切向）</li>
+<li><strong>耦合常数</strong>：$S_e = 137.035999084$（精确结构常数倒数），其数值由谱互锁圈完全确定</li>
+<li><strong>物理映射</strong>：M-C耦合映射为电子（$\mathcal{M}$ 方向的质量激发）和光子（$\mathcal{C}$ 方向的无质量传播模）——两者共享同一耦合常数</li>
+</ul>
+</div>
+
+<p><strong>关键特征</strong>：M-C耦合同时产生了有质量激发（电子）和无质量激发（光子），这是电磁相互作用的核心特征——荷（电子荷）与传播子（光子）在同一个几何耦合中起源。</p>
+
+<p><strong>来源</strong>：0.6.3（M-C腰边耦合），0.6.8（光子零质量定理）</p>
+
+<h3>4.11.2 M-I完备性耦合</h3>
+
+<p>M-I耦合——物质扇区与信息扇区的相互作用——的几何根源在于 $\theta_M$ 与 $\theta_I$ 通过完备性约束 $\theta_M+\theta_C+\theta_I=90^\circ$ 的反相关关系。当 $\theta_M$ 增大时，$\theta_I$ 必须减小（在固定 $\theta_C$ 下），反之亦然。</p>
+
+<div class="theorem-box">
+<strong>定理 4.19（M-I耦合结构）</strong>：M-I耦合适用于以下机制：
+<ul>
+<li><strong>反相关约束</strong>：$\partial \theta_I / \partial \theta_M = -1$（在固定 $\theta_C$ 下），导致M与I的涨落始终反向</li>
+<li><strong>信息-质量转化</strong>：信息密度 $\rho_I$ 的变化通过M-I耦合影响 $\theta_M$，从而改变局域质量标度</li>
+<li><strong>饱和稳态下的M-I关系</strong>：当信息场达到稳态（$\Delta_g\rho_I = -\mathcal{S}$）时，M-I耦合趋于固定值，提供质量谱的边界条件</li>
+</ul>
+</div>
+
+<p><strong>来源</strong>：0.6.4（M-I耦合）</p>
+
+<h3>4.11.3 耦合的梯度结构</h3>
+
+<p>M-C和M-I耦合在约束截面 $\Sigma$ 上具有统一的梯度结构：</p>
+
+<div class="theorem-box">
+<strong>定理 4.20（耦合的梯度统一性）</strong>：M-C耦合和M-I耦合的联合作用可以表示为三个扇区角的梯度流：
+$$\frac{\partial}{\partial \tau} \begin{pmatrix} \theta_M \\ \theta_C \\ \theta_I \end{pmatrix} = -\begin{pmatrix} \Gamma_M & \Gamma_{MC} & \Gamma_{MI} \\ \Gamma_{CM} & \Gamma_C & \Gamma_{CI} \\ \Gamma_{IM} & \Gamma_{IC} & \Gamma_I \end{pmatrix} \cdot \begin{pmatrix} \partial S/\partial\theta_M \\ \partial S/\partial\theta_C \\ \partial S/\partial\theta_I \end{pmatrix}$$
+其中迁移率矩阵 $\Gamma_{ab}$ 的非对角元描述交叉耦合，对角元描述自耦合。完备性约束 $\sum\theta_i=90^\circ$ 保证该矩阵的秩为2（约束截面上的有效自由度）。
+</div>
+
+<p><strong>来源</strong>：0.6.7 §3（耦合梯度结构）</p>
+
+</div>
+
+<!-- ======= §4.12 ======= -->
+<h2 id="ch4-12">§4.12 M场谱分析与呼吸模式</h2>
+
+<h3>4.12.1 M场的谱结构</h3>
+
+<p>M场在约束截面 $\Sigma$ 上的谱分析研究 $\theta_M$ 在 $\Sigma$ 上的涨落模式——即M场如何响应外部微扰，以及这些响应的特征频率和衰减率。</p>
+
+<div class="theorem-box">
+<strong>定理 4.21（M场谱结构）</strong>：M场的涨落模式由图拉普拉斯 $L_G$ 在 $\mathcal{M}$ 方向上的投影决定：
+$$\delta \theta_M(\xi,\eta;\sigma) = \sum_k a_k(\sigma) \cdot \psi_k(\xi,\eta)$$
+其中 $\psi_k$ 为 $L_G$ 在 $\Sigma$ 上的特征函数，$a_k(\sigma)$ 为时间依赖的振幅系数。特征值 $\mu_k$ 对应各模式的涨落能量：
+$$E_k = \frac{1}{2} \mu_k |a_k|^2$$
+</div>
+
+<p>谱分析的关键结论：M场谱的基模（$\mu_0=0$）对应整体质量标度的刚性平移——不改变粒子质量比值；第一激发模（$\mu_1$）对应轻子-夸克之间的质量差异；高阶模对应代际分裂。</p>
+
+<p><strong>来源</strong>：0.6.6（M场谱分析）</p>
+
+<h3>4.12.2 呼吸模式</h3>
+
+<p>M场的呼吸模式——系统在Hessian软模方向（$\xi$方向）的集体振荡——是M场动力学中一个独特的现象。</p>
+
+<div class="definition-box">
+<strong>定义 4.8（呼吸模式）</strong>：M场的呼吸模式定义为 $\theta_M$ 在Hessian软模方向上的周期性涨落：
+$$\theta_M(\sigma) = \theta_M^0 + A \cdot \cos(\omega_{\text{breathe}} \cdot \sigma + \phi_0) \cdot e^{-\gamma\sigma}$$
+其中 $A$ 为振幅，$\omega_{\text{breathe}}$ 为呼吸频率（由Hessian谱间隙决定），$\gamma$ 为衰减率（由图扩散决定），$\phi_0$ 为初始相位。
+</div>
+
+<p>呼吸模式的物理含义：当M场偏离稳态时，它会以Hessian软模的特征频率进行衰减振荡——这一振荡对应于质量标度的微扰弛豫。呼吸模式的周期由 $\lambda_1$ 决定：$T_{\text{breathe}} \approx 2\pi/\sqrt{\lambda_1}$。</p>
+
+<p><strong>来源</strong>：0.6.5（M场呼吸模式），0.6 §5.3（与Hessian呼吸模式的关系）</p>
+
+</div>
+
+<!-- ======= §4.13 ======= -->
+<h2 id="ch4-13">§4.13 M-C-I三场完全耦合</h2>
+
+<h3>4.13.1 三场完全耦合方程</h3>
+
+<p>将M场（§4.10–§4.11）、C场（§4.5–§4.6）、I场（§4.1–§4.4）的动力学方程合并，得到三场完全耦合的演化方程组。</p>
+
+<div class="theorem-box">
+<strong>定理 4.22（三场完全耦合方程）</strong>：M-C-I三场的联合演化由以下方程组描述：
+
+$$\begin{aligned}
+\frac{\partial \theta_M}{\partial \tau} &= -\Gamma_M \frac{\partial S}{\partial \theta_M} - \Gamma_{MC} \frac{\partial S}{\partial \theta_C} - \Gamma_{MI} \frac{\partial S}{\partial \theta_I} + \xi_{M\leftarrow C} + \xi_{M\leftarrow I} \\
+\frac{\partial \rho_C}{\partial \tau} &= \mathcal{L}_C \rho_C + \beta_{CM} \cdot \nabla_\eta \theta_M + \beta_{CI} \cdot \nabla_\xi \rho_I \\
+\frac{\partial \rho_I}{\partial \tau} &= -L_G \rho_I + \mathcal{S}(\theta_M) + \alpha_{IC} \cdot \rho_C
+\end{aligned}$$
+
+其中：
+<ul>
+<li>第一行：M场方程——梯度流 + C/I交叉耦合项 $\xi$</li>
+<li>第二行：C场方程——Liouville演化 + M/I修正项</li>
+<li>第三行：I场方程——图热扩散 + M源项 + C修正项</li>
+</ul>
+
+完备性约束 $\theta_M+\theta_C+\theta_I=90^\circ$ 耦合三个方程中的角度变量。
+</div>
+
+<p><strong>诚实性标注</strong>：三场完全耦合方程是当前几何论的动力学最高成果，但尚未完全严格化（0.6.9已完成框架铺设，但交叉耦合项的精确系数——$\Gamma_{MC},\Gamma_{MI},\beta_{CM},\alpha_{IC}$——的定量锁定仍部分依赖数值匹配而非公理推导）。</p>
+
+<h3>4.13.2 三场分离的时间尺度</h3>
+
+<p>三场耦合方程在数学上复杂，但幸运的是，三个场的特征时间尺度有数量级的分离：</p>
+
+<table class="data-table">
+<thead>
+<tr><th>场</th><th>特征时间</th><th>数量级</th><th>物理对应</th></tr>
+</thead>
+<tbody>
+<tr><td>C场（因果）</td><td>$N_{\text{cause}} \approx 10$ 步</td><td>$\sim 10^{-1}$ s</td><td>因果推进时间</td></tr>
+<tr><td>I场（信息）</td><td>$\Gamma_{\text{geo}}^{-1} \approx 1.74\times10^{22}$ 步</td><td>$\sim 10^6$ s</td><td>退相干时间</td></tr>
+<tr><td>M场（质量）</td><td>$T_{\text{breathe}} \approx 2\pi/\sqrt{\lambda_1}$</td><td>$\sim 10^{-3}$ s</td><td>质量弛豫时间</td></tr>
+</tbody>
+</table>
+
+<p>时间尺度分离意味着：在短时间尺度上（$\sigma \ll \Gamma_{\text{geo}}^{-1}$），I场可视为冻结（$\rho_I \approx$ 常数），M场和C场的动力学主导；在长时间尺度上（$\sigma \gg T_{\text{breathe}}$），M场已稳定（$\theta_M \approx$ 常数），I场的扩散主导。这一分离是自然选择对动力学方程进行时间尺度截断的几何论版本。</p>
+
+<h3>4.13.3 三场联合稳态</h3>
+
+<div class="theorem-box">
+<strong>定理 4.23（三场联合稳态的存在性）</strong>：在长时极限 $\sigma \to \infty$ 下，三场完全耦合方程存在唯一联合稳态 $(\theta_M^*, \rho_C^*, \rho_I^*)$，满足：
+<ul>
+<li>$\theta_M^*$：由M场梯度流与C-I耦合的平衡确定，数值上等价于卷三互锁圈输出的 $\theta_M^e = 57.93^\circ$</li>
+<li>$\rho_C^*$：C场均匀稳态（Lébesgue测度常数）</li>
+<li>$\rho_I^*$：I场Poisson稳态 $\Delta_g \rho_I^* = -\mathcal{S}(\theta_M^*)$</li>
+</ul>
+联合稳态的存在性由M场势函数的凸性、C场Perron-Frobenius算子的压缩性和I场图热扩散的耗散性共同保证。
+</div>
+
+<p><strong>来源</strong>：0.6.9（M-C-I三场完全耦合），0.6.9 §6（联合稳态）</p>
+
+<h3>4.13.4 三场动力学的物理输出总览</h3>
+
+<table class="data-table">
+<thead>
+<tr><th>物理量</th><th>几何论输出</th><th>实验值</th><th>偏差</th><th>最相关章节</th></tr>
+</thead>
+<tbody>
+<tr><td>退相干时间 $\tau_{\text{dec}}$</td><td>$\approx 7.28$ 日</td><td>—</td><td>预言</td><td>§4.3</td></tr>
+<tr><td>因果深度 $N_{\text{cause}}$</td><td>$\approx 10$</td><td>—</td><td>预言</td><td>§4.5</td></tr>
+<tr><td>电子质量 $m_e$</td><td>$510.99895$ keV</td><td>$510.99895$ keV</td><td>$<10^{-6}$</td><td>§4.10</td></tr>
+<tr><td>光子零质量</td><td>$m_\gamma=0$（定理）</td><td>$<10^{-18}$ eV</td><td>严格</td><td>§4.11</td></tr>
+<tr><td>耦合常数 $\alpha^{-1}$</td><td>$137.035999084$</td><td>$137.035999084$</td><td>$<10^{-10}$</td><td>§4.11</td></tr>
+</tbody>
+</table>
+
+<p><strong>来源</strong>：0.6.9 §7（物理预言总表）</p>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- 卷末注 -->
+<!-- ============================================================ -->
+<div class="chapter-end">
+<h3>延伸阅读</h3>
+<p>各章内容的完整推导和严格证明，见以下原始文章：</p>
+<ul>
+<li>信息场动力学：0.4, 0.4.1, 0.4.2, 0.4.4, 0.4.5, 0.4.7</li>
+<li>因果场动力学：0.5, 0.5.1, 0.5.2, 0.5.6, 0.5.7</li>
+<li>M场动力学与完全耦合：0.6, 0.6.1–0.6.9</li>
+<li>约束截面：0.2.1, 0.2.1.1, 0.2.2</li>
+<li>交叉耦合：21号</li>
+</ul>
+</div>
+
+</div> <!-- #main -->
+</div> <!-- #app -->
+</body>
+</html>
