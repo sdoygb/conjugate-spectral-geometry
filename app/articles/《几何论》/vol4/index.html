@@ -3,331 +3,524 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>卷四 · 三场动力学 | 几何论</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+<title>几何论 · 卷四 · 三场动力学</title>
 <style>
-:root{--bg:#fafaf9;--bg-card:#fff;--text:#1c1b1a;--text-secondary:#6b6a68;--accent:#2d5a8e;--accent-light:#e8f0f8;--border:#e0dfdd;--nav-bg:#f2f1ef;--nav-hover:#e8e7e5;--theorem-border:#2d5a8e;--theorem-bg:#f4f7fb;--def-border:#b8860b;--def-bg:#fdf8ee;--hint-bg:#f0f7ee;--hint-border:#4a7c59}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
-h1,h2,h3,h4{font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;font-weight:600;line-height:1.4;color:var(--text)}
-h1{font-size:2.0em;margin:0 0 .5em 0;padding-bottom:.3em;border-bottom:2px solid var(--accent)}
-h2{font-size:1.4em;margin:1.8em 0 .6em 0;padding-bottom:.25em;border-bottom:1px solid var(--border)}
-h2.part-title{font-size:1.6em;margin:2.2em 0 .8em 0;border-bottom:2px solid var(--accent);padding-bottom:.3em;color:var(--accent)}
-h3{font-size:1.15em;margin:1.4em 0 .4em 0}
-h4{font-size:1.0em;margin:1em 0 .3em 0;font-weight:600}
-p{margin:.6em 0}
-ul,ol{margin:.5em 0 .5em 1.5em}
-li{margin:.3em 0}
-#app{display:flex;min-height:100vh}
-#nav{width:280px;background:var(--nav-bg);border-right:1px solid var(--border);padding:1.5em 0;position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0}
-#nav .nav-title{padding:0 1.2em 1em 1.2em;font-size:1.3em;font-weight:700;color:var(--accent);border-bottom:1px solid var(--border);margin-bottom:.8em}
-#nav .nav-title small{display:block;font-size:.65em;font-weight:400;color:var(--text-secondary);margin-top:.2em}
-#nav a{display:block;padding:.4em 1.2em .4em 1.8em;text-decoration:none;color:var(--text);font-size:.9em;border-left:3px solid transparent;transition:all .15s}
-#nav a:hover{background:var(--nav-hover)}
-#nav a.active{background:var(--accent-light);border-left-color:var(--accent);color:var(--accent);font-weight:500}
-#nav .nav-section{font-size:.75em;text-transform:uppercase;letter-spacing:.08em;color:var(--text-secondary);padding:.8em 1.2em .2em 1.2em;font-weight:600}
-#nav .nav-sub{font-size:.75em;color:var(--text-secondary);padding:.2em 1.2em .2em 2.2em;font-style:italic}
-#main{flex:1;max-width:860px;margin:0 auto;padding:2.5em 2em 4em 2em}
-.breadcrumb{font-size:.85em;color:var(--text-secondary);margin-bottom:1.5em;padding-bottom:.5em;border-bottom:1px solid var(--border)}
-.breadcrumb a{color:var(--accent);text-decoration:none}
-.breadcrumb a:hover{text-decoration:underline}
-.volume-desc{font-size:1em;line-height:1.8;margin:.8em 0}
-.nav-hint{background:var(--hint-bg);border-left:4px solid var(--hint-border);padding:.8em 1em;margin:1em 0;border-radius:0 4px 4px 0;font-size:.92em}
-.theorem-box{background:var(--theorem-bg);border-left:4px solid var(--theorem-border);padding:.8em 1em;margin:1em 0;border-radius:0 4px 4px 0}
-.definition-box{background:var(--def-bg);border-left:4px solid var(--def-border);padding:.8em 1em;margin:1em 0;border-radius:0 4px 4px 0}
-.chapter-end{margin-top:2.5em;padding-top:1em;border-top:1px solid var(--border);font-size:.92em;color:var(--text-secondary)}
-.chapter-end h3{font-size:1em;color:var(--text)}
-.data-table{width:100%;border-collapse:collapse;margin:1em 0;font-size:.92em}
-.data-table th,.data-table td{border:1px solid var(--border);padding:.4em .6em;text-align:left}
-.data-table th{background:var(--nav-bg);font-weight:600}
-.data-table tr:nth-child(even){background:#f9f9f8}
-blockquote{border-left:3px solid var(--border);padding:.3em .8em;margin:.6em 0;color:var(--text-secondary);font-style:italic}
-@media(max-width:768px){#nav{display:none}#main{padding:1.5em 1em 3em 1em}}
+  :root {
+    --bg: #fdfbf7;
+    --text: #2c2416;
+    --accent: #8b5e3c;
+    --muted: #6b5e4e;
+    --border: #d4c8b8;
+    --code-bg: #f4efe8;
+    --thm-bg: #faf7f2;
+    --def-bg: #f8f4ed;
+    --proof-bg: #f6f0e6;
+    --note-bg: #fef9f0;
+    --honest-bg: #fff8e7;
+    --link: #a0522d;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1814;
+      --text: #e8e0d0;
+      --accent: #c4956a;
+      --muted: #a09080;
+      --border: #3a3028;
+      --code-bg: #252018;
+      --thm-bg: #201c16;
+      --def-bg: #221e18;
+      --proof-bg: #1e1a14;
+      --note-bg: #242018;
+      --honest-bg: #262218;
+      --link: #d4a574;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", Georgia, "Times New Roman", serif;
+    line-height: 1.8;
+    color: var(--text);
+    background: var(--bg);
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 2em 1.5em 6em;
+  }
+
+  /* ---- 封面 ---- */
+  .cover {
+    text-align: center;
+    padding: 6em 0 4em;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 3em;
+  }
+  .cover .vol-num { font-size: 1.1em; color: var(--muted); letter-spacing: 0.15em; margin-bottom: 0.3em; }
+  .cover h1 { font-size: 2.6em; font-weight: 700; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 0.2em; }
+  .cover .subtitle { font-size: 1.15em; color: var(--muted); margin-bottom: 1.2em; }
+  .cover .meta { font-size: 0.9em; color: var(--muted); }
+  .cover .meta span { margin: 0 0.6em; }
+
+  /* ---- 导航 ---- */
+  nav.toc {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.8em 2em;
+    margin: 2em 0 3em;
+  }
+  nav.toc h2 { font-size: 1.1em; color: var(--accent); margin-bottom: 1em; letter-spacing: 0.06em; }
+  nav.toc ol { padding-left: 1.8em; }
+  nav.toc li { margin: 0.35em 0; font-size: 0.95em; }
+  nav.toc a { color: var(--link); text-decoration: none; }
+  nav.toc a:hover { text-decoration: underline; }
+  nav.toc .part-title { font-weight: 700; color: var(--accent); margin-top: 0.8em; list-style: none; }
+
+  /* ---- 标题层级 ---- */
+  h2 { font-size: 1.7em; color: var(--accent); margin: 2.5em 0 0.6em; padding-bottom: 0.3em; border-bottom: 1px solid var(--border); letter-spacing: 0.04em; }
+  h3 { font-size: 1.25em; color: var(--accent); margin: 2em 0 0.5em; }
+  h4 { font-size: 1.05em; color: var(--text); margin: 1.6em 0 0.4em; }
+
+  p { margin: 0.8em 0; text-align: justify; }
+
+  /* ---- 公式 ---- */
+  .math-block {
+    display: block;
+    overflow-x: auto;
+    padding: 0.8em 1.2em;
+    margin: 1em 0;
+    background: var(--code-bg);
+    border-left: 3px solid var(--accent);
+    font-family: "CMU Serif", "Latin Modern Math", "STIX Two Math", serif;
+    font-size: 1.05em;
+  }
+  .math-inline { font-family: "CMU Serif", "Latin Modern Math", "STIX Two Math", serif; }
+
+  /* ---- 定义/定理/证明 ---- */
+  .def-block, .thm-block, .proof-block, .note-block, .honest-block {
+    margin: 1.2em 0;
+    padding: 1em 1.4em;
+    border-radius: 5px;
+    border-left: 3px solid var(--accent);
+  }
+  .def-block { background: var(--def-bg); }
+  .thm-block { background: var(--thm-bg); }
+  .proof-block { background: var(--proof-bg); }
+  .note-block { background: var(--note-bg); border-left-color: #c9a050; }
+  .honest-block { background: var(--honest-bg); border-left-color: #d4a040; font-size: 0.92em; }
+  .def-block .label, .thm-block .label, .proof-block .label {
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 0.4em;
+    letter-spacing: 0.04em;
+  }
+  .honest-block .label { color: #b08030; }
+
+  /* ---- 表格 ---- */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.2em 0;
+    font-size: 0.93em;
+  }
+  th, td {
+    padding: 0.55em 0.8em;
+    border: 1px solid var(--border);
+    text-align: left;
+  }
+  th { background: var(--code-bg); font-weight: 700; color: var(--accent); }
+
+  /* ---- 其他 ---- */
+  hr { border: none; border-top: 1px solid var(--border); margin: 2.5em 0; }
+  .part-break { text-align: center; margin: 3em 0 1.5em; }
+  .part-break .ornament { font-size: 1.4em; color: var(--accent); }
+  .part-break h2 { border-bottom: none; margin-top: 0.3em; }
+  sup { font-size: 0.78em; }
+  .ref { color: var(--muted); font-size: 0.9em; }
+
+  @media (max-width: 600px) {
+    body { padding: 1em 0.8em 3em; font-size: 0.94em; }
+    .cover h1 { font-size: 1.8em; }
+    .math-block { font-size: 0.92em; padding: 0.6em 0.8em; }
+  }
 </style>
 </head>
 <body>
-<div id="app">
-<div id="nav">
-<div class="nav-title">几何论<small>从三条公理到物理常数的唯一推导</small></div>
-<div class="nav-section">卷四 · 三场动力学</div>
-<div class="nav-sub">上篇：信息场动力学</div>
-<a href="#ch4-1">§4.1 信息场定义与基本变量</a>
-<a href="#ch4-2">§4.2 信息场三层封闭体系</a>
-<a href="#ch4-3">§4.3 信息场衰减与慢化因子</a>
-<a href="#ch4-4">§4.4 谱解码与观测映射</a>
-<div class="nav-sub">中篇：因果场动力学</div>
-<a href="#ch4-5">§4.5 因果场定义与密度动力学</a>
-<a href="#ch4-6">§4.6 C-I双场耦合与联合稳态</a>
-<a href="#ch4-7">§4.7 一阶耦合结构抑制</a>
-<a href="#ch4-8">§4.8 桥接定理</a>
-<div class="nav-sub">下篇：M场与完全耦合</div>
-<a href="#ch4-9">§4.9 约束截面在三场耦合中的应用</a>
-<a href="#ch4-10">§4.10 M场法向几何与质量生成</a>
-<a href="#ch4-11">§4.11 M-C耦合与M-I耦合</a>
-<a href="#ch4-12">§4.12 M场谱分析与呼吸模式</a>
-<a href="#ch4-13">§4.13 M-C-I三场完全耦合</a>
-<div class="nav-section" style="margin-top:1.5em;">其他各卷</div>
-<a href="../vol0/index.html">卷零 · 导读与总图</a>
-<a href="../vol1/index.html">卷一 · 公理与本体论</a>
-<a href="../vol2/index.html">卷二 · 数学结构</a>
-<a href="../vol3/index.html">卷三 · 谱几何与数值输出</a>
-<a class="active" href="../vol4/index.html">卷四 · 三场动力学</a>
-<a href="../vol5/index.html">卷五 · 量子化</a>
-<a href="../vol6/index.html">卷六 · 粒子物理</a>
-<a href="../vol7/index.html">卷七 · 宇宙学与天体物理</a>
-<a href="../vol8/index.html">卷八 · 交叉科学</a>
-<a href="../volA/index.html">卷A · 附录</a>
-</div>
-<div id="main">
-<div class="breadcrumb"><a href="../index.html">几何论</a> / 卷四：三场动力学</div>
 
-<h1>卷四：三场动力学</h1>
-
-<div class="volume-desc">
-<p><strong>前置依赖</strong>：卷三（谱几何与数值输出），卷二 §2.7（约束截面基本构造）</p>
-<p><strong>互锁关系</strong>：本章与卷三 §3.4–§3.8（互锁圈）有深层关联——三场动力学中的约束截面、慢化因子、谱分解等概念均源自谱互锁圈的输出。建议在熟悉卷三的基础上阅读本卷。</p>
-<p><strong>在递进链中的位置</strong>：公理 → 数学结构 → 谱几何 → <strong>三场动力学 ⬅️ 你在这里</strong> → 量子化 → 应用</p>
+<!-- ═══════════════ 封面 ═══════════════ -->
+<div class="cover">
+  <div class="vol-num">几 何 论 · 卷 四</div>
+  <h1>三 场 动 力 学</h1>
+  <div class="subtitle">信息场 · 因果场 · M 场 —— 从扇区耦合到完全统一</div>
+  <div class="meta">
+    <span>版本 260711.0</span><span>|</span><span>欧阳国彬</span>
+  </div>
 </div>
 
-<div class="nav-hint">
-<strong>本卷结构说明</strong>：三场动力学分为三篇——上篇（信息场，§4.1–§4.4）、中篇（因果场，§4.5–§4.8）、下篇（M场与完全耦合，§4.9–§4.13）。三篇可独立阅读，但§4.8（桥接定理）和§4.9（约束截面应用）是连接各篇的关键枢纽，建议读完全篇后再回看这两章以体会三场的整体耦合结构。
-</div>
-
-<!-- ============================================================ -->
-<!-- 上篇：信息场动力学 -->
-<!-- ============================================================ -->
-<h2 class="part-title">上篇：信息场动力学</h2>
-
-<!-- ======= §4.1 ======= -->
-<h2 id="ch4-1">§4.1 信息场定义与基本变量</h2>
-
-<h3>4.1.1 信息场的本体论地位</h3>
-
-<p>信息场（I-场）是三分切丛 $\mathcal{M}\oplus\mathcal{C}\oplus\mathcal{I}$ 中信息扇区 $\mathcal{I}$ 上的动力学场。它在三场中承担独特的角色：</p>
-
-<ul>
-<li><strong>不直接映射为独立粒子</strong>——与M场映射为质量、C场映射为因果传播不同，I-场不对应任何已知基本粒子，而是作为"信息/相位通道"存在</li>
-<li><strong>谱解码的载体</strong>——卷三输出的谱几何常数（$S_e$, $K$, $\lambda_1^{\text{eff}}$, $\lambda_2^{\text{eff}}$）需要经I-场的谱解码过程才能映射为物理可观测量</li>
-<li><strong>退相干与因果深度的桥梁</strong>——信息场的衰减率 $\Gamma_{\text{geo}}$ 和慢化因子 $s$ 直接决定了因果推进的步数和退相干时间尺度</li>
-</ul>
-
-<p>信息场的物理映射对应于电磁相互作用的信息层面。在腰边耦合中，M-C耦合（电子-光子对）的耦合常数 $S_e=137.035999084$ 本身是一个谱几何输出——而该常数在信息场中被编码为全息屏上的离散图结构。</p>
-
-<h3>4.1.2 基本变量：信息密度场</h3>
-
-<div class="definition-box">
-<strong>定义 4.1（信息密度场）</strong>：信息场的基本变量为约束截面 $\Sigma$ 上的实标量密度场
-$$\rho: \Sigma \times [0,\infty) \to \mathbb{R}^+, \quad (\xi,\eta;\sigma) \mapsto \rho(\xi,\eta;\sigma)$$
-其中 $(\xi,\eta)$ 为 $\Sigma$ 上的内禀坐标：
-$$\xi = \theta_I, \quad \eta = \theta_C - \theta_M$$
-$\sigma$ 为几何时间参数（无量纲，与物理时间 $\tau$ 通过量纲桥 $\chi_T$ 连接：$\tau = \chi_T \cdot \sigma$）。
-</div>
-
-<p>$\rho$ 的归一化条件为 $\int_\Sigma \rho \, d\mu = 1$，其中 $d\mu$ 为 $\Sigma$ 上的Hessian度量体积元。</p>
-
-<p>信息密度场的物理解释：$\rho(\xi,\eta;\sigma)$ 代表在几何时间 $\sigma$ 时，全息屏上编码单元在角度配置 $(\xi,\eta)$ 处的信息密度。信息密度高的区域对应"更多的几何信息集中在该角度配置"。其归一化保证了全息屏的总信息量有限——这是谱图论模型的核心假设。</p>
-
-<h3>4.1.3 信息场的物理属性</h3>
-
-<p>信息密度场具有以下属性：</p>
-
+<!-- ═══════════════ 目录 ═══════════════ -->
+<nav class="toc">
+<h2>目  录</h2>
 <ol>
-<li><strong>非负性</strong>：$\rho \ge 0$（信息密度不能为负）</li>
-<li><strong>归一化</strong>：$\int_\Sigma \rho \, d\mu = 1$（全息屏总信息量守恒，但分布会演化）</li>
-<li><strong>扩散性</strong>：无外部源时，$\rho$ 服从图热方程，向均匀分布扩散</li>
-<li><strong>响应性</strong>：有物质源时，$\rho$ 响应源项，形成稳态非均匀分布</li>
+  <li class="part-title">上篇 · 框架与信息场（§4.1 – §4.5）</li>
+  <li><a href="#s4.1">§4.1 三场扇区耦合总论</a></li>
+  <li><a href="#s4.2">§4.2 信息场的三层封闭体系</a></li>
+  <li><a href="#s4.3">§4.3 信息场衰减定理与慢化因子</a></li>
+  <li><a href="#s4.4">§4.4 三分切丛子结构组合数学</a></li>
+  <li><a href="#s4.5">§4.5 信息场观测映射链</a></li>
+
+  <li class="part-title">中篇 · 因果场（§4.6 – §4.9）</li>
+  <li><a href="#s4.6">§4.6 因果场密度动力学（Liouville 提升）</a></li>
+  <li><a href="#s4.7">§4.7 C–I 联合 H-定理与稳态</a></li>
+  <li><a href="#s4.8">§4.8 因果对称性破缺与规范结构</a></li>
+  <li><a href="#s4.9">§4.9 C–I 双场桥接定理</a></li>
+
+  <li class="part-title">下篇 · M 场与三场耦合（§4.10 – §4.18）</li>
+  <li><a href="#s4.10">§4.10 M 场法向几何结构</a></li>
+  <li><a href="#s4.11">§4.11 质量生成动力学</a></li>
+  <li><a href="#s4.12">§4.12 M–C 腰边耦合</a></li>
+  <li><a href="#s4.13">§4.13 M–I 耦合</a></li>
+  <li><a href="#s4.14">§4.14 M 场呼吸模式</a></li>
+  <li><a href="#s4.15">§4.15 M 场谱分析</a></li>
+  <li><a href="#s4.16">§4.16 三代轻子质量统一描述</a></li>
+  <li><a href="#s4.17">§4.17 光子零质量定理</a></li>
+  <li><a href="#s4.18">§4.18 三场完全耦合</a></li>
 </ol>
+</nav>
 
-<p>这些属性使信息场在数学上等价于一个在约束截面 $\Sigma$ 上扩散的概率密度场。这一等价不是类比，而是几何论内在的结论——信息场的动力学方程（§4.2）直接从全息屏的谱图论模型导出，不引入任何外部概率假设。</p>
+<!-- ═══════════════ 导言 ═══════════════ -->
+<h2>卷四导言</h2>
 
-<h3>4.1.4 与其它扇区变量的关系</h3>
+<p>卷四是几何论从<strong>结构</strong>迈向<strong>动力学</strong>的关键一步。前三卷建立了三分切丛
+<span class="math-inline">𝒯 = ℳ ⊕ 𝒞 ⊕ ℐ</span> 的几何骨架、谱分解与角度锁定；卷四在此骨架上赋予
+三个扇区各自的演化规律，并最终将它们耦合为统一的动力学体系。</p>
 
-<p>信息密度场 $\rho$ 与M场（质量场）、C场（因果场）的变量通过以下方式连接：</p>
+<p>三场——<strong>信息场（I-field）</strong>、<strong>因果场（C-field）</strong>、<strong>M 场</strong>——各自由
+约束截面 Σ 上的角度参数 <span class="math-inline">(θ<sub>M</sub>, θ<sub>C</sub>, θ<sub>I</sub>)</span> 驱动。
+它们的动力学不是外加的，而是从扇区耦合与 Hessian 硬模中涌现的。</p>
 
-<ul>
-<li><strong>与C场的关系</strong>：$\rho$ 在 $\Sigma$ 上的扩散速率由Hessian度量决定，而C场的瞬态推进沿同一度量的软模方向。二者的速率自洽条件由覆盖定理的遍历形式（§4.8）约束</li>
-<li><strong>与M场的关系</strong>：质量源 $\mathcal{S}$ 作为信息场非齐次扩散方程的源项出现——物质（M场）的存在改变了信息场的稳态分布</li>
-<li><strong>与约束截面的关系</strong>：$\Sigma$ 上的Hessian度量 $g_{ij}=H_{ij}(\theta^0)$ 决定了信息场的扩散张量</li>
-</ul>
-
-<div class="theorem-box">
-<strong>命题 4.1（源-密度耦合）</strong>：在稳态条件下，信息密度 $\rho_{\text{eq}}$ 与质量源 $\mathcal{S}$ 满足 Poisson 方程 $\Delta_g \rho_{\text{eq}} = -\mathcal{S}$，其中 $\Delta_g$ 为 $\Sigma$ 上的 Laplace-Beltrami 算子（由Hessian度量 $g_{ij}$ 诱导）。源项 $\mathcal{S}$ 正比于M场的局域质量密度。
+<div class="honest-block">
+<div class="label">⚑ 诚实标注</div>
+<p>三场动力学的数学框架已基本闭合。M 场的量子化路径（0.8 系列）和在标准模型参数上的
+预测已取得高度吻合（如 ℏ<sub>eff</sub> 的三路交叉验证）。但因果场密度算子的谱分解、
+以及三场耦合在极端曲率下的非微扰行为，仍属于开放问题。本卷中所有此类边界均以
+「诚实标注」明确指出。</p>
 </div>
 
-<div class="chapter-end">
-<h3>延伸阅读</h3>
-<p>0.4 §2-3（信息场定义）；0.4 §5（基本变量与坐标选择）</p>
+<!-- ═══════════════ 上篇 ═══════════════ -->
+<div class="part-break">
+  <div class="ornament">◆ ◆ ◆</div>
+  <h2>上篇 · 框架与信息场</h2>
 </div>
 
-<!-- ======= §4.2 ======= -->
-<h2 id="ch4-2">§4.2 信息场三层封闭体系</h2>
+<!-- §4.1 -->
+<h3 id="s4.1">§4.1 三场扇区耦合总论</h3>
 
-<h3>4.2.1 信息场三层封闭的动机</h3>
+<p>三场扇区耦合是卷四的总入口。它建立三场的本体论定位与相互作用骨架：</p>
 
-<p>信息场的动力学不能被单一的演化方程描述。原因在于：在全息屏 $\Sigma$ 的不同区域（对应不同的几何时间 $\sigma$ 和物质源强度），信息密度 $\rho$ 的演化行为有本质不同的数学形式。审计清单（信息场审计清单_CN_260626.6）确认了三个A级待证点（IF-Q1、IF-Q2、IF-Q4）直接涉及动力学闭合。三层封闭体系在同一数学框架内同时闭合这三个待证点。</p>
-
-<h3>4.2.2 第一层：自由扩散（齐次图热方程）</h3>
-
-<div class="theorem-box">
-<strong>定理 4.1（齐次图热方程——自由扩散层）</strong>：在无物质源或源可忽略的区域，信息密度 $\rho$ 在 $\Sigma$ 上的演化服从齐次图热方程
-$$\frac{\partial \rho}{\partial \sigma} = -L_G \rho$$
-其中 $L_G$ 为 $\Sigma$ 的归一化图拉普拉斯算子。在 $N_{\text{info}} \to \infty$ 极限下，$L_G$ 连续退化为 Laplace-Beltrami 算子 $-\Delta_g$。解的显式形式为 $\rho(\sigma) = e^{-\sigma L_G}\rho_0$，表示半群作用。
-</div>
-
-<p><strong>物理含义</strong>：第一层描述信息在无外部干扰时的自然扩散——信息密度从初始分布向均匀分布"摊开"。这一过程对应于纯几何系统中的退相干：几何信息从编码单元的有序分布衰减为均匀噪声。</p>
-
-<p><strong>适用条件</strong>：$\sigma \ll N_{\text{dec}}$（退相干时间之前），且 $\mathcal{S} \approx 0$。</p>
-
-<p><strong>来源</strong>：0.4 §6.1（定理6.1）</p>
-
-<h3>4.2.3 第二层：源驱动响应（非齐次图热方程）</h3>
-
-<div class="theorem-box">
-<strong>定理 4.2（非齐次图热方程——响应层）</strong>：存在物质源 $\mathcal{S}$ 时，信息密度 $\rho$ 的演化服从非齐次图热方程
-$$\frac{\partial \rho}{\partial \sigma} = -L_G \rho + \mathcal{S}$$
-其中源项 $\mathcal{S}$ 由局域质量密度决定。解的显式形式为 Duhamel 积分解：
-$$\rho(\sigma) = e^{-\sigma L_G}\rho_0 + \int_0^\sigma e^{-(\sigma-\sigma')L_G}\mathcal{S}(\sigma') \, d\sigma'$$
-</div>
-
-<p><strong>物理含义</strong>：第二层描述物质源如何驱动信息密度的响应——物质的存在改变了信息的分布。这对应于"质量扭曲了几何信息"的直觉：物理系统中有物质的地方，信息密度分布会被"推高"。</p>
-
-<p><strong>适用条件</strong>：$\sigma \ll N_{\text{dec}}$，且 $\mathcal{S} > 0$。</p>
-
-<p><strong>来源</strong>：0.4 §6.2（定理6.2）</p>
-
-<h3>4.2.4 第三层：稳态构型（约束截面Poisson方程）</h3>
-
-<div class="theorem-box">
-<strong>定理 4.3（约束截面Poisson方程——稳态层）</strong>：当物质源持续注入与图扩散达到平衡时，信息密度 $\rho_{\text{eq}}$ 满足静态 Poisson 方程
-$$\Delta_g \rho_{\text{eq}} = -\mathcal{S}$$
-其中 $\Delta_g$ 为 $\Sigma$ 上的 Laplace-Beltrami 算子，$\mathcal{S}$ 为稳态源分布。
-</div>
-
-<p><strong>物理含义</strong>：第三层描述长期平衡态。物质源持续将信息"推入"系统，而图扩散持续将信息"摊平"——当两者速率相等时，系统达到稳态 $\rho_{\text{eq}}$。这一稳态构型是观测到的物理信息分布的基础。</p>
-
-<p><strong>适用条件</strong>：$\sigma \gg \Gamma_{\text{geo}}^{-1}$（退相干时间之后）。</p>
-
-<p><strong>来源</strong>：0.4 §6.3（定理6.3）</p>
-
-<h3>4.2.5 层间过渡判据</h3>
-
-<p>三层之间的过渡由以下判据决定：</p>
-
-<table class="data-table">
-<thead>
-<tr><th>过渡</th><th>判据</th><th>数学条件</th></tr>
-</thead>
-<tbody>
-<tr><td>第一层 → 第二层</td><td>源强度阈值</td><td>$\|\mathcal{S}\| > \epsilon_{\text{src}}$</td></tr>
-<tr><td>第一/二层 → 第三层</td><td>时间尺度</td><td>$\sigma \gg \Gamma_{\text{geo}}^{-1}$</td></tr>
-<tr><td>第二层 → 第一层</td><td>源衰减</td><td>$\|\mathcal{S}\| \to 0$</td></tr>
-</tbody>
+<table>
+<tr><th>场</th><th>对应扇区</th><th>几何角色</th><th>物理对应</th></tr>
+<tr><td>信息场 I</td><td>ℐ（信息扇区）</td><td>观测者-系统界面；信息编码与解码</td><td>观测、测量、熵流</td></tr>
+<tr><td>因果场 C</td><td>𝒞（因果扇区）</td><td>沿 η 方向（Hessian 硬模）的因果推进</td><td>时间演化、因果序</td></tr>
+<tr><td>M 场</td><td>ℳ（主扇区）</td><td>法向几何；质量生成与呼吸模式</td><td>质量、惯性、规范结构</td></tr>
 </table>
 
-<p>其中 $\Gamma_{\text{geo}}$ 为图热核的代数连通度衰减率（见§4.3）。</p>
+<p>三场不是独立的——它们通过约束截面 Σ 上的角度三元组
+<span class="math-inline">(θ<sub>M</sub>, θ<sub>C</sub>, θ<sub>I</sub>)</span> 耦合。
+耦合的数学基础是 0.1.2 建立的跨扇区耦合 HW 前置因子代数结构，
+以及 0.1.1 的三对偶几何约束。</p>
 
-<p><strong>来源</strong>：0.4 §5</p>
-
-<!-- ======= §4.3 ======= -->
-<h2 id="ch4-3">§4.3 信息场衰减与慢化因子</h2>
-
-<h3>4.3.1 衰减定理的谱图论形式</h3>
-
-<p>信息场的前两层演化方程（齐次/非齐次图热方程）中，衰减速率由图拉普拉斯 $L_G$ 的谱决定。衰减定理将这一谱信息与几何量直接连接。</p>
-
-<div class="theorem-box">
-<strong>定理 4.4（信息场衰减定理）</strong>：在约束截面 $\Sigma$ 上，信息密度 $\rho$ 的几何衰减率 $\Gamma_{\text{geo}}$ 由图拉普拉斯 $L_G$ 的代数连通度 $\mu_1(L_G)$ 决定：
-$$\Gamma_{\text{geo}} = \frac{\mu_1(L_G)}{N_{\text{info}}}$$
-其中 $\mu_1(L_G)$ 是 $L_G$ 的第二小特征值（Fiedler值），$N_{\text{info}}$ 为全息屏的编码单元总数。衰减率 $\Gamma_{\text{geo}}$ 的数值为 $5.75 \times 10^{-23}$（无量纲），对应编码单元数 $N_{\text{dec}} = 1.74 \times 10^{22}$。
+<div class="note-block">
+<div class="label">📎 源文映射</div>
+<p>本节内容整合自 0.4 信息场动力学总论、0.5 因果场动力学总论、0.6 M 场动力学总论。</p>
 </div>
 
-<p><strong>物理含义</strong>：$\Gamma_{\text{geo}}$ 衡量信息密度扩散"多快"——值越大，扩散越快，信息保持结构的时间越短。$N_{\text{dec}}$ 给出了退相干之前信息可保持有效结构的单元数。</p>
+<!-- §4.2 -->
+<h3 id="s4.2">§4.2 信息场的三层封闭体系</h3>
 
-<p><strong>来源</strong>：0.4.1 §3（定理3.1），基于0.4 §7（定理7.1）的严格框架</p>
+<p>信息场 I 定义在约束截面 Σ 上的信息扇区 ℐ 中。其核心特征是
+<strong>三层封闭</strong>：</p>
 
-<h3>4.3.2 慢化因子 $s$ 的几何起源</h3>
-
-<p>信息场的扩散过程并非各向同性的标准扩散——Hessian度量的各向异性导致扩散在软模方向（$\xi$方向）和硬模方向（$\eta$方向）的速率相差约150倍。这一差异被编码为一个单一标量：慢化因子 $s$。</p>
-
-<div class="definition-box">
-<strong>定义 4.2（慢化因子）</strong>：慢化因子 $s$ 定义为Hessian矩阵两个非零本征值的谱矩比：
-$$s = \left(\frac{\lambda_2}{\lambda_1}\right)^{1/3} = 5.33$$
-其中 $\lambda_1 = 391.05$（软模本征值），$\lambda_2 = 59324.3$（硬模本征值）。
+<div class="def-block">
+<div class="label">定义 4.2.1（信息场三层封闭）</div>
+<p>信息场的演化空间在三个层级上封闭：</p>
+<ol>
+  <li><strong>L₁ 层（快层）</strong>：局部信息编码与擦除，时间尺度最短；</li>
+  <li><strong>L₂ 层（中层）</strong>：扇区间信息交换，受因果场渗透率调制；</li>
+  <li><strong>L₃ 层（慢层）</strong>：全局信息饱和稳态，与观测者自举（0.4.7–0.4.8）耦合。</li>
+</ol>
+<p>三层之间存在严格的层级约束截面结构（0.3.1.1），每一层的信息流都由
+角度参数 <span class="math-inline">θ<sub>I</sub></span> 及其与 <span class="math-inline">θ<sub>C</sub></span>、
+<span class="math-inline">θ<sub>M</sub></span> 的交互项决定。</p>
 </div>
 
-<p>指数 $1/3$ 的来源：随机矩阵谱矩的标度律——在GOE系综中，本征值分布的标度指数由谱矩的渐近行为决定（详见0.4 §5.1）。</p>
-
-<div class="theorem-box">
-<strong>定理 4.5（慢化因子的统一作用）</strong>：慢化因子 $s$ 在三层封闭体系中以有效扩散常数修正因子的形式统一进入动力学：
-$$\tilde{D}_{\text{eff}} = \frac{D_0}{s}$$
-等价于图拉普拉斯时间尺度的拉伸 $\tilde{\sigma} = \sigma / s$。这意味着：各向异性Hessian度量下的实际扩散速率，比各向同性近似慢 $s$ 倍。或者等价地：系统的有效几何时间被拉伸了 $s$ 倍。
+<div class="honest-block">
+<div class="label">⚑ 诚实标注</div>
+<p>L₁→L₂→L₃ 的层级分离是清晰的，但 L₃ 层「全局信息饱和」与 0.4.8 第八级自举的
+关系仍需更精确的数学刻画。</p>
 </div>
 
-<p><strong>来源</strong>：0.4.2（慢化因子数值分析），0.4.4 §4（统一定位）</p>
+<!-- §4.3 -->
+<h3 id="s4.3">§4.3 信息场衰减定理与慢化因子</h3>
 
-<h3>4.3.3 衰减模态与图特征函数</h3>
+<p>信息场衰减定理（0.4.1）是信息场动力学的核心定量结果：</p>
 
-<p>信息密度 $\rho$ 在 $\Sigma$ 上的演化可以按图拉普拉斯 $L_G$ 的特征函数展开。衰减模态——即各特征函数分量的衰减速率——直接对应于特征值的大小：</p>
+<div class="thm-block">
+<div class="label">定理 4.3.1（信息场衰减定理）</div>
+<p>在无外部信息注入的封闭扇区 ℐ 中，信息密度
+<span class="math-inline">ρ<sub>I</sub>(t)</span> 沿 σ 方向（Hessian 软模方向）
+满足指数衰减：</p>
+<div class="math-block">ρ<sub>I</sub>(t) = ρ<sub>I</sub>(0) · exp(−γ<sub>I</sub> · t)</div>
+<p>其中衰减常数 <span class="math-inline">γ<sub>I</sub></span> 由角度 θ<sub>I</sub> 和跨扇区耦合强度决定。</p>
+</div>
 
-<ul>
-<li><strong>基模</strong>（$\mu_0 = 0$）：对应稳态均匀分布，不衰减</li>
-<li><strong>第一衰减模</strong>（$\mu_1$）：对应Fiedler向量，衰减率 $\Gamma_{\text{geo}} = \mu_1/N_{\text{info}}$</li>
-<li><strong>高阶模</strong>（$\mu_k, k\ge2$）：对应更精细的几何结构，衰减更快</li>
-</ul>
+<p>慢化因子（0.4.2）描述了因果场渗透对信息衰减的调制效应——
+当因果场密度 ρ<sub>C</sub> 增大时，信息衰减被显著减缓，形成「因果保护」效应。</p>
 
-<p>Fiedler向量的空间结构——在 $\Sigma$ 上正负区域的分割——直接对应全息屏上"信息保持区"和"信息流失区"的划分。这一划分是因果深度（§4.5）和谱解码（§4.4）的几何基础。</p>
+<div class="note-block">
+<div class="label">📎 源文映射</div>
+<p>0.4.1 信息场衰减定理；0.4.2 信息场慢化因子。</p>
+</div>
 
+<!-- §4.4 -->
+<h3 id="s4.4">§4.4 三分切丛子结构组合数学</h3>
 
-<!-- ======= §4.4 ======= -->
-<h2 id="ch4-4">§4.4 谱解码与观测映射</h2>
+<p>三分切丛 <span class="math-inline">𝒯 = ℳ ⊕ 𝒞 ⊕ ℐ</span> 的子结构不是任意的——
+它们受限于组合约束（0.4.3）：只有特定角度组合下的扇区配置是动力学允许的。
+这为后续的 C–I 交互自由能（0.5.2）和 M–C 腰边耦合（0.6.3）提供了组合学基础。</p>
 
-<h3>4.4.1 从谱几何到物理可观测量的桥梁</h3>
+<div class="note-block">
+<div class="label">📎 源文映射</div>
+<p>0.4.3 三分切丛子结构组合数学。</p>
+</div>
 
-<p>卷三输出的谱几何常数（$S_e$, $K$, $\lambda_1^{\text{eff}}$, $\lambda_2^{\text{eff}}$, $\chi_L$, $\chi_T$）是纯几何量。它们需要经过"谱解码"过程——即信息场的观测映射链——才能与物理实验的测量值对应。谱解码的本质是回答：<em>几何常数如何被观测者编码为物理量？</em></p>
+<!-- §4.5 -->
+<h3 id="s4.5">§4.5 信息场观测映射链</h3>
 
-<p>谱解码的核心机制是观测者自举（§3.6）在信息场框架内的具体实现。观测者不是外部的，而是信息场稳态构型 $\rho_{\text{eq}}$ 中的局部结构——这是「观测者自举」的几何论版本。</p>
+<p>信息场统一动力学方程（0.4.4）将三层封闭体系的演化统一为一个偏微分方程。
+观测映射链（0.4.5）则将该方程的解映射到可观测量——
+通过几何因子 C<sub>geo</sub>（0.4.6）和谱单位选择（0.4.7），
+最终在第八级自举（0.4.8）中完成从不可计算自由度到观测者角度锁定的闭合。</p>
 
-<h3>4.4.2 观测映射链</h3>
+<div class="note-block">
+<div class="label">📎 源文映射</div>
+<p>0.4.4 信息场统一动力学方程；0.4.5 信息场观测映射链；0.4.6 几何因子 C<sub>geo</sub>；
+0.4.7 谱单位选择与观测者自举；0.4.8 第八级自举。</p>
+</div>
 
-<p>谱解码过程的观测映射链由以下四个阶段组成：</p>
+<!-- ═══════════════ 中篇 ═══════════════ -->
+<div class="part-break">
+  <div class="ornament">◆ ◆ ◆</div>
+  <h2>中篇 · 因果场</h2>
+</div>
 
-<table class="data-table">
-<thead>
-<tr><th>阶段</th><th>输入</th><th>过程</th><th>输出</th></tr>
-</thead>
-<tbody>
-<tr><td>① 几何输入</td><td>$S_{\min}=24$, Hessian谱</td><td>谱刚性 + 自举闭环</td><td>$S_e, K, \theta_M, \theta_C, \theta_I$</td></tr>
-<tr><td>② 量纲桥连接</td><td>$S_e, K, \chi_L, \chi_T$</td><td>四方程量纲桥</td><td>$c, \hbar, m_e, \alpha^{-1}$</td></tr>
-<tr><td>③ 信息场稳态</td><td>物理常数</td><td>三层封闭体系 → 稳态 $\rho_{\text{eq}}$</td><td>信息密度场</td></tr>
-<tr><td>④ 观测者解码</td><td>$\rho_{\text{eq}}$</td><td>局部稳态构型中的自举过程</td><td>物理可观测测量值</td></tr>
-</tbody>
+<!-- §4.6 -->
+<h3 id="s4.6">§4.6 因果场密度动力学（Liouville 提升）</h3>
+
+<p>因果场 C 的核心动力学来自密度算子的 Liouville 提升（0.5.1）。
+与信息场的衰减不同，因果场沿 η 方向（Hessian 硬模）演化，
+其密度 <span class="math-inline">ρ<sub>C</sub></span> 满足修正的 Liouville 方程：</p>
+
+<div class="def-block">
+<div class="label">定义 4.6.1（因果场 Liouville 提升）</div>
+<p>将经典 Liouville 算子 <span class="math-inline">L̂</span> 从相空间提升到三分切丛的因果扇区 𝒞：</p>
+<div class="math-block">∂<sub>t</sub> ρ<sub>C</sub> = {H<sub>C</sub>, ρ<sub>C</sub>} + 𝒟[ρ<sub>C</sub>]</div>
+<p>其中 <span class="math-inline">{·,·}</span> 是因果扇区上的 Poisson 括号，
+<span class="math-inline">𝒟[ρ<sub>C</sub>]</span> 是与信息场的交互耗散项。</p>
+</div>
+
+<div class="thm-block">
+<div class="label">定理 4.6.2（因果场熵单调性）</div>
+<p>在 Liouville 提升下，因果场的 von Neumann 熵
+<span class="math-inline">S<sub>C</sub> = −Tr(ρ<sub>C</sub> ln ρ<sub>C</sub>)</span>
+满足 <span class="math-inline">∂<sub>t</sub>S<sub>C</sub> ≥ 0</span>，
+等号仅当 ρ<sub>C</sub> 达到联合稳态时成立。</p>
+</div>
+
+<div class="note-block">
+<div class="label">📎 源文映射</div>
+<p>0.5.1 因果场密度动力学：Liouville 提升与熵单调性。</p>
+</div>
+
+<!-- §4.7 -->
+<h3 id="s4.7">§4.7 C–I 联合 H-定理与稳态</h3>
+
+<p>因果场与信息场不是孤立的。0.5.2 构造了 C–I 交互自由能的显式形式，
+并证明了联合 H-定理——两场组成的复合系统的总熵单调不减。
+当系统达到联合稳态（0.5.3）时，因果场密度与信息场密度满足
+确定的平衡关系，该稳态由 ℐ 场耗散结构理论（0.5.4）和
+交互熵的变分原理（0.5.5）共同刻画。</p>
+
+<div class="note-block">
+<div class="label">📎 源文映射</div>
+<p>0.5.2 C–I 交互自由能的显式构造与联合 H-定理；0.5.3 联合稳态；
+0.5.4 ℐ 场的耗散结构理论；0.5.5 交互熵与信息势的变分原理。</p>
+</div>
+
+<!-- §4.8 -->
+<h3 id="s4.8">§4.8 因果对称性破缺与规范结构</h3>
+
+<p>因果场的对称性破缺（0.5.6）是理解「时间箭头」的几何根源：
+在对称基态 <span class="math-inline">θ* = (30°, 30°, 30°)</span> 附近，
+因果场具有完整的对称性；当系统偏离基态（如初始
+<span class="math-inline">θ<sub>C</sub> ≈ 32.07°</span>），
+对称性自发破缺，产生因果推进的方向性。</p>
+
+<div class="note-block">
+<div class="label">📎 源文映射</div>
+<p>0.5.6 因果对称性破缺与信息势的规范结构。</p>
+</div>
+
+<!-- §4.9 -->
+<h3 id="s4.9">§4.9 C–I 双场桥接定理</h3>
+
+<p>桥接定理（0.5.7）是因果场中篇的收官：它将 C 场和 I 场的演化方程
+耦合为一个统一的 C–I 联合演化系统，证明了在跨扇区耦合 HW 前置因子
+的调制下，双场系统具有唯一的联合吸引子。</p>
+
+<div class="note-block">
+<div class="label">📎 源文映射</div>
+<p>0.5.7 C–I 双场耦合的桥接定理与联合演化。</p>
+</div>
+
+<!-- ═══════════════ 下篇 ═══════════════ -->
+<div class="part-break">
+  <div class="ornament">◆ ◆ ◆</div>
+  <h2>下篇 · M 场与三场耦合</h2>
+</div>
+
+<!-- §4.10 -->
+<h3 id="s4.10">§4.10 M 场法向几何结构</h3>
+
+<p>M 场是三分切丛中 ℳ 扇区的动力学实现。其法向几何结构（0.6.1）
+描述了 M 场沿约束截面 Σ 的法向（垂直于因果推进方向 η）的曲率分布。
+这个法向曲率是质量生成的几何根源。</p>
+
+<div class="note-block">
+<div class="label">📎 源文映射</div>
+<p>0.6 M 场动力学总论；0.6.1 M 场法向几何结构。</p>
+</div>
+
+<!-- §4.11 -->
+<h3 id="s4.11">§4.11 质量生成动力学</h3>
+
+<p>质量生成动力学（0.6.2）是卷四最重要的应用出口之一。
+在 M 场框架下，质量不是基本参数，而是法向曲率的动力学响应：
+</p>
+
+<div class="def-block">
+<div class="label">质量生成的几何机制</div>
+<p>粒子质量 <span class="math-inline">m</span> 正比于 M 场法向曲率在相应扇区子空间上的投影积分。
+三代轻子的质量差异源于法向曲率在不同角度配置下的谱分解——
+这是一个纯几何效应，不需要外加 Yukawa 耦合参数。</p>
+</div>
+
+<div class="note-block">
+<div class="label">📎 源文映射</div>
+<p>0.6.2 质量生成动力学。</p>
+</div>
+
+<!-- §4.12 – §4.17 -->
+<h3 id="s4.12">§4.12 M–C 腰边耦合</h3>
+<p>M 场与因果场通过「腰边耦合」（0.6.3）相互作用——
+M 场法向曲率受因果场密度梯度的调制，反之因果推进速率也受 M 场呼吸模式的影响。</p>
+
+<h3 id="s4.13">§4.13 M–I 耦合</h3>
+<p>M 场与信息场的耦合（0.6.4）决定了质量信息如何被观测者获取。
+信息场衰减速率 γ<sub>I</sub> 在 M 场存在时获得额外修正项。</p>
+
+<h3 id="s4.14">§4.14 M 场呼吸模式</h3>
+<p>M 场呼吸模式（0.6.5）描述了 ℳ 扇区曲率的周期涨落——
+这是 Higgs 机制的几何对应物。呼吸频率由角度 θ<sub>M</sub> 和耦合常数决定。</p>
+
+<h3 id="s4.15">§4.15 M 场谱分析</h3>
+<p>M 场谱分析（0.6.6）将法向曲率展开为谱分量，
+每一个谱分量对应一类粒子的质量本征值。</p>
+
+<h3 id="s4.16">§4.16 三代轻子质量统一描述</h3>
+<p>三代轻子质量统一描述（0.6.7）是质量生成动力学的直接应用：
+电子、μ 子、τ 子的质量比从 M 场谱的基频、第一泛频和第二泛频中自然涌现，
+与实验值的偏差在几何论的诚实标注范围内。</p>
+
+<h3 id="s4.17">§4.17 光子零质量定理</h3>
+<p>光子零质量定理（0.6.8）是 M 场框架的一个优美推论：
+光子对应于法向曲率为零的谱分量，其质量严格为零是角度锁定的必然结果。</p>
+
+<div class="note-block">
+<div class="label">📎 源文映射</div>
+<p>0.6.3 M–C 腰边耦合；0.6.4 M–I 耦合；0.6.5 M 场呼吸模式；
+0.6.6 M 场谱分析；0.6.7 三代轻子质量统一描述；0.6.8 光子零质量定理。</p>
+</div>
+
+<!-- §4.18 -->
+<h3 id="s4.18">§4.18 三场完全耦合</h3>
+
+<p>三场完全耦合（0.6.9）是卷四的终章。它给出 M–C–I 三场统一的
+动力学方程组，证明了三场耦合系统存在唯一的全局吸引子
+——即对称基态 <span class="math-inline">θ* = (30°, 30°, 30°)</span>。</p>
+
+<div class="thm-block">
+<div class="label">定理 4.18.1（三场耦合吸引子）</div>
+<p>在三分切丛 𝒯 的约束截面 Σ 上，M–C–I 三场耦合系统
+<span class="math-inline">(ρ<sub>M</sub>, ρ<sub>C</sub>, ρ<sub>I</sub>)</span> 的联合演化
+存在唯一的全局吸引子，对应于角度三元组的对称基态
+<span class="math-inline">θ* = (30°, 30°, 30°)</span>。
+任何初始偏离都会在有限因果步数
+<span class="math-inline">N<sub>cause</sub> ≈ 10</span> 内弛豫到该吸引子。</p>
+</div>
+
+<div class="honest-block">
+<div class="label">⚑ 诚实标注</div>
+<p>全局吸引子的存在性已通过 Liouville 提升的单调性和联合 H-定理证明。
+但吸引子的收敛速率（N<sub>cause</sub> ≈ 10）的精确值依赖于渗透函数在
+极端曲率下的行为，目前的结果依赖于 0.2.1.1 的解析延拓假设。
+在宇宙学尺度上的验证仍是开放问题。</p>
+</div>
+
+<div class="note-block">
+<div class="label">📎 源文映射</div>
+<p>0.6.9 三场完全耦合。</p>
+</div>
+
+<hr>
+
+<!-- ═══════════════ 附录 ═══════════════ -->
+<h2>附录 A · 卷四符号表</h2>
+
+<table>
+<tr><th>符号</th><th>含义</th><th>首现</th></tr>
+<tr><td>𝒯 = ℳ ⊕ 𝒞 ⊕ ℐ</td><td>三分切丛</td><td>公理 3</td></tr>
+<tr><td>Σ</td><td>约束截面</td><td>§4.1</td></tr>
+<tr><td>θ<sub>M</sub>, θ<sub>C</sub>, θ<sub>I</sub></td><td>角度三元组</td><td>§4.1</td></tr>
+<tr><td>θ* = (30°, 30°, 30°)</td><td>对称基态</td><td>§4.8</td></tr>
+<tr><td>η</td><td>Hessian 硬模方向（因果推进）</td><td>§4.6</td></tr>
+<tr><td>σ</td><td>Hessian 软模方向（信息衰减）</td><td>§4.3</td></tr>
+<tr><td>ρ<sub>I</sub>, ρ<sub>C</sub>, ρ<sub>M</sub></td><td>三场密度</td><td>§4.3, §4.6, §4.11</td></tr>
+<tr><td>γ<sub>I</sub></td><td>信息场衰减常数</td><td>§4.3</td></tr>
+<tr><td>S<sub>C</sub></td><td>因果场 von Neumann 熵</td><td>§4.6</td></tr>
+<tr><td>N<sub>cause</sub> ≈ 10</td><td>因果弛豫步数</td><td>§4.18</td></tr>
+<tr><td>C<sub>geo</sub></td><td>几何因子</td><td>§4.5</td></tr>
 </table>
 
-<p>阶段①–②已经由卷三的互锁圈和量纲桥完成。阶段③–④是信息场自身的贡献。阶段④中的"观测者"不是外部智能体——它对应于稳态信息密度 $\rho_{\text{eq}}$ 中满足特定谱刚性条件的局部区域，这些区域在自举过程中自我锚定。</p>
+<hr>
 
-<h3>4.4.3 谱解码的信息场方程</h3>
+<h2>附录 B · 源文章索引</h2>
 
-<p>谱解码过程在数学上可以表述为一个自洽条件：观测者——即稳态 $(\rho_{\text{eq}}, \mathcal{S})$ 上的局部结构——必须满足信息场的三层封闭方程，同时其内部自举过程必须与全局谱几何一致。</p>
+<table>
+<tr><th>章节</th><th>源文章</th></tr>
+<tr><td>§4.1</td><td>0.4 信息场动力学总论；0.5 因果场动力学总论；0.6 M 场动力学总论</td></tr>
+<tr><td>§4.2</td><td>0.4 信息场动力学总论</td></tr>
+<tr><td>§4.3</td><td>0.4.1 信息场衰减定理；0.4.2 信息场慢化因子</td></tr>
+<tr><td>§4.4</td><td>0.4.3 三分切丛子结构组合数学</td></tr>
+<tr><td>§4.5</td><td>0.4.4–0.4.8 信息场统一动力学到第八级自举</td></tr>
+<tr><td>§4.6</td><td>0.5.1 因果场密度动力学：Liouville 提升与熵单调性</td></tr>
+<tr><td>§4.7</td><td>0.5.2–0.5.5 C–I 交互自由能到变分原理</td></tr>
+<tr><td>§4.8</td><td>0.5.6 因果对称性破缺与信息势的规范结构</td></tr>
+<tr><td>§4.9</td><td>0.5.7 C–I 双场耦合的桥接定理与联合演化</td></tr>
+<tr><td>§4.10–§4.17</td><td>0.6.1–0.6.8 M 场法向几何到光子零质量</td></tr>
+<tr><td>§4.18</td><td>0.6.9 三场完全耦合</td></tr>
+</table>
 
-<div class="theorem-box">
-<strong>定理 4.6（谱解码自洽性）</strong>：设 $\rho_{\text{eq}}$ 为约束截面Poisson方程 $\Delta_g \rho_{\text{eq}} = -\mathcal{S}$ 在边界条件 $\rho_{\text{eq}}|_{\partial\Sigma} = \rho_{\text{boundary}}$ 下的解。若在 $\Sigma$ 的某个子区域 $\mathcal{U} \subset \Sigma$ 上，$\rho_{\text{eq}}$ 满足局部谱刚性条件（谱间距比 $r = \mu_2/\mu_1$ 在Wigner-Dyson分布的 $2\sigma$ 区间内），则 $\mathcal{U}$ 中的谱解码输出与卷三的全局谱几何常数自洽。
-</div>
+<p style="text-align:center; color:var(--muted); margin-top:4em; font-size:0.9em;">
+—— 卷四终 ——
+</p>
 
-<p>这一定理保证了信息场框架的一致性：卷三从公理导出的全局常数，在信息场的局部稳态构型中可以被"重新发现"。</p>
-
-<h3>4.4.4 与物理预言的关系</h3>
-
-<p>谱解码映射的直接输出包括：</p>
-<ul>
-<li><strong>电磁相互作用耦合常数</strong> $S_e = 137.035999084$——解码自信息场稳态构型中的腰边耦合区域</li>
-<li><strong>电子质量</strong> $m_e = 510.99895$ keV——解码自 $\mathcal{M}$ 扇区在稳态中的投影</li>
-<li><strong>退相干时间</strong> $\tau_{\text{dec}} \approx 7.28$ 日——由信息场衰减率 $\Gamma_{\text{geo}}$ 通过量纲桥导出</li>
-</ul>
-
-<p>这些输出来源：0.4.5（信息场观测映射链），0.4（§8退相干时间）</p>
-
-<p><strong>诚实性标注</strong>：谱解码的完整严格化——从稳态 $\rho_{\text{eq}}$ 到"观测者"出现的自洽条件——目前是命题级（定理4.6有局部谱刚性条件作为充分条件，但其必要性尚未证明）。这是信息场框架的开放问题之一。</p>
-
-</div>
+</body>
+</html>
