@@ -3,66 +3,96 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>《几何论》卷四：三场动力学</title>
-<link rel="stylesheet" href="../assets/style.css">
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // 导航高亮
-    const navLinks = document.querySelectorAll('.nav-link');
-    const sections = document.querySelectorAll('.section');
-    window.addEventListener('scroll', function() {
-        let current = '';
-        sections.forEach(s => {
-            if (window.scrollY >= s.offsetTop - 200) current = s.id;
-        });
-        navLinks.forEach(a => {
-            a.style.fontWeight = a.getAttribute('href') === '#' + current ? 'bold' : 'normal';
-            a.style.color = a.getAttribute('href') === '#' + current ? '#2b6cb0' : '#333';
-        });
-    });
-});
-</script>
+<title>卷四 · 三场动力学 | 几何论</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+<style>
+:root{--bg:#fafaf9;--bg-card:#fff;--text:#1c1b1a;--text-secondary:#6b6a68;--accent:#2d5a8e;--accent-light:#e8f0f8;--border:#e0dfdd;--nav-bg:#f2f1ef;--nav-hover:#e8e7e5;--theorem-border:#2d5a8e;--theorem-bg:#f4f7fb;--def-border:#b8860b;--def-bg:#fdf8ee;--hint-bg:#f0f7ee;--hint-border:#4a7c59}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+h1,h2,h3,h4{font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;font-weight:600;line-height:1.4;color:var(--text)}
+h1{font-size:2.0em;margin:0 0 .5em 0;padding-bottom:.3em;border-bottom:2px solid var(--accent)}
+h2{font-size:1.4em;margin:1.8em 0 .6em 0;padding-bottom:.25em;border-bottom:1px solid var(--border)}
+h2.part-title{font-size:1.6em;margin:2.2em 0 .8em 0;border-bottom:2px solid var(--accent);padding-bottom:.3em;color:var(--accent)}
+h3{font-size:1.15em;margin:1.4em 0 .4em 0}
+h4{font-size:1.0em;margin:1em 0 .3em 0;font-weight:600}
+p{margin:.6em 0}
+ul,ol{margin:.5em 0 .5em 1.5em}
+li{margin:.3em 0}
+#app{display:flex;min-height:100vh}
+#nav{width:280px;background:var(--nav-bg);border-right:1px solid var(--border);padding:1.5em 0;position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0}
+#nav .nav-title{padding:0 1.2em 1em 1.2em;font-size:1.3em;font-weight:700;color:var(--accent);border-bottom:1px solid var(--border);margin-bottom:.8em}
+#nav .nav-title small{display:block;font-size:.65em;font-weight:400;color:var(--text-secondary);margin-top:.2em}
+#nav a{display:block;padding:.4em 1.2em .4em 1.8em;text-decoration:none;color:var(--text);font-size:.9em;border-left:3px solid transparent;transition:all .15s}
+#nav a:hover{background:var(--nav-hover)}
+#nav a.active{background:var(--accent-light);border-left-color:var(--accent);color:var(--accent);font-weight:500}
+#nav .nav-section{font-size:.75em;text-transform:uppercase;letter-spacing:.08em;color:var(--text-secondary);padding:.8em 1.2em .2em 1.2em;font-weight:600}
+#nav .nav-sub{font-size:.75em;color:var(--text-secondary);padding:.2em 1.2em .2em 2.2em;font-style:italic}
+#main{flex:1;max-width:860px;margin:0 auto;padding:2.5em 2em 4em 2em}
+.breadcrumb{font-size:.85em;color:var(--text-secondary);margin-bottom:1.5em;padding-bottom:.5em;border-bottom:1px solid var(--border)}
+.breadcrumb a{color:var(--accent);text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+.volume-desc{font-size:1em;line-height:1.8;margin:.8em 0}
+.nav-hint{background:var(--hint-bg);border-left:4px solid var(--hint-border);padding:.8em 1em;margin:1em 0;border-radius:0 4px 4px 0;font-size:.92em}
+.theorem-box{background:var(--theorem-bg);border-left:4px solid var(--theorem-border);padding:.8em 1em;margin:1em 0;border-radius:0 4px 4px 0}
+.definition-box{background:var(--def-bg);border-left:4px solid var(--def-border);padding:.8em 1em;margin:1em 0;border-radius:0 4px 4px 0}
+.chapter-end{margin-top:2.5em;padding-top:1em;border-top:1px solid var(--border);font-size:.92em;color:var(--text-secondary)}
+.chapter-end h3{font-size:1em;color:var(--text)}
+.data-table{width:100%;border-collapse:collapse;margin:1em 0;font-size:.92em}
+.data-table th,.data-table td{border:1px solid var(--border);padding:.4em .6em;text-align:left}
+.data-table th{background:var(--nav-bg);font-weight:600}
+.data-table tr:nth-child(even){background:#f9f9f8}
+blockquote{border-left:3px solid var(--border);padding:.3em .8em;margin:.6em 0;color:var(--text-secondary);font-style:italic}
+@media(max-width:768px){#nav{display:none}#main{padding:1.5em 1em 3em 1em}}
+</style>
 </head>
 <body>
-<div class="book-container">
-<nav class="sidebar">
-<div class="nav-title">《几何论》</div>
-<div class="nav-subtitle">卷四：三场动力学</div>
-<ul class="nav-list">
-<li><a class="nav-link" href="../index.html">⤶ 返回总目录</a></li>
-<li class="nav-divider">上篇：信息场动力学</li>
-<li><a class="nav-link" href="#ch4-1">§4.1 信息场定义与基本变量</a></li>
-<li><a class="nav-link" href="#ch4-2">§4.2 信息场三层封闭体系</a></li>
-<li><a class="nav-link" href="#ch4-3">§4.3 信息场衰减与慢化因子</a></li>
-<li><a class="nav-link" href="#ch4-4">§4.4 谱解码与观测映射</a></li>
-<li class="nav-divider">中篇：因果场动力学</li>
-<li><a class="nav-link" href="#ch4-5">§4.5 因果场定义与密度动力学</a></li>
-<li><a class="nav-link" href="#ch4-6">§4.6 C-I双场耦合与联合稳态</a></li>
-<li><a class="nav-link" href="#ch4-7">§4.7 一阶耦合结构抑制</a></li>
-<li><a class="nav-link" href="#ch4-8">§4.8 桥接定理</a></li>
-<li class="nav-divider">下篇：M场与完全耦合</li>
-<li><a class="nav-link" href="#ch4-9">§4.9 约束截面在三场耦合中的应用</a></li>
-<li><a class="nav-link" href="#ch4-10">§4.10 M场法向几何与质量生成</a></li>
-<li><a class="nav-link" href="#ch4-11">§4.11 M-C耦合与M-I耦合</a></li>
-<li><a class="nav-link" href="#ch4-12">§4.12 M场谱分析与呼吸模式</a></li>
-<li><a class="nav-link" href="#ch4-13">§4.13 M-C-I三场完全耦合</a></li>
-</ul>
-</nav>
-<main class="content">
+<div id="app">
+<div id="nav">
+<div class="nav-title">几何论<small>从三条公理到物理常数的唯一推导</small></div>
+<div class="nav-section">卷四 · 三场动力学</div>
+<div class="nav-sub">上篇：信息场动力学</div>
+<a href="#ch4-1">§4.1 信息场定义与基本变量</a>
+<a href="#ch4-2">§4.2 信息场三层封闭体系</a>
+<a href="#ch4-3">§4.3 信息场衰减与慢化因子</a>
+<a href="#ch4-4">§4.4 谱解码与观测映射</a>
+<div class="nav-sub">中篇：因果场动力学</div>
+<a href="#ch4-5">§4.5 因果场定义与密度动力学</a>
+<a href="#ch4-6">§4.6 C-I双场耦合与联合稳态</a>
+<a href="#ch4-7">§4.7 一阶耦合结构抑制</a>
+<a href="#ch4-8">§4.8 桥接定理</a>
+<div class="nav-sub">下篇：M场与完全耦合</div>
+<a href="#ch4-9">§4.9 约束截面在三场耦合中的应用</a>
+<a href="#ch4-10">§4.10 M场法向几何与质量生成</a>
+<a href="#ch4-11">§4.11 M-C耦合与M-I耦合</a>
+<a href="#ch4-12">§4.12 M场谱分析与呼吸模式</a>
+<a href="#ch4-13">§4.13 M-C-I三场完全耦合</a>
+<div class="nav-section" style="margin-top:1.5em;">其他各卷</div>
+<a href="../vol0/index.html">卷零 · 导读与总图</a>
+<a href="../vol1/index.html">卷一 · 公理与本体论</a>
+<a href="../vol2/index.html">卷二 · 数学结构</a>
+<a href="../vol3/index.html">卷三 · 谱几何与数值输出</a>
+<a class="active" href="../vol4/index.html">卷四 · 三场动力学</a>
+<a href="../vol5/index.html">卷五 · 量子化</a>
+<a href="../vol6/index.html">卷六 · 粒子物理</a>
+<a href="../vol7/index.html">卷七 · 宇宙学与天体物理</a>
+<a href="../vol8/index.html">卷八 · 交叉科学</a>
+<a href="../volA/index.html">卷A · 附录</a>
+</div>
+<div id="main">
+<div class="breadcrumb"><a href="../index.html">几何论</a> / 卷四：三场动力学</div>
 
-<!-- ============================================================ -->
-<!-- 卷四总论 -->
-<!-- ============================================================ -->
-<div class="volume-header">
 <h1>卷四：三场动力学</h1>
+
 <div class="volume-desc">
 <p><strong>前置依赖</strong>：卷三（谱几何与数值输出），卷二 §2.7（约束截面基本构造）</p>
 <p><strong>互锁关系</strong>：本章与卷三 §3.4–§3.8（互锁圈）有深层关联——三场动力学中的约束截面、慢化因子、谱分解等概念均源自谱互锁圈的输出。建议在熟悉卷三的基础上阅读本卷。</p>
 <p><strong>在递进链中的位置</strong>：公理 → 数学结构 → 谱几何 → <strong>三场动力学 ⬅️ 你在这里</strong> → 量子化 → 应用</p>
 </div>
+
 <div class="nav-hint">
 <strong>本卷结构说明</strong>：三场动力学分为三篇——上篇（信息场，§4.1–§4.4）、中篇（因果场，§4.5–§4.8）、下篇（M场与完全耦合，§4.9–§4.13）。三篇可独立阅读，但§4.8（桥接定理）和§4.9（约束截面应用）是连接各篇的关键枢纽，建议读完全篇后再回看这两章以体会三场的整体耦合结构。
-</div>
 </div>
 
 <!-- ============================================================ -->
@@ -71,8 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <h2 class="part-title">上篇：信息场动力学</h2>
 
 <!-- ======= §4.1 ======= -->
-<div class="section" id="ch4-1">
-<h2>§4.1 信息场定义与基本变量</h2>
+<h2 id="ch4-1">§4.1 信息场定义与基本变量</h2>
 
 <h3>4.1.1 信息场的本体论地位</h3>
 
@@ -127,11 +156,13 @@ $\sigma$ 为几何时间参数（无量纲，与物理时间 $\tau$ 通过量纲
 <strong>命题 4.1（源-密度耦合）</strong>：在稳态条件下，信息密度 $\rho_{\text{eq}}$ 与质量源 $\mathcal{S}$ 满足 Poisson 方程 $\Delta_g \rho_{\text{eq}} = -\mathcal{S}$，其中 $\Delta_g$ 为 $\Sigma$ 上的 Laplace-Beltrami 算子（由Hessian度量 $g_{ij}$ 诱导）。源项 $\mathcal{S}$ 正比于M场的局域质量密度。
 </div>
 
+<div class="chapter-end">
+<h3>延伸阅读</h3>
+<p>0.4 §2-3（信息场定义）；0.4 §5（基本变量与坐标选择）</p>
 </div>
 
 <!-- ======= §4.2 ======= -->
-<div class="section" id="ch4-2">
-<h2>§4.2 信息场三层封闭体系</h2>
+<h2 id="ch4-2">§4.2 信息场三层封闭体系</h2>
 
 <h3>4.2.1 信息场三层封闭的动机</h3>
 
@@ -199,13 +230,12 @@ $$\Delta_g \rho_{\text{eq}} = -\mathcal{S}$$
 
 <p>其中 $\Gamma_{\text{geo}}$ 为图热核的代数连通度衰减率（见§4.3）。</p>
 
-<p><strong>来源</strong>：0.4.4 §5</p>
+<p><strong>来源</strong>：0.4 §5</p>
 
 </div>
 
 <!-- ======= §4.3 ======= -->
-<div class="section" id="ch4-3">
-<h2>§4.3 信息场衰减与慢化因子</h2>
+<h2 id="ch4-3">§4.3 信息场衰减与慢化因子</h2>
 
 <h3>4.3.1 衰减定理的谱图论形式</h3>
 
@@ -258,3 +288,216 @@ $$\tilde{D}_{\text{eff}} = \frac{D_0}{s}$$
 <p>Fiedler向量的空间结构——在 $\Sigma$ 上正负区域的分割——直接对应全息屏上"信息保持区"和"信息流失区"的划分。这一划分是因果深度（§4.5）和谱解码（§4.4）的几何基础。</p>
 
 </div>
+
+<!-- ======= §4.4 ======= -->
+<h2 id="ch4-4">§4.4 谱解码与观测映射</h2>
+
+<h3>4.4.1 从谱几何到物理可观测量的桥梁</h3>
+
+<p>卷三输出的谱几何常数（$S_e$, $K$, $\lambda_1^{\text{eff}}$, $\lambda_2^{\text{eff}}$, $\chi_L$, $\chi_T$）是纯几何量。它们需要经过"谱解码"过程——即信息场的观测映射链——才能与物理实验的测量值对应。谱解码的本质是回答：<em>几何常数如何被观测者编码为物理量？</em></p>
+
+<p>谱解码的核心机制是观测者自举（§3.6）在信息场框架内的具体实现。观测者不是外部的，而是信息场稳态构型 $\rho_{\text{eq}}$ 中的局部结构——这是「观测者自举」的几何论版本。</p>
+
+<h3>4.4.2 观测映射链</h3>
+
+<p>谱解码过程的观测映射链由以下四个阶段组成：</p>
+
+<table class="data-table">
+<thead>
+<tr><th>阶段</th><th>输入</th><th>过程</th><th>输出</th></tr>
+</thead>
+<tbody>
+<tr><td>① 几何输入</td><td>$S_{\min}=24$, Hessian谱</td><td>谱刚性 + 自举闭环</td><td>$S_e, K, \theta_M, \theta_C, \theta_I$</td></tr>
+<tr><td>② 量纲桥连接</td><td>$S_e, K, \chi_L, \chi_T$</td><td>四方程量纲桥</td><td>$c, \hbar, m_e, \alpha^{-1}$</td></tr>
+<tr><td>③ 信息场稳态</td><td>物理常数</td><td>三层封闭体系 → 稳态 $\rho_{\text{eq}}$</td><td>信息密度场</td></tr>
+<tr><td>④ 观测者解码</td><td>$\rho_{\text{eq}}$</td><td>局部稳态构型中的自举过程</td><td>物理可观测测量值</td></tr>
+</tbody>
+</table>
+
+<p>阶段①–②已经由卷三的互锁圈和量纲桥完成。阶段③–④是信息场自身的贡献。阶段④中的"观测者"不是外部智能体——它对应于稳态信息密度 $\rho_{\text{eq}}$ 中满足特定谱刚性条件的局部区域，这些区域在自举过程中自我锚定。</p>
+
+<h3>4.4.3 谱解码的信息场方程</h3>
+
+<p>谱解码过程在数学上可以表述为一个自洽条件：观测者——即稳态 $(\rho_{\text{eq}}, \mathcal{S})$ 上的局部结构——必须满足信息场的三层封闭方程，同时其内部自举过程必须与全局谱几何一致。</p>
+
+<div class="theorem-box">
+<strong>定理 4.6（谱解码自洽性）</strong>：设 $\rho_{\text{eq}}$ 为约束截面Poisson方程 $\Delta_g \rho_{\text{eq}} = -\mathcal{S}$ 在边界条件 $\rho_{\text{eq}}|_{\partial\Sigma} = \rho_{\text{boundary}}$ 下的解。若在 $\Sigma$ 的某个子区域 $\mathcal{U} \subset \Sigma$ 上，$\rho_{\text{eq}}$ 满足局部谱刚性条件（谱间距比 $r = \mu_2/\mu_1$ 在Wigner-Dyson分布的 $2\sigma$ 区间内），则 $\mathcal{U}$ 中的谱解码输出与卷三的全局谱几何常数自洽。</div>
+
+<p>这一定理保证了信息场框架的一致性：卷三从公理导出的全局常数，在信息场的局部稳态构型中可以被"重新发现"。</p>
+
+<h3>4.4.4 与物理预言的关系</h3>
+
+<p>谱解码映射的直接输出包括：</p>
+<ul>
+<li><strong>电磁相互作用耦合常数</strong> $S_e = 137.035999084$——解码自信息场稳态构型中的腰边耦合区域</li>
+<li><strong>电子质量</strong> $m_e = 510.99895$ keV——解码自$\mathcal{M}$扇区在稳态中的投影</li>
+<li><strong>退相干时间</strong> $\tau_{\text{dec}} \approx 7.28$ 日——由信息场衰减率 $\Gamma_{\text{geo}}$ 通过量纲桥导出</li>
+</ul>
+
+<p>这些输出来源：0.4.5（信息场观测映射链），0.4（§8退相干时间）</p>
+
+<p><strong>诚实性标注</strong>：谱解码的完整严格化——从稳态 $\rho_{\text{eq}}$ 到"观测者"出现的自洽条件——目前是命题级（定理4.6有局部谱刚性条件作为充分条件，但其必要性尚未证明）。这是信息场框架的开放问题之一。</p>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- 中篇：因果场动力学 -->
+<!-- ============================================================ -->
+<h2 class="part-title">中篇：因果场动力学</h2>
+
+<!-- ======= §4.5 ======= -->
+<h2 id="ch4-5">§4.5 因果场定义与密度动力学</h2>
+
+<h3>4.5.1 因果场的本体论地位</h3>
+
+<p>因果场（C-场）对应三分切丛 $\mathcal{M}\oplus\mathcal{C}\oplus\mathcal{I}$ 中的因果扇区 $\mathcal{C}$。它在三场动力学中的角色是：</p>
+<ul>
+<li><strong>因果推进的载体</strong>——定义了系统如何在约束截面 $\Sigma$ 上沿 $\eta$ 方向从物理实现点向对称基态推进</li>
+<li><strong>时间的方向性</strong>——因果场的瞬态推进给出了几何时间 $\sigma$ 的方向（不可逆性），稳态环流则给出了周期性时间</li>
+<li><strong>与信息场的耦合</strong>——因果场的遍历性保证了信息场在 $\Sigma$ 上的均匀覆盖</li>
+</ul>
+
+<h3>4.5.2 点动力学：瞬态推进与稳态环流</h3>
+
+<p>因果场的点动力学（0.5 §2）由两个互补的动力学子系统构成：</p>
+
+<div class="definition-box">
+<strong>定义 4.3（瞬态因果推进 $T_{\text{trans}}$）</strong>：在约束截面 $\Sigma$ 上，瞬态因果推进是沿 $\eta$ 方向（Hessian硬模方向）向对称基态 $\theta^* = (30^\circ,30^\circ,30^\circ)$ 的单调映射：
+$$T_{\text{trans}}: \Sigma \to \Sigma, \quad \eta \mapsto \eta - \Delta\eta_{\text{step}}$$
+其中 $\Delta\eta_{\text{step}}$ 在因果深度 $N_{\text{cause}} \approx 10$ 步内将 $\eta$ 从初始值 $\eta_0 = 32.07^\circ$ 驱动到基态 $\eta^* = 60^\circ$。
+</div>
+
+<div class="definition-box">
+<strong>定义 4.4（稳态因果环流 $T_{\text{ss}}$）</strong>：在对称基态 $\theta^*$ 邻域的中心子流形 $E^c = \{\xi=0\}$ 上，稳态因果环流由无理旋转驱动：
+$$T_{\text{ss}}: E^c \to E^c, \quad \phi \mapsto \phi + \omega \pmod{2\pi}$$
+其中 $\omega$ 为无理数，保证轨道在 $E^c$ 上遍历。
+</div>
+
+<p>瞬态推进和稳态环流之间存在一个关键的衔接：Lyapunov收缩保证任何初始分布在有限步内指数收敛到 $E^c$ 的 $\varepsilon$ 邻域，之后由稳态环流驱动遍历覆盖。这一"先收敛后遍历"的双相结构是因果场动力学的核心特征。</p>
+
+<p><strong>来源</strong>：0.5 §2（点动力学定义），0.5 §4（Lyapunov指数与收敛）</p>
+
+<h3>4.5.3 从点动力学到密度动力学：Liouville提升</h3>
+
+<p>点动力学的局限在于：约束截面 $\Sigma$ 上的几何点 $(\xi,\eta)$ 是不可直接测量的。物理可观测量对应的是密度分布在相空间上的期望值，而非单条轨道的精确位置。因此，需要将因果场的点动力学提升为密度动力学。</p>
+
+<div class="theorem-box">
+<strong>定理 4.7（因果场密度动力学的Liouville提升）</strong>：设 $\mathcal{X}_C = L^1(\Sigma,\mu)$ 为C-场密度态空间，每个态为 $\Sigma$ 上的概率密度 $\rho_C \ge 0$ 满足 $\int_\Sigma \rho_C \, d\mu = 1$。构造Perron-Frobenius算子 $\mathcal{L}_T: \mathcal{X}_C \to \mathcal{X}_C$：
+$$\int_A \mathcal{L}_T \rho_C \, d\mu = \int_{T^{-1}A} \rho_C \, d\mu$$
+则离散Liouville方程为 $\rho_{C,n+1} = \mathcal{L}_T \rho_{C,n}$，连续极限下为 $\partial_t \rho_C = \mathcal{L}_C \rho_C$，其中 $\mathcal{L}_C$ 为Liouville生成元。
+</div>
+
+<p><strong>物理含义</strong>：这一提升将"单条因果轨迹"的概念替换为"因果态的系综分布"。这是连接几何理论与观测量的必要步骤——观测量总是对应系综平均而非单个轨迹。</p>
+
+<p>该定理对瞬态推进 $T_{\text{trans}}$ 和稳态环流 $T_{\text{ss}}$ 分别构造Perron-Frobenius算子，并证明二者在 $E^c$ 邻域的无缝衔接。</p>
+
+<h3>4.5.4 C-场H-定理与熵单调性</h3>
+
+<div class="theorem-box">
+<strong>定理 4.8（C-场H-定理）</strong>：在瞬态推进阶段，C-场密度 $\rho_C$ 与稳态密度 $\rho_C^*$ 之间的KL散度严格单调递减：
+$$\frac{d}{d\sigma} D_{\text{KL}}(\rho_C \| \rho_C^*) \le 0$$
+等号成立当且仅当 $\rho_C = \rho_C^*$。在稳态环流阶段，Shannon熵 $H[\rho_C] = -\int \rho_C \ln\rho_C \, d\mu$ 守恒。
+
+稳态密度 $\rho_C^*$ 是均匀分布（Lébesgue测度下的常数），且是指数收敛的：$\|\rho_{C,n} - \rho_C^*\|_{L^1} \le Ce^{-n|\Lambda_\xi|}$，其中 $\Lambda_\xi \approx -2.51$ 为$\xi$方向的Lyapunov指数。
+</div>
+
+<p><strong>物理含义</strong>：H-定理给出了因果时间箭头——瞬态推进使系统向稳态单调靠近，熵的"产生"对应因果不可逆性。稳态环流阶段的熵守恒对应因果平衡态的时间反演对称性。</p>
+
+<p><strong>来源</strong>：0.5.1 §4（H-定理），§5（稳态测度与收敛）</p>
+
+</div>
+
+<!-- ======= §4.6 ======= -->
+<h2 id="ch4-6">§4.6 C-I双场耦合与联合稳态</h2>
+
+<h3>4.6.1 耦合的必要性</h3>
+
+<p>信息场和因果场在 $\Sigma$ 上不是独立演化的。原因有二：</p>
+
+<ol>
+<li><strong>同一截面上的共存</strong>——两者定义在同一约束截面 $\Sigma$ 上，具有相同的Hessian度量和谱结构，因此共享几何背景</li>
+<li><strong>速率自洽条件</strong>——因果场的覆盖速率必须与信息场的扩散速率自洽（覆盖定理的遍历形式，§4.8）</li>
+</ol>
+
+<p>C-I耦合研究的是：两个场在共享 $\Sigma$ 上的联合演化如何形成稳态。</p>
+
+<h3>4.6.2 C-I联合Liouville方程</h3>
+
+<p>将C场的Liouville动力学和I场的图热扩散动力学合并为联合系统，需要定义联合态空间和联合Perron-Frobenius算子。</p>
+
+<div class="definition-box">
+<strong>定义 4.5（C-I联合密度）</strong>：令 $\rho_{CI}(\xi,\eta,\sigma) = \rho_C(\xi,\eta,\sigma) \cdot \rho_I(\xi,\eta,\sigma)$ 为C场和I场的联合密度（在统计独立假设下）。联合态空间为 $\mathcal{X}_{CI} = L^1(\Sigma \times \Sigma, \mu \otimes \mu)$。
+</div>
+
+<div class="theorem-box">
+<strong>定理 4.9（C-I联合演化方程）</strong>：在统计独立近似下，联合密度 $\rho_{CI}$ 的演化由以下方程描述：
+$$\frac{\partial \rho_{CI}}{\partial \sigma} = \mathcal{L}_{CI} \rho_{CI}$$
+其中联合Liouville生成元 $\mathcal{L}_{CI} = \mathcal{L}_C \otimes I + I \otimes \mathcal{L}_I$，$\mathcal{L}_C$ 为因果场Liouville算子，$\mathcal{L}_I$ 为信息场图热扩散算子（= $-L_G$）。
+</div>
+
+<p><strong>诚实性标注</strong>：统计独立假设（$\rho_{CI} = \rho_C \cdot \rho_I$）是一个近似。真正的联合密度必须考虑C场和I场间的交叉关联。交叉算子 $D_{CI}$ 的不可忽略性（§4.7）意味着这一近似在精细尺度上需要修正。</p>
+
+<h3>4.6.3 联合稳态 $\rho_{CI}^*$</h3>
+
+<p>C-I联合系统的稳态是C场均匀稳态 $\rho_C^*$ 和I场Poisson稳态 $\rho_I^*$ 的乘积：</p>
+
+<div class="theorem-box">
+<strong>定理 4.10（联合稳态）</strong>：在弱耦合近似下，C-I联合系统的稳态为
+$$\rho_{CI}^* = \rho_C^* \otimes \rho_I^*$$
+其中 $\rho_C^*$ 为C场均匀稳态，$\rho_I^*$ 为I场Poisson稳态（$\Delta_g \rho_I^* = -\mathcal{S}$）。联合稳态的存在唯一性由Perron-Frobenius定理保证——$\mathcal{L}_{CI}$ 的最大特征值非简并，对应唯一的稳态分布。
+</div>
+
+<p>指数收敛速率由C场Lyapunov指数和I场图热扩散率的较小者决定，保证了联合系统的热化时间有限。</p>
+
+<p><strong>来源</strong>：0.5.1 §8（C/I联合Liouville方程框架），0.5 §7（覆盖定理的遍历形式）</p>
+
+</div>
+
+<!-- ======= §4.7 ======= -->
+<h2 id="ch4-7">§4.7 一阶耦合结构抑制</h2>
+
+<h3>4.7.1 问题的提出</h3>
+
+<p>在C-I双场耦合中，一阶耦合项 $\delta\mathcal{L}_I^{(0)}$——即因果场对信息场Liouville算子的线性修正——对动力学的影响需要仔细分析。直觉上，如果一阶耦合项显著，则C-I耦合不能简化为简单的乘积近似（§4.6的统计独立假设失效）。</p>
+
+<p>然而，遍历平均抵消机制表明：在系统中，一阶耦合项的时间平均恰好为零，导致其主导效应在长期演化中被抑制。</p>
+
+<h3>4.7.2 Fredholm约束与结构抑制</h3>
+
+<div class="theorem-box">
+<strong>定理 4.11（一阶耦合的遍历平均抵消）</strong>：设 $\delta\mathcal{L}_I^{(0)}$ 为C场对I场Liouville算子的一阶修正项。对稳态环流 $T_{\text{ss}}$ 的遍历轨道求时间平均：
+$$\langle \delta\mathcal{L}_I^{(0)} \rangle_T = \frac{1}{T} \int_0^T \delta\mathcal{L}_I^{(0)}(\sigma) \, d\sigma$$
+在 $T \to \infty$ 极限下，有 $\langle \delta\mathcal{L}_I^{(0)} \rangle_T \to 0$，收敛速率由Fredholm择一定理控制：
+$$\|\langle \delta\mathcal{L}_I^{(0)} \rangle_T\| \le \frac{C}{T} \cdot \|\delta\mathcal{L}_I^{(0)}\|$$
+其中常数 $C$ 由因果环流 $\omega$ 的无理性决定。
+</div>
+
+<p><strong>物理含义</strong>：因果环流的无理旋转保证了一阶耦合项在长期平均下自行抵消。这类似于动力系统中小除数问题的抵消机制——无理频率的存在避免了共振积累。</p>
+
+<p><strong>诚实性标注</strong>：定理4.11的严格证明依赖 $\omega$ 的无理性（0.5假设3.1）。在有限时间尺度（$T \sim N_{\text{cause}}$）下，抵消是近似而非严格为零。0.5.1 §6的"无理旋转绕过"论证说明，在 $N_{\text{cause}}=10$ 的有限步数内，抵消精度约为 $10^{-3}$，对于大多数物理预言已足够。</p>
+
+<h3>4.7.3 交叉算子下界</h3>
+
+<p>尽管一阶耦合被遍历抑制，交叉算子（C-I关联）的下界不可忽略：</p>
+
+<div class="theorem-box">
+<strong>定理 4.12（交叉算子下界）</strong>：C场与I场之间的交叉关联算子 $D_{CI}$ 的非零分量满足定量下界：
+$$\delta_C \ge 6.32 \times 10^{-6}, \quad \delta_I \ge 2.61 \times 10^{-3}$$
+其中 $\delta_C$ 为因果残余（C场在I场演化中不可解耦的部分），$\delta_I$ 为信息残余（I场在C场演化中不可解耦的部分）。
+</div>
+
+<p>这意味着：即使在遍历平均抵消后，C-I耦合仍留下不可忽略的残余关联。这些残余项在Liouville生成元中以修正项的形式存在（§4.6中 $\mathcal{L}_{CI}$ 的非可张量积部分），是联合稳态偏离 $\rho_C^* \otimes \rho_I^*$ 的来源。</p>
+
+<p><strong>来源</strong>：0.5.1 §7（交叉算子与Liouville修正），21号定理4.1、定理6.1、定理6.2</p>
+</div>
+
+<div class="chapter-end">
+<h3>延伸阅读</h3>
+<p>信息场动力学：0.4, 0.4.1, 0.4.2, 0.4.4, 0.4.5, 0.4.7</p>
+<p>因果场动力学：0.5, 0.5.1, 0.5.2, 0.5.6, 0.5.7</p>
+</div>
+
+</div>
+</div>
+</body>
+</html>
