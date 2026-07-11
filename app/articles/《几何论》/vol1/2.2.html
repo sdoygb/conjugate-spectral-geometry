@@ -10,70 +10,107 @@
   onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
 <style>
 :root {
-  --bg: #f8f7f4; --text: #1a1a1a; --accent: #2d5a8e; --accent2: #b8860b;
-  --border: #d0c8b8; --card-bg: #ffffff; --sidebar-bg: #f0eee8; --muted: #777;
-  --theorem-border: #2d5a8e; --def-border: #b8860b; --proof-bg: #f9f7f0;
+  --bg: #f8f7f4;
+  --text: #1a1a1a;
+  --accent: #2d5a8e;
+  --accent2: #b8860b;
+  --border: #d0c8b8;
+  --card-bg: #ffffff;
+  --sidebar-bg: #f0eee8;
+  --muted: #777;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
   font-family: -apple-system, "PingFang SC", "Noto Sans SC", system-ui, sans-serif;
-  background: var(--bg); color: var(--text); line-height: 1.8;
-  display: flex; min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+  display: flex;
+  min-height: 100vh;
 }
 .sidebar {
-  width: 280px; flex-shrink: 0; background: var(--sidebar-bg);
-  border-right: 1px solid var(--border); padding: 2rem 1.2rem;
-  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  width: 280px;
+  flex-shrink: 0;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border);
+  padding: 2rem 1.2rem;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
 }
 .sidebar h1 { font-size: 1.2rem; color: var(--accent2); margin-bottom: 0.3rem; }
 .sidebar .subtitle { font-size: 0.8rem; color: var(--muted); margin-bottom: 1.5rem; }
 .sidebar nav a {
-  display: block; padding: 0.25rem 0; color: var(--accent);
-  text-decoration: none; font-size: 0.85rem;
+  display: block;
+  padding: 0.25rem 0;
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.85rem;
+  border-bottom: 1px solid transparent;
 }
-.sidebar nav a:hover { text-decoration: underline; }
+.sidebar nav a:hover { border-bottom-color: var(--accent); }
 .sidebar .nav-hint {
-  margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border);
-  font-size: 0.75rem; color: var(--muted);
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.75rem;
+  color: var(--muted);
 }
 .sidebar .nav-hint a { color: var(--accent); text-decoration: none; }
 .content {
-  flex: 1; max-width: 800px; margin: 0 auto; padding: 3rem 2rem;
+  flex: 1;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
 }
-h1 { font-size: 1.8rem; color: var(--accent2); margin-bottom: 1rem; }
-h2 { font-size: 1.3rem; color: var(--accent); margin: 2rem 0 1rem; padding-bottom: 0.3rem; border-bottom: 1px solid var(--border); }
-h3 { font-size: 1.1rem; color: var(--text); margin: 1.5rem 0 0.8rem; }
-p { margin: 0.8rem 0; text-align: justify; }
-.axiom-box {
-  background: var(--card-bg); border-left: 4px solid var(--accent2);
-  padding: 1rem 1.5rem; margin: 1.5rem 0; border-radius: 0 6px 6px 0;
-}
-.axiom-box .label { font-weight: bold; color: var(--accent2); font-size: 0.9rem; }
+h1 { font-size: 2rem; color: var(--accent2); margin-bottom: 0.5rem; }
+h2 { font-size: 1.4rem; color: var(--accent); margin: 2rem 0 1rem; padding-bottom: 0.3rem; border-bottom: 1px solid var(--border); }
+h3 { font-size: 1.1rem; color: var(--accent); margin: 1.5rem 0 0.8rem; }
+p { margin: 0.8rem 0; text-indent: 2em; }
+p.no-indent { text-indent: 0; }
 .theorem-box {
-  background: var(--card-bg); border-left: 4px solid var(--theorem-border);
-  padding: 1rem 1.5rem; margin: 1rem 0; border-radius: 0 6px 6px 0;
+  background: #f0f4f8;
+  border-left: 4px solid var(--accent);
+  padding: 1rem 1.5rem;
+  margin: 1.2rem 0;
+  border-radius: 0 6px 6px 0;
 }
-.theorem-box .label { font-weight: bold; color: var(--theorem-border); }
+.theorem-box strong { color: var(--accent); }
+.definition-box {
+  background: #f5f0e8;
+  border-left: 4px solid var(--accent2);
+  padding: 1rem 1.5rem;
+  margin: 1.2rem 0;
+  border-radius: 0 6px 6px 0;
+}
+.definition-box strong { color: var(--accent2); }
 .proof-box {
-  background: var(--proof-bg); border-left: 4px solid var(--border);
-  padding: 1rem 1.5rem; margin: 1rem 0; border-radius: 0 6px 6px 0;
+  background: #fafafa;
+  border: 1px dashed var(--border);
+  padding: 1rem 1.5rem;
+  margin: 1.2rem 1.5rem;
+  border-radius: 6px;
   font-size: 0.95rem;
 }
-.proof-box .label { font-weight: bold; color: var(--muted); font-style: italic; }
-.def-box {
-  background: var(--card-bg); border-left: 4px solid var(--def-border);
-  padding: 1rem 1.5rem; margin: 1rem 0; border-radius: 0 6px 6px 0;
+.proof-box strong { color: var(--muted); }
+.nav-hint-inline {
+  background: #f0eee8;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.8rem 1.2rem;
+  margin: 1.5rem 0;
+  font-size: 0.85rem;
+  color: var(--muted);
 }
-.def-box .label { font-weight: bold; color: var(--def-border); }
-.nav-hint-bar {
-  margin-top: 2rem; padding: 1rem 0; border-top: 1px solid var(--border);
-  display: flex; justify-content: space-between; font-size: 0.85rem;
-}
-.nav-hint-bar a { color: var(--accent); text-decoration: none; }
-.nav-hint-bar a:hover { text-decoration: underline; }
+.nav-hint-inline a { color: var(--accent); text-decoration: none; }
 .chapter-end {
-  margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border);
-  text-align: center; color: var(--muted); font-size: 0.85rem;
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
 }
 </style>
 </head>
@@ -83,149 +120,82 @@ p { margin: 0.8rem 0; text-align: justify; }
   <h1>⬡ 几何论</h1>
   <div class="subtitle">卷一 · 公理与数学结构</div>
   <nav>
-    <a href="index.html">← 卷一首頁</a>
-    <a href="2.1.html" style="margin-top:0.8rem;">§2.1 公理1：圆拓扑公理</a>
-    <a href="2.2.html" style="font-weight:bold;">§2.2 公理2：边界极限公理</a>
-    <a href="2.3.html">§2.3 公理3：全息屏编码条件</a>
-    <a href="3.1.html" style="margin-top:0.8rem;">§3.1 六项作用量</a>
-    <a href="3.2.html">§3.2 Hessian截面</a>
+    <a href="index.html#ch1">第1章 引言</a>
+    <a href="1.1.html" style="padding-left:1rem;font-size:0.8rem;">§1.1　几何论的时空结构</a>
+    <a href="index.html#ch2" style="margin-top:0.5rem;">第2章 几何论公理</a>
+    <a href="2.1.html" style="padding-left:1rem;font-size:0.8rem;">§2.1　公理1：圆拓扑公理</a>
+    <a href="2.2.html" style="padding-left:1rem;font-size:0.8rem;">§2.2　公理2：边界极限公理</a>
+    <a href="2.3.html" style="padding-left:1rem;font-size:0.8rem;">§2.3　公理3：全息屏编码条件</a>
   </nav>
   <div class="nav-hint">
-    <a href="/">← 返回首页</a>
+    <a href="/">← 返回首页</a><br>
+    <a href="/vol0/">卷零 · 数学推导</a><br>
+    卷一 · 公理与数学结构<br>
+    <a href="/vol2/">卷二 · 谱几何</a><br>
+    <a href="/vol3/">卷三 · 几何物理</a>
   </div>
 </div>
 
 <div class="content">
 
-<h1>§2.2　公理2：边界极限公理</h1>
+<h1>§2.2 公理2：边界极限公理</h1>
 
-<p>公理1只规定了参数空间 $D = S^1\setminus\{p_0,p_*\}$ 的拓扑结构，但没有告诉我们任何关于"几何量"的信息。公理2填补了这个空白：它在 $D$ 上定义了一个公理化几何量 $S_{\text{axiom}}$，并规定了它在两个边界点 $p_0$ 和 $p_*$ 附近的行为。</p>
-
-<div class="axiom-box">
-  <div class="label">公理2（边界极限公理）</div>
-  <p>在参数空间 $D$ 上存在公理化几何量 $S_{\text{axiom}}: D \to (0,+\infty)$，满足：</p>
-  <ol>
-    <li><strong>连续性</strong>：$S_{\text{axiom}}$ 在每个连通分支 $D_\pm$ 上连续；</li>
-    <li><strong>真空极限</strong>：当 $x$ 沿任一分支逼近 $p_0$ 时，$\displaystyle\lim_{x \to p_0} S_{\text{axiom}}(x) = 0$；</li>
-    <li><strong>退化极限</strong>：当 $x$ 沿任一分支逼近 $p_*$ 时，$\displaystyle\lim_{x \to p_*} S_{\text{axiom}}(x) = +\infty$。</li>
-  </ol>
+<div class="definition-box">
+<strong>公理2（边界极限公理）</strong>
+<br><br>
+三分切丛 $\mathcal{M} \oplus \mathcal{C} \oplus \mathcal{I}$ 的三个扇区存在一个公共的边界极限结构。设 $\partial\mathcal{M}$、$\partial\mathcal{C}$、$\partial\mathcal{I}$ 分别为各扇区的边界，则存在同胚映射：
+$$ \varphi: \partial\mathcal{M} \cup \partial\mathcal{C} \cup \partial\mathcal{I} \to S^2 $$
+使得三个边界在 $S^2$ 上的像构成一个分割。该分割由三个角度参数 $\theta_M, \theta_C, \theta_I$ 标定。
 </div>
 
-<h3>公理2的解读</h3>
+<h2>几何直觉</h2>
 
-<p><strong>连续性</strong>意味着参数的小变化只会引起几何量的小变化——这是一个合理的光滑性要求。</p>
+<p>公理2回答的问题是：三个扇区如何在边界上汇合？全息原理要求理论的全部自由度可以编码在边界上，因此边界结构决定了理论的全部内容。</p>
 
-<p><strong>真空极限</strong>说：当系统趋近基态 $p_0$ 时，公理化几何量趋于零。在基态处，没有激发，几何量为零是自然的。</p>
+<p>$S^2$ 作为公共边界拓扑是一个自然的选择——它是紧致二维流形中拓扑最简单者（可定向、单连通、Euler示性数为2）。将三个扇区的边界映射到同一个 $S^2$ 上，意味着它们共享同一个"天空"。</p>
 
-<p><strong>退化极限</strong>说：当系统趋近奇异点 $p_*$ 时，几何量发散到无穷大。这个发散不是理论的问题，它恰恰定义了理论的边界——在 $p_*$ 处，系统不再有良好定义的几何结构。</p>
+<h2>角度分割</h2>
 
-<h3>注：两个分支的独立性</h3>
+<p>$S^2$ 被三条大圆分割为三个区域，分别对应三个扇区的边界投影。每个区域在 $S^2$ 上的面积比例由角度 $\theta_M, \theta_C, \theta_I$ 给出：</p>
 
-<p>公理2不要求 $S_{\text{axiom}}$ 在 $D_+$ 与 $D_-$ 上具有相同的函数表达式，也不要求 $S_{\text{axiom}}$ 在整个 $D$ 上连续（$p_0$ 与 $p_*$ 不在 $D$ 中）。因此 $S_{\text{axiom}}$ 可以是两个独立分支上的不同函数，只要各自满足边界条件即可。这个灵活性在后续的构造中会被利用。</p>
+$$ \frac{\text{Area}(\partial\mathcal{M})}{4\pi} = \frac{\theta_M}{90^\circ}, \quad
+   \frac{\text{Area}(\partial\mathcal{C})}{4\pi} = \frac{\theta_C}{90^\circ}, \quad
+   \frac{\text{Area}(\partial\mathcal{I})}{4\pi} = \frac{\theta_I}{90^\circ} $$
 
-<hr style="margin:2rem 0;border:none;border-top:1px solid var(--border);">
+<p>归一约束 $\theta_M + \theta_C + \theta_I = 90^\circ$ 自动保证了总面积等于 $4\pi$。</p>
 
-<h2>定理2.1：值域定理</h2>
+<h2>第一层推论</h2>
 
-<p>公理1和公理2的第一个重要推论：几何量 $S_{\text{axiom}}$ 在每个分支上的取值范围是整个正实数轴——任何正数值都可以在某个激发态上实现。</p>
+<h3>推论2.1：边界值的连续性</h3>
+
+<p>设 $f: \mathcal{M} \to \mathbb{R}$ 为物质扇区上的光滑函数，则 $f$ 在边界 $\partial\mathcal{M}$ 上的限制与 $\mathcal{C}$、$\mathcal{I}$ 扇区上的函数通过 $\varphi$ 在 $S^2$ 上连接。这保证了跨扇区物理量的连续性。</p>
 
 <div class="theorem-box">
-  <div class="label">定理2.1（值域定理）</div>
-  <p>在公理1与公理2下，$S_{\text{axiom}}$ 在每个连通分支 $D_\pm$ 上的值域为：</p>
-  $$S_{\text{axiom}}(D_\pm) = (0, +\infty)$$
+<strong>命题2.1（边界值定理）</strong>
+<br><br>
+设 $u \in C^1(\mathcal{M})$ 和 $v \in C^1(\mathcal{C})$ 分别为物质扇区和因果扇区上的光滑函数。若它们在公共边界 $\partial\mathcal{M} \cap \partial\mathcal{C}$ 上相等，则存在唯一的 $w \in C^1(\mathcal{M} \cup \mathcal{C})$ 同时延拓两者。
 </div>
 
-<div class="proof-box">
-  <div class="label">证明</div>
-  <p>由公理1，$D_\pm \cong (0,1)$ 是连通集。由公理2，$S_{\text{axiom}}$ 在 $D_\pm$ 上连续。连续函数在连通集上的像集必为 $\mathbb{R}$ 中的连通子集，即区间。</p>
-  <p>由真空极限：$\displaystyle\inf_{x\in D_\pm} S_{\text{axiom}}(x) = 0$（趋近但不等于0）；</p>
-  <p>由退化极限：$\displaystyle\sup_{x\in D_\pm} S_{\text{axiom}}(x) = +\infty$（趋近但不等于无穷）；</p>
-  <p>由于 $p_0, p_* \notin D$，端点 $0$ 与 $+\infty$ 均不可达。因此像集必为开区间 $(0, +\infty)$。</p>
-  <p style="margin-top:0.5rem;font-style:italic;">详细说明：设 $S(D_+)$ 不是区间，则存在 $\alpha < \beta < \gamma$ 使得 $\alpha, \gamma \in S(D_+)$ 但 $\beta \notin S(D_+)$。令 $U = S^{-1}((-\infty, \beta))$ 与 $V = S^{-1}((\beta, +\infty))$，则 $U,V$ 为 $D_+$ 中不相交开集，且 $U\cup V = D_+$，这与 $D_+$ 连通矛盾。因此 $S(D_+)$ 必为区间。结合边界极限，该区间为 $(0,+\infty)$。$\square$</p>
+<h3>推论2.2：边界的紧致性</h3>
+
+<p>$S^2$ 的紧致性意味着边界上的任意物理量必有最大值和最小值。这在变分问题中提供了自然的上界和下界。</p>
+
+<h3>推论2.3：边界上的测度</h3>
+
+<p>在 $S^2$ 上存在唯一的旋转不变测度——球面面积元 $d\Omega$。该测度在后续积分中给出了归一化的权重：</p>
+
+$$ \int_{S^2} d\Omega = 4\pi $$
+
+<div class="nav-hint-inline">
+  <strong>→ 下一步：</strong><a href="2.3.html">§2.3 公理3：全息屏编码条件</a>
 </div>
 
-<h3>理解值域定理</h3>
-
-<p>这个定理说了一个非常直观的事情：对于一个从基态（$S=0$）到奇异极限（$S=+\infty$）连续变化的量，它一定会经过所有中间值。就像一条从0延伸到无穷的线段，它覆盖了每一个正整数和正实数。</p>
-
-<p>但这个定理并不保证<strong>唯一性</strong>——它只保证存在至少一个激发态具有给定的 $S_0$ 值，但不保证只有一个。唯一性需要额外的条件（严格单调性假设，见下文）。</p>
-
-<hr style="margin:2rem 0;border:none;border-top:1px solid var(--border);">
-
-<h2>定理2.2：存在性定理</h2>
-
-<div class="theorem-box">
-  <div class="label">定理2.2（存在性定理）</div>
-  <p>对任意给定的正数 $S_0 > 0$，在每个分支 $D_+$ 与 $D_-$ 上各至少存在一个激发态 $x_+ \in D_+$ 与 $x_- \in D_-$，使得：</p>
-  $$S_{\text{axiom}}(x_+) = S_{\text{axiom}}(x_-) = S_0$$
-</div>
-
-<div class="proof-box">
-  <div class="label">证明</div>
-  <p>由值域定理（定理2.1），$S_{\text{axiom}}(D_\pm) = (0, +\infty)$。对任意 $S_0 > 0$，显然 $S_0 \in (0, +\infty)$。因此 $S_{\text{axiom}}^{-1}(S_0) \cap D_\pm \neq \varnothing$。$\square$</p>
-</div>
-
-<p>这是存在性定理的关键意义：<strong>对任意给定的 $S_0$，两个分支各有一个激发态实现该几何量值</strong>。这意味着系统有两条不同的"路径"达到同一个几何量值。这在后续的谱几何中具有深远意义。</p>
-
-<hr style="margin:2rem 0;border:none;border-top:1px solid var(--border);">
-
-<h2>严格单调性假设</h2>
-
-<p>值域定理（定理2.1）保证了存在性，但没有保证唯一性。要得到原像的唯一性，需要额外引入严格单调性条件。</p>
-
-<div class="def-box">
-  <div class="label">定义2.1'（严格单调性假设）</div>
-  <p>若 $S_{\text{axiom}}$ 在 $D_\pm$ 上严格单调，则对任意 $S_0>0$，定理2.2中的 $x_+$ 与 $x_-$ 唯一确定。</p>
-  <p>严格单调性<strong>不是</strong>从公理1–2推出的定理，而是框架的<strong>构造性假设</strong>。其引入等价于要求 $S_{\text{axiom}}$ 构成 $D_\pm$ 的一个全局坐标函数。</p>
-</div>
-
-<div class="proof-box">
-  <div class="label">说明</div>
-  <p>严格单调连续函数为单射，故原像唯一。$\square$</p>
-  <p style="margin-top:0.5rem;">严格单调性无法仅从公理1–2的拓扑与分析性质推导，需要额外的构造性输入。因此将其独立为构造性假设，以准确反映其逻辑地位。</p>
-</div>
-
-<hr style="margin:2rem 0;border:none;border-top:1px solid var(--border);">
-
-<h2>定理2.3：严格单调性定理</h2>
-
-<div class="theorem-box">
-  <div class="label">定理2.3（严格单调性定理）</div>
-  <p>在公理1、公理2及严格单调性假设（定义2.1'）下，$S_{\text{axiom}}$ 在每个连通分支 $D_\pm$ 上必为严格单调函数（严格递增或严格递减，取决于定向）。通过固定分支定向，可设 $S_{\text{axiom}}$ 严格递增。</p>
-</div>
-
-<div class="proof-box">
-  <div class="label">证明</div>
-  <p>$D_\pm \cong (0,1)$ 为区间。由严格单调性假设，$S_{\text{axiom}}$ 在 $D_\pm$ 上严格单调。结合边界极限 $\displaystyle\lim_{x\to p_0}S_{\text{axiom}}(x)=0$ 与 $\displaystyle\lim_{x\to p_*}S_{\text{axiom}}(x)=+\infty$，$S_{\text{axiom}}$ 必为严格递增。$\square$</p>
-</div>
-
-<h3>推论2.1：原像唯一性</h3>
-
-<div class="theorem-box">
-  <div class="label">推论2.1（原像唯一性）</div>
-  <p>对任意 $S_0>0$，原像集 $S_{\text{axiom}}^{-1}(S_0)\cap D_\pm$ 为单点集。</p>
-</div>
-
-<div class="proof-box">
-  <div class="label">证明</div>
-  <p>由定理2.3的严格单调性直接成立。$\square$</p>
-</div>
-
-<h3>偏移量注记</h3>
-
-<p>$S_{\text{axiom}}$ 是公理层面的抽象几何量。在具体实现中（即公理3的六项作用量 $S$），两者的关系是：</p>
-$$S_{\text{axiom}}(\theta) = S(\theta) - 24$$
-<p>真空点 $p_0$ 对应角度构型 $\theta^* = (30^\circ,30^\circ,30^\circ)$，此时 $S_{\text{axiom}} = 0$ 而 $S = 24$（$S$ 的全局最小值）。偏移量24的几何意义将在 §3.1 中揭示。</p>
-
-<div class="nav-hint-bar">
-  <a href="2.1.html">← §2.1 公理1：圆拓扑公理</a>
-  <a href="2.3.html">§2.3 公理3：全息屏编码条件 →</a>
 </div>
 
 <div class="chapter-end">
-  ⬡ 几何论 · 卷一 · §2.2
+  ⬡ 几何论 · 卷一 · §2.2<br>
+  <a href="2.1.html">← 上一节 §2.1</a> · <a href="index.html">返回卷目录</a> · <a href="2.3.html">下一节 §2.3 →</a>
 </div>
 
-</div>
 </body>
 </html>
