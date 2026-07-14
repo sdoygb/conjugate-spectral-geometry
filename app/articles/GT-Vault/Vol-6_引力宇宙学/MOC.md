@@ -44,6 +44,16 @@
 | GT-6.6.5 | 平坦性结构锁定定理 | $S^3\times S^3\times S^3$拓扑不变量 |
 | GT-6.6.6 | 冻结临界点定理 | $t_{\text{freeze}}\approx1700$年，$N_{\text{info}}^{\text{freeze}}\approx1.1\times10^9$ |
 | GT-6.6.7 | 原初扰动谱定理 | $A_s\approx9.1\times10^{-10}$，$n_s\approx0.97$，$r\ll0.01$ |
+| GT-6.7.1 | 重子数几何定义 | $B=(1/3)w_{\theta_C}$，拓扑缠绕数 |
+| GT-6.7.2 | 相变边界拓扑扇区连通 | 维度跃迁瞬时所有$\theta_C$扇区等权连通 |
+| GT-6.7.3 | 重子生成主导窗口 | N₂→N₃，乘子跳变5.56倍 |
+| GT-6.7.4 | 几何CP破坏 | $\delta_{CP}\approx1.20$ rad |
+| GT-6.7.5 | 非平衡度量 | $\epsilon_{\text{non-eq}}=r_{k+1}/r_k$，N₂→N₃为5.56 |
+| GT-6.7.6 | I场编码密度-温度对应 | $kT_{\text{eff}}=\sqrt{\rho_{\text{info}}}\cdot E_{\text{Planck}}$ |
+| GT-6.7.7 | C扇区共凝结与结合能 | $B(A,Z)=\kappa_{\text{lock}}(A,Z)\cdot B_0$ |
+| GT-6.7.8 | 氘瓶颈几何条件 | $\kappa_{\text{deuteron}}>(kT_{\text{eff}}/E_{\text{info}})\cdot|\ln\eta|$ |
+| GT-6.7.9 | ⁴He丰度零参数预言 | $Y_p\approx0.25$ |
+| GT-6.7.10 | ⁷Be几何不稳定性 | $\kappa_{\text{lock}}(7,4)$小于稳定性阈值 |
 
 ## 来源文章
 
