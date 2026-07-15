@@ -4,7 +4,7 @@
 > **用途**：几何论全部术语在此统一。任何新文章引入术语前必须先在本表登记。  
 > **语言**：中文 / English  
 > **更新规则**：见 §11 维护规则  
-> **本次更新**：§4 定理——新增19条GT-Vault定理（几何速度代数、谱互锁、硬方向冻结、约束梯度流、M-C腰边耦合、M-I完备性耦合、谱互锁闭包、约束释放效应、多体截面、规范群几何根源、耦合常数Hessian谱统一、内禀膨胀率、差异量级函数、七级递推膨胀、几何CP破坏、质子衰变寿命、中微子Majorana本质、电荷量子化几何条件、拓扑超导材料筛选）；§5 常数——新增7条GT-Vault参数；§8 概念名称——新增8条GT-Vault概念（观测链、时间尺度硬化、稳态因果环流、ℰ映射函子、跨级渗透、几何引力起源、第八级不可控、谱互锁闭包闭包）；§9 构造性——新增3条构造性概念（量子化谱刚性适用、倒伏相截断闭包、spinfoam构造）；§11.2 新增GT-Vault术语冲突记录
+> **本次更新**：§4 定理——新增19条GT-Vault定理（几何速度代数、谱互锁、硬方向冻结、约束梯度流、M-C腰边耦合、M-I完备性耦合、谱互锁闭包、约束释放效应、多体截面、规范群几何根源、耦合常数Hessian谱统一、内禀膨胀率、差异量级函数、七级递推膨胀、几何CP破坏、质子衰变寿命、中微子Majorana本质、电荷量子化几何条件、拓扑超导材料筛选）；§5 常数——新增7条GT-Vault参数；§8 概念名称——新增8条GT-Vault概念（观测链、时间尺度硬化、稳态因果环流、ℰ映射函子、跨级渗透、几何引力起源、第八级不可控、谱互锁闭包）；§9 构造性——新增3条构造性概念（量子化谱刚性适用、倒伏相截断闭包、spinfoam构造）；§11.2 新增GT-Vault术语冲突记录
 
 ---
 
@@ -56,7 +56,7 @@
 | 约束截面 | Constrained Cross-Section | 参数空间中的几何约束子流形，用于物理态的约化描述 | 0.2.1 §1 |
 | 层级约束截面 | Hierarchical Constrained Cross-Section | 多尺度标度下的嵌套约束截面结构 | 0.3.1.1 §1 |
 | 全息宇宙 | Holographic Universe | 约束截面框架下的宇宙学全息描述，将宇宙演化映射为信息场动力学 | 0.2.2 §1 |
-| 渗透函数 | Percolation Function | 约束截面之间的信息渗透强度函数，控制跨层级耦合 | 0.2.1.1 §1 |
+| 渗透函数 | Percolation Function | 约束截面之间的信息渗透强度函数，控制跨层级耦合的渗透率，由 Hessian 谱间隙 $\Lambda_H$ 决定 | 0.2.1.1 §1 |
 | M场法向几何结构 | M-Field Normal Geometry | M场在三分切丛法向子丛上的几何构造，定义质量生成的几何基础 | 0.6.1 §1 |
 | M场呼吸模式 | M-Field Breathing Mode | M场的径向振荡模式，对应 Higgs 粒子的几何起源 | 0.6.5 §1, 4号 §2 |
 | M-C腰边耦合 | M-C Waist-Edge Coupling | 物质场与因果场在约束截面边缘的耦合结构，对应电磁相互作用 | 0.6.3 §1 |
@@ -181,7 +181,7 @@
 | 因果角锁定定理 | Causal Angle Locking Theorem | 电子-缪子 $\theta_C$-共享联合截面上，驻点条件强制 $\theta_C^{(2)} = \theta_C^0 = 26.16^\circ$ | 24号 §4.3 |
 | $\theta_M^{(2)}$ 对称性解析论证 | $\theta_M^{(2)}$ Symmetry Analytic Proof | $\theta_M^{(2)} = (90^\circ - \theta_C^0)/2 = 31.92^\circ$（无耦合极限），含 $W_{12}$ 耦合修正后 $\approx 31.94^\circ$，由 $S$ 函数全排列对称性严格导出 | 24号 §4.4 |
 | $C_n$ 独立于驻点条件定理 | $C_n$ Independence from Stationarity Theorem | 质量标度 $C_n$ 不进入联合截面驻点条件，由全息屏层级嵌套独立确定 | 24号 §5.1 |
-| 三代起源定理 | Three-Generation Origin Theorem | $N_{\text{gen}} = 3$ 是截面类型的代数和穷举结果：三扇区 $\to$ 三种截面类型（$\theta_C$-共享、M-同步、$\theta_I$-共享），其中 $\theta_I$-共享物理不可行 + 裸截面为第一代 $\to$ 恰好三代。推论 6.3b：$N_{\text{gen}} = 3 - 1 + 1 = 3$ | 0.6.7 §6.4 |
+| 三代起源定理（截面类型） | Three-Generation Origin Theorem (Section Type) | $N_{\text{gen}} = 3$ 是截面类型的代数和穷举结果：三扇区 $\to$ 三种截面类型（$\theta_C$-共享、M-同步、$\theta_I$-共享），其中 $\theta_I$-共享物理不可行 + 裸截面为第一代 $\to$ 恰好三代。推论 6.3b：$N_{\text{gen}} = 3 - 1 + 1 = 3$ | 0.6.7 §6.4 |
 | I场扩散冻结定理 | I-Field Diffusion Freezing Theorem | $\tau_I^{\text{spatial}} = N_{\text{info}} \cdot \Delta\tau_{\text{step}}$，$N_1$ 时 $\sim 1$ 周 $\to$ 早期宇宙天生均匀，视界问题自动消解 | 50号 §3 |
 | $N_{\text{info}}(t)$ 函数定理 | $N_{\text{info}}(t)$ Function Theorem | 七级递推在 $t_7 \approx 850$ 年内完成，此后 $N_{\text{info}}(t>t_7) = N_7(t/t_7)^2$（$\beta=2$ 精炼幂律） | 50号 §5.6 |
 | 原初扰动谱定理 | Primordial Perturbation Spectrum Theorem | $A_s = 1/N_{\text{info}}^{\text{freeze}} \approx 9.1\times10^{-10}$（零参数，与 Planck $2.10\times10^{-9}$ 差因子 2.3），$n_s \approx 0.97$，$r \ll 0.01$ | 50号 §8 |
@@ -195,7 +195,7 @@
 | 无磁单极子结论 | No Magnetic Monopole Conclusion | 约束流形 $S$ 为 2-单纯形 $\to$ 可缩 $\to$ $\pi_2(S)=0$ $\to$ $H^2(S;\mathbb{Z})=0$ $\to$ 所有 U(1) 丛平凡 $\to$ $\nabla\cdot\mathbf{B}=0$ 处处成立。狄拉克量子化条件 $eg=n/2$ 反转：不是磁荷存在则电荷量子化，而是 $\theta_C$ 纤维化单值性要求电荷量子化 | 56号 §3–§5 |
 | 电弱 crossover 定理 | Electroweak Crossover Theorem | 电弱"相变"不存在——只有平滑 crossover。质量来自软模曲率恢复力，非真空期望值 $\to$ 无可破缺的对称性；$\theta_M$ 随 $N_{\text{info}}$ 平滑演化 | 4号 §5.3 |
 | 强 CP 拓扑冻结定理 | Strong CP Topological Freezing Theorem | $\bar{\theta}=0$ 是结构强制的：U(1)_A 手征转动 = ℐ 扇区全局 $\theta_I$ 平移，$\tilde{S}_{\text{total}}$ 在 U(1) 作用下单调（P0/CG-1），公理 1 真空标记 $\to$ U(1) 完全冻结 $\to$ $\bar{\theta}=0$。零参数，轴子不存在 | 5号 §5.5 |
-| 三代起源拓扑定理 | Three-Generation Origin Topological Theorem | $N_{\text{gen}} = \dim(\Delta^2) + 1 = 3$。$S_3$ 迷向子群穷举：$\{e\}$（电子，三角全不等）、$S_2^{IM}$（缪子）、$S_2^{CI}$（τ子）、$S_2^{MC}$（梯度流不可达）、$S_3/A_3$（重心，非粒子构型）。第四代无处可去——所有五种 $S_3$ 子群类型已穷举完毕 | 57号 §4 |
+| 三代起源拓扑定理（迷向子群） | Three-Generation Origin Topological Theorem (Isotropy Subgroup) | $N_{\text{gen}} = \dim(\Delta^2) + 1 = 3$。$S_3$ 迷向子群穷举：$\{e\}$（电子，三角全不等）、$S_2^{IM}$（缪子）、$S_2^{CI}$（τ子）、$S_2^{MC}$（梯度流不可达）、$S_3/A_3$（重心，非粒子构型）。第四代无处可去——所有五种 $S_3$ 子群类型已穷举完毕 | 57号 §4 |
 | 自由色荷拓扑禁止定理 | Free Color Charge Topological Forbiddance Theorem | 自由色荷对应约束流形顶点 $(90^\circ,0,0)$，$1/\sin^2 0^\circ \to \infty$ $\to$ $S \to \infty$ $\to$ $E \to \infty$。禁闭是拓扑的（顶点奇点），不是动力学的（不需要 $\alpha_s$ 跑动） | 58号 §3 |
 | MW 色约化定理 | MW Color Reduction Theorem | Marsden-Weinstein 约化：$N=1$ $\to$ 0D 相空间（无动力学），$N=2$ $\to$ 1D（离散束缚态），$N=3$ $\to$ 2D（可传播）。色单态是唯一可传播构型 | 58号 §4–§6 |
 | 引力统一定理 | Gravity Unification Theorem | 引力的三个几何表达——因果场动力学 $\Lambda_\xi$（0.5）、裸引力耦合 $G_{9D}$（10号）、宏观有效引力 $G_{\text{eff}}$（54号）——是约束流形 $\Delta^2$ 上同一 Hessian 谱 $(\lambda_1,\lambda_2)$ 的三个投影。转换不需要任何额外假设 | 59号 §6 |
@@ -445,7 +445,7 @@
 | 观测链 | Observation Chain | 信息场→观测的时间层级结构——信息场编码经谱解码、量纲桥、后验匹配三步转化为可观测物理预言 | 3A.6 §核心 |
 | 时间尺度硬化 | Time Scale Hardening | 观测链末端的有效时间压缩——观测链越长，有效时间分辨率越粗，宏观时间标度从 $\chi_T \sim 10^{-17}$ s 硬化至人类经验尺度 $\sim 10^0$ s | 3A.6 §核心 |
 | 几何引力起源 | Geometric Origin of Gravity | 引力作为几何梯度流的涌现——$\mathbb{R}^9$ 梯度流相对梯度 $\Delta = 0.509945$ 的内禀驱动，非独立力 | 11号 §3.2 |
-| 跨级渗透 | Cross-Level Percolation | 约束截面之间的信息渗透强度函数——控制跨层级耦合的渗透率，由 Hessian 谱间隙 $\Lambda_H$ 决定 | 0.2.1.1 §1 |
+
 | 谱互锁闭包 | Spectral Interlock Closure | 三场谱互锁关系形成的闭合拓扑结构——所有谱互锁定理构成不可分割的闭包块，无外部输入依赖 | 4.2 §核心 |
 
 ---
