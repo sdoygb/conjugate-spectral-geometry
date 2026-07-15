@@ -434,6 +434,12 @@
 | 顶点奇点 | Vertex Singularity | 约束流形顶点 $(90^\circ, 0, 0)$ 处 $S$-泛函的 $1/\sin^2 0^\circ$ 发散——自由色荷被拓扑禁止的根源。奇点不是正则化失败，是几何结构的必然输出 | 58号 §3 |
 | Hessian 谱三投影 | Hessian Spectrum Triple Projection | $\lambda_1, \lambda_2$ 两个 Hessian 本征值分别投影为三个独立物理表达：因果场动力学 $\Lambda_\xi = -\frac{1}{2}\log(\lambda_2/\lambda_1)$（0.5）、裸引力耦合 $G_{9D} \propto \sqrt{\lambda_1/\lambda_2}$（10号）、宏观有效引力 $G_{\text{eff}} = G_{9D}\sqrt{1+a_0/a_N}$（54号）。万物皆几何的最后一块拼图 | 59号 §2–§6 |
 | $S_2$ 对称性恢复 | $S_2$ Symmetry Restoration | μ 子和 τ 子落在 $S_2$ 线上（两个角相等），电子是唯一 $S_3$ 完全破缺的粒子。对称性恢复是质量增强因子 $f_\mu = 2\pi(S_e-2)$ 的几何根源——每退化一个扇区，有效编码容量减 1 | 60号 §6.9 |
+| ℰ 映射函子 | ℰ Mapping Functor | 几何量→物理量的函子映射——将纯几何量（$S_e$, $K$, $\theta_\alpha$）映射为可观测物理量（$\alpha$, $m_e$, 耦合常数）的跨卷函子构造 | 2.1 §3 |
+| 观测链 | Observation Chain | 信息场→观测的时间层级结构——信息场编码经谱解码、量纲桥、后验匹配三步转化为可观测物理预言 | 3A.6 §核心 |
+| 时间尺度硬化 | Time Scale Hardening | 观测链末端的有效时间压缩——观测链越长，有效时间分辨率越粗，宏观时间标度从 $\chi_T \sim 10^{-17}$ s 硬化至人类经验尺度 $\sim 10^0$ s | 3A.6 §核心 |
+| 几何引力起源 | Geometric Origin of Gravity | 引力作为几何梯度流的涌现——$\mathbb{R}^9$ 梯度流相对梯度 $\Delta = 0.509945$ 的内禀驱动，非独立力 | 11号 §3.2 |
+| 跨级渗透 | Cross-Level Percolation | 约束截面之间的信息渗透强度函数——控制跨层级耦合的渗透率，由 Hessian 谱间隙 $\Lambda_H$ 决定 | 0.2.1.1 §1 |
+| 谱互锁闭包 | Spectral Interlock Closure | 三场谱互锁关系形成的闭合拓扑结构——所有谱互锁定理构成不可分割的闭包块，无外部输入依赖 | 4.2 §核心 |
 
 ---
 
