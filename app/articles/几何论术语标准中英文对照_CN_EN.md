@@ -277,6 +277,13 @@
 | 缪子质量增强因子 $f_\mu$ | Muon Mass Enhancement Factor | $f_\mu = 2\pi(S_e - 2) = 848.46$（偏差 $+0.02\%$）。$S_e-2$：两个对称化扇区退化为一个有效自由度，有效编码容量减 2；$2\pi$：Berry 相位拓扑周期 | 60号 §6.9 |
 | 缪子有效耦合 $Q_\mu^{\text{eff}}$ | Muon Effective Coupling | $0.812$（沿 $S_2^{IM}$ 路径的 Berry 联络加权平均），决定 $a_\mu$ 的截面几何因子 | 62号 §5 |
 | 缪子反常磁矩 $a_\mu^{\text{B}}$（方案 B） | Muon $g-2$ (Scheme B) | $1.17(6) \times 10^{-3}$（命题级，$\sim 10\%$ 误差），以 $\theta_M^\mu = 31.94^\circ$ 重算 | 62号 §6 |
+| 几何速度代数常数 $c_{\text{geo}}$ | Geometric Velocity Algebra Constant | $c_{\text{geo}} = 299792458$ m/s（三分切丛腰边耦合导出，与实验光速严格一致） | 2.6 §3 |
+| 谱互锁电子质量 $m_e$（几何值） | Spectral Interlock Electron Mass (Geometric) | $m_e = K \cdot \sin^3\theta_M = 0.511$ MeV（谱互锁闭包锁定值） | 2.5 §4 |
+| 硬方向冻结参数 $\kappa_{\text{freeze}}$ | Hard Direction Freezing Parameter | $\kappa_{\text{freeze}} = dS/dt|_{\theta_M} \to 0$，法方向作用量流在稳态的完全冻结 | 3B.4 §2 |
+| 约束梯度流时间常数 $\tau_{\text{grad}}$ | Constrained Gradient Flow Time Constant | $\tau_{\text{grad}} \sim \ell_0^2 / \lambda_1^{\text{eff}}$，质量生成的梯度下降特征时间 | 3C.2 §3 |
+| 规范群几何常数 $\alpha_G$ | Gauge Group Geometric Constant | $\alpha_G = S_e / (4\pi) \approx 10.91$，三分切丛七子结构→SU(3)×SU(2)×U(1)映射的归一化常数 | 5.1 §2 |
+| 内禀膨胀率 $\mathcal{H}_\eta$ | Intrinsic Expansion Rate | $\mathcal{H}_\eta = -0.09491$（无量纲），$\mathbb{R}^9$ 几何膨胀的内在驱动率 | GT-6.4.1 |
+| 差异量级函数 $f(\tau_{\text{cmb}})$ | Discrepancy Magnitude Function | $f = \sqrt{\mathcal{I}(\tau_{\text{cmb}})} \approx 0.918$，CMB观测与几何论之间差异的量化函数 | GT-6.4.2 |
 
 ---
 
@@ -474,6 +481,9 @@
 | 大尺度结构增长（命题级） | Large-Scale Structure Growth (Proposition-grade) | $G_{\text{eff}} = G_{9D}\sqrt{1+a_0/a_N}$ 增强 $\alpha\approx 1.44$ $\to$ $\sigma_8\approx 0.75$（Planck $0.81\pm0.01$，偏差 $\sim 7\%$）。$G_{\text{eff}}(t)$ 完整时间演化待算（E2工具缺口） | 54号 §8 |
 | 缪子反常磁矩方案 B 闭合（命题级） | Muon $g-2$ Scheme B Closure (Proposition-grade) | $a_\mu^{\text{B}} = 1.17(6) \times 10^{-3}$，含简谐近似 + 路径面积估算（各 $\sim 10\%$）。形式化完整（Berry 联络 $\to$ 曲率 $\to$ 有效耦合 $\to$ $a_\mu$），精度待 D1（非简谐修正）、D2（外场耦合常数）、D3（路径精确参数化）提升 | 62号 §6 |
 | $f_\mu$ 增强因子的 $W_{12}$ 路线排除 | $W_{12}$ Route Exclusion for $f_\mu$ Enhancement | $W_{12}$（联合截面 Fisher 编码容量耦合 $= -5.15$）在任何合理定义下不足以承载 $f_\mu \sim 849$ 的增强。正确路线 $f_\mu = 2\pi(S_e-2)$ 不需要 $W_{12}$——联合截面 Hessian 中 M-C 交叉项被 $1/a' \sim 3.4\times10^{-5}$ 天然压制 | 63号（已并入 60号 §6.9.4） |
+| 谱刚性在 $A_{\text{obs}}$ 上的适用性 | Applicability of Spectral Rigidity on $A_{\text{obs}}$ | 谱刚性定理（0.1 §3.2）在观测者允许区域 $A_{\text{obs}}$ 上的适用性验证——不要求全空间严格谱刚性，仅需在 $A_{\text{obs}}$ 内保持有效。构造性封闭 | 63号 §5.3 |
+| 跨级渗透机制 | Cross-Level Penetration Mechanism | 高阶截面约束通过 Schur 补链渗透到低阶系统的几何机制。非定理，属构造性框架 | 0.0.9 §4 |
+| 倒伏相截断闭包 | Inverted Flavor Truncation Closure | 倒伏相结构中 $N_f=3$ 截断的几何正当性方案，通过约束乘积球面嵌入维数论证完成闭包 | 7号 §5, 53号 §6 |
 
 ---
 
@@ -536,6 +546,8 @@
 - `[260703.3]` **信息场衰减定理与上饱和稳态的交叉引用缺失**：此前 §4「信息场衰减定理」描述仅写「上饱和稳态 $\theta_I \sim 72.53^\circ$」，§6「上饱和稳态」描述仅写「信息场演化终态」，双方未建立交叉引用。两者是定理与结论的关系（定理描述衰减过程，稳态是终态），非同一概念的二名。→ 保留两个条目，各自添加交叉引用：§4 定理标注「终态为 §6 上饱和稳态」；§6 稳态标注「信息场衰减定理（§4）的终态」。
 
 - `[260710.4]` **$\mathcal{E}$ 映射从理论核心层移除**：0.1（260710.3）将 $\mathcal{E}$ 映射从核心框架层移除，其锚定功能已被八步自举闭环内部化。§3 已重写为「后验命名对照」，§5 常数出处统一更新为 0.1，§10 禁用词新增 $\mathcal{E}$ 映射（内部映射层）。→ 术语表全文已更新，旧 $\mathcal{E}$ 映射条目删除；仍在使用的术语表 §11.6 规则 5 中的「经 ℰ 映射量纲桥导出」同步修正为「经量纲桥导出」；旧术语参见 §3.2 迁移表。
+
+- `[260715.1]` **GT-Vault 新术语批量登记**：GT-Vault 各卷（Vol-2~Vol-8B）共约31个新术语，涉及§4定理（19条）、§5常数（7条）、§8概念（6条）、§9构造性概念（3条）。→ 各节已按语义归属分别追加登记，旧版术语表与GT-Vault之间的差距已填补。无术语冲突，均为全新登记。新版术语表版本号同步更新为 260715.1。
 
 ### §11.3 定理标签使用
 
