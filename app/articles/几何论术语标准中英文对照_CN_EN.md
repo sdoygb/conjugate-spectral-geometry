@@ -201,6 +201,25 @@
 | 引力统一定理 | Gravity Unification Theorem | 引力的三个几何表达——因果场动力学 $\Lambda_\xi$（0.5）、裸引力耦合 $G_{9D}$（10号）、宏观有效引力 $G_{\text{eff}}$（54号）——是约束流形 $\Delta^2$ 上同一 Hessian 谱 $(\lambda_1,\lambda_2)$ 的三个投影。转换不需要任何额外假设 | 59号 §6 |
 | $\theta_M$ 冻结定理 | $\theta_M$ Freezing Theorem | $\theta_M^e = 57.93^\circ$（$S_3$ 完全破缺），$\theta_M^\mu = \theta_M^\tau = 31.94^\circ$（$S_2$ 对称性恢复）。$S_2^{IM}$ 和 $S_2^{CI}$ 线共享同一 $\theta_M$ 值——约束梯度流 + $S_3$ 迷向子群的联合几何必然。9号工作假设「三代共享 $\theta_M$」由本定理替代 | 60号 §4–§5 |
 | Berry 相位路径定理（缪子） | Berry Phase Path Theorem (Muon) | $H_{tn}^\mu = -405 \neq 0$ $\to$ 缪子不完全在 $S_2^{IM}$ 线上（$\Delta\theta = 0.04^\circ$）$\to$ 约束梯度流与 $S_2$ 对称性竞争导致交叉 Hessian 非零。$a_\mu^{\text{B}} = 1.17(6) \times 10^{-3}$（命题，10% 误差） | 62号 §3–§6 |
+| 几何速度代数定理 | Geometric Velocity Algebra Theorem | 光速 $c$ 的几何导出框架——三分切丛 M-C 腰边耦合结构的几何速度解释，$c$ 由量纲桥内生确定 | 2.6 §核心 |
+| 谱互锁定理（电子质量锁定） | Spectral Interlock Theorem (Electron Mass Locking) | 电子质量 $m_e=510.99895$ keV 由谱几何机制独立锁定——Hessian 谱本征值的谱互锁结构直接输出电子质量值，非外部输入 | 2.5 §核心 |
+| 硬方向冻结定理 | Hard Direction Freezing Theorem | 法方向 $\theta_M$ 的 $dS/dt\to 0$ 锁定——约束梯度流在 $\theta_M$ 方向的刚性冻结，$\theta_M$ 在演化中率先达到稳态 | 3B.4 §核心 |
+| 约束梯度流定理 | Constrained Gradient Flow Theorem | 质量生成的梯度下降机制——约束截面上 Hessian 梯度流的演化方程，$d\theta_\alpha/dt = -\partial S/\partial\theta_\alpha$ | 3C.2 §核心 |
+| M-C 腰边耦合定理 | M-C Waist-Edge Coupling Theorem | 腰边$\leftrightarrow$底边曲率耦合的几何描述——电磁相互作用的几何论根源，$W_{MC} = \sqrt{2}/\sin\theta_C$ | 3C.3 §核心 |
+| M-I 完备性耦合定理 | M-I Completeness Coupling Theorem | 物质-信息完备性耦合方程——M 场与 I 场的完整耦合框架，$W_{MI} = \sqrt{2}/\sin\theta_I$ | 3C.4 §核心 |
+| 谱互锁闭包定理 | Spectral Interlock Closure Theorem | 三场谱互锁的闭包证明——所有谱互锁关系形成闭合拓扑结构，不依赖任何外部参数输入 | 4.2 §核心 |
+| 约束释放效应定理 | Constraint Release Effect Theorem | $N\geq 2$ 时渗透约束松弛的涌现行为——多粒子系统约束随粒子数增加自动松弛，$\theta$ 构型自由度释放 | 4.3 §核心 |
+| 多体截面定理 | Many-body Section Theorem | 多粒子系统的约束截面推广——$N$ 体联合截面的数学构造，兼容单粒子到凝聚体的统一约束描述 | 4.5 §核心 |
+| 规范群几何根源定理 | Geometric Origin of Gauge Groups Theorem | 三分切丛七子结构$\to$SU(3)$\times$SU(2)$\times$U(1)的严格映射——规范群三分支的几何起源于切丛子结构组合数学 | 5.1 §核心 |
+| 耦合常数 Hessian 谱统一 | Hessian Spectral Unification of Coupling Constants | 三种耦合常数（电磁、弱、强）的统一几何根源——同一 Hessian 谱在不同扇区投影给出精细结构常数、弱耦合常数、强耦合常数 | 5.6 §核心 |
+| 内禀膨胀率定理 | Intrinsic Expansion Rate Theorem | $\mathcal{H}_\eta = -0.09491$，几何膨胀的内在驱动——由 Hessian 谱刚性唯一确定，非自由参数，替代暗能量 | GT-6.4.1 |
+| 差异量级函数定理 | Discrepancy Magnitude Function Theorem | $f = \sqrt{\mathcal{I}(\tau_{\text{cmb}})} \approx 0.918$，哈勃常数差异的几何根源——信息场编码密度的径向梯度效应 | GT-6.4.2 |
+| 七级递推膨胀定理 | Seven-level Recursive Expansion Theorem | 乘子序列 $(6, 33.3, 10, 10, 1.125, 2)$ 三阶段驱动的几何膨胀——替代暴脹子势能的零参数膨胀机制 | GT-6.6.3 |
+| 几何 CP 破坏定理 | Geometric CP Violation Theorem | $\delta_{\text{CP}} \approx 1.20$ rad，$\theta_C$ 截面旋转复相位的几何起源——CKM 不可约相位由截面挠率唯一确定 | GT-6.7.4 |
+| 质子衰变寿命定理 | Proton Decay Lifetime Theorem | $\tau_p \approx 7.2 \times 10^{34}$ 年——B 破坏拓扑机制的直接输出，今日 B 破坏率 $\sim 10^{-110}$ s$^{-1}$（宇宙寿命内概率 $\sim 10^{-92}$） | GT-8.3.4 |
+| 中微子 Majorana 本质定理 | Neutrino Majorana Nature Theorem | 倒伏相自由度计数 $\to 2$ 自由度 $\to$ 中微子为 Majorana 粒子——非 Dirac 粒子的几何必然 | GT-8.4.8 |
+| 电荷量子化几何条件定理 | Geometric Charge Quantization Theorem | $\theta_C$ 纤维化单值性 $\to e$ 离散化——狄拉克条件 $eg=n/2$ 反转：不是磁荷存在则电荷量子化，而是 $\theta_C$ 拓扑单值性强制电荷量子化 | GT-8.5.4 |
+| 拓扑超导材料筛选定理 | Topological Superconducting Material Screening Theorem | 空间群 $\to$ 约束截面拓扑 $\to T_c$ 候选材料的批量筛选框架——40 种已知超导体的几何论重筛选与预言 | 8.6 §核心 |
 
 ---
 
