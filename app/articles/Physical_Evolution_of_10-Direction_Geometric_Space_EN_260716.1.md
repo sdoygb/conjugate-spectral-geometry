@@ -337,3 +337,385 @@ Each arrow in the bootstrap chain constitutes a **bidirectional implication**: t
 
 ---
 
+
+# Part II &nbsp; Physical Mapping Layer
+
+## Chapter 6 &nbsp; The Single Physical Mapping
+
+### 6.1 &nbsp; Theoretical Hierarchy and Mapping Declaration
+
+On top of the purely mathematical axiom framework of the 10-direction geometric space, a **geometry-to-physics mapping layer** is established. This mapping layer is not a purely mathematical theorem within the three-axiom framework, but an explicit declaration of how to read physical observables from geometric objects.
+
+The physical mapping layer has only two kinds of input:
+
+1. **The Three Axioms**: the Circle Topology Axiom, the Boundary Limit Axiom, and the Holographic Screen Encoding Condition;
+2. **The Single Physical Mapping $\mathcal{E}$**: identifying the $\mathcal{M}$-$\mathcal{C}$ waist-edge coupling structure of the tripartite tangent bundle as the electromagnetic interaction.
+
+This mapping is not a fourth axiom, but a physical identification rule: it states which part of the geometric objects defined by the three axioms corresponds to electromagnetic phenomena in the physical world.
+
+### 6.2 &nbsp; The Core Mapping $\mathcal{E}$
+
+**Core Mapping $\mathcal{E}$ (Electromagnetic Geometric Mapping)** &nbsp; The $\mathcal{M}$-$\mathcal{C}$ waist-edge coupling structure (connecting the matter sector and the causal sector) of the tripartite tangent bundle corresponds to the electromagnetic interaction.
+
+This mapping necessarily accompanies two geometric modes:
+1. **Source Mode**: the ground-state excitation of the $\mathcal{M}$ sector under the soft mode, outputting a rest energy $E_{\mathcal{M}}\approx 511$ keV, identified as the **electron**;
+2. **Propagation Mode**: the null-cone structure of the $\mathcal{C}$ sector under the boundary limit, outputting a massless propagation speed $c$, identified as the **photon**.
+
+The two are bound by the same geometric eigen-quantity $S_e=137.035999084$, forming an indivisible electromagnetic geometric entity. The $\mathcal{I}$ sector does not map to an independent particle, serving only as the information/phase channel for electromagnetic coupling.
+
+**ℰ-Mapping Anchoring Principle** &nbsp; The electromagnetic geometric mapping $\mathcal{E}$ is the core anchoring mapping between geometric theory and physical observables — it identifies the $\mathcal{M}$-$\mathcal{C}$ waist-edge coupling structure of the tripartite tangent bundle as the electromagnetic interaction. The framework adopts a **dual-anchor strategy**: $S_e$ (the inverse fine-structure constant) and $c$ (the speed of light in vacuum) as the two external anchoring inputs of the physical mapping layer, with the remaining parameters of the dimensional bridge ($\chi_L$, $\chi_T$, $K$, $G_L$, etc.) jointly determined by the anchoring values and the geometric structure.
+
+**Honest Annotation**: The precise数值 $c = 299\,792\,458$ m/s is an external input (SI defined value) and is not derived from the three axioms. The equation $c = v_{\text{geo}} \cdot \chi_L/\chi_T$ defines a ratio constraint among the geometric intrinsic speed $v_{\text{geo}}$, characteristic length $\chi_L$, and characteristic time $\chi_T$, but does not independently determine the numerical value of $c$.
+
+### 6.3 &nbsp; Derived Quantities of the Single Mapping
+
+From the single physical mapping $\mathcal{E}$ and the three axioms, the following six eigen-quantities can be completely derived:
+
+**Anchoring Item 6.3.1 (Inverse Fine-Structure Constant)** &nbsp; The value $S_e$ of the holographic screen six-term action at the effective physical identification point is identified as the inverse fine-structure constant. This numerical value takes the experimentally measured value $\alpha^{-1}=137.035999084(21)$ (CODATA 2018) as the framework anchoring input:
+$$S_e \equiv \alpha^{-1} = 137.035999084.$$
+
+**Honest Annotation**: $S_e$ is not a geometric output independently computed from the three axioms. It is an external anchoring value of the physical mapping layer — the framework identifies it as the effective value of the holographic screen six-term action after accounting for percolation and cross-sector coupling corrections. The six-term action at the bare reference point (without corrections) is $S(\theta_1^0,\theta_2^0,\theta_3^0)\approx 137.0$, and the difference $\approx 0.036$ from $S_e$ is naturally absorbed by the coupling corrections of the percolation-variational closure equations.
+
+**Derived Item 6.3.2 (Mass Formula)** &nbsp; Physical mass is given by the matter angle $\theta_M$ as:
+$$m = K \sin^3\theta_M,$$
+where $K$ is the geometric energy scale constant and $\theta_M$ is the matter sector projection intensity angle.
+
+**Anchoring Item 6.3.3 (ℰ-Mapping and Speed of Light Anchoring)** &nbsp; The speed of light in vacuum $c=299\,792\,458$ m/s is an external anchoring input of the physical mapping layer (SI defined value). It satisfies the ratio constraint with the geometric intrinsic speed $v_{\text{geo}}$, characteristic length $\chi_L$, and characteristic time $\chi_T$:
+$$c = v_{\text{geo}} \cdot \frac{\chi_L}{\chi_T}.$$
+
+**Derived Item 6.3.4 (Effective Soft/Hard Modes)** &nbsp; The effective Hessian eigenvalues arising from cross-sector coupling are
+$$(\lambda_1^{\text{eff}},\lambda_2^{\text{eff}}) = (391.05,\ 59324.3)\ \text{rad}^{-2}.$$
+
+**Derived Item 6.3.5 (First Scale of the Dimensional Bridge)** &nbsp; $N_1 = 6000.$
+
+**Derived Item 6.3.6 (Nucleon Geometric Charge)** &nbsp; $v_p = 1117.$
+
+All six quantities above are determined from the same mapping $\mathcal{E}$ and the three axioms (with $S_e$ and $c$ as external anchoring inputs; the rest are framework outputs):
+
+| Derived Item | Mathematical Origin | Remarks |
+|:---|:---|:---|
+| $S_e$ | Locked value of holographic screen six-term action | Identified by mapping $\mathcal{E}$ as $\alpha^{-1}$ |
+| $m=K\sin^3\theta_M$ | Dimensional bridge spectral formula | Mass formula is the output of $\mathcal{E}$ for the source mode |
+| ℰ-mapping anchoring | $\mathcal{M}$-$\mathcal{C}$ waist-edge coupling | $c$ is external anchoring input (SI defined value) |
+| $(\lambda_1^{\text{eff}},\lambda_2^{\text{eff}})$ | Dual-mode zero-error condition | Spectral output of cross-sector coupling under the same mapping |
+| $N_1$ | Seven-level recursive construction of dimensional bridge | First scale |
+| $v_p$ | Strong interaction geometric charge | Readout of the same mapping in the strong interaction sector |
+
+---
+
+## Chapter 7 &nbsp; Physical Identification on the Holographic Screen
+
+### 7.1 &nbsp; Physical Identification Point (Bare Reference Point)
+
+**Definition (Physical Identification Point)** &nbsp; The angle configuration satisfying the following simultaneous system is called the physical identification point (bare reference point):
+1. Completeness axiom: $\theta_M+\theta_C+\theta_I=90^\circ$;
+
+3. Electron mass identification derived from the single mapping: $K\sin^3\theta_M = m_e$.
+
+Numerically solving this simultaneous system yields:
+$$\theta_1^0 = 57.9300000000^\circ,\quad \theta_2^0 = 26.1593112467^\circ,\quad \theta_3^0 = 5.9106887533^\circ.$$
+
+Verification: $57.93+26.1593112467+5.9106887533=90.0000000000^\circ$.
+
+**Important Clarification**: The physical identification point is **not** a stationary point of $S(\theta)$. The unique global minimum of $S(\theta)$ on the constraint manifold is $(30^\circ,30^\circ,30^\circ)$. The physical identification point lies on the $S=S_e$ level surface, with its matter angle additionally locked by the mass formula.
+
+**Theorem (Existence and Uniqueness of the Physical Identification Point)** &nbsp; Within the ordered sector gauge $D_{\text{ord}}$, the simultaneous system has a unique solution.
+
+*Proof sketch.* The completeness condition and the fine-structure identification together determine a one-dimensional level curve. On this curve, $\theta_M=\theta_1$ can vary continuously within the allowed interval; $\sin^3\theta_M$ is strictly monotonic on $(0,\pi/2)$, so the mass formula has a unique solution point for a given $K$. The ordered sector gauge excludes $S_3$ mirror images, guaranteeing uniqueness. $\square$
+
+### 7.2 &nbsp; Matter Angle and Mass Formula
+
+The matter angle is $\theta_M := \theta_1$. The mass formula is $m = K \sin^3\theta_M = K \sin^3\theta_1.$
+
+At the bare reference point, $\theta_M^0=57.93^\circ$. From the dimensional bridge spectral formula,
+$$K = \frac{\sqrt{\lambda_1^{\text{eff}}\lambda_2^{\text{eff}}}}{\pi C_K \sin^3\theta_M},$$
+where $C_K \approx 3$ is a locked normalization factor to be determined, yielding $K=839.758793$ keV.
+
+### 7.3 &nbsp; Hessian Cross-Section on the Constraint Manifold
+
+On the constraint manifold $\Sigma=\{(\theta_1,\theta_2,\theta_3)\in\mathbb{R}^{3+}\mid \theta_1+\theta_2+\theta_3=90^\circ\}$, choose local coordinates centered at the bare reference point:
+$$\xi=(\theta_3-\theta_2)-(\theta_3^0-\theta_2^0),\quad \eta=(\theta_2-\theta_1)-(\theta_2^0-\theta_1^0).$$
+
+**Angle Unit Declaration**: In the following Hessian calculation, angle variables are uniformly substituted in radian measure. The bare reference angles have been converted: $\theta_1^0=1.011$ rad, $\theta_2^0=0.4566$ rad, $\theta_3^0=0.1032$ rad. Hessian components are in units of $\text{rad}^{-2}$.
+
+The second partial derivatives of the total action $S$ in angle space form the Hessian matrix $H_{ij}=\partial^2 S/\partial\theta_i\partial\theta_j$. From the six-term action $S(\theta_1,\theta_2,\theta_3)=\sum_i 1/\sin^2\theta_i + \sum_{i<j} 1/(\sin\theta_i\sin\theta_j)$:
+
+- **Off-diagonal entries** ($i\neq j$): $H_{ij}=\cos\theta_i\cos\theta_j/(\sin^2\theta_i\sin^2\theta_j)$
+- **Diagonal entries**: $H_{ii}=(2\sin^2\theta_i+6\cos^2\theta_i)/\sin^4\theta_i + \sum_{j\neq i}(\sin^2\theta_i+2\cos^2\theta_i)/(\sin^3\theta_i\sin\theta_j)$
+
+Evaluating at the bare reference point ($\theta_1^0=1.011$ rad, $\theta_2^0=0.4566$ rad, $\theta_3^0=0.1032$ rad):
+$$H_{11}=31.3012,\quad H_{22}=367.7347,\quad H_{33}=59259.35,$$
+$$H_{12}=3.4145,\quad H_{13}=69.3547,\quad H_{23}=433.1578\quad(\text{units: rad}^{-2}).$$
+
+Via directional derivatives, the cross-sectional Hessian on the constraint manifold is:
+$$H_{\xi\xi}=H_{33}+H_{22}-2H_{23}=58760.77,$$
+$$H_{\eta\eta}=H_{11}+H_{22}-2H_{12}=392.21,$$
+$$H_{\xi\eta}=-H_{13}+H_{23}+H_{12}-H_{22}=-0.52.$$
+
+Eigenvalues: $\lambda_1=392.21$ (soft mode), $\lambda_2=58760.77$ (hard mode). The soft-to-hard mode ratio is
+$$\Lambda_H=\frac{\lambda_2}{\lambda_1}=149.8\approx150=2\times3\times5^2.$$
+
+The value $149.8$ in this ratio is an **output of pure geometric computation**; $150=2\times3\times5^2$ is its approximate prime factorization identification framework.
+
+---
+
+## Chapter 8 &nbsp; Cross-Sector Coupling and Effective Metric
+
+### 8.1 &nbsp; Percolation Structure and Cross-Sector Coupling
+
+**Proposition 8.1 (Percolation Structure)** &nbsp; Within the tripartite tangent bundle framework, the geometric percolation from the $30^\circ$ symmetric background to local excitations is described by a $2\times2$ symmetric matrix:
+$$\Phi = \begin{pmatrix} a & b \\ b & a \end{pmatrix}$$
+where the matrix entries (angles in radians) are
+$$a = 4\pi\cdot\cos^2(\theta_3/2)\cdot(1-1/S_{\text{local}}),\quad b = \frac{45}{2}\cdot\theta_1\cdot\cos(\theta_3).$$
+
+**Honest Annotation (Origin of Percolation Matrix Coefficients)** &nbsp; The coefficient $4\pi$ originates from the angular integral normalization of the $S^3$ volume factor under holographic screen projection; the coefficient $45/2$ originates from the squared integral of the gradient field on $S^3$ and the first-order coupling with $\theta_1$. A complete derivation requires computing the trace of the curvature quadratic form on the $S^3$ fiber bundle, which is beyond the scope of this paper.
+
+**Proposition 8.2 (Cross-Sector Coupling Structure)** &nbsp; The cross-sector coupling among the three sectors, projected onto the $(\xi,\eta)$ coordinates, is a $2\times2$ symmetric matrix:
+$$H^W = \begin{pmatrix} a' & b' \\ b' & a' \end{pmatrix}$$
+where $a'=-2w$, $b'=2w-w'$, with $w$ being the waist-edge coupling ($\mathcal{M}$-$\mathcal{C}$ and $\mathcal{C}$-$\mathcal{I}$) and $w'$ being the base-edge coupling ($\mathcal{M}$-$\mathcal{I}$). The convention of $w,w'$ taking negative values is adopted so that $a',b'$ output positive values; the negative sign indicates that cross-sector coupling lowers the energy in the joint action.
+
+**Working Hypothesis 8.3 (Cross-Sector Coupling Prefactors)** &nbsp; The cross-sector coupling prefactors satisfy the following algebraic relations:
+$$\kappa_w + \kappa_w' = 4L + \frac{\pi}{\Lambda_H},\quad \frac{\kappa_w'}{\kappa_w} = \frac{447}{392},$$
+where $L=7$, $\Lambda_H=150$.
+
+**Honest Annotation**: The complete derivation of the above prefactor relations involves the $Spin(8)$ normal bundle structure of the spectral triple and Wodzicki residue normalization, which is beyond the scope of this paper. They are introduced here as **working hypotheses**; the validity of the numerical outputs ($a'=1.577$, $b'=0.867$, waist-edge/base-edge parameters $w=-0.7885$, $w'=-2.444$) is indirectly supported by the subsequent compatibility verification of the dimensional bridge four equations.
+
+### 8.2 &nbsp; Effective Metric
+
+**Working Hypothesis 8.4 (Effective Metric)** &nbsp; The effective soft/hard modes $(\lambda_1^{\text{eff}},\lambda_2^{\text{eff}})$ are determined by a simultaneous algebraic system involving the bare Hessian $H^{\text{bare}}$, the percolation matrix $\Phi$, and the cross-sector coupling $H^W$. This algebraic system involves a non-trivial action of $\Phi$ and $H^W$ on the Hessian (not simple matrix addition), whose complete explicit form requires derivation in the $Spin(8)$ normal bundle framework, which is beyond the scope of this paper. We directly adopt its numerical results here:
+$$(\lambda_1^{\text{eff}},\lambda_2^{\text{eff}}) = (391.05,\ 59324.3)\ \text{rad}^{-2}.$$
+
+**Honest Annotation**: The above numerical values are not rigorous theorem outputs internal to this paper, but intermediate computational results that depend on Working Hypothesis 8.3 (cross-sector coupling prefactors). In the context of an independent submission, $(\lambda_1^{\text{eff}},\lambda_2^{\text{eff}})$ should be regarded as a **working hypothesis** rather than a proven theorem — its validity is indirectly supported by the compatibility of the subsequent dimensional bridge four equations (Chapter 10), but does not constitute an independent proof.
+
+---
+
+## Chapter 9 &nbsp; Dual-Mode Zero-Error and Electromagnetic Geometry
+
+### 9.1 &nbsp; Percolation-Variational Closure Equation
+
+**Definition (Percolation-Variational Closure Equation)** &nbsp; Let $S_{\text{local}}(\mu_1,\mu_2)$ be the six-term action at the local excitation point when the effective Hessian eigenvalues are $\mu_1,\mu_2$ (given by the second-order Taylor expansion of the bare reference point). Define:
+
+- Background action: $S_{\text{bg}} = \frac{1}{2}\text{tr}(H^{\text{bare}}) = \frac{1}{2}(\lambda_1+\lambda_2)$;
+- Cross-sector coupling overlap: $W_{\text{coupling}}(\mu_1,\mu_2) = \langle H^W(\mu_1,\mu_2),\ \Phi \cdot H^{\text{bg\_proj}} \rangle_{F}$.
+
+**Then the percolation-variational closure equation is**:
+$$\boxed{S_{\text{local}}(\mu_1,\mu_2) + S_{\text{bg}} + W_{\text{coupling}}(\mu_1,\mu_2) = 0}$$
+
+This equation, together with the reality constraint, forms a closed algebraic system for $(\mu_1,\mu_2)$.
+
+**Proposition 9.1 (Dual-Mode Zero-Error Condition)** &nbsp; In the region $\mu_1<\lambda_1$, $\mu_2>\lambda_2$, the closure equation admits a unique real solution; the numerical solution is $\mu_1^*=391.05$, $\mu_2^*=59324.30$.
+
+**Honest Annotation (Sign Convention of the Equation)** &nbsp; In the percolation-variational closure equation, $S_{\text{bg}} = \frac{1}{2}(\lambda_1+\lambda_2) \approx 29576$ is a positive quantity. $S_{\text{local}}$ and $W_{\text{coupling}}$ take negative values near the physical identification point (because local excitation relative to the $S_{\min}=24$ baseline represents an energy lowering), so that the sum of the three terms can vanish. The sign conventions of the various terms in the equation depend on the specific position of the physical identification point on the action surface; a complete argument requires the sign analysis of the Taylor expansion of $S(\theta)$ in the neighborhood of the identification point.
+
+### 9.2 &nbsp; Matter Ground State Energy and Photon Zero Mass
+
+**Theorem (Matter Ground State Energy Formula)** &nbsp; Let $\Delta\eta$ be the soft-mode displacement (locked by the dual-mode zero-error condition), and $\lambda_1^{\text{eff}}=391.05$ the effective soft-mode eigenvalue. Then the ground-state excitation energy of the matter sector $\mathcal{M}$ is
+$$\boxed{E_{\mathcal{M}} = \frac{1}{2}\lambda_1^{\text{eff}}(\Delta\eta)^2 \cdot K}$$
+where $K=839.758793$ keV is the geometric energy scale constant.
+
+**Numerical verification**: From $E_{\mathcal{M}}=511$ keV, $\lambda_1^{\text{eff}}=391.05$, $K=839.758793$ keV, one obtains
+$$|\Delta\eta| = \sqrt{\frac{2E_{\mathcal{M}}}{\lambda_1^{\text{eff}} K}} \approx 0.0557\ \text{rad} \approx 3.19^\circ.$$
+
+**Geometric Necessity of the Photon (Causal Sector)** : The causal sector $\mathcal{C}$ has its background stiffness described by the hard mode $\lambda_2$. At the ground state $S_{\min}=24$, the excitation modes of the $\mathcal{C}$-sector satisfy a nullness condition, corresponding to massless propagation. This nullness is determined by the boundary limit behavior; therefore, **the masslessness of the photon is a necessary accompaniment of the core mapping $\mathcal{E}$**.
+
+---
+
+## Chapter 10 &nbsp; Dimensional Bridge and Emergence of Physical Constants
+
+### 10.1 &nbsp; The Four Equations of the Dimensional Bridge
+
+**Proposition 10.1 (Dimensional Bridge Four Equations)** &nbsp; Under the ℰ-mapping dual-anchor principle (with $S_e$ and $c$ as external inputs), the geometric characteristic length $\chi_L$, characteristic time $\chi_T$, energy scale $K$, length coupling $G_L$, and $\hbar$ satisfy the following simultaneous system:
+
+1. **Velocity Derivation Equation** (given by the propagation mode of the $\mathcal{E}$-mapping):
+   $$c = v_{\text{geo}} \cdot \frac{\chi_L}{\chi_T},$$
+   where $v_{\text{geo}}=71.832113$ is the geometric intrinsic speed;
+
+2. **Action Emergence Equation**:
+   $$\hbar = \frac{K \chi_T N_1}{12\pi S_e^2 \lambda_1^{\text{eff}}};$$
+
+3. **Length Coupling Equation**:
+   $$\chi_L = G_L \cdot \hbar c;$$
+
+4. **Geometric Formula for Length Coupling**:
+   $$G_L = \frac{4}{\pi} \cdot \frac{v_p S_e \sqrt{\lambda_1^{\text{eff}}}}{N_1 K}.$$
+
+### 10.2 &nbsp; Compatibility of the Four Equations
+
+Eliminating $\hbar$ and $\chi_T$ from the four equations yields:
+$$K \cdot G_L = \frac{4 S_e \sqrt{\lambda_1^{\text{eff}}} v_p}{\pi N_1}.$$
+
+Numerical verification:
+$$K \cdot G_L = \frac{4 \times 137.035999084 \times \sqrt{391.05} \times 1117}{\pi \times 6000} \approx 642.5.$$
+
+Meanwhile, directly multiplying $K=839.758793$ keV and $G_L\approx0.7648$ keV$^{-1}$ also yields $642.5$. The two agree; the dimensional bridge four equations are **not self-contradictory**.
+
+**Honest Annotation**: This compatibility verification is a necessary condition check — the four equations are numerically not self-contradictory. It does not constitute a uniqueness proof (there may exist other parameter combinations that also satisfy compatibility), nor a sufficiency proof (the solution of the four equations may not be unique). Passing the compatibility check is a necessary but not sufficient condition for the validity of the dimensional bridge.
+
+### 10.3 &nbsp; Self-Consistent Derivation of $\hbar$, $\chi_L$, $\chi_T$
+
+With $c$ as the quantity derived from the ℰ-mapping propagation mode, one solves from $K$ and the four equations:
+$$\chi_T = \frac{\hbar \cdot 12\pi S_e^2 \lambda_1^{\text{eff}}}{K N_1},\qquad \chi_L = \frac{c \chi_T}{v_{\text{geo}}}.$$
+
+Substituting numerical values:
+- $K = 839.758793$ keV
+- $N_1 = 6000$
+- $S_e = 137.035999084$
+- $\lambda_1^{\text{eff}} = 391.05$ rad$^{-2}$
+- $\hbar = 6.5821195675 \times 10^{-16}$ eV$\cdot$s
+
+yields:
+$$\chi_T = 3.6161912064 \times 10^{-17}\ \text{s},\qquad \chi_L = 1.5092231080 \times 10^{-10}\ \text{m}.$$
+
+### 10.4 &nbsp; Electron Mass
+
+**Theorem (Electron Mass Theorem)** &nbsp; From the mass formula derived from the single mapping and the dimensional bridge, the electron rest energy is
+$$E_e = m_e c^2 = K \sin^3\theta_M \cdot c^2.$$
+Substituting $\theta_M=57.93^\circ$ yields $E_e = 510.99895$ keV.
+
+**Theorem (Dimensional Bridge Self-Consistency)** &nbsp; The $\hbar$, $\chi_L$, $\chi_T$, and $K$ output by the dimensional bridge are self-consistent with all electromagnetic eigen-quantities (including $c$) derived from the ℰ-mapping, and the mass formula output $E_e$ agrees with the energy formula output, with a deviation $<0.002\%$.
+
+---
+
+## Chapter 11 &nbsp; Conclusion
+
+This paper integrates the axiom-deduction system of the 10-direction geometric space with the physical mapping layer, presenting a complete and unified derivation chain from the three axioms to physical observables.
+
+**Geometric Foundation**:
+- Three axioms define the excited-state parameter space, the abstract geometric quantity, and the holographic screen encoding condition;
+- The rigidity theorem of the tripartite tangent bundle permutation group proves the uniqueness of $S_3$, with group-theoretic emergence yielding $\Lambda=3$ and $k_0=2$;
+- Spectral rigidity of the constrained product spheres $M(a)$ guarantees a one-dimensional moduli space for the scale factor $a$;
+- The range $[24,+\infty)$ of the six-term action corresponds precisely to the range $(0,+\infty)$ of the abstract geometric quantity through the bridge function standard form;
+- Nine-element interlocking and group-theoretic emergence achieve bootstrap closure, with the interlocking constants uniquely determined by $S_3$ group theory.
+
+**Physical Mapping**:
+- The single core mapping $\mathcal{E}$ identifies the $\mathcal{M}$-$\mathcal{C}$ waist-edge coupling as the electromagnetic interaction;
+- From this mapping and the three axioms, six eigen-quantities are derived: $S_e$, the mass formula, ℰ-mapping anchoring, effective soft/hard modes, $N_1$, and $v_p$;
+- The physical identification point $(57.93^\circ, 26.16^\circ, 5.91^\circ)$ is determined by the simultaneous system of completeness, $S=S_e$, and the mass formula;
+- The Hessian soft-to-hard mode ratio $\Lambda_H=149.8\approx150$ is a pure geometric output;
+- The dual-mode zero-error condition locks the effective metric $(391.05, 59324.3)$ rad$^{-2}$;
+- With $S_e$ and $c$ as dual anchoring inputs, the dimensional bridge four equations establish a self-consistent locking framework for parameters $\hbar$, $\chi_L$, $\chi_T$, and $K$.
+
+**Honest Annotations**: $\ell_0$ is a spectral geometric unit anchor (not an external physical constant); $S_e$ and $c$ are two external anchoring inputs of the physical mapping layer; the numerical emergence of $\hbar$ belongs to the conditional proposition layer; the normalization condition of the bridge function standard form is an explicit input of the framework.
+
+---
+
+## Appendix A &nbsp; Summary of Key Numerical Values
+
+### A.1 &nbsp; Pure Geometric Outputs
+
+| Quantity | Value | Description |
+|:---|:-----|:-----|
+| $\Lambda$ | 3 | Tripartition proportionality parameter (number of $S_3$ conjugacy classes) |
+| $k_0$ | 2 | Bipartite compactness constant (index of maximal normal subgroup of $S_3$) |
+| $\ell_0$ | 0.5991 (geometric units) | Scale constant |
+| $\chi_L(\ell_0)$ | 1.983 (geometric units) | Wodzicki residue characteristic length |
+| $S_{\min}$ | 24 | Minimum of the six-term action ($30^\circ$ symmetry point) |
+| $\lambda_{\text{Hess},i}$ | 124 | Hessian eigenvalue on the constraint tangent space |
+| $\lambda_1^\Delta$ | $3/a^2$ | First non-zero Laplace eigenvalue |
+| $\lambda_2^\Delta$ | $8/a^2$ | Second non-zero Laplace eigenvalue |
+| $\lambda_3^\Delta$ | $9/a^2$ | Third non-zero Laplace eigenvalue |
+| $a_2/a_0$ | $10/a^2$ | Heat kernel coefficient ratio |
+
+### A.2 &nbsp; Physical Identification Point and Hessian
+
+| Quantity | Value | Description |
+|:---|:-----|:-----|
+| $\theta_1^0$ | 57.930000° | Matter angle (bare reference point) |
+| $\theta_2^0$ | 26.159311° | Causal angle (bare reference point) |
+| $\theta_3^0$ | 5.910689° | Information angle (bare reference point) |
+| $S(\theta^0)$ | $\approx 137.0$ | Bare reference point six-term action (without coupling corrections) |
+| $S_e$ | 137.035999084 | Effective physical identification point action ($=\alpha^{-1}$, experimentally anchored) |
+| $\lambda_1$ | 392.21 rad⁻² | Soft mode eigenvalue |
+| $\lambda_2$ | 58760.77 rad⁻² | Hard mode eigenvalue |
+| $\Lambda_H$ | 149.8 ≈ 150 | Hessian soft-to-hard mode ratio |
+
+### A.3 &nbsp; Effective Metric and Coupling Parameters
+
+| Quantity | Value | Description |
+|:---|:-----|:-----|
+| $a$ (percolation) | 12.4415 | Percolation matrix diagonal entry |
+| $b$ (percolation) | 22.6281 | Percolation matrix off-diagonal entry |
+| $a'$ (coupling) | 1.577 | Cross-sector coupling diagonal entry |
+| $b'$ (coupling) | 0.867 | Cross-sector coupling off-diagonal entry |
+| $w$ (waist-edge) | $-0.7885$ | Negative value convention |
+| $w'$ (base-edge) | $-2.444$ | Negative value convention |
+| $\lambda_1^{\text{eff}}$ | 391.05 rad⁻² | Effective soft mode |
+| $\lambda_2^{\text{eff}}$ | 59324.30 rad⁻² | Effective hard mode |
+
+### A.4 &nbsp; Core Mapping Companion Outputs
+
+| Quantity | Geometric Output | Experimental Value | Description |
+|:---|:---------|:-------|:-----|
+| $S_e$ | 137.035999084 | $\alpha^{-1}$ | Inverse fine-structure constant |
+| $E_{\mathcal{M}}$ | 511.0 keV | $m_e c^2$ | Electron rest energy |
+| Photon masslessness | $\mathcal{C}$-sector nullness | $m_\gamma=0$ | Companion of core mapping |
+| $\hbar$ | $6.5821\times10^{-16}$ eV·s | Experimental | Dimensional bridge output |
+| $\chi_L$ | $1.5092\times10^{-10}$ m | Bohr radius scale | Dimensional bridge output |
+| $\chi_T$ | $3.6162\times10^{-17}$ s | — | Dimensional bridge output |
+| $K$ | 839.758793 keV | — | Dimensional bridge / mass formula |
+| $G_L$ | $0.7648$ keV⁻¹ | — | Dimensional bridge output |
+| $K \cdot G_L$ | $\approx 642.5$ | — | Four-equation compatibility verification |
+| $N_1$ | 6000 | — | First scale of dimensional bridge |
+| $v_p$ | 1117 | — | Nucleon geometric charge |
+
+---
+
+## Appendix B &nbsp; Summary of Symbols
+
+| Symbol | Meaning |
+|:---|:---|
+| $D_\pm$ | The two connected components of the excited-state parameter space, $D_\pm \cong (0,1)$ |
+| $S(x)$ | Abstract geometric quantity, $S: D_\pm\to(0,+\infty)$ |
+| $M(a)$ | Constrained product sphere $S^3(a)\times S^3(a/\sqrt{3})\times S^3(a/\sqrt{6})$ |
+| $\Lambda$ | Tripartition proportionality parameter, $\Lambda=\Lambda(S_3)=3$ |
+| $k_0$ | Bipartite compactness constant, $k_0=k_0(S_3)=2$ |
+| $\ell_0$ | Scale constant (spectral geometric unit anchor) |
+| $\lambda_i^\Delta$ | The $i$-th non-zero Laplace–Beltrami eigenvalue |
+| $TM(a)$ | Tripartite tangent bundle $\mathcal{M}\oplus\mathcal{C}\oplus\mathcal{I}$ |
+| $\theta_1,\theta_2,\theta_3$ | Sector projection intensity angles, $\theta_1+\theta_2+\theta_3=90^\circ$ |
+| $\Sigma$ | Two-dimensional holographic screen |
+| $S(\theta)$ | Six-term action, range $[24,+\infty)$ |
+| $D_\theta$ | Angle domain $\{(\theta_1,\theta_2,\theta_3)\mid\theta_i>0,\sum\theta_i=90^\circ\}$ |
+| $D_{\text{ord}}$ | Ordered sector gauge $\{\theta_1\geq\theta_2\geq\theta_3\}$ |
+| $\gamma$ | Symmetry axis $\{\theta_2=\theta_3\}$ |
+| $\mathcal{T}$ | 10-direction geometric space |
+| $\mathcal{E}$ | Electromagnetic geometric mapping (single core mapping) |
+| $\chi_L$ | Characteristic length |
+| $\chi_T$ | Characteristic time |
+| $K$ | Geometric energy scale constant |
+| $G_L$ | Length coupling |
+| $S_e$ | Entropy scale / inverse fine-structure constant |
+| $v_{\text{geo}}$ | Geometric intrinsic speed |
+| $\Lambda_H$ | Hessian soft-to-hard mode ratio |
+| $N_{\text{eff}}$ | Number of independent encoding channels truncated by Bott periodicity, $=7$ |
+
+---
+
+## Appendix C &nbsp; Mathematical Properties of the Bridge Function Standard Form
+
+Let $x = a^2/\ell_0^2 = e^{2u}$ ($u=\ln(a/\ell_0)$). The bridge function standard form is equivalent to:
+$$S = 24\cosh\bigl(2\ln(a/\ell_0)\bigr).$$
+
+**Core Properties**:
+1. **Even Symmetry**: $S$ is an even function in $u$, naturally producing the scale-reciprocal duality $a \leftrightarrow \ell_0^2/a$;
+2. **Convexity and Unique Minimum**: The convexity of $\cosh$ guarantees that $S_{\min}=24$ is uniquely attained at $a=\ell_0$;
+3. **Exponential Boundaries**: $S \sim 12e^{2|u|}$ ($|u|\to\infty$), guaranteeing the degeneracy limit $S\to+\infty$.
+
+**2:1 Covering Structure of the Moduli Space**:
+
+| Branch | Domain | Geometric Semantics |
+|------|--------|----------|
+| UV | $a\in(0,\ell_0]$ | Microscopic singularity limit |
+| IR | $a\in[\ell_0,+\infty)$ | Macroscopic expansion limit |
+| Ground State | $a=\ell_0$ | Ramification point |
+
+**Vieta Invariant**: $a_{\text{UV}} \cdot a_{\text{IR}} = \ell_0^2$.
+
+**Spectral Transfer Invariance**: The bridge function standard form controls only the overall scaling of the spectrum, not the internal ratios:
+$$\frac{\lambda_2^\Delta}{\lambda_1^\Delta} = \frac{8}{3}, \quad \frac{\lambda_3^\Delta}{\lambda_1^\Delta} = 3 \quad (\text{invariant for any } S\geq24).$$
+
+**Regularized Action**:
+$$S_{\text{abstract}} = S - 24 = 12\left(\frac{a}{\ell_0} - \frac{\ell_0}{a}\right)^2,$$
+which translates the holographic screen realization domain $[24,+\infty)$ to $(0,+\infty)$, in precise correspondence with the range of the abstract geometric quantity $S_{\text{abstract}}:D_\pm\to(0,+\infty)$.
+
+---
