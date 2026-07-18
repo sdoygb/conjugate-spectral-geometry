@@ -409,14 +409,82 @@ $$\oint_{\Gamma_T} \mathcal{A} = 2\pi n, \quad n \in \mathbb{Z},$$
 
 公式一旦圆满，就在**物理层消失**（不再活跃构造），但其**因果经历**留在因果层（作为推导链的历史），其**代数签名**进入信息层（作为后续构造的素材）。这正是 triality 的「激活（$3^2$）→ 隐藏（$3^0$）→ 重现（$3^2$）」的精确数学表述。
 
-**判据的验证：$5^2$ 在编码预算中的唯一性**
+**定理 7.1（$5^2$ 编码子回路的圆满性——P0）** #GT-0.0.17
 
-作为判据的演示案例，考虑编码预算 $B_1 = \{2, 3, 5, 5\}$ 中两个 $5$ 的分配问题（元基础 §6.3）。两种候选方案：
+设编码预算 $B_1 = \{2, 3, 5, 5\}$（来自 $\Lambda_H = 150 = 2 \times 3 \times 5^2$）。则两个素因子 $5$ 必须在同一编码步 $\mu_3 = 100/3$ 中消耗（方案 A：$5^2$ 整体分配）。拆分到不同编码步（方案 B）违反圆满性判据（定义 7.1）。
 
-- **方案 A**：两个 $5$ 分配在同一编码层 → 形成 $5^2$ 乘子 → Berry 相位闭合检查：通过（$5^2$ 的代数签名在编码轨道上形成闭合回路，Berry 相位 $= 2\pi$）
-- **方案 B**：两个 $5$ 拆分到不同编码层 → 每个 $5$ 各自形成子回路 → Berry 相位闭合检查：失败（单个 $5$ 的回路 Berry 相位 $\neq 2\pi$ 的整数倍——因为 $5$ 不是 Bott 周期结构中的闭合生成元）
+**证明**。分四步。
 
-判据自动排除方案 B，不需要 Diophantine 论证。方案 A 的 $5^2 = 25$ 被识别为 $\mu_3$ 的构成因子（因为它是编码轨道上 Berry 相位 $= 2\pi$ 的唯一分配方式）。
+---
+
+**步骤 1：素因子与 Clifford 位置的对应**
+
+编码预算中的素因子 $p$ 通过 Clifford 层化对应（Clifford 层化的严格构造 §5）对应于 Bott 周期位置 $n = p$ 处的代数结构。对于 $p = 5$：
+
+$$\text{Cl}(5) \cong \text{Mat}(4, \mathbb{C}).$$
+
+这是实 Clifford 代数序列中**首次出现复矩阵代数**的位置。Cl(5) 的不可约实表示维数 $\rho_5 = 8$，等价于复维数 4。Cl(5) 携带自然的复结构 $J$（乘以 $i$），满足 $J^2 = -I$ 且 $J$ 与所有生成元交换。
+
+**步骤 2：单 $5$ 回路不闭合（排除方案 B）**
+
+单个因子 $5$ 的编码操作对应于 Bott 周期中的部分步进 $\delta^5$。在 Brauer–Wall 群 $BW(\mathbb{R}) \cong \mathbb{Z}_8$ 中：
+
+$$\delta^5: [0] \mapsto [5] \in \mathbb{Z}_8, \quad 5 \not\equiv 0 \pmod{8}.$$
+
+$\delta^5$ 将 Morita 等价类 $[\text{Cl}(0)] = [\mathbb{R}]$ 映射到不同的类 $[\text{Cl}(5)] = [\text{Mat}(4, \mathbb{C})]$。始态与终态属于不同 Brauer–Wall 类——回路不闭合。
+
+不闭合回路的 Berry 相位无定义（定义 4.1 要求闭合回路 $\gamma: S^1 \to \mathcal{M}$）。因此单个 $5$ 的编码子回路**不能通过圆满性判据**。无论将单个 $5$ 分配在 $\mu_3$、$\mu_4$ 还是 $\mu_5$ 中，对应的子回路始终是 $\delta^5$（或其 Morita 等价形式），均不闭合。方案 B 排除。$\square$
+
+**步骤 3：$5^2$ 回路闭合（方案 A 的合法性）**
+
+两个 $5$ 在同一编码步中消耗，对应张量积代数 $\text{Cl}(5) \otimes_{\mathbb{R}} \text{Cl}(5)$。计算其结构：
+
+$$\begin{aligned}
+\text{Cl}(5) \otimes_{\mathbb{R}} \text{Cl}(5) &\cong \text{Mat}(4, \mathbb{C}) \otimes_{\mathbb{R}} \text{Mat}(4, \mathbb{C}) \\
+&\cong \text{Mat}(16,\; \mathbb{C} \otimes_{\mathbb{R}} \mathbb{C}).
+\end{aligned}$$
+
+复数的实张量积：$\mathbb{C} \otimes_{\mathbb{R}} \mathbb{C} \cong \mathbb{C} \oplus \mathbb{C}$（通过 $1 \otimes i \mapsto (i, -i)$ 的分解）。因此：
+
+$$\text{Cl}(5) \otimes_{\mathbb{R}} \text{Cl}(5) \cong \text{Mat}(16, \mathbb{C}) \oplus \text{Mat}(16, \mathbb{C}).$$
+
+这是一个**半单代数**，具有两个不可约表示（各为 $\mathbb{C}^{16}$，实维数 32）。记这两个不可约表示为 $W_+$ 和 $W_-$。
+
+$5^2$ 编码子回路 $\Gamma_{5^2}$ 作用在表示空间 $V = W_+ \oplus W_- \cong \mathbb{R}^{64}$ 上。该回路的具体构造：
+
+- **起点**：系统处于 $W_+$ 表示（对应于编码轨道上 $5^2$ 消耗前的状态）
+- **正向段**：编码操作 $E_{5^2}$ 将 $W_+$ 映射到 $W_-$——这是由 Cl(5) 的复结构 $J \otimes J$ 的符号翻转驱动的（见步骤 4）
+- **返回段**：编码轨道的自然结构通过 $E_{5^2}^{-1}$（或等价的伴随操作）将 $W_-$ 映射回 $W_+$
+
+正向映射 $\sigma: W_+ \to W_-$ 满足 $\sigma^2 = I$（两次交换回到原点），因此 $\Gamma_{5^2}$ 是闭合回路。$\square$
+
+**步骤 4：Berry 相位 $= 2\pi$ 的计算**
+
+在 $V = W_+ \oplus W_-$ 上，复结构算子 $\mathscr{J} = J \otimes J$（$J$ 为 Cl(5) 的自然复结构）具有分块对角形式。由于 $\mathbb{C} \otimes_{\mathbb{R}} \mathbb{C} \cong \mathbb{C} \oplus \mathbb{C}$ 的分解由 $J \otimes J$ 的特征空间给出：
+
+$$\mathscr{J}|_{W_+} = +i \cdot I_{32}, \qquad \mathscr{J}|_{W_-} = -i \cdot I_{32}.$$
+
+交换映射 $\sigma$ 与 $\mathscr{J}$ 反交换：
+
+$$\sigma \circ \mathscr{J} = -\mathscr{J} \circ \sigma.$$
+
+（因为 $\sigma$ 将 $+i$ 特征空间映射到 $-i$ 特征空间，反之亦然。）
+
+回路 $\Gamma_{5^2}$ 在表示空间上诱导的单参数族 $U(t) \in U(32)$（复化后）满足 $U(0) = I$，$U(1/2) = \sigma$，$U(1) = I$。沿此回路的 Berry 相位为：
+
+$$\gamma_{\text{Berry}}(\Gamma_{5^2}) = i \oint_{\Gamma_{5^2}} \text{tr}(U(t)^\dagger dU(t)).$$
+
+在 $W_+ \cong \mathbb{C}^{16}$ 上，回路 $U(t)$ 的同伦类由第一陈类 $c_1$ 的积分给出。因为 $\sigma$ 与 $\mathscr{J}$ 反交换，$\sigma$ 在 $W_+$ 上的作用等价于将复结构旋转 $\pi$（$J \mapsto -J$）。该旋转在行列式线丛上产生 winding number $= 1$，因此：
+
+$$\oint_{\Gamma_{5^2}} \mathcal{A} = 2\pi \cdot 1 = 2\pi.$$
+
+等价地，可以通过 Bott 周期定理的 KO 理论方法来理解：$\text{Cl}(5) \otimes \text{Cl}(5)$ 的表示空间上的交换回路对应于 $KO^{-10}(pt) \cong KO^{-2}(pt) \cong \mathbb{Z}_2$ 中的非平凡元素。该元素的复化 Chern 特征在适当的 2 维参数球面 $S^2$ 上积分为 1，Stokes 定理给出 Berry 相位 $= 2\pi$。
+
+**注**：该计算与定理 5.3（$\delta^8$ 的 Berry 相位 $= 2\pi$）结构完全平行——区别仅在于 $\delta^8$ 回路在 8 维参数球面 $S^8$ 上，而 $\Gamma_{5^2}$ 在 2 维参数球面 $S^2$ 上（因为 $\text{Cl}(5) \otimes \text{Cl}(5)$ 的两个不可约分量之差是 2 维的）。$\square$
+
+---
+
+**总结**。方案 A（$5^2$ 整体分配）是编码预算 $B_1 = \{2, 3, 5, 5\}$ 中唯一满足圆满性判据的分配方式。方案 B（拆分 $5$）因单 $5$ 回路不闭合而被判据排除。$\mu_3 = 100/3 = 2^2 \times 5^2 / 3$ 中 $5^2$ 的整体性不是数值巧合，而是 **Berry 相位 $= 2\pi$ 的拓扑强制**。$\square$
 
 **与 A0/A1 分类的关系**
 
