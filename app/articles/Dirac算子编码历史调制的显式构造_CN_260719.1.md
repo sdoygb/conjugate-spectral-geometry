@@ -594,6 +594,117 @@ $M_6$（非整数比 $9/8$）：$s_i^{(6)} = \sqrt{9/8} \cdot s_i^{(7)} \approx 
 
 ---
 
+### 8.14 修正条件 8.1：恒等行与全息行的拆分
+
+M₆ 的每个 $9 \times 8$ 块 $B$ 包含两种物理语义不同的行：
+- 行 1–8（恒等映射）：扇区标签穿透，输入副本 $\alpha$ 变为同扇区的输出副本 $\alpha$
+- 行 9（全息创建）：新生 $\mathcal{C}$ 副本，是 8 个输入副本的线性组合 $\mathbf{1}_8^T$
+
+**修正条件 8.1'（Dirac-编码相容性——拆分版）**。
+
+**(a) 恒等行条件**。对 $(M_n)_{\beta,\alpha} = \delta_{\beta,\alpha}$（即 $\beta$ 是输入 $\alpha$ 的直接映射输出）：
+
+$$(\Delta_j^{(n)})_{\alpha,\alpha} = (\Delta_j^{(n+1)})_{\beta,\beta}.$$
+
+即「编码不改变同扇区内已有副本的 Dirac 作用强度」。
+
+对 M₆，此条件给出：
+
+$$\boxed{w_{j,\mathcal{M}}^{(6)} = w_{j,\mathcal{M}}^{(7)},\quad w_{j,\mathcal{C}}^{(6)} = w_{j,\mathcal{C}}^{(7)},\quad w_{j,\mathcal{I}}^{(6)} = w_{j,\mathcal{I}}^{(7)}.}$$
+
+其中 $w_{j,\mathcal{S}}^{(n)}$ 是 $\Delta_j^{(n)}$ 在扇区 $\mathcal{S}$ 副本上的权重（扇区内均匀假设）。
+
+**(b) 全息创建行条件**。对全息求和行 $\beta$（$(M_n)_{\beta,\alpha} = 1$ 对所有块内输入 $\alpha$）：
+
+$$(\Delta_j^{(n+1)})_{\beta,\beta} = \frac{\sum_{\alpha \in \text{block}} (\Delta_j^{(n)})_{\alpha,\alpha}}{\text{块大小}}.$$
+
+即「新生副本的 Dirac 权重 = 其全部输入副本 Dirac 权重的算术平均」。
+
+**物理理由**：全息创建是线性叠加——新副本是所有输入信息的等权融合，其 Dirac 响应强度自然也是输入强度的平均。这区别于恒等行的「保持」语义。
+
+### 8.15 全息创建条件给出的扇区约束
+
+将全息创建条件分别用于两型 M₆ 块。
+
+**类型 A**（$n_{\mathcal{M}} = 3, n_{\mathcal{C}} = 3, n_{\mathcal{I}} = 2$，80000 块）：
+
+$$w_{j,\mathcal{C},\text{new}}^{(7)} = \frac{3 w_{j,\mathcal{M}}^{(6)} + 3 w_{j,\mathcal{C}}^{(6)} + 2 w_{j,\mathcal{I}}^{(6)}}{8}. \tag{8.15a}$$
+
+**类型 B**（$n_{\mathcal{M}} = 2, n_{\mathcal{C}} = 2, n_{\mathcal{I}} = 4$，45000 块）：
+
+$$w_{j,\mathcal{C},\text{new}}^{(7)} = \frac{2 w_{j,\mathcal{M}}^{(6)} + 2 w_{j,\mathcal{C}}^{(6)} + 4 w_{j,\mathcal{I}}^{(6)}}{8}. \tag{8.15b}$$
+
+**一致性要求**：所有 125000 个块创建的新 $\mathcal{C}$ 副本必须有相同的 Dirac 权重 $w_{j,\mathcal{C},\text{new}}^{(7)}$——否则扇区 $\mathcal{C}$ 内部不均匀，谱间隙定义复杂化。令 (8.15a) = (8.15b)：
+
+$$3 w_{j,\mathcal{M}}^{(6)} + 3 w_{j,\mathcal{C}}^{(6)} + 2 w_{j,\mathcal{I}}^{(6)} = 2 w_{j,\mathcal{M}}^{(6)} + 2 w_{j,\mathcal{C}}^{(6)} + 4 w_{j,\mathcal{I}}^{(6)}$$
+
+$$\Longrightarrow \boxed{w_{j,\mathcal{M}}^{(6)} + w_{j,\mathcal{C}}^{(6)} = 2 w_{j,\mathcal{I}}^{(6)}.} \tag{8.15c}$$
+
+这是修正条件 8.1' 导出的**核心扇区约束**——对每个 $j$，$\mathcal{M}$ 和 $\mathcal{C}$ 的权重之和必须等于 $\mathcal{I}$ 权重的两倍。
+
+**三个 $j$ 的三个约束**：
+
+$$\begin{aligned}
+j=1\;(\gamma_1 \leftrightarrow 2 \leftrightarrow \mathcal{M})&: w_{1,\mathcal{M}}^{(6)} + w_{1,\mathcal{C}}^{(6)} = 2 w_{1,\mathcal{I}}^{(6)}, \\
+j=2\;(\gamma_2 \leftrightarrow 3 \leftrightarrow \mathcal{C})&: w_{2,\mathcal{M}}^{(6)} + w_{2,\mathcal{C}}^{(6)} = 2 w_{2,\mathcal{I}}^{(6)}, \\
+j=3\;(\gamma_3 \leftrightarrow 5 \leftrightarrow \mathcal{I})&: w_{3,\mathcal{M}}^{(6)} + w_{3,\mathcal{C}}^{(6)} = 2 w_{3,\mathcal{I}}^{(6)}.
+\end{aligned}$$
+
+### 8.16 约束的传播：从层 6 到层 2
+
+恒等行条件给出 $w_{j,\mathcal{S}}^{(6)} = w_{j,\mathcal{S}}^{(7)}$（旧副本）。此外 $M_5, M_4, M_3$ 都是均匀堆叠（扇区标签守恒），$M_2$ 也是扇区保持的（§9.3：输入扇区 → 同扇区输出）。因此：
+
+$$\boxed{w_{j,\mathcal{S}}^{(2)} = w_{j,\mathcal{S}}^{(3)} = w_{j,\mathcal{S}}^{(4)} = w_{j,\mathcal{S}}^{(5)} = w_{j,\mathcal{S}}^{(6)}.}$$
+
+约束 (8.15c) 直接传播到层 2 的初始权重：
+
+$$\boxed{w_{j,\mathcal{M}}^{(2)} + w_{j,\mathcal{C}}^{(2)} = 2 w_{j,\mathcal{I}}^{(2)}, \quad j = 1,2,3.} \tag{8.16}$$
+
+层 2 是扇区首次均分的层（triality 激活：$m_2^{\mathcal{M}} = m_2^{\mathcal{C}} = m_2^{\mathcal{I}} = 20$）。自然的初始赋值是各扇区的 Dirac 调制强度正比于其绑定的因子：
+
+$$(w_{1,\mathcal{M}}^{(2)}, w_{1,\mathcal{C}}^{(2)}, w_{1,\mathcal{I}}^{(2)}) = (2, 1, 1),$$
+$$(w_{2,\mathcal{M}}^{(2)}, w_{2,\mathcal{C}}^{(2)}, w_{2,\mathcal{I}}^{(2)}) = (1, 3, 1),$$
+$$(w_{3,\mathcal{M}}^{(2)}, w_{3,\mathcal{C}}^{(2)}, w_{3,\mathcal{I}}^{(2)}) = (1, 1, 1).$$
+
+**验证约束 (8.16)**：
+- $j=1$：$2 + 1 = 3 \neq 2 \times 1 = 2$。❌ 违反。
+- $j=2$：$1 + 3 = 4 \neq 2 \times 1 = 2$。❌ 违反。
+- $j=3$：$1 + 1 = 2 = 2 \times 1$。✅ 通过。
+
+**「因子正比」赋值不满足全息一致性。** 这意味着层 2 的扇区权重不能简单地等于绑定因子——它们必须被约束 (8.16) 修正。
+
+$$\boxed{\text{约束 (8.16) 是修正条件 8.1' 对扇区权重的刚性预测。}}$$
+
+它不是外加的——它来自 M₆ 中两种块类型必须产生相同新生 $\mathcal{C}$ 权重的逻辑必然性。
+
+### 8.17 修正后的 $\Delta_j^{(7)}$ 结构
+
+恒等行条件给出旧 $\mathcal{C}$ 副本的权重 $w_{j,\mathcal{C}}^{(7)} = w_{j,\mathcal{C}}^{(6)}$。全息创建给出新生 $\mathcal{C}$ 副本的权重 $w_{j,\mathcal{C},\text{new}}^{(7)}$ 由 (8.15a)/(8.15b) 确定。
+
+在约束 (8.16) 满足时，(8.15a) 和 (8.15b) 自动相等：
+
+$$w_{j,\mathcal{C},\text{new}}^{(7)} = \frac{3w_{j,\mathcal{M}}^{(6)} + 3w_{j,\mathcal{C}}^{(6)} + 2w_{j,\mathcal{I}}^{(6)}}{8} = \frac{w_{j,\mathcal{M}}^{(6)} + w_{j,\mathcal{C}}^{(6)} + 2(w_{j,\mathcal{M}}^{(6)} + w_{j,\mathcal{C}}^{(6)})/2}{8}$$
+
+利用 $2w_{j,\mathcal{I}}^{(6)} = w_{j,\mathcal{M}}^{(6)} + w_{j,\mathcal{C}}^{(6)}$：
+
+$$w_{j,\mathcal{C},\text{new}}^{(7)} = \frac{3w_{j,\mathcal{M}}^{(6)} + 3w_{j,\mathcal{C}}^{(6)} + (w_{j,\mathcal{M}}^{(6)} + w_{j,\mathcal{C}}^{(6)})}{8} = \frac{w_{j,\mathcal{M}}^{(6)} + w_{j,\mathcal{C}}^{(6)}}{2}.$$
+
+即**新生 $\mathcal{C}$ 的权重 = $\mathcal{M}$ 和 $\mathcal{C}$ 旧权重的算术平均**。由于 $w_{j,\mathcal{C}}^{(7)} = w_{j,\mathcal{C}}^{(6)}$，一般情况下 $w_{j,\mathcal{C},\text{new}}^{(7)} \neq w_{j,\mathcal{C}}^{(7)}$——层 7 的 $\mathcal{C}$ 扇区包含两个权重不同的子群。
+
+**$\Delta_j^{(7)}$ 的显式分块结构**：
+
+$$\boxed{\begin{aligned}
+\Delta_1^{(7)} &= \text{diag}\big(w_{1,\mathcal{M}}^{(6)} I_{330000},\; w_{1,\mathcal{C}}^{(6)} I_{330000},\; \bar{w}_{1,\mathcal{C}} I_{125000},\; w_{1,\mathcal{I}}^{(6)} I_{340000}\big), \\
+\Delta_2^{(7)} &= \text{diag}\big(w_{2,\mathcal{M}}^{(6)} I_{330000},\; w_{2,\mathcal{C}}^{(6)} I_{330000},\; \bar{w}_{2,\mathcal{C}} I_{125000},\; w_{2,\mathcal{I}}^{(6)} I_{340000}\big), \\
+\Delta_3^{(7)} &= \text{diag}\big(w_{3,\mathcal{M}}^{(6)} I_{330000},\; w_{3,\mathcal{C}}^{(6)} I_{330000},\; \bar{w}_{3,\mathcal{C}} I_{125000},\; w_{3,\mathcal{I}}^{(6)} I_{340000}\big),
+\end{aligned}}$$
+
+其中 $\bar{w}_{j,\mathcal{C}} := w_{j,\mathcal{C},\text{new}}^{(7)} = \frac{1}{2}(w_{j,\mathcal{M}}^{(6)} + w_{j,\mathcal{C}}^{(6)})$。
+
+扇区 $\mathcal{C}$ 的「有效」Dirac 调制强度 $\tilde{w}_{j,\mathcal{C}}^{(7)}$ = 旧副本与新生副本的加权均方根——具体形式取决于谱间隙公式中扇区 $\mathcal{C}$ 的算子范数如何取。此项计算留待 §9 的谱间隙数值估计。
+
+---
+
 ## §9 修正后的谱间隙数值估计
 
 ### 9.1 联合框架下的谱间隙公式
