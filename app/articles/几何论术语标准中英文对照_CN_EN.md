@@ -458,6 +458,15 @@
 | 几何引力起源 | Geometric Origin of Gravity | 引力作为几何梯度流的涌现——$\mathbb{R}^9$ 梯度流相对梯度 $\Delta = 0.509945$ 的内禀驱动，非独立力 | 11号 §3.2 |
 
 | 谱互锁闭包 | Spectral Interlock Closure | 三场谱互锁关系形成的闭合拓扑结构——所有谱互锁定理构成不可分割的闭包块，无外部输入依赖 | 4.2 §核心 |
+| 零之动 | Zero Motion ($\delta$) | 原初区分操作，Bott 步进算符的哲学/代数源头。$\delta$ 的迭代生成 Clifford 代数 $\text{Cl}(n)$ 的层级结构，每一步受反交换关系的刚性约束 | 共扼谱几何 §2.1–2.3 |
+| 自洽性筛选 | Self-Consistency Filter | $\delta$ 迭代中候选结构的存活条件：内部自洽 + 迭代稳定。绝大多数候选结构被淘汰，存活者构成严格层级 $\mathcal{S}_0 \subset \cdots \subset \mathcal{S}_7$。数学实现为 $\delta^8$ 回路的 Berry 相位 | 共扼谱几何 §2.3 |
+| 凝聚相三角构型 | Condensed Phase Triangle Configuration | 三扇区凝聚相角度 $(\theta_M, \theta_C, \theta_I)$ 满足 $\sum\theta = 90^\circ$，由观测者位置 $\sigma_{\text{target}}$ 经 Born 法则和三次方程确定。是 $\sin^2\theta_W$ 和 $\alpha$ 等物理常数的共同几何源头 | 共扼谱几何 §5.1.2；弱混合角 §2 |
+| 编码轨道 | Encoding Orbit | $N_1 \to N_2 \to \cdots \to N_7$ 的七层递推序列，由预算-基因型双层结构和乘子序列唯一确定。终端值 $N_7$ 决定凝聚相权重 $\sigma_i$ 和物理常数 | 共扼谱几何 §4 |
+| 预算-基因型双层结构 | Budget-Genotype Bilayer | 编码轨道的双层约束：预算层（谱总量守恒）和基因型层（乘子序列刚性），两者联合唯一确定编码递推 | 共扼谱几何 §4.4 |
+| Birkhoff 混合矩阵 | Birkhoff Mixing Matrix | $M_5 = T \cdot \text{diag}(\chi)$，$T$ 在 2 维 Birkhoff 多面体上连续变化。不同 $T$ 给出不同的不动点 $\sigma^*$，生成精细结构常数景观 | 共扼谱几何 §4.5 |
+| 法丛 $\text{Spin}(8)/S^7$ | Normal Bundle $\text{Spin}(8)/S^7$ | 凝聚相三角构型的法丛几何结构，其谱留数比确定弱混合角的前置因子比 $\kappa_w/\kappa_w' = 392/447$ | 弱混合角 §3 |
+| 信息场自反馈屏蔽 | Information Field Self-Feedback Screening | 信息场 $\mathcal{I}$ 通过三场闭合路径（$\mathcal{M} \to \mathcal{C} \to \mathcal{I} \to \mathcal{M}$）的 Berry 相位反馈，对 $\{\mathcal{M}, \mathcal{I}\}$ 跨扇区耦合产生 $\sim 1\%$ 的有效抑制 | 弱混合角 §5 |
+| 扇区投影正弦对应 | Sector Projection Sine Correspondence | 耦合强度的几何识别规则：$\{\mathcal{M}, \mathcal{C}\}$ 腰边方向投影 $\propto \sin\theta_C$（电磁），$\{\mathcal{M}, \mathcal{I}\}$ 跨扇区方向投影 $\propto \sin\theta_I$（弱） | 弱混合角 §4.2 |
 
 ---
 
