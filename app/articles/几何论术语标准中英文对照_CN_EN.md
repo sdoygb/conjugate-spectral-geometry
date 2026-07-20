@@ -290,6 +290,11 @@
 | 规范群几何常数 $\alpha_G$ | Gauge Group Geometric Constant | $\alpha_G = S_e / (4\pi) \approx 10.91$，三分切丛七子结构→SU(3)×SU(2)×U(1)映射的归一化常数 | 5.1 §2 |
 | 内禀膨胀率 $\mathcal{H}_\eta$ | Intrinsic Expansion Rate | $\mathcal{H}_\eta = -0.09491$（无量纲），$\mathbb{R}^9$ 几何膨胀的内在驱动率 | GT-6.4.1 |
 | 差异量级函数 $f(\tau_{\text{cmb}})$ | Discrepancy Magnitude Function | $f = \sqrt{\mathcal{I}(\tau_{\text{cmb}})} \approx 0.918$，CMB观测与几何论之间差异的量化函数 | GT-6.4.2 |
+| 前置因子比 $\kappa_w/\kappa_w'$ | Prefactor Ratio | $392/447 \approx 0.8762$，由法丛 $\text{Spin}(8)/S^7$ 的谱几何确定，$\sqrt{\kappa_w/\kappa_w'} \approx 0.9360$ 进入弱混合角的屏蔽因子修正 | 弱混合角 §3.2–3.3 |
+| 编码基态 $N_1$ | Encoding Ground State | $N_1 = 6000 = 2 \cdot k_0 \cdot 1500$，其中 $k_0=2$ 来自终端二元性定理，是编码轨道的初始值 | 共扼谱几何 §4.2 |
+| 终端值 $N_7$ | Terminal Value | $N_7 = 2.7 \times 10^8$，编码轨道第七层的终端值，通过编码递推确定。$N_7 \to \chi \to \sigma \to C \to S(\sigma)$ 为完整推导链 | 共扼谱几何 §4.5 |
+| 景观范围 | Landscape Range | $S \in [24, 968]$，$\alpha^{-1} \approx 137$ 对应景观中的 1 维等值线。不同区域（不同 Birkhoff 权重 $T$）给出不同的 $S(\sigma^*)$ 值 | 共扼谱几何 §5 |
+| 屏蔽因子 | Screening Factor | $1/(1 + \sin^2\theta_I\sqrt{\kappa_w/\kappa_w'})$，信息场自反馈对弱耦合的有效抑制，修正量 $\sim 1\%$ | 弱混合角 §5.2 |
 
 ---
 
