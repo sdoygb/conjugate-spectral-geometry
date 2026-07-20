@@ -504,6 +504,10 @@
 | 谱刚性在 $A_{\text{obs}}$ 上的适用性 | Applicability of Spectral Rigidity on $A_{\text{obs}}$ | 谱刚性定理（0.1 §3.2）在观测者允许区域 $A_{\text{obs}}$ 上的适用性验证——不要求全空间严格谱刚性，仅需在 $A_{\text{obs}}$ 内保持有效。构造性封闭 | 63号 §5.3 |
 | 跨级渗透机制 | Cross-Level Penetration Mechanism | 高阶截面约束通过 Schur 补链渗透到低阶系统的几何机制。非定理，属构造性框架 | 0.0.9 §4 |
 | 倒伏相截断闭包 | Inverted Flavor Truncation Closure | 倒伏相结构中 $N_f=3$ 截断的几何正当性方案，通过约束乘积球面嵌入维数论证完成闭包 | 7号 §5, 53号 §6 |
+| 精细结构常数景观 | Fine-Structure Constant Landscape | $S(\sigma) \in [24, 968]$，由 Birkhoff 混合矩阵 $T$ 的连续变化生成。$\alpha^{-1} \approx 137$ 是景观中的 1 维等值线，对应我们所在区域 $T_{\text{ours}}$ 的坐标读数。观测者谱条件 (P1)–(P5) 将景观约束为可容纳观测者的子集。（诚实标注：景观的测度尚未确定——我们所在区域是否典型为开放问题） | 共扼谱几何 §5 |
+| 观测者自举（共扼谱几何版本） | Observer Bootstrapping (CSG version) | 我们在框架内部——$\alpha^{-1}$ 作为观测者位置坐标定位景观区域，$\sin^2\theta_W$ 作为该位置的可证伪预言。（诚实标注：$\alpha^{-1}$ 是输入而非推导输出——这是观测者选择效应，非循环论证） | 共扼谱几何 §5.0 |
+| 谱间隙公式 | Spectral Gap Formula | 将代数 Dirac 算子对易子范数映射为物理角度（$\theta_M, \theta_C, \theta_I$），是编码数学与物理观测之间的桥梁。公式形式为 $\theta_k = f([D, \pi_k])$ | 共扼谱几何 §4.6 |
+| 代数作用量 $S(\sigma)$ | Algebraic Action $S(\sigma)$ | 六项作用量的谱几何形式，以凝聚相权重 $\sigma_i$ 为变量。$S(\sigma)$ 是 $S(\theta)$ 在凝聚相极限下的代数对应物 | 共扼谱几何 §4.8 |
 
 ---
 
