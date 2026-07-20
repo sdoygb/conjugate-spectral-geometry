@@ -220,6 +220,12 @@
 | 中微子 Majorana 本质定理 | Neutrino Majorana Nature Theorem | 倒伏相自由度计数 $\to 2$ 自由度 $\to$ 中微子为 Majorana 粒子——非 Dirac 粒子的几何必然 | GT-8.4.8 |
 | 电荷量子化几何条件定理 | Geometric Charge Quantization Theorem | $\theta_C$ 纤维化单值性 $\to e$ 离散化——狄拉克条件 $eg=n/2$ 反转：不是磁荷存在则电荷量子化，而是 $\theta_C$ 拓扑单值性强制电荷量子化 | GT-8.5.4 |
 | 拓扑超导材料筛选定理 | Topological Superconducting Material Screening Theorem | 空间群 $\to$ 约束截面拓扑 $\to T_c$ 候选材料的批量筛选框架——40 种已知超导体的几何论重筛选与预言 | 8.6 §核心 |
+| 共扼定理（三定理联合） | Conjugate Theorems (Triad) | $\Lambda=3$（半单分裂定理）、$\Delta\Theta=5$（复结构涌现定理）、$k_0=2$（终端二元性定理），三者从 Clifford 代数刚性与自洽性筛选联合涌现，在 Bott 周期中形成结构耦合的共扼三元组 | 共扼谱几何 §2.4 |
+| $\delta^8$ 回路 Berry 相位定理 | $\delta^8$ Circuit Berry Phase Theorem | $\gamma_{\text{Berry}}(\delta^8) = 2\pi$，$\delta^8$ 回路的拓扑非平凡性等价于自洽性筛选的存活条件 | 共扼谱几何 §3.4 |
+| 圆满性判据 | Perfection Criterion | Berry 相位 $2\pi$ 意味着结构不自相矛盾、$\delta$ 迭代不崩溃；Berry 相位为零的平凡回路在筛选下被淘汰。自洽性筛选与圆满判据为同一机制的双重描述 | 共扼谱几何 §3.5 |
+| 乘子序列唯一性定理 | Multiplier Sequence Uniqueness Theorem | 乘子序列在预算-基因型双层结构、Triality 四阶段、回收基准不变定理及 Bott 截断的联合约束下唯一确定 | 共扼谱几何 §4.4 |
+| 代数约束定理 | Algebraic Constraint Theorem | $\sum\sigma_i = 1$，三个凝聚相权重 $\sigma_i$ 由编码轨道的三次方程约束，是代数 Dirac 算子对易子范数的刚性推论 | 共扼谱几何 §4.7 |
+| 弱混合角几何定理 | Geometric Weak Mixing Angle Theorem | $\sin^2\theta_W = \frac{\sin\theta_I}{\sin\theta_C \cdot (1 + \sin^2\theta_I\sqrt{\kappa_w/\kappa_w'})}$，由凝聚相三角构型、扇区投影比与信息场自反馈屏蔽因子联合唯一确定，预言值 $0.23123$（实验 $0.23122\pm0.00003$，偏差 $+0.004\%$） | 弱混合角 §6.1 |
 
 ---
 
