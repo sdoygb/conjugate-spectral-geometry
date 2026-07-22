@@ -1,7 +1,7 @@
 # The Geometric Origin of the Weak Mixing Angle — From the Condensed Phase Triangular Configuration to $\sin^2\theta_W$
 
 Ouyang Guobin
-Guangdong, China
+Shunde District, Foshan, Guangdong, China
 
 ---
 
