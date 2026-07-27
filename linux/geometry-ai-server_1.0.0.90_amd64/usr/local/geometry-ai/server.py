@@ -4,7 +4,7 @@
 
 
 
-server.py - 几何论AI调度中间层主入口
+server.py - 共扼谱几何AI调度中间层主入口
 从 geometry_ai_server_v5_12.py 提取的 Flask 路由和启动代码
 """
 
@@ -301,7 +301,7 @@ def _finalize_turn(
     history_queries = living_field.get_history_queries(session_id)
     delta_seconds = living_field.get_history_delta_seconds(session_id)
 
-    # 计算回复的几何论术语密度（自指反馈信号）
+    # 计算回复的共扼谱几何术语密度（自指反馈信号）
     geo_density = compute_geo_density(response_text)
 
     # 调用 update_eta_living，传入 history_queries、delta_seconds、geo_density
@@ -976,7 +976,7 @@ def teach_antipattern():
 @app.route('/v1/teach/patch', methods=['POST'])
 def teach_patch():
     """
-    知识补丁 API：直接补充几何论知识。
+    知识补丁 API：直接补充共扼谱几何知识。
     请求体：
     {
         "topic": "主题",
@@ -1465,7 +1465,7 @@ def chat_completions():
         _vision_note = (
             "\n\n【视觉能力已激活】你同时具有文本和图片处理能力。"
             "如果用户上传了图片，请仔细观察并理解图片内容（包括但不限于：图解、公式截图、手写笔记、图表、代码截图等），"
-            "然后结合几何论知识回答问题。对于图片中的公式，尝试用 LaTeX 转写；对于手写内容，尽力辨认后给出回答。"
+            "然后结合共扼谱几何知识回答问题。对于图片中的公式，尝试用 LaTeX 转写；对于手写内容，尽力辨认后给出回答。"
         )
         final_messages[0]["content"] = final_messages[0]["content"] + _vision_note
         # 重新路由到视觉模型的提供商
@@ -1605,7 +1605,7 @@ def chat_completions():
         base_url, api_key = get_provider_for_model(req_model)
         client = openai.OpenAI(api_key=api_key, base_url=base_url)
         try:
-            # 质量门控 - 如果AI回复偏离几何论，自动重试
+            # 质量门控 - 如果AI回复偏离共扼谱几何，自动重试
             # v10 增强：反模式检测触发重试时，在prompt中注入反模式警告
             # 工具调用链（非流式）——处理 KIMI 等模型的 function calling
             MAX_TOOL_CHAIN = 5
@@ -1639,7 +1639,7 @@ def chat_completions():
             for attempt in range(1 + MAX_QUALITY_RETRIES):
                 if attempt > 0:
                     logger.info(f"[QUALITY-GATE] 第{attempt+1}次重试（检测到低质量回复）")
-                    retry_prompt = system_prompt + "\n\n【紧急指令 - 上次回复质量不合格】\n你必须基于几何论框架给出实质性回答。禁止说'未找到引用'、'无法访问'、'我是AI'等偏离几何论的话。直接用公理、定理、命题来回答。"
+                    retry_prompt = system_prompt + "\n\n【紧急指令 - 上次回复质量不合格】\n你必须基于共扼谱几何框架给出实质性回答。禁止说'未找到引用'、'无法访问'、'我是AI'等偏离共扼谱几何的话。直接用公理、定理、命题来回答。"
 
                     # v10 新增：如果是因为反模式触发，额外注入反模式警告
                     if teaching_system:
@@ -1676,7 +1676,7 @@ def chat_completions():
                 # Open WebUI 系统请求（标题/标签生成等）
                 if clean_query.startswith("### Task:") or clean_query.startswith("Generate"):
                     _skip_quality = True
-                # 非几何论问题（短查询、无专业术语）
+                # 非共扼谱几何问题（短查询、无专业术语）
                 elif len(clean_query) < 20:
                     _skip_quality = True
                 # 闲聊/日常对话
@@ -1729,7 +1729,7 @@ if __name__ == '__main__':
     else:
         logger.warning("[STARTUP] 教学系统初始化失败（向量库不可用）")
 
-    logger.info(f"[STARTUP] ===== 几何论AI {VERSION} (build {BUILD_DATE}) =====")
+    logger.info(f"[STARTUP] ===== 共扼谱几何AI {VERSION} (build {BUILD_DATE}) =====")
     logger.info(f"[STARTUP] 文章目录: {UPLOAD_FOLDER}")
     logger.info(f"[STARTUP] ChromaDB 目录: {CHROMA_DB_DIR}")
     logger.info(f"[STARTUP] ChromaDB 状态: {'已连接' if vector_kb and vector_kb.is_initialized else '未连接'}")
@@ -1740,7 +1740,7 @@ if __name__ == '__main__':
     logger.info(f"[STARTUP] Open WebUI uploads: {OPENWEBUI_UPLOAD_DIR} (存在: {os.path.exists(OPENWEBUI_UPLOAD_DIR)})")
     logger.info(f"[STARTUP] 质量门控: {'开启' if QUALITY_GATE_ENABLED else '关闭'}, 最大重试: {MAX_QUALITY_RETRIES}")
     logger.info(f"[STARTUP] 学习闭环: coherence > {LEARN_COHERENCE_THRESHOLD}, 长度 > {LEARN_MIN_LENGTH}")
-    logger.info(f"[STARTUP] 自指反馈环: 已启用（回复几何论术语密度 -> eta 自指增强 + 论断提取）")
+    logger.info(f"[STARTUP] 自指反馈环: 已启用（回复共扼谱几何术语密度 -> eta 自指增强 + 论断提取）")
     # v10 新增：打印教学系统状态
     if teaching_system:
         stats = teaching_system.get_stats()

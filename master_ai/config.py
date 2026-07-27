@@ -1,7 +1,7 @@
 """
 config.py — 主库AI配置模块
 
-复用上层 app/ 的几何论常数和 SiliconFlow embedding 配置，
+复用上层 app/ 的共扼谱几何常数和 SiliconFlow embedding 配置，
 主库AI只读公理层（0.0.*）和已验证定理（master_formulas collection）。
 """
 import os
@@ -17,7 +17,7 @@ from typing import Dict, Any
 MASTER_AI_DIR = os.path.dirname(os.path.abspath(__file__))
 # 项目根目录（GeometryAI-Mac-Build/）
 PROJECT_ROOT = os.path.dirname(MASTER_AI_DIR)
-# 上层 app/ 目录（复用其 .env 和几何论常数）
+# 上层 app/ 目录（复用其 .env 和共扼谱几何常数）
 APP_DIR = os.path.join(PROJECT_ROOT, "app")
 
 # 加载 .env（优先 master_ai/.env，回退 app/.env）
@@ -102,7 +102,7 @@ MASTER_AI_PORT = int(os.getenv('MASTER_AI_PORT', '5001'))
 MASTER_AI_TOKEN = os.getenv('MASTER_AI_TOKEN', 'master-ai-verify')
 
 # ------------------------------------------------------------------
-# 几何论锁定常数（与 app/config.py 完全一致）
+# 共扼谱几何锁定常数（与 app/config.py 完全一致）
 # ------------------------------------------------------------------
 GEOMETRY_CONSTANTS: Dict[str, Any] = {
     "S_e": 137.035999084,           # 七级递推锁定，精细结构常数倒数

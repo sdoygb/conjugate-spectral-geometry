@@ -4,7 +4,7 @@
 
 
 
-server.py - 几何论AI调度中间层主入口
+server.py - 共扼谱几何AI调度中间层主入口
 从 geometry_ai_server_v5_12.py 提取的 Flask 路由和启动代码
 """
 
@@ -67,7 +67,9 @@ def _handle_error(e):
 
 @app.errorhandler(Exception)
 def _handle_exception(e):
-    logger.error(f"[UNHANDLED] {type(e).__name__}: {e}")
+    import traceback
+    tb = traceback.format_exc()
+    logger.error(f"[UNHANDLED] {type(e).__name__}: {e}\n{tb}")
     return openai_error(f"内部服务器错误: {str(e)[:200]}", status=500)
 
 # 简单 rate limiting：每分钟最多 60 次请求（per IP）
@@ -168,7 +170,7 @@ def extract_files_from_request(data: Dict[str, Any]):
                                     logger.debug(f"[FILES] base64解码失败: {e}")
                         if isinstance(fcontent, str) and fcontent:
                             files_content.append(
-                                f"--- 文件: {fname} ---\n{fcontent[:50000]}\n--- 文件结束 ---"
+                                f"--- 文件: {fname} ---\n{fcontent[:100000]}\n--- 文件结束 ---"
                             )
                             logger.info(f"[FILES] 提取 {fname}: {len(fcontent)} 字符")
 
@@ -179,7 +181,7 @@ def extract_files_from_request(data: Dict[str, Any]):
                 fname = f.get('name', f.get('filename', 'unknown'))
                 fcontent = f.get('content', f.get('text', f.get('document', '')))
                 if isinstance(fcontent, str) and fcontent:
-                    files_content.append(f"--- 文件: {fname} ---\n{fcontent[:50000]}\n--- 文件结束 ---")
+                    files_content.append(f"--- 文件: {fname} ---\n{fcontent[:100000]}\n--- 文件结束 ---")
     meta = data.get('metadata', {}) or {}
     if not meta:
         meta = data.get('meta', {}) or {}
@@ -190,7 +192,7 @@ def extract_files_from_request(data: Dict[str, Any]):
                     fname = f.get('name', f.get('filename', 'unknown'))
                     fcontent = f.get('content', f.get('text', ''))
                     if isinstance(fcontent, str) and fcontent:
-                        files_content.append(f"--- 文件: {fname} ---\n{fcontent[:50000]}\n--- 文件结束 ---")
+                        files_content.append(f"--- 文件: {fname} ---\n{fcontent[:100000]}\n--- 文件结束 ---")
 
     combined = " ".join(all_text_parts)
 
@@ -203,24 +205,19 @@ def extract_files_from_request(data: Dict[str, Any]):
     if is_auto:
         clean = combined[:500]
     elif len(combined) > 2000 and not files_content:
+        # 用户粘贴了长文本：不提取文件内容，直接保留原始消息
+        # 原始消息已在 clean_messages 中完整保留，无需重复注入
+        # 只提取简短指令用于向量搜索
         lines = combined.split('\n')
         instr = []
-        file_start = 0
         for i, line in enumerate(lines[:10]):
             if line.strip() and len(line) < 200 and not line.startswith('#'):
                 instr.append(line)
-                file_start = i + 1
             elif line.strip() and i < 3:
-                file_start = i + 1
+                continue
             elif line.strip():
                 break
-        if instr and file_start < len(lines):
-            clean = " ".join(instr)[:300]
-            file_text = '\n'.join(lines[file_start:])
-            files_content.append(f"--- 粘贴文件内容 ---\n{file_text[:50000]}\n--- 文件结束 ---")
-        else:
-            clean = combined[:300]
-            files_content.append(f"--- 粘贴文件内容 ---\n{combined[:50000]}\n--- 文件结束 ---")
+        clean = " ".join(instr)[:500] if instr else combined[:500]
     else:
         # 优先用最后一条用户消息（最相关），fallback到combined
         last_msg = all_text_parts[-1] if all_text_parts else ""
@@ -301,7 +298,7 @@ def _finalize_turn(
     history_queries = living_field.get_history_queries(session_id)
     delta_seconds = living_field.get_history_delta_seconds(session_id)
 
-    # 计算回复的几何论术语密度（自指反馈信号）
+    # 计算回复的共扼谱几何术语密度（自指反馈信号）
     geo_density = compute_geo_density(response_text)
 
     # 调用 update_eta_living，传入 history_queries、delta_seconds、geo_density
@@ -403,6 +400,17 @@ def preview_article(filename):
     import re as _re
     fpath = os.path.join(UPLOAD_FOLDER, filename)
     if not os.path.exists(fpath):
+        # 递归搜索子目录
+        try:
+            from tools import _find_article_recursive
+            rel_path = _find_article_recursive(filename)
+            if rel_path:
+                fpath = os.path.join(UPLOAD_FOLDER, rel_path)
+                filename = rel_path
+        except ImportError:
+            pass
+    if not os.path.exists(fpath):
+        # 最后尝试：在根目录模糊匹配
         if os.path.exists(UPLOAD_FOLDER):
             matches = [f for f in os.listdir(UPLOAD_FOLDER) if filename in f]
             if len(matches) == 1:
@@ -1004,7 +1012,7 @@ def teach_antipattern():
 @app.route('/v1/teach/patch', methods=['POST'])
 def teach_patch():
     """
-    知识补丁 API：直接补充几何论知识。
+    知识补丁 API：直接补充共扼谱几何知识。
     请求体：
     {
         "topic": "主题",
@@ -1426,7 +1434,7 @@ def chat_completions():
 
     # 历史消息截断：保留 system + 最近 N 条消息，防止 token 爆炸
     MAX_HISTORY_MESSAGES = 80  # 最近 80 条消息（约 40 轮对话）
-    MAX_HISTORY_CHARS = 30000  # 历史消息总字符上限
+    MAX_HISTORY_CHARS = 120000  # 历史消息总字符上限（DeepSeek 支持 64K tokens ≈ 128K 字符）
     if len(final_messages) > MAX_HISTORY_MESSAGES + 1:  # +1 是 system
         trimmed = final_messages[1:-(MAX_HISTORY_MESSAGES)]
         # 生成本地摘要（不调 API，提取关键信息）
@@ -1450,9 +1458,15 @@ def chat_completions():
         logger.info(f"[TRIM] 历史消息从 {len(clean_messages)} 条截断到 {MAX_HISTORY_MESSAGES} 条（含摘要）")
 
     # 字符数截断：从最早的消息开始删除，直到总字符数低于上限
+    # 保护最后一条用户消息（当前输入）不被删除
     total_chars = sum(len(json.dumps(m, ensure_ascii=False)) for m in final_messages)
     while total_chars > MAX_HISTORY_CHARS and len(final_messages) > 3:  # 至少保留 system + 1轮
-        removed = final_messages.pop(1)  # 删除 system 之后最早的消息
+        # 找到最早可删除的消息（不删除 system 和最后两条消息）
+        # 最后两条通常是 user(当前输入) 和可能的 assistant(上一轮回复)
+        delete_idx = 1  # system 之后最早的消息
+        if delete_idx >= len(final_messages) - 2:  # 保护最后两条
+            break
+        removed = final_messages.pop(delete_idx)
         total_chars -= len(json.dumps(removed, ensure_ascii=False))
     if len(final_messages) < len(clean_messages) + 1:
         logger.info(f"[TRIM] 历史消息字符截断: {total_chars} 字符, {len(final_messages)-1} 条")
@@ -1534,7 +1548,7 @@ def chat_completions():
         _vision_note = (
             "\n\n【视觉能力已激活】你同时具有文本和图片处理能力。"
             "如果用户上传了图片，请仔细观察并理解图片内容（包括但不限于：图解、公式截图、手写笔记、图表、代码截图等），"
-            "然后结合几何论知识回答问题。对于图片中的公式，尝试用 LaTeX 转写；对于手写内容，尽力辨认后给出回答。"
+            "然后结合共扼谱几何知识回答问题。对于图片中的公式，尝试用 LaTeX 转写；对于手写内容，尽力辨认后给出回答。"
         )
         final_messages[0]["content"] = final_messages[0]["content"] + _vision_note
         # 重新路由到视觉模型的提供商
@@ -1674,7 +1688,7 @@ def chat_completions():
         base_url, api_key = get_provider_for_model(req_model)
         client = openai.OpenAI(api_key=api_key, base_url=base_url)
         try:
-            # 质量门控 - 如果AI回复偏离几何论，自动重试
+            # 质量门控 - 如果AI回复偏离共扼谱几何，自动重试
             # v10 增强：反模式检测触发重试时，在prompt中注入反模式警告
             # 工具调用链（非流式）——处理 KIMI 等模型的 function calling
             MAX_TOOL_CHAIN = 8
@@ -1708,7 +1722,7 @@ def chat_completions():
             for attempt in range(1 + MAX_QUALITY_RETRIES):
                 if attempt > 0:
                     logger.info(f"[QUALITY-GATE] 第{attempt+1}次重试（检测到低质量回复）")
-                    retry_prompt = system_prompt + "\n\n【紧急指令 - 上次回复质量不合格】\n你必须基于几何论框架给出实质性回答。禁止说'未找到引用'、'无法访问'、'我是AI'等偏离几何论的话。直接用公理、定理、命题来回答。"
+                    retry_prompt = system_prompt + "\n\n【紧急指令 - 上次回复质量不合格】\n你必须基于共扼谱几何框架给出实质性回答。禁止说'未找到引用'、'无法访问'、'我是AI'等偏离共扼谱几何的话。直接用公理、定理、命题来回答。"
 
                     # v10 新增：如果是因为反模式触发，额外注入反模式警告
                     if teaching_system:
@@ -1745,7 +1759,7 @@ def chat_completions():
                 # Open WebUI 系统请求（标题/标签生成等）
                 if clean_query.startswith("### Task:") or clean_query.startswith("Generate"):
                     _skip_quality = True
-                # 非几何论问题（短查询、无专业术语）
+                # 非共扼谱几何问题（短查询、无专业术语）
                 elif len(clean_query) < 20:
                     _skip_quality = True
                 # 闲聊/日常对话
@@ -1798,7 +1812,7 @@ if __name__ == '__main__':
     else:
         logger.warning("[STARTUP] 教学系统初始化失败（向量库不可用）")
 
-    logger.info(f"[STARTUP] ===== 几何论AI {VERSION} (build {BUILD_DATE}) =====")
+    logger.info(f"[STARTUP] ===== 共扼谱几何AI {VERSION} (build {BUILD_DATE}) =====")
     logger.info(f"[STARTUP] 文章目录: {UPLOAD_FOLDER}")
     logger.info(f"[STARTUP] ChromaDB 目录: {CHROMA_DB_DIR}")
     logger.info(f"[STARTUP] ChromaDB 状态: {'已连接' if vector_kb and vector_kb.is_initialized else '未连接'}")
@@ -1809,7 +1823,7 @@ if __name__ == '__main__':
     logger.info(f"[STARTUP] Open WebUI uploads: {OPENWEBUI_UPLOAD_DIR} (存在: {os.path.exists(OPENWEBUI_UPLOAD_DIR)})")
     logger.info(f"[STARTUP] 质量门控: {'开启' if QUALITY_GATE_ENABLED else '关闭'}, 最大重试: {MAX_QUALITY_RETRIES}")
     logger.info(f"[STARTUP] 学习闭环: coherence > {LEARN_COHERENCE_THRESHOLD}, 长度 > {LEARN_MIN_LENGTH}")
-    logger.info(f"[STARTUP] 自指反馈环: 已启用（回复几何论术语密度 -> eta 自指增强 + 论断提取）")
+    logger.info(f"[STARTUP] 自指反馈环: 已启用（回复共扼谱几何术语密度 -> eta 自指增强 + 论断提取）")
     # v10 新增：打印教学系统状态
     if teaching_system:
         stats = teaching_system.get_stats()

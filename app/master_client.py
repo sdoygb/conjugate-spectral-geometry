@@ -234,6 +234,39 @@ class MasterClient:
 
         return results
 
+    def fetch_truth_by_number(self, number: int) -> Optional[Dict[str, Any]]:
+        """
+        按永久编号从主库精确查询一条真理。
+
+        Args:
+            number: 永久编号（如 100 对应 #100）
+
+        Returns:
+            真理公式详情，或 None
+        """
+        if not self._available:
+            return None
+
+        # 先查本地缓存
+        for f in self._truth_cache:
+            if int(f.get("permanent_number", 0)) == number:
+                return f
+
+        # 缓存没有，从主库拉取全部再查
+        result = self._get("/v1/master/truth", timeout=30)
+        if result is None:
+            return None
+
+        formulas = result.get("formulas", [])
+        self._truth_cache = formulas
+        self._last_truth_sync = time.time()
+
+        for f in formulas:
+            if int(f.get("permanent_number", 0)) == number:
+                return f
+
+        return None
+
     # ==================== 通道2: 提交候选公式 ====================
 
     def submit_formula(

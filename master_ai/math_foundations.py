@@ -2,11 +2,11 @@
 math_foundations.py — 标准数学公理基座（Layer 0）
 
 定义主库AI独立推导时可自由使用的标准数学工具。
-这些是数学界已确立的定理和事实，不需要从几何论公理推导。
+这些是数学界已确立的定理和事实，不需要从共扼谱几何公理推导。
 
 分层公理体系：
   L0: 标准数学基座（本文件） — 无需验证，直接接受
-  L1: 几何论三公理 — 推导的唯一理论起点
+  L1: 共扼谱几何三公理 — 推导的唯一理论起点
   L2: 桥接假设 — 子AI显式声明的外部物理锚点
   L3: 已验证定理 — 主库中已通过验证的公式
 
@@ -210,7 +210,7 @@ PENDING_PHYSICS_DERIVATIONS: List[Dict[str, str]] = []
 
 def get_foundations_text() -> str:
     """构建L0数学基座文本（供LLM提示词使用）"""
-    lines = ["【L0: 标准数学公理基座 — 可自由使用，无需从几何论公理推导】\n"]
+    lines = ["【L0: 标准数学公理基座 — 可自由使用，无需从共扼谱几何公理推导】\n"]
     for category_key, category in MATH_FOUNDATIONS.items():
         lines.append(f"\n▼ {category['name']}（{category['description']}）")
         for fact in category["facts"]:

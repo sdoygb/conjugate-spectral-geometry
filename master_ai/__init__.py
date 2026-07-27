@@ -7,7 +7,7 @@ master_ai — 主库AI：专职圆满检测的验证引擎
   主库已验证公式 → 反哺给所有本地 Agent 作为只读真理层
 
 核心模块：
-  config.py          — 配置与几何论常数
+  config.py          — 配置与共扼谱几何常数
   master_db.py       — 主库数据库（append-only ChromaDB）
   berry_checker.py   — Berry回路闭合检测器（核心）
   falsification.py   — §9.6 四条证伪条件检查器

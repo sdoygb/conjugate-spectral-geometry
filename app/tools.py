@@ -223,7 +223,7 @@ ARTICLE_TOOLS = [
         "type": "function",
         "function": {
             "name": "view_article",
-            "description": "查看文章内容。每次默认读取前3000字符。如果用户要求阅读大文章全文，请分多次调用：先读前3000字符（offset=0,limit=3000），再读下一段（offset=3000,limit=3000），依此类推，直到读完。大多数情况下向量检索已自动注入相关片段到【参考资料】区域，无需调用此工具。",
+            "description": "查看文章原文内容（精确内容，非向量近似）。每次默认读取5000字符。如果用户要求阅读大文章全文，请分多次调用：先读前5000字符（offset=0,limit=5000），再读下一段（offset=5000,limit=5000），依此类推，直到读完。日常对话中向量检索已自动注入相关片段到【参考资料】区域，通常无需调用；但审核/抽查时必须用此工具读取原文核实，不可仅依赖向量库结果。",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -254,7 +254,7 @@ ARTICLE_TOOLS = [
         "type": "function",
         "function": {
             "name": "list_articles",
-            "description": "列出所有文章的编号、标题和摘要。当你需要了解文章全貌（如查找特定主题的文章、确认文章编号、浏览文章结构）时，优先用此工具而不是逐篇 view_article。返回内容轻量（每篇约1行），不会消耗大量token。",
+            "description": "列出文章的编号、标题、路径和摘要。当你需要了解文章全貌（如查找特定主题的文章、确认文章编号、浏览文章结构、确认某目录下有多少文件）时，优先用此工具。支持 directory 参数按目录筛选，如 directory='Vol-0_从零开始' 只列出该目录下的文章。返回内容轻量（每篇约1行）。",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -267,6 +267,10 @@ ARTICLE_TOOLS = [
                         "description": "可选，语言筛选：'CN' 只显示中文，'EN' 只显示英文，留空显示全部。",
                         "default": "",
                         "enum": ["CN", "EN", ""]
+                    },
+                    "directory": {
+                        "type": "string",
+                        "description": "可选，只列出指定目录下的文章。如 'Vol-0_从零开始'、'GT-Vault/Vol-1_几何结构'。留空列出全部。"
                     }
                 },
                 "required": []
@@ -299,7 +303,7 @@ ARTICLE_TOOLS = [
         "type": "function",
         "function": {
             "name": "write_article",
-            "description": "将内容写入 articles 目录中的文件，用于创建或修改几何论文章。支持分段写入大文章：第一次用 mode=write，后续用 mode=append 追加。写入时旧版自动归档到 archive/。",
+            "description": "将内容写入 articles 目录中的文件，用于创建或修改共扼谱几何文章。支持分段写入大文章：第一次用 mode=write，后续用 mode=append 追加。写入时旧版自动归档到 archive/。",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -678,6 +682,28 @@ ARTICLE_TOOLS = [
                 "required": []
             }
         }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "search_master_truth",
+            "description": "搜索已验证的绝对真理（主库真理层）。支持两种模式：(1)按编号查询：query='#4'或query='#1 #3 #5'查指定编号的定理内容；(2)语义搜索：query='互锁常数'或query='谱刚性的证明'搜索相关已验证定理。返回定理的完整内容、永久编号和验证信息。建议在推导前先搜索相关定理作为合法起点。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "搜索查询。按编号：'#4'；语义搜索：'互锁常数'或'谱刚性'"
+                    },
+                    "top_k": {
+                        "type": "integer",
+                        "description": "语义搜索时返回的结果数，默认5",
+                        "default": 5
+                    }
+                },
+                "required": ["query"]
+            }
+        }
     }
 ]
 
@@ -692,11 +718,366 @@ _GIT_REPO_DIR = None
 
 
 def _safe_path(filename: str) -> str:
-    """安全路径检查：防止路径遍历攻击"""
-    fpath = os.path.abspath(os.path.join(UPLOAD_FOLDER, filename))
+    """安全路径检查：防止路径遍历攻击。支持子目录路径。"""
+    # 取纯文件名，防止 ../ 遍历
+    pure_name = os.path.basename(filename)
+    fpath = os.path.abspath(os.path.join(UPLOAD_FOLDER, pure_name))
     if not fpath.startswith(os.path.abspath(UPLOAD_FOLDER)):
         raise ValueError(f"非法文件路径: {filename}")
     return fpath
+
+
+def _safe_path_with_subdir(filename: str) -> str:
+    """安全路径检查：支持子目录写入，但防止路径遍历攻击。
+    如 filename='GT-Vault/Vol-0_从零开始/0.1_xxx.md' 会创建子目录并返回完整路径。"""
+    # 规范化路径分隔符
+    norm = filename.replace('\\', '/')
+    # 去掉开头的 / 和 ..
+    while norm.startswith('/'):
+        norm = norm[1:]
+    # 防止路径遍历：不允许 .. 
+    parts = norm.split('/')
+    safe_parts = []
+    for p in parts:
+        if p == '..' or p == '.':
+            continue
+        safe_parts.append(p)
+    if not safe_parts:
+        raise ValueError(f"非法文件路径: {filename}")
+    
+    fpath = os.path.abspath(os.path.join(UPLOAD_FOLDER, *safe_parts))
+    base = os.path.abspath(UPLOAD_FOLDER)
+    if not fpath.startswith(base):
+        raise ValueError(f"非法文件路径: {filename}")
+    
+    # 自动创建子目录
+    dir_path = os.path.dirname(fpath)
+    os.makedirs(dir_path, exist_ok=True)
+    
+    return fpath
+
+
+def _resolve_article_path(filename: str) -> tuple[str | None, str]:
+    """统一的文章路径查找：返回 (绝对路径, 实际相对路径)。
+    查找顺序：完整路径 → 递归搜索 → 根目录basename → 编号匹配。
+    所有工具（view/edit/manage_articles）共用此函数，保证路径解析一致。"""
+    has_path = '/' in filename or '\\' in filename
+    fpath = None
+    actual_path = filename
+    
+    if has_path:
+        # 1. 先尝试完整路径（安全拼接，防止路径遍历）
+        norm = filename.replace('\\', '/')
+        parts = [p for p in norm.split('/') if p and p != '..' and p != '.']
+        if parts:
+            candidate = os.path.abspath(os.path.join(UPLOAD_FOLDER, *parts))
+            base = os.path.abspath(UPLOAD_FOLDER)
+            if candidate.startswith(base) and os.path.exists(candidate):
+                fpath = candidate
+                actual_path = '/'.join(parts)
+        # 2. 完整路径找不到，用 _find_article_recursive
+        if fpath is None:
+            rel_path = _find_article_recursive(filename)
+            if rel_path:
+                fpath = os.path.join(UPLOAD_FOLDER, rel_path)
+                actual_path = rel_path
+    
+    # 3. 不带路径或上面没找到：根目录精确匹配
+    if fpath is None:
+        try:
+            root_fpath = _safe_path(filename)
+            if os.path.exists(root_fpath):
+                fpath = root_fpath
+                actual_path = os.path.basename(filename)
+        except ValueError:
+            pass
+    
+    # 4. 编号匹配
+    if fpath is None:
+        rel_path = _find_article_recursive(filename)
+        if rel_path:
+            fpath = os.path.join(UPLOAD_FOLDER, rel_path)
+            actual_path = rel_path
+    
+    return (fpath, actual_path)
+
+
+def _find_article_recursive(filename: str) -> str | None:
+    """递归搜索子目录中的文章文件。返回相对于 UPLOAD_FOLDER 的相对路径，找不到返回 None。
+    只做精确匹配和编号匹配，不做模糊包含匹配（避免张冠李戴）。"""
+    import re as _re
+    base = os.path.abspath(UPLOAD_FOLDER)
+    skip_dirs = {'.obsidian', 'Attachments', 'Templates', 'copilot', 'archive', '.git', '__pycache__'}
+    
+    pure_name = os.path.basename(filename)
+    
+    # 收集所有文件
+    all_files = []
+    for root, dirs, files in os.walk(base):
+        dirs[:] = [d for d in dirs if d not in skip_dirs]
+        for f in files:
+            rel = os.path.relpath(os.path.join(root, f), base).replace('\\', '/')
+            all_files.append((rel, f))
+    
+    # 0. 路径后缀匹配：如果filename带路径，先尝试精确路径匹配
+    if '/' in filename or '\\' in filename:
+        norm_filename = filename.replace('\\', '/')
+        for rel, f in all_files:
+            if rel == norm_filename or rel.endswith('/' + norm_filename):
+                return rel
+        # 忽略目录名差异（如GT-Vault vs GT-Vault_ZH），但文件名必须精确匹配
+        path_parts = norm_filename.split('/')
+        if len(path_parts) >= 2:
+            target_name = path_parts[-1]
+            target_parent = path_parts[-2]
+            for rel, f in all_files:
+                if f == target_name:
+                    rel_parts = rel.split('/')
+                    if len(rel_parts) >= 2:
+                        if target_parent in rel_parts[-2] or rel_parts[-2] in target_parent:
+                            return rel
+            # 文件名精确匹配但目录不同，也返回
+            for rel, f in all_files:
+                if f == target_name:
+                    return rel
+    
+    # 1. 精确匹配文件名
+    for rel, f in all_files:
+        if f == pure_name:
+            return rel
+    
+    # 2. 编号匹配：只匹配纯编号（如 "0.1" "0.4" "10"）
+    # 必须是纯数字编号，不能是带文字的部分文件名
+    num_match = _re.match(r'^(\d+(?:\.\d+)*)$', pure_name)
+    if num_match:
+        prefix = num_match.group(1)
+        prefix_matches = []
+        for rel, f in all_files:
+            if f.startswith(prefix + "_"):
+                prefix_matches.append(rel)
+        if len(prefix_matches) == 1:
+            return prefix_matches[0]
+        if len(prefix_matches) > 1:
+            # 多个匹配：优先选GT-Vault下的，然后选最新版本
+            gt_vault_matches = [m for m in prefix_matches if m.startswith('GT-Vault/')]
+            if len(gt_vault_matches) >= 1:
+                gt_vault_matches.sort(reverse=True)
+                return gt_vault_matches[0]
+            prefix_matches.sort(reverse=True)
+            return prefix_matches[0]
+    
+    # 3. 不做模糊包含匹配——找不到就返回None
+    return None
+
+
+def _smart_replace(content: str, old_text: str, new_text: str) -> dict:
+    """多级容错替换：精确 → 空白归一化 → 行锚点 → 关键片段匹配"""
+    import re as _re
+
+    # 级别1：精确匹配
+    count = content.count(old_text)
+    if count > 0:
+        new_content = content.replace(old_text, new_text)
+        return {
+            "success": True,
+            "content": new_content,
+            "added": len(new_text) * count,
+            "removed": len(old_text) * count,
+            "detail": f"精确匹配替换 {count} 处（-{len(old_text)*count}字符 +{len(new_text)*count}字符）"
+        }
+
+    # 级别2：空白归一化匹配（统一空格、Tab、换行符）
+    def _norm_ws(s):
+        return _re.sub(r'[ \t]+', ' ', _re.sub(r'\r\n', '\n', s))
+
+    norm_old = _norm_ws(old_text)
+    norm_content = _norm_ws(content)
+    if norm_old in norm_content:
+        # 在归一化内容中找到位置，映射回原始内容
+        norm_pos = norm_content.find(norm_old)
+        # 通过逐字符对齐找到原始位置
+        orig_start = _map_norm_to_orig(content, norm_content, norm_pos)
+        orig_end = _map_norm_to_orig(content, norm_content, norm_pos + len(norm_old))
+        if orig_start is not None and orig_end is not None:
+            actual_old = content[orig_start:orig_end]
+            new_content = content[:orig_start] + new_text + content[orig_end:]
+            return {
+                "success": True,
+                "content": new_content,
+                "added": len(new_text),
+                "removed": len(actual_old),
+                "detail": f"空白归一化匹配 1 处（原{len(actual_old)}字符 -> 新{len(new_text)}字符）"
+            }
+
+    # 级别3：行锚点匹配（用首行和末行定位区域）
+    old_lines = [l for l in old_text.strip().split('\n') if l.strip()]
+    if len(old_lines) >= 2:
+        first_line = old_lines[0].strip()
+        last_line = old_lines[-1].strip()
+        first_pos = content.find(first_line)
+        if first_pos >= 0:
+            search_end = first_pos + len(old_text) + 500
+            search_region = content[first_pos:search_end]
+            last_pos_in_region = search_region.rfind(last_line)
+            if last_pos_in_region >= 0:
+                actual_end = first_pos + last_pos_in_region + len(last_line)
+                actual_old = content[first_pos:actual_end]
+                new_content = content[:first_pos] + new_text + content[actual_end:]
+                return {
+                    "success": True,
+                    "content": new_content,
+                    "added": len(new_text),
+                    "removed": len(actual_old),
+                    "detail": f"行锚点匹配 1 处（原{len(actual_old)}字符 -> 新{len(new_text)}字符）"
+                }
+
+    # 级别4：关键片段匹配（提取old_text中最独特的纯文本片段作为锚点）
+    # 去掉LaTeX公式后的纯文本片段
+    plain_fragments = _re.findall(r'[^\$\\{}\[\]()]+', old_text)
+    plain_fragments = [f.strip() for f in plain_fragments if len(f.strip()) >= 8]
+    if plain_fragments:
+        # 用最长的片段定位
+        plain_fragments.sort(key=len, reverse=True)
+        for frag in plain_fragments[:3]:
+            frag_pos = content.find(frag)
+            if frag_pos >= 0:
+                # 向前后扩展到包含整个old_text的区域
+                estimated_start = max(0, frag_pos - len(old_text))
+                estimated_end = min(len(content), frag_pos + len(old_text))
+                region = content[estimated_start:estimated_end]
+                # 在区域内找首行和末行
+                region_first = old_lines[0].strip() if old_lines else ""
+                region_last = old_lines[-1].strip() if old_lines else ""
+                r_start = region.find(region_first) if region_first else -1
+                r_end = region.rfind(region_last) if region_last else -1
+                if r_start >= 0 and r_end >= 0 and r_end >= r_start:
+                    actual_start = estimated_start + r_start
+                    actual_end = estimated_start + r_end + len(region_last)
+                    actual_old = content[actual_start:actual_end]
+                    new_content = content[:actual_start] + new_text + content[actual_end:]
+                    return {
+                        "success": True,
+                        "content": new_content,
+                        "added": len(new_text),
+                        "removed": len(actual_old),
+                        "detail": f"关键片段匹配 1 处（原{len(actual_old)}字符 -> 新{len(new_text)}字符）"
+                    }
+                # 如果首末行找不到，直接用片段位置做小范围替换
+                if r_start < 0:
+                    # 用片段本身作为替换范围（扩展到完整行）
+                    line_start = content.rfind('\n', 0, frag_pos) + 1
+                    line_end = content.find('\n', frag_pos + len(frag))
+                    if line_end < 0:
+                        line_end = len(content)
+                    # 尝试匹配更多行
+                    for extra in range(1, min(len(old_lines), 10)):
+                        next_line_end = content.find('\n', line_end + 1)
+                        if next_line_end < 0:
+                            break
+                        if old_lines[-1].strip() in content[line_start:next_line_end]:
+                            line_end = next_line_end
+                            break
+                        line_end = next_line_end
+                    actual_old = content[line_start:line_end]
+                    new_content = content[:line_start] + new_text + content[line_end:]
+                    return {
+                        "success": True,
+                        "content": new_content,
+                        "added": len(new_text),
+                        "removed": len(actual_old),
+                        "detail": f"片段行匹配 1 处（原{len(actual_old)}字符 -> 新{len(new_text)}字符）"
+                    }
+
+    # 级别5：单行场景 - 去掉所有空白后匹配
+    if '\n' not in old_text.strip():
+        compact_old = _re.sub(r'\s+', '', old_text)
+        compact_content = _re.sub(r'\s+', '', content)
+        if compact_old in compact_content:
+            compact_pos = compact_content.find(compact_old)
+            mapped = _map_compact_to_orig(content, compact_content, compact_pos, len(compact_old))
+            if mapped and mapped[0] is not None and mapped[1] is not None:
+                orig_start, orig_end = mapped
+                actual_old = content[orig_start:orig_end]
+                new_content = content[:orig_start] + new_text + content[orig_end:]
+                return {
+                    "success": True,
+                    "content": new_content,
+                    "added": len(new_text),
+                    "removed": len(actual_old),
+                    "detail": f"紧凑匹配 1 处（原{len(actual_old)}字符 -> 新{len(new_text)}字符）"
+                }
+
+    return {"success": False, "content": content, "added": 0, "removed": 0, "detail": "未匹配",
+            "old_text_preview": old_text[:120]}
+
+
+def _find_similar_text(content: str, old_text: str, threshold: float = 0.5) -> str:
+    """在content中找到与old_text最相似的片段，帮助调试替换失败的原因。"""
+    import difflib
+    old_lines = [l for l in old_text.strip().split('\n') if l.strip()]
+    if not old_lines:
+        return ""
+    
+    # 用最长的行查找最相似的内容
+    best_match = ""
+    best_ratio = 0
+    for old_line in old_lines:
+        if len(old_line.strip()) < 6:
+            continue
+        # 在content中找相似行
+        content_lines = content.split('\n')
+        for cl in content_lines:
+            ratio = difflib.SequenceMatcher(None, old_line.strip(), cl.strip()).ratio()
+            if ratio > best_ratio:
+                best_ratio = ratio
+                best_match = cl.strip()
+    
+    if best_ratio >= threshold:
+        return f"（最相似行，相似度{best_ratio:.0%}: {best_match[:100]}）"
+    return ""
+
+
+def _map_norm_to_orig(orig: str, norm: str, norm_pos: int) -> int | None:
+    """将归一化文本中的位置映射回原始文本中的位置"""
+    oi = 0  # 原始文本索引
+    ni = 0  # 归一化文本索引
+    while ni < norm_pos and oi < len(orig):
+        if ni < len(norm) and oi < len(orig) and norm[ni] == orig[oi]:
+            ni += 1
+            oi += 1
+        else:
+            # 原始文本中有额外空白被归一化掉了
+            oi += 1
+    return oi if ni >= norm_pos else None
+
+
+def _map_compact_to_orig(orig: str, compact: str, compact_pos: int, compact_len: int):
+    """将去空白文本中的位置映射回原始文本"""
+    oi = 0
+    ci = 0
+    # 找到起始位置
+    while ci < compact_pos and oi < len(orig):
+        if orig[oi].isspace():
+            oi += 1
+        elif ci < len(compact) and orig[oi] == compact[ci]:
+            ci += 1
+            oi += 1
+        else:
+            ci += 1
+            oi += 1
+    start = oi
+    # 找到结束位置
+    target_end = compact_pos + compact_len
+    while ci < target_end and oi < len(orig):
+        if orig[oi].isspace():
+            oi += 1
+        elif ci < len(compact) and orig[oi] == compact[ci]:
+            ci += 1
+            oi += 1
+        else:
+            ci += 1
+            oi += 1
+    return start, oi
 
 def _find_git_repo():
     """查找 articles 目录所在的 git 仓库根目录"""
@@ -835,6 +1216,7 @@ def _list_articles(arguments: Dict[str, Any]) -> str:
     轻量列出文章编号+标题+摘要。每篇约1行，总消耗约50行。
     filter: 关键词筛选
     lang: CN/EN/空
+    directory: 只列出指定目录下的文章（如 "Vol-0_从零开始" 或 "GT-Vault/Vol-0_从零开始"）
     """
     import re as _re_la
     articles_dir = os.path.join(UPLOAD_FOLDER) if not os.path.isdir(UPLOAD_FOLDER) else UPLOAD_FOLDER
@@ -843,28 +1225,67 @@ def _list_articles(arguments: Dict[str, Any]) -> str:
 
     filter_kw = arguments.get("filter", "").strip().lower()
     lang_filter = arguments.get("lang", "").strip().upper()
+    directory_filter = arguments.get("directory", "").strip()
 
     entries = []
     seen_nums = set()  # 同一编号只取 CN 优先
 
-    for f in sorted(os.listdir(articles_dir)):
-        if not f.endswith('.md') or f.startswith('目录_总览') or f.startswith('.') or f.startswith('search_') or f.startswith('hidden_') or f.startswith('Mathematical_') or f.startswith('十方') or f.startswith('README'):
+    # 递归扫描所有子目录
+    skip_dirs = {'.obsidian', 'Attachments', 'Templates', 'copilot', 'archive', '.git', '__pycache__'}
+    all_md_files = []
+    for root, dirs, files in os.walk(articles_dir):
+        dirs[:] = [d for d in dirs if d not in skip_dirs]
+        for f in files:
+            if f.endswith('.md'):
+                rel = os.path.relpath(os.path.join(root, f), articles_dir)
+                filepath = os.path.join(root, f)
+                mtime = os.path.getmtime(filepath)
+                all_md_files.append((rel, filepath, mtime))
+    # 按修改时间倒序（最新在前）
+    all_md_files.sort(key=lambda x: x[2], reverse=True)
+
+    # 目录筛选
+    if directory_filter:
+        directory_filter = directory_filter.replace('\\', '/')
+        # 模糊匹配目录名（排除根目录的空字符串匹配）
+        filtered = []
+        for rel, filepath, mtime in all_md_files:
+            subdir = os.path.dirname(rel).replace('\\', '/')
+            if subdir and (directory_filter in subdir or subdir in directory_filter):
+                filtered.append((rel, filepath, mtime))
+        all_md_files = filtered
+
+    for rel, filepath, mtime in all_md_files:
+        f = os.path.basename(rel)
+        subdir = os.path.dirname(rel)
+        if f.startswith('目录_总览') or f.startswith('.') or f.startswith('search_') or f.startswith('hidden_') or f.startswith('Mathematical_') or f.startswith('十方') or f.startswith('README') or f == 'MOC.md':
             continue
+        # 匹配两种文件名格式：
+        # 1. 数字编号: 0.1_标题_CN_260713.1.md
+        # 2. 非数字编号: 互扼几何_标题_CN_260718.1.md
         m = _re_la.match(r'^([\d.]+)_(.+)_(CN|EN)_[\d.]+\.md$', f)
-        if not m:
-            continue
-        num = m.group(1)
-        title_part = m.group(2).replace('_', ' ')
-        lang = m.group(3)
+        if m:
+            num = m.group(1)
+            title_part = m.group(2).replace('_', ' ')
+            lang = m.group(3)
+        else:
+            # 尝试匹配非数字编号的文件
+            m2 = _re_la.match(r'^(.+?)_(CN|EN)_[\d.]+\.md$', f)
+            if m2:
+                num = ""  # 无数字编号
+                title_part = m2.group(1).replace('_', ' ')
+                lang = m2.group(2)
+            else:
+                continue
 
         # 语言筛选
         if lang_filter and lang != lang_filter:
             continue
 
-        # 去重：同一编号优先 CN
-        if num in seen_nums:
+        # 去重：同一编号优先 CN（跳过空编号的）
+        if num and num in seen_nums:
             continue
-        if lang_filter != "EN":
+        if num and lang_filter != "EN":
             seen_nums.add(num)
 
         # 关键词筛选
@@ -873,7 +1294,6 @@ def _list_articles(arguments: Dict[str, Any]) -> str:
                 continue
 
         # 读取标题（首行）和摘要（第二行或前100字符）
-        filepath = os.path.join(articles_dir, f)
         title = title_part
         summary = ""
         try:
@@ -890,16 +1310,31 @@ def _list_articles(arguments: Dict[str, Any]) -> str:
         except:
             pass
 
+        # 显示完整相对路径和修改时间
+        import time as _time_la
+        mtime_str = _time_la.strftime("%m-%d %H:%M", _time_la.localtime(mtime))
+        loc = f" [{subdir}]" if subdir else ""
         lang_tag = f"[{lang}] " if lang == "EN" else ""
-        entries.append(f"| {num} | {lang_tag}{title} | {summary} |")
+        # 显示精确文件名（AI用这个调用view_article，一字不差）
+        entries.append(f"| {num} | {lang_tag}{title}{loc} | {mtime_str} | `{rel}` | {summary} |")
 
     if not entries:
-        hint = f"未找到匹配文章 (filter='{filter_kw}', lang='{lang_filter}')。共 {len(os.listdir(articles_dir))} 个文件。"
+        # 列出所有可用目录帮助AI
+        all_dirs = set()
+        for root, dirs, files in os.walk(articles_dir):
+            dirs[:] = [d for d in dirs if d not in skip_dirs]
+            for f in files:
+                if f.endswith('.md'):
+                    rel = os.path.relpath(root, articles_dir)
+                    if rel != '.':
+                        all_dirs.add(rel.replace('\\', '/'))
+        dir_list = "\n".join(sorted(all_dirs))
+        hint = f"未找到匹配文章 (filter='{filter_kw}', lang='{lang_filter}', directory='{directory_filter}')。\n\n可用目录:\n{dir_list}"
         return hint
 
-    header = "| 编号 | 标题 | 摘要 |\n|------|------|------|"
+    header = "| 编号 | 标题 [路径] | 修改时间 | 精确文件名 | 摘要 |\n|------|-------------|---------|-----------|------|"
     result = header + "\n" + "\n".join(entries)
-    result += f"\n\n共 {len(entries)} 篇文章。如需查看具体内容，请用 view_article（默认3000字符/次）。"
+    result += f"\n\n共 {len(entries)} 篇文章（按修改时间倒序，最新在前）。调用 view_article 时用「精确文件名」列的值（反引号内的完整文件名，一字不差）。用 directory 参数筛选目录。"
     return result
 
 
@@ -941,42 +1376,106 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
             filename = arguments.get("filename", "")
             limit = int(arguments.get("limit", 5000) or 5000)
             offset = int(arguments.get("offset", 0) or 0)
-            try:
-                fpath = _safe_path(filename)
-            except ValueError as e:
-                return f"错误：{e}"
-            if not os.path.exists(fpath):
-                # 智能模糊匹配：支持编号匹配（如"0.1"匹配"0.1_几何动力学_CN_260626.6.md"）
-                if os.path.exists(UPLOAD_FOLDER):
-                    matches = [f for f in os.listdir(UPLOAD_FOLDER) if filename in f]
-                    # 如果没命中，尝试按编号前缀匹配（如"0.1"开头的文件）
-                    if not matches:
-                        for f in os.listdir(UPLOAD_FOLDER):
-                            if f.startswith(filename + "_"):
-                                matches.append(f)
-                    # 提取纯数字编号再匹配（如"3号文章"→"3"，"3(260626.6)"→"3"）
-                    if not matches:
-                        import re as _re
-                        num_match = _re.match(r'^(\d+(?:\.\d+)*)', filename)
-                        if num_match:
-                            prefix = num_match.group(1)
-                            for f in os.listdir(UPLOAD_FOLDER):
-                                if f.startswith(prefix + "_"):
-                                    matches.append(f)
-                    if len(matches) == 1:
-                        fpath = os.path.join(UPLOAD_FOLDER, matches[0])
-                    elif len(matches) > 1:
-                        # 多个匹配，优先选最新版本
-                        matches.sort(reverse=True)
-                        fpath = os.path.join(UPLOAD_FOLDER, matches[0])
-                    else:
-                        # 列出所有文件帮助AI选择（按编号智能排序）
-                        all_files = sorted(os.listdir(UPLOAD_FOLDER), key=_article_sort_key)
-                        # 如果是数字编号搜索，高亮匹配项
-                        hint = f"文件 '{filename}' 不存在。共 {len(all_files)} 个文件，按编号排序：\n"
-                        return hint + "\n".join(all_files[:50]) + (f"\n...还有 {len(all_files)-50} 个文件" if len(all_files) > 50 else "")
+            actual_path = filename  # 记录实际找到的路径
+            
+            # 优先策略：如果filename带路径，先尝试完整路径，再尝试递归搜索，最后fallback到根目录
+            has_path = '/' in filename or '\\' in filename
+            fpath = None
+            
+            if has_path:
+                # 1. 先尝试完整路径（安全拼接，防止路径遍历）
+                norm = filename.replace('\\', '/')
+                parts = [p for p in norm.split('/') if p and p != '..' and p != '.']
+                if parts:
+                    candidate = os.path.abspath(os.path.join(UPLOAD_FOLDER, *parts))
+                    base = os.path.abspath(UPLOAD_FOLDER)
+                    if candidate.startswith(base) and os.path.exists(candidate):
+                        fpath = candidate
+                        actual_path = '/'.join(parts)
+                
+                # 2. 完整路径找不到，用 _find_article_recursive
+                if fpath is None:
+                    rel_path = _find_article_recursive(filename)
+                    if rel_path:
+                        fpath = os.path.join(UPLOAD_FOLDER, rel_path)
+                        actual_path = rel_path
+            
+            # 3. 不带路径，或上面都没找到：尝试根目录精确匹配
+            if fpath is None:
+                try:
+                    root_fpath = _safe_path(filename)
+                    if os.path.exists(root_fpath):
+                        fpath = root_fpath
+                        actual_path = os.path.basename(filename)
+                except ValueError as e:
+                    return f"错误：{e}"
+            
+            # 4. 还是找不到，用 _find_article_recursive（编号匹配等）
+            if fpath is None:
+                rel_path = _find_article_recursive(filename)
+                if rel_path:
+                    fpath = os.path.join(UPLOAD_FOLDER, rel_path)
+                    actual_path = rel_path
+            
+            if fpath is None or not os.path.exists(fpath):
+                # 列出所有文件，并搜索相似文件名
+                all_files = []
+                for root, dirs, files in os.walk(UPLOAD_FOLDER):
+                    skip_dirs = {'.obsidian', 'Attachments', 'Templates', 'copilot', 'archive', '.git', '__pycache__'}
+                    dirs[:] = [d for d in dirs if d not in skip_dirs]
+                    for f in files:
+                        if f.endswith('.md'):
+                            rel = os.path.relpath(os.path.join(root, f), UPLOAD_FOLDER)
+                            all_files.append(rel)
+                all_files.sort()
+                
+                # 智能搜索相似文件名（基于关键词）
+                import difflib
+                pure_name = os.path.basename(filename)
+                # 提取文件名中的关键词（去掉扩展名和版本号）
+                kw = pure_name.replace('.md', '')
+                # 去掉 _CN/EN_后的版本号部分
+                import re as _re_vn
+                kw = _re_vn.sub(r'_(CN|EN)_.*$', '', kw)
+                # 分词
+                kw_parts = [p for p in kw.split('_') if len(p) >= 2]
+                
+                similar = []
+                for rel in all_files:
+                    rel_lower = rel.lower()
+                    # 计算相似度
+                    ratio = difflib.SequenceMatcher(None, pure_name.lower(), os.path.basename(rel).lower()).ratio()
+                    # 关键词匹配
+                    kw_matches = sum(1 for p in kw_parts if p.lower() in rel_lower)
+                    if ratio >= 0.6 or kw_matches >= 2:
+                        similar.append((rel, ratio, kw_matches))
+                
+                # 按相似度排序
+                similar.sort(key=lambda x: (x[2], x[1]), reverse=True)
+                
+                hint = f"❌ 文件 '{filename}' 不存在。共 {len(all_files)} 个文件。"
+                if similar:
+                    hint += f"\n\n可能你想找的文件（{len(similar)} 个相似）：\n"
+                    for rel, ratio, kwm in similar[:10]:
+                        hint += f"  ✓ {rel}  (相似度{ratio:.0%}, 关键词命中{kwm})\n"
+                    hint += f"\n用 view_article(filename='上述文件名之一') 查看。"
                 else:
-                    return "文章目录不存在"
+                    # 没有相似文件，列出最近修改的文件
+                    hint += "未找到相似文件名。最近修改的文件：\n"
+                    recent = []
+                    for rel in all_files:
+                        fpath_tmp = os.path.join(UPLOAD_FOLDER, rel)
+                        try:
+                            mtime = os.path.getmtime(fpath_tmp)
+                            recent.append((rel, mtime))
+                        except:
+                            pass
+                    recent.sort(key=lambda x: x[1], reverse=True)
+                    import time as _time_v
+                    for rel, mt in recent[:10]:
+                        mt_str = _time_v.strftime("%m-%d %H:%M", _time_v.localtime(mt))
+                        hint += f"  {mt_str}  {rel}\n"
+                return hint
             with open(fpath, 'r', encoding='utf-8') as f:
                 content = f.read()
             total = len(content)
@@ -996,14 +1495,14 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                             section_content = section_content[:limit] + "\n...[截断]"
                         # 找下一章节标题位置，提示剩余内容
                         next_section_pos = content.find('\n## ', offset + 10)
-                        return f"文件: {filename} (共{total}字符) | 章节: {line.strip()}\n位置: {offset}-{offset+len(section_content)}\n{section_content}"
-                return f"未找到包含 '{section_name}' 的章节。\n可用章节：\n" + _extract_toc(content, filename, total)
+                        return f"文件: {actual_path} (共{total}字符) | 章节: {line.strip()}\n位置: {offset}-{offset+len(section_content)}\n{section_content}"
+                return f"未找到包含 '{section_name}' 的章节。\n可用章节：\n" + _extract_toc(content, actual_path, total)
 
             # 当 limit=0 且 offset=0 时（首次打开），自动附加章节目录
             # 如果 limit > 0 且 offset == 0，说明是默认 3000 字符读取，也附加目录
             toc = ""
             if (not limit and not offset) or (limit and not offset):
-                toc = "\n" + _extract_toc(content, filename, total)
+                toc = "\n" + _extract_toc(content, actual_path, total)
 
             # 应用offset和limit
             if offset and offset > 0:
@@ -1011,7 +1510,8 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
             if limit and limit > 0 and len(content) > limit:
                 content = content[:limit] + f"\n...[截断]"
             pos_info = f"位置: {offset}-{min(offset + (limit or total), total)}"
-            return f"文件: {filename} (共{total}字符, {pos_info})\n{toc}\n{content}"
+            path_hint = f" [实际路径: {actual_path}]" if actual_path != filename else ""
+            return f"文件: {actual_path} (共{total}字符, {pos_info}){path_hint}\n{toc}\n{content}"
 
         elif name == "write_article":
             filename = arguments.get("filename", "")
@@ -1021,7 +1521,7 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                 return "错误：缺少文件名"
             os.makedirs(UPLOAD_FOLDER, exist_ok=True)
             try:
-                fpath = _safe_path(filename)
+                fpath = _safe_path_with_subdir(filename)
             except ValueError as e:
                 return f"错误：{e}"
 
@@ -1053,7 +1553,9 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                     os.makedirs(archive_dir, exist_ok=True)
                     # 始终加时间戳后缀，避免任何覆盖或目录化问题
                     ts = _time2.strftime("%Y%m%d_%H%M%S")
-                    stem, ext = os.path.splitext(filename)
+                    # 用 basename 避免带路径的文件名在 archive 里创建子目录
+                    pure_name = os.path.basename(fpath)
+                    stem, ext = os.path.splitext(pure_name)
                     archive_path = os.path.join(archive_dir, f"{stem}_{ts}{ext}")
                     # 用 copy2 + remove 替代 shutil.move（move 在目标已存在时会变成目录）
                     try:
@@ -1071,13 +1573,17 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                     # （当新文件名和旧文件名不同时，index_single_file 不会清理旧的）
                     _cleanup_stale_article(vector_kb, filename)
                 # 自动 git commit（版本管理）
-                _git_result = _auto_git_commit(filename, content)
+                # 用 fpath 的相对路径确保 git add 正确文件
+                _git_result = _auto_git_commit(os.path.relpath(fpath, UPLOAD_FOLDER), content)
                 try:
                     preview_host = _request.host
                 except RuntimeError:
                     preview_host = "localhost:5000"
-                preview_url = f"http://{preview_host}/preview/{filename}"
-                return f"已写入 {filename} ({len(content)} 字符)，向量索引已更新。{archive_msg}{_git_result}\n\n【重要】请务必在回复中告诉用户文章已保存，并将以下预览链接以Markdown格式提供给用户：[点击预览文章]({preview_url})"
+                # 用实际相对路径生成预览URL
+                _rel_for_preview = os.path.relpath(fpath, UPLOAD_FOLDER)
+                from urllib.parse import quote as _url_quote
+                preview_url = f"http://{preview_host}/preview/{_url_quote(_rel_for_preview)}"
+                return f"已写入 {_rel_for_preview} ({len(content)} 字符)，向量索引已更新。{archive_msg}{_git_result}\n\n【重要】请务必在回复中告诉用户文章已保存，并将以下预览链接以Markdown格式提供给用户：[点击预览文章]({preview_url})"
 
         elif name == "edit_article":
             # 局部修改文章：先归档完整原文件，再执行替换
@@ -1088,115 +1594,153 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
             if not replacements or not isinstance(replacements, list):
                 return "错误：缺少 replacements 参数，或格式不正确（需要数组）"
             os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+            
+            # 和 view_article 同样的查找策略：带路径优先精确路径，再递归搜索，最后根目录
+            has_path = '/' in filename or '\\' in filename
+            fpath = None
+            actual_path = filename
+            
+            if has_path:
+                # 1. 先尝试完整路径
+                norm = filename.replace('\\', '/')
+                parts = [p for p in norm.split('/') if p and p != '..' and p != '.']
+                if parts:
+                    candidate = os.path.abspath(os.path.join(UPLOAD_FOLDER, *parts))
+                    base = os.path.abspath(UPLOAD_FOLDER)
+                    if candidate.startswith(base) and os.path.exists(candidate):
+                        fpath = candidate
+                        actual_path = '/'.join(parts)
+                # 2. 完整路径找不到，用 _find_article_recursive
+                if fpath is None:
+                    rel_path = _find_article_recursive(filename)
+                    if rel_path:
+                        fpath = os.path.join(UPLOAD_FOLDER, rel_path)
+                        actual_path = rel_path
+            
+            # 3. 不带路径或上面没找到：根目录精确匹配
+            if fpath is None:
+                try:
+                    root_fpath = _safe_path(filename)
+                    if os.path.exists(root_fpath):
+                        fpath = root_fpath
+                        actual_path = os.path.basename(filename)
+                except ValueError as e:
+                    return f"错误：{e}"
+            
+            # 4. 编号匹配
+            if fpath is None:
+                rel_path = _find_article_recursive(filename)
+                if rel_path:
+                    fpath = os.path.join(UPLOAD_FOLDER, rel_path)
+                    actual_path = rel_path
+            
+            if fpath is None or not os.path.exists(fpath):
+                return f"错误：文件 {filename} 不存在。可用文件请用 list_articles 查看"
+
             try:
-                fpath = _safe_path(filename)
-            except ValueError as e:
-                return f"错误：{e}"
+                # 第一步：归档完整原文件
+                import shutil as _shutil
+                import time as _time2
+                archive_dir = os.path.join(UPLOAD_FOLDER, "archive")
+                os.makedirs(archive_dir, exist_ok=True)
+                ts = _time2.strftime("%Y%m%d_%H%M%S")
+                stem, ext = os.path.splitext(os.path.basename(fpath))
+                archive_path = os.path.join(archive_dir, f"{stem}_{ts}{ext}")
+                try:
+                    _shutil.copy2(fpath, archive_path)
+                    archive_msg = f"（完整原文件已归档到 archive/{stem}_{ts}{ext}）"
+                except Exception as _arch_e:
+                    archive_msg = f"（归档失败: {_arch_e}）"
 
-            if not os.path.exists(fpath):
-                return f"错误：文件 {filename} 不存在，请先用 write_article 创建"
+                # 第二步：读取文件并执行替换
+                try:
+                    with open(fpath, 'r', encoding='utf-8') as f:
+                        file_content = f.read()
+                except Exception as e:
+                    return f"错误：读取文件失败: {e}"
 
-            # 第一步：归档完整原文件
-            import shutil as _shutil
-            import time as _time2
-            archive_dir = os.path.join(UPLOAD_FOLDER, "archive")
-            os.makedirs(archive_dir, exist_ok=True)
-            ts = _time2.strftime("%Y%m%d_%H%M%S")
-            stem, ext = os.path.splitext(filename)
-            archive_path = os.path.join(archive_dir, f"{stem}_{ts}{ext}")
-            try:
-                _shutil.copy2(fpath, archive_path)
-                archive_msg = f"（完整原文件已归档到 archive/{stem}_{ts}{ext}）"
-            except Exception as _arch_e:
-                archive_msg = f"（归档失败: {_arch_e}）"
+                original_size = len(file_content)
+                replacement_details = []
+                total_chars_added = 0
+                total_chars_removed = 0
+                failed_count = 0
 
-            # 第二步：读取文件并执行替换
-            try:
-                with open(fpath, 'r', encoding='utf-8') as f:
-                    file_content = f.read()
-            except Exception as e:
-                return f"错误：读取文件失败: {e}"
+                for i, rep in enumerate(replacements):
+                    old_text = rep.get("old_text", "")
+                    new_text = rep.get("new_text", "")
+                    # 类型保护：确保是字符串
+                    if not isinstance(old_text, str):
+                        old_text = str(old_text) if old_text else ""
+                    if not isinstance(new_text, str):
+                        new_text = str(new_text) if new_text else ""
+                    if not old_text:
+                        replacement_details.append(f"  #{i+1}: 跳过（old_text 为空）")
+                        failed_count += 1
+                        continue
 
-            original_size = len(file_content)
-            replacement_details = []
-            total_chars_added = 0
-            total_chars_removed = 0
-
-            for i, rep in enumerate(replacements):
-                old_text = rep.get("old_text", "")
-                new_text = rep.get("new_text", "")
-                if not old_text:
-                    replacement_details.append(f"  #{i+1}: 跳过（old_text 为空）")
-                    continue
-                count = file_content.count(old_text)
-                if count == 0:
-                    # 模糊匹配：清理空白差异后重试
-                    import re as _re
-                    def _normalize_ws(s):
-                        return _re.sub(r'[ \t]+', ' ', _re.sub(r'\r\n', '\n', s.strip()))
-                    norm_old = _normalize_ws(old_text)
-                    # 在文件中逐行归一化后搜索
-                    norm_content = _normalize_ws(file_content)
-                    fuzzy_count = norm_content.count(norm_old)
-                    if fuzzy_count > 0:
-                        # 找到模糊匹配位置，在原始文件中定位并替换
-                        # 策略：取 old_text 的第一行和最后几行作为锚点
-                        old_lines = old_text.strip().split('\n')
-                        first_line = old_lines[0].strip()
-                        last_line = old_lines[-1].strip() if len(old_lines) > 1 else ""
-                        # 在原文中找到包含第一行和最后一行的区域
-                        first_pos = file_content.find(first_line)
-                        if first_pos >= 0 and last_line:
-                            search_region = file_content[first_pos:first_pos+len(old_text)+200]
-                            last_pos_in_region = search_region.rfind(last_line)
-                            if last_pos_in_region >= 0:
-                                actual_end = first_pos + last_pos_in_region + len(last_line)
-                                actual_old = file_content[first_pos:actual_end]
-                                file_content = file_content[:first_pos] + new_text + file_content[actual_end:]
-                                total_chars_added += len(new_text)
-                                total_chars_removed += len(actual_old)
-                                replacement_details.append(f"  #{i+1}: 模糊匹配替换 1 处（原{len(actual_old)}字符 -> 新{len(new_text)}字符）")
-                                continue
-                        replacement_details.append(f"  #{i+1}: 未找到匹配文本（前50字符: ...{old_text[:50]}...）")
+                    match_result = _smart_replace(file_content, old_text, new_text)
+                    if match_result["success"]:
+                        file_content = match_result["content"]
+                        total_chars_added += match_result["added"]
+                        total_chars_removed += match_result["removed"]
+                        replacement_details.append(f"  #{i+1}: ✅ {match_result['detail']}")
                     else:
-                        replacement_details.append(f"  #{i+1}: 未找到匹配文本（前50字符: ...{old_text[:50]}...）")
-                else:
-                    file_content = file_content.replace(old_text, new_text)
-                    total_chars_added += len(new_text)
-                    total_chars_removed += len(old_text) * count
-                    replacement_details.append(f"  #{i+1}: 替换 {count} 处（-{len(old_text)*count}字符 +{len(new_text)*count}字符）")
+                        failed_count += 1
+                        # 替换失败：找出相似文本帮助调试
+                        similar = _find_similar_text(file_content, old_text)
+                        preview = match_result.get("old_text_preview", old_text[:80])
+                        replacement_details.append(f"  #{i+1}: ❌ 未找到匹配文本（6级容错全失败）")
+                        replacement_details.append(f"       old_text前120字符: {preview!r}")
+                        if similar:
+                            replacement_details.append(f"       文件中最相似: {similar}")
+                        replacement_details.append(f"       建议: 用 view_article section=§4.6.4 查看当前内容，复制精确文本再替换")
 
-            # 第三步：写回文件
-            try:
-                with open(fpath, 'w', encoding='utf-8') as f:
-                    f.write(file_content)
+                # 检查是否所有替换都失败
+                if failed_count == len(replacements):
+                    return (
+                        f"❌ 所有 {len(replacements)} 处替换均失败，文件未修改。\n"
+                        f"替换详情:\n{chr(10).join(replacement_details)}\n\n"
+                        f"可能原因:\n"
+                        f"  1. old_text 与文件内容有细微差异（空格/标点/Unicode）\n"
+                        f"  2. §章节号在文件中可能是不同格式（如 ## §4.6.4 vs ### 4.6.4）\n"
+                        f"  3. 文件已被之前的编辑改过，old_text 已不存在\n"
+                        f"建议: 用 view_article(filename, section='4.6.4') 查看当前精确内容"
+                    )
+
+                # 第三步：写回文件
+                try:
+                    with open(fpath, 'w', encoding='utf-8') as f:
+                        f.write(file_content)
+                except Exception as e:
+                    return f"错误：写入文件失败: {e}"
+
+                new_size = len(file_content)
+
+                # 第四步：更新向量索引
+                if vector_kb and vector_kb.is_initialized:
+                    vector_kb.index_single_file(fpath)
+
+                # 第五步：git commit
+                _git_result = _auto_git_commit(actual_path, file_content)
+
+                try:
+                    preview_host = _request.host
+                except RuntimeError:
+                    preview_host = "localhost:5000"
+                preview_url = f"http://{preview_host}/preview/{actual_path}"
+
+                detail_str = "\n".join(replacement_details)
+                size_change = new_size - original_size
+                size_str = f"+{size_change}" if size_change >= 0 else str(size_change)
+                return (
+                    f"已修改 {actual_path}（{original_size} -> {new_size} 字符，{size_str}）。{archive_msg}\n"
+                    f"替换详情:\n{detail_str}\n"
+                    f"向量索引已更新。{_git_result}\n\n"
+                    f"【重要】请务必在回复中告诉用户文章已修改，并将以下预览链接以Markdown格式提供给用户：[点击预览文章]({preview_url})"
+                )
             except Exception as e:
-                return f"错误：写入文件失败: {e}"
-
-            new_size = len(file_content)
-
-            # 第四步：更新向量索引
-            if vector_kb and vector_kb.is_initialized:
-                vector_kb.index_single_file(fpath)
-
-            # 第五步：git commit
-            _git_result = _auto_git_commit(filename, file_content)
-
-            try:
-                preview_host = _request.host
-            except RuntimeError:
-                preview_host = "localhost:5000"
-            preview_url = f"http://{preview_host}/preview/{filename}"
-
-            detail_str = "\n".join(replacement_details)
-            size_change = new_size - original_size
-            size_str = f"+{size_change}" if size_change >= 0 else str(size_change)
-            return (
-                f"已修改 {filename}（{original_size} -> {new_size} 字符，{size_str}）。{archive_msg}\n"
-                f"替换详情:\n{detail_str}\n"
-                f"向量索引已更新。{_git_result}\n\n"
-                f"【重要】请务必在回复中告诉用户文章已修改，并将以下预览链接以Markdown格式提供给用户：[点击预览文章]({preview_url})"
-            )
+                import traceback
+                return f"edit_article 内部错误: {e}\n{traceback.format_exc()}"
 
         elif name == "personal_read":
             # 读取个人数据库
@@ -1415,12 +1959,16 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                 filename = arguments.get("filename", "")
                 limit = min(int(arguments.get("limit", "10")), 30)
                 if filename:
-                    # 构建文件相对路径
+                    # 用统一路径解析找到真实文件路径
+                    fpath, actual_path = _resolve_article_path(filename)
+                    if fpath is None or not os.path.exists(fpath):
+                        return f"文件 '{filename}' 不存在，无法查看git历史。用 list_articles 查看可用文件。"
+                    # 构建文件相对路径（相对于git仓库根）
                     rel_dir = os.path.relpath(UPLOAD_FOLDER, repo)
                     if rel_dir == '.':
-                        file_path = filename
+                        file_path = actual_path
                     else:
-                        file_path = os.path.join(rel_dir, filename)
+                        file_path = os.path.join(rel_dir, actual_path)
                     r = _sp.run(
                         ["git", "-C", repo, "log", "--oneline", f"-{limit}", "--", file_path],
                         capture_output=True, timeout=10
@@ -1454,22 +2002,21 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
             if action == "archive":
                 if not filename:
                     return "错误：缺少文件名"
-                try:
-                    fpath = _safe_path(filename)
-                except ValueError as e:
-                    return f"错误：{e}"
-                if not os.path.exists(fpath):
+                fpath, actual_path = _resolve_article_path(filename)
+                if fpath is None or not os.path.exists(fpath):
                     return f"文件 '{filename}' 不存在"
                 archive_dir = os.path.join(UPLOAD_FOLDER, "archive")
                 os.makedirs(archive_dir, exist_ok=True)
-                archive_path = os.path.join(archive_dir, filename)
+                # 用实际文件名（不含路径）作为归档文件名
+                archive_name = os.path.basename(fpath)
+                archive_path = os.path.join(archive_dir, archive_name)
                 if os.path.exists(archive_path):
                     import time as _time3
                     ts = _time3.strftime("%Y%m%d_%H%M%S")
-                    stem, ext = os.path.splitext(filename)
+                    stem, ext = os.path.splitext(archive_name)
                     archive_path = os.path.join(archive_dir, f"{stem}_{ts}{ext}")
                 _shutil2.move(fpath, archive_path)
-                return f"已归档: {filename} -> archive/"
+                return f"已归档: {actual_path} -> archive/{os.path.basename(archive_path)}"
 
             elif action == "list_archive":
                 archive_dir = os.path.join(UPLOAD_FOLDER, "archive")
@@ -1495,77 +2042,66 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
             elif action == "move":
                 if not filename or not target:
                     return "错误：缺少文件名和目标路径"
-                try:
-                    fpath = _safe_path(filename)
-                except ValueError as e:
-                    return f"错误：{e}"
-                if not os.path.exists(fpath):
+                fpath, actual_path = _resolve_article_path(filename)
+                if fpath is None or not os.path.exists(fpath):
                     return f"文件 '{filename}' 不存在"
                 # 智能判断：target 以 .md 结尾则为重命名+移动，否则为移动到子目录
                 if target.endswith('.md'):
                     # 目标是文件名：重命名（保持在当前目录）
-                    target_path = os.path.join(UPLOAD_FOLDER, target)
-                    os.makedirs(os.path.dirname(target_path), exist_ok=True)
+                    target_path = _safe_path_with_subdir(target)
                     _shutil2.move(fpath, target_path)
                     # 更新向量索引中的文件名引用
                     try:
                         vector_kb = getattr(sys.modules.get('knowledge'), 'vector_kb', None)
                         if vector_kb:
-                            vector_kb.update_filename_in_metadata(filename, target)
+                            vector_kb.update_filename_in_metadata(actual_path, target)
                     except Exception:
                         pass
-                    return f"已重命名: {filename} -> {target}"
+                    return f"已重命名: {actual_path} -> {target}"
                 else:
                     # 目标是目录名：移动到子目录
-                    target_dir = os.path.join(UPLOAD_FOLDER, target)
-                    os.makedirs(target_dir, exist_ok=True)
-                    target_path = os.path.join(target_dir, os.path.basename(filename))
+                    target_dir = _safe_path_with_subdir(target + "/.keep")
+                    target_dir = os.path.dirname(target_dir)
+                    target_path = os.path.join(target_dir, os.path.basename(fpath))
                     _shutil2.move(fpath, target_path)
-                    return f"已移动: {filename} -> {target}/"
+                    return f"已移动: {actual_path} -> {target}/"
 
             elif action == "rename":
                 if not filename or not target:
                     return "错误：缺少文件名和新名称"
-                try:
-                    fpath = _safe_path(filename)
-                    new_path = _safe_path(target)
-                except ValueError as e:
-                    return f"错误：{e}"
-                if not os.path.exists(fpath):
+                fpath, actual_path = _resolve_article_path(filename)
+                if fpath is None or not os.path.exists(fpath):
                     return f"文件 '{filename}' 不存在"
-                os.makedirs(os.path.dirname(new_path), exist_ok=True)
+                new_path = _safe_path_with_subdir(target)
                 _shutil2.move(fpath, new_path)
                 # 更新向量索引：删除旧文件名的 chunk，重建新文件名的 chunk
                 index_msg = ""
                 if vector_kb and vector_kb.is_initialized:
                     try:
                         # 先删除旧 fname 的所有 chunk
-                        vector_kb.articles_collection.delete(where={"fname": filename})
+                        vector_kb.articles_collection.delete(where={"fname": actual_path})
                         # 再对新文件做增量索引
                         vector_kb.index_single_file(new_path)
                         index_msg = "，向量索引已更新"
                     except Exception as _idx_e:
                         index_msg = f"，向量索引更新失败: {_idx_e}"
-                return f"已重命名: {filename} -> {target}{index_msg}"
+                return f"已重命名: {actual_path} -> {target}{index_msg}"
 
             elif action == "delete":
                 if not filename:
                     return "错误：缺少文件名"
-                try:
-                    fpath = _safe_path(filename)
-                except ValueError as e:
-                    return f"错误：{e}"
-                if not os.path.exists(fpath):
+                fpath, actual_path = _resolve_article_path(filename)
+                if fpath is None or not os.path.exists(fpath):
                     return f"文件 '{filename}' 不存在"
                 os.remove(fpath)
                 # 同步删除向量索引
                 if vector_kb and vector_kb.is_initialized:
                     try:
-                        vector_kb.articles_collection.delete(where={"fname": filename})
+                        vector_kb.articles_collection.delete(where={"fname": actual_path})
                         vector_kb._articles_count = vector_kb.articles_collection.count()
                     except Exception:
                         pass
-                return f"已删除: {filename}，向量索引已同步"
+                return f"已删除: {actual_path}，向量索引已同步"
 
             else:
                 return f"未知操作: {action}，支持: archive/list_archive/create_dir/move/rename/delete"
@@ -1952,12 +2488,12 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                     lines = [f"✓ 真理层同步完成",
                              f"  已验证绝对真理: {len(formulas)} 个",
                              f"  公式列表（带永久编号）:"]
-                    for f in formulas[:15]:
+                    for f in formulas[:50]:
                         num = f.get("permanent_number", 0)
                         name = f.get("formula_name", "?")
                         lines.append(f"    #{num}  {name}")
-                    if len(formulas) > 15:
-                        lines.append(f"    ... 共 {len(formulas)} 个")
+                    if len(formulas) > 50:
+                        lines.append(f"    ... 共 {len(formulas)} 个，可用 search_master_truth(query='#N') 查询任意编号")
                     lines.append("")
                     lines.append("  这些已验证公式已存入本地 master_truth collection，")
                     lines.append("  可以在推导中作为合法起点引用（用永久编号#N引用）。")
@@ -1967,6 +2503,89 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                     return "主库真理层为空（尚无已验证公式），或同步失败"
             except Exception as e:
                 return f"同步真理层失败: {e}"
+
+        elif name == "search_master_truth":
+            # 搜索主库真理层：支持按编号查询和语义搜索
+            try:
+                query = arguments.get("query", "").strip()
+                top_k = int(arguments.get("top_k", 5) or 5)
+                if not query:
+                    return "错误：缺少 query 参数"
+
+                # 模式1：按编号查询（query 包含 #N 格式）
+                import re as _re_search
+                numbers = _re_search.findall(r'#(\d+)', query)
+                if numbers:
+                    # 优先从主库直接拉取（不依赖本地向量索引）
+                    try:
+                        from master_client import get_master_client
+                        mc = get_master_client()
+                        if mc.is_available:
+                            lines = []
+                            for num in numbers:
+                                f = mc.fetch_truth_by_number(int(num))
+                                if f:
+                                    lines.append(f"#{num} {f.get('formula_name', '?')}")
+                                    lines.append(f"  master_id: {f.get('master_id', '?')}")
+                                    lines.append(f"  verified_at: {f.get('verified_at', '?')}")
+                                    lines.append(f"  内容:\n{f.get('document', '')}")
+                                    lines.append("")
+                                else:
+                                    lines.append(f"#{num} 未找到对应定理\n")
+                            return "\n".join(lines) if lines else "未找到匹配的定理"
+                    except Exception:
+                        pass  # 主库不可用，降级到本地
+
+                    # 降级：从本地 master_truth collection 查找
+                    if vector_kb and vector_kb.is_initialized:
+                        count = vector_kb.get_master_truth_count()
+                        if count > 0:
+                            all_truths = vector_kb.master_truth_collection.get(include=["metadatas", "documents"])
+                            lines = []
+                            for num in numbers:
+                                found = False
+                                for i, meta in enumerate(all_truths.get("metadatas", [])):
+                                    if str(meta.get("permanent_number", "")) == num:
+                                        doc = all_truths.get("documents", [""])[i]
+                                        lines.append(f"#{num} {meta.get('formula_name', '?')}")
+                                        lines.append(f"  master_id: {meta.get('master_id', '?')}")
+                                        lines.append(f"  verified_at: {meta.get('verified_at', '?')}")
+                                        lines.append(f"  内容:\n{doc}")
+                                        lines.append("")
+                                        found = True
+                                        break
+                                if not found:
+                                    lines.append(f"#{num} 未找到对应定理\n")
+                            return "\n".join(lines) if lines else "未找到匹配的定理"
+
+                    return f"无法查询 #{numbers[0]}：主库不可用且本地真理层未同步。请先调用 sync_master_truth 同步。"
+
+                # 模式2：语义搜索
+                if not vector_kb or not vector_kb.is_initialized:
+                    return "向量库未初始化，无法进行语义搜索。可按编号查询（如 query='#100'）。"
+
+                count = vector_kb.get_master_truth_count()
+                if count == 0:
+                    return "本地真理层为空，请先调用 sync_master_truth 同步主库真理层"
+
+                results = vector_kb.search_master_truth(query, top_k=top_k)
+                if not results:
+                    return f"语义搜索 '{query}' 无结果。当前真理层有 {count} 个已验证定理。"
+
+                lines = [f"语义搜索 '{query}' 返回 {len(results)} 个结果:"]
+                for i, r in enumerate(results):
+                    meta = r.get("metadata", {})
+                    dist = r.get("distance", 1.0)
+                    num = meta.get("permanent_number", "?")
+                    fname = meta.get("formula_name", "?")
+                    text = r.get("text", "")
+                    lines.append(f"\n--- 结果 {i+1} (距离={dist:.3f}) ---")
+                    lines.append(f"#{num}  {fname}")
+                    lines.append(f"  master_id: {meta.get('master_id', '?')}")
+                    lines.append(f"  内容:\n{text[:500]}")
+                return "\n".join(lines)
+            except Exception as e:
+                return f"搜索真理层失败: {e}"
 
         else:
             return f"未知工具: {name}"
@@ -1980,7 +2599,7 @@ OPENAPI_SPEC = {
     "openapi": "3.1.0",
     "info": {
         "title": "Geometry AI Server - 工具集",
-        "description": "几何论 AI 可用的文件读写、个人数据库、对话记录查询工具",
+        "description": "共扼谱几何 AI 可用的文件读写、个人数据库、对话记录查询工具",
         "version": "1.0.0"
     },
     "servers": [{"url": "http://localhost:5000"}],

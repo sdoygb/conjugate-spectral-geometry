@@ -1,6 +1,6 @@
 from __future__ import annotations
 """
-knowledge.py — 几何论AI调度中间层知识库模块
+knowledge.py — 共扼谱几何AI调度中间层知识库模块
 从 geometry_ai_server_v5_12.py 提取的嵌入函数、向量知识库和一致性评估。
 """
 
@@ -87,7 +87,7 @@ class BM25Searcher:
         if not self._jieba_loaded:
             try:
                 import jieba
-                # 添加几何论领域自定义词典
+                # 添加共扼谱几何领域自定义词典
                 _dict_path = os.path.join(os.path.dirname(__file__), 'jieba_dict.txt')
                 if os.path.exists(_dict_path):
                     jieba.load_userdict(_dict_path)
@@ -282,7 +282,7 @@ class LocalEmbeddingFunction:
 
 class VectorKnowledgeBase:
     """
-    使用 ChromaDB 向量数据库的几何论知识库。
+    使用 ChromaDB 向量数据库的共扼谱几何知识库。
     五个集合：
     - articles: 静态70篇文章知识（从文件目录构建）
     - learned: 动态学习的QA对（高质量对话自动存入）
@@ -431,7 +431,7 @@ class VectorKnowledgeBase:
 
             # 定义所有集合
             collections_config = [
-                ("articles", "几何论70篇文章静态知识库"),
+                ("articles", "共扼谱几何70篇文章静态知识库"),
                 ("learned", "动态学习的QA对"),
                 ("corrections", "教学纠正记录"),
                 ("antipatterns", "反模式库"),
@@ -654,7 +654,7 @@ class VectorKnowledgeBase:
 
         self.articles_collection = self.client.get_or_create_collection(
             name="articles",
-            metadata={"description": "几何论70篇文章静态知识库"},
+            metadata={"description": "共扼谱几何70篇文章静态知识库"},
             embedding_function=self.embedding_fn
         )
 
@@ -2266,7 +2266,7 @@ class VectorKnowledgeBase:
 
 def estimate_coherence(response_text: str) -> float:
     """
-    评估回复的几何论一致性得分。
+    评估回复的共扼谱几何一致性得分。
     依赖 GEOMETRY_CONSTANTS、TERM_SYNONYMS、SYNONYM_EXPAND（从 config 导入）。
     """
     if not response_text:

@@ -260,7 +260,7 @@ ARTICLE_TOOLS = [
         "type": "function",
         "function": {
             "name": "write_article",
-            "description": "将内容写入 articles 目录中的文件，用于创建或修改几何论文章。支持分段写入大文章：第一次用 mode=write，后续用 mode=append 追加。写入时旧版自动归档到 archive/。",
+            "description": "将内容写入 articles 目录中的文件，用于创建或修改共扼谱几何文章。支持分段写入大文章：第一次用 mode=write，后续用 mode=append 追加。写入时旧版自动归档到 archive/。",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -1094,7 +1094,7 @@ OPENAPI_SPEC = {
     "openapi": "3.1.0",
     "info": {
         "title": "Geometry AI Server - 工具集",
-        "description": "几何论 AI 可用的文件读写、个人数据库、对话记录查询工具",
+        "description": "共扼谱几何 AI 可用的文件读写、个人数据库、对话记录查询工具",
         "version": "1.0.0"
     },
     "servers": [{"url": "http://localhost:5000"}],

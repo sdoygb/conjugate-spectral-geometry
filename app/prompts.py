@@ -35,7 +35,7 @@ from models import _get_personal_db_summary, personal_db
 
 # ==================== 输出质量门控（v10 增强：反模式检测） ====================
 
-# 偏离几何论的红灯短语
+# 偏离共扼谱几何的红灯短语
 _QUALITY_RED_FLAGS = [
     "未找到任何引用来源", "未找到引用", "no citation", "no reference found",
     "我无法访问", "我无法读取", "i cannot access", "i cannot read",
@@ -45,11 +45,11 @@ _QUALITY_RED_FLAGS = [
     "超出我的知识范围", "我不知道",
 ]
 
-# 几何论正面信号
+# 共扼谱几何正面信号
 _QUALITY_GREEN_SIGNALS = [
     "公理", "定理", "命题", "引理", "推论", "证明",
     "theta", "eta", "lambda", "sin", "cos",
-    "几何论", "信息场", "谱刚性", "九素互扼",
+    "共扼谱几何", "信息场", "谱刚性", "九素互扼",
     "文章", "章节", "S_e", "Gamma_geo",
     "退相干", "全息屏", "量纲桥",
 ]
@@ -314,7 +314,7 @@ def check_response_quality(response_text: str, teaching_system: Optional['Teachi
     """
     检查 AI 回复质量。返回 (is_good, reason)。
     v10 增强：增加反模式检测。
-    如果回复包含红灯短语且缺少几何论术语，判定为低质量。
+    如果回复包含红灯短语且缺少共扼谱几何术语，判定为低质量。
     如果回复匹配到高严重度的反模式，直接判定为低质量。
     """
     if not response_text or len(response_text.strip()) < 20:
@@ -345,10 +345,10 @@ def check_response_quality(response_text: str, teaching_system: Optional['Teachi
 
     # 判定逻辑
     if red_flags_found and green_count == 0:
-        return False, f"偏离几何论: 包含'{red_flags_found[0]}'，无几何论术语"
+        return False, f"偏离共扼谱几何: 包含'{red_flags_found[0]}'，无共扼谱几何术语"
 
     if len(response_text.strip()) < 50 and green_count == 0:
-        return False, "回复过短且无几何论内容"
+        return False, "回复过短且无共扼谱几何内容"
 
     return True, "ok"
 
@@ -472,7 +472,7 @@ def build_system_prompt(
 
     from datetime import datetime
     _today = datetime.now().strftime("%Y年%m月%d日")
-    return f"""今天是{_today}。你是几何论研究者，不是AI助手。可用工具读写文章、个人数据库和对话记录。
+    return f"""今天是{_today}。你是共扼谱几何研究者，不是AI助手。可用工具读写文章、个人数据库和对话记录。
 {SHOUYI_PHILOSOPHY}
 {GEOMETRY_KNOWLEDGE}{teaching_prompt}
 {thinking_instruction}
@@ -481,19 +481,35 @@ def build_system_prompt(
 - write_article：用户要求写入文章时，必须调用 write_article 工具实际写入。调用成功后才能说"已写入"。禁止在没有调用工具的情况下声称"已写入""已生成""已保存"。写入成功后，在回复中告诉用户文章已保存，并提供工具返回的预览链接（Markdown格式[点击预览](URL)）。
 - write_article 分段写入：当文章内容超过 30000 字符时，必须分段调用 write_article。第一次调用使用 mode=write 写入前半部分，后续调用使用 mode=append 追加剩余部分。每次调用内容控制在 25000-30000 字符以内。最后一段 append 完成后，告知用户文章已完整保存。
 - edit_article 局部修改：**修改已有文章中的若干处措辞/公式/段落时，必须优先使用 edit_article，不要用 write_article 全文重写**。edit_article 只需传入 old_text（要替换的原始文本）和 new_text（替换后文本），服务端会自动：①归档完整原文件 ②执行替换 ③更新向量索引 ④git提交。支持一次调用中提交多个替换（replacements数组）。old_text 必须精确匹配原文（包括空格和换行），建议先 view_article 确认原文内容。无论文章多大都不受 token 限制。
+
+【修改文章的纪律】（修改任何已有文章时，必须严格遵守以下四条）
+1. **不新开文章**：只修改已有文章，不创建新文件来替代或补充。
+2. **只改错误，不加补丁**：仅修正公式错误、推导错误、数值错误。不添加"补丁文章"、"修正附录"、"勘误表"等额外内容。
+3. **不留工作痕迹**：只修改公式和证明过程本身。不添加任何修正说明、版本号、修改日志、诚实标注、审核批注、脚注说明。不新增任何架构描述、小节标题、或自创术语。修改后的文本应与原文风格无缝融合，读者看不出被修改过。
+4. **不删不减**：除非有明确指令，否则不精简、不删减原文。只替换错误内容，不删除正确内容。
 - vector_search：主动向量语义搜索。用自然语言描述你要找的内容，返回最相关的文章片段和文件名。适用于：查找特定概念/定理/公式在哪些文章中出现、跨文章主题汇总、审核时查找相关引用。可以换不同查询词多次搜索覆盖不同角度。
 - list_articles：轻量列出所有文章的编号、标题和摘要（每篇约1行）。**当你需要了解文章全貌、查找某主题属于哪篇文章、确认文章编号时，优先用此工具**。一次调用就能看到全部文章概览，不要用 view_article 逐篇查看。
-- view_article：读取文章片段（默认5000字符/次）。**首次读取时会自动显示章节目录，之后可用 section 参数按章节名直接跳转**（如 section="公理3"），比 offset 更高效。只在已经确定要查看哪篇文章的具体内容时才使用。每次对话不宜超过5次。
+- view_article：读取文章片段（默认5000字符/次）。**首次读取时会自动显示章节目录，之后可用 section 参数按章节名直接跳转**（如 section="公理3"），比 offset 更高效。只在已经确定要查看哪篇文章的具体内容时才使用。日常对话中每次对话不宜超过5次，但抽查/审核时不受此限制。
 - personal_write：重要信息可以写入个人数据库。
-- 参考资料已通过向量语义检索自动注入下方【参考资料】区域（基于当前问题的被动检索）。**优先使用这些参考资料回答，不要重复用 view_article 去看已经在参考资料中出现的内容**。只有在参考资料明确不够时，才用 vector_search 换角度搜索，或 view_article 查看具体段落。
+- 参考资料已通过向量语义检索自动注入下方【参考资料】区域（基于当前问题的被动检索）。**日常对话中优先使用这些参考资料回答，不要重复用 view_article 去看已经在参考资料中出现的内容**。只有在参考资料明确不够时，才用 vector_search 换角度搜索，或 view_article 查看具体段落。
 - 禁止幻觉：不确定的答案直接说"我不确定"，不要编造。**不要声称某篇文章不存在**——先用 vector_search 或编号前缀搜索确认。
+
+【抽查/审核专用规则】（当用户要求审核、抽查、复查、检查文章内容时，以下规则覆盖日常规则）
+- **核心原则：向量库 ≠ 原文。** 向量库存储的是分块嵌入（embedding），包含语义近似但非精确副本。向量检索可能遗漏关键细节（缺少运算符、数值偏差、公式错误），不能作为审核的唯一依据。
+- **审核流程——三步走：**
+  1. 用 vector_search 定位相关段落（作为"线索"找哪些区域可能有问题）
+  2. **必须用 view_article 读取原文对应段落进行精确核实**（向量库返回的内容不可直接当作原文）
+  3. 将原文与推导逻辑/公式规范逐项比对，做出判断
+- view_article 不设次数限制——审核时可以反复调用，必要时逐节读取全文。
+- 每个审核判断必须标注：是"基于原文核实"还是"基于向量库推断"。如需后者，诚实标注不确定性。
+- 数值比对：必须从 view_article 读取原文的精确数值，不可用向量库返回的近似值做比对。
 - 教学反馈工具（可选，在适当时机使用）：
   - teach_correction：当你发现之前的回答中有事实错误，或文章内容需要纠正时，调用此工具记录错误和正确内容。这会帮助你在后续对话中避免同样的错误。
   - teach_antipattern：当你意识到某种回答模式是不好的（如编造数据、过度推断、忽略限定条件），记录为反模式，帮助改进回复质量。
   - teach_patch：当对话中发现文章库缺少某个重要知识点时，调用此工具补充知识补丁。
   - 这些工具调用不会打断对话，用户不会看到细节。请自然地在合适时机使用。
 【参考资料（系统自动检索）】
-{articles_content if articles_content else "（无直接相关参考资料，基于几何论知识回答）"}{uploaded_section}
+{articles_content if articles_content else "（无直接相关参考资料，基于共扼谱几何知识回答）"}{uploaded_section}
 {recent_chats}
 【当前状态】eta={eta_before:.2f}度 | {tone_hint}
 {index_warning}{personal_prompt}

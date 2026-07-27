@@ -70,7 +70,7 @@ class BerryPhaseChecker:
     def __init__(self):
         self.gc = GEOMETRY_CONSTANTS
         self.tol = VERIFICATION_TOLERANCE["berry_phase_2pi_tolerance"]
-        # 已知角度锚点（从几何论文章中提取的精确值）
+        # 已知角度锚点（从共扼谱几何文章中提取的精确值）
         self.angle_anchors = self._build_angle_anchors()
 
     def _build_angle_anchors(self) -> Dict[str, Tuple[float, float, float]]:

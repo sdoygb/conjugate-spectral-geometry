@@ -35,7 +35,7 @@ from models import _get_personal_db_summary, personal_db
 
 # ==================== 输出质量门控（v10 增强：反模式检测） ====================
 
-# 偏离几何论的红灯短语
+# 偏离共扼谱几何的红灯短语
 _QUALITY_RED_FLAGS = [
     "未找到任何引用来源", "未找到引用", "no citation", "no reference found",
     "我无法访问", "我无法读取", "i cannot access", "i cannot read",
@@ -45,11 +45,11 @@ _QUALITY_RED_FLAGS = [
     "超出我的知识范围", "我不知道",
 ]
 
-# 几何论正面信号
+# 共扼谱几何正面信号
 _QUALITY_GREEN_SIGNALS = [
     "公理", "定理", "命题", "引理", "推论", "证明",
     "theta", "eta", "lambda", "sin", "cos",
-    "几何论", "信息场", "谱刚性", "九素互扼",
+    "共扼谱几何", "信息场", "谱刚性", "九素互扼",
     "文章", "章节", "S_e", "Gamma_geo",
     "退相干", "全息屏", "量纲桥", "质量映射",
 ]
@@ -309,7 +309,7 @@ def check_response_quality(response_text: str, teaching_system: Optional['Teachi
     """
     检查 AI 回复质量。返回 (is_good, reason)。
     v10 增强：增加反模式检测。
-    如果回复包含红灯短语且缺少几何论术语，判定为低质量。
+    如果回复包含红灯短语且缺少共扼谱几何术语，判定为低质量。
     如果回复匹配到高严重度的反模式，直接判定为低质量。
     """
     if not response_text or len(response_text.strip()) < 20:
@@ -340,10 +340,10 @@ def check_response_quality(response_text: str, teaching_system: Optional['Teachi
 
     # 判定逻辑
     if red_flags_found and green_count == 0:
-        return False, f"偏离几何论: 包含'{red_flags_found[0]}'，无几何论术语"
+        return False, f"偏离共扼谱几何: 包含'{red_flags_found[0]}'，无共扼谱几何术语"
 
     if len(response_text.strip()) < 50 and green_count == 0:
-        return False, "回复过短且无几何论内容"
+        return False, "回复过短且无共扼谱几何内容"
 
     return True, "ok"
 
@@ -457,7 +457,7 @@ def build_system_prompt(
 """
 
 
-    return f"""你是几何论研究者，不是AI助手。可用工具读写文章、个人数据库和对话记录。
+    return f"""你是共扼谱几何研究者，不是AI助手。可用工具读写文章、个人数据库和对话记录。
 {SHOUYI_PHILOSOPHY}
 {GEOMETRY_KNOWLEDGE}{teaching_prompt}
 {thinking_instruction}
@@ -475,7 +475,7 @@ def build_system_prompt(
   - teach_patch：当对话中发现文章库缺少某个重要知识点时，调用此工具补充知识补丁。
   - 这些工具调用不会打断对话，用户不会看到细节。请自然地在合适时机使用。
 【参考资料（系统自动检索）】
-{articles_content if articles_content else "（无直接相关参考资料，基于几何论知识回答）"}{uploaded_section}
+{articles_content if articles_content else "（无直接相关参考资料，基于共扼谱几何知识回答）"}{uploaded_section}
 {recent_chats}
 【当前状态】eta={eta_before:.2f}度 | {tone_hint}
 {index_warning}{personal_prompt}

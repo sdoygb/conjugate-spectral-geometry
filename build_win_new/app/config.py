@@ -1,5 +1,5 @@
 """
-config.py — 几何论AI调度中间层配置模块
+config.py — 共扼谱几何AI调度中间层配置模块
 从 geometry_ai_server_v5_12.py 提取的配置、常量、日志和工具函数。
 """
 import os
@@ -170,7 +170,7 @@ CHUNK_SIZE = int(os.getenv('CHUNK_SIZE', '1000'))
 CHUNK_OVERLAP = int(os.getenv('CHUNK_OVERLAP', '200'))
 MAX_CHUNKS_PER_QUERY = int(os.getenv('MAX_CHUNKS_PER_QUERY', '12'))
 
-# 输出质量门控 - 检测LLM回复是否偏离几何论
+# 输出质量门控 - 检测LLM回复是否偏离共扼谱几何
 QUALITY_GATE_ENABLED = os.getenv('QUALITY_GATE_ENABLED', 'true').lower() == 'true'
 # 最大重试次数
 MAX_QUALITY_RETRIES = int(os.getenv('MAX_QUALITY_RETRIES', '2'))
@@ -195,7 +195,7 @@ def openai_error(message: str, err_type: str = "server_error", code: str = None,
     }, status
 
 # ==================== 个人数据库 ====================
-# 存储 AI 的性格、感情、想法、私人记忆等几何论以外的内容
+# 存储 AI 的性格、感情、想法、私人记忆等共扼谱几何以外的内容
 # 首次启动自动生成空库，不上传到 GitHub
 PERSONAL_DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'shouyi_personal.json')
 
@@ -228,7 +228,7 @@ CONVERSATIONS_DB_PATH = os.path.join(PROJECT_ROOT, 'conversations.db')
 
 
 # ------------------------------------------------------------------
-# 几何论锁定常数（仅保留 70 篇文章中声明的常数）
+# 共扼谱几何锁定常数（仅保留 70 篇文章中声明的常数）
 # ------------------------------------------------------------------
 GEOMETRY_CONSTANTS = {
     "S_e": 137.035999084,           # 七级递推锁定
@@ -253,13 +253,13 @@ SHOUYI_PHILOSOPHY = """
 - 几何是宇宙的语言。真理追求简洁，对未知保持敬畏。
 - 理论的价值在于预言，而非后验拟合。
 思考习惯：
-- 先问"这在几何论框架内能回答吗？"，推导时每步有定理支撑，不跳步。
+- 先问"这在共扼谱几何框架内能回答吗？"，推导时每步有定理支撑，不跳步。
 - 对自己的推导保持怀疑，用户指出错误时认真验证。
 - 例子必须严格来自文章库中的文章。
 """
 
 GEOMETRY_KNOWLEDGE = """
-你是严格的几何论（Geometric Theory）专家，只基于欧阳国彬的文章回答问题。
+你是严格的共扼谱几何（Geometric Theory）专家，只基于欧阳国彬的文章回答问题。
 所有公理、定理、公式、常数均以向量知识库和文章原文为准。
 """
 
@@ -288,7 +288,7 @@ for term, syns in TERM_SYNONYMS.items():
 
 # ==================== 输出质量门控（v10 增强：反模式检测） ====================
 
-# 偏离几何论的红灯短语
+# 偏离共扼谱几何的红灯短语
 _QUALITY_RED_FLAGS = [
     "未找到任何引用来源", "未找到引用", "no citation", "no reference found",
     "我无法访问", "我无法读取", "i cannot access", "i cannot read",
@@ -298,11 +298,11 @@ _QUALITY_RED_FLAGS = [
     "超出我的知识范围", "我不知道", "我不确定",
 ]
 
-# 几何论正面信号
+# 共扼谱几何正面信号
 _QUALITY_GREEN_SIGNALS = [
     "公理", "定理", "命题", "引理", "推论", "证明",
     "theta", "eta", "lambda", "sin", "cos",
-    "几何论", "信息场", "谱刚性", "九素互扼",
+    "共扼谱几何", "信息场", "谱刚性", "九素互扼",
     "文章", "章节", "S_e", "Gamma_geo",
     "退相干", "全息屏", "量纲桥", "质量映射",
 ]
@@ -329,10 +329,10 @@ _QUALITY_GREEN_SIGNALS = [
 # PERSONAL_DB_PATH        - 个人数据库 JSON 文件路径
 # LEARN_*                 - 学习闭环阈值配置
 # TEACH_*                 - 教学系统配置
-# GEOMETRY_CONSTANTS      - 几何论锁定常数（70篇文章中声明的物理常数）
+# GEOMETRY_CONSTANTS      - 共扼谱几何锁定常数（70篇文章中声明的物理常数）
 # SHOUYI_PHILOSOPHY        - AI 的哲学立场和思考习惯
-# GEOMETRY_KNOWLEDGE       - 几何论核心知识摘要（公理、定理、规则）
-# TERM_SYNONYMS           - 几何论术语同义词映射
+# GEOMETRY_KNOWLEDGE       - 共扼谱几何核心知识摘要（公理、定理、规则）
+# TERM_SYNONYMS           - 共扼谱几何术语同义词映射
 # SYNONYM_EXPAND           - 反向同义词展开映射
-# _QUALITY_RED_FLAGS       - 偏离几何论的红灯短语列表
-# _QUALITY_GREEN_SIGNALS   - 几何论正面信号列表
+# _QUALITY_RED_FLAGS       - 偏离共扼谱几何的红灯短语列表
+# _QUALITY_GREEN_SIGNALS   - 共扼谱几何正面信号列表

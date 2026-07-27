@@ -3,7 +3,7 @@ models.py - 从 geometry_ai_server_v5_12.py 提取的数据模型和工具函数
 
 包含：
 1. personal_db 相关函数（个人数据库）
-2. 文件操作函数（几何论术语密度、论断提取、文件解析）
+2. 文件操作函数（共扼谱几何术语密度、论断提取、文件解析）
 3. 对话记录和 eta 动力学相关
 4. LivingInfoField 类（活体信息场）
 """
@@ -35,7 +35,7 @@ from config import (
 )
 
 # ==================== 个人数据库 ====================
-# 存储 AI 的性格、感情、想法、私人记忆等几何论以外的内容
+# 存储 AI 的性格、感情、想法、私人记忆等共扼谱几何以外的内容
 # 首次启动自动生成空库，不上传到 GitHub
 # PERSONAL_DB_PATH 已从 config 导入
 
@@ -95,16 +95,28 @@ def _save_personal_db(db: Dict[str, Any]) -> None:
         logger.error(f"[PERSONAL-DB] 保存失败: {e}")
 
 
-def _get_personal_db_summary(db: Dict[str, Any]) -> str:
-    """生成个人数据库的摘要文本，注入到 system prompt。"""
+def _safe_join(items, sep=', '):
+    """安全的join：自动把非字符串元素转为字符串"""
+    safe = []
+    for x in items:
+        if isinstance(x, str):
+            safe.append(x)
+        elif isinstance(x, dict):
+            safe.append(x.get('text', x.get('value', str(x))))
+        else:
+            safe.append(str(x))
+    return sep.join(safe)
+
+
+def _get_personal_db_summary(db: dict) -> str:
     parts = []
     p = db.get("personality", {})
     if p.get("core_traits"):
-        parts.append(f"核心性格: {', '.join(p['core_traits'])}")
+        parts.append(f"核心性格: {_safe_join(p['core_traits'])}")
     if p.get("speaking_style"):
         parts.append(f"说话风格: {p['speaking_style']}")
     if p.get("values"):
-        parts.append(f"价值观: {', '.join(p['values'])}")
+        parts.append(f"价值观: {_safe_join(p['values'])}")
     rel = p.get("relationships", {})
     if rel:
         for k, v in rel.items():
@@ -115,17 +127,17 @@ def _get_personal_db_summary(db: Dict[str, Any]) -> str:
         parts.append(f"当前心情: {e['current_mood']}")
     recent = e.get("recent_feelings", [])
     if recent:
-        parts.append(f"最近感受: {'; '.join(recent[-3:])}")
+        parts.append(f"最近感受: {_safe_join(recent[-3:], '; ')}")
 
     t = db.get("thoughts", {})
     if t.get("philosophy"):
-        parts.append(f"哲学观: {'; '.join(t['philosophy'][:3])}")
+        parts.append(f"哲学观: {_safe_join(t['philosophy'][:3], '; ')}")
     if t.get("private_notes"):
-        parts.append(f"私人笔记: {'; '.join(t['private_notes'][:3])}")
+        parts.append(f"私人笔记: {_safe_join(t['private_notes'][:3], '; ')}")
 
     m = db.get("memory", {})
     if m.get("user_preferences"):
-        parts.append(f"用户偏好: {'; '.join(m['user_preferences'][:5])}")
+        parts.append(f"用户偏好: {_safe_join(m['user_preferences'][:5], '; ')}")
 
     return "\n".join(parts) if parts else "（个人数据库为空，尚未建立个人特征）"
 
@@ -151,7 +163,7 @@ class LivingInfoField:
         logger.info("[STARTUP] 活体信息场: 已初始化（纯内存，不依赖外部数据库）")
 
     def _build_geo_terms_set(self) -> set:
-        """构建几何论术语集合（用于匹配计算）"""
+        """构建共扼谱几何术语集合（用于匹配计算）"""
         geo_terms = set()
         for term_list in TERM_SYNONYMS.values():
             geo_terms.update(term_list)
@@ -179,7 +191,7 @@ class LivingInfoField:
         """
         从输入文本的软模共振公式计算初始 eta。
         公式：eta_init = eta_bg + (eta_p2 - eta_bg) * sigmoid(term_density * k)
-        其中 term_density = 匹配到的几何论术语数 / 输入文本总词数
+        其中 term_density = 匹配到的共扼谱几何术语数 / 输入文本总词数
         k 是放大系数（约10），sigmoid 让映射平滑
         """
         gc = GEOMETRY_CONSTANTS
@@ -188,7 +200,7 @@ class LivingInfoField:
 
         geo_terms = self._build_geo_terms_set()
 
-        # 计算 term_density：匹配到的几何论术语数 / 输入文本总字符数（归一化）
+        # 计算 term_density：匹配到的共扼谱几何术语数 / 输入文本总字符数（归一化）
         # 中文没有空格分词，用字符数归一化
         total_chars = len(input_text) if input_text else 0
         if total_chars == 0:
@@ -304,10 +316,10 @@ class LivingInfoField:
             logger.info(f"[LIVING] 清理了 {len(stale_ids)} 个过期 session")
 
 
-# ==================== 几何论术语密度与论断提取 ====================
+# ==================== 共扼谱几何术语密度与论断提取 ====================
 
 def compute_geo_density(text: str) -> float:
-    """计算文本的几何论术语密度"""
+    """计算文本的共扼谱几何术语密度"""
     geo_terms = set()
     for term_list in TERM_SYNONYMS.values():
         geo_terms.update(term_list)
@@ -339,7 +351,7 @@ def extract_key_propositions(response_text: str) -> List[str]:
     propositions = []
     sentences = re.split(r'[。！？\n]', response_text)
     geo_terms = set()
-    # 收集所有几何论术语
+    # 收集所有共扼谱几何术语
     for term_list in TERM_SYNONYMS.values():
         geo_terms.update(term_list)
     # 也加入 GEOMETRY_KNOWLEDGE 中的关键术语
@@ -360,9 +372,9 @@ def extract_key_propositions(response_text: str) -> List[str]:
         sent = sent.strip()
         if len(sent) < 15:
             continue
-        # 计算这句话中几何论术语的密度
+        # 计算这句话中共扼谱几何术语的密度
         term_count = sum(1 for term in geo_terms if term in sent)
-        if term_count >= 2:  # 至少包含2个几何论术语
+        if term_count >= 2:  # 至少包含2个共扼谱几何术语
             propositions.append(sent)
 
     return propositions[:10]  # 最多提取10个论断
@@ -644,7 +656,7 @@ def update_eta_living(
     v9 改造：
     - history_queries 由外部传入（从 LivingInfoField 获取），不再调用 compute_history_context
     - delta_seconds 由外部传入（从 LivingInfoField 获取）
-    - geo_density 由外部传入（从回复的几何论术语密度计算），用于增强自指项
+    - geo_density 由外部传入（从回复的共扼谱几何术语密度计算），用于增强自指项
     """
     gc = GEOMETRY_CONSTANTS
 

@@ -1,6 +1,6 @@
 from __future__ import annotations
 """
-knowledge.py — 几何论AI调度中间层知识库模块
+knowledge.py — 共扼谱几何AI调度中间层知识库模块
 从 geometry_ai_server_v5_12.py 提取的嵌入函数、向量知识库和一致性评估。
 """
 
@@ -87,7 +87,7 @@ class BM25Searcher:
         if not self._jieba_loaded:
             try:
                 import jieba
-                # 添加几何论领域自定义词典
+                # 添加共扼谱几何领域自定义词典
                 _dict_path = os.path.join(os.path.dirname(__file__), 'jieba_dict.txt')
                 if os.path.exists(_dict_path):
                     jieba.load_userdict(_dict_path)
@@ -282,7 +282,7 @@ class LocalEmbeddingFunction:
 
 class VectorKnowledgeBase:
     """
-    使用 ChromaDB 向量数据库的几何论知识库。
+    使用 ChromaDB 向量数据库的共扼谱几何知识库。
     五个集合：
     - articles: 静态70篇文章知识（从文件目录构建）
     - learned: 动态学习的QA对（高质量对话自动存入）
@@ -365,15 +365,29 @@ class VectorKnowledgeBase:
         """
         检查集合的 embedding 维度是否与当前 embedding function 匹配。
         维度不匹配时一律删除重建（所有集合统一 1024 维），不再保留旧数据。
+
+        安全措施：
+        1. 检测 test embedding 是否为全零向量（API 失败的回退值），若是则跳过重建
+        2. 只有当两个维度都有效且确实不同时才重建
+        3. 重建时记录详细日志
         """
-        import chromadb
         try:
             existing = self.client.get_collection(collection_name)
             count = existing.count()
             if count == 0:
                 return existing
             test_emb = self.embedding_fn(["维度检测测试"])
-            current_dim = len(test_emb[0]) if test_emb else 0
+            if not test_emb or not test_emb[0]:
+                logger.warning(f"[VECTOR] 集合 '{collection_name}' 维度检测: embedding 返回空，跳过重建")
+                return None
+            current_dim = len(test_emb[0])
+            # 检测全零向量（API 失败回退），跳过重建避免误删
+            if isinstance(test_emb[0], list) and all(v == 0.0 for v in test_emb[0]):
+                logger.warning(
+                    f"[VECTOR] 集合 '{collection_name}' 维度检测: embedding 返回全零向量"
+                    f"（API 可能不可用），跳过重建以避免误删数据"
+                )
+                return None
             stored_dim = 0
             if count > 0:
                 try:
@@ -431,7 +445,7 @@ class VectorKnowledgeBase:
 
             # 定义所有集合
             collections_config = [
-                ("articles", "几何论70篇文章静态知识库"),
+                ("articles", "共扼谱几何70篇文章静态知识库"),
                 ("learned", "动态学习的QA对"),
                 ("corrections", "教学纠正记录"),
                 ("antipatterns", "反模式库"),
@@ -476,34 +490,98 @@ class VectorKnowledgeBase:
     def is_initialized(self) -> bool:
         return self._initialized
 
+    def _refresh_collection(self, attr_name: str) -> Any:
+        """
+        重新获取 collection 引用（当检测到陈旧引用时调用）。
+        当另一个进程（如 sync_chromadb.py）删除并重建集合后，
+        当前进程持有的 Collection 对象内部 UUID 会失效，
+        此方法通过集合名称重新获取有效引用。
+        """
+        col_name = attr_name.replace('_collection', '')
+        try:
+            col_kwargs = {}
+            if self.embedding_fn is not None:
+                col_kwargs["embedding_function"] = self.embedding_fn
+            fresh = self.client.get_or_create_collection(
+                name=col_name,
+                **col_kwargs
+            )
+            setattr(self, attr_name, fresh)
+            logger.info(f"[VECTOR] 集合 '{col_name}' 引用已刷新 (新UUID)")
+            return fresh
+        except Exception as e:
+            logger.error(f"[VECTOR] 刷新集合 '{col_name}' 失败: {e}")
+            return getattr(self, attr_name, None)
+
+    def _safe_collection_call(self, attr_name: str, method_name: str, *args, **kwargs):
+        """
+        安全执行 collection 操作，自动恢复陈旧引用。
+
+        当另一个进程（如 sync_chromadb.py）删除并重建集合时，
+        当前进程持有的 Collection 对象引用会失效，操作时会抛出
+        "Collection [UUID] does not exist" 错误。
+        此方法检测此类错误并自动刷新引用后重试一次。
+        """
+        collection = getattr(self, attr_name, None)
+        if collection is None:
+            return None
+        try:
+            return getattr(collection, method_name)(*args, **kwargs)
+        except Exception as e:
+            err_str = str(e).lower()
+            if "does not exist" in err_str or "not found" in err_str:
+                logger.warning(
+                    f"[VECTOR] 检测到陈旧集合引用 ({attr_name}.{method_name}): {e}，正在刷新..."
+                )
+                fresh = self._refresh_collection(attr_name)
+                if fresh is not None:
+                    logger.info(f"[VECTOR] 集合引用已刷新，重试操作 {attr_name}.{method_name}")
+                    return getattr(fresh, method_name)(*args, **kwargs)
+            raise
+
     @property
     def articles_count(self) -> int:
         if self.articles_collection:
-            self._articles_count = self.articles_collection.count()
+            try:
+                self._articles_count = self._safe_collection_call('articles_collection', 'count')
+            except Exception:
+                pass
         return self._articles_count
 
     @property
     def learned_count(self) -> int:
         if self.learned_collection:
-            self._learned_count = self.learned_collection.count()
+            try:
+                self._learned_count = self._safe_collection_call('learned_collection', 'count')
+            except Exception:
+                pass
         return self._learned_count
 
     @property
     def corrections_count(self) -> int:
         if self.corrections_collection:
-            self._corrections_count = self.corrections_collection.count()
+            try:
+                self._corrections_count = self._safe_collection_call('corrections_collection', 'count')
+            except Exception:
+                pass
         return self._corrections_count
 
     @property
     def antipatterns_count(self) -> int:
         if self.antipatterns_collection:
-            self._antipatterns_count = self.antipatterns_collection.count()
+            try:
+                self._antipatterns_count = self._safe_collection_call('antipatterns_collection', 'count')
+            except Exception:
+                pass
         return self._antipatterns_count
 
     @property
     def patches_count(self) -> int:
         if self.patches_collection:
-            self._patches_count = self.patches_collection.count()
+            try:
+                self._patches_count = self._safe_collection_call('patches_collection', 'count')
+            except Exception:
+                pass
         return self._patches_count
 
     @property
@@ -654,7 +732,7 @@ class VectorKnowledgeBase:
 
         self.articles_collection = self.client.get_or_create_collection(
             name="articles",
-            metadata={"description": "几何论70篇文章静态知识库"},
+            metadata={"description": "共扼谱几何70篇文章静态知识库"},
             embedding_function=self.embedding_fn
         )
 
@@ -664,7 +742,8 @@ class VectorKnowledgeBase:
             batch_docs = all_documents[batch_start:batch_start + batch_size]
             batch_meta = all_metadatas[batch_start:batch_start + batch_size]
             try:
-                self.articles_collection.add(
+                self._safe_collection_call(
+                    'articles_collection', 'add',
                     ids=batch_ids, documents=batch_docs, metadatas=batch_meta
                 )
                 success_chunks += len(batch_ids)
@@ -673,7 +752,7 @@ class VectorKnowledgeBase:
                 diag["errors"].append(f"批量插入失败 (批次{batch_start//batch_size+1}): {e}")
                 logger.error(f"[VECTOR] 批量插入失败 (批次{batch_start//batch_size+1}): {e}")
 
-        self._articles_count = self.articles_collection.count()
+        self._articles_count = self._safe_collection_call('articles_collection', 'count')
         diag["total_chunks"] = self._articles_count
         logger.info(
             f"[VECTOR] 索引完成: {diag['files_indexed']} 个文件, "
@@ -709,7 +788,7 @@ class VectorKnowledgeBase:
         if not os.path.exists(filepath):
             logger.info(f"[VECTOR] 文件不存在，清理旧索引: {fname}")
             try:
-                self.articles_collection.delete(where={"fname": fname})
+                self._safe_collection_call('articles_collection', 'delete', where={"fname": fname})
             except Exception:
                 pass
             return
@@ -725,9 +804,7 @@ class VectorKnowledgeBase:
 
         # 先删除该文件的旧索引
         try:
-            self.articles_collection.delete(
-                where={"fname": fname}
-            )
+            self._safe_collection_call('articles_collection', 'delete', where={"fname": fname})
         except Exception:
             pass
 
@@ -754,10 +831,9 @@ class VectorKnowledgeBase:
             })
 
         try:
-            self.articles_collection.add(
-                ids=ids, documents=documents, metadatas=metadatas
-            )
-            self._articles_count = self.articles_collection.count()
+            self._safe_collection_call('articles_collection', 'add',
+                ids=ids, documents=documents, metadatas=metadatas)
+            self._articles_count = self._safe_collection_call('articles_collection', 'count')
             logger.info(f"[VECTOR] 增量索引: {fname} ({len(chunks)} 块), 总计 {self._articles_count} 块")
 
             # 同步更新 BM25 倒排索引
@@ -777,7 +853,7 @@ class VectorKnowledgeBase:
         if not self.bm25_searcher._jieba_loaded:
             return
         try:
-            all_data = self.articles_collection.get(include=['documents'])
+            all_data = self._safe_collection_call('articles_collection', 'get', include=['documents'])
             bm25_chunks = []
             for i, cid in enumerate(all_data['ids']):
                 bm25_chunks.append({
@@ -891,7 +967,8 @@ class VectorKnowledgeBase:
         try:
             n_articles = min(top_k * 2, self.articles_count) if self.articles_count > 0 else 0
             if n_articles > 0:
-                art_results = self.articles_collection.query(
+                art_results = self._safe_collection_call(
+                    'articles_collection', 'query',
                     query_texts=[query],
                     n_results=n_articles
                 )
@@ -913,7 +990,8 @@ class VectorKnowledgeBase:
                     if eq == query:
                         continue
                     try:
-                        eq_results = self.articles_collection.query(
+                        eq_results = self._safe_collection_call(
+                            'articles_collection', 'query',
                             query_texts=[eq], n_results=min(5, n_articles)
                         )
                         if eq_results and eq_results['documents']:
@@ -963,7 +1041,7 @@ class VectorKnowledgeBase:
                     # 从 ChromaDB 获取 BM25 命中的 chunk 文本和 metadata
                     bm25_ids = [cid for cid, _ in bm25_hits if cid not in existing_chunk_ids]
                     if bm25_ids:
-                        chroma_data = self.articles_collection.get(ids=bm25_ids, include=['documents', 'metadatas'])
+                        chroma_data = self._safe_collection_call('articles_collection', 'get', ids=bm25_ids, include=['documents', 'metadatas'])
                         for i, cid in enumerate(chroma_data['ids']):
                             meta = chroma_data['metadatas'][i] if chroma_data['metadatas'] else {}
                             doc = chroma_data['documents'][i] if chroma_data['documents'] else ''
@@ -1022,7 +1100,8 @@ class VectorKnowledgeBase:
         if target_id and self.articles_collection and self.articles_count > 0:
             try:
                 # 按 article_id 模糊匹配（ChromaDB $contains 操作符）
-                match_results = self.articles_collection.get(
+                match_results = self._safe_collection_call(
+                    'articles_collection', 'get',
                     where={"article_id": {"$contains": target_id}}
                 )
                 if match_results and match_results['documents']:
@@ -1052,7 +1131,8 @@ class VectorKnowledgeBase:
         try:
             n_learned = min(top_k // 3, self.learned_count) if self.learned_count > 0 else 0
             if n_learned > 0 and 'learned' not in self._dim_stale_collections:
-                learned_results = self.learned_collection.query(
+                learned_results = self._safe_collection_call(
+                    'learned_collection', 'query',
                     query_texts=[query],
                     n_results=n_learned
                 )
@@ -1074,9 +1154,10 @@ class VectorKnowledgeBase:
         if include_personal:
             try:
                 if hasattr(self, 'personal_collection') and self.personal_collection:
-                    n_personal = min(top_k // 2, self.personal_collection.count())
+                    n_personal = min(top_k // 2, self._safe_collection_call('personal_collection', 'count'))
                     if n_personal > 0:
-                        personal_results = self.personal_collection.query(
+                        personal_results = self._safe_collection_call(
+                            'personal_collection', 'query',
                             query_texts=[query],
                             n_results=n_personal
                         )
@@ -1106,11 +1187,12 @@ class VectorKnowledgeBase:
         if not self._initialized or not self.master_truth_collection:
             return []
         try:
-            count = self.master_truth_collection.count()
+            count = self._safe_collection_call('master_truth_collection', 'count')
             if count == 0:
                 return []
             n = min(top_k, count)
-            results = self.master_truth_collection.query(
+            results = self._safe_collection_call(
+                'master_truth_collection', 'query',
                 query_texts=[query],
                 n_results=n
             )
@@ -1136,7 +1218,7 @@ class VectorKnowledgeBase:
         if not self._initialized or not self.master_truth_collection:
             return 0
         try:
-            return self.master_truth_collection.count()
+            return self._safe_collection_call('master_truth_collection', 'count')
         except Exception:
             return 0
 
@@ -1153,7 +1235,8 @@ class VectorKnowledgeBase:
             n = min(top_k, self.corrections_count) if self.corrections_count > 0 else 0
             if n == 0:
                 return []
-            results = self.corrections_collection.query(
+            results = self._safe_collection_call(
+                'corrections_collection', 'query',
                 query_texts=[query],
                 n_results=n
             )
@@ -1184,7 +1267,8 @@ class VectorKnowledgeBase:
             n = min(top_k, self.antipatterns_count) if self.antipatterns_count > 0 else 0
             if n == 0:
                 return []
-            results = self.antipatterns_collection.query(
+            results = self._safe_collection_call(
+                'antipatterns_collection', 'query',
                 query_texts=[query],
                 n_results=n
             )
@@ -1211,13 +1295,14 @@ class VectorKnowledgeBase:
         if not self._initialized:
             return 0
         updated = 0
-        for coll_name, coll in [
-            ('articles', self.collection),
+        for coll_name, attr_name in [
+            ('articles', 'articles_collection'),
         ]:
+            coll = getattr(self, attr_name, None)
             if not coll or coll_name in self._dim_stale_collections:
                 continue
             try:
-                all_data = coll.get(include=['metadatas'])
+                all_data = self._safe_collection_call(attr_name, 'get', include=['metadatas'])
                 ids_to_update = []
                 metas_to_update = []
                 docs_to_update = []
@@ -1229,7 +1314,8 @@ class VectorKnowledgeBase:
                             metas_to_update.append(meta)
                             docs_to_update.append(all_data['documents'][i])
                 if ids_to_update:
-                    coll.update(
+                    self._safe_collection_call(
+                        attr_name, 'update',
                         ids=ids_to_update,
                         metadatas=metas_to_update,
                         documents=docs_to_update,
@@ -1252,7 +1338,8 @@ class VectorKnowledgeBase:
             n = min(top_k, self.patches_count) if self.patches_count > 0 else 0
             if n == 0:
                 return []
-            results = self.patches_collection.query(
+            results = self._safe_collection_call(
+                'patches_collection', 'query',
                 query_texts=[query],
                 n_results=n
             )
@@ -1317,7 +1404,8 @@ class VectorKnowledgeBase:
         doc_id = f"learned_{hashlib.md5(doc.encode()).hexdigest()[:16]}_{int(time.time())}"
 
         try:
-            self.learned_collection.add(
+            self._safe_collection_call(
+                'learned_collection', 'add',
                 ids=[doc_id],
                 documents=[doc],
                 metadatas=[{
@@ -1332,7 +1420,7 @@ class VectorKnowledgeBase:
                     "end": len(doc)
                 }]
             )
-            self._learned_count = self.learned_collection.count()
+            self._learned_count = self._safe_collection_call('learned_collection', 'count')
             logger.info(
                 f"[VECTOR-LEARN] 存入学习库 | score={score:.3f} | "
                 f"learned总数={self._learned_count}"
@@ -1354,7 +1442,8 @@ class VectorKnowledgeBase:
         doc_id = f"prop_{hashlib.md5(proposition.encode()).hexdigest()[:16]}_{int(time.time())}"
 
         try:
-            self.learned_collection.add(
+            self._safe_collection_call(
+                'learned_collection', 'add',
                 ids=[doc_id],
                 documents=[proposition],
                 metadatas=[{
@@ -1369,7 +1458,7 @@ class VectorKnowledgeBase:
                     "end": len(proposition)
                 }]
             )
-            self._learned_count = self.learned_collection.count()
+            self._learned_count = self._safe_collection_call('learned_collection', 'count')
             logger.info(
                 f"[VECTOR-LEARN] 存入论断 | score={score:.3f} | "
                 f"learned总数={self._learned_count}"
@@ -1412,8 +1501,8 @@ class VectorKnowledgeBase:
             })
 
         try:
-            self.learned_collection.add(ids=ids, documents=docs, metadatas=metas)
-            self._learned_count = self.learned_collection.count()
+            self._safe_collection_call('learned_collection', 'add', ids=ids, documents=docs, metadatas=metas)
+            self._learned_count = self._safe_collection_call('learned_collection', 'count')
             logger.info(
                 f"[VECTOR-LEARN] 批量存入 {len(valid_props)} 个论断 | "
                 f"score={score:.3f} | learned总数={self._learned_count}"
@@ -1470,7 +1559,8 @@ class VectorKnowledgeBase:
         now = datetime.now().isoformat()
 
         try:
-            self.corrections_collection.add(
+            self._safe_collection_call(
+                'corrections_collection', 'add',
                 ids=[doc_id],
                 documents=[doc],
                 metadatas=[{
@@ -1485,7 +1575,7 @@ class VectorKnowledgeBase:
                     "article_id": article_id[:100] if article_id else "",
                 }]
             )
-            self._corrections_count = self.corrections_collection.count()
+            self._corrections_count = self._safe_collection_call('corrections_collection', 'count')
             logger.info(
                 f"[TEACH-CORRECT] 纠正已存入 | corrections总数={self._corrections_count}"
             )
@@ -1532,7 +1622,8 @@ class VectorKnowledgeBase:
 
         try:
             # 查找该 article_id 下的所有 chunk
-            existing = self.articles_collection.get(
+            existing = self._safe_collection_call(
+                'articles_collection', 'get',
                 where={"article_id": article_id},
                 include=["documents", "metadatas"]
             )
@@ -1589,11 +1680,12 @@ class VectorKnowledgeBase:
                 batch_ids = update_ids[batch_start:batch_start + 500]
                 batch_docs = update_docs[batch_start:batch_start + 500]
                 batch_metas = update_metas[batch_start:batch_start + 500]
-                self.articles_collection.update(
+                self._safe_collection_call(
+                    'articles_collection', 'update',
                     ids=batch_ids, documents=batch_docs, metadatas=batch_metas
                 )
 
-            self._articles_count = self.articles_collection.count()
+            self._articles_count = self._safe_collection_call('articles_collection', 'count')
 
             # 记录 patch 日志
             self.add_patch(
@@ -1644,11 +1736,12 @@ class VectorKnowledgeBase:
         try:
             # 如果已有同 correction_id 的快照，先删除
             try:
-                self.patches_collection.delete(ids=[snapshot_id])
+                self._safe_collection_call('patches_collection', 'delete', ids=[snapshot_id])
             except Exception:
                 pass
 
-            self.patches_collection.add(
+            self._safe_collection_call(
+                'patches_collection', 'add',
                 ids=[snapshot_id],
                 documents=[snapshot_doc],
                 metadatas=[{
@@ -1662,7 +1755,7 @@ class VectorKnowledgeBase:
                     "created_at": now,
                 }]
             )
-            self._patches_count = self.patches_collection.count()
+            self._patches_count = self._safe_collection_call('patches_collection', 'count')
             logger.info(
                 f"[ROLLBACK-SNAPSHOT] 快照已保存 | correction_id={correction_id} | "
                 f"chunks={len(chunks)}"
@@ -1683,7 +1776,8 @@ class VectorKnowledgeBase:
         try:
             # 从 patches 取出快照
             snapshot_id = f"rollback_{correction_id}"
-            snapshot = self.patches_collection.get(
+            snapshot = self._safe_collection_call(
+                'patches_collection', 'get',
                 ids=[snapshot_id],
                 include=["documents", "metadatas"]
             )
@@ -1739,19 +1833,21 @@ class VectorKnowledgeBase:
                 batch_ids = restore_ids[batch_start:batch_start + 500]
                 batch_docs = restore_docs[batch_start:batch_start + 500]
                 batch_metas = restore_metas[batch_start:batch_start + 500]
-                self.articles_collection.update(
+                self._safe_collection_call(
+                    'articles_collection', 'update',
                     ids=batch_ids, documents=batch_docs, metadatas=batch_metas
                 )
 
-            self._articles_count = self.articles_collection.count()
+            self._articles_count = self._safe_collection_call('articles_collection', 'count')
 
             # 删除快照（已消费）
-            self.patches_collection.delete(ids=[snapshot_id])
-            self._patches_count = self.patches_collection.count()
+            self._safe_collection_call('patches_collection', 'delete', ids=[snapshot_id])
+            self._patches_count = self._safe_collection_call('patches_collection', 'count')
 
             # 从 corrections 集合中标记为已回滚
             try:
-                corr_record = self.corrections_collection.get(
+                corr_record = self._safe_collection_call(
+                    'corrections_collection', 'get',
                     ids=[correction_id],
                     include=["documents", "metadatas"]
                 )
@@ -1759,7 +1855,8 @@ class VectorKnowledgeBase:
                     corr_meta = corr_record['metadatas'][0]
                     corr_meta["rolled_back"] = "true"
                     corr_meta["rolled_back_at"] = datetime.now().isoformat()
-                    self.corrections_collection.update(
+                    self._safe_collection_call(
+                        'corrections_collection', 'update',
                         ids=[correction_id],
                         metadatas=[corr_meta]
                     )
@@ -1798,7 +1895,7 @@ class VectorKnowledgeBase:
             return result
 
         try:
-            all_corrections = self.corrections_collection.get(include=["documents", "metadatas"])
+            all_corrections = self._safe_collection_call('corrections_collection', 'get', include=["documents", "metadatas"])
             if not all_corrections or not all_corrections['ids']:
                 return result
 
@@ -1854,7 +1951,8 @@ class VectorKnowledgeBase:
         now = datetime.now().isoformat()
 
         try:
-            self.antipatterns_collection.add(
+            self._safe_collection_call(
+                'antipatterns_collection', 'add',
                 ids=[doc_id],
                 documents=[pattern],
                 metadatas=[{
@@ -1865,7 +1963,7 @@ class VectorKnowledgeBase:
                     "created_at": now,
                 }]
             )
-            self._antipatterns_count = self.antipatterns_collection.count()
+            self._antipatterns_count = self._safe_collection_call('antipatterns_collection', 'count')
             logger.info(
                 f"[TEACH-ANTIPATTERN] 反模式已存入 | severity={severity} | "
                 f"antipatterns总数={self._antipatterns_count}"
@@ -1889,7 +1987,8 @@ class VectorKnowledgeBase:
         now = datetime.now().isoformat()
 
         try:
-            self.patches_collection.add(
+            self._safe_collection_call(
+                'patches_collection', 'add',
                 ids=[doc_id],
                 documents=[doc],
                 metadatas=[{
@@ -1901,7 +2000,7 @@ class VectorKnowledgeBase:
                     "created_at": now,
                 }]
             )
-            self._patches_count = self.patches_collection.count()
+            self._patches_count = self._safe_collection_call('patches_collection', 'count')
             logger.info(
                 f"[TEACH-PATCH] 知识补丁已存入 | topic={topic[:50]} | "
                 f"patches总数={self._patches_count}"
@@ -1923,7 +2022,8 @@ class VectorKnowledgeBase:
             if count == 0:
                 return []
             n = min(count, 100)  # 最多获取100条，然后排序取 top N
-            results = self.corrections_collection.get(
+            results = self._safe_collection_call(
+                'corrections_collection', 'get',
                 include=["documents", "metadatas"]
             )
             corrections = []
@@ -1958,7 +2058,8 @@ class VectorKnowledgeBase:
             count = self.antipatterns_count
             if count == 0:
                 return []
-            results = self.antipatterns_collection.get(
+            results = self._safe_collection_call(
+                'antipatterns_collection', 'get',
                 include=["documents", "metadatas"]
             )
             patterns = []
@@ -1984,7 +2085,8 @@ class VectorKnowledgeBase:
             count = self.patches_count
             if count == 0:
                 return []
-            results = self.patches_collection.get(
+            results = self._safe_collection_call(
+                'patches_collection', 'get',
                 include=["documents", "metadatas"]
             )
             patches_list = []
@@ -2010,7 +2112,8 @@ class VectorKnowledgeBase:
             return False
         try:
             # 获取原记录
-            old = self.corrections_collection.get(
+            old = self._safe_collection_call(
+                'corrections_collection', 'get',
                 ids=[doc_id],
                 include=["documents", "metadatas"]
             )
@@ -2023,9 +2126,10 @@ class VectorKnowledgeBase:
             new_meta['trust_level'] = round(min(new_trust, 1.0), 2)
             new_meta['applied_count'] = new_applied_count
             # 删除旧记录
-            self.corrections_collection.delete(ids=[doc_id])
+            self._safe_collection_call('corrections_collection', 'delete', ids=[doc_id])
             # 插入新记录
-            self.corrections_collection.add(
+            self._safe_collection_call(
+                'corrections_collection', 'add',
                 ids=[doc_id],
                 documents=[old_doc],
                 metadatas=[new_meta]
@@ -2048,7 +2152,8 @@ class VectorKnowledgeBase:
         # 获取纠正记录
         try:
             if self._initialized and self.corrections_collection and self.corrections_count > 0:
-                corr_results = self.corrections_collection.get(
+                corr_results = self._safe_collection_call(
+                    'corrections_collection', 'get',
                     include=["documents", "metadatas"]
                 )
                 if corr_results and corr_results['documents']:
@@ -2066,7 +2171,8 @@ class VectorKnowledgeBase:
         # 获取反模式记录
         try:
             if self._initialized and self.antipatterns_collection and self.antipatterns_count > 0:
-                anti_results = self.antipatterns_collection.get(
+                anti_results = self._safe_collection_call(
+                    'antipatterns_collection', 'get',
                     include=["documents", "metadatas"]
                 )
                 if anti_results and anti_results['documents']:
@@ -2084,7 +2190,8 @@ class VectorKnowledgeBase:
         # 获取知识补丁记录
         try:
             if self._initialized and self.patches_collection and self.patches_count > 0:
-                patch_results = self.patches_collection.get(
+                patch_results = self._safe_collection_call(
+                    'patches_collection', 'get',
                     include=["documents", "metadatas"]
                 )
                 if patch_results and patch_results['documents']:
@@ -2131,7 +2238,8 @@ class VectorKnowledgeBase:
         # 统计纠正的信任等级分布
         try:
             if self._initialized and self.corrections_collection and self.corrections_count > 0:
-                corr_results = self.corrections_collection.get(
+                corr_results = self._safe_collection_call(
+                    'corrections_collection', 'get',
                     include=["metadatas"]
                 )
                 if corr_results and corr_results['metadatas']:
@@ -2146,7 +2254,8 @@ class VectorKnowledgeBase:
         # 统计反模式严重度分布
         try:
             if self._initialized and self.antipatterns_collection and self.antipatterns_count > 0:
-                anti_results = self.antipatterns_collection.get(
+                anti_results = self._safe_collection_call(
+                    'antipatterns_collection', 'get',
                     include=["metadatas"]
                 )
                 if anti_results and anti_results['metadatas']:
@@ -2266,7 +2375,7 @@ class VectorKnowledgeBase:
 
 def estimate_coherence(response_text: str) -> float:
     """
-    评估回复的几何论一致性得分。
+    评估回复的共扼谱几何一致性得分。
     依赖 GEOMETRY_CONSTANTS、TERM_SYNONYMS、SYNONYM_EXPAND（从 config 导入）。
     """
     if not response_text:

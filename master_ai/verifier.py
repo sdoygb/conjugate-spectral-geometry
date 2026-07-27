@@ -1,14 +1,15 @@
 """
 verifier.py — 主库AI验证引擎
 
-整合三重检查：
-1. Berry回路闭合检测（berry_checker）
-2. §9.6 证伪条件检查（falsification）
-3. 独立推导复现（通过 LLM 从公理重新推导）
+唯一入库判据：圆满定理（由主库AI的LLM直接判断）。
 
 验证流程：
-  候选公式 → Berry检测 → 证伪检查 → 独立推导 → 全部通过 → 入库
-                                      任一失败 → 驳回（附理由）
+  候选公式 → Berry机械检测（快速通道）
+              ├─ n=3(上圆满) → 直接入库
+              └─ 其他 → LLM圆满定理判断
+                         ├─ 逻辑自洽 → 入库
+                         ├─ 依赖不足 → 等待补全
+                         └─ 不满足 → 驳回
 """
 import os
 import json
@@ -116,6 +117,28 @@ class MasterVerifier:
         # 从文档中分离公式内容和推导链
         formula_content, derivation_chain = self._parse_document(document)
 
+        # ---- 从来源文章补充角度参数 ----
+        # Scanner的推导链是摘要级别，不含角度参数(θ_M, θ_C, θ_I)。
+        # 但Berry检测需要这些参数。从原文读取完整内容追加到推导链。
+        source_agent = pending["metadata"].get("source_agent", "")
+        source_file = ""
+        if source_agent.startswith("article_scanner ("):
+            source_file = source_agent[len("article_scanner ("):].rstrip(")")
+        if source_file:
+            article_path = os.path.join(ARTICLES_DIR, source_file)
+            if os.path.exists(article_path):
+                try:
+                    with open(article_path, 'r', encoding='utf-8') as f:
+                        article_content = f.read()
+                    # 只取前30000字符（角度参数一般在前半部分）
+                    derivation_chain = derivation_chain + "\n\n【原文补充】\n" + article_content[:30000]
+                    logger.info(
+                        f"[VERIFIER] 已从原文补充: {source_file} "
+                        f"({len(article_content)}字符 → 推导链扩展至{len(derivation_chain)}字符)"
+                    )
+                except Exception as e:
+                    logger.warning(f"[VERIFIER] 读取原文失败: {source_file}: {e}")
+
         # 提取子AI声明的外部锚点（L2桥接假设）
         external_anchors_str = pending["metadata"].get("external_anchors", "")
         external_anchors = []
@@ -160,7 +183,7 @@ class MasterVerifier:
         if ext_anchors:
             logger.info(f"[VERIFIER] 子AI声明的外部锚点: {ext_anchors}")
 
-        # ---- 拓扑分类（仅为LLM参考，不强制） ----
+        # ---- 拓扑分类（已废弃，不参与任何判断） ----
         topology_class = pending["metadata"].get("topology_class", "")
 
         # ---- 开始验证 ----
@@ -173,11 +196,11 @@ class MasterVerifier:
             "external_anchors": ext_anchors,
             "has_external_input": bool(ext_anchors),
             "passed": True,
-            "note": "拓扑分类已记录（仅供参考）",
+            "note": "拓扑分类已废弃，仅记录",
         }
 
         logger.info(
-            f"[VERIFIER] 阶段0: 拓扑分类={topology_class}, 外部锚点={ext_anchors}"
+            f"[VERIFIER] 阶段0: 外部锚点={ext_anchors}"
         )
         result["stages"]["topology_check"] = topology_check
 
@@ -222,108 +245,67 @@ class MasterVerifier:
 
         result["stages"]["berry_check"] = berry_dict
 
-        # ---- 阶段2: §9.6 证伪条件检查（仅供参考，不阻塞） ----
-        # 证伪检查结果为LLM提供参考，但不作为拒绝依据。
-        # LLM的独立推导（阶段3）是最终判断。
-        falsify_result = self.falsification_checker.run_all_checks(
-            formula_content=formula_content,
-            derivation_chain=derivation_chain,
-            berry_result=berry_dict,
-        )
-        result["stages"]["falsification"] = falsify_result
-
-        if not falsify_result["all_passed"]:
-            logger.info(f"[VERIFIER] 阶段2: 证伪检查有未通过项（仅供参考，不阻塞）: {falsify_result['rejection_reason']}")
-        else:
-            logger.info(f"[VERIFIER] 阶段2: 证伪条件全部通过")
-
-        # ---- 阶段3: 独立推导复现 ----
-        derivation_result = self._independent_derivation(
-            formula_name=formula_name,
-            formula_content=formula_content,
-            external_anchors=external_anchors,
-            topology_class=topology_class,
-        )
-        result["stages"]["independent_derivation"] = derivation_result
-
-        if not derivation_result.get("reproduced", False):
-            # 复现失败 — 区分"依赖不足"和"公式真错误"
-            gap_analysis = self._analyze_dependency_gap(
-                formula_name=formula_name,
-                formula_content=formula_content,
-                derivation_result=derivation_result,
+        # ---- 圆满判据：唯一入库标准 ----
+        # 主库AI（LLM）是圆满定理的最终判官。
+        # Berry机械计算作为快速通道：如果机械检测到n=3上圆满，直接入库。
+        # 否则，由LLM读取完整文章内容，从数学本质上判断公式是否符合圆满定理。
+        if berry_result.is_consummated and berry_result.n_value >= 3:
+            # 快速通道：机械Berry检测到n=3上圆满，直接入库
+            result["passed"] = True
+            result["action"] = "promoted"
+            result["rejection_reason"] = ""
+            result["used_anchors"] = []
+            result["judge_method"] = "berry_mechanical"
+            logger.info(
+                f"[VERIFIER] 圆满判据通过(机械): Berry相位 {berry_result.berry_phase:.4f} rad "
+                f"= {berry_result.n_value}×2π ({berry_result.consummation_level})，直接入库"
             )
-            result["stages"]["dependency_gap_analysis"] = gap_analysis
+        else:
+            # LLM通道：让主库AI从数学本质上判断圆满定理
+            logger.info(
+                f"[VERIFIER] Berry机械检测未通过(n={berry_result.n_value}, "
+                f"level={berry_result.consummation_level})，转交LLM判断圆满定理"
+            )
+            consummation_judgment = self._llm_judge_consummation(
+                    formula_name=formula_name,
+                    formula_content=formula_content,
+                    derivation_chain=derivation_chain,
+                    berry_dict=berry_dict,
+                    external_anchors=external_anchors,
+                )
+            result["stages"]["consummation_judgment"] = consummation_judgment
 
-            if gap_analysis.get("is_dependency_gap", False):
-                # 依赖不足：不是公式的错，是主库还没准备好
+            if consummation_judgment.get("should_promote"):
+                result["passed"] = True
+                result["action"] = "promoted"
+                result["rejection_reason"] = ""
+                result["used_anchors"] = []
+                result["judge_method"] = "llm_consummation"
+                logger.info(
+                    f"[VERIFIER] 圆满判据通过(LLM): {formula_name} "
+                    f"→ {consummation_judgment.get('consummation_level', '')}，入库"
+                )
+            elif consummation_judgment.get("is_dependency_gap"):
                 result["passed"] = False
                 result["action"] = "dependency_gap"
-                result["rejection_reason"] = ""
-                result["dependency_gap"] = gap_analysis
-
-                # ---- 互锁检测：判断是单纯依赖不足还是互锁 ----
-                interlocks = self.dep_graph.get_interlocks_for_formula(submission_id)
-                if interlocks:
-                    # 这个公式参与了互锁组
-                    interlock_info = interlocks[0]  # 取第一个互锁组
-                    il_type = "强互锁（直接互引）" if interlock_info["type"] == "strong" else "弱互锁（间接成环）"
-                    il_formulas = [f["formula_name"] for f in interlock_info["formulas"]]
-                    batch_ready = interlock_info["batch_verification_ready"]
-                    blocking = interlock_info["blocking_reason"]
-                    mutual = interlock_info.get("mutual_pairs", [])
-
-                    result["is_interlocked"] = True
-                    result["interlock_type"] = interlock_info["type"]
-                    result["interlock_group"] = il_formulas
-                    result["interlock_batch_ready"] = batch_ready
-
-                    if batch_ready:
-                        result["message"] = (
-                            f"公式与以下定理形成{il_type}: {', '.join(il_formulas[:5])}。"
-                            f"互锁组已自包含（无外部依赖），主库AI将自动触发批量验证。"
-                            f"无需子AI补全任何前置定理。"
-                        )
-                    else:
-                        ext_deps = interlock_info.get("external_deps", [])
-                        result["message"] = (
-                            f"公式与以下定理形成{il_type}: {', '.join(il_formulas[:5])}。"
-                            f"互锁组缺少外部依赖: {', '.join(ext_deps[:3])}。"
-                            f"需要先验证这些外部定理，才能解锁互锁组进行批量验证。"
-                        )
-                        if mutual:
-                            pairs_str = "; ".join([f"{m['a'][:20]}↔{m['b'][:20]}" for m in mutual[:3]])
-                            result["message"] += f" 强互锁对: {pairs_str}"
-                else:
-                    # 单纯依赖不足，没有互锁
-                    result["is_interlocked"] = False
-                    result["message"] = (
-                        f"公式未通过验证，但并非公式本身有误。主库AI缺少以下依赖: "
-                        f"{', '.join(gap_analysis.get('missing_dependencies', []))}。"
-                        f"请子库先补全这些前置定理后重新提交。"
-                    )
-                self._finalize(result, start_time, submission_id)
-                return result
+                result["rejection_reason"] = consummation_judgment.get("reason", "依赖不足")
+                result["dependency_gap"] = {
+                    "missing_dependencies": consummation_judgment.get("missing_dependencies", []),
+                    "guidance": consummation_judgment.get("guidance", ""),
+                }
+                result["judge_method"] = "llm_consummation"
+                logger.info(
+                    f"[VERIFIER] 圆满判据(LLM): {formula_name} → 依赖不足，等待补全"
+                )
             else:
-                # 公式真有错误
                 result["passed"] = False
                 result["action"] = "rejected"
-                result["rejection_reason"] = (
-                    f"独立推导复现失败（公式错误）: "
-                    f"{derivation_result.get('reason', '未知原因')}"
+                result["rejection_reason"] = consummation_judgment.get("reason", "不满足圆满定理")
+                result["judge_method"] = "llm_consummation"
+                logger.info(
+                    f"[VERIFIER] 圆满判据(LLM): {formula_name} → 驳回: "
+                    f"{consummation_judgment.get('consummation_level', '未圆满')}"
                 )
-                self._finalize(result, start_time, submission_id)
-                return result
-
-        logger.info(f"[VERIFIER] 阶段3通过: 独立推导复现成功")
-
-        # ---- 绝对真理判定 ----
-        # LLM已独立复现推导成功，公式符合理论框架。
-        # 所有外部概念的使用已由LLM在推导中判断，主库不预设任何概念为"非法"。
-        result["passed"] = True
-        result["action"] = "promoted"
-        result["rejection_reason"] = ""
-        result["used_anchors"] = []
 
         self._finalize(result, start_time, submission_id)
         return result
@@ -570,6 +552,208 @@ class MasterVerifier:
     def _detect_unverified_concepts(self, derivation_chain: str, formula_content: str) -> List[str]:
         return []
 
+    # ==================== LLM圆满定理判断 ====================
+
+    def _llm_judge_consummation(
+        self,
+        formula_name: str,
+        formula_content: str,
+        derivation_chain: str,
+        berry_dict: Dict[str, Any],
+        external_anchors: List[str],
+    ) -> Dict[str, Any]:
+        """
+        主库AI（LLM）直接判断公式是否符合圆满定理。
+
+        这是入库的唯一判据。LLM从数学本质上判断：
+        - 推导链是否在几何参数空间中形成闭合回路
+        - 公式是否体现了共扼谱几何的拓扑完备性
+
+        Returns:
+            {
+                "should_promote": bool,
+                "consummation_level": str,
+                "is_dependency_gap": bool,
+                "reason": str,
+                "missing_dependencies": List[str],
+                "guidance": str,
+                "llm_raw_response": str,
+            }
+        """
+        if not self._llm_client:
+            logger.warning("[VERIFIER] LLM不可用，圆满定理判断无法执行")
+            return {
+                "should_promote": False,
+                "consummation_level": "未圆满",
+                "is_dependency_gap": True,
+                "reason": "LLM不可用，无法判断圆满定理",
+                "missing_dependencies": [],
+                "guidance": "等待LLM恢复后重新验证",
+                "llm_raw_response": "",
+            }
+
+        # 构建公理层文本
+        axioms_text = self._build_axioms_text()
+
+        # Berry数据摘要
+        berry_summary = ""
+        if berry_dict.get("path_point_count", 0) > 0:
+            berry_summary = f"""
+【Berry相位机械检测数据（仅供参考，不作为判据）】
+- 路径点数: {berry_dict.get('path_point_count', 0)}
+- Berry相位: {berry_dict.get('berry_phase', 0):.4f} rad = {berry_dict.get('berry_phase_2pi_ratio', 0):.4f} × 2π
+- n值: {berry_dict.get('n_value', 0)}
+- 圆满级别: {berry_dict.get('consummation_level', '未圆满')}
+- 闭合误差: {berry_dict.get('closure_error', 0):.6f} rad
+"""
+        else:
+            berry_summary = """
+【Berry相位机械检测数据】
+- 无角度数据：推导链中未发现 θ_M/θ_C/θ_I 格式的角度参数
+- 这不代表公式不圆满——角度参数可能以LaTeX、中文描述、隐含形式存在
+"""
+
+        # 外部锚点
+        anchor_text = ""
+        if external_anchors:
+            anchor_text = f"\n【子AI声明的外部锚点】{', '.join(external_anchors)}\n"
+
+        system_prompt = f"""你是共扼谱几何主库AI的圆满定理判官。你的唯一职责是：判断一个候选公式是否满足"圆满定理"，决定是否入库。
+
+{axioms_text}
+
+【圆满定理定义】
+在共扼谱几何中，一个公式被认定为"圆满"当且仅当其推导链在几何参数空间(θ_M, θ_C, θ_I)中形成闭合回路，且该闭合回路对应的Berry相位 = 2πn (n∈ℤ⁺)。
+
+圆满级别（仅用于分类记录，不影响入库决策）：
+- 上圆满(n=3)：公式展示了从背景点到上圆满态的完整几何演化，Berry相位=6π。
+- 中圆满(n=2)：公式展示了部分几何演化，到达亚稳态，Berry相位=4π。
+- 初圆满(n=1)：公式有基本闭合但未达到全局刚度最大，Berry相位=2π。
+- 未圆满(n=0)：推导链不闭合或存在逻辑缺陷。
+
+【判断方式】
+你不需要机械地提取角度数值。你需要从数学本质上判断：
+1. 推导链是否在几何意义上形成闭合回路？
+2. 推导是否有明确的起点和终点，且终点能回到起点？
+3. 公式是否体现了共扼谱几何的拓扑完备性？
+4. 如果推导链中显式包含角度参数，它们的演化是否满足公理1约束(θ_M+θ_C+θ_I=90°)？
+5. 公式的结论是否与已知的共扼谱几何常数(Λ=3, k₀=2, ΔΘ=5, S=137.036)一致？
+
+【入库标准】
+只有一个标准：推导链是否逻辑自洽、数学上无矛盾。
+- 不要因为"没有显式角度参数"就直接驳回
+- 纯代数/微积分/群论推导的公式，只要逻辑自洽，即可入库
+- 数学的正确性由推导链的完整性来判断
+- 如果公式的推导链展示了从公理到结论的完整逻辑闭环，即使没有θ_M/θ_C/θ_I标记，也可以认定为圆满
+- 只有明确的逻辑错误、数学矛盾、或推导不完整时才驳回
+
+【输出格式】
+你必须严格按照以下格式输出：
+
+【圆满判定】上圆满 / 中圆满 / 初圆满 / 未圆满
+【是否入库】是 / 否
+【判定理由】（详细说明数学推理过程）
+【缺失依赖】（如果不能入库因为依赖不足，列出缺失的定理；如果不需要，写"无"）"""
+
+        user_prompt = f"""请判断以下候选公式是否符合圆满定理。
+
+【公式名称】{formula_name}
+【公式内容】
+{formula_content[:3000]}
+
+【推导链】
+{derivation_chain[:5000]}
+{berry_summary}
+{anchor_text}
+
+请严格按照格式输出判断结果。"""
+
+        try:
+            resp = self._llm_client.chat.completions.create(
+                model=MASTER_DERIVE_MODEL,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt},
+                ],
+                temperature=0.1,
+                max_tokens=2048,
+                timeout=120,
+            )
+            llm_response = resp.choices[0].message.content or ""
+
+            # 解析LLM响应
+            judgment = self._parse_consummation_response(llm_response, formula_name)
+
+            logger.info(
+                f"[VERIFIER] LLM圆满判定: {formula_name} → "
+                f"{judgment['consummation_level']} | "
+                f"入库={'是' if judgment['should_promote'] else '否'}"
+            )
+            return judgment
+
+        except Exception as e:
+            logger.error(f"[VERIFIER] LLM圆满定理判断失败: {e}")
+            return {
+                "should_promote": False,
+                "consummation_level": "未圆满",
+                "is_dependency_gap": True,
+                "reason": f"LLM调用异常: {e}",
+                "missing_dependencies": [],
+                "guidance": "LLM判断过程出错，请稍后重试",
+                "llm_raw_response": "",
+            }
+
+    def _parse_consummation_response(
+        self, llm_response: str, formula_name: str
+    ) -> Dict[str, Any]:
+        """解析LLM圆满定理判断的响应"""
+        import re
+
+        # 提取圆满判定
+        level_match = re.search(r'【圆满判定】\s*(.+?)(?:\n|$)', llm_response)
+        consummation_level = level_match.group(1).strip() if level_match else "未圆满"
+
+        # 提取是否入库
+        promote_match = re.search(r'【是否入库】\s*(.+?)(?:\n|$)', llm_response)
+        should_promote = "是" in (promote_match.group(1) if promote_match else "")
+
+        # 提取判定理由
+        reason_match = re.search(r'【判定理由】\s*(.+?)(?=\n【|$)', llm_response, re.DOTALL)
+        reason = reason_match.group(1).strip() if reason_match else "LLM未给出明确理由"
+
+        # 提取缺失依赖
+        deps_match = re.search(r'【缺失依赖】\s*(.+?)(?=\n【|$)', llm_response, re.DOTALL)
+        deps_text = deps_match.group(1).strip() if deps_match else ""
+        missing_deps = []
+        if deps_text and deps_text != "无" and deps_text != "None":
+            for line in deps_text.split("\n"):
+                line = line.strip().strip("-•").strip()
+                if line and len(line) > 2:
+                    missing_deps.append(line)
+
+        # 判断是否依赖不足
+        is_dependency_gap = (
+            not should_promote
+            and len(missing_deps) > 0
+            and "依赖不足" in reason
+        )
+
+        guidance = ""
+        if is_dependency_gap:
+            guidance = f"需先入库以下依赖定理: {', '.join(missing_deps[:5])}"
+        elif not should_promote:
+            guidance = reason[:200]
+
+        return {
+            "should_promote": should_promote,
+            "consummation_level": consummation_level,
+            "is_dependency_gap": is_dependency_gap,
+            "reason": reason[:500],
+            "missing_dependencies": missing_deps,
+            "guidance": guidance,
+            "llm_raw_response": llm_response[:2000],
+        }
+
     # ==================== 批量闭环验证 ====================
 
     def verify_cycle(self, cycle: Dict[str, Any]) -> Dict[str, Any]:
@@ -661,7 +845,7 @@ class MasterVerifier:
 
         all_formulas = "\n\n".join(formula_texts)
 
-        system_prompt = f"""你是几何论主库AI验证器。现在进行批量闭环验证。
+        system_prompt = f"""你是共扼谱几何主库AI验证器。现在进行批量闭环验证。
 
 {axioms_text}
 {math_text}
@@ -803,7 +987,7 @@ class MasterVerifier:
 
         使用四层知识来源：
         L0: 标准数学基座（可直接使用）
-        L1: 几何论三公理（推导起点）
+        L1: 共扼谱几何三公理（推导起点）
         L2: 桥接假设（子AI声明的外部锚点，需白名单校验）
         L3: 已验证定理（主库中已入库的公式）
 
@@ -1033,7 +1217,7 @@ class MasterVerifier:
 请分析失败的根本原因，并区分以下两种情况：
 
 **情况A: 依赖不足**
-如果你认为公式本身在逻辑上可能是正确的，但你无法从公理+数学基座复现它，是因为推导过程中需要用到某些尚未被验证的几何论中间定理或概念（注意：标准数学事实如∂²=0、Stokes定理等已在L0基座中提供，不算缺失依赖）。请列出这些缺失的几何论依赖。
+如果你认为公式本身在逻辑上可能是正确的，但你无法从公理+数学基座复现它，是因为推导过程中需要用到某些尚未被验证的共扼谱几何中间定理或概念（注意：标准数学事实如∂²=0、Stokes定理等已在L0基座中提供，不算缺失依赖）。请列出这些缺失的共扼谱几何依赖。
 
 **情况B: 公式错误**
 如果你在推导过程中发现了明确的逻辑矛盾、数学错误或与公理冲突的问题，请指出具体错误。
@@ -1049,7 +1233,7 @@ class MasterVerifier:
             resp = self._llm_client.chat.completions.create(
                 model=MASTER_DERIVE_MODEL,
                 messages=[
-                    {"role": "system", "content": "你是几何论主库AI的依赖分析模块。你的职责是分析验证失败的原因，区分'依赖不足'和'公式错误'。"},
+                    {"role": "system", "content": "你是共扼谱几何主库AI的依赖分析模块。你的职责是分析验证失败的原因，区分'依赖不足'和'公式错误'。"},
                     {"role": "user", "content": analysis_prompt},
                 ],
                 temperature=0.1,
@@ -1124,9 +1308,9 @@ class MasterVerifier:
     def _build_axioms_text(self) -> str:
         """构建理论起点说明"""
         lines = ["【理论起点】\n"]
-        lines.append("所有推导基于几何论文章中的定义和已验证主库公式。")
+        lines.append("所有推导基于共扼谱几何文章中的定义和已验证主库公式。")
         lines.append("你可以查阅相关文章获取基本定义和公式。\n")
-        lines.append("【几何论锁定常数】")
+        lines.append("【共扼谱几何锁定常数】")
         for k, v in GEOMETRY_CONSTANTS.items():
             lines.append(f"  {k} = {v}")
         return "\n".join(lines)
@@ -1142,7 +1326,7 @@ class MasterVerifier:
 {math_text}
 
 【重要说明】以上L0数学基座是标准数学事实，你可以自由使用这些工具进行推导。
-这些数学定理不需要从几何论公理推导——它们是数学界已确立的结果。
+这些数学定理不需要从共扼谱几何公理推导——它们是数学界已确立的结果。
 你可以在推导中直接引用 [DG-01], [TP-02] 等编号。
 """
 
@@ -1153,7 +1337,7 @@ class MasterVerifier:
 {bridge_text}
 
 【单一ℰ原则】
-ℰ 是几何论唯一的外部物理假设——将几何量映射为物理可观测量。
+ℰ 是共扼谱几何唯一的外部物理假设——将几何量映射为物理可观测量。
 Born规则、物理识别点、归一化约定等都不是独立假设，而是ℰ的推论。
 如果推导中需要用到Born规则等物理概念，但它们尚未在L3主库中（即尚未从ℰ推导验证），
 则判定为"依赖不足"——子AI需要先从ℰ推导这些概念，提交验证入库后再来。
@@ -1162,7 +1346,7 @@ Born规则、物理识别点、归一化约定等都不是独立假设，而是�
         # 待推导物理定理清单
         pending_text = get_pending_derivations_text()
 
-        return f"""你是几何论主库AI验证引擎。你的唯一职责是：从公理独立推导，验证候选公式是否正确。
+        return f"""你是共扼谱几何主库AI验证引擎。你的唯一职责是：从公理独立推导，验证候选公式是否正确。
 
 {axioms_text}
 {math_section}

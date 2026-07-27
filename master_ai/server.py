@@ -82,7 +82,7 @@ _verify_lock = threading.Lock()  # 确保同一时间只验证一个公式
 _retry_counts: Dict[str, int] = {}  # submission_id → 重试次数
 
 # 并行worker配置
-NUM_WORKERS = int(os.getenv('MASTER_VERIFY_WORKERS', '10'))  # 并行验证worker数
+NUM_WORKERS = int(os.getenv('MASTER_VERIFY_WORKERS', '5'))  # 并行验证worker数
 _worker_locks = [threading.Lock() for _ in range(NUM_WORKERS)]  # 每个worker一个锁
 _worker_threads: List[threading.Thread] = []
 _last_promote_time = time.time()  # 上次有公式入库的时间
@@ -530,6 +530,7 @@ def submit():
     local_verification = data.get("local_verification")
     external_anchors = data.get("external_anchors", [])
     topology_class = data.get("topology_class", "")  # A0 或 A1
+    formula_type = data.get("formula_type", "")  # 定理/引理/命题/公理/推论
     priority_hint = data.get("priority_hint", False)  # 优先验证提示
     interlock_hint = data.get("interlock_hint", [])  # 子AI互锁提示
     interlock_reasoning = data.get("interlock_reasoning", "")  # 子AI互锁推导说明
@@ -545,6 +546,7 @@ def submit():
         local_verification=local_verification,
         external_anchors=external_anchors,
         topology_class=topology_class,
+        formula_type=formula_type,
         priority_hint=priority_hint,
         interlock_hint=interlock_hint,
         interlock_reasoning=interlock_reasoning,
@@ -754,6 +756,7 @@ def formula_detail(formula_id: str):
         "master_id": formula_id,
         "permanent_number": meta.get("permanent_number", ""),
         "formula_name": meta.get("formula_name", ""),
+        "formula_type": meta.get("formula_type", ""),
         "document": result["documents"][0],
         "status": meta.get("status", ""),
         "verified_at": meta.get("verified_at", ""),
@@ -1120,7 +1123,7 @@ def suspend():
 def main():
     """启动主库AI服务"""
     logger.info("=" * 60)
-    logger.info("几何论 主库AI 验证引擎")
+    logger.info("共扼谱几何 主库AI 验证引擎")
     logger.info(f"端口: {MASTER_AI_PORT}")
     logger.info(f"验证模型: {os.getenv('MASTER_VERIFY_MODEL', 'deepseek-v4-pro')}")
     logger.info(f"推导模型: {os.getenv('MASTER_DERIVE_MODEL', 'deepseek-v4-pro')}")

@@ -267,10 +267,21 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
         for msg in final_messages:
             _clean = {}
             _clean["role"] = msg.get("role", "user")
-            # content: 确保不为 null
+            # content: 确保是字符串（DeepSeek 不接受 list 格式的 content）
             _content = msg.get("content", "")
             if _content is None:
                 _content = ""
+            if isinstance(_content, list):
+                # 多模态消息：提取文本部分
+                _text_parts = []
+                for _item in _content:
+                    if isinstance(_item, dict) and _item.get("type") == "text":
+                        _t = _item.get("text", "")
+                        if isinstance(_t, str):
+                            _text_parts.append(_t)
+                    elif isinstance(_item, str):
+                        _text_parts.append(_item)
+                _content = "\n".join(_text_parts) if _text_parts else ""
             _clean["content"] = _content
             # reasoning_content: DeepSeek 思考模式必须传回
             if "reasoning_content" in msg:
@@ -339,8 +350,7 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                         if _tc_id in {tc.get("id") for tc in _prev["tool_calls"] if tc.get("id")}:
                             _has_matching_call = True
                             break
-                    if _prev.get("role") == "user":
-                        break
+                    # 不因 user 消息而停止向前搜索（user 消息可能被插入在 tool 响应之间）
                 if not _has_matching_call:
                     logger.warning(f"[TOOL] 移除孤立的 tool 响应消息 (tool_call_id={_tc_id})")
                     continue
@@ -382,9 +392,10 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                 if delta.content:
                     collected_content += delta.content
 
-                # 收集 reasoning_content（DeepSeek 思考模式）
+                # 收集 reasoning_content 并实时透传给客户端（思考过程不涉及工具调用，安全转发）
                 if hasattr(delta, 'reasoning_content') and delta.reasoning_content:
                     collected_reasoning += delta.reasoning_content
+                    yield _sse_chunk({"reasoning_content": delta.reasoning_content})
 
                 # 收集 tool_calls（流式增量）
                 if hasattr(delta, 'tool_calls') and delta.tool_calls:
@@ -433,6 +444,7 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                             collected_content += delta.content
                         if hasattr(delta, 'reasoning_content') and delta.reasoning_content:
                             collected_reasoning += delta.reasoning_content
+                            yield _sse_chunk({"reasoning_content": delta.reasoning_content})
                         if hasattr(delta, 'tool_calls') and delta.tool_calls:
                             for tc_delta in delta.tool_calls:
                                 idx = tc_delta.index
@@ -573,6 +585,7 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                 })
             logger.warning(f"[TOOL] 每轮限制 {max_calls_per_round} 个调用，跳过 {len(skipped)} 个")
 
+        _inject_budget_warning = False  # Token 预算保护标志（延迟到所有 tool 响应后插入）
         for tc_info in tool_calls_list:
             func_name = tc_info["function"]["name"]
             try:
@@ -626,13 +639,18 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
             })
 
             # Token 预算保护：如果工具结果累计超过 80000 token，
-            # 在下一个 tool 消息中注入提示，要求模型尽快回答
+            # 标记需要注入停止提示（延迟到所有 tool 响应之后插入，避免破坏 tool_calls 连续性）
             if _total_tool_input_tokens > 80000 and _total_tool_calls.get(func_name, 0) <= 1:
-                final_messages.append({
-                    "role": "user",
-                    "content": "【系统提示】工具调用已消耗大量上下文，请基于已有信息直接回答用户，不要再调用工具。"
-                })
-                logger.warning(f"[TOOL] Token 预算 {_total_tool_input_tokens} 已超 80000，注入停止提示")
+                _inject_budget_warning = True
+                logger.warning(f"[TOOL] Token 预算 {_total_tool_input_tokens} 已超 80000，标记注入停止提示")
+
+    # 延迟注入 Token 预算保护消息（确保不破坏 tool_calls → tool 响应的连续性）
+    if _inject_budget_warning:
+        final_messages.append({
+            "role": "user",
+            "content": "【系统提示】工具调用已消耗大量上下文，请基于已有信息直接回答用户，不要再调用工具。"
+        })
+        logger.info(f"[TOOL] 延迟注入 Token 预算保护消息（所有 tool 响应之后）")
 
     # 超过轮数限制，强制要求模型直接回答 -- 真正流式
     logger.warning(f"[TOOL] 超过 {max_tool_rounds} 轮，强制生成文本回复")

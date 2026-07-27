@@ -21,6 +21,7 @@ PYTHON_FILES = [
     "server.py", "config.py", "knowledge.py", "models.py",
     "prompts.py", "tools.py", "stream.py", "admin_routes.py",
     "share_routes.py", "auto_teach.py", "start.py", "version.py",
+    "master_client.py", "opencode_proxy.py",
 ]
 
 def copy_source():

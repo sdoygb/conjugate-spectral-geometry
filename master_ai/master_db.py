@@ -192,6 +192,7 @@ class MasterDatabase:
         local_verification: Optional[Dict] = None,
         external_anchors: Optional[List[str]] = None,
         topology_class: str = "A0",
+        formula_type: str = "",
         priority_hint: bool = False,
         interlock_hint: Optional[List[str]] = None,
         interlock_reasoning: str = "",
@@ -251,6 +252,7 @@ class MasterDatabase:
                     metadata = {
                         "submission_id": submission_id,
                         "formula_name": formula_name,
+                        "formula_type": formula_type,
                         "source_agent": source_agent,
                         "status": "duplicate",
                         "submitted_at": datetime.now().isoformat(),
@@ -283,6 +285,7 @@ class MasterDatabase:
         metadata = {
             "submission_id": submission_id,
             "formula_name": formula_name,
+            "formula_type": formula_type,
             "source_agent": source_agent,
             "status": "pending",
             "submitted_at": datetime.now().isoformat(),
@@ -344,6 +347,7 @@ class MasterDatabase:
             item = {
                 "submission_id": mid,
                 "formula_name": meta.get("formula_name", ""),
+                "formula_type": meta.get("formula_type", ""),
                 "source_agent": meta.get("source_agent", ""),
                 "topology_class": meta.get("topology_class", ""),
                 "status": meta.get("status", "pending"),
@@ -583,6 +587,7 @@ class MasterDatabase:
             "master_id": master_id,
             "permanent_number": str(self._next_seq()),  # 永久编号，一入库不回收
             "formula_name": formula_name,
+            "formula_type": pending["metadata"].get("formula_type", ""),  # 定理/引理/命题/公理/推论
             "source_agent": pending["metadata"].get("source_agent", ""),
             "verified_at": datetime.now().isoformat(),
             "verification_result": json.dumps(verification_result, ensure_ascii=False),
@@ -677,6 +682,7 @@ class MasterDatabase:
                 "master_id": mid,
                 "permanent_number": int(meta.get("permanent_number", "0")) if meta.get("permanent_number") else 0,
                 "formula_name": meta.get("formula_name", ""),
+                "formula_type": meta.get("formula_type", ""),
                 "document": result["documents"][i],
                 "verified_at": meta.get("verified_at", ""),
                 "berry_status": meta.get("berry_status", "no_angle_data"),
