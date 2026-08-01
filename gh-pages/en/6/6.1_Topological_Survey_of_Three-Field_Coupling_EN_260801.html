@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6.1 Topological Survey of Three-Field Coupling | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Version: 260721.1">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/6/6.1_Topological_Survey_of_Three-Field_Coupling_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">6.1 Topological Survey of Three-Field Coupling</span>
+  </nav>
+  <main class="article-content">
+<h1 id="topological-survey-of-three-field-coupling">6.1 Topological
+Survey of Three-Field Coupling</h1>
+<p><strong>Version</strong>: 260721.1</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>This article surveys the topological structure of the ℳ𝒞ℐ
+three-sector joint coupling. The three-field coupling is realized
+through three permutation components of the Birkhoff mixing matrix <span
+class="math inline">\(T\)</span>: identity <span
+class="math inline">\(I\)</span> (ℳ self-coupling), 3-cycle <span
+class="math inline">\(P_\tau\)</span> (ℳ-𝒞-ℐ waist-edge), and inverse
+3-cycle <span class="math inline">\(P_{\tau^{-1}}\)</span> (ℳ-ℐ-𝒞
+reverse cycle). The joint cross-section constitutes the complete
+topology of the three-field coupling. This article further presents the
+complete construction of the three-field coupling matrix, the algebraic
+closure of inter-sector coupling channels, a systematic analysis of
+topological invariants, and the hierarchical origin of the four
+interactions within a unified topological picture.</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<p>§1　Joint Cross-Section Topology 　1.1　Three-Field Coupling Graph
+　1.2　Coupling Matrix 　1.3　Topological Invariants 　1.4　Construction
+Details of the Three-Field Coupling Matrix 　1.5　Inter-Sector Coupling
+Channels 　1.6　Directionality of Coupling Channels</p>
+<p>§2　Unified Picture of the Four Interactions 　2.1　From Coupling to
+Interactions 　2.2　The Special Position of the Strong Interaction
+　2.3　Hierarchy of Interaction Strengths 　2.4　Closure of Coupling
+Channels 　2.5　Geometric Factorization of the Hierarchy</p>
+<p>§3　Self-Consistency of the Three-Field Coupling 　3.1　Double
+Stochasticity Guarantee 　3.2　Uniqueness of the Fixed Point
+　3.3　Eigenvalue Analysis of Convergence 　3.4　Double Stochasticity
+and the Perron-Frobenius Theorem</p>
+<p>§4　Topological Classification of the Three-Field Coupling
+　4.1　Isomorphism Classes of the Coupling Graph 　4.2　Genus of the
+Coupling Graph 　4.3　Topological Classification and Physical
+Correspondence</p>
+<p>§5　Algebraic Closure of Sector Coupling 　5.1　Definition of Closure
+　5.2　Closure and Cross-Region Information Import 　5.3　Falsifiability
+of Closure</p>
+<hr />
+<h2 id="joint-cross-section-topology">§1 Joint Cross-Section
+Topology</h2>
+<h3 id="three-field-coupling-graph">1.1 Three-Field Coupling Graph</h3>
+<p>The topological structure of the three-field coupling:</p>
+<pre><code> ℳ ←──θ_I──→ ℳ (self-coupling, electromagnetic)
+ │ ↗
+ θ_τ θ_σ₂
+ │ ↗
+ ↓ ↗
+ 𝒞 ←──?──→ ℐ (mediated via ℳ)</code></pre>
+<p>Three direct couplings: - ℳ→ℳ: <span
+class="math inline">\(\theta_I\)</span> (self-coupling, electromagnetic
+interaction) - ℳ→𝒞→ℐ→ℳ: <span class="math inline">\(\theta_\tau\)</span>
+(3-cycle, weak interaction) - ℳ↔︎ℐ: <span
+class="math inline">\(\theta_{\sigma_2}\)</span> (inverse 3-cycle <span
+class="math inline">\(P_{\tau^{-1}}\)</span>, gravitational
+interaction)</p>
+<p>The key feature of the three-field coupling graph is: there is no
+direct edge between the Causal Sector 𝒞 and the Information Sector
+ℐ—their coupling must be mediated via the Matter Sector ℳ. This
+topological incompleteness arises because after triality breaking, the
+<span class="math inline">\(Z_2\)</span> residual symmetry preserves
+only the ℳ-ℐ exchange; the 𝒞-ℐ direct coupling is eliminated.</p>
+<h3 id="coupling-matrix">1.2 Coupling Matrix</h3>
+<p><strong>Theorem 6.1.1.01 (Three-Field Coupling Matrix).</strong> The
+three-field joint coupling is fully described by <span
+class="math inline">\(M_5 = T \cdot \text{diag}(\chi)\)</span>:</p>
+<p><span class="math display">\[M_5 = \begin{pmatrix} \theta_I \chi_M
+&amp; \theta_\tau \chi_M &amp; \theta_{\sigma_2} \chi_M \\
+\theta_{\sigma_2} \chi_C &amp; \theta_I \chi_C &amp; \theta_\tau \chi_C
+\\ \theta_\tau \chi_I &amp; \theta_{\sigma_2} \chi_I &amp; \theta_I
+\chi_I \end{pmatrix}.\]</span></p>
+<ul>
+<li>Diagonal entries: sector self-coupling (<span
+class="math inline">\(\theta_I\)</span>)</li>
+<li>Off-diagonal entries: cross-sector coupling (<span
+class="math inline">\(\theta_\tau\)</span> or <span
+class="math inline">\(\theta_{\sigma_2}\)</span>)</li>
+</ul>
+<p><strong>Proof.</strong> By Theorem 2.3.7.02, the Birkhoff mixing
+matrix <span class="math inline">\(T = \theta_I \cdot I + \theta_\tau
+\cdot P_\tau + \theta_{\sigma_2} \cdot P_{\tau^{-1}}\)</span>. The
+explicit forms of the three permutation matrices are:</p>
+<p><span class="math display">\[I = \begin{pmatrix} 1 &amp; 0 &amp; 0 \\
+0 &amp; 1 &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{pmatrix}, \quad P_\tau =
+\begin{pmatrix} 0 &amp; 1 &amp; 0 \\ 0 &amp; 0 &amp; 1 \\ 1 &amp; 0
+&amp; 0 \end{pmatrix}, \quad P_{\tau^{-1}} = \begin{pmatrix} 0 &amp; 0
+&amp; 1 \\ 1 &amp; 0 &amp; 0 \\ 0 &amp; 1 &amp; 0
+\end{pmatrix}.\]</span></p>
+<p>where <span class="math inline">\(P_\tau\)</span> realizes the
+3-cycle <span class="math inline">\((1\,2\,3)\)</span> and <span
+class="math inline">\(P_{\tau^{-1}}\)</span> realizes the inverse
+3-cycle <span class="math inline">\((1\,3\,2)\)</span>. The cumulative
+stretch diagonal matrix <span class="math inline">\(\text{diag}(\chi) =
+\text{diag}(8, 9, 1)\)</span> (Theorem 2.3.7.02 §3.2). The matrix
+product <span class="math inline">\(M_5 = T \cdot
+\text{diag}(\chi)\)</span> has each column <span
+class="math inline">\(j\)</span> equal to the <span
+class="math inline">\(j\)</span>-th column of <span
+class="math inline">\(T\)</span> multiplied by <span
+class="math inline">\(\chi_j\)</span>, directly yielding the above
+explicit form. ∎</p>
+<h3 id="topological-invariants">1.3 Topological Invariants</h3>
+<p>Topological invariants of the three-field coupling graph:</p>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 38%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Invariant</th>
+<th style="text-align: center;">Value</th>
+<th style="text-align: left;">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Number of nodes</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">Three sectors</td>
+</tr>
+<tr>
+<td style="text-align: left;">Number of edges</td>
+<td style="text-align: center;">6 (including self-loops)</td>
+<td style="text-align: left;">Complete graph with self-loops</td>
+</tr>
+<tr>
+<td style="text-align: left;">Connectivity</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">Triply connected</td>
+</tr>
+<tr>
+<td style="text-align: left;">Number of cycles</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">Forward 3-cycle + reverse 3-cycle</td>
+</tr>
+<tr>
+<td style="text-align: left;">Euler characteristic</td>
+<td style="text-align: center;">−1</td>
+<td style="text-align: left;">Torus with one disk removed: χ = 2 − 2g −
+b = 2 − 2 − 1 = −1</td>
+</tr>
+<tr>
+<td style="text-align: left;">Automorphism group</td>
+<td style="text-align: center;">Z₂</td>
+<td style="text-align: left;">Residual symmetry after triality
+breaking</td>
+</tr>
+</tbody>
+</table>
+<p>The non-trivial Euler characteristic <span class="math inline">\(\chi
+= -1\)</span> of the three-field coupling graph indicates that the
+corresponding surface is not planar (<span class="math inline">\(\chi =
+2\)</span>) but a torus (<span class="math inline">\(g = 1\)</span>)
+with one open disk removed (<span class="math inline">\(b = 1\)</span>).
+This topological non-triviality is consistent with the global structure
+of Berry phase <span class="math inline">\(2\pi\)</span>: the Coding
+Orbit closes on the torus, but the 7-step truncation leaves one
+“opening”—the 8th step (Bott periodicity closure) is not yet
+completed.</p>
+<h3 id="construction-details-of-the-three-field-coupling-matrix">1.4
+Construction Details of the Three-Field Coupling Matrix</h3>
+<p>The three-field coupling matrix <span
+class="math inline">\(M_5\)</span> is constructed from the synthesis of
+two independent algebraic structures: the Birkhoff mixing <span
+class="math inline">\(T\)</span> and the cumulative stretch <span
+class="math inline">\(\text{diag}(\chi)\)</span>. The two arise from
+different algebraic levels, and their synthesis is rigid.</p>
+<p><strong>Construction of the Birkhoff Mixing <span
+class="math inline">\(T\)</span>.</strong> <span
+class="math inline">\(T\)</span> is determined by the three permutation
+orbits after triality breaking <span class="math inline">\(S_3 \to
+Z_2\)</span> (Theorem 2.3.7.02 §2.2). The three orbit weights <span
+class="math inline">\((\theta_I, \theta_\tau,
+\theta_{\sigma_2})\)</span> satisfy the normalization constraint <span
+class="math inline">\(\theta_I + \theta_\tau + \theta_{\sigma_2} =
+1\)</span>, with effective degrees of freedom equal to 2. The observer
+position weights <span class="math inline">\((0.782, 0.209,
+0.009)\)</span> are uniquely determined from the fixed point <span
+class="math inline">\(\sigma^*\)</span> and stretch factors <span
+class="math inline">\(\chi\)</span> via the Cramer’s rule analytic
+formula (Theorem 2.3.7.02 §3.4).</p>
+<p><strong>Construction of the Cumulative Stretch <span
+class="math inline">\(\chi\)</span>.</strong> <span
+class="math inline">\(\chi = (8, 9, 1)\)</span> is determined by the
+Multiplier Sequence (Theorem 10.11.1.14) and Sector-Factor Binding
+(Theorem 1.2.3.01). Specifically:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Sector</th>
+<th style="text-align: center;">χ value</th>
+<th style="text-align: left;">Source</th>
+<th style="text-align: center;">Bound Factor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ℳ</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;">μ₁ × μ₂ matter components 2 × 4</td>
+<td style="text-align: center;">γ₁ ↔︎ 2</td>
+</tr>
+<tr>
+<td style="text-align: left;">𝒞</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: left;">Triality breaking complex structure
+contribution 3²</td>
+<td style="text-align: center;">γ₂ ↔︎ 3</td>
+</tr>
+<tr>
+<td style="text-align: left;">ℐ</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">Recycling balance (zero net stretch)</td>
+<td style="text-align: center;">γ₃ ↔︎ 5</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rigidity of the Synthesis.</strong> The synthesis <span
+class="math inline">\(M_5 = T \cdot \text{diag}(\chi)\)</span>
+introduces no new free parameters—the 2 degrees of freedom of <span
+class="math inline">\(T\)</span> are locked by the fixed point equation,
+and the 3 values of <span class="math inline">\(\chi\)</span> are locked
+by Bott periodicity. Hence all 9 matrix entries of <span
+class="math inline">\(M_5\)</span> are fully determined by algebraic
+structure and are non-adjustable.</p>
+<p>The determinant of <span class="math inline">\(M_5\)</span> is:</p>
+<p><span class="math display">\[\det(M_5) = \det(T) \cdot \chi_M \chi_C
+\chi_I.\]</span></p>
+<p>From the eigenvalues of <span class="math inline">\(T\)</span>: <span
+class="math inline">\(\lambda_1 = 1\)</span>, <span
+class="math inline">\(\lambda_{2,3} = 0.678 \pm 0.181i\)</span>, we have
+<span class="math inline">\(\det(T) = \lambda_1 \lambda_2 \lambda_3 =
+|\lambda_{2,3}|^2 = 0.702^2 \approx 0.493\)</span>. Hence:</p>
+<p><span class="math display">\[\det(M_5) = 0.493 \times 8 \times 9
+\times 1 \approx 35.5.\]</span></p>
+<p><span class="math inline">\(M_5\)</span> is non-singular (<span
+class="math inline">\(\det \neq 0\)</span>), guaranteeing that the fixed
+point equation has a unique solution.</p>
+<h3 id="inter-sector-coupling-channels">1.5 Inter-Sector Coupling
+Channels</h3>
+<p>The three-field coupling matrix <span
+class="math inline">\(M_5\)</span> defines 9 coupling channels (3
+diagonal, 6 off-diagonal). Each channel corresponds to a specific
+physical interaction:</p>
+<table>
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 22%" />
+<col style="width: 18%" />
+<col style="width: 18%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Channel</th>
+<th style="text-align: center;">Matrix Entry</th>
+<th style="text-align: left;">Coupling Path</th>
+<th style="text-align: left;">Physical Correspondence</th>
+<th style="text-align: center;">Strength</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ℳ→ℳ</td>
+<td style="text-align: center;">θ_I χ_M</td>
+<td style="text-align: left;">Self-coupling</td>
+<td style="text-align: left;">Electromagnetic</td>
+<td style="text-align: center;">6.256</td>
+</tr>
+<tr>
+<td style="text-align: left;">𝒞→𝒞</td>
+<td style="text-align: center;">θ_I χ_C</td>
+<td style="text-align: left;">Self-coupling</td>
+<td style="text-align: left;">Causal order preservation</td>
+<td style="text-align: center;">7.038</td>
+</tr>
+<tr>
+<td style="text-align: left;">ℐ→ℐ</td>
+<td style="text-align: center;">θ_I χ_I</td>
+<td style="text-align: left;">Self-coupling</td>
+<td style="text-align: left;">Information preservation</td>
+<td style="text-align: center;">0.782</td>
+</tr>
+<tr>
+<td style="text-align: left;">ℳ→𝒞</td>
+<td style="text-align: center;">θ_τ χ_M</td>
+<td style="text-align: left;">Waist-edge (3-cycle)</td>
+<td style="text-align: left;">Weak (ℳ→𝒞)</td>
+<td style="text-align: center;">1.672</td>
+</tr>
+<tr>
+<td style="text-align: left;">𝒞→ℐ</td>
+<td style="text-align: center;">θ_τ χ_C</td>
+<td style="text-align: left;">Waist-edge (3-cycle)</td>
+<td style="text-align: left;">Weak (𝒞→ℐ)</td>
+<td style="text-align: center;">1.881</td>
+</tr>
+<tr>
+<td style="text-align: left;">ℐ→ℳ</td>
+<td style="text-align: center;">θ_τ χ_I</td>
+<td style="text-align: left;">Waist-edge (3-cycle)</td>
+<td style="text-align: left;">Weak (ℐ→ℳ)</td>
+<td style="text-align: center;">0.209</td>
+</tr>
+<tr>
+<td style="text-align: left;">ℳ→ℐ</td>
+<td style="text-align: center;">θ_σ₂ χ_M</td>
+<td style="text-align: left;">Inverse 3-cycle (P_τ⁻¹)</td>
+<td style="text-align: left;">Gravity (ℳ→ℐ)</td>
+<td style="text-align: center;">0.072</td>
+</tr>
+<tr>
+<td style="text-align: left;">𝒞→ℳ</td>
+<td style="text-align: center;">θ_σ₂ χ_C</td>
+<td style="text-align: left;">Inverse 3-cycle (P_τ⁻¹)</td>
+<td style="text-align: left;">Gravity (𝒞→ℳ)</td>
+<td style="text-align: center;">0.081</td>
+</tr>
+<tr>
+<td style="text-align: left;">ℐ→𝒞</td>
+<td style="text-align: center;">θ_σ₂ χ_I</td>
+<td style="text-align: left;">Inverse 3-cycle (P_τ⁻¹)</td>
+<td style="text-align: left;">Gravity (ℐ→𝒞)</td>
+<td style="text-align: center;">0.009</td>
+</tr>
+</tbody>
+</table>
+<p>Channel strengths are determined by the product of Birkhoff weights
+and cumulative stretches. The electromagnetic channel (ℳ→ℳ) is strongest
+(<span class="math inline">\(\theta_I \chi_M = 6.256\)</span>), and the
+gravitational channel (ℐ→𝒞) is weakest (<span
+class="math inline">\(\theta_{\sigma_2} \chi_I = 0.009\)</span>), with a
+strength ratio of approximately <span
+class="math inline">\(700:1\)</span>.</p>
+<p><strong>Algebraic Closure of Channels.</strong> The 6 off-diagonal
+channels are not independent—they are constrained by Birkhoff double
+stochasticity. Specifically, the sum of off-diagonal entries in each row
+equals <span class="math inline">\(1 - \theta_I\)</span>:</p>
+<p><span class="math display">\[\theta_\tau \chi_j + \theta_{\sigma_2}
+\chi_j = (1 - \theta_I) \chi_j.\]</span></p>
+<p>This means the total strength of cross-sector coupling is uniquely
+determined by <span class="math inline">\(\theta_I\)</span>—the larger
+<span class="math inline">\(\theta_I\)</span> is (the more
+self-preserving the Matter Sector), the weaker the cross-sector
+coupling. The observer position <span class="math inline">\(\theta_I =
+0.782\)</span> gives a total cross-sector strength <span
+class="math inline">\(1 - 0.782 = 0.218\)</span>, roughly one-quarter of
+the self-coupling strength.</p>
+<h3 id="directionality-of-coupling-channels">1.6 Directionality of
+Coupling Channels</h3>
+<p>The three-field coupling channels possess definite directionality—the
+3-cycle <span class="math inline">\(P_\tau\)</span> is directed, and the
+inverse 3-cycle <span class="math inline">\(P_{\tau^{-1}}\)</span> is
+likewise directed (reverse cycle).</p>
+<p><strong>Directionality of 3-Cycle Channels.</strong> <span
+class="math inline">\(P_\tau\)</span> realizes the directed cycle <span
+class="math inline">\(\mathcal{M} \to \mathcal{C} \to \mathcal{I} \to
+\mathcal{M}\)</span>. This directionality corresponds to the arrow of
+time—causal order proceeds from the Matter Sector, through the Causal
+Sector to the Information Sector, and back to the Matter Sector. The
+irreversibility of the cycle (3 steps needed to return to the start)
+corresponds to the irreversibility of the arrow of time.</p>
+<p><strong>Symmetry of Inverse 3-Cycle Channels.</strong> <span
+class="math inline">\(P_{\tau^{-1}}\)</span> realizes the reverse cycle
+<span class="math inline">\(\mathcal{M} \to \mathcal{I} \to \mathcal{C}
+\to \mathcal{M}\)</span>. <span class="math inline">\(P_{\tau^{-1}}^3 =
+I\)</span> (same 3rd order cycle as <span
+class="math inline">\(P_\tau\)</span>) guarantees closure of the cycle.
+<span class="math inline">\(P_{\tau^{-1}}\)</span> and <span
+class="math inline">\(P_\tau\)</span> are mutual inverses—the forward
+cycle and reverse cycle constitute the complete <span
+class="math inline">\(S_3\)</span> group structure. Note: <span
+class="math inline">\(P_{\tau^{-1}}\)</span> is not the involution <span
+class="math inline">\(\sigma_2\)</span> retained after <span
+class="math inline">\(S_3 \to Z_2\)</span> breaking (<span
+class="math inline">\(P_{\sigma_2}^2=I\)</span> has involution
+property), but is rather a 3rd-order cyclic element. Its lack of
+involution property (<span class="math inline">\(P_{\tau^{-1}}^2 \neq
+I\)</span>) is consistent with the physical fact that involution
+generators are lost in triality breaking. The gravitational interaction
+is realized through the <span
+class="math inline">\(P_{\tau^{-1}}\)</span> channel—its directionality
+(<span
+class="math inline">\(\mathcal{M}\to\mathcal{I}\to\mathcal{C}\to\mathcal{M}\)</span>)
+corresponds to the irreversible process by which gravity couples matter
+information into causal structure.</p>
+<p>The coexistence of directionality and cyclicity is the core feature
+of the three-field coupling: the weak interaction follows the forward
+cycle <span class="math inline">\(P_\tau\)</span> (arrow of time), the
+gravitational interaction follows the reverse cycle <span
+class="math inline">\(P_{\tau^{-1}}\)</span>
+(information→matter→causal), and the electromagnetic interaction is
+self-coupling (no directional concept).</p>
+<hr />
+<h2 id="unified-picture-of-the-four-interactions">§2 Unified Picture of
+the Four Interactions</h2>
+<h3 id="from-coupling-to-interactions">2.1 From Coupling to
+Interactions</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Interaction</th>
+<th style="text-align: left;">Coupling Path</th>
+<th style="text-align: center;">Birkhoff Component</th>
+<th style="text-align: center;">Strength</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Electromagnetic</td>
+<td style="text-align: left;">ℳ→ℳ</td>
+<td style="text-align: center;">θ_I</td>
+<td style="text-align: center;">0.782</td>
+</tr>
+<tr>
+<td style="text-align: left;">Weak</td>
+<td style="text-align: left;">ℳ→𝒞→ℐ→ℳ</td>
+<td style="text-align: center;">θ_τ</td>
+<td style="text-align: center;">0.209</td>
+</tr>
+<tr>
+<td style="text-align: left;">Strong</td>
+<td style="text-align: left;">𝒞 internal (complex structure
+triality)</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">(Vol. 7)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Gravity</td>
+<td style="text-align: left;">ℳ↔︎ℐ</td>
+<td style="text-align: center;">θ_σ₂</td>
+<td style="text-align: center;">0.009</td>
+</tr>
+</tbody>
+</table>
+<h3 id="the-special-position-of-the-strong-interaction">2.2 The Special
+Position of the Strong Interaction</h3>
+<p>The strong interaction does not arise directly from a component of
+<span class="math inline">\(T\)</span>—it arises from the triality of
+the complex structure <span class="math inline">\(J = \omega_5\)</span>
+of the Causal Sector Cl(5). The triple representation of <span
+class="math inline">\(J\)</span> (<span class="math inline">\(V, S^+,
+S^-\)</span>) produces the SU(3) color gauge structure. The strength of
+the strong interaction is determined by the algebraic structure of <span
+class="math inline">\(\Delta\Theta = 5\)</span>, not by Birkhoff
+weights. Detailed derivation is in Vol. 7.</p>
+<p>The special position of the strong interaction reflects the
+hierarchical structure of the three-field coupling: the electromagnetic,
+weak, and gravitational interactions arise directly from the components
+of <span class="math inline">\(T\)</span>, while the strong interaction
+arises from the internal algebraic structure of the Causal Sector. The
+algebraic root of this hierarchy lies in the fact that the complex
+structure <span class="math inline">\(J = \omega_5\)</span> of Cl(5)
+possesses a triality beyond the Spin(8) triality—this is the extra
+algebraic legacy of <span class="math inline">\(\Delta\Theta =
+5\)</span>.</p>
+<h3 id="hierarchy-of-interaction-strengths">2.3 Hierarchy of Interaction
+Strengths</h3>
+<p>Strength hierarchy of the four interactions:</p>
+<p><span class="math display">\[\alpha_{\text{em}} \sim \theta_I \gg
+\alpha_W \sim \theta_\tau \gg \alpha_s \sim f(\Delta\Theta) \gg \alpha_G
+\sim \theta_{\sigma_2}.\]</span></p>
+<p>This hierarchy is jointly determined by the Birkhoff weights <span
+class="math inline">\(\theta_I \gg \theta_\tau \gg
+\theta_{\sigma_2}\)</span> and the Structure Constant <span
+class="math inline">\(\Delta\Theta\)</span>.</p>
+<p>The algebraic origin of the hierarchy can be traced to triality
+breaking <span class="math inline">\(S_3 \to Z_2\)</span>. Under full
+<span class="math inline">\(S_3\)</span> symmetry, the three permutation
+orbits have equal weights (<span class="math inline">\(\theta_I =
+\theta_\tau = \theta_{\sigma_2} = 1/3\)</span>), and all four
+interaction strengths are equal. Triality breaking partitions the 6
+elements of <span class="math inline">\(S_3\)</span> into 3 orbits, and
+the energy cost of breaking causes the three orbit weights to split: the
+identity orbit (<span class="math inline">\(\theta_I\)</span>) is most
+stable (no breaking cost), the exchange orbit (<span
+class="math inline">\(\theta_\tau\)</span>) is next (single flip cost),
+and the cyclic orbit (<span
+class="math inline">\(\theta_{\sigma_2}\)</span>) is least stable
+(triple cycle cost). This increasing breaking cost directly corresponds
+to the decreasing interaction strengths.</p>
+<h3 id="closure-of-coupling-channels">2.4 Closure of Coupling
+Channels</h3>
+<p>The four interactions correspond to 6 channels of the three-field
+coupling, but these channels are not independent—they are closed by two
+algebraic constraints:</p>
+<p><strong>Constraint 1: Row-sum constraint (Birkhoff double
+stochasticity).</strong> The sum of channel strengths in each row is
+constant:</p>
+<p><span class="math display">\[\sum_j (M_5)_{ij} / \chi_j = \theta_I +
+\theta_\tau + \theta_{\sigma_2} = 1.\]</span></p>
+<p>This constraint guarantees that coding information is conserved among
+the three fields—neither created nor destroyed.</p>
+<p><strong>Constraint 2: Column-sum constraint.</strong> The sum of
+channel strengths in each column is also constant:</p>
+<p><span class="math display">\[\sum_i (M_5)_{ij} / \chi_j = \theta_I +
+\theta_\tau + \theta_{\sigma_2} = 1.\]</span></p>
+<p>The column-sum constraint guarantees that the total coding received
+by each sector equals its total coding emitted—the three-field coupling
+is “revenue-neutral.”</p>
+<p>With both constraints jointly applied, the effective degrees of
+freedom of the 6 channels is <span class="math inline">\(6 - 2 =
+4\)</span>. But triality breaking further partitions the 6 channels into
+3 groups (identity, exchange, cycle), with channels within each group
+having equal weight, reducing the effective degrees of freedom to 2.
+Thus the strengths of the four interactions are fully determined by 2
+parameters—this is the topological root of the cross-region information
+import feature of Conjugate Spectral Geometry.</p>
+<h3 id="geometric-factorization-of-the-hierarchy">2.5 Geometric
+Factorization of the Hierarchy</h3>
+<p>The strength hierarchy of the four interactions can also be
+understood through geometric factorization (Theorem 5.5.1.01). Each
+interaction is determined by a dominant geometric factor:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Interaction</th>
+<th style="text-align: center;">Birkhoff Component</th>
+<th style="text-align: left;">Dominant Factor</th>
+<th style="text-align: center;">Factor Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Electromagnetic</td>
+<td style="text-align: center;">θ_I</td>
+<td style="text-align: left;">f₁ = √Λ = √3</td>
+<td style="text-align: center;">1.732</td>
+</tr>
+<tr>
+<td style="text-align: left;">Weak</td>
+<td style="text-align: center;">θ_τ</td>
+<td style="text-align: left;">f₂ = √(ΔΘ/Λ) = √(5/3)</td>
+<td style="text-align: center;">1.291</td>
+</tr>
+<tr>
+<td style="text-align: left;">Strong</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: left;">f₃ = √k₀ = √2</td>
+<td style="text-align: center;">1.414</td>
+</tr>
+<tr>
+<td style="text-align: left;">Gravity</td>
+<td style="text-align: center;">θ_σ₂</td>
+<td style="text-align: left;">f₄ = 1/√(2π)</td>
+<td style="text-align: center;">0.399</td>
+</tr>
+</tbody>
+</table>
+<p>The product of Birkhoff weights and geometric factors gives the
+complete strength of each interaction. The strength of the
+electromagnetic interaction is determined by <span
+class="math inline">\(\theta_I \cdot \sqrt{3} \approx 1.354\)</span>,
+the weak interaction by <span class="math inline">\(\theta_\tau \cdot
+\sqrt{5/3} \approx 0.270\)</span>, and the gravitational interaction by
+<span class="math inline">\(\theta_{\sigma_2} \cdot 1/\sqrt{2\pi}
+\approx 0.0036\)</span>. This double-layer structure—Birkhoff weights
+(dynamics) and geometric factors (structure)—provides a complete
+algebraic description of interaction strengths.</p>
+<hr />
+<h2 id="self-consistency-of-the-three-field-coupling">§3
+Self-Consistency of the Three-Field Coupling</h2>
+<h3 id="double-stochasticity-guarantee">3.1 Double Stochasticity
+Guarantee</h3>
+<p>The double stochasticity of <span class="math inline">\(T\)</span>
+(row-sum = column-sum = 1) guarantees the self-consistency of the
+three-field coupling:</p>
+<p><span class="math display">\[\sum_j T_{ij} = 1 \implies \text{total
+output of each sector} = \text{total input}.\]</span></p>
+<p>This means coding information is conserved among the three
+fields—neither created nor destroyed.</p>
+<p>The deeper meaning of double stochasticity is the <strong>coding
+conservation law</strong>. View the three-field coupling as a flow
+network of coding information: the coding information of the Matter
+Sector ℳ flows to 𝒞 via <span class="math inline">\(P_\tau\)</span>
+(weak interaction channel) and to ℐ via <span
+class="math inline">\(P_{\sigma_2}\)</span> (gravitational channel),
+while simultaneously receiving backflow from 𝒞 and ℐ. Double
+stochasticity guarantees that each sector’s net outflow equals its net
+inflow—coding information is conserved in the three-field coupling
+network.</p>
+<p>The algebraic formulation of this conservation law is: at any time
+<span class="math inline">\(t\)</span>, the sum of the three-field
+coding weights is identically 1:</p>
+<p><span class="math display">\[\sigma_{\mathcal{M}}(t) +
+\sigma_{\mathcal{C}}(t) + \sigma_{\mathcal{I}}(t) = 1, \quad \forall
+t.\]</span></p>
+<p>This is the dynamical corollary of the normalization condition—double
+stochasticity guarantees that normalization is preserved under time
+evolution.</p>
+<h3 id="uniqueness-of-the-fixed-point">3.2 Uniqueness of the Fixed
+Point</h3>
+<p>The fixed point <span class="math inline">\(\sigma^*\)</span> of the
+three-field coupling exists uniquely (Theorem 2.3.2.01), and the
+Jacobian spectral radius <span class="math inline">\(\rho = 0.124 &lt;
+1\)</span> guarantees exponential convergence. The three-field system is
+globally stable.</p>
+<p>The three components of the fixed point <span
+class="math inline">\(\sigma^* \approx (0.777912, 0.210603,
+0.011484)\)</span> correspond to the steady-state coding weights of the
+three sectors. The Matter Sector weight <span
+class="math inline">\(\sigma_{\mathcal{M}}^* \approx 0.777912\)</span>
+is the largest—matter dominates; the Information Sector weight <span
+class="math inline">\(\sigma_{\mathcal{I}}^* \approx 0.011484\)</span>
+is the smallest—information capacity is limited. This distribution is
+consistent with observation: we live in a matter-dominated universe with
+finite information capacity.</p>
+<p>The uniqueness of the fixed point is jointly guaranteed by two
+factors:</p>
+<ol type="1">
+<li><strong>Non-singularity of <span
+class="math inline">\(M_5\)</span></strong>: <span
+class="math inline">\(\det(M_5) \approx 35.5 \neq 0\)</span>, the fixed
+point equation <span class="math inline">\(M_5 \sigma^* = Z
+\sigma^*\)</span> has a unique solution.</li>
+<li><strong>Jacobian contractivity</strong>: <span
+class="math inline">\(\rho = 0.124 &lt; 1\)</span>, the fixed point is
+an attractor; starting from any initial state, the system converges to
+<span class="math inline">\(\sigma^*\)</span>.</li>
+</ol>
+<h3 id="eigenvalue-analysis-of-convergence">3.3 Eigenvalue Analysis of
+Convergence</h3>
+<p>The convergence of the three-field coupling is determined by the
+eigenvalues of <span class="math inline">\(T\)</span>. The
+characteristic polynomial of <span class="math inline">\(T\)</span>
+is:</p>
+<p><span class="math display">\[\det(T - \lambda I) = (\lambda -
+1)(\lambda^2 - 2\text{Re}(\lambda_2)\lambda + |\lambda_2|^2) =
+0.\]</span></p>
+<p>The three eigenvalues are:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Eigenvalue</th>
+<th style="text-align: center;">Modulus</th>
+<th style="text-align: left;">Physical Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">λ₁ = 1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">Principal eigenvalue, fixed point
+direction</td>
+</tr>
+<tr>
+<td style="text-align: center;">λ₂ = 0.678 + 0.181i</td>
+<td style="text-align: center;">0.702</td>
+<td style="text-align: left;">Damped oscillatory mode</td>
+</tr>
+<tr>
+<td style="text-align: center;">λ₃ = 0.678 − 0.181i</td>
+<td style="text-align: center;">0.702</td>
+<td style="text-align: left;">Damped oscillatory mode (conjugate)</td>
+</tr>
+</tbody>
+</table>
+<p>The principal eigenvalue <span class="math inline">\(\lambda_1 =
+1\)</span> corresponds to the fixed point direction—this direction does
+not decay and is the steady state. The non-principal eigenvalues <span
+class="math inline">\(\lambda_{2,3}\)</span> have modulus <span
+class="math inline">\(|\lambda_{2,3}| = 0.702 &lt; 1\)</span>,
+corresponding to decaying modes—any perturbation away from the fixed
+point decays exponentially at rate <span
+class="math inline">\(|\lambda_{2,3}|^n \to 0\)</span>.</p>
+<p>The complex eigenvalues indicate that the convergence process
+involves damped oscillations—the imaginary part of the oscillation <span
+class="math inline">\(\text{Im}(\lambda_{2,3}) = \pm 0.181\)</span>
+corresponds to the flip operation of the <span
+class="math inline">\(Z_2\)</span> residual symmetry, and the decaying
+real part <span class="math inline">\(\text{Re}(\lambda_{2,3}) =
+0.678\)</span> corresponds to the convergence tendency of Birkhoff
+mixing. The oscillation period is <span class="math inline">\(2\pi /
+0.181 \approx 34.7\)</span> time steps—one complete oscillation in about
+35 steps.</p>
+<h3 id="double-stochasticity-and-the-perron-frobenius-theorem">3.4
+Double Stochasticity and the Perron-Frobenius Theorem</h3>
+<p><span class="math inline">\(T\)</span> is a nonnegative irreducible
+doubly stochastic matrix. The Perron-Frobenius Theorem guarantees:</p>
+<ol type="1">
+<li><strong>Principal eigenvalue is 1</strong>: <span
+class="math inline">\(\lambda_1 = 1\)</span> is the maximal eigenvalue
+of <span class="math inline">\(T\)</span>, corresponding to the positive
+eigenvector <span class="math inline">\(\sigma^* &gt; 0\)</span>.</li>
+<li><strong>Uniqueness</strong>: The algebraic multiplicity of <span
+class="math inline">\(\lambda_1 = 1\)</span> is 1 (because <span
+class="math inline">\(T\)</span> is primitive—<span
+class="math inline">\(T^3 &gt; 0\)</span>); the fixed point is
+unique.</li>
+<li><strong>Remaining eigenvalues have modulus less than 1</strong>:
+<span class="math inline">\(|\lambda_{2,3}| &lt; 1\)</span>,
+guaranteeing convergence.</li>
+</ol>
+<p>The premise for applying the Perron-Frobenius Theorem—primitivity of
+<span class="math inline">\(T\)</span>—is guaranteed by <span
+class="math inline">\(T^3 &gt; 0\)</span>. Every entry of <span
+class="math inline">\(T^3\)</span> is greater than zero, meaning any two
+sectors are mutually reachable within 3 steps—the three-field coupling
+network is strongly connected. Strong connectivity guarantees global
+stability of the fixed point—no matter what initial state one starts
+from, after 3 iterations all sectors have been coupled.</p>
+<hr />
+<h2 id="topological-classification-of-the-three-field-coupling">§4
+Topological Classification of the Three-Field Coupling</h2>
+<h3 id="isomorphism-classes-of-the-coupling-graph">4.1 Isomorphism
+Classes of the Coupling Graph</h3>
+<p>Isomorphism classes of the three-field coupling graph are classified
+by the relative magnitudes of the Birkhoff weights <span
+class="math inline">\((\theta_I, \theta_\tau,
+\theta_{\sigma_2})\)</span>:</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Isomorphism Class</th>
+<th style="text-align: left;">Condition</th>
+<th style="text-align: left;">Coupling Dominance</th>
+<th style="text-align: left;">Physical Correspondence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ℳ-dominant</td>
+<td style="text-align: left;">θ_I ≫ θ_τ, θ_σ₂</td>
+<td style="text-align: left;">Electromagnetic dominant</td>
+<td style="text-align: left;">Our universe</td>
+</tr>
+<tr>
+<td style="text-align: left;">Uniform coupling</td>
+<td style="text-align: left;">θ_I ≈ θ_τ ≈ θ_σ₂ ≈ 1/3</td>
+<td style="text-align: left;">Three forces balanced</td>
+<td style="text-align: left;">Grand unified phase</td>
+</tr>
+<tr>
+<td style="text-align: left;">𝒞-dominant</td>
+<td style="text-align: left;">θ_τ ≫ θ_I, θ_σ₂</td>
+<td style="text-align: left;">Weak dominant</td>
+<td style="text-align: left;">Early universe (?)</td>
+</tr>
+<tr>
+<td style="text-align: left;">ℐ-dominant</td>
+<td style="text-align: left;">θ_σ₂ ≫ θ_I, θ_τ</td>
+<td style="text-align: left;">Gravity dominant</td>
+<td style="text-align: left;">Black hole interior (?)</td>
+</tr>
+</tbody>
+</table>
+<p>The four isomorphism classes correspond to four distinct regions on
+the Birkhoff polytope. Our universe belongs to the ℳ-dominant class—the
+electromagnetic interaction strength far exceeds the weak and
+gravitational strengths. The grand unified phase (uniform coupling)
+corresponds to the high-energy phase of the early universe—triality
+symmetry not yet broken or partially restored.</p>
+<h3 id="genus-of-the-coupling-graph">4.2 Genus of the Coupling
+Graph</h3>
+<p>The genus <span class="math inline">\(g\)</span> of the three-field
+coupling graph is determined by the Euler characteristic:</p>
+<p><span class="math display">\[g = \frac{2 - \chi - b}{2}.\]</span></p>
+<p>Substituting <span class="math inline">\(\chi = -1\)</span>, <span
+class="math inline">\(b = 1\)</span> (one boundary component—the
+three-field coupling graph has one “opening” corresponding to the
+missing 8th step of Bott periodicity):</p>
+<p><span class="math display">\[g = \frac{2 - (-1) - 1}{2} = \frac{2}{2}
+= 1.\]</span></p>
+<p>Genus <span class="math inline">\(g = 1\)</span> indicates that the
+three-field coupling graph can be embedded on a torus. The two
+non-trivial loops of the torus correspond to the two independent
+three-field cycles—the forward 3-cycle <span
+class="math inline">\(P_\tau\)</span> and the reverse 3-cycle <span
+class="math inline">\(P_{\tau^{-1}}\)</span>. These two cycles
+constitute a basis for the one-dimensional homology of the torus.</p>
+<h3 id="topological-classification-and-physical-correspondence">4.3
+Topological Classification and Physical Correspondence</h3>
+<p>The topological classification yields a complete physical picture of
+the three-field coupling:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Topological Feature</th>
+<th style="text-align: center;">Value</th>
+<th style="text-align: left;">Physical Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Genus</td>
+<td style="text-align: center;">g = 1</td>
+<td style="text-align: left;">Torus topology—Berry phase 2π</td>
+</tr>
+<tr>
+<td style="text-align: left;">Boundary components</td>
+<td style="text-align: center;">b = 1</td>
+<td style="text-align: left;">Bott periodicity 8th step not closed</td>
+</tr>
+<tr>
+<td style="text-align: left;">Automorphism group</td>
+<td style="text-align: center;">Z₂</td>
+<td style="text-align: left;">Triality breaking residual</td>
+</tr>
+<tr>
+<td style="text-align: left;">Fundamental group</td>
+<td style="text-align: center;">π₁ = Z × Z</td>
+<td style="text-align: left;">Two independent cycles</td>
+</tr>
+</tbody>
+</table>
+<p>The two generators of the fundamental group <span
+class="math inline">\(\pi_1 = \mathbb{Z} \times \mathbb{Z}\)</span>
+correspond to the weak interaction (forward cycle) and gravitational
+interaction (reverse cycle). The electromagnetic interaction does not
+correspond to a non-trivial loop—it is self-coupling (identity element)
+and topologically trivial.</p>
+<hr />
+<h2 id="algebraic-closure-of-sector-coupling">§5 Algebraic Closure of
+Sector Coupling</h2>
+<h3 id="definition-of-closure">5.1 Definition of Closure</h3>
+<p>Algebraic closure of the three-field coupling means: all matrix
+entries of the three-field coupling matrix <span
+class="math inline">\(M_5\)</span> are uniquely determined by a finite
+set of algebraic parameters (<span class="math inline">\(\theta_I,
+\theta_\tau, \theta_{\sigma_2}, \chi_M, \chi_C, \chi_I\)</span>), and
+these parameters are uniquely locked by Bott periodicity, triality
+breaking, and the Birkhoff fixed point—there are no free parameters.</p>
+<p>Specific meanings of closure: - <strong>Algebraic determination of
+parameters</strong>: all 6 parameters are derived from algebraic
+structure, requiring no empirical input. - <strong>Rigidity of
+mappings</strong>: <span class="math inline">\(\text{Bott} \to
+\chi\)</span>, <span class="math inline">\(\text{triality} \to
+T\)</span>, <span class="math inline">\(\text{fixed point} \to
+\theta\)</span>; each step of the mapping is algebraically determined. -
+<strong>Testability of predictions</strong>: closure guarantees that
+predictions are definite—there are no adjustable parameters to “fit”
+experiment.</p>
+<h3 id="closure-and-cross-region-information-import">5.2 Closure and
+Cross-Region Information Import</h3>
+<p>Algebraic closure is the mathematical guarantee of cross-region
+information import. Closure ensures:</p>
+<ol type="1">
+<li><strong>Physical constants are not free parameters</strong>—they are
+uniquely determined by algebraic structure.</li>
+<li><strong>The precision of physical constants is limited only by
+computational accuracy</strong>—there are no “unknown” parameters.</li>
+<li><strong>Cross-region information import is
+bidirectional</strong>—from pure geometry to physics (e.g., from Bott
+periodicity to <span class="math inline">\(\alpha^{-1}\)</span>) and
+from physics feeding back to geometry (e.g., from <span
+class="math inline">\(\alpha^{-1} \approx 137\)</span> inferring <span
+class="math inline">\(\chi\)</span>) are both definite.</li>
+</ol>
+<p>This closure is the key distinction between Conjugate Spectral
+Geometry and other unified theories (such as string theory)—string
+theory possesses <span class="math inline">\(10^{500}\)</span> landscape
+vacua, whereas Conjugate Spectral Geometry has only one algebraically
+closed three-field coupling structure (the landscape <span
+class="math inline">\(S \in [24, 968]\)</span> is a continuous
+variation, but the coupling structure itself is algebraically
+closed).</p>
+<h3 id="falsifiability-of-closure">5.3 Falsifiability of Closure</h3>
+<p>Algebraic closure is falsifiable. If any of the following situations
+is discovered, the algebraic closure of the three-field coupling is
+falsified:</p>
+<ol type="1">
+<li><strong>Existence of independently adjustable free
+parameters</strong>: if experiment requires introducing a free parameter
+not present in the algebraic structure to match observation, closure is
+broken.</li>
+<li><strong>Parameter inconsistency</strong>: if the same parameter
+derived from different physical constants is inconsistent (e.g., <span
+class="math inline">\(\theta_I\)</span> derived from <span
+class="math inline">\(\alpha\)</span> and from <span
+class="math inline">\(\sin^2\theta_W\)</span> differ), closure is
+broken.</li>
+<li><strong>Irreconcilable discrepancy between prediction and
+experiment</strong>: if the predictions given by closure have
+ineliminable deviations from experiment (beyond running corrections and
+observational errors), closure is falsified.</li>
+</ol>
+<p>The falsifiability of algebraic closure makes the three-field
+coupling theory a scientific theory—it provides definite, testable
+predictions, not unfalsifiable philosophical statements.</p>
+<hr />
+<h2 id="theorem-index">Theorem Index</h2>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 28%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Number</th>
+<th style="text-align: left;">Content</th>
+<th style="text-align: center;">Proof Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Theorem 6.1.1.01</td>
+<td style="text-align: left;">Three-Field Coupling Matrix Theorem</td>
+<td style="text-align: center;">Proved (this article §1.2)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 07:53:34</p>
+  </footer>
+</div>
+</body>
+</html>

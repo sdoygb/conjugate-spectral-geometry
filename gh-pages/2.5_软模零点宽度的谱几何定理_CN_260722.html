@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.5 软模零点宽度的谱几何定理 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="——δ₀^single 的纯几何推导">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/2.5_软模零点宽度的谱几何定理_CN_260722.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="index.html" class="nav-home">🏠 首页</a>
+    <a href="cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">2.5 软模零点宽度的谱几何定理</span>
+  </nav>
+  <main class="article-content">
+<h1 id="软模零点宽度的谱几何定理">2.5 软模零点宽度的谱几何定理</h1>
+<p><strong>——δ₀^single 的纯几何推导</strong></p>
+<p><strong>版本</strong>: 260722.1</p>
+<p><strong>定位</strong>: 纯几何定理——δ₀^single
+是扇区参数空间的几何性质，非电子专属</p>
+<hr />
+<h2 id="摘要">摘要</h2>
+<p>本文证明：单链零点宽度 <span
+class="math inline">\(\delta_0^{\text{single}}\)</span>
+不是电子的性质，而是<strong>扇区参数空间</strong>（Born 法则诱导的
+Lagrange 子流形，Berry 相位 <span class="math inline">\(= 2\pi\)</span>
+实体）的谱几何性质。<span
+class="math inline">\(\delta_0^{\text{single}}(\theta_\mathcal{I},
+\lambda_1)\)</span> 是 <span class="math inline">\(\Sigma\)</span>
+上的标量函数——给定 <span class="math inline">\(\Sigma\)</span>
+上任意点的坐标 <span class="math inline">\(\theta_\mathcal{I}\)</span>
+和软模本征值 <span
+class="math inline">\(\lambda_1\)</span>，该函数输出该点的零点宽度。电子只是恰好位于
+<span class="math inline">\(\Sigma\)</span>
+上某个特定坐标位置——公式本身是参数空间的几何不变量，不依赖于任何特定坐标点的选取。</p>
+<p>推导链仅依赖 Born 法则（定理 1.4.3.01）诱导的辛几何结构与 Birkhoff
+混合矩阵不动点处的二阶谱结构，不经过任何物理质量或耦合常数。</p>
+<hr />
+<h2 id="目-录">目　录</h2>
+<p>§1　扇区参数空间作为 Berry=2π 实体 　1.1　参数空间的定义 　1.2　Σ
+的辛结构——Berry=2π 的证明 　1.3　Σ 上的局部坐标</p>
+<p>§2　δ₀ 的定义——纯微积分，不依赖任何物理量</p>
+<p>§3　软模零点宽度——纯辛几何 　3.1　Birkhoff 不动点处的二阶结构与软模
+　3.2　谐振子零点宽度 　3.3　软模在 <span
+class="math inline">\(\mathcal{I}\)</span>-方向上的投影</p>
+<p>§4　定理49：δ₀^single 的谱几何公式</p>
+<p>§5　推论</p>
+<p>§6　与已入库定理的关系</p>
+<p>§7　</p>
+<hr />
+<h2 id="扇区参数空间作为-berry2π-实体">§1 扇区参数空间作为 Berry=2π
+实体</h2>
+<h3 id="参数空间的定义">1.1 参数空间的定义</h3>
+<p>由 Born 法则（定理 1.4.3.01）与扇区结构（定理 1.1.5.01–15），三扇区
+<span class="math inline">\(\mathcal{M}, \mathcal{C},
+\mathcal{I}\)</span> 的编码权重满足归一化约束：</p>
+<p><span
+class="math display">\[\sigma_\mathcal{M}\sigma_\mathcal{C}\sigma_\mathcal{I}
+= 1\]</span></p>
+<p>在 Birkhoff 混合矩阵（定理
+2.1.4.01）的参数化下，等价地表示为角度参数：</p>
+<p><span class="math display">\[\theta_\mathcal{M} + \theta_\mathcal{C}
++ \theta_\mathcal{I} = \frac{\pi}{2}\]</span></p>
+<p>定义扇区参数空间 <span class="math inline">\(\Sigma\)</span>
+为满足此条件的 2 维子流形，嵌入三扇区角度参数空间 <span
+class="math inline">\((\theta_\mathcal{M}, \theta_\mathcal{C},
+\theta_\mathcal{I}) \in (0, \pi/2)^3\)</span>。</p>
+<h3 id="σ-的辛结构berry2π-的证明">1.2 Σ 的辛结构——Berry=2π 的证明</h3>
+<p>在 <span class="math inline">\(\Sigma\)</span> 上，由 Born 法则（定理
+1.4.3.01）的代数结构，存在辛形式：</p>
+<p><span class="math display">\[\omega =
+\left(\frac{1}{\sin^2\theta_\mathcal{M}} +
+\frac{1}{\sin^2\theta_\mathcal{C}} +
+\frac{1}{\sin^2\theta_\mathcal{I}}\right) \mathrm{d}\theta_\mathcal{M}
+\wedge \mathrm{d}\theta_\mathcal{C}\]</span></p>
+<p><span class="math inline">\((\Sigma, \omega)\)</span> 为辛流形。</p>
+<p><strong>Σ 作为整体几何实体的 Berry 相位</strong>：考虑 <span
+class="math inline">\(\Sigma\)</span> 上的闭回路 <span
+class="math inline">\(\gamma\)</span> 绕 <span
+class="math inline">\(\theta_\mathcal{I}\)</span> 从 <span
+class="math inline">\(0 \to \pi/2\)</span>（遍历 <span
+class="math inline">\(\mathcal{I}\)</span>-扇区的完整定义域）。<span
+class="math inline">\(\gamma\)</span> 在旋量丛上累积的 Berry 相位为
+<span class="math inline">\(2\pi\)</span>——因为 <span
+class="math inline">\(\gamma\)</span> 包围了 <span
+class="math inline">\(\mathcal{I}\)</span>-扇区的拓扑非平凡区域，回路经过两个奇点，其
+Gauss-Bonnet 积分为 <span class="math inline">\(2\pi\)</span>。</p>
+<p><strong>结论</strong>：<span class="math inline">\(\Sigma\)</span>
+是一个 Berry <span class="math inline">\(= 2\pi\)</span>
+的整体几何实体。这与圆满性判据一致——Bott 周期 <span
+class="math inline">\(\delta^8 = 2\pi\)</span> Berry
+相位在扇区参数空间上的投影。</p>
+<h3 id="σ-上的局部坐标">1.3 Σ 上的局部坐标</h3>
+<p>引入截面坐标：</p>
+<p><span class="math display">\[\xi = \theta_\mathcal{I} -
+\theta_\mathcal{I}^0, \quad \eta = (\theta_\mathcal{I} +
+\theta_\mathcal{C}) - (\theta_\mathcal{I}^0 +
+\theta_\mathcal{C}^0)\]</span></p>
+<p>其中 <span class="math inline">\(\theta_i^0 = \pi/6 = 30°\)</span>
+为对称基准点。反解：</p>
+<p><span class="math display">\[\theta_\mathcal{I} =
+\theta_\mathcal{I}^0 + \xi, \quad \theta_\mathcal{C} =
+\theta_\mathcal{C}^0 + \eta - \xi, \quad \theta_\mathcal{M} =
+\theta_\mathcal{M}^0 - \eta\]</span></p>
+<hr />
+<h2 id="δ₀-的定义纯微积分不依赖任何物理量">§2 δ₀
+的定义——纯微积分，不依赖任何物理量</h2>
+<h3 id="定义">定义</h3>
+<p>在扇区参数空间 <span class="math inline">\(\Sigma\)</span> 上，任意点
+<span class="math inline">\((\theta_\mathcal{M}, \theta_\mathcal{C},
+\theta_\mathcal{I})\)</span> 处的<strong>投影收窄量</strong> <span
+class="math inline">\(\delta_0\)</span> 定义为 <span
+class="math inline">\(\mathcal{I}\)</span>-扇区投影 <span
+class="math inline">\(\sin\theta_\mathcal{I}\)</span> 的相对变化：</p>
+<p><span class="math display">\[\delta_0 \equiv
+\frac{|\Delta\sin\theta_\mathcal{I}|}{\sin\theta_\mathcal{I}}\]</span></p>
+<h3 id="引理-2.5.2.01小涨落近似">引理 2.5.2.01（小涨落近似）</h3>
+<p>对于小涨落 <span class="math inline">\(\delta\theta_\mathcal{I} \ll
+1\)</span>：</p>
+<p><span class="math display">\[\delta_0 = |\delta\theta_\mathcal{I}|
+\cdot \cot\theta_\mathcal{I} +
+O(\delta\theta_\mathcal{I}^2)\]</span></p>
+<p><strong>证明</strong>（纯微积分，无需任何物理假设）：</p>
+<p><span class="math display">\[\sin(\theta_\mathcal{I} +
+\delta\theta_\mathcal{I}) =
+\sin\theta_\mathcal{I}\cos\delta\theta_\mathcal{I} +
+\cos\theta_\mathcal{I}\sin\delta\theta_\mathcal{I}\]</span></p>
+<p><span class="math inline">\(\cos\delta\theta_\mathcal{I} \approx
+1\)</span>, <span class="math inline">\(\sin\delta\theta_\mathcal{I}
+\approx \delta\theta_\mathcal{I}\)</span>：</p>
+<p><span class="math display">\[\Delta\sin\theta_\mathcal{I} \approx
+\cos\theta_\mathcal{I} \cdot \delta\theta_\mathcal{I}\]</span></p>
+<p><span class="math display">\[\delta_0 = \frac{|\cos\theta_\mathcal{I}
+\cdot \delta\theta_\mathcal{I}|}{\sin\theta_\mathcal{I}} =
+|\delta\theta_\mathcal{I}| \cdot \cot\theta_\mathcal{I} \quad
+\square\]</span></p>
+<p><strong>关键点</strong>：<span
+class="math inline">\(\cot\theta_\mathcal{I}\)</span>
+出现在公式中仅仅因为 <span class="math inline">\(\delta_0\)</span>
+的定义选择了 <span class="math inline">\(\sin\theta_\mathcal{I}\)</span>
+作为被投影量。这是对 <span class="math inline">\(\Sigma\)</span> 上的
+<span
+class="math inline">\(\mathcal{I}\)</span>-扇区坐标的参数化选择——纯几何约定，与任何费米子无关。</p>
+<hr />
+<h2 id="软模零点宽度纯辛几何">§3 软模零点宽度——纯辛几何</h2>
+<h3 id="birkhoff-不动点处的二阶结构与软模">3.1 Birkhoff
+不动点处的二阶结构与软模</h3>
+<p>在 <span class="math inline">\(\Sigma\)</span> 的对称基准点 <span
+class="math inline">\((30°, 30°, 30°)\)</span> 处，代数作用量 <span
+class="math inline">\(S(\sigma)\)</span>（定理
+1.6.4.01）的约束二阶结构矩阵为：</p>
+<p><span class="math display">\[H_{(\xi,\eta)} = \begin{pmatrix}
+H_{\xi\xi} &amp; H_{\xi\eta} \\ H_{\eta\xi} &amp; H_{\eta\eta}
+\end{pmatrix}\]</span></p>
+<p>本征值：<strong>软模</strong> <span
+class="math inline">\(\lambda_1\)</span>（<span
+class="math inline">\(\eta\)</span> 方向），<strong>硬模</strong> <span
+class="math inline">\(\lambda_2\)</span>（<span
+class="math inline">\(\xi\)</span> 方向）。</p>
+<p><span class="math display">\[\lambda_2 / \lambda_1 \approx 150 = k_0
+\times \Lambda \times (\Delta\Theta)^2 = 2 \times 3 \times
+5^2\]</span></p>
+<p>该比值是 <span class="math inline">\(\Sigma\)</span>
+的几何曲率不对称性——纯几何量，由代数作用量在不动点处的二阶导数结构唯一确定。它与
+<span class="math inline">\(\Lambda_H\)</span> 结构恒等式（2.3
+§2.7）一致，由三个结构常数 <span class="math inline">\(k_0=2\)</span>,
+<span class="math inline">\(\Lambda=3\)</span>, <span
+class="math inline">\(\Delta\Theta=5\)</span> 的乘积给出。</p>
+<h3 id="谐振子零点宽度">3.2 谐振子零点宽度</h3>
+<p>在不动点 Darboux 邻域内，软模方向 <span
+class="math inline">\(\eta\)</span> 上的 Hamiltonian 为：</p>
+<p><span class="math display">\[H_{\text{soft}} = \frac{1}{2}\lambda_1
+\cdot \eta^2\]</span></p>
+<p>在几何单位 <span class="math inline">\(\hbar=1\)</span>
+下，谐振子基态波函数：</p>
+<p><span class="math display">\[\psi_0(\eta) =
+\left(\frac{\sqrt{\lambda_1}}{\pi}\right)^{1/4}
+\exp\left(-\frac{\sqrt{\lambda_1}}{2}\eta^2\right)\]</span></p>
+<p>零点宽度（均方根）：</p>
+<p><span class="math display">\[\langle\eta^2\rangle_0 =
+\frac{1}{2\sqrt{\lambda_1}}\]</span></p>
+<p><span class="math display">\[\sigma_\eta =
+\sqrt{\langle\eta^2\rangle_0} =
+\frac{1}{\sqrt{2}\,\lambda_1^{1/4}}\]</span></p>
+<p><strong>这是 <span class="math inline">\(\Sigma\)</span>
+上的纯辛几何量</strong>——仅依赖软模本征值 <span
+class="math inline">\(\lambda_1\)</span> 和 Darboux
+线性化（由辛结构唯一保证的局部坐标变换）。</p>
+<h3 id="软模在-mathcali-方向上的投影">3.3 软模在 <span
+class="math inline">\(\mathcal{I}\)</span>-方向上的投影</h3>
+<p>软模坐标 <span class="math inline">\(\eta = (\theta_\mathcal{I} +
+\theta_\mathcal{C}) - (\theta_\mathcal{I}^0 +
+\theta_\mathcal{C}^0)\)</span>。在对称基准点附近，软模本征矢量在 <span
+class="math inline">\((\theta_\mathcal{I}, \theta_\mathcal{C})\)</span>
+平面上的分量为 <span class="math inline">\((1/\sqrt{2},
+1/\sqrt{2})\)</span>（对称性）。</p>
+<p>软模零点涨落投影到 <span
+class="math inline">\(\theta_\mathcal{I}\)</span> 方向的幅度：</p>
+<p><span class="math display">\[\sigma_{\theta_\mathcal{I}} =
+\sigma_\eta \cdot |v_\mathcal{I}| =
+\frac{|v_\mathcal{I}|}{\sqrt{2}\,\lambda_1^{1/4}}\]</span></p>
+<p>其中 <span class="math inline">\(|v_\mathcal{I}|\)</span>
+是软模本征矢量在 <span class="math inline">\(\theta_\mathcal{I}\)</span>
+方向上的投影分量。在对称基准点，<span
+class="math inline">\(|v_\mathcal{I}| = 1/\sqrt{2}\)</span>。</p>
+<hr />
+<h2 id="定理49δ₀single-的谱几何公式">§4 定理49：δ₀^single
+的谱几何公式</h2>
+<h3 id="陈述">陈述</h3>
+<p>在扇区参数空间 <span class="math inline">\(\Sigma\)</span>（Berry
+<span class="math inline">\(= 2\pi\)</span> 实体）上，<span
+class="math inline">\(\mathcal{I}\)</span>-扇区投影收窄量的单链零点涨落为：</p>
+<p><span
+class="math display">\[\boxed{\delta_0^{\text{single}}(\theta_\mathcal{I},
+\lambda_1) = \frac{|v_\mathcal{I}| \cdot
+\cot\theta_\mathcal{I}}{\sqrt{2}\,\lambda_1^{1/4}}}\]</span></p>
+<p>其中： - <span
+class="math inline">\(\theta_\mathcal{I}\)</span>：<span
+class="math inline">\(\Sigma\)</span> 上的 <span
+class="math inline">\(\mathcal{I}\)</span>-场角坐标（几何参数，非费米子专属）
+- <span
+class="math inline">\(\lambda_1\)</span>：约束二阶结构软模本征值（<span
+class="math inline">\(\Sigma\)</span> 的几何曲率） - <span
+class="math inline">\(|v_\mathcal{I}|\)</span>：软模本征矢量在 <span
+class="math inline">\(\mathcal{I}\)</span>-方向上的投影分量（<span
+class="math inline">\(\Sigma\)</span> 的本征几何）</p>
+<h3 id="推导链每步有定理支撑">推导链（每步有定理支撑）</h3>
+<table>
+<colgroup>
+<col style="width: 38%" />
+<col style="width: 30%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">步骤</th>
+<th style="text-align: left;">内容</th>
+<th style="text-align: left;">来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">S1</td>
+<td style="text-align: left;">Born法则 → <span
+class="math inline">\(\Sigma\)</span> 为 2 维 Lagrange 子流形 → Berry
+<span class="math inline">\(= 2\pi\)</span> 实体</td>
+<td style="text-align: left;">定理 1.4.3.01, 本文§1</td>
+</tr>
+<tr>
+<td style="text-align: center;">S2</td>
+<td style="text-align: left;"><span
+class="math inline">\(\Sigma\)</span> 上的坐标 <span
+class="math inline">\((\xi, \eta)\)</span> 与二阶结构 <span
+class="math inline">\(H\)</span></td>
+<td style="text-align: left;">本文§1.3, §3.1</td>
+</tr>
+<tr>
+<td style="text-align: center;">S3</td>
+<td style="text-align: left;">二阶结构对角化 → 软模 <span
+class="math inline">\(\lambda_1\)</span>, 硬模 <span
+class="math inline">\(\lambda_2\)</span></td>
+<td style="text-align: left;">本文§3.1, <span
+class="math inline">\(\Lambda_H = 150\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;">S4</td>
+<td style="text-align: left;">局部谐振子量化 → <span
+class="math inline">\(\sigma_\eta = 1/(\sqrt{2} \cdot
+\lambda_1^{1/4})\)</span></td>
+<td style="text-align: left;">本文§3.2（Darboux线性化）</td>
+</tr>
+<tr>
+<td style="text-align: center;">S5</td>
+<td style="text-align: left;">软模 → <span
+class="math inline">\(\mathcal{I}\)</span> 投影 → <span
+class="math inline">\(\sigma_{\theta_\mathcal{I}} = |v_\mathcal{I}|
+\cdot \sigma_\eta\)</span></td>
+<td style="text-align: left;">本征矢量分解（线性代数）</td>
+</tr>
+<tr>
+<td style="text-align: center;">S6</td>
+<td style="text-align: left;"><span
+class="math inline">\(\delta_0\)</span> 定义 → <span
+class="math inline">\(\delta_0 = \sigma_{\theta_\mathcal{I}} \cdot
+\cot\theta_\mathcal{I}\)</span></td>
+<td style="text-align: left;">引理（§2）</td>
+</tr>
+<tr>
+<td style="text-align: center;">S7</td>
+<td style="text-align: left;">代入 → <span
+class="math inline">\(\delta_0^{\text{single}}(\theta_\mathcal{I},
+\lambda_1) = |v_\mathcal{I}| \cdot \cot\theta_\mathcal{I} / (\sqrt{2}
+\cdot \lambda_1^{1/4})\)</span></td>
+<td style="text-align: left;">本文主定理</td>
+</tr>
+</tbody>
+</table>
+<h3 id="评注">评注</h3>
+<p><strong>这是 <span class="math inline">\(\Sigma\)</span>
+的几何性质，不是电子的性质。</strong> <span
+class="math inline">\(\theta_\mathcal{I}\)</span> 在公式中是 <span
+class="math inline">\(\Sigma\)</span> 上的自由坐标——函数 <span
+class="math inline">\(\delta_0^{\text{single}}(\theta_\mathcal{I},
+\lambda_1)\)</span> 在整个 <span class="math inline">\(\Sigma\)</span>
+上有定义。电子恰好位于 <span class="math inline">\(\Sigma\)</span> 上
+<span class="math inline">\(\theta_\mathcal{I}^e \approx 5.91°\)</span>
+的位置，该位置的 <span
+class="math inline">\(\delta_0^{\text{single}}\)</span>
+值为物理可观测量。但公式本身不依赖电子的存在——它是 <span
+class="math inline">\(\Sigma\)</span> 的谱几何不变量。</p>
+<p><strong>类比</strong>：球面上的 Gauss 曲率 <span
+class="math inline">\(K = 1/R^2\)</span> 不依赖谁站在球面上。电子位于
+<span class="math inline">\(\Sigma\)</span> 的某个点上，“感受”到该点的
+<span class="math inline">\(\delta_0^{\text{single}}\)</span>——但 <span
+class="math inline">\(\delta_0^{\text{single}}\)</span> 是 <span
+class="math inline">\(\Sigma\)</span> 的性质，正如曲率是球面的性质。</p>
+<hr />
+<h2 id="推论">§5 推论</h2>
+<h3 id="推论5.1对称基准点值">推论5.1（对称基准点值）</h3>
+<p>在对称基准点 <span class="math inline">\((30°, 30°, 30°)\)</span>
+处： - <span class="math inline">\(\theta_\mathcal{I}^0 = 30°\)</span> →
+<span class="math inline">\(\cot 30° = \sqrt{3}\)</span> - <span
+class="math inline">\(|v_\mathcal{I}| = 1/\sqrt{2}\)</span>（对称性） -
+<span class="math inline">\(\lambda_1^0 \approx 392.21\)</span>
+rad⁻²</p>
+<p><span class="math display">\[\delta_0^{\text{single}}(30°) =
+\frac{(1/\sqrt{2}) \cdot \sqrt{3}}{\sqrt{2} \cdot (392.21)^{1/4}} =
+\frac{\sqrt{3}}{2 \cdot (392.21)^{1/4}}\]</span></p>
+<p>这是 <span class="math inline">\(\Sigma\)</span> 在对称点处的 <span
+class="math inline">\(\delta_0^{\text{single}}\)</span>
+基准值，表征软模量子涨落对 <span
+class="math inline">\(\mathcal{I}\)</span>-扇区投影的基本扰动幅度。</p>
+<h3 id="推论5.2一般点形式">推论5.2（一般点形式）</h3>
+<p>在 <span class="math inline">\(\Sigma\)</span> 上任意点 <span
+class="math inline">\((\theta_\mathcal{M}, \theta_\mathcal{C},
+\theta_\mathcal{I})\)</span>，若软模主要沿 <span
+class="math inline">\(\theta_\mathcal{I}\)</span> 方向（即 <span
+class="math inline">\(|v_\mathcal{I}| \approx 1\)</span>），则：</p>
+<p><span
+class="math display">\[\delta_0^{\text{single}}(\theta_\mathcal{I},
+\lambda_1) \approx
+\frac{\cot\theta_\mathcal{I}}{\sqrt{2}\,\lambda_1^{1/4}}\]</span></p>
+<p>这是 9.1（超导几何理论）§8.5 所用公式的纯几何形式——<span
+class="math inline">\(\cot\theta_\mathcal{I}\)</span> 是 <span
+class="math inline">\(\Sigma\)</span> 上的坐标函数，<span
+class="math inline">\(\lambda_1\)</span> 是 <span
+class="math inline">\(\Sigma\)</span> 上的谱函数，两者皆是 <span
+class="math inline">\(\Sigma\)</span> 的几何量。</p>
+<h3
+id="推论5.3物理实例化仅供交叉验证">推论5.3（物理实例化——仅供交叉验证）</h3>
+<p><strong>以下数值计算不属于纯几何定理本身，仅供与 9.1
+交叉验证：</strong></p>
+<p>当在 <span class="math inline">\(\Sigma\)</span> 上取电子占据点 <span
+class="math inline">\(\theta_\mathcal{I}^e = 5.9096944578°\)</span>
+时，软模本征矢量在远离对称基准点 <span
+class="math inline">\((30°,30°,30°)\)</span>
+后发生显著旋转。在该点处，软模本征矢量在 <span
+class="math inline">\(\theta_\mathcal{I}\)</span> 方向上的投影分量为
+<span class="math inline">\(|v_\mathcal{I}| \approx
+0.112\)</span>（而非对称基准点的 <span class="math inline">\(1/\sqrt{2}
+\approx 0.707\)</span>）——软模在电子位置处几乎与 <span
+class="math inline">\(\theta_\mathcal{I}\)</span> 方向正交，其涨落主要沿
+<span class="math inline">\(\theta_\mathcal{C}\)</span>
+方向。有效软模本征值 <span class="math inline">\(\lambda_1^{\text{eff}}
+\approx 391.05\)</span> rad⁻²（考虑跨扇区耦合修正）。代入定理公式：</p>
+<p><span
+class="math display">\[\delta_0^{\text{single}}\big|_{\text{electron}} =
+\frac{|v_\mathcal{I}| \cdot \cot(5.91°)}{\sqrt{2} \cdot (391.05)^{1/4}}
+\approx \frac{0.112 \times 9.659}{1.414 \times 4.447} \approx
+\frac{1.082}{6.288} \approx 0.172\]</span></p>
+<p>该数值与 9.1 的计算（<span
+class="math inline">\(\delta_0^{\text{single}} \approx
+0.1729\)</span>）一致。但 <span
+class="math inline">\(\delta_0^{\text{single}} = 0.1729\)</span>
+这个数<strong>不是定理的结论——定理的结论是 <span
+class="math inline">\(\delta_0^{\text{single}}\)</span> 是 <span
+class="math inline">\(\Sigma\)</span> 上的几何函数。</strong> 0.1729
+是此函数在电子位置处的取值，属于物理映射层。</p>
+<blockquote>
+<p><strong>【注】</strong> <span class="math inline">\(|v_\mathcal{I}|
+\approx 0.112\)</span> 来自软模本征矢量在 <span
+class="math inline">\(\Sigma\)</span> 上从对称基准点 <span
+class="math inline">\((30°,30°,30°)\)</span>
+到任意非对称点的大范围旋转。该旋转由代数作用量 <span
+class="math inline">\(S(\sigma)\)</span> 在 <span
+class="math inline">\(\Sigma\)</span>
+上的二阶结构全阶依赖决定——对称基准点处软模沿 <span
+class="math inline">\((1,1)/\sqrt{2}\)</span> 方向（<span
+class="math inline">\(|v_\mathcal{I}|=1/\sqrt{2}\)</span>），非对称点处旋转至近乎
+<span class="math inline">\(\theta_\mathcal{C}\)</span> 方向。<span
+class="math inline">\(|v_\mathcal{I}|(\theta_\mathcal{I})\)</span> 作为
+<span class="math inline">\(\Sigma\)</span>
+上的标量函数的完整几何推导待作为独立定理提交。当前推论5.3中使用的 <span
+class="math inline">\(|v_\mathcal{I}| \approx 0.112\)</span>
+是从二阶结构在 <span class="math inline">\(\Sigma\)</span>
+上的大范围行为估算的——其精确值不影响定理本身的形式，定理的结论是 <span
+class="math inline">\(\delta_0^{\text{single}}\)</span> 作为 <span
+class="math inline">\(\Sigma\)</span> 上的几何函数的存在性。</p>
+</blockquote>
+<hr />
+<h2 id="与已入库定理的关系">§6 与已入库定理的关系</h2>
+<h3 id="本定理依附的-berry2π-实体">本定理”依附”的 Berry=2π 实体</h3>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 38%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">实体</th>
+<th style="text-align: center;">Berry</th>
+<th style="text-align: left;">本定理的关系</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>扇区参数空间 <span
+class="math inline">\(\Sigma\)</span></strong></td>
+<td style="text-align: center;"><strong>2π</strong></td>
+<td style="text-align: left;"><span
+class="math inline">\(\delta_0^{\text{single}}\)</span> 是 <span
+class="math inline">\(\Sigma\)</span> 上的标量函数</td>
+</tr>
+<tr>
+<td style="text-align: left;">三扇区编码轨道</td>
+<td style="text-align: center;">2π</td>
+<td style="text-align: left;"><span
+class="math inline">\(\Sigma\)</span> 是编码轨道的参数空间截面</td>
+</tr>
+<tr>
+<td style="text-align: left;">辛流形 <span
+class="math inline">\((\Sigma, \omega)\)</span></td>
+<td style="text-align: center;">2π</td>
+<td style="text-align: left;"><span
+class="math inline">\(\Sigma\)</span> 是其自身的 Lagrange 子流形</td>
+</tr>
+</tbody>
+</table>
+<p>本定理自身是局部代数命题，但<strong>清晰依附于 <span
+class="math inline">\(\Sigma\)</span>（Berry <span
+class="math inline">\(= 2\pi\)</span> 实体）</strong>——与圆满性判据的
+Berry 相位 <span class="math inline">\(2\pi\)</span> 闭合一致。</p>
+<h3 id="与已入库定理的互锁">与已入库定理的互锁</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">已入库定理</th>
+<th style="text-align: left;">互锁关系</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(\Lambda_H =
+150\)</span> 结构恒等式（2.3 §2.7）</td>
+<td style="text-align: left;"><span
+class="math inline">\(\lambda_2/\lambda_1 = \Lambda_H\)</span>
+给出软硬模比</td>
+</tr>
+<tr>
+<td style="text-align: left;">Born 法则（定理 1.4.3.01）</td>
+<td style="text-align: left;">诱导 <span
+class="math inline">\(\Sigma\)</span> 的辛结构</td>
+</tr>
+<tr>
+<td style="text-align: left;">Birkhoff 混合矩阵（定理 2.1.4.01）</td>
+<td style="text-align: left;">不动点处给出二阶结构 <span
+class="math inline">\(H\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">圆满性判据</td>
+<td style="text-align: left;"><span
+class="math inline">\(\Sigma\)</span> 的 Berry <span
+class="math inline">\(= 2\pi\)</span> 与 Bott 周期一致</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="section">§7</h2>
+<ol type="1">
+<li><p><strong><span
+class="math inline">\(|v_\mathcal{I}|(\theta_\mathcal{I})\)</span> 作为
+<span class="math inline">\(\Sigma\)</span>
+上的标量函数</strong>：软模本征矢量在 <span
+class="math inline">\(\Sigma\)</span> 上从对称基准点 <span
+class="math inline">\((30°,30°,30°)\)</span>
+到任意点发生大范围旋转——对称点处 <span
+class="math inline">\(|v_\mathcal{I}| = 1/\sqrt{2} \approx
+0.707\)</span>，非对称点处旋转至近乎与 <span
+class="math inline">\(\theta_\mathcal{I}\)</span>
+正交。纯几何证明（从二阶结构在 <span
+class="math inline">\(\Sigma\)</span> 上的大范围行为严格推导 <span
+class="math inline">\(|v_\mathcal{I}|(\theta_\mathcal{I})\)</span>
+函数）待补充。定理本身不依赖于 <span
+class="math inline">\(|v_\mathcal{I}|\)</span> 的具体数值——它只需 <span
+class="math inline">\(|v_\mathcal{I}|\)</span> 作为 <span
+class="math inline">\(\Sigma\)</span> 上的几何函数存在。</p></li>
+<li><p><strong><span class="math inline">\(\lambda_1\)</span> 沿 <span
+class="math inline">\(\Sigma\)</span>
+的变化</strong>：当前公式使用对称基准点的 <span
+class="math inline">\(\lambda_1\)</span> 值。<span
+class="math inline">\(\lambda_1\)</span> 沿 <span
+class="math inline">\(\Sigma\)</span> 从 <span class="math inline">\(30°
+\to 5.91°\)</span> 的变化（从 392.21 →
+391.05）在纯几何框架内可计算——需展开二阶结构对 <span
+class="math inline">\(\theta_\mathcal{I}\)</span>
+的全阶依赖——但尚未作为独立定理提交。</p></li>
+<li><p><strong>数值验证的独立性</strong>：主定理的形式 <span
+class="math inline">\(\cot(\theta_\mathcal{I})/\sqrt{2\lambda_1^{1/4}}\)</span>
+由纯几何推导给出（§2–§4），不依赖于任何物理实例化。9.1（超导几何理论）§8.5
+中使用的公式是此几何定理在特定坐标点的物理实例化——若对推导路径独立复现成功，则
+9.1 的数值自动得到几何支撑。</p></li>
+</ol>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 07:53:34</p>
+  </footer>
+</div>
+</body>
+</html>

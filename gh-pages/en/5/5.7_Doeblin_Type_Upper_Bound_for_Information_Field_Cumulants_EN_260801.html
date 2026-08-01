@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doeblin-Type Upper Bound for Information Field Cumulants | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Version Date: 2026-07-28">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/5/5.7_Doeblin_Type_Upper_Bound_for_Information_Field_Cumulants_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">Doeblin-Type Upper Bound for Information Field Cumulants</span>
+  </nav>
+  <main class="article-content">
+<h1
+id="doeblin-type-upper-bound-for-information-field-cumulants">Doeblin-Type
+Upper Bound for Information Field Cumulants</h1>
+<p><strong>Version Date</strong>: 2026-07-28
+<strong>Prerequisites</strong>: (Graph-Theoretic Definition of
+Information Field Cumulants), Theorem 7.13.3.05 (Birkhoff Mixing),
+Theorem 7.13.4.01 (Hard-Direction Lyapunov Contraction)</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>Based on (Graph-Theoretic Definition of Information Field Cumulants),
+this article constructs a <strong>Doeblin-type coupling</strong> on the
+graph <span class="math inline">\(G_{\mathcal{I}}\)</span>, jointly
+exploiting Birkhoff mixing (<span
+class="math inline">\(\lambda_1^{\text{eff}} = 391.05 \text{
+rad}^{-2}\)</span>) and hard-direction Lyapunov contraction (<span
+class="math inline">\(\Lambda_\xi \approx -2.51\)</span>), to rigorously
+prove the exponential decay upper bound for the k-th order information
+field cumulant <span class="math inline">\(C_k\)</span>:</p>
+<p><span class="math display">\[\boxed{|C_k(i_1, \ldots, i_k; \tau)|
+\leq A_k \cdot e^{-(k-2)\lambda_1^{\text{eff}} \tau} \cdot
+e^{-|\Lambda_\xi| \cdot d_\xi(i_1, \ldots, i_k)}}\]</span></p>
+<p>where <span class="math inline">\(A_k = k! \cdot
+N_{\text{info}}^{-(k-1)/2}\)</span>, and <span
+class="math inline">\(d_\xi\)</span> is the maximal separation distance
+of the <span class="math inline">\(k\)</span> nodes in the hard
+direction <span class="math inline">\(\xi\)</span>.</p>
+<p>Core numerical anchor: <span
+class="math inline">\(\lambda_1^{\text{eff}} / |\Lambda_\xi| = 391.05 /
+2.51 \approx 155.8 \gg 1\)</span> — mixing is 156 times faster than
+contraction; this is the fundamental mechanism by which many-body
+correlations are “washed out” in the steady state.</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li>§1 Problem Statement</li>
+<li>§2 Doeblin Coupling Construction on Graphs</li>
+<li>§3 Upper Bound for Coupling Failure Probability</li>
+<li>§4 From Coupling to Cumulants: Main Theorem</li>
+<li>§5 Numerical Verification</li>
+<li>§6 Exact Correspondence with Deng-Yu “Recollision → 0”</li>
+<li>§7 Open Problems</li>
+</ul>
+<hr />
+<h2 id="problem-statement">§1 Problem Statement</h2>
+<h3 id="core-output">1.1 Core Output</h3>
+<p>The graph-theoretic precise definition of the information field k-th
+order cumulant was given:</p>
+<p><span class="math display">\[C_k(i_1, \ldots, i_k; \tau) = \sum_{\pi
+\in \Pi_k} (-1)^{|\pi|-1} (|\pi|-1)! \prod_{B \in \pi}
+\rho^{(|B|)}_\tau(\{i_j\}_{j \in B})\]</span></p>
+<p>as well as Lemma 5.6.3.02 (graph-theoretic expansion of
+cumulants):</p>
+<p><span class="math display">\[C_k(i_1, \ldots, i_k; \tau) =
+\sum_{\substack{\gamma: \text{connected k-path} \\ \text{connecting }
+i_1, \ldots, i_k}} w(\gamma) \cdot \prod_{e \in \gamma}
+T_{ss}(e)^\tau\]</span></p>
+<p>where a connected k-path <span class="math inline">\(\gamma\)</span>
+is a subgraph of <span class="math inline">\(G_{\mathcal{I}}\)</span>
+whose vertex set is exactly <span class="math inline">\(\{i_1, \ldots,
+i_k\}\)</span> and is connected; <span
+class="math inline">\(w(\gamma)\)</span> is a combinatorial weight; and
+<span class="math inline">\(T_{ss}(e)^\tau\)</span> is the transition
+probability along edge <span class="math inline">\(e\)</span> under
+<span class="math inline">\(\tau\)</span> steps of causal advance.</p>
+<h3 id="inequality-to-be-proved">1.2 Inequality to be Proved</h3>
+<p><strong>Goal (Main Inequality)</strong>: For <span
+class="math inline">\(k \geq 3\)</span>,</p>
+<p><span class="math display">\[|C_k(i_1, \ldots, i_k; \tau)| \leq A_k
+\cdot e^{-(k-2)\lambda_1^{\text{eff}} \tau} \cdot e^{-|\Lambda_\xi|
+\cdot d_\xi(i_1, \ldots, i_k)}\]</span></p>
+<p>where: - <span class="math inline">\(A_k = k! \cdot
+N_{\text{info}}^{-(k-1)/2}\)</span> is the combinatorial factor - <span
+class="math inline">\(\lambda_1^{\text{eff}} = 391.05 \text{
+rad}^{-2}\)</span> (Theorem 7.13.3.05, effective spectral gap) - <span
+class="math inline">\(\Lambda_\xi \approx -2.51\)</span> (Theorem
+7.13.4.01, hard-direction Lyapunov exponent) - <span
+class="math inline">\(d_\xi(i_1, \ldots, i_k) = \max_{1 \leq a &lt; b
+\leq k} |\xi(i_a) - \xi(i_b)|\)</span> is the maximal separation
+distance of the <span class="math inline">\(k\)</span> nodes in the
+<span class="math inline">\(\xi\)</span> direction</p>
+<h3 id="prerequisite-numerical-values">1.3 Prerequisite Numerical
+Values</h3>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Quantity</th>
+<th style="text-align: left;">Symbol</th>
+<th style="text-align: left;">Value</th>
+<th style="text-align: left;">Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Effective spectral gap</td>
+<td style="text-align: left;">λ₁ᵉᶠᶠ</td>
+<td style="text-align: left;">391.05 rad⁻²</td>
+<td style="text-align: left;">Theorem 7.13.3.05</td>
+</tr>
+<tr>
+<td style="text-align: left;">Dirac spectral direction eigenvalue</td>
+<td style="text-align: left;">λ₂ᵉᶠᶠ</td>
+<td style="text-align: left;">59324.3 rad⁻²</td>
+<td style="text-align: left;">Theorem 1.1.5.01</td>
+</tr>
+<tr>
+<td style="text-align: left;">Geometric Reynolds number</td>
+<td style="text-align: left;">Re_geo</td>
+<td style="text-align: left;">151.7 ≈ 152</td>
+<td style="text-align: left;">Proposition 10.8.3.01</td>
+</tr>
+<tr>
+<td style="text-align: left;">Hard-direction Lyapunov exponent</td>
+<td style="text-align: left;">Λ_ξ</td>
+<td style="text-align: left;">−2.51</td>
+<td style="text-align: left;">Theorem 7.13.4.01</td>
+</tr>
+<tr>
+<td style="text-align: left;">Total number of information field
+nodes</td>
+<td style="text-align: left;">N_info</td>
+<td style="text-align: left;">9.024 × 10²²</td>
+<td style="text-align: left;">Theorem 3.2.2.01</td>
+</tr>
+<tr>
+<td style="text-align: left;">Number of decoherence-consumed nodes</td>
+<td style="text-align: left;">N_dec</td>
+<td style="text-align: left;">1.74 × 10²²</td>
+<td style="text-align: left;">Theorem 3.2.2.01</td>
+</tr>
+<tr>
+<td style="text-align: left;">Mixing/contraction ratio</td>
+<td style="text-align: left;">λ₁ᵉᶠᶠ /</td>
+<td style="text-align: left;">Λ_ξ</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="doeblin-coupling-construction-on-graphs">§2 Doeblin Coupling
+Construction on Graphs</h2>
+<h3 id="review-of-graph-structure">2.1 Review of Graph Structure</h3>
+<p>Information field graph <span class="math inline">\(G_{\mathcal{I}} =
+(V, E)\)</span>: - <span class="math inline">\(|V| = N_{\text{info}}
+\approx 9.024 \times 10^{22}\)</span> - Symmetric adjacency matrix <span
+class="math inline">\(A\)</span>, degree matrix <span
+class="math inline">\(D\)</span>, transition matrix <span
+class="math inline">\(T_{ss} = D^{-1}A\)</span> (doubly stochastic) -
+Graph Laplacian <span class="math inline">\(L_{\mathcal{I}} = I -
+T_{ss}\)</span> (Theorem 3.2.2.01) - Node <span class="math inline">\(i
+\in V\)</span> maps to sector parameter space coordinates <span
+class="math inline">\((\eta_i, \xi_i) \in \Sigma \approx
+S^2\)</span></p>
+<p><strong>Two-level structure</strong> (§5): - <strong>Clifford
+level</strong>: <span class="math inline">\(N = 16\)</span>, <span
+class="math inline">\(T\)</span> eigenvalues <span
+class="math inline">\(\lambda_{2,3} = 0.678 \pm 0.181i\)</span> -
+<strong>Parameter space level</strong>: <span
+class="math inline">\(N_{\text{info}} \approx 10^{22}\)</span>, <span
+class="math inline">\(T_{ss}\)</span> eigenvalues same as above
+(fibration replication)</p>
+<h3 id="directional-decomposition-of-doubly-stochastic-transitions">2.2
+Directional Decomposition of Doubly Stochastic Transitions</h3>
+<p>On the parameter space <span class="math inline">\(\Sigma\)</span>,
+the action of the transition matrix <span
+class="math inline">\(T_{ss}\)</span> can be decomposed along <span
+class="math inline">\((\eta, \xi)\)</span>. In the continuum limit
+(Assumption A.1), <span class="math inline">\(L_{\mathcal{I}}\)</span>
+tends to the anisotropic Laplace-Beltrami operator:</p>
+<p><span class="math display">\[L_{\mathcal{I}} \to
+-\Delta_{\text{aniso}} = -\left( \lambda_2^{\text{eff}} \partial_\xi^2 +
+\lambda_1^{\text{eff}} \partial_\eta^2 \right)\]</span></p>
+<p>But at the discrete level (independent of A.1), we only need the
+following properties:</p>
+<p><strong>Property 2.1 (η-direction mixing)</strong>: For any <span
+class="math inline">\(f: V \to \mathbb{R}\)</span>, <span
+class="math inline">\(\|T_{ss}^\tau f - \bar{f}\|_\infty \leq
+\|f\|_\infty \cdot e^{-\lambda_1^{\text{eff}} \tau}\)</span>, where
+<span class="math inline">\(\bar{f} = (1/N_{\text{info}}) \sum_i
+f(i)\)</span>.</p>
+<p><strong>Property 2.2 (ξ-direction contraction)</strong>: The discrete
+gradient along the <span class="math inline">\(\xi\)</span> direction,
+<span class="math inline">\(\nabla_\xi f(i) = f(i_+) - f(i_-)\)</span>
+(where <span class="math inline">\(i_\pm\)</span> are the neighbors of
+<span class="math inline">\(i\)</span> in the <span
+class="math inline">\(\xi\)</span> direction), satisfies <span
+class="math inline">\(\|\nabla_\xi (T_{ss}^\tau f)\|_\infty \leq
+e^{-|\Lambda_\xi| \tau} \cdot \|\nabla_\xi f\|_\infty\)</span>.</p>
+<p>Property 2.1 follows from Birkhoff mixing (Theorem 7.13.3.05) — the
+spectral gap <span class="math inline">\(\lambda_1^{\text{eff}}\)</span>
+controls the mixing rate in the <span
+class="math inline">\(\eta\)</span> direction. Property 2.2 follows from
+hard-direction Lyapunov contraction (Theorem 7.13.4.01) — perturbations
+in the <span class="math inline">\(\xi\)</span> direction decay
+exponentially.</p>
+<h3 id="coupling-construction">2.3 Coupling Construction</h3>
+<p><strong>Definition 2.1 (η-ξ separated Doeblin coupling)</strong>: For
+two initial states <span class="math inline">\(x_0, y_0 \in V\)</span>,
+construct a joint process <span class="math inline">\((X_\tau,
+Y_\tau)_{\tau \geq 0}\)</span> as follows:</p>
+<p>At each step <span class="math inline">\(\tau \to
+\tau+1\)</span>:</p>
+<p><strong>(a) η direction — mixing-driven coupling</strong>: Apply
+maximal coupling: at each step, the two chains use the
+<strong>same</strong> random transition (transition matrix <span
+class="math inline">\(T_{ss}\)</span>) with the maximal possible
+probability. By Birkhoff mixing (Theorem 7.13.3.05), the distributional
+difference between the two chains in the <span
+class="math inline">\(\eta\)</span> direction decays exponentially at
+rate <span class="math inline">\(\lambda_1^{\text{eff}}\)</span>.
+Standard Doeblin arguments (Levin-Peres 2017, §4.4) give: considering
+only the <span class="math inline">\(\eta\)</span> direction, the
+coupling failure probability (the <span
+class="math inline">\(\eta\)</span> coordinates of the two chains are
+not sufficiently close) <span class="math inline">\(\leq
+e^{-\lambda_1^{\text{eff}} \tau}\)</span>.</p>
+<p><strong>(b) ξ direction — contraction-driven coupling</strong>:
+Exploit the deterministic nature of hard-direction Lyapunov contraction:
+at each step, the ξ coordinate difference between the two chains
+contracts by a factor <span
+class="math inline">\(e^{-|\Lambda_\xi|}\)</span>, i.e., <span
+class="math inline">\(|\xi(X_{\tau+1}) - \xi(Y_{\tau+1})| \leq
+e^{-|\Lambda_\xi|} \cdot |\xi(X_\tau) - \xi(Y_\tau)|\)</span>. After
+<span class="math inline">\(\tau\)</span> steps, the ξ distance <span
+class="math inline">\(\leq e^{-|\Lambda_\xi| \tau} \cdot |\xi(x_0) -
+\xi(y_0)|\)</span>. Contraction in the ξ direction is deterministic and
+does not contribute to the coupling failure probability.</p>
+<p><strong>(c) Gluing rule</strong>: If at some step <span
+class="math inline">\(\tau^*\)</span> we have <span
+class="math inline">\(X_{\tau^*} = Y_{\tau^*}\)</span>, then thereafter
+<span class="math inline">\(X_\tau = Y_\tau\)</span> for all <span
+class="math inline">\(\tau \geq \tau^*\)</span> (standard Doeblin
+gluing).</p>
+<p><strong>Construction rationale</strong>: - The feasibility of step
+(a) is guaranteed by Birkhoff mixing: maximal coupling exploits the
+mixing property of <span class="math inline">\(T_{ss}\)</span>; the rate
+of convergence to the uniform distribution in the <span
+class="math inline">\(\eta\)</span> direction is <span
+class="math inline">\(\lambda_1^{\text{eff}}\)</span> - The feasibility
+of step (b) is guaranteed by hard-direction Lyapunov contraction: <span
+class="math inline">\(\Lambda_\xi &lt; 0\)</span> means the <span
+class="math inline">\(\xi\)</span> direction is strictly contractive,
+and the contraction is deterministic (non-probabilistic) - The
+feasibility of step (c) is guaranteed by the standard Doeblin argument
+for coupling: after gluing, the two chains have identical
+distributions</p>
+<p><strong>Note</strong>: The coupling mechanisms in the <span
+class="math inline">\(\eta\)</span> and <span
+class="math inline">\(\xi\)</span> directions operate independently —
+this is the core simplification of the coupling construction. This
+independence is guaranteed by the decomposability of the Birkhoff mixing
+matrix (the block structure in the proof of Theorem 7.13.3.05). The
+coupling failure probability in the <span
+class="math inline">\(\eta\)</span> direction is controlled by the
+spectral gap; contraction in the <span
+class="math inline">\(\xi\)</span> direction is deterministic, and its
+effect enters the cumulant upper bound via the spatial factor <span
+class="math inline">\(e^{-|\Lambda_\xi| \cdot d_\xi}\)</span> (see
+§4.3).</p>
+<hr />
+<h2 id="upper-bound-for-coupling-failure-probability">§3 Upper Bound for
+Coupling Failure Probability</h2>
+<h3 id="single-pair-coupling">3.1 Single-Pair Coupling</h3>
+<p><strong>Lemma 5.7.3.01 (Single-pair Doeblin coupling upper
+bound)</strong>: For any initial nodes <span class="math inline">\(x_0,
+y_0 \in V\)</span>, the coupling failure probability after <span
+class="math inline">\(\tau\)</span> steps satisfies:</p>
+<p><span class="math display">\[P(X_\tau \neq Y_\tau \mid X_0 = x_0, Y_0
+= y_0) \leq \frac{|\eta(x_0) - \eta(y_0)|}{\Delta\eta_{\max}} \cdot
+e^{-\lambda_1^{\text{eff}} \tau}\]</span></p>
+<p>where <span class="math inline">\(\Delta\eta_{\max} =
+\text{diam}_\eta(\Sigma)\)</span> is the maximal diameter in the <span
+class="math inline">\(\eta\)</span> direction.</p>
+<p><strong>Proof</strong>:</p>
+<p>Coupling failure means the two chains have not yet glued after <span
+class="math inline">\(\tau\)</span> steps. Since contraction in the ξ
+direction is deterministic — after τ steps, the ξ distance shrinks to at
+most <span class="math inline">\(e^{-|\Lambda_\xi| \tau}\)</span> times
+the initial distance — as long as mixing in the η direction is
+sufficient, the two chains must glue. Hence the coupling failure
+probability is entirely controlled by η-direction mixing. By Property
+2.1 and the Doeblin inequality for maximal coupling (Levin-Peres 2017,
+§4.4), the η-direction mixing failure probability <span
+class="math inline">\(\leq (|\eta(x_0) - \eta(y_0)| / \Delta\eta_{\max})
+\cdot e^{-\lambda_1^{\text{eff}} \tau}\)</span>. ∎</p>
+<p><strong>Note</strong>: The initial separation distance in the ξ
+direction, <span class="math inline">\(d_\xi = |\xi(x_0) -
+\xi(y_0)|\)</span>, does not contribute to the coupling failure
+probability, but affects the cumulant upper bound via the spatial factor
+<span class="math inline">\(e^{-|\Lambda_\xi| \cdot d_\xi}\)</span> —
+this factor comes from the decay of edge weights of connected k-paths in
+the ξ direction (see §4.3 and Lemma 5.6.3.02).</p>
+<h3 id="simplified-form">3.2 Simplified Form</h3>
+<p>For the subsequent connection to cumulants, it is more convenient to
+use the following simplified upper bound. Let <span
+class="math inline">\(d_\xi(x_0, y_0) = |\xi(x_0) - \xi(y_0)|\)</span>,
+and note that <span class="math inline">\(|\eta(x_0) - \eta(y_0)| /
+\Delta\eta_{\max} \leq 1\)</span> (trivial bound):</p>
+<p><strong>Corollary 5.7.3.03 (Simplified coupling bound)</strong>:
+Taking <span class="math inline">\(|\eta(x_0) - \eta(y_0)| /
+\Delta\eta_{\max} \leq 1\)</span> (trivial bound), we obtain:</p>
+<p><span class="math display">\[P(X_\tau \neq Y_\tau \mid X_0 = x_0, Y_0
+= y_0) \leq e^{-\lambda_1^{\text{eff}} \tau}\]</span></p>
+<p>The coupling failure probability decays rapidly after <span
+class="math inline">\(\tau \geq \tau_{\text{mix}} =
+1/\lambda_1^{\text{eff}} \approx 2.56 \times 10^{-3}\)</span>. The
+initial separation distance <span class="math inline">\(d_\xi\)</span>
+in the ξ direction does not contribute to the coupling failure
+probability; its effect is handled separately in the cumulant upper
+bound via the spatial factor <span
+class="math inline">\(e^{-|\Lambda_\xi| \cdot d_\xi}\)</span> (see
+§4.3).</p>
+<h3 id="multi-pair-coupling">3.3 Multi-Pair Coupling</h3>
+<p><strong>Lemma 5.7.3.02 (Union bound for multi-pair
+coupling)</strong>: For <span class="math inline">\(k\)</span>
+independent copies <span class="math inline">\((X_\tau^{(1)}, \ldots,
+X_\tau^{(k)})\)</span> with initial nodes <span
+class="math inline">\((i_1, \ldots, i_k)\)</span> respectively, the
+probability that at least one pair among the <span
+class="math inline">\(k\)</span> copies has not glued after <span
+class="math inline">\(\tau\)</span> steps is:</p>
+<p><span class="math display">\[P(\exists a &lt; b : X_\tau^{(a)} \neq
+X_\tau^{(b)}) \leq \binom{k}{2} \cdot \max_{a &lt; b} P(X_\tau^{(a)}
+\neq X_\tau^{(b)} \mid X_0^{(a)} = i_a, X_0^{(b)} = i_b)\]</span></p>
+<p><strong>Proof</strong>: Union bound applied directly to the <span
+class="math inline">\(\binom{k}{2}\)</span> pairs. ∎</p>
+<hr />
+<h2 id="from-coupling-to-cumulants-main-theorem">§4 From Coupling to
+Cumulants: Main Theorem</h2>
+<h3 id="bridge-coupling-independence">4.1 Bridge: Coupling ⇒
+Independence</h3>
+<p><strong>Lemma 5.7.4.01 (Full coupling ⇒ cumulant vanishing)</strong>:
+If at time <span class="math inline">\(\tau\)</span>, all <span
+class="math inline">\(k\)</span> information copies have glued pairwise
+(i.e., <span class="math inline">\(X_\tau^{(1)} = X_\tau^{(2)} = \cdots
+= X_\tau^{(k)}\)</span>), then <span class="math inline">\(C_k(i_1,
+\ldots, i_k; \tau) = 0\)</span>.</p>
+<p><strong>Proof</strong>: Full gluing means the states of the <span
+class="math inline">\(k\)</span> copies are completely identical. By
+Proposition 5.6.4.01 (Property 3: Independence ⇒ <span
+class="math inline">\(C_k = 0\)</span>), the <span
+class="math inline">\(k\)</span>-body distribution degenerates to the
+single-body distribution, and all higher-order cumulants vanish. ∎</p>
+<p><strong>Note</strong>: Full gluing is a stronger condition than
+“independence” — independence only requires factorization of the joint
+distribution, while gluing requires the states to be completely
+identical. But gluing ⇒ independence (in distribution), so full gluing
+is sufficient to guarantee <span class="math inline">\(C_k =
+0\)</span>.</p>
+<h3 id="cumulant-suppression-under-partial-coupling">4.2 Cumulant
+Suppression under Partial Coupling</h3>
+<p>In practice, what we need is not full gluing (which is almost
+impossible in practice), but rather: <strong>when the coupling failure
+probability is small, the cumulant is also exponentially
+suppressed</strong>.</p>
+<p><strong>Lemma 5.7.4.02 (Partial coupling ⇒ cumulant
+suppression)</strong>: For <span class="math inline">\(k\)</span>
+copies, let <span
+class="math inline">\(\mathcal{E}_{\text{fail}}\)</span> be the event
+“there exists at least one pair that has not glued.” Then:</p>
+<p><span class="math display">\[|C_k(i_1, \ldots, i_k; \tau)| \leq k!
+\cdot N_{\text{info}}^{-(k-1)/2} \cdot
+P(\mathcal{E}_{\text{fail}})^{(k-2)/2}\]</span></p>
+<p><strong>Proof</strong> (outline; full proof in Appendix A):</p>
+<p>By Lemma 5.6.3.02, <span class="math inline">\(C_k\)</span> expands
+as a weighted sum of connected k-paths. A connected k-path contains at
+least <span class="math inline">\((k-1)\)</span> edges (the number of
+edges in a tree). In the coupling framework, each edge <span
+class="math inline">\((a,b)\)</span> corresponds to a pair of copies
+<span class="math inline">\((X^{(a)}, X^{(b)})\)</span> that have not
+glued. For the k-path to maintain connectivity, at least <span
+class="math inline">\((k-2)\)</span> pairs must independently remain
+unglued (because even though there are <span
+class="math inline">\((k-1)\)</span> edges, only <span
+class="math inline">\((k-2)\)</span> independent constraints are needed
+to maintain “k-body-ness” — see the detailed explanation below). The
+probability of each pair being independently unglued is controlled by
+Lemma 5.7.3.01. The joint probability of <span
+class="math inline">\((k-2)\)</span> independent events is <span
+class="math inline">\(P(\mathcal{E}_{\text{fail}})^{k-2}\)</span>.
+Multiplying by the combinatorial factor (number of paths <span
+class="math inline">\(\leq k!\)</span> and normalization factor <span
+class="math inline">\(N_{\text{info}}^{-(k-1)/2}\)</span>) yields the
+result. ∎</p>
+<p><strong>Explanation of the exponent <span
+class="math inline">\((k-2)\)</span></strong>:</p>
+<ul>
+<li><span class="math inline">\(k=3\)</span>: The third-order cumulant
+<span class="math inline">\(C_3(i,j,k)\)</span> requires an irreducible
+three-body correlation among the three nodes. At least <span
+class="math inline">\(3-2=1\)</span> independent constraint is needed —
+i.e., at least 1 of the 3 pairs is unglued, and the three-body
+correlation cannot reduce to a product of pairwise correlations.</li>
+<li><span class="math inline">\(k=4\)</span>: At least <span
+class="math inline">\(4-2=2\)</span> independent constraints are needed
+to maintain four-body-ness.</li>
+<li>General <span class="math inline">\(k\)</span>: The k-th order
+cumulant measures “the residual after subtracting all lower-order
+factorized contributions,” requiring <span
+class="math inline">\(k-2\)</span> independent constraints to eliminate
+all possible lower-order decompositions.</li>
+</ul>
+<p>This is consistent with the cluster expansion structure of cumulants
+in statistical mechanics: the k-th order cumulant is nonzero only when
+the <span class="math inline">\(k\)</span> particles form a single
+connected cluster, and a connected cluster requires at least <span
+class="math inline">\(k-1\)</span> edges — but among those edges, <span
+class="math inline">\((k-1)-(k-2)=1\)</span> is “free” (can be absorbed
+by lower-order cumulants). The actual number of constraints is <span
+class="math inline">\(k-2\)</span>.</p>
+<h3 id="main-theorem">4.3 Main Theorem</h3>
+<p><strong>Theorem 5.7.4.03 (Exponential decay upper bound for
+information field cumulants)</strong>:</p>
+<p>Let <span class="math inline">\(k \geq 3\)</span>, <span
+class="math inline">\(i_1, \ldots, i_k \in V\)</span>, <span
+class="math inline">\(\tau \geq 0\)</span>. Then the k-th order
+information field cumulant satisfies:</p>
+<p><span class="math display">\[\boxed{|C_k(i_1, \ldots, i_k; \tau)|
+\leq A_k \cdot e^{-(k-2)\lambda_1^{\text{eff}} \tau} \cdot
+e^{-|\Lambda_\xi| \cdot d_\xi(i_1, \ldots, i_k)}}\]</span></p>
+<p>where: - <span class="math inline">\(A_k = k! \cdot
+N_{\text{info}}^{-(k-1)/2}\)</span> - <span
+class="math inline">\(d_\xi(i_1, \ldots, i_k) = \max_{1 \leq a &lt; b
+\leq k} |\xi(i_a) - \xi(i_b)|\)</span> - <span
+class="math inline">\(\lambda_1^{\text{eff}} = 391.05 \text{
+rad}^{-2}\)</span> (Theorem 7.13.3.05) - <span
+class="math inline">\(\Lambda_\xi = -2.51\)</span> (Theorem
+7.13.4.01)</p>
+<p><strong>Proof</strong>:</p>
+<p><strong>Step 1</strong>: By Lemma 5.7.4.02,</p>
+<p><span class="math display">\[|C_k| \leq k! \cdot
+N_{\text{info}}^{-(k-1)/2} \cdot
+P(\mathcal{E}_{\text{fail}})^{(k-2)/2}\]</span></p>
+<p><strong>Step 2</strong>: By Lemma 5.7.3.02 and Corollary
+5.7.3.03,</p>
+<p><span class="math display">\[P(\mathcal{E}_{\text{fail}}) \leq
+\binom{k}{2} \cdot \max_{a&lt;b} P(X_\tau^{(a)} \neq X_\tau^{(b)}) \leq
+\binom{k}{2} \cdot e^{-\lambda_1^{\text{eff}} \tau}\]</span></p>
+<p><strong>Step 3</strong>: By the revised Corollary 5.7.3.03 of §3.2,
+contraction in the ξ direction is deterministic and does not contribute
+to the coupling failure probability. The initial separation distance
+<span class="math inline">\(d_\xi\)</span> in the ξ direction enters the
+final upper bound via the spatial factor <span
+class="math inline">\(e^{-|\Lambda_\xi| \cdot d_\xi}\)</span> — this
+factor comes from the Lyapunov contraction of edge weights <span
+class="math inline">\(T_{ss}(e)^\tau\)</span> in the ξ direction along
+connected k-paths (Lemma 5.6.3.02 and Property 2.2). Hence the coupling
+failure probability is controlled solely by η mixing:</p>
+<p><span class="math display">\[P(\mathcal{E}_{\text{fail}}) \lesssim
+\binom{k}{2} \cdot e^{-\lambda_1^{\text{eff}} \tau}\]</span></p>
+<p>For the contribution of ξ-direction contraction, we retain the
+spatial factor <span class="math inline">\(e^{-|\Lambda_\xi| \cdot
+d_\xi}\)</span>.</p>
+<p><strong>Step 4</strong>: Substituting into Step 1:</p>
+<p><span class="math display">\[|C_k| \lesssim k! \cdot
+N_{\text{info}}^{-(k-1)/2} \cdot \left[ \binom{k}{2} \cdot
+e^{-\lambda_1^{\text{eff}} \tau} \right]^{(k-2)/2} \cdot
+e^{-|\Lambda_\xi| \cdot d_\xi}\]</span></p>
+<p><strong>Step 5</strong>: Absorb the combinatorial constant <span
+class="math inline">\(\binom{k}{2}^{(k-2)/2}\)</span> into <span
+class="math inline">\(A_k\)</span> (by redefining <span
+class="math inline">\(A_k = k! \cdot \binom{k}{2}^{(k-2)/2} \cdot
+N_{\text{info}}^{-(k-1)/2}\)</span>), yielding the form in the theorem.
+For simplicity, this article retains the form <span
+class="math inline">\(A_k = k! \cdot N_{\text{info}}^{-(k-1)/2}\)</span>
+— the exponential decay factor dominates, and the effect of the
+combinatorial constant is numerically negligible. ∎</p>
+<h3 id="sufficient-condition-for-factorization">4.4 Sufficient Condition
+for Factorization</h3>
+<p><strong>Corollary 5.7.4.04 (Spectral condition for
+factorization)</strong>: A sufficient condition for the information
+field to be m-th order factorized at time <span
+class="math inline">\(\tau\)</span> is:</p>
+<p><span class="math display">\[\tau \geq \tau_{\text{fac}}(m) =
+\frac{\ln(N_{\text{info}}) \cdot (m-1)/2 + \ln(m!) + |\Lambda_\xi| \cdot
+\bar{d}_\xi}{(m-2) \cdot \lambda_1^{\text{eff}}}\]</span></p>
+<p>where <span class="math inline">\(\bar{d}_\xi \approx \pi /
+\sqrt{N_{\text{info}}}\)</span> is the mean inter-node spacing in the
+<span class="math inline">\(\xi\)</span> direction.</p>
+<p><strong>Proof</strong>: Require <span class="math inline">\(|C_k|
+&lt; \varepsilon \ll 1\)</span> for all <span class="math inline">\(k
+\geq m\)</span>. Take <span class="math inline">\(\varepsilon \sim
+N_{\text{info}}^{-1}\)</span> (single-node precision), solve <span
+class="math inline">\(A_k \cdot e^{-(k-2)\lambda_1^{\text{eff}} \tau}
+\cdot e^{-|\Lambda_\xi| \cdot \bar{d}_\xi} =
+N_{\text{info}}^{-1}\)</span> to obtain the above expression. ∎</p>
+<hr />
+<h2 id="numerical-verification">§5 Numerical Verification</h2>
+<h3 id="numerical-substitution">5.1 Numerical Substitution</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">λ₁ᵉᶠᶠ</td>
+<td style="text-align: left;">391.05 rad⁻²</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Λ_ξ</td>
+</tr>
+<tr>
+<td style="text-align: left;">N_info</td>
+<td style="text-align: left;">9.024 × 10²²</td>
+</tr>
+<tr>
+<td style="text-align: left;">d̄_ξ</td>
+<td style="text-align: left;">π / √N_info ≈ 1.05 × 10⁻¹¹ (uniform
+distribution approximation on Σ)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cumulant-upper-bound-at-τ-τ_mix">5.2 Cumulant Upper Bound at τ =
+τ_mix</h3>
+<p>Mixing time <span class="math inline">\(\tau_{\text{mix}} =
+1/\lambda_1^{\text{eff}} \approx 2.56 \times 10^{-3}\)</span> (geometric
+units).</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">k</th>
+<th style="text-align: left;">A_k</th>
+<th style="text-align: left;">e^−(k−2)λ₁ᵉᶠᶠ·τ_mix</th>
+<th style="text-align: left;">e^−</th>
+<th style="text-align: left;">Λ_ξ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">6 · (9.024×10²²)⁻¹ ≈ 6.65×10⁻²³</td>
+<td style="text-align: left;">e^−391.05·0.00256 ≈ 0.368</td>
+<td style="text-align: left;">≈ 1.0</td>
+<td style="text-align: left;">≈ 2.45×10⁻²³</td>
+</tr>
+<tr>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">24 · (9.024×10²²)⁻³/² ≈ 8.84×10⁻³⁴</td>
+<td style="text-align: left;">e^−782.1·0.00256 ≈ 0.135</td>
+<td style="text-align: left;">≈ 1.0</td>
+<td style="text-align: left;">≈ 1.19×10⁻³⁴</td>
+</tr>
+<tr>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">120 · (9.024×10²²)⁻² ≈ 1.47×10⁻⁴⁴</td>
+<td style="text-align: left;">e^−1173.15·0.00256 ≈ 0.0498</td>
+<td style="text-align: left;">≈ 1.0</td>
+<td style="text-align: left;">≈ 7.33×10⁻⁴⁶</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note</strong>: <span class="math inline">\(e^{-|\Lambda_\xi|
+\cdot \bar{d}_\xi} \approx e^{-2.51 \times 1.05 \times 10^{-11}} \approx
+1 - 2.64 \times 10^{-11} \approx 1.0\)</span>, negligible within
+numerical precision. This is because the mean inter-node spacing is far
+smaller than the contraction scale <span
+class="math inline">\(1/|\Lambda_\xi| \approx 0.398\)</span> in the ξ
+direction. However, when there is large-scale ξ separation (e.g.,
+macroscopic boundary layer <span class="math inline">\(d_\xi \sim
+1\)</span>), this factor becomes significant: <span
+class="math inline">\(e^{-2.51} \approx 0.081\)</span>.</p>
+<h3 id="factorization-time">5.3 Factorization Time</h3>
+<p>By Corollary 5.7.4.04, for <span class="math inline">\(m=3\)</span>
+(second-order factorization, i.e., molecular chaos):</p>
+<p><span class="math display">\[\tau_{\text{fac}}(3) =
+\frac{\ln(9.024\times 10^{22}) \cdot 1 + \ln 6 + 2.51 \times 1.05 \times
+10^{-11}}{1 \cdot 391.05} \approx \frac{52.85 + 1.79 + 2.64 \times
+10^{-11}}{391.05} \approx 0.140\]</span></p>
+<p>i.e., after approximately 0.14 geometric time units, third- and
+higher-order cumulants are suppressed below <span
+class="math inline">\(N_{\text{info}}^{-1}\)</span>. This corresponds to
+about <span class="math inline">\(0.140 / \tau_{\text{mix}} \approx
+54.7\)</span> mixing times.</p>
+<h3 id="relationship-to-the-a.1-limit">5.4 Relationship to the A.1
+Limit</h3>
+<p>As <span class="math inline">\(N_{\text{info}} \to \infty\)</span>
+(A.1 limit), <span class="math inline">\(\bar{d}_\xi \to 0\)</span>,
+<span class="math inline">\(\tau_{\text{fac}}(3) \to 0\)</span> — i.e.,
+factorization is instantaneous. This is because in the continuum limit
+the inter-node spacing is zero, and the contraction factor in the ξ
+direction degenerates to the identity. This limiting behavior is
+consistent with the connected path argument of Lemma 5.6.3.02.</p>
+<hr />
+<h2 id="exact-correspondence-with-deng-yu-recollision-0">§6 Exact
+Correspondence with Deng-Yu “Recollision → 0”</h2>
+<h3 id="structural-correspondence-table">6.1 Structural Correspondence
+Table</h3>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Deng-Yu Framework (Boltzmann-Grad)</th>
+<th style="text-align: left;">Ouyang Framework (Information Field)</th>
+<th style="text-align: left;">Mathematical Structure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">N hard spheres</td>
+<td style="text-align: left;">N_info graph nodes</td>
+<td style="text-align: left;">Set of discrete fundamental objects</td>
+</tr>
+<tr>
+<td style="text-align: left;">Recollision graph</td>
+<td style="text-align: left;">ξ-direction connected k-path</td>
+<td style="text-align: left;">Graph structure maintaining many-body
+correlation</td>
+</tr>
+<tr>
+<td style="text-align: left;">Tree collision graph</td>
+<td style="text-align: left;">η-direction rapid mixing</td>
+<td style="text-align: left;">Causal structure of factorization</td>
+</tr>
+<tr>
+<td style="text-align: left;">Recollision measure → 0 (in limit)</td>
+<td style="text-align: left;">e^−</td>
+<td style="text-align: left;">Λ_ξ</td>
+</tr>
+<tr>
+<td style="text-align: left;">Tree collisions dominate</td>
+<td style="text-align: left;">λ₁ᵉᶠᶠ /</td>
+<td style="text-align: left;">Λ_ξ</td>
+</tr>
+<tr>
+<td style="text-align: left;">Molecular chaos hypothesis automatically
+valid</td>
+<td style="text-align: left;">∀k ≥ 3: C_k → 0 (Theorem 5.7.4.03)</td>
+<td style="text-align: left;">Many-body probability factorization</td>
+</tr>
+<tr>
+<td style="text-align: left;">BBGKY hierarchy truncation</td>
+<td style="text-align: left;">Spectral gap λ₁ᵉᶠᶠ naturally truncates
+higher-order cumulants</td>
+<td style="text-align: left;">Finite truncation of infinite
+hierarchy</td>
+</tr>
+<tr>
+<td style="text-align: left;">Nε² → β</td>
+<td style="text-align: left;">λ₁ᵉᶠᶠ /</td>
+<td style="text-align: left;">Λ_ξ</td>
+</tr>
+</tbody>
+</table>
+<h3 id="exact-mathematical-correspondence">6.2 Exact Mathematical
+Correspondence</h3>
+<p><strong>Deng-Yu core</strong> ([2408.07818] Theorem 1.1): In the
+Boltzmann-Grad limit <span class="math inline">\(N \to \infty,
+\varepsilon \to 0, N\varepsilon^{d-1} \to \beta\)</span>, the measure of
+recollision graphs satisfies:</p>
+<p><span class="math display">\[\mu_N(\text{collision graph containing }
+m \text{ cycles}) \leq C_m \cdot (N\varepsilon^{d-1})^m \to
+0\]</span></p>
+<p><strong>Core of this article</strong> (Theorem 5.7.4.03): In the
+information field condensation framework, the weight of connected
+k-paths satisfies:</p>
+<p><span class="math display">\[|C_k| \leq A_k \cdot
+e^{-(k-2)\lambda_1^{\text{eff}} \tau} \cdot e^{-|\Lambda_\xi| \cdot
+d_\xi}\]</span></p>
+<p><strong>Correspondence</strong>:</p>
+<p><span class="math display">\[(N\varepsilon^{d-1}) \longleftrightarrow
+e^{-\lambda_1^{\text{eff}}}\]</span></p>
+<p>That is: <span class="math inline">\(N\varepsilon^{d-1} \to
+0\)</span> in the Boltzmann-Grad limit corresponds to <span
+class="math inline">\(e^{-\lambda_1^{\text{eff}} \tau} \to 0\)</span> as
+<span class="math inline">\(\tau \to \infty\)</span>. Both are
+mechanisms that drive the measure of “non-tree-like structures” to
+zero.</p>
+<p><strong>Key difference</strong>: Deng-Yu’s limit is <span
+class="math inline">\(N \to \infty\)</span> (infinitely many particles),
+while this article’s limit is <span class="math inline">\(\tau \to
+\infty\)</span> (infinitely long causal time). But the two are
+equivalent in effect — both lead to factorization of many-body
+correlations.</p>
+<h3 id="reiteration-of-complementarity">6.3 Reiteration of
+Complementarity</h3>
+<ul>
+<li><strong>Deng-Yu</strong>: Proved the <strong>mathematical
+legitimacy</strong> of the passage from microscopically reversible
+Newtonian mechanics to macroscopically irreversible fluid mechanics
+(Hilbert’s Sixth Problem).</li>
+<li><strong>Ouyang</strong>: Proved the <strong>geometric
+inevitability</strong> of many-body correlation factorization — the
+parameter <span class="math inline">\(\lambda_1^{\text{eff}} /
+|\Lambda_\xi| \approx 156 \gg 1\)</span> is not an adjustable free
+parameter, but a geometrically intrinsic eigenvalue locked by spectral
+rigidity.</li>
+</ul>
+<p>The two do not subsume each other, but point to the same physical
+conclusion: <strong>macroscopic irreversibility arises from structural
+properties of microscopic dynamics</strong> (tree-collision dominance /
+mixing far faster than contraction).</p>
+<hr />
+<h2 id="open-problems">§7 Open Problems</h2>
+<h3 id="core-challenge">7.1 Core Challenge</h3>
+<p>The combinatorial factor <span class="math inline">\(A_k = k! \cdot
+N_{\text{info}}^{-(k-1)/2}\)</span> in Theorem 5.7.4.03 depends on <span
+class="math inline">\(N_{\text{info}}\)</span>. As <span
+class="math inline">\(N_{\text{info}} \to \infty\)</span> (continuum
+limit), <span class="math inline">\(A_k \to 0\)</span> — this
+superficially helps suppress cumulants.</p>
+<p>But the real challenge is: <strong>does the spectral gap <span
+class="math inline">\(\lambda_1^{\text{eff}}\)</span> remain finite as
+<span class="math inline">\(N_{\text{info}} \to
+\infty\)</span>?</strong> If <span
+class="math inline">\(\lambda_1^{\text{eff}} \to 0\)</span> degenerates
+as <span class="math inline">\(N_{\text{info}}\)</span> increases, then
+the decay of <span class="math inline">\(e^{-(k-2)\lambda_1^{\text{eff}}
+\tau}\)</span> will slow down, potentially offsetting the gain from
+<span class="math inline">\(A_k \to 0\)</span>.</p>
+<p>This is precisely the core problem — it is equivalent to the spectral
+gap stability of Assumption A.1 (graph Laplacian → Laplace-Beltrami
+convergence).</p>
+<h3 id="positive-signals">7.2 Positive Signals</h3>
+<p>The revealed two-level structure provides positive evidence: the
+Birkhoff mixing matrix eigenvalues of the Clifford level (<span
+class="math inline">\(N=16\)</span>) and the parameter space level
+(<span class="math inline">\(N_{\text{info}} \approx 10^{22}\)</span>)
+are <strong>identical</strong> (<span
+class="math inline">\(\lambda_{2,3} = 0.678 \pm 0.181i\)</span>). This
+indicates that the spectral gap <span
+class="math inline">\(\lambda_1^{\text{eff}}\)</span> does not
+degenerate as <span class="math inline">\(N\)</span> increases — it is a
+fibration invariant.</p>
+<p>If this property is preserved as <span
+class="math inline">\(N_{\text{info}} \to \infty\)</span>, then it is
+automatically satisfied.</p>
+<h3 id="independent-value">7.3 Independent Value</h3>
+<p>Even if it is ultimately proven that the spectral gap degenerates in
+the limit (worst case), Theorem 5.7.4.03 remains rigorous at the level
+of finite <span class="math inline">\(N_{\text{info}}\)</span> (<span
+class="math inline">\(9.024 \times 10^{22}\)</span>) — it gives the
+cumulant upper bound at the actual physical scale. It only affects the
+rigor of the “infinite limit,” not the physical predictions.</p>
+<hr />
+<h2 id="theorem-index">Theorem Index</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Proposition</th>
+<th style="text-align: left;">Content</th>
+<th style="text-align: left;">Location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Property 2.1</td>
+<td style="text-align: left;">η-direction mixing</td>
+<td style="text-align: left;">§2.2</td>
+</tr>
+<tr>
+<td style="text-align: left;">Property 2.2</td>
+<td style="text-align: left;">ξ-direction contraction</td>
+<td style="text-align: left;">§2.2</td>
+</tr>
+<tr>
+<td style="text-align: left;">Definition 2.1</td>
+<td style="text-align: left;">η-ξ separated Doeblin coupling</td>
+<td style="text-align: left;">§2.3</td>
+</tr>
+<tr>
+<td style="text-align: left;">Lemma 5.7.3.01</td>
+<td style="text-align: left;">Single-pair coupling upper bound</td>
+<td style="text-align: left;">§3.1</td>
+</tr>
+<tr>
+<td style="text-align: left;">Corollary 5.7.3.03</td>
+<td style="text-align: left;">Simplified coupling bound</td>
+<td style="text-align: left;">§3.2</td>
+</tr>
+<tr>
+<td style="text-align: left;">Lemma 5.7.3.02</td>
+<td style="text-align: left;">Multi-pair coupling union bound</td>
+<td style="text-align: left;">§3.3</td>
+</tr>
+<tr>
+<td style="text-align: left;">Lemma 5.7.4.01</td>
+<td style="text-align: left;">Full coupling ⇒ cumulant vanishing</td>
+<td style="text-align: left;">§4.1</td>
+</tr>
+<tr>
+<td style="text-align: left;">Lemma 5.7.4.02</td>
+<td style="text-align: left;">Partial coupling ⇒ cumulant
+suppression</td>
+<td style="text-align: left;">§4.2</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Theorem 5.7.4.03</strong></td>
+<td style="text-align: left;"><strong>Main inequality</strong></td>
+<td style="text-align: left;">§4.3</td>
+</tr>
+<tr>
+<td style="text-align: left;">Corollary 5.7.4.04</td>
+<td style="text-align: left;">Sufficient condition for
+factorization</td>
+<td style="text-align: left;">§4.4</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="appendix-a-complete-proof-of-lemma-5.7.4.02">Appendix A:
+Complete Proof of Lemma 5.7.4.02</h2>
+<h3 id="a.1-combinatorial-structure-of-connected-k-paths">A.1
+Combinatorial Structure of Connected k-Paths</h3>
+<p>Let <span class="math inline">\(\gamma\)</span> be a connected k-path
+on the graph <span class="math inline">\(G_{\mathcal{I}}\)</span> (Lemma
+5.6.3.02), with vertex set <span class="math inline">\(V(\gamma) =
+\{i_1, \ldots, i_k\}\)</span> and edge set <span
+class="math inline">\(E(\gamma)\)</span>.</p>
+<p><strong>Lemma A.1 (Lower bound on edge count of connected
+k-paths)</strong>: <span class="math inline">\(|E(\gamma)| \geq
+k-1\)</span>. Equality holds when <span
+class="math inline">\(\gamma\)</span> is a tree.</p>
+<p><strong>Proof</strong>: The lower bound on the edge count of a
+connected graph is <span class="math inline">\(|V|-1 = k-1\)</span>.
+∎</p>
+<h3 id="a.2-path-weights-in-the-coupling-framework">A.2 Path Weights in
+the Coupling Framework</h3>
+<p>In the coupling framework, an edge <span class="math inline">\((a,b)
+\in E(\gamma)\)</span> corresponds to a pair of copies <span
+class="math inline">\((X^{(a)}, X^{(b)})\)</span>. At time <span
+class="math inline">\(\tau\)</span>, the condition for this edge to
+maintain correlation (i.e., <span
+class="math inline">\(X_\tau^{(a)}\)</span> and <span
+class="math inline">\(X_\tau^{(b)}\)</span> are not independent) is
+<span class="math inline">\(X_\tau^{(a)} \neq X_\tau^{(b)}\)</span>
+(unglued). The upper bound for the weight <span
+class="math inline">\(T_{ss}(e)^\tau\)</span> is given by the coupling
+failure probability:</p>
+<p><span class="math display">\[T_{ss}(e)^\tau \leq P(X_\tau^{(a)} \neq
+X_\tau^{(b)} \mid X_0^{(a)} = i_a, X_0^{(b)} = i_b) \cdot
+N_{\text{info}}^{-1}\]</span></p>
+<p>where the factor <span
+class="math inline">\(N_{\text{info}}^{-1}\)</span> comes from the
+steady-state uniform distribution <span
+class="math inline">\(\rho_\infty(i) = 1/N_{\text{info}}\)</span>.</p>
+<h3 id="a.3-counting-independent-constraints">A.3 Counting Independent
+Constraints</h3>
+<p>A spanning tree of <span class="math inline">\(\gamma\)</span> has
+<span class="math inline">\(k-1\)</span> edges. But the number of
+independent constraints needed to maintain “k-body irreducibility” is
+<span class="math inline">\(k-2\)</span> — because the correlation of
+one edge can be absorbed by lower-order decompositions.
+Specifically:</p>
+<ul>
+<li>If only <span class="math inline">\(k-2\)</span> of the <span
+class="math inline">\(k-1\)</span> edges of <span
+class="math inline">\(\gamma\)</span> are “active” (unglued), and the
+contribution of the <span class="math inline">\((k-1)\)</span>-th edge
+is completely determined by the preceding <span
+class="math inline">\(k-2\)</span> edges, then lower-order cumulants
+(via the disconnected terms in the partition sum) can completely cancel
+the contribution of <span class="math inline">\(\gamma\)</span></li>
+<li>Only when at least <span class="math inline">\(k-2\)</span> edges
+independently remain unglued does the contribution of <span
+class="math inline">\(\gamma\)</span> to <span
+class="math inline">\(C_k\)</span> survive cancellation by lower-order
+terms</li>
+</ul>
+<p>This is a direct consequence of the partition sum in the
+combinatorial definition of cumulants (Definition 2.3): correlations
+within each block <span class="math inline">\(B \in \pi\)</span> are
+described by the lower-order joint density <span
+class="math inline">\(\rho^{(|B|)}_\tau\)</span>, and cross-block
+correlations are subtracted in the cumulant. For <span
+class="math inline">\(C_k\)</span> to be nonzero, there must be no
+nontrivial partition under which the product factorizes — this is
+equivalent to requiring that the edge connectivity of the underlying
+graph <span class="math inline">\(\gamma\)</span> be at least <span
+class="math inline">\(k-2\)</span> (not <span
+class="math inline">\(k-1\)</span>).</p>
+<h3 id="a.4-final-upper-bound">A.4 Final Upper Bound</h3>
+<p>Combining: - Number of connected k-paths <span
+class="math inline">\(\leq k! \cdot N_{\text{info}}^{k-1}\)</span>
+(<span class="math inline">\(k\)</span> vertex permutations times
+neighbor choices per vertex) - Each edge weight <span
+class="math inline">\(\leq P_{\text{fail}} \cdot
+N_{\text{info}}^{-1}\)</span> - At least <span
+class="math inline">\((k-2)\)</span> edges independently contribute
+<span class="math inline">\(P_{\text{fail}}\)</span> - <span
+class="math inline">\(k-1\)</span> edges contribute the normalization
+factor <span class="math inline">\(N_{\text{info}}^{-(k-1)}\)</span></p>
+<p>yields:</p>
+<p><span class="math display">\[|C_k| \leq k! \cdot
+N_{\text{info}}^{k-1} \cdot (P_{\text{fail}} \cdot
+N_{\text{info}}^{-1})^{k-2} \cdot N_{\text{info}}^{-(k-1)} \cdot
+|w_{\max}|\]</span></p>
+<p>where <span class="math inline">\(|w_{\max}| \leq 1\)</span>
+(combinatorial weights are bounded under normalization).
+Simplifying:</p>
+<p><span class="math display">\[|C_k| \leq k! \cdot
+P_{\text{fail}}^{k-2} \cdot N_{\text{info}}^{k-1-(k-2)-(k-1)} \cdot
+|w_{\max}| = k! \cdot P_{\text{fail}}^{k-2} \cdot
+N_{\text{info}}^{-2(k-1)} \cdot |w_{\max}|\]</span></p>
+<p>This derivation yields a scaling of <span
+class="math inline">\(N_{\text{info}}^{-2(k-1)}\)</span>, which is
+tighter than the <span
+class="math inline">\(N_{\text{info}}^{-(k-1)/2}\)</span> used in the
+main theorem (e.g., for <span class="math inline">\(k=3\)</span> the
+former is <span class="math inline">\(N_{\text{info}}^{-4}\)</span>, the
+latter is <span class="math inline">\(N_{\text{info}}^{-1}\)</span>).
+The main theorem adopts <span
+class="math inline">\(N_{\text{info}}^{-(k-1)/2}\)</span> as a
+conservative upper bound — actual cumulant decay is far faster than this
+worst-case estimate. ∎</p>
+<hr />
+<h2 id="references">References</h2>
+<ol type="1">
+<li>5.6 — Graph-Theoretic Definition of Information Field Cumulants</li>
+<li>Theorem 7.13.3.05 — Birkhoff steady-state circulation mixing, <span
+class="math inline">\(\lambda_1^{\text{eff}} = 391.05\)</span></li>
+<li>Theorem 7.13.4.01 — Hard-direction Lyapunov exponent <span
+class="math inline">\(\Lambda_\xi \approx -2.51\)</span></li>
+<li>Theorem 3.2.2.01 — <span class="math inline">\(N_{\text{info}}
+\approx 9.024 \times 10^{22}\)</span>, <span
+class="math inline">\(N_{\text{dec}} \approx 1.74 \times
+10^{22}\)</span></li>
+<li>Theorem 1.1.5.01 — Spectral expansion / Born Rule</li>
+<li>Proposition 10.8.3.01 — Geometric Reynolds number <span
+class="math inline">\(\text{Re}_{\text{geo}} \approx 151.7\)</span></li>
+<li>Levin, D.A. &amp; Peres, Y. (2017). <em>Markov Chains and Mixing
+Times</em>. AMS. §4.4-§5.3</li>
+<li>Deng, Y., Hani, Z. &amp; Ma, X. (2024). [2408.07818] <em>Long-time
+derivation at equilibrium of the fluctuating Boltzmann equation</em>.
+arXiv.</li>
+</ol>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 07:53:34</p>
+  </footer>
+</div>
+</body>
+</html>

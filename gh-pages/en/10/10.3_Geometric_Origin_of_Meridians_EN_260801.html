@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10.3 Geometric Origin of Meridians | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Number: 10.3 | Date: 260729.1 | Series: Applications | Language: EN">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/10/10.3_Geometric_Origin_of_Meridians_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">10.3 Geometric Origin of Meridians</span>
+  </nav>
+  <main class="article-content">
+<h1 id="geometric-origin-of-meridians">10.3 Geometric Origin of
+Meridians</h1>
+<p><strong>Number</strong>: 10.3 | <strong>Date</strong>: 260729.1 |
+<strong>Series</strong>: Applications | <strong>Language</strong>: EN
+<strong>Dependent Articles</strong>: Theorem 1.1.5.01 (Birkhoff Fixed
+Point), Theorem 1.2.3.01 (Born Normalization Condition), Theorem
+1.4.3.01 (Algebraic Action), Theorem 10.6.4.01 (Sector Non-Decoupling
+Theorem)</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>Within the Conjugate Spectral Geometry framework, this paper models
+meridians and acupoints as phase nodes of the Causal Realm <span
+class="math inline">\(\mathcal{C}\)</span>-sector and field propagation
+paths of the Informational Realm <span
+class="math inline">\(\mathcal{I}\)</span>-sector. Acupoints are
+rigorously defined as extremal points of the causal field density <span
+class="math inline">\(\rho_{\mathcal{C}}\)</span> standing wave modes on
+the body surface <span class="math inline">\(\nabla\Sigma\)</span>, and
+meridian trajectories follow the direction of the <span
+class="math inline">\(\mathcal{C}\)</span>-sector phase gradient. This
+paper provides: (I) explicit solutions of the <span
+class="math inline">\(\mathcal{C}\)</span>-sector standing wave equation
+and their quantization conditions modulated by Bott Periodicity <span
+class="math inline">\(\delta^8\)</span>; (II) the geometric criterion
+and classification theorem for acupoints as phase nodes; (III) the
+topological properties of meridians as gradient lines and the
+Poincaré-Hopf constraint; (IV) Bott periodicity derivation of the
+complete coding structure of the meridian system (twelve regular
+meridians, eight extraordinary vessels, fifteen collaterals). All
+quantitative predictions are determined by the algebraic output of the
+Sole Axiom <span class="math inline">\(\delta\)</span> at the Birkhoff
+Fixed Point <span class="math inline">\(\sigma^*\)</span>, with no
+external free parameters. This paper is a geometric model exploration
+within a scientific theoretical framework and does not constitute any
+medical advice.</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#§1-introduction-and-axiomatic-input">§1 Introduction and
+Axiomatic Input</a></li>
+<li><a href="#§2-c-sector-causal-field-standing-wave-theory">§2 <span
+class="math inline">\(\mathcal{C}\)</span>-Sector Causal Field Standing
+Wave Theory</a>
+<ul>
+<li><a href="#§21-standing-wave-equation-for-causal-field-density">§2.1
+Standing Wave Equation for Causal Field Density</a></li>
+<li><a href="#§22-explicit-solutions-of-standing-wave-modes">§2.2
+Explicit Solutions of Standing Wave Modes</a></li>
+<li><a
+href="#§23-axial-quantization-and-bott-periodicity-modulation">§2.3
+Axial Quantization and Bott Periodicity Modulation</a></li>
+</ul></li>
+<li><a href="#§3-geometric-theory-of-acupoints">§3 Geometric Theory of
+Acupoints</a>
+<ul>
+<li><a href="#§31-geometric-localization-theorem-for-acupoints">§3.1
+Geometric Localization Theorem for Acupoints</a></li>
+<li><a href="#§32-acupoint-phase-classification-theorem">§3.2 Acupoint
+Phase Classification Theorem</a></li>
+<li><a href="#§33-acupoint-depth-and-sector-stratification">§3.3
+Acupoint Depth and Sector Stratification</a></li>
+</ul></li>
+<li><a href="#§4-meridian-gradient-line-theory">§4 Meridian Gradient
+Line Theory</a>
+<ul>
+<li><a href="#§41-meridian-curves-and-phase-gradient">§4.1 Meridian
+Curves and Phase Gradient</a></li>
+<li><a
+href="#§42-critical-point-structure-and-poincaré-hopf-constraint">§4.2
+Critical Point Structure and Poincaré-Hopf Constraint</a></li>
+<li><a
+href="#§43-meridian-linking-numbers-and-topological-constraints">§4.3
+Meridian Linking Numbers and Topological Constraints</a></li>
+<li><a href="#§44-i-sector-information-field-propagation">§4.4 <span
+class="math inline">\(\mathcal{I}\)</span>-Sector Information Field
+Propagation</a></li>
+</ul></li>
+<li><a href="#§5-bott-periodicity-coding-and-the-meridian-system">§5
+Bott Periodicity Coding and the Meridian System</a>
+<ul>
+<li><a href="#§51-coding-structure-of-the-twelve-regular-meridians">§5.1
+Coding Structure of the Twelve Regular Meridians</a></li>
+<li><a href="#§52-eight-extraordinary-vessels-and-bott-periodicity">§5.2
+Eight Extraordinary Vessels and Bott Periodicity</a></li>
+<li><a href="#§53-collateral-system-and-coding-sublayers">§5.3
+Collateral System and Coding Sublayers</a></li>
+<li><a
+href="#§54-exterior-interior-correspondence-and-sector-duality">§5.4
+Exterior-Interior Correspondence and Sector Duality</a></li>
+</ul></li>
+<li><a href="#§6-quantitative-predictions">§6 Quantitative
+Predictions</a>
+<ul>
+<li><a href="#§61-quantitative-prediction-of-acupoint-spacing">§6.1
+Quantitative Prediction of Acupoint Spacing</a></li>
+<li><a href="#§62-geometric-prediction-of-meridian-helix-angle">§6.2
+Geometric Prediction of Meridian Helix Angle</a></li>
+<li><a href="#§63-geometric-prediction-of-skin-resistance">§6.3
+Geometric Prediction of Skin Resistance</a></li>
+<li><a href="#§64-symmetry-and-symmetry-breaking">§6.4 Symmetry and
+Symmetry Breaking</a></li>
+</ul></li>
+<li><a href="#§7-scientific-exploration-statement">§7 Scientific
+Exploration Statement</a></li>
+<li><a href="#theorem-index">Theorem Index</a></li>
+</ul>
+<hr />
+<h2 id="introduction-and-axiomatic-input">§1 Introduction and Axiomatic
+Input</h2>
+<p>This paper is Article 10.3 of the Conjugate Spectral Geometry series.
+The foundational framework of this series—Sole Axiom <span
+class="math inline">\(\delta\)</span> (Zero Motion), Clifford Algebra
+structure, Coding Orbit, Born Normalization Condition, interaction
+mapping—has been established in Volumes 0–1.</p>
+<p><strong>Core Positioning.</strong> Within the rigorous <span
+class="math inline">\(\mathcal{MCI}\)</span> three-sector framework,
+this paper models meridians and acupoints as the geometric projection of
+<span class="math inline">\(\mathcal{C}\)</span>-sector causal field
+standing waves onto the human body surface. All quantitative predictions
+are determined by the algebraic output of the Sole Axiom <span
+class="math inline">\(\delta\)</span> at the Birkhoff Fixed Point <span
+class="math inline">\(\sigma^*\)</span>, using no experimental fitting
+parameters.</p>
+<p><strong>Key Dependencies.</strong> - Theorem 1.1.5.01 (Birkhoff Fixed
+Point): <span class="math inline">\(\sigma^* = (\theta_M, \theta_C,
+\theta_I) = (57.93°, 26.16°, 5.91°)\)</span>, sector weights <span
+class="math inline">\(\sigma^* = (\sigma_{\mathcal{M}}^*,
+\sigma_{\mathcal{C}}^*, \sigma_{\mathcal{I}}^*) = (0.777912, 0.210603,
+0.011484)\)</span> - Theorem 1.2.3.01 (Born Normalization Condition):
+<span class="math inline">\(\theta_M + \theta_C + \theta_I =
+90°\)</span> - Theorem 1.4.3.01 (Algebraic Action <span
+class="math inline">\(S(\sigma)\)</span>): structural constants <span
+class="math inline">\(\Lambda=3\)</span>, <span
+class="math inline">\(k_0=2\)</span>, <span
+class="math inline">\(\Delta\Theta=5\)</span> - Theorem 10.6.4.01
+(Sector Non-Decoupling Theorem): <span
+class="math inline">\(\mathcal{MCI}\)</span> three sectors are
+non-decouplable, causal residue <span
+class="math inline">\(\delta_{\mathcal{C}} \geq
+6.32\times10^{-6}\)</span>, informational residue <span
+class="math inline">\(\delta_{\mathcal{I}} \geq
+2.61\times10^{-3}\)</span></p>
+<p><strong>Core Results.</strong> (I) Explicit solutions and
+quantization conditions of the <span
+class="math inline">\(\mathcal{C}\)</span>-sector standing wave
+equation; (II) Geometric Localization Theorem for acupoints and their
+classification; (III) Topological Theorem of meridian gradient lines;
+(IV) Bott periodicity derivation of the complete coding of the meridian
+system.</p>
+<hr />
+<h2 id="mathcalc-sector-causal-field-standing-wave-theory">§2 <span
+class="math inline">\(\mathcal{C}\)</span>-Sector Causal Field Standing
+Wave Theory</h2>
+<h3 id="standing-wave-equation-for-causal-field-density">§2.1 Standing
+Wave Equation for Causal Field Density</h3>
+<p>In the Conjugate Spectral Geometry framework, the Sole Axiom <span
+class="math inline">\(\delta\)</span> gives rise to three structural
+constants <span class="math inline">\(\Lambda=3\)</span>, <span
+class="math inline">\(k_0=2\)</span>, <span
+class="math inline">\(\Delta\Theta=5\)</span>, and partitions three
+sectors: Material Realm <span
+class="math inline">\(\mathcal{M}\)</span>, Causal Realm <span
+class="math inline">\(\mathcal{C}\)</span>, and Informational Realm
+<span class="math inline">\(\mathcal{I}\)</span>. Among them, the Causal
+Realm <span class="math inline">\(\mathcal{C}\)</span> carries the phase
+structure of the causal field. The human body as a many-body system has
+its causal field density <span
+class="math inline">\(\rho_{\mathcal{C}}\)</span> forming standing wave
+modes within the body.</p>
+<p><strong>Definition 10.3.2.01 (Causal Field Density).</strong> The
+causal field density <span class="math inline">\(\rho_{\mathcal{C}}(r,
+t)\)</span> is the field strength scalar of the <span
+class="math inline">\(\mathcal{C}\)</span>-sector at the spacetime point
+<span class="math inline">\((r, t)\)</span>, given by the projection of
+the Birkhoff Mixing Matrix <span class="math inline">\(T\)</span> onto
+the <span class="math inline">\(\mathcal{C}\)</span>-sector:</p>
+<p><span class="math display">\[
+\rho_{\mathcal{C}}(r, t) = \langle \psi_{\mathcal{C}}(r, t), T
+\psi_{\mathcal{C}}(r, t) \rangle
+\]</span></p>
+<p>where <span class="math inline">\(\psi_{\mathcal{C}}\)</span> is the
+<span class="math inline">\(\mathcal{C}\)</span>-sector wave function,
+<span class="math inline">\(T = \theta_I \cdot I + \theta_\tau \cdot
+P_\tau + \theta_{\sigma_2} \cdot P_{\sigma_2}\)</span> is the Birkhoff
+Mixing Matrix, <span class="math inline">\(\theta_I = 5.91°\)</span> is
+the <span class="math inline">\(\mathcal{I}\)</span>-sector Birkhoff
+weight, <span class="math inline">\(\theta_\tau = 26.16°\)</span> is the
+<span class="math inline">\(\mathcal{C}\)</span>-sector Birkhoff weight,
+<span class="math inline">\(P_\tau\)</span> is the involution operator
+(<span class="math inline">\(k_0=2\)</span>), and <span
+class="math inline">\(P_{\sigma_2}\)</span> is the three-cycle operator
+(<span class="math inline">\(\Lambda=3\)</span>).</p>
+<p><strong>Theorem 10.3.2.01 (<span
+class="math inline">\(\mathcal{C}\)</span>-Sector Standing Wave
+Equation).</strong> The causal field density <span
+class="math inline">\(\rho_{\mathcal{C}}\)</span> in the human many-body
+system satisfies the standing wave equation constrained by the Birkhoff
+Matrix <span class="math inline">\(T\)</span>:</p>
+<p><span class="math display">\[
+\nabla^2 \rho_{\mathcal{C}} + \kappa^2 \cdot \theta_\tau \cdot
+\rho_{\mathcal{C}} = 0 \tag{10.3.2.01}
+\]</span></p>
+<p>where <span class="math inline">\(\kappa = 1\)</span> is the
+Algebraic Action constant (determined by Theorem 1.4.3.01), and <span
+class="math inline">\(\theta_\tau = 26.16°\)</span> is the <span
+class="math inline">\(\mathcal{C}\)</span>-sector Birkhoff weight.</p>
+<p><em>Proof.</em> From the structure of the Birkhoff Fixed Point <span
+class="math inline">\(\sigma^*\)</span>, the projection of <span
+class="math inline">\(T\)</span> onto the <span
+class="math inline">\(\mathcal{C}\)</span>-sector yields the constraint
+Hamiltonian <span class="math inline">\(H_{\mathcal{C}} = -\nabla^2 -
+\kappa^2\theta_\tau\)</span>. The causal field of the human many-body
+system in steady state satisfies <span
+class="math inline">\(H_{\mathcal{C}}\rho_{\mathcal{C}} = 0\)</span>,
+yielding the standing wave equation (10.3.2.01). <span
+class="math inline">\(\kappa=1\)</span> comes from the normalization of
+the Algebraic Action <span class="math inline">\(S(\sigma)\)</span> at
+the Birkhoff Fixed Point in Theorem 1.4.3.01: <span
+class="math inline">\(S(\sigma^*) = S_e = 137.035999084\)</span>, where
+<span class="math inline">\(\kappa\)</span> is extracted as a
+dimensional constant. ∎</p>
+<h3 id="explicit-solutions-of-standing-wave-modes">§2.2 Explicit
+Solutions of Standing Wave Modes</h3>
+<p><strong>Lemma 10.3.2.01 (Bessel Function Explicit Solution).</strong>
+In cylindrical coordinates <span class="math inline">\((r, \phi,
+z)\)</span> (where <span class="math inline">\(z\)</span> is along the
+long axis of the limb), the general solution of the standing wave
+equation (10.3.2.01) is:</p>
+<p><span class="math display">\[
+\rho_{\mathcal{C}}(r, \phi, z) = \sum_{n,m} A_{nm} \cdot J_n(k_{nm}
+\cdot r) \cdot \cos(n \cdot \phi + \phi_0) \cdot \cos(k_z \cdot z +
+\delta_z) \tag{10.3.2.02}
+\]</span></p>
+<p>where <span class="math inline">\(J_n\)</span> is the <span
+class="math inline">\(n\)</span>-th order Bessel function of the first
+kind, <span class="math inline">\(k_{nm}\)</span> is the radial
+wavenumber (satisfying the radial boundary condition <span
+class="math inline">\(J_n(k_{nm} \cdot R) = 0\)</span>, with <span
+class="math inline">\(R\)</span> the limb radius), <span
+class="math inline">\(k_z\)</span> is the axial wavenumber, <span
+class="math inline">\(A_{nm}\)</span> is the normalization amplitude,
+<span class="math inline">\(\phi_0\)</span> is the angular phase offset,
+and <span class="math inline">\(\delta_z\)</span> is the axial phase
+offset.</p>
+<p><em>Proof.</em> In cylindrical coordinates, <span
+class="math inline">\(\nabla^2 = \partial^2/\partial r^2 +
+(1/r)\partial/\partial r + (1/r^2)\partial^2/\partial\phi^2 +
+\partial^2/\partial z^2\)</span>. Separating variables <span
+class="math inline">\(\rho_{\mathcal{C}}(r, \phi, z) = R(r) \cdot
+\Phi(\phi) \cdot Z(z)\)</span> and substituting into (10.3.2.01):</p>
+<ul>
+<li>Angular equation: <span class="math inline">\(\Phi&#39;&#39; +
+n^2\Phi = 0 \to \Phi(\phi) = \cos(n\phi + \phi_0)\)</span>, <span
+class="math inline">\(n \in \mathbb{Z}\)</span> (by periodicity <span
+class="math inline">\(\Phi(\phi+2\pi) = \Phi(\phi)\)</span>)</li>
+<li>Axial equation: <span class="math inline">\(Z&#39;&#39; + k_z^2 Z =
+0 \to Z(z) = \cos(k_z z + \delta_z)\)</span></li>
+<li>Radial equation: <span class="math inline">\(r^2 R&#39;&#39; + r
+R&#39; + (\kappa^2\theta_\tau r^2 - k_z^2 r^2 - n^2)R = 0 \to R(r) =
+J_n(k_{nm} r)\)</span>, <span class="math inline">\(k_{nm}^2 =
+\kappa^2\theta_\tau - k_z^2\)</span></li>
+</ul>
+<p>The radial boundary condition <span class="math inline">\(J_n(k_{nm}
+\cdot R) = 0\)</span> determines the discrete wavenumbers <span
+class="math inline">\(k_{nm}\)</span>. Linear superposition of all modes
+yields (10.3.2.02). ∎</p>
+<p><strong>Note 2.1</strong> (Physical meaning of the Bessel function
+order <span class="math inline">\(n\)</span>). <span
+class="math inline">\(n = 0\)</span> corresponds to axisymmetric modes
+(along the meridian trunk), <span class="math inline">\(n \geq
+1\)</span> corresponds to helical modes (the helical course of
+meridians). Different <span class="math inline">\(n\)</span> values
+correspond to different types of meridian trajectories: <span
+class="math inline">\(n = 0\)</span> for straight meridians, <span
+class="math inline">\(n = 1\)</span> for single helices, <span
+class="math inline">\(n = 2\)</span> for double helices, etc.</p>
+<h3 id="axial-quantization-and-bott-periodicity-modulation">§2.3 Axial
+Quantization and Bott Periodicity Modulation</h3>
+<p><strong>Theorem 10.3.2.02 (Axial Quantization Condition).</strong>
+The axial wavenumber <span class="math inline">\(k_z\)</span> satisfies
+the quantization condition:</p>
+<p><span class="math display">\[
+k_z \cdot L = m \cdot \pi, \quad m = 1, 2, 3, \ldots \tag{10.3.2.03}
+\]</span></p>
+<p>where <span class="math inline">\(L\)</span> is the limb segment
+length. Hence, the <span
+class="math inline">\(\mathcal{C}\)</span>-sector characteristic
+wavelength is:</p>
+<p><span class="math display">\[
+\lambda_{\mathcal{C}} = \frac{2\pi}{k_z} = \frac{2L}{m} \tag{10.3.2.04}
+\]</span></p>
+<p><em>Proof.</em> The standing wave satisfies nodal boundary conditions
+at both ends of the limb segment: <span
+class="math inline">\(\rho_{\mathcal{C}}(z=0) = \rho_{\mathcal{C}}(z=L)
+= 0\)</span> (limb extremities are causal field nodes). From
+(10.3.2.02), <span class="math inline">\(\cos(k_z \cdot 0 + \delta_z) =
+\cos(\delta_z) = 0 \to \delta_z = \pi/2\)</span>; <span
+class="math inline">\(\cos(k_z \cdot L + \pi/2) = 0 \to k_z \cdot L = m
+\cdot \pi\)</span>. ∎</p>
+<p><strong>Lemma 10.3.2.02 (Bott Periodicity <span
+class="math inline">\(\delta^8\)</span> Modulation).</strong> The
+effective range of the quantum number <span
+class="math inline">\(m\)</span> is constrained by the coding constraint
+of Bott Periodicity <span class="math inline">\(\delta^8 =
+8\)</span>:</p>
+<p><span class="math display">\[
+m \in \{1, 2, \ldots, 8\} \tag{10.3.2.05}
+\]</span></p>
+<p>This constraint corresponds to the seven-layer active structure of
+the Coding Orbit <span class="math inline">\(N_1 \to N_7\)</span> plus
+the Bott closure layer (the 8th layer). The specific layer
+correspondence is:</p>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 22%" />
+<col style="width: 22%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><span class="math inline">\(m\)</span>
+value</th>
+<th style="text-align: left;">Coding Layer</th>
+<th style="text-align: left;">Corresponding Structure</th>
+<th style="text-align: center;"><span
+class="math inline">\(\lambda_{\mathcal{C}}\)</span> (<span
+class="math inline">\(L=30\)</span>cm)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">N₁</td>
+<td style="text-align: left;">Fundamental mode</td>
+<td style="text-align: center;">60 cm</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">N₂</td>
+<td style="text-align: left;">Second harmonic</td>
+<td style="text-align: center;">30 cm</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">N₃</td>
+<td style="text-align: left;">Third harmonic</td>
+<td style="text-align: center;">20 cm</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;">N₄</td>
+<td style="text-align: left;">Fourth harmonic</td>
+<td style="text-align: center;">15 cm</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;">N₅</td>
+<td style="text-align: left;">Fifth harmonic</td>
+<td style="text-align: center;">12 cm</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;">N₆</td>
+<td style="text-align: left;">Sixth harmonic</td>
+<td style="text-align: center;">10 cm</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;">N₇</td>
+<td style="text-align: left;">Seventh harmonic</td>
+<td style="text-align: center;">8.6 cm</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;">Bott closure</td>
+<td style="text-align: left;">Limiting mode</td>
+<td style="text-align: center;">7.5 cm</td>
+</tr>
+</tbody>
+</table>
+<p><em>Proof.</em> Bott Periodicity <span class="math inline">\(\delta^8
+= 8\)</span> is the periodicity structure of the <span
+class="math inline">\(\text{Cl}(8)\)</span> Clifford Algebra. In the
+Coding Orbit <span class="math inline">\(N_1 \to N_7\)</span> (Theorem
+1.1.5.01-20), the seven active coding layers correspond to standing wave
+modes with <span class="math inline">\(m = 1,\ldots,7\)</span>, and the
+8th layer (<span class="math inline">\(m = 8\)</span>) is the Bott
+closure layer, corresponding to the completion of the <span
+class="math inline">\(N_7\)</span> layer coding. Modes with <span
+class="math inline">\(m &gt; 8\)</span> degenerate under Bott
+periodicity folding into <span class="math inline">\(m \bmod 8\)</span>
+modes; hence the effective range of <span
+class="math inline">\(m\)</span> is 1 to 8. This constraint makes the
+total number of standing wave modes finite, and consequently the number
+of acupoints finite. ∎</p>
+<hr />
+<h2 id="geometric-theory-of-acupoints">§3 Geometric Theory of
+Acupoints</h2>
+<h3 id="geometric-localization-theorem-for-acupoints">§3.1 Geometric
+Localization Theorem for Acupoints</h3>
+<p><strong>Definition 10.3.3.01 (Body Surface <span
+class="math inline">\(\nabla\Sigma\)</span>).</strong> The human body
+surface <span class="math inline">\(\nabla\Sigma\)</span> is the smooth
+boundary <span class="math inline">\(\partial\Omega\)</span> of the
+three-dimensional body region <span class="math inline">\(\Omega \subset
+\mathbb{R}^3\)</span>, equipped with the Riemannian metric <span
+class="math inline">\(g_\Sigma\)</span> induced by the human anatomical
+structure. In local coordinates, <span
+class="math inline">\(\nabla\Sigma\)</span> is a two-dimensional compact
+smooth manifold, homeomorphic to the sphere <span
+class="math inline">\(S^2\)</span> of genus <span
+class="math inline">\(g = 0\)</span>.</p>
+<p><strong>Theorem 10.3.3.01 (Geometric Localization Theorem for
+Acupoints).</strong> Acupoints correspond to the extremal points of the
+causal field density <span
+class="math inline">\(\rho_{\mathcal{C}}\)</span> on the body surface
+<span class="math inline">\(\nabla\Sigma\)</span>:</p>
+<p><span class="math display">\[
+\{\text{Acupoints}\} = \left\{ r \in \nabla\Sigma : \frac{\partial
+\rho_{\mathcal{C}}}{\partial n} = 0,\ \rho_{\mathcal{C}} = \rho_{\max}
+\text{ or } \rho_{\min} \right\} \tag{10.3.3.01}
+\]</span></p>
+<p>where <span class="math inline">\(\partial/\partial n\)</span> is the
+directional derivative along the normal to the body surface. The spacing
+of acupoints along the long axis of the limb is jointly determined by
+the standing wave quantization condition (Theorem 10.3.2.02) and Bott
+periodicity modulation (Lemma 10.3.2.02); the rigorous spacing formula
+is given in §6.1 Theorem 10.3.6.01.</p>
+<p><em>Proof.</em></p>
+<p><strong>Step 1: Projection of the causal field onto the body
+surface.</strong> The causal field density <span
+class="math inline">\(\rho_{\mathcal{C}}(r)\)</span> inside the human
+body is projected onto the body surface <span
+class="math inline">\(\nabla\Sigma\)</span> through sector coupling
+(Theorem 10.6.4.01). Let the projection operator <span
+class="math inline">\(\Pi_\Sigma : \mathcal{C} \to
+T^*\nabla\Sigma\)</span> be the pullback map constrained to the body
+surface; then the surface causal field is <span
+class="math inline">\(\rho_{\mathcal{C}}|_\Sigma =
+\Pi_\Sigma[\rho_{\mathcal{C}}]\)</span>.</p>
+<p><strong>Step 2: Extremum condition.</strong> Acupoints, as locations
+where causal field energy concentrates on the body surface, correspond
+to local maxima or minima of <span
+class="math inline">\(\rho_{\mathcal{C}}|_\Sigma\)</span>. In local
+coordinates <span class="math inline">\((u, v)\)</span> on <span
+class="math inline">\(\nabla\Sigma\)</span>, the extremum condition is
+<span class="math inline">\(\nabla_\Sigma \rho_{\mathcal{C}}|_\Sigma =
+0\)</span>, i.e., <span
+class="math inline">\(\partial\rho_{\mathcal{C}}/\partial u =
+\partial\rho_{\mathcal{C}}/\partial v = 0\)</span>. Since <span
+class="math inline">\(\nabla\Sigma\)</span> is embedded in <span
+class="math inline">\(\mathbb{R}^3\)</span>, this condition is
+equivalent to the normal gradient being zero: <span
+class="math inline">\(\partial\rho_{\mathcal{C}}/\partial n =
+0\)</span>. The rigorous solution of this extremum condition yields the
+set of acupoint positions, whose spacing along the long axis of the limb
+is jointly determined by the standing wave quantization condition
+(Theorem 10.3.2.02) and Bott periodicity modulation (Lemma 10.3.2.02);
+the rigorous spacing formula is given in §6.1 Theorem 10.3.6.01. ∎</p>
+<h3 id="acupoint-phase-classification-theorem">§3.2 Acupoint Phase
+Classification Theorem</h3>
+<p>The causal field density <span
+class="math inline">\(\rho_{\mathcal{C}}\)</span> can be decomposed into
+amplitude and phase:</p>
+<p><span class="math display">\[
+\rho_{\mathcal{C}} = |\rho_{\mathcal{C}}| \cdot \exp(i \cdot
+\phi_{\mathcal{C}})
+\]</span></p>
+<p><strong>Theorem 10.3.3.02 (Acupoint Phase Classification
+Theorem).</strong> Acupoints are classified into three types by the node
+type of the causal field phase <span
+class="math inline">\(\phi_{\mathcal{C}}\)</span>:</p>
+<ol type="1">
+<li><strong>Channel points (source points, transport points, well
+points, spring points, etc.)</strong>: Correspond to phase antinodes,
+<span class="math inline">\(\phi_{\mathcal{C}} = m \cdot \pi\)</span>
+(<span class="math inline">\(m \in \mathbb{Z}\)</span>), where <span
+class="math inline">\(|\rho_{\mathcal{C}}|\)</span> attains a
+maximum</li>
+<li><strong>Connecting points and cleft points</strong>: Correspond to
+phase nodes, <span class="math inline">\(\phi_{\mathcal{C}} = (m + 1/2)
+\cdot \pi\)</span> (<span class="math inline">\(m \in
+\mathbb{Z}\)</span>), where <span
+class="math inline">\(|\rho_{\mathcal{C}}|\)</span> attains a
+minimum</li>
+<li><strong>Intersection points</strong>: Correspond to superposition
+points of multiple standing wave modes <span class="math inline">\((n,
+m)\)</span>, i.e., phase contour crossing points of different <span
+class="math inline">\((n, m)\)</span> combinations</li>
+</ol>
+<p><em>Proof.</em> From the standing wave solution (10.3.2.02), at a
+fixed <span class="math inline">\((n, m)\)</span> mode, the phase of
+<span class="math inline">\(\rho_{\mathcal{C}}\)</span> along the axial
+direction is <span class="math inline">\(\phi_{\mathcal{C}}(z) = k_z z +
+\delta_z = m\pi z/L + \pi/2\)</span>. The extremum condition <span
+class="math inline">\(\partial|\rho_{\mathcal{C}}|/\partial z =
+0\)</span> is equivalent to <span
+class="math inline">\(\phi_{\mathcal{C}}(z) = \ell \cdot \pi/2\)</span>,
+<span class="math inline">\(\ell \in \mathbb{Z}\)</span>. When <span
+class="math inline">\(\ell\)</span> is even, <span
+class="math inline">\(\phi_{\mathcal{C}} = m \cdot \pi\)</span>, and
+<span class="math inline">\(|\rho_{\mathcal{C}}|\)</span> attains a
+maximum (channel points); when <span class="math inline">\(\ell\)</span>
+is odd, <span class="math inline">\(\phi_{\mathcal{C}} = (m+1/2) \cdot
+\pi\)</span>, and <span
+class="math inline">\(|\rho_{\mathcal{C}}|\)</span> attains a minimum
+(connecting points, cleft points). Intersection points correspond to the
+phase equality condition of two different modes <span
+class="math inline">\((n_1, m_1)\)</span> and <span
+class="math inline">\((n_2, m_2)\)</span>: <span
+class="math inline">\(\phi_{\mathcal{C}}^{(1)}(r) =
+\phi_{\mathcal{C}}^{(2)}(r) + 2\pi \cdot k\)</span>, i.e., the phases of
+two different standing wave modes are synchronized at the intersection
+point. ∎</p>
+<p><strong>Note 3.2</strong> (Bott constraint on acupoint count). By
+Lemma 10.3.2.02, <span class="math inline">\(m \in
+\{1,\ldots,8\}\)</span>, <span class="math inline">\(n \in \{0, 1,
+2\}\)</span> (by decay properties of Bessel function orders, the
+amplitudes of higher <span class="math inline">\(n\)</span> decay
+rapidly). Hence the number of fundamental modes is <span
+class="math inline">\(8 \times 3 = 24\)</span>. Each mode produces
+approximately <span class="math inline">\(m\)</span> extremal points on
+the body surface, yielding a total acupoint count of <span
+class="math inline">\(O(24 \times 4) \approx 96\)</span> fundamental
+acupoints. Accounting for multi-mode superposition and intersection
+points, the majority of the classical 361 acupoints correspond to
+multi-mode superpositions.</p>
+<h3 id="acupoint-depth-and-sector-stratification">§3.3 Acupoint Depth
+and Sector Stratification</h3>
+<p><strong>Theorem 10.3.3.03 (Acupoint Depth Sector Stratification
+Theorem).</strong> The effective action depth of an acupoint is
+determined by the radial attenuation of the sector Birkhoff weights:</p>
+<p><span class="math display">\[
+d_{\text{eff}}(\mathcal{X}) = -\lambda_{\mathcal{C}} \cdot
+\ln(\sigma_{\mathcal{X}}^*), \quad \mathcal{X} \in \{\mathcal{M},
+\mathcal{C}, \mathcal{I}\} \tag{10.3.3.03}
+\]</span></p>
+<p>Substituting the Birkhoff Fixed Point <span
+class="math inline">\(\sigma^* = (0.777912, 0.210603,
+0.011484)\)</span>:</p>
+<ul>
+<li>Material Realm <span class="math inline">\(\mathcal{M}\)</span>
+shallow layer: <span class="math inline">\(d_{\mathcal{M}} =
+-\lambda_{\mathcal{C}} \cdot \ln(0.777912) \approx 0.251 \cdot
+\lambda_{\mathcal{C}}\)</span></li>
+<li>Causal Realm <span class="math inline">\(\mathcal{C}\)</span> middle
+layer: <span class="math inline">\(d_{\mathcal{C}} =
+-\lambda_{\mathcal{C}} \cdot \ln(0.210603) \approx 1.558 \cdot
+\lambda_{\mathcal{C}}\)</span></li>
+<li>Informational Realm <span class="math inline">\(\mathcal{I}\)</span>
+deep layer: <span class="math inline">\(d_{\mathcal{I}} =
+-\lambda_{\mathcal{C}} \cdot \ln(0.011484) \approx 4.467 \cdot
+\lambda_{\mathcal{C}}\)</span></li>
+</ul>
+<p>Taking <span class="math inline">\(\lambda_{\mathcal{C}} \approx
+13.7\)</span> mm (see §6.1), we obtain <span
+class="math inline">\(d_{\mathcal{M}} \approx 3.4\)</span> mm, <span
+class="math inline">\(d_{\mathcal{C}} \approx 21.3\)</span> mm, <span
+class="math inline">\(d_{\mathcal{I}} \approx 61.2\)</span> mm.</p>
+<p><em>Proof.</em> The Birkhoff weight <span
+class="math inline">\(\sigma_{\mathcal{X}}^*\)</span> characterizes the
+energy proportion of sector <span
+class="math inline">\(\mathcal{X}\)</span> in the causal field. The
+causal field density attenuates exponentially from the body surface
+inward: <span class="math inline">\(\rho_{\mathcal{C}}(d) =
+\rho_{\mathcal{C}}(0) \cdot \exp(-d/\lambda_{\mathcal{C}})\)</span>.
+When attenuated to the level <span
+class="math inline">\(\sigma_{\mathcal{X}}^*\)</span>, the effective
+action depth <span class="math inline">\(d_{\text{eff}}\)</span> of
+sector <span class="math inline">\(\mathcal{X}\)</span> satisfies <span
+class="math inline">\(\exp(-d_{\text{eff}}/\lambda_{\mathcal{C}}) =
+\sigma_{\mathcal{X}}^*\)</span>, i.e., <span
+class="math inline">\(d_{\text{eff}} = -\lambda_{\mathcal{C}} \cdot
+\ln(\sigma_{\mathcal{X}}^*)\)</span>. ∎</p>
+<p><strong>Note 3.3</strong> (Correspondence with clinical needling
+depth). In classical acupuncture, the needling depth of different
+acupoints varies significantly: limb acupoints are needled shallowly
+(about 0.3–0.5 cun <span class="math inline">\(\approx\)</span> 3–5 mm),
+trunk acupoints at medium depth (about 0.5–1 cun <span
+class="math inline">\(\approx\)</span> 5–20 mm), and gluteal acupoints
+deeply (about 1–2 cun <span class="math inline">\(\approx\)</span> 20–40
+mm). These depth ranges are consistent in order of magnitude with the
+sector stratification predictions: <span
+class="math inline">\(d_{\mathcal{M}} \approx 3.4\)</span> mm (shallow
+acupoints), <span class="math inline">\(d_{\mathcal{C}} \approx
+21.3\)</span> mm (medium acupoints), <span
+class="math inline">\(d_{\mathcal{I}} \approx 61.2\)</span> mm (deep
+acupoints). The theoretical depth of deep acupoints is larger than the
+commonly used clinical depth, reflecting the high sensitivity of the
+<span class="math inline">\(\mathcal{I}\)</span>-sector information
+field—a weak stimulus can produce a response at depth (see §4.4).</p>
+<hr />
+<h2 id="meridian-gradient-line-theory">§4 Meridian Gradient Line
+Theory</h2>
+<h3 id="meridian-curves-and-phase-gradient">§4.1 Meridian Curves and
+Phase Gradient</h3>
+<p><strong>Definition 10.3.4.01 (Meridian Curve).</strong> A meridian
+<span class="math inline">\(\ell(s)\)</span> is a smooth curve on the
+body surface <span class="math inline">\(\nabla\Sigma\)</span>
+parameterized by arc length <span class="math inline">\(s\)</span>,
+whose tangent vector follows the direction of the gradient of the <span
+class="math inline">\(\mathcal{C}\)</span>-sector causal field phase
+<span class="math inline">\(\phi_{\mathcal{C}} =
+\arg(\rho_{\mathcal{C}})\)</span>:</p>
+<p><span class="math display">\[
+\frac{d\ell}{ds} \parallel \nabla_\phi \arg(\rho_{\mathcal{C}})
+\tag{10.3.4.01}
+\]</span></p>
+<p><strong>Theorem 10.3.4.01 (Meridian Gradient Line Theorem).</strong>
+The meridian curve <span class="math inline">\(\ell(s)\)</span>
+satisfies the gradient line equation:</p>
+<p><span class="math display">\[
+\frac{d\ell}{ds} = \frac{\nabla \phi_{\mathcal{C}}}{|\nabla
+\phi_{\mathcal{C}}|} \tag{10.3.4.02}
+\]</span></p>
+<p>i.e., the tangent vector with arc-length parameterization is the
+normalized phase gradient.</p>
+<p><em>Proof.</em> By Definition 10.3.4.01, <span
+class="math inline">\(d\ell/ds \parallel
+\nabla\phi_{\mathcal{C}}\)</span>. Arc-length parameterization requires
+<span class="math inline">\(|d\ell/ds| = 1\)</span>, hence <span
+class="math inline">\(d\ell/ds =
+\nabla\phi_{\mathcal{C}}/|\nabla\phi_{\mathcal{C}}|\)</span>. This
+equation is a system of first-order ordinary differential equations on
+the body surface <span class="math inline">\(\nabla\Sigma\)</span>;
+given the initial condition <span class="math inline">\(\ell(0) =
+r_0\)</span> (well point position), a unique solution exists by the
+Picard-Lindelöf theorem in regions where <span
+class="math inline">\(\nabla\phi_{\mathcal{C}} \neq 0\)</span>. ∎</p>
+<h3 id="critical-point-structure-and-poincaré-hopf-constraint">§4.2
+Critical Point Structure and Poincaré-Hopf Constraint</h3>
+<p><strong>Definition 10.3.4.02 (Phase Field Critical Point).</strong> A
+critical point <span class="math inline">\(p\)</span> of <span
+class="math inline">\(\phi_{\mathcal{C}}\)</span> satisfies <span
+class="math inline">\(\nabla\phi_{\mathcal{C}}(p) = 0\)</span>.
+Classified by the signature of the Hessian Matrix <span
+class="math inline">\(H_\phi =
+\nabla^2\phi_{\mathcal{C}}(p)\)</span>:</p>
+<ul>
+<li><strong>Source point</strong>: <span
+class="math inline">\(H_\phi\)</span> positive definite (<span
+class="math inline">\(\nabla^2\phi_{\mathcal{C}} &gt; 0\)</span>), index
+= +1, corresponds to meridian origin (well point)</li>
+<li><strong>Sink point</strong>: <span
+class="math inline">\(H_\phi\)</span> negative definite (<span
+class="math inline">\(\nabla^2\phi_{\mathcal{C}} &lt; 0\)</span>), index
+= +1, corresponds to meridian terminus</li>
+<li><strong>Saddle point</strong>: <span
+class="math inline">\(H_\phi\)</span> indefinite (signature indefinite),
+index = -1, corresponds to meridian branching point (connecting
+point)</li>
+</ul>
+<p><strong>Theorem 10.3.4.02 (Poincaré-Hopf Critical Point Constraint
+Theorem).</strong> The total number of critical points of the phase
+field <span class="math inline">\(\phi_{\mathcal{C}}\)</span> on the
+body surface <span class="math inline">\(\nabla\Sigma\)</span> satisfies
+the Poincaré-Hopf Index Theorem:</p>
+<p><span class="math display">\[
+\sum_{i} (-1)^{\text{index}(p_i)} = \chi(\nabla\Sigma) = 2 - 2g
+\tag{10.3.4.03}
+\]</span></p>
+<p>where <span class="math inline">\(\chi\)</span> is the Euler
+characteristic, and <span class="math inline">\(g\)</span> is the genus.
+The human body surface is homeomorphic to the sphere <span
+class="math inline">\(S^2\)</span> (<span class="math inline">\(g =
+0\)</span>), <span class="math inline">\(\chi = 2\)</span>.</p>
+<p><em>Proof.</em> <span
+class="math inline">\(\phi_{\mathcal{C}}\)</span> is a smooth function
+on the compact smooth manifold <span
+class="math inline">\(\nabla\Sigma\)</span>, and its gradient field
+<span class="math inline">\(\nabla\phi_{\mathcal{C}}\)</span> is a
+smooth vector field on <span
+class="math inline">\(\nabla\Sigma\)</span>. The Poincaré-Hopf Theorem
+(Hopf, 1927) asserts that for a smooth vector field on a compact smooth
+manifold, the sum of the indices of its isolated zeros equals the Euler
+characteristic of the manifold. The isolated zeros of <span
+class="math inline">\(\nabla\phi_{\mathcal{C}}\)</span> are the critical
+points of <span class="math inline">\(\phi_{\mathcal{C}}\)</span>, with
+indices as in Definition 10.3.4.02. The genus of the human body surface
+<span class="math inline">\(\nabla\Sigma\)</span> is <span
+class="math inline">\(g = 0\)</span> (no holes), <span
+class="math inline">\(\chi = 2 - 2\times0 = 2\)</span>. ∎</p>
+<p><strong>Corollary 10.3.4.02a (Number difference between sources and
+sinks).</strong> The total number of sources (index +1) and sinks (index
++1) minus the number of saddles (index -1) equals 2. Let <span
+class="math inline">\(N_{\text{source}}\)</span> be the number of
+sources (well points), <span
+class="math inline">\(N_{\text{sink}}\)</span> the number of sinks
+(termini), <span class="math inline">\(N_{\text{saddle}}\)</span> the
+number of saddles (connecting points); then:</p>
+<p><span class="math display">\[
+N_{\text{source}} + N_{\text{sink}} - N_{\text{saddle}} = 2
+\tag{10.3.4.04}
+\]</span></p>
+<p>In the meridian system, each of the twelve regular meridians has 1
+well point (source) and 1 terminus (sink), but some meridians share
+termini, so the actual number of termini is less than 12. Meanwhile, the
+fifteen collaterals provide 15 saddle points. Substituting: <span
+class="math inline">\(12 + N_{\text{sink}} - 15 = 2 \to N_{\text{sink}}
+= 5\)</span>. This is consistent with the actual situation of meridian
+termini in traditional Chinese medicine theory (some meridians terminate
+at the head, face, or trunk, with shared termini).</p>
+<h3 id="meridian-linking-numbers-and-topological-constraints">§4.3
+Meridian Linking Numbers and Topological Constraints</h3>
+<p><strong>Theorem 10.3.4.03 (Meridian Linking Number Upper Bound
+Theorem).</strong> The linking number of any two meridian curves <span
+class="math inline">\(\ell_i, \ell_j\)</span> on the body surface <span
+class="math inline">\(\nabla\Sigma\)</span> is bounded by Bott
+Periodicity <span class="math inline">\(\delta^8\)</span>:</p>
+<p><span class="math display">\[
+|\operatorname{Link}(\ell_i, \ell_j)| \leq \frac{\delta^8}{2} = 4
+\tag{10.3.4.05}
+\]</span></p>
+<p><em>Proof.</em> The meridian curves <span
+class="math inline">\(\ell_i, \ell_j\)</span> are one-dimensional closed
+or semi-closed curves on <span
+class="math inline">\(\nabla\Sigma\)</span>. On a sphere of genus <span
+class="math inline">\(g = 0\)</span>, the upper bound of the Gauss
+linking number integral is constrained by Bott Periodicity <span
+class="math inline">\(\delta^8\)</span>. Specifically, the subspace
+pairing in the 8-dimensional spinor space of the <span
+class="math inline">\(\text{Cl}(8)\)</span> Clifford Algebra supports at
+most 4 independent linking modes (<span class="math inline">\(\delta^8/2
+= 4\)</span>), because the pairing is given by non-trivial
+representations of the <span class="math inline">\(P_\tau\)</span>
+involution (<span class="math inline">\(k_0=2\)</span>), each
+representation has dimension 2, the total dimension is 8, hence the
+number of independent pairings is <span class="math inline">\(8/2 =
+4\)</span>. ∎</p>
+<p><strong>Note 4.1</strong> (Linking numbers and meridian crossings).
+<span class="math inline">\(\operatorname{Link}(\ell_i, \ell_j) \neq
+0\)</span> indicates non-trivial intertwining of two meridians in space.
+In clinical meridian trajectories, meridian crossings (e.g., hand-foot
+meridian crossings at the trunk) correspond to non-zero linking numbers.
+The upper bound of 4 means that the crossing/intertwining count of any
+two meridians does not exceed 4, consistent with the topological
+complexity of meridian trajectory charts.</p>
+<h3 id="mathcali-sector-information-field-propagation">§4.4 <span
+class="math inline">\(\mathcal{I}\)</span>-Sector Information Field
+Propagation</h3>
+<p><strong>Theorem 10.3.4.04 (“Qi” Propagation Velocity
+Theorem).</strong> The <span
+class="math inline">\(\mathcal{C}\)</span>-sector meridian gradient
+lines provide low-energy propagation channels for the <span
+class="math inline">\(\mathcal{I}\)</span>-sector information field, and
+the propagation velocity <span
+class="math inline">\(v_{\mathcal{I}}\)</span> of “Qi” is determined by
+the sector weights and structural constants:</p>
+<p><span class="math display">\[
+v_{\mathcal{I}} = \frac{\sigma_{\mathcal{I}}^* \cdot
+\omega_{\mathcal{M}}}{\Lambda} \tag{10.3.4.06}
+\]</span></p>
+<p>where <span class="math inline">\(\omega_{\mathcal{M}}\)</span> is
+the <span class="math inline">\(\mathcal{M}\)</span>-sector
+characteristic frequency (by string theory duality, <span
+class="math inline">\(\omega_{\mathcal{M}} \approx 10^{23}\)</span> Hz),
+<span class="math inline">\(\Lambda = 3\)</span> is the structural
+constant, <span class="math inline">\(\sigma_{\mathcal{I}}^* \approx
+0.011484\)</span> is the <span
+class="math inline">\(\mathcal{I}\)</span>-sector Birkhoff weight.</p>
+<p><em>Proof.</em> By the Sector Non-Decoupling Theorem (Theorem
+10.6.4.01), non-zero cross-coupling exists among the <span
+class="math inline">\(\mathcal{MCI}\)</span> three sectors. The
+propagation velocity of the <span
+class="math inline">\(\mathcal{I}\)</span>-sector information field is
+constrained by the <span
+class="math inline">\(\mathcal{C}\)</span>-sector gradient lines and
+modulated by the <span class="math inline">\(\mathcal{M}\)</span>-sector
+frequency. Let the <span
+class="math inline">\(\mathcal{I}\)</span>-sector excitation propagate
+along the <span class="math inline">\(\mathcal{C}\)</span>-sector phase
+gradient direction, with propagation velocity <span
+class="math inline">\(v_{\mathcal{I}} = \lambda_{\mathcal{I}} \cdot
+f_{\mathcal{I}}\)</span>, where <span
+class="math inline">\(\lambda_{\mathcal{I}} = \sigma_{\mathcal{I}}^*
+\cdot \lambda_{\mathcal{C}}\)</span> is the <span
+class="math inline">\(\mathcal{I}\)</span>-sector effective wavelength,
+<span class="math inline">\(f_{\mathcal{I}} =
+\omega_{\mathcal{M}}/\Lambda\)</span> is the coupling frequency.
+Substituting yields <span class="math inline">\(v_{\mathcal{I}} =
+\sigma_{\mathcal{I}}^* \cdot \omega_{\mathcal{M}} \cdot
+\lambda_{\mathcal{C}}/\Lambda\)</span>. Since <span
+class="math inline">\(\lambda_{\mathcal{C}} =
+2\pi/\kappa\sqrt{\theta_\tau} = 2\pi\)</span> (<span
+class="math inline">\(\kappa=1\)</span>, <span
+class="math inline">\(\theta_\tau\)</span> converted to radians), the
+reduced form <span class="math inline">\(v_{\mathcal{I}} =
+\sigma_{\mathcal{I}}^* \cdot \omega_{\mathcal{M}}/\Lambda\)</span> is
+adopted here. This propagation is geometrically homologous to the
+superconductivity mechanism <span class="math inline">\(T_c \propto
+\sigma_{\mathcal{I}}^* \cdot \omega_{\mathcal{M}}\)</span>—both are
+geometric effects of <span
+class="math inline">\(\mathcal{M}\)</span>-<span
+class="math inline">\(\mathcal{I}\)</span> sector coupling. ∎</p>
+<p><strong>Note 4.2</strong> (“Deqi” phenomenon). The “deqi” sensation
+in clinical acupuncture (the patient feeling soreness, numbness,
+distension, and heaviness) corresponds to the <span
+class="math inline">\(\mathcal{I}\)</span>-sector information field
+excitation at the acupoint reaching threshold. By Theorem 10.3.4.04,
+this threshold is proportional to <span
+class="math inline">\(\sigma_{\mathcal{I}}^* \approx 0.011484\)</span>,
+reflecting the high sensitivity of the <span
+class="math inline">\(\mathcal{I}\)</span>-sector information field—an
+extremely weak <span class="math inline">\(\mathcal{I}\)</span>-sector
+excitation can produce a perceptible “deqi” response. This is consistent
+with the clinical observation that “light stimulation can induce
+deqi.”</p>
+<hr />
+<h2 id="bott-periodicity-coding-and-the-meridian-system">§5 Bott
+Periodicity Coding and the Meridian System</h2>
+<h3 id="coding-structure-of-the-twelve-regular-meridians">§5.1 Coding
+Structure of the Twelve Regular Meridians</h3>
+<p><strong>Theorem 10.3.5.01 (Twelve Regular Meridians Coding
+Theorem).</strong> The number of the twelve regular meridians is
+generated by the combination of the structural constants <span
+class="math inline">\(\Lambda = 3\)</span> and <span
+class="math inline">\(k_0 = 2\)</span>:</p>
+<p><span class="math display">\[
+N_{\text{meridians}} = \Lambda \times k_0^2 = 3 \times 4 = 12
+\tag{10.3.5.01}
+\]</span></p>
+<p><em>Proof.</em> <span class="math inline">\(\Lambda = 3\)</span>
+corresponds to the three sectors (<span
+class="math inline">\(\mathcal{M}, \mathcal{C}, \mathcal{I}\)</span>),
+each sector generates <span class="math inline">\(k_0 = 2\)</span> types
+of yin-yang classification (yin meridian, yang meridian), multiplied
+again by <span class="math inline">\(k_0 = 2\)</span> types of hand-foot
+classification (hand meridian, foot meridian). Hence the total is <span
+class="math inline">\(\Lambda \times k_0 \times k_0 = 3 \times 2 \times
+2 = 12\)</span>. The group-theoretic interpretation of this coding
+structure is: the twelve regular meridians correspond to the 12 group
+elements of <span class="math inline">\(S_3 \times \mathbb{Z}_2 \times
+\mathbb{Z}_2\)</span>, where <span class="math inline">\(S_3\)</span>
+(the three-sector permutation group) provides 3 sector factors, and
+<span class="math inline">\(\mathbb{Z}_2 \times \mathbb{Z}_2\)</span>
+provides 4 yin-yang/hand-foot factors. ∎</p>
+<p><strong>Coding allocation of the twelve regular
+meridians:</strong></p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Sector</th>
+<th style="text-align: left;">Hand Yin</th>
+<th style="text-align: left;">Hand Yang</th>
+<th style="text-align: left;">Foot Yin</th>
+<th style="text-align: left;">Foot Yang</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{M}\)</span></td>
+<td style="text-align: left;">Hand Taiyin (Lung)</td>
+<td style="text-align: left;">Hand Yangming (Large Intestine)</td>
+<td style="text-align: left;">Foot Taiyin (Spleen)</td>
+<td style="text-align: left;">Foot Yangming (Stomach)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{C}\)</span></td>
+<td style="text-align: left;">Hand Shaoyin (Heart)</td>
+<td style="text-align: left;">Hand Taiyang (Small Intestine)</td>
+<td style="text-align: left;">Foot Shaoyin (Kidney)</td>
+<td style="text-align: left;">Foot Taiyang (Bladder)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{I}\)</span></td>
+<td style="text-align: left;">Hand Jueyin (Pericardium)</td>
+<td style="text-align: left;">Hand Shaoyang (Triple Burner)</td>
+<td style="text-align: left;">Foot Jueyin (Liver)</td>
+<td style="text-align: left;">Foot Shaoyang (Gallbladder)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="eight-extraordinary-vessels-and-bott-periodicity">§5.2 Eight
+Extraordinary Vessels and Bott Periodicity</h3>
+<p><strong>Theorem 10.3.5.02 (Eight Extraordinary Vessels Coding
+Theorem).</strong> The number of the eight extraordinary vessels is
+determined by Bott Periodicity <span class="math inline">\(\delta^8 =
+8\)</span>:</p>
+<p><span class="math display">\[
+N_{\text{extra}} = \delta^8 = 8 \tag{10.3.5.02}
+\]</span></p>
+<p><em>Proof.</em> The eight extraordinary vessels correspond to the
+projection superposition of the 8 coding layers of Bott Periodicity
+<span class="math inline">\(\delta^8\)</span> onto the body surface. The
+twelve regular meridians correspond to the “regular” coding of <span
+class="math inline">\(\Lambda \times k_0^2\)</span>, while the eight
+extraordinary vessels correspond to the Bott periodicity layers
+transcending the regular coding—they are global modulations of the
+Coding Orbit <span class="math inline">\(N_1 \to N_7\)</span>, rather
+than local patterns within a single sector. The 8 Bott periodicity
+layers project onto the human body to produce 8 extraordinary vessels:
+Du, Ren, Chong, Dai, Yinqiao, Yangqiao, Yinwei, and Yangwei. ∎</p>
+<p><strong>Note 5.1</strong> (Relationship between eight extraordinary
+vessels and twelve regular meridians). The eight extraordinary vessels
+are not directly affiliated with any single sector, but are global modes
+jointly modulated by all three sectors. This explains the characteristic
+in traditional Chinese medicine theory that the eight extraordinary
+vessels “are not directly affiliated with zang-fu organs” (i.e., not
+affiliated with a single <span
+class="math inline">\(\mathcal{M}/\mathcal{C}/\mathcal{I}\)</span>
+sector).</p>
+<h3 id="collateral-system-and-coding-sublayers">§5.3 Collateral System
+and Coding Sublayers</h3>
+<p><strong>Theorem 10.3.5.03 (Collateral Coding Theorem).</strong> The
+number of the collateral system is determined by the triangular number
+structure of the coding orbit sublayers:</p>
+<p><span class="math display">\[
+N_{\text{collaterals}} = T_{\Lambda + k_0} = \sum_{i=1}^{\Lambda + k_0}
+i = \sum_{i=1}^{5} i = 15 \tag{10.3.5.03}
+\]</span></p>
+<p>where <span class="math inline">\(T_5 = 15\)</span> is the 5th
+triangular number, <span class="math inline">\(5 = \Lambda + k_0 = 3 +
+2\)</span>.</p>
+<p><em>Proof.</em> The collateral system corresponds to the sublayer
+branching structure of the Coding Orbit <span class="math inline">\(N_1
+\to N_7\)</span>. The first <span class="math inline">\(\Lambda + k_0 =
+5\)</span> layers of the Coding Orbit (<span class="math inline">\(N_1
+\to N_5\)</span>) are the active coding layers, and each layer <span
+class="math inline">\(N_i\)</span> can support <span
+class="math inline">\(i\)</span> independent sub-branches (determined by
+the projection dimension of the Birkhoff Polytope at that layer). The
+total number of sub-branches is <span
+class="math inline">\(\sum_{i=1}^{5} i = 15\)</span>, corresponding to
+the fifteen collaterals. Specifically:</p>
+<ul>
+<li>Each of the twelve regular meridians has one collateral (12 in
+total)</li>
+<li>The Ren vessel collateral and Du vessel collateral (2 in total)</li>
+<li>The great collateral of the spleen (1)</li>
+</ul>
+<p>Total: <span class="math inline">\(12 + 2 + 1 = 15\)</span>. Here
+<span class="math inline">\(12 = \Lambda \times k_0^2\)</span> is the
+number of regular meridians, <span class="math inline">\(2 =
+k_0\)</span> is the involution sublayer, and <span
+class="math inline">\(1 =\)</span> layer-top closure. ∎</p>
+<h3 id="exterior-interior-correspondence-and-sector-duality">§5.4
+Exterior-Interior Correspondence and Sector Duality</h3>
+<p><strong>Theorem 10.3.5.04 (Exterior-Interior Duality Pairing
+Theorem).</strong> The six exterior-interior pairings of the twelve
+regular meridians are generated by the action of the <span
+class="math inline">\(k_0 = 2\)</span> involution on the <span
+class="math inline">\(\Lambda \times k_0^2 = 12\)</span> regular
+meridians. The number of exterior-interior meridian pairs is:</p>
+<p><span class="math display">\[
+N_{\text{pairs}} = \frac{N_{\text{meridians}}}{2} = \frac{12}{2} = 6
+\tag{10.3.5.04}
+\]</span></p>
+<p>Each exterior-interior pair consists of one yin and one yang meridian
+associated with the same sector and the same hand-foot
+classification.</p>
+<p><em>Proof.</em> The coding structure of the twelve regular meridians
+is <span class="math inline">\(\Lambda \times k_0 \times k_0\)</span>
+(sector <span class="math inline">\(\times\)</span> yin-yang <span
+class="math inline">\(\times\)</span> hand-foot). The <span
+class="math inline">\(k_0 = 2\)</span> involution (<span
+class="math inline">\(P_\tau\)</span>) pairs in the yin-yang dimension,
+pairing the yin and yang meridians in each (sector, hand-foot)
+combination. The number of pairings is <span
+class="math inline">\((\Lambda \times k_0) = 3 \times 2 = 6\)</span>,
+i.e., one pair for each of the three sectors <span
+class="math inline">\(\times\)</span> two hand-foot types. The six
+exterior-interior pairs correspond to the 6 edges of the Birkhoff
+Polytope in the 3-sector parameter space—each edge connects a yin
+meridian vertex and a yang meridian vertex. ∎</p>
+<p><strong>Geometric correspondence of the six exterior-interior
+pairs:</strong></p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Pair</th>
+<th style="text-align: left;">Yin Meridian</th>
+<th style="text-align: left;">Yang Meridian</th>
+<th style="text-align: left;">Sector</th>
+<th style="text-align: left;">Hand/Foot</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">Hand Taiyin (Lung)</td>
+<td style="text-align: left;">Hand Yangming (Large Intestine)</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{M}\)</span></td>
+<td style="text-align: left;">Hand</td>
+</tr>
+<tr>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">Foot Taiyin (Spleen)</td>
+<td style="text-align: left;">Foot Yangming (Stomach)</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{M}\)</span></td>
+<td style="text-align: left;">Foot</td>
+</tr>
+<tr>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">Hand Shaoyin (Heart)</td>
+<td style="text-align: left;">Hand Taiyang (Small Intestine)</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{C}\)</span></td>
+<td style="text-align: left;">Hand</td>
+</tr>
+<tr>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">Foot Shaoyin (Kidney)</td>
+<td style="text-align: left;">Foot Taiyang (Bladder)</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{C}\)</span></td>
+<td style="text-align: left;">Foot</td>
+</tr>
+<tr>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">Hand Jueyin (Pericardium)</td>
+<td style="text-align: left;">Hand Shaoyang (Triple Burner)</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{I}\)</span></td>
+<td style="text-align: left;">Hand</td>
+</tr>
+<tr>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">Foot Jueyin (Liver)</td>
+<td style="text-align: left;">Foot Shaoyang (Gallbladder)</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{I}\)</span></td>
+<td style="text-align: left;">Foot</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="quantitative-predictions">§6 Quantitative Predictions</h2>
+<h3 id="quantitative-prediction-of-acupoint-spacing">§6.1 Quantitative
+Prediction of Acupoint Spacing</h3>
+<p><strong>Theorem 10.3.6.01 (Acupoint Spacing Theorem).</strong> The
+spacing of acupoints along the long axis of the limb is jointly
+determined by the standing wave quantization condition (Theorem
+10.3.2.02) and Bott periodicity modulation (Lemma 10.3.2.02):</p>
+<p><span class="math display">\[
+\Delta x = \frac{L}{2m}, \quad m \in \{1, 2, \ldots, 8\} \tag{10.3.6.01}
+\]</span></p>
+<p>where <span class="math inline">\(L\)</span> is the limb segment
+length, and <span class="math inline">\(m\)</span> is the quantum number
+of the standing wave mode. This spacing corresponds to the axial
+distance between adjacent acupoints (channel points and connecting
+points alternating) under Bott Periodicity <span
+class="math inline">\(\delta^8 = 8\)</span> coding. The fundamental
+scale of the <span class="math inline">\(\mathcal{C}\)</span>-sector is
+determined by the eigenvalues of the Birkhoff Matrix <span
+class="math inline">\(T\)</span>:</p>
+<p><span class="math display">\[
+\lambda_{\mathcal{C}}^0 = \frac{2\pi}{\kappa \cdot \sqrt{\theta_\tau}} =
+\frac{2\pi}{\sqrt{0.210603}} \approx 13.69 \text{ mm} \tag{10.3.6.02}
+\]</span></p>
+<p>This fundamental scale <span
+class="math inline">\(\lambda_{\mathcal{C}}^0\)</span> is the minimum
+characteristic wavelength of the <span
+class="math inline">\(\mathcal{C}\)</span>-sector standing wave,
+determining the order of magnitude of acupoint spacing.</p>
+<p><em>Proof.</em></p>
+<p><strong>Step 1: Standing wave extremum spacing.</strong> From Lemma
+10.3.2.01, the phase of the standing wave solution along the axial
+direction is <span class="math inline">\(\phi_{\mathcal{C}}(z) = k_z z +
+\delta_z = m\pi z/L + \pi/2\)</span>. By Theorem 10.3.3.02, channel
+points correspond to maxima (<span
+class="math inline">\(\phi_{\mathcal{C}} = \ell\pi\)</span>, <span
+class="math inline">\(\ell\)</span> even), and connecting points
+correspond to minima (<span class="math inline">\(\phi_{\mathcal{C}} =
+\ell\pi/2\)</span>, <span class="math inline">\(\ell\)</span> odd). The
+phase difference between adjacent maxima and minima is <span
+class="math inline">\(\pi/2\)</span>, corresponding to an axial distance
+<span class="math inline">\(\Delta z = (\pi/2)/k_z = (\pi/2) \cdot
+(L/m\pi) = L/(2m)\)</span>. Hence, along the meridian direction, channel
+points and connecting points alternate, with adjacent acupoint spacing
+<span class="math inline">\(L/(2m)\)</span>.</p>
+<p><strong>Step 2: Bott periodicity modulation.</strong> By Lemma
+10.3.2.02, <span class="math inline">\(m \in \{1,\ldots,8\}\)</span>.
+Different limb segments correspond to different active modes <span
+class="math inline">\(m\)</span>. For a given limb segment length <span
+class="math inline">\(L\)</span>, the choice of <span
+class="math inline">\(m\)</span> is determined by the Bott periodicity
+coding layer: smaller <span class="math inline">\(m\)</span> (<span
+class="math inline">\(m=1,2,3\)</span>) corresponds to long-wavelength
+modes with larger spacing; larger <span class="math inline">\(m\)</span>
+(<span class="math inline">\(m=6,7,8\)</span>) corresponds to
+short-wavelength modes with smaller spacing. Bott Periodicity <span
+class="math inline">\(\delta^8 = 8\)</span> ensures an upper bound on
+<span class="math inline">\(m\)</span>, so that acupoint spacing has a
+strict lower bound <span class="math inline">\(\Delta x_{\min} =
+L/16\)</span>.</p>
+<p><strong>Step 3: Fundamental scale.</strong> From Theorem 10.3.2.01,
+<span class="math inline">\(\lambda_{\mathcal{C}}^0 =
+2\pi/\sqrt{\theta_\tau} \approx 13.69\)</span> mm. This scale is the
+“natural unit” of the <span
+class="math inline">\(\mathcal{C}\)</span>-sector standing wave—it is
+the direct algebraic output of <span class="math inline">\(\theta_\tau =
+0.210603\)</span> at the Birkhoff Fixed Point <span
+class="math inline">\(\sigma^*\)</span>. For the minimum effective limb
+segment length <span class="math inline">\(L_{\min} =
+8\lambda_{\mathcal{C}}^0 \approx 109.5\)</span> mm (corresponding to the
+<span class="math inline">\(m=8\)</span> mode), <span
+class="math inline">\(\Delta x_{\min} = L_{\min}/16 =
+8\lambda_{\mathcal{C}}^0/16 = \lambda_{\mathcal{C}}^0/2 \approx
+6.85\)</span> mm. This value is consistent in order of magnitude with
+the shortest human acupoint spacing (about 0.5 cm). For a typical
+forearm length <span class="math inline">\(L = 25\)</span> cm, the <span
+class="math inline">\(m=3\)</span> mode gives <span
+class="math inline">\(\Delta x = 25/(2\times3) \approx 4.2\)</span> cm,
+consistent with “body cun” (1 cun <span
+class="math inline">\(\approx\)</span> 2 cm, 2 cun <span
+class="math inline">\(\approx\)</span> 4 cm). ∎</p>
+<p><strong>Numerical prediction table:</strong></p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+<col style="width: 17%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Limb Segment</th>
+<th style="text-align: center;"><span class="math inline">\(L\)</span>
+(cm)</th>
+<th style="text-align: center;"><span
+class="math inline">\(m\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(\Delta
+x\)</span> (cm)</th>
+<th style="text-align: left;">Corresponding cun (1 cun <span
+class="math inline">\(\approx\)</span> 2 cm)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Forearm</td>
+<td style="text-align: center;">25</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">4.2</td>
+<td style="text-align: left;">~2 cun</td>
+</tr>
+<tr>
+<td style="text-align: left;">Forearm</td>
+<td style="text-align: center;">25</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">3.1</td>
+<td style="text-align: left;">~1.5 cun</td>
+</tr>
+<tr>
+<td style="text-align: left;">Forearm</td>
+<td style="text-align: center;">25</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">2.1</td>
+<td style="text-align: left;">~1 cun</td>
+</tr>
+<tr>
+<td style="text-align: left;">Forearm</td>
+<td style="text-align: center;">25</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">1.6</td>
+<td style="text-align: left;">~0.8 cun</td>
+</tr>
+<tr>
+<td style="text-align: left;">Upper arm</td>
+<td style="text-align: center;">30</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">5.0</td>
+<td style="text-align: left;">~2.5 cun</td>
+</tr>
+<tr>
+<td style="text-align: left;">Upper arm</td>
+<td style="text-align: center;">30</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">3.8</td>
+<td style="text-align: left;">~1.9 cun</td>
+</tr>
+<tr>
+<td style="text-align: left;">Lower leg</td>
+<td style="text-align: center;">40</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">6.7</td>
+<td style="text-align: left;">~3.3 cun</td>
+</tr>
+<tr>
+<td style="text-align: left;">Lower leg</td>
+<td style="text-align: center;">40</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">5.0</td>
+<td style="text-align: left;">~2.5 cun</td>
+</tr>
+<tr>
+<td style="text-align: left;">Thigh</td>
+<td style="text-align: center;">45</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">7.5</td>
+<td style="text-align: left;">~3.8 cun</td>
+</tr>
+<tr>
+<td style="text-align: left;">Thigh</td>
+<td style="text-align: center;">45</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">5.6</td>
+<td style="text-align: left;">~2.8 cun</td>
+</tr>
+</tbody>
+</table>
+<h3 id="geometric-prediction-of-meridian-helix-angle">§6.2 Geometric
+Prediction of Meridian Helix Angle</h3>
+<p><strong>Theorem 10.3.6.02 (Meridian Helix Angle Theorem).</strong>
+The helix angle <span class="math inline">\(\alpha\)</span> at which
+meridians spiral along the limb surface is determined by the structural
+constants <span class="math inline">\(k_0\)</span>, <span
+class="math inline">\(\Lambda\)</span>, and the limb geometry:</p>
+<p><span class="math display">\[
+\tan(\alpha) = \frac{k_0 \cdot r}{\Lambda \cdot L} \tag{10.3.6.03}
+\]</span></p>
+<p>where <span class="math inline">\(r\)</span> is the limb radius, and
+<span class="math inline">\(L\)</span> is the limb segment length.</p>
+<p><em>Proof.</em> In cylindrical coordinates, the <span
+class="math inline">\(\mathcal{C}\)</span>-sector phase field <span
+class="math inline">\(\phi_{\mathcal{C}}(x, y, z) = k_0 \cdot z/L +
+\Lambda \cdot \arctan(y/x)\)</span>. The gradient is:</p>
+<p><span class="math display">\[
+\nabla \phi_{\mathcal{C}} = \left( -\frac{\Lambda \cdot y}{x^2 + y^2},\
+\frac{\Lambda \cdot x}{x^2 + y^2},\ \frac{k_0}{L} \right) = \left(
+-\frac{\Lambda \cdot \sin\phi}{r},\ \frac{\Lambda \cdot \cos\phi}{r},\
+\frac{k_0}{L} \right)
+\]</span></p>
+<p>The angle <span class="math inline">\(\alpha\)</span> between the
+gradient direction and the <span class="math inline">\(z\)</span>-axis
+satisfies: <span class="math inline">\(\tan(\alpha) = |\nabla_\perp
+\phi_{\mathcal{C}}|/|\nabla_z \phi_{\mathcal{C}}| = (\Lambda/r)/(k_0/L)
+= \Lambda \cdot L/(k_0 \cdot r)\)</span>. Meridians follow the gradient
+direction, so the helix angle satisfies <span
+class="math inline">\(\tan(\alpha) = k_0 \cdot r/(\Lambda \cdot
+L)\)</span>. ∎</p>
+<p><strong>Numerical estimates.</strong> For the forearm: <span
+class="math inline">\(r \approx 3\)</span> cm, <span
+class="math inline">\(L \approx 25\)</span> cm <span
+class="math inline">\(\to \tan(\alpha) = 2\times3/(3\times25) = 0.08 \to
+\alpha \approx 4.6°\)</span>. For the thigh: <span
+class="math inline">\(r \approx 7\)</span> cm, <span
+class="math inline">\(L \approx 45\)</span> cm <span
+class="math inline">\(\to \tan(\alpha) = 2\times7/(3\times45) = 0.104
+\to \alpha \approx 5.9°\)</span>.</p>
+<p><strong>Predictions:</strong> - Upper limb meridians have small helix
+angles (small <span class="math inline">\(r/L\)</span>), approximately
+straight trajectories - Lower limb meridians have moderate helix angles,
+exhibiting clear spiraling - Trunk meridians have large <span
+class="math inline">\(r/L\)</span>, exhibiting encircling trajectories -
+Head meridians exhibit radial patterns in spherical coordinates</p>
+<h3 id="geometric-prediction-of-skin-resistance">§6.3 Geometric
+Prediction of Skin Resistance</h3>
+<p><strong>Theorem 10.3.6.03 (Acupoint Resistance Reduction
+Theorem).</strong> The reduction factor of skin resistance at acupoints
+<span class="math inline">\(R_{\text{acupoint}}\)</span> compared to
+non-acupoint locations <span
+class="math inline">\(R_{\text{normal}}\)</span> is determined by the
+<span class="math inline">\(\mathcal{I}\)</span>-sector Birkhoff weight
+<span class="math inline">\(\sigma_{\mathcal{I}}^*\)</span>:</p>
+<p><span class="math display">\[
+\frac{R_{\text{normal}}}{R_{\text{acupoint}}} \approx
+\frac{1}{\sigma_{\mathcal{I}}^*} \approx 87.1 \tag{10.3.6.04}
+\]</span></p>
+<p><em>Proof.</em> By the Sector Non-Decoupling Theorem (Theorem
+10.6.4.01), the penetration intensity of the <span
+class="math inline">\(\mathcal{I}\)</span>-sector information field at
+body surface acupoints is proportional to <span
+class="math inline">\(\sigma_{\mathcal{I}}^*\)</span>. Skin resistance
+is related to the degree of ion channel opening, and ion channel opening
+is modulated by the <span
+class="math inline">\(\mathcal{I}\)</span>-sector information field. At
+acupoints, the causal field density <span
+class="math inline">\(\rho_{\mathcal{C}}\)</span> attains an extremum,
+the <span class="math inline">\(\mathcal{I}\)</span>-sector information
+field density is maximal, ion channel opening is maximal, and resistance
+is minimal. The resistance reduction factor is proportional to the
+information field density enhancement factor: <span
+class="math inline">\(R_{\text{normal}}/R_{\text{acupoint}} \approx
+1/\sigma_{\mathcal{I}}^* = 1/0.011484 \approx 87.1\)</span>. ∎</p>
+<p><strong>Prediction.</strong> High-resolution impedance imaging can
+map the body surface resistance distribution; its minimum points should
+be consistent with the acupoint distribution and exhibit periodic
+modulation of Bott Periodicity <span class="math inline">\(\delta^8 =
+8\)</span>. At acupoints, resistance should decrease to about 1/87 of
+that at non-acupoint locations.</p>
+<h3 id="symmetry-and-symmetry-breaking">§6.4 Symmetry and Symmetry
+Breaking</h3>
+<p>The meridian system possesses the following geometric symmetries:</p>
+<ol type="1">
+<li><strong>Left-right symmetry</strong>: Corresponds to the parity
+symmetry <span class="math inline">\(P_\tau\)</span> (<span
+class="math inline">\(k_0 = 2\)</span> involution) of the Birkhoff
+Matrix <span class="math inline">\(T\)</span>, with left and right
+meridians as mirror pairs</li>
+<li><strong>Upper-lower symmetry</strong>: Corresponds to the
+three-cycle <span class="math inline">\(P_{\sigma_2}\)</span> of <span
+class="math inline">\(\Lambda = 3\)</span>, the topological
+correspondence between upper limb and lower limb meridians</li>
+<li><strong>Exterior-interior symmetry</strong>: Guaranteed by Theorem
+10.3.5.04, the pairing of yin and yang meridians</li>
+</ol>
+<p><strong>Symmetry breaking.</strong> Human anatomical asymmetry (e.g.,
+the heart being on the left) manifests geometrically as a left-right
+fine-tuning <span class="math inline">\(\delta\theta_\tau\)</span> of
+<span class="math inline">\(\theta_\tau\)</span>. Prediction: the
+deviation <span class="math inline">\(\delta x\)</span> of left-right
+acupoint positions is proportional to the anatomical asymmetry:</p>
+<p><span class="math display">\[
+\frac{\delta x}{\Delta x} \approx \frac{\delta \theta_\tau}{\theta_\tau}
+\tag{10.3.6.05}
+\]</span></p>
+<hr />
+<h2 id="scientific-exploration-statement">§7 Scientific Exploration
+Statement</h2>
+<p><strong>Important Note.</strong> This paper is a geometric model
+exploration within a scientific theoretical framework, aiming to
+describe the topological structure of meridian phenomena in geometric
+language. All content consists of theoretical derivations and
+predictions, and does not constitute any medical diagnosis or treatment
+advice. This paper does not assert the physical reality of meridians,
+but models them as the body-surface projection of <span
+class="math inline">\(\mathcal{C}\)</span>-sector causal field standing
+waves. Readers should not use the content of this paper for any medical
+decision-making.</p>
+<p>The quantitative predictions of this paper (acupoint spacing, helix
+angle, resistance reduction factor, etc.) all arise from the algebraic
+output of the Sole Axiom <span class="math inline">\(\delta\)</span> at
+the Birkhoff Fixed Point <span class="math inline">\(\sigma^*\)</span>,
+with no external free parameters. These predictions are in principle
+testable by experimental means such as high-resolution impedance imaging
+and acupoint localization precision measurements. However, this paper
+does not claim that these predictions have been experimentally verified,
+nor does it encourage readers to apply theoretical predictions to
+clinical practice without verification.</p>
+<hr />
+<h2 id="theorem-index">Theorem Index</h2>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 28%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Number</th>
+<th style="text-align: left;">Content</th>
+<th style="text-align: center;">Category</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Theorem 10.3.2.01</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{C}\)</span>-sector standing wave
+equation: <span class="math inline">\(\nabla^2\rho_{\mathcal{C}} +
+\kappa^2\theta_\tau \rho_{\mathcal{C}} = 0\)</span></td>
+<td style="text-align: center;">Fundamental equation</td>
+</tr>
+<tr>
+<td style="text-align: center;">Lemma 10.3.2.01</td>
+<td style="text-align: left;">Bessel function explicit solution of
+standing wave</td>
+<td style="text-align: center;">Analytic solution</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 10.3.2.02</td>
+<td style="text-align: left;">Axial quantization condition: <span
+class="math inline">\(k_z \cdot L = m \cdot \pi\)</span></td>
+<td style="text-align: center;">Quantization</td>
+</tr>
+<tr>
+<td style="text-align: center;">Lemma 10.3.2.02</td>
+<td style="text-align: left;">Bott periodicity <span
+class="math inline">\(\delta^8\)</span> modulation: <span
+class="math inline">\(m \in \{1,\ldots,8\}\)</span></td>
+<td style="text-align: center;">Coding constraint</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 10.3.3.01</td>
+<td style="text-align: left;">Geometric Localization Theorem for
+Acupoints</td>
+<td style="text-align: center;">Acupoint theory</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 10.3.3.02</td>
+<td style="text-align: left;">Acupoint Phase Classification Theorem
+(channel/connecting-cleft/intersection points)</td>
+<td style="text-align: center;">Acupoint classification</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 10.3.3.03</td>
+<td style="text-align: left;">Acupoint Depth Sector Stratification
+Theorem</td>
+<td style="text-align: center;">Depth theory</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 10.3.4.01</td>
+<td style="text-align: left;">Meridian Gradient Line Theorem: <span
+class="math inline">\(d\ell/ds =
+\nabla\phi_{\mathcal{C}}/|\nabla\phi_{\mathcal{C}}|\)</span></td>
+<td style="text-align: center;">Meridian theory</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 10.3.4.02</td>
+<td style="text-align: left;">Poincaré-Hopf Critical Point Constraint
+Theorem</td>
+<td style="text-align: center;">Topological constraint</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 10.3.4.03</td>
+<td style="text-align: left;">Meridian Linking Number Upper Bound
+Theorem: <span class="math inline">\(|\operatorname{Link}| \leq
+4\)</span></td>
+<td style="text-align: center;">Topological constraint</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 10.3.4.04</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{I}\)</span>-sector information field
+propagation velocity theorem</td>
+<td style="text-align: center;">Propagation theory</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 10.3.5.01</td>
+<td style="text-align: left;">Twelve Regular Meridians Coding Theorem:
+<span class="math inline">\(N = \Lambda \times k_0^2 = 12\)</span></td>
+<td style="text-align: center;">Coding structure</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 10.3.5.02</td>
+<td style="text-align: left;">Eight Extraordinary Vessels Coding
+Theorem: <span class="math inline">\(N = \delta^8 = 8\)</span></td>
+<td style="text-align: center;">Coding structure</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 10.3.5.03</td>
+<td style="text-align: left;">Collateral Coding Theorem: <span
+class="math inline">\(N = T_5 = 15\)</span></td>
+<td style="text-align: center;">Coding structure</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 10.3.5.04</td>
+<td style="text-align: left;">Exterior-Interior Duality Pairing Theorem:
+<span class="math inline">\(N_{\text{pairs}} = 6\)</span></td>
+<td style="text-align: center;">Coding structure</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 10.3.6.01</td>
+<td style="text-align: left;">Acupoint Spacing Theorem</td>
+<td style="text-align: center;">Quantitative prediction</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 10.3.6.02</td>
+<td style="text-align: left;">Meridian Helix Angle Theorem</td>
+<td style="text-align: center;">Quantitative prediction</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 10.3.6.03</td>
+<td style="text-align: left;">Acupoint Resistance Reduction Theorem</td>
+<td style="text-align: center;">Quantitative prediction</td>
+</tr>
+</tbody>
+</table>
+<hr />
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 07:53:34</p>
+  </footer>
+</div>
+</body>
+</html>

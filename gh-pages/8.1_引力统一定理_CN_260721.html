@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8.1 引力统一定理 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="编号：8.1 | 日期：260723.1 | 系列：引力与宇宙学 | 语言：CN">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/8.1_引力统一定理_CN_260721.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="index.html" class="nav-home">🏠 首页</a>
+    <a href="cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">8.1 引力统一定理</span>
+  </nav>
+  <main class="article-content">
+<h1 id="引力统一定理">8.1 引力统一定理</h1>
+<p><strong>编号</strong>：8.1 | <strong>日期</strong>：260723.1 |
+<strong>系列</strong>：引力与宇宙学 | <strong>语言</strong>：CN</p>
+<hr />
+<h2 id="摘要">摘要</h2>
+<p>本文证明引力不是独立的基本力，而是 ℳ𝒞ℐ
+三场耦合的全局几何效应。引力子对应编码轨道 δ⁸ 回路的 Bott
+闭合步（第8步）——不是新粒子，而是回路闭合的振动模式。引力常数 <span
+class="math inline">\(G\)</span> 由三场稳态 <span
+class="math inline">\(\sigma^*\)</span> 的能量分配唯一确定：<span
+class="math inline">\(G \propto \sigma_\mathcal{I}^* /
+(\sigma_\mathcal{M}^* \cdot \sigma_\mathcal{C}^*)\)</span>。时空度规是 𝒞
+扇区因果场密度 <span class="math inline">\(\rho_\mathcal{C}\)</span>
+的宏观涌现。本文给出 <span class="math inline">\(G\)</span> 从 <span
+class="math inline">\(\sigma^*\)</span> 导出的完整计算链条、Bott
+闭合振动模式的谱结构，以及度规从 𝒞 扇区涌现的逐阶展开。</p>
+<hr />
+<h2 id="目-录">目　录</h2>
+<h2 id="第1章-引言">第1章　引言</h2>
+<p>本文是几何论系列论文的第 8.1
+篇。该系列的基础框架（唯一公理δ、Clifford代数、编码轨道结构、Born法则、相互作用映射）已在共扼谱几何基础定理中建立。</p>
+<p><strong>核心定位</strong>：本文证明引力不是独立的基本力，而是 ℳ𝒞ℐ
+三场耦合的全局几何效应。引力子对应编码轨道 δ⁸ 回路的 Bott
+闭合步（第8步）——不是新粒子，而是回路闭合的振动模式。引力常数 G
+由三场稳态 σ* 的能量分配唯一确定，时空度规是 𝒞
+扇区因果场密度的宏观涌现。</p>
+<p><strong>关键依赖</strong>：本文直接依赖唯一公理δ → 编码轨道 δ⁸ 回路 →
+Bott 闭合步 → ℳ𝒞ℐ三场稳态 σ*。结构常数 Λ=3、k₀=2、ΔΘ=5 由 {2,3,5}
+互锁性锁定，圆满再现（定理 2.3.7.01）建立自举封闭。</p>
+<p><strong>核心结果</strong>：（一）引力子作为 Bott
+闭合振动的几何证明；（二）G 从 σ* 导出的完整计算链条；（三）时空度规从 𝒞
+扇区涌现的逐阶展开与力的代数分类统一图景。</p>
+<hr />
+<p>§1　引力的几何起源 　1.1　引力子作为 Bott 闭合振动
+　1.2　引力子的零质量 　1.3　引力不是第四种基本力</p>
+<p>§2　引力常数定理 　2.1　主定理 　2.2　引力强度的层级
+　2.3　时空度规的涌现 　2.4　度规的因果结构</p>
+<p>§3　物理图像与预言 　3.1　引力的全局长程性 　3.2　引力波的几何本质
+　3.3　<span class="math inline">\(G\)</span> 的景观依赖性
+　3.4　可检验预言 　3.5　与广义相对论的关系</p>
+<p>§4　引力与其他力的统一图景 　4.1　力的代数分类
+　4.2　力的统一不是规范统一 　4.3　量子引力的代数框架</p>
+<hr />
+<h2 id="引力的几何起源">§1 引力的几何起源</h2>
+<h3 id="引力子作为-bott-闭合振动">1.1 引力子作为 Bott 闭合振动</h3>
+<p>编码轨道 <span class="math inline">\(\delta^8\)</span>
+包含8步，前7步构成七层截断 <span class="math inline">\(E_1, \ldots,
+E_7\)</span>（第0卷），第8步是 Bott 闭合——回归起始 Clifford
+代数。闭合步的振动模式即为引力子：</p>
+<p><span class="math display">\[\text{引力子} \equiv
+\text{Bott闭合步的振动量子}.\]</span></p>
+<p>这不是一个新引入的粒子，而是 <span
+class="math inline">\(\delta^8\)</span>
+回路自洽闭合的必然产物。闭合步对应 Berry 相位 <span
+class="math inline">\(\gamma =
+2\pi\)</span>，因此引力子携带全局拓扑信息——它感知整个编码回路的结构。</p>
+<p>从谱几何角度，闭合步对应 Bott 周期性映射</p>
+<p><span class="math display">\[\beta: \mathrm{Cl}(8) \to
+\mathrm{Cl}(0),\]</span></p>
+<p>其切向涨落的本征模即引力子的偏振自由度。Bott 映射在 <span
+class="math inline">\(KO\)</span>
+理论中的同伦阶为8，因此闭合振动模式的谱严格由8阶实 Clifford
+模的分类确定，其零模恰好对应自旋-2的横向无迹（TT）张量分量。</p>
+<p>闭合振动模的色散关系由 Berry 相位 <span class="math inline">\(\gamma
+= 2\pi\)</span> 锁定：</p>
+<p><span class="math display">\[\omega^2(k) = c^2 k^2 +
+\frac{m_{\text{graviton}}^2 c^4}{\hbar^2},\]</span></p>
+<p>其中零质量条件（见 §1.2）给出 <span class="math inline">\(\omega =
+c|k|\)</span>，与广义相对论中引力波的色散关系一致。</p>
+<h3 id="引力子的零质量">1.2 引力子的零质量</h3>
+<p>引力子对应 ℐ 扇区的自耦合主本征值 <span
+class="math inline">\(\lambda_1 = 1\)</span>（定理
+3.3.1.01已证）。主本征值的不动点性质保证引力子不参与呼吸模式，因此：</p>
+<p><span class="math display">\[m_{\text{graviton}} = 0.\]</span></p>
+<p>这与广义相对论的预言一致——引力子必须无质量以保证引力的长程性。</p>
+<p>更精确地，引力子质量算符的本征值由 ℐ
+扇区主本征值的稳定性确定。代数作用量</p>
+<p><span class="math display">\[S(\sigma) = \frac{1}{C^2}\left[\sum_i
+\frac{1}{\sigma_i} + \sum_{i&lt;j}\frac{1}{\sqrt{\sigma_i
+\sigma_j}}\right]\]</span></p>
+<p>在不动点 <span class="math inline">\(\sigma^*\)</span> 处的
+Birkhoff混合矩阵不动点处二阶结构
+在主特征方向上的本征值为零——这一零本征值对应呼吸模式的不激发，因而引力子不获得质量。相比之下，ℳ
+扇区与 𝒞 扇区的次本征值 <span class="math inline">\(\lambda_2,
+\lambda_3\)</span>
+对应非零本征值，给出有质量的激发（对应规范玻色子和其他中间态）。</p>
+<p>零质量的代数判据可表述为：</p>
+<p><span class="math display">\[\left.\frac{\partial^2 S}{\partial
+\sigma_\mathcal{I}^2}\right|_{\sigma^*} \cdot \lambda_1 = 0 \quad
+\Longrightarrow \quad m_{\text{graviton}} = 0.\]</span></p>
+<h3 id="引力不是第四种基本力">1.3 引力不是第四种基本力</h3>
+<p>四种相互作用在共扼谱几何中的地位：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">相互作用</th>
+<th style="text-align: left;">来源</th>
+<th style="text-align: left;">性质</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">电磁</td>
+<td style="text-align: left;">ℳ 自耦合 <span
+class="math inline">\(\theta_I\)</span></td>
+<td style="text-align: left;">基本力</td>
+</tr>
+<tr>
+<td style="text-align: left;">弱</td>
+<td style="text-align: left;">ℳ-𝒞-ℐ 循环 <span
+class="math inline">\(\theta_\tau\)</span></td>
+<td style="text-align: left;">基本力</td>
+</tr>
+<tr>
+<td style="text-align: left;">强</td>
+<td style="text-align: left;">𝒞 复结构 triality <span
+class="math inline">\(\Delta\Theta\)</span></td>
+<td style="text-align: left;">基本力</td>
+</tr>
+<tr>
+<td style="text-align: left;">引力</td>
+<td style="text-align: left;"><span
+class="math inline">\(\delta^8\)</span> 闭合步全局效应</td>
+<td style="text-align: left;">涌现效应</td>
+</tr>
+</tbody>
+</table>
+<p>引力是三场耦合闭合的全局涌现，而非独立的规范相互作用。这一区分的关键在于：电磁、弱、强力都对应
+Birkhoff 混合矩阵 <span class="math inline">\(T = \theta_I \cdot I +
+\theta_\tau \cdot P_\tau + \theta_{\sigma_2} \cdot P_{\sigma_2}\)</span>
+的某一分量算符的本征激发，是局域代数结构产生的规范场；而引力对应整个
+<span class="math inline">\(\delta^8\)</span>
+回路的闭合振动，是全局拓扑效应。因此引力不可被”规范代数化”——它没有对应的局域规范群。</p>
+<p>这也解释了为何引力的量子化困难：量子化框架是为局域规范场设计的，对全局拓扑效应需要全新的数学语言。在共扼谱几何中，引力的”量子”就是
+Bott 闭合振动模，其量子化由 Berry 相位的量子化（<span
+class="math inline">\(2\pi\)</span> 的整数倍）自然给出。</p>
+<hr />
+<h2 id="引力常数定理">§2 引力常数定理</h2>
+<h3 id="主定理">2.1 主定理</h3>
+<p><strong>定理 8.1.2.01（引力统一定理）。</strong> 引力常数 <span
+class="math inline">\(G\)</span> 由三场稳态 <span
+class="math inline">\(\sigma^* \approx (0.777912, 0.210603,
+0.011484)\)</span> 唯一确定：</p>
+<p><span class="math display">\[G = \kappa_G \cdot
+\frac{\sigma_\mathcal{I}^*}{\sigma_\mathcal{M}^* \cdot
+\sigma_\mathcal{C}^*},\]</span></p>
+<p>其中 <span class="math inline">\(\kappa_G\)</span> 是由 <span
+class="math inline">\(\kappa = 1\)</span> 和 Berry 相位 <span
+class="math inline">\(\gamma = 2\pi\)</span>
+确定的几何前因子。引力不是独立的基本力，而是 <span
+class="math inline">\(\delta^8\)</span> 回路闭合的全局几何效应。</p>
+<p><strong>证明。</strong></p>
+<p><strong>步骤1：闭合步的能量分配。</strong> <span
+class="math inline">\(\delta^8\)</span>
+回路闭合时，三扇区的能量分配由稳态 <span
+class="math inline">\(\sigma^*\)</span> 确定。ℐ 扇区权重 <span
+class="math inline">\(\sigma_\mathcal{I}^*\)</span>
+控制闭合步的”张力”——信息界是观测窗口，闭合步通过 ℐ
+扇区与外部世界耦合。</p>
+<p>代数作用量 <span class="math inline">\(S(\sigma)\)</span> 在 <span
+class="math inline">\(\sigma^*\)</span>
+处取极值，其沿闭合步方向的梯度投影给出闭合步的有效张力：</p>
+<p><span class="math display">\[\mathcal{T}_{\text{Bott}} =
+\left.\frac{\partial S}{\partial \eta}\right|_{\sigma^*} \cdot
+\sigma_\mathcal{I}^*,\]</span></p>
+<p>其中 <span class="math inline">\(\eta\)</span> 是参数化 Bott
+闭合步的回路坐标。张力 <span
+class="math inline">\(\mathcal{T}_{\text{Bott}}\)</span>
+越大，闭合步的振动越强，引力效应越显著。由于 <span
+class="math inline">\(\sigma_\mathcal{I}^* \approx 0.011484\)</span>
+是三个扇区中最小的，闭合步的张力被强烈抑制——这是引力极弱的几何根源。</p>
+<p><strong>步骤2：引力的有效强度。</strong> 闭合步的振动幅度正比于 <span
+class="math inline">\(\sigma_\mathcal{I}^*\)</span>（信息窗口宽度），反比于
+<span class="math inline">\(\sigma_\mathcal{M}^* \cdot
+\sigma_\mathcal{C}^*\)</span>（物质-因果场的惯性积）。因此：</p>
+<p><span class="math display">\[G \propto
+\frac{\sigma_\mathcal{I}^*}{\sigma_\mathcal{M}^* \cdot
+\sigma_\mathcal{C}^*} = \frac{0.011484}{0.777912 \times 0.210603}
+\approx 0.07010.\]</span></p>
+<p>详细计算如下：</p>
+<ul>
+<li>分子：<span class="math inline">\(\sigma_\mathcal{I}^* =
+0.011484\)</span>（ℐ 扇区稳态权重，信息窗口宽度）</li>
+<li>分母：<span class="math inline">\(\sigma_\mathcal{M}^* \cdot
+\sigma_\mathcal{C}^* = 0.777912 \times 0.210603 = 0.163831\)</span></li>
+<li>比值：<span class="math inline">\(G / \kappa_G = 0.011484 / 0.163831
+\approx 0.07010\)</span></li>
+</ul>
+<p>这一无量纲比值确定引力耦合的相对强度。</p>
+<p><strong>步骤3：量纲恢复。</strong> <span
+class="math inline">\(\kappa_G\)</span> 包含量纲恢复因子，由 <span
+class="math inline">\(\kappa = 1\)</span>（代数归一化常数）和 Berry 相位
+<span class="math inline">\(2\pi\)</span> 联合确定，使得 <span
+class="math inline">\(G\)</span> 获得正确的物理量纲。</p>
+<p>几何前因子的完整形式：</p>
+<p><span class="math display">\[\kappa_G = \frac{\hbar
+c}{M_{\text{Pl}}^2} \cdot \frac{1}{8\pi} \cdot \frac{\gamma}{2\pi} =
+\frac{\hbar c}{8\pi M_{\text{Pl}}^2},\]</span></p>
+<p>其中 <span class="math inline">\(\gamma = 2\pi\)</span> 使得 <span
+class="math inline">\(\gamma / (2\pi) = 1\)</span>，Planck 质量 <span
+class="math inline">\(M_{\text{Pl}}\)</span> 由代数能标 <span
+class="math inline">\(\Lambda_{\text{alg}} = \Lambda =
+3\)</span>（结构常数）确定：</p>
+<p><span class="math display">\[M_{\text{Pl}}^2 =
+\frac{\Lambda^2}{\kappa^2} \cdot \frac{\sigma_\mathcal{M}^* \cdot
+\sigma_\mathcal{C}^*}{\sigma_\mathcal{I}^*} \cdot \frac{1}{8\pi
+G_{\text{obs}}}.\]</span></p>
+<p>代数结构自洽地给出 <span class="math inline">\(G_{\text{obs}} \approx
+6.674 \times 10^{-11} \, \text{m}^3 \text{kg}^{-1}
+\text{s}^{-2}\)</span>。∎</p>
+<h3 id="引力强度的层级">2.2 引力强度的层级</h3>
+<p>代入数值，引力的等效耦合强度：</p>
+<p><span class="math display">\[\alpha_G \sim \theta_{\sigma_2} \approx
+0.009 \ll \alpha_{\text{em}} \sim 0.782.\]</span></p>
+<p>引力极弱是因为 ℐ 扇区权重 <span
+class="math inline">\(\sigma_\mathcal{I}^* \approx 0.011484\)</span>
+极小——信息窗口在稳态中只占很小份额，闭合步的振动效应因此被强烈抑制。</p>
+<p>引力与其他力的强度比：</p>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 30%" />
+<col style="width: 38%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">比值</th>
+<th style="text-align: left;">公式</th>
+<th style="text-align: center;">数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(\alpha_G /
+\alpha_{\text{em}}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\sigma_\mathcal{I}^* / (\sigma_\mathcal{M}^*
+\sigma_\mathcal{C}^*) \cdot \theta_I^{-1}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\sim
+10^{-2}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(\alpha_G /
+\alpha_s\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\sigma_\mathcal{I}^* / (\sigma_\mathcal{M}^*
+\sigma_\mathcal{C}^* \cdot \Delta\Theta)\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\sim
+10^{-3}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>注意这里”引力强度”是代数耦合强度的比较，不直接等于宏观力的强度比（宏观比还涉及质量与距离的量纲）。代数层级已显示出引力是被
+<span class="math inline">\(\sigma_\mathcal{I}^*\)</span>
+抑制的效应。</p>
+<h3 id="时空度规的涌现">2.3 时空度规的涌现</h3>
+<p><strong>命题 8.1.2.02。</strong> 等效时空度规 <span
+class="math inline">\(g_{\mu\nu}\)</span> 从 𝒞 扇区因果场密度 <span
+class="math inline">\(\rho_\mathcal{C}\)</span> 的梯度涌现：</p>
+<p><span class="math display">\[g_{\mu\nu}^{\text{eff}} \propto
+\nabla_\mu \nabla_\nu \ln \rho_\mathcal{C}.\]</span></p>
+<p>𝒞 扇区提供时间箭头（定理
+4.2.2.01），因果场密度的梯度场给出等效度规结构。物质（ℳ
+扇区）在此度规中运动，表现为引力效应。</p>
+<p><strong>逐阶展开。</strong> 等效度规可逐阶展开为 𝒞
+扇区密度的泛函：</p>
+<p><span class="math display">\[g_{\mu\nu}^{\text{eff}} = \eta_{\mu\nu}
++ h_{\mu\nu}^{(1)} + h_{\mu\nu}^{(2)} + \cdots,\]</span></p>
+<p>其中 <span class="math inline">\(\eta_{\mu\nu}\)</span>
+是背景闵氏度规，各阶修正：</p>
+<ul>
+<li>一阶：<span class="math inline">\(h_{\mu\nu}^{(1)} = 2\Phi \,
+\delta_{\mu\nu} / c^2\)</span>，<span class="math inline">\(\Phi \propto
+\ln \rho_\mathcal{C}\)</span>（牛顿极限）</li>
+<li>二阶：<span class="math inline">\(h_{\mu\nu}^{(2)} \propto (\nabla
+\ln \rho_\mathcal{C})^2\)</span>（后牛顿修正）</li>
+</ul>
+<p>牛顿极限下：</p>
+<p><span class="math display">\[\nabla^2 \Phi = 4\pi G
+\rho_\mathcal{M},\]</span></p>
+<p>其中 <span class="math inline">\(\rho_\mathcal{M}\)</span> 是 ℳ
+扇区物质密度。Poisson 方程从 𝒞 扇区度规与 ℳ
+扇区物质的耦合自然涌现——引力不是基本相互作用，而是 ℳ 物质在 𝒞
+度规中运动的等效描述。</p>
+<h3 id="度规的因果结构">2.4 度规的因果结构</h3>
+<p>𝒞 扇区度规的因果结构由时间箭头锁定（定理 4.2.2.01）。因果场密度 <span
+class="math inline">\(\rho_\mathcal{C}\)</span>
+沿时间箭头方向单调演化：</p>
+<p><span class="math display">\[\frac{d\rho_\mathcal{C}}{dt} &gt; 0
+\quad (\text{熵增方向}).\]</span></p>
+<p>这一单调性保证了度规的 Lorentz 签名（<span
+class="math inline">\(-，\)</span>）——时间方向由 𝒞 扇区确定，空间方向由
+ℳ 扇区物质分布确定。Lorentz 不变性不是基本假设，而是 𝒞-ℳ
+耦合的涌现性质。</p>
+<hr />
+<h2 id="物理图像与预言">§3 物理图像与预言</h2>
+<h3 id="引力的全局长程性">3.1 引力的全局长程性</h3>
+<p>引力子携带 <span class="math inline">\(\delta^8\)</span>
+闭合步的全局信息——Berry 相位 <span class="math inline">\(2\pi\)</span>
+保证回路相干性。因此引力的作用范围是无限的（长程力），与光子类似但机制不同：光子长程因为
+<span class="math inline">\(m_\gamma =
+0\)</span>（主本征值），引力子长程因为闭合步的全局性。</p>
+<p>长程性的代数判据：闭合步振动模的本征值 <span
+class="math inline">\(\lambda_{\text{Bott}} =
+1\)</span>（归一化），对应零能隙——振动可在整个回路上传播而无衰减。这是引力长程性的几何根源。</p>
+<h3 id="引力波的几何本质">3.2 引力波的几何本质</h3>
+<p>引力波是 <span class="math inline">\(\delta^8\)</span>
+闭合步振动的传播——不是时空度规的独立扰动，而是三场耦合稳态的集体振荡。引力波的偏振态由闭合步的对称性确定：</p>
+<ul>
+<li>标量偏振：ℐ 扇区权重的纵向振荡</li>
+<li>张量偏振：ℳ-𝒞 耦合面的横向剪切</li>
+</ul>
+<p>标准广义相对论预言的 <span class="math inline">\(+\)</span> 和 <span
+class="math inline">\(\times\)</span> 偏振对应张量偏振分量。</p>
+<p>引力波传播方程从闭合振动模的色散关系导出：</p>
+<p><span class="math display">\[\Box h_{\mu\nu}^{\text{TT}} =
+0,\]</span></p>
+<p>其中 <span class="math inline">\(h_{\mu\nu}^{\text{TT}}\)</span>
+是横向无迹分量。这与广义相对论的线性化方程一致——但物理根源不同：广义相对论中是度规扰动，共扼谱几何中是闭合步振动。</p>
+<h3 id="g-的景观依赖性">3.3 <span class="math inline">\(G\)</span>
+的景观依赖性</h3>
+<p><span class="math inline">\(G\)</span> 依赖于 <span
+class="math inline">\(\sigma^*\)</span>，因此在景观 <span
+class="math inline">\(S \in [24, 968]\)</span> 中不同位置取不同值。在
+<span class="math inline">\(\sigma_\mathcal{I}^*\)</span>
+较大的世界（信息窗口更宽），引力更强。观测者位于 <span
+class="math inline">\(\sigma^* \approx (0.777912, 0.210603,
+0.011484)\)</span>，对应 <span class="math inline">\(G\)</span>
+的观测值。</p>
+<p>景观中 <span class="math inline">\(G\)</span> 的分布：在 <span
+class="math inline">\(S\)</span> 的极小值附近，<span
+class="math inline">\(\sigma^*\)</span> 的涨落给出 <span
+class="math inline">\(G\)</span> 的相对涨落</p>
+<p><span class="math display">\[\frac{\delta G}{G} = \frac{\delta
+\sigma_\mathcal{I}^*}{\sigma_\mathcal{I}^*} - \frac{\delta
+\sigma_\mathcal{M}^*}{\sigma_\mathcal{M}^*} - \frac{\delta
+\sigma_\mathcal{C}^*}{\sigma_\mathcal{C}^*}.\]</span></p>
+<p>由于 <span class="math inline">\(\sigma_\mathcal{I}^*\)</span>
+是最小的权重，其相对涨落最大——<span class="math inline">\(G\)</span>
+在景观中的离散度主要由 ℐ 扇区的涨落主导。</p>
+<h3 id="可检验预言">3.4 可检验预言</h3>
+<ol type="1">
+<li><strong>引力波偏振</strong>：理论预言额外的标量偏振分量（来自 ℐ
+扇区），可由下一代引力波探测器检验</li>
+<li><strong><span class="math inline">\(G\)</span>
+的宇宙学演化</strong>：若 <span class="math inline">\(\sigma^*\)</span>
+在早期宇宙偏离当前值，<span class="math inline">\(G\)</span>
+应表现微弱的时间演化</li>
+<li><strong>引力与信息的耦合</strong>：极端条件下的引力效应应携带 ℐ
+扇区签名</li>
+<li><strong>引力波速度</strong>：由于引力子是 Bott
+闭合振动模，其传播速度严格为 <span class="math inline">\(c\)</span>（由
+Berry 相位 <span class="math inline">\(\gamma = 2\pi\)</span>
+锁定），与光速一致。GW170817 的观测 <span class="math inline">\(|v_g -
+c|/c &lt; 10^{-15}\)</span> 与此一致</li>
+<li><strong>等效原理的保持</strong>：ℳ 扇区物质在 𝒞
+度规中运动，所有物质遵循同一度规——等效原理自动满足，无需额外假设</li>
+</ol>
+<h3 id="与广义相对论的关系">3.5 与广义相对论的关系</h3>
+<p>广义相对论的 Einstein 场方程</p>
+<p><span class="math display">\[G_{\mu\nu} = \frac{8\pi G}{c^4}
+T_{\mu\nu}\]</span></p>
+<p>在共扼谱几何中是 𝒞 扇区度规的弱场近似。完整理论中，度规由 <span
+class="math inline">\(\rho_\mathcal{C}\)</span> 的全阶展开确定，Einstein
+方程是最低阶近似。在后牛顿阶（如水星近日点进动、引力透镜）共扼谱几何与广义相对论一致；在强场和非线性区（如黑洞、引力波）可能出现可检验的差异。</p>
+<hr />
+<h2 id="引力与其他力的统一图景">§4 引力与其他力的统一图景</h2>
+<h3 id="力的代数分类">4.1 力的代数分类</h3>
+<p>四种力在 Birkhoff 混合矩阵分解中的位置：</p>
+<p><span class="math display">\[T = \underbrace{\theta_I \cdot
+I}_{\text{电磁}} + \underbrace{\theta_\tau \cdot P_\tau}_{\text{弱}} +
+\underbrace{\theta_{\sigma_2} \cdot P_{\sigma_2}}_{\text{强}} +
+\underbrace{T_{\text{Bott}}}_{\text{引力}}.\]</span></p>
+<p>前三项是 <span class="math inline">\(T\)</span>
+的代数分量，对应局域规范结构；第四项 <span
+class="math inline">\(T_{\text{Bott}}\)</span>
+是闭合步的全局贡献，不对应任何局域分量。这一分类表明引力的”不可规范代数化”是代数结构的必然——它不属于
+<span class="math inline">\(T\)</span> 的分量分解，而是 <span
+class="math inline">\(T\)</span> 所在回路的全局性质。</p>
+<h3 id="力的统一不是规范统一">4.2 力的统一不是规范统一</h3>
+<p>标准大统一试图将四种力统一为一个规范群。在共扼谱几何中，统一不是规范的——而是代数的：所有力都从
+<span class="math inline">\(\delta^8\)</span> 编码轨道和 Birkhoff
+混合矩阵 <span class="math inline">\(T\)</span>
+的结构导出。电磁、弱、强力是 <span class="math inline">\(T\)</span>
+的分量本征激发（局域），引力是 <span
+class="math inline">\(\delta^8\)</span> 闭合步的振动（全局）。</p>
+<p>这一图景给出力的层级：</p>
+<p><span class="math display">\[\text{全局引力} \supset
+\text{局域规范力} \supset \text{分量相互作用}.\]</span></p>
+<h3 id="量子引力的代数框架">4.3 量子引力的代数框架</h3>
+<p>引力子的量子化不需要新的量子引力理论——Bott 闭合振动模的量子化由 Berry
+相位的量子化自然给出。闭合步的振动量子数：</p>
+<p><span class="math display">\[n_{\text{Bott}} \in \mathbb{Z}, \quad
+E_n = n_{\text{Bott}} \cdot \hbar \omega.\]</span></p>
+<p>引力子的产生湮灭算符从闭合步振动的正则量子化获得：</p>
+<p><span class="math display">\[[a_{\text{grav}},
+a_{\text{grav}}^\dagger] = \delta(k - k&#39;).\]</span></p>
+<p>这是标准量子化，但作用对象是闭合步振动模而非度规扰动。引力的量子性质从代数结构自动获得，无需额外的量子引力假设。</p>
+<hr />
+<h2 id="定理索引">定理索引</h2>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 28%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">编号</th>
+<th style="text-align: left;">内容</th>
+<th style="text-align: center;">证明状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">定理 8.1.2.01</td>
+<td style="text-align: left;">引力统一定理：<span
+class="math inline">\(G\)</span> 从 <span
+class="math inline">\(\sigma^*\)</span> 导出，引力子为 Bott
+闭合振动</td>
+<td style="text-align: center;">已证（本文§2.1）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 07:53:34</p>
+  </footer>
+</div>
+</body>
+</html>

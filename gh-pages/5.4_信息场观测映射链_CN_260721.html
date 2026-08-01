@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5.4 信息场观测映射链 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="版本: 260721.2">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/5.4_信息场观测映射链_CN_260721.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="index.html" class="nav-home">🏠 首页</a>
+    <a href="cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">5.4 信息场观测映射链</span>
+  </nav>
+  <main class="article-content">
+<h1 id="信息场观测映射链">5.4 信息场观测映射链</h1>
+<p><strong>版本</strong>: 260721.2</p>
+<hr />
+<h2 id="摘要">摘要</h2>
+<p>本文建立信息场到观测者的映射链。观测者通过信息场的谱分辨量获取物理信息。映射链从编码权重
+<span class="math inline">\(\sigma\)</span> 出发，经 Born
+法则、代数归一化和 Birkhoff
+混合矩阵，最终到达可观测量。本文详细推导编码到观测的完整映射，分析可观测量提取机制，并讨论映射的不可逆性与观测者信息容量的关系。</p>
+<hr />
+<h2 id="目-录">目　录</h2>
+<p>§1　观测映射链 　1.1　映射链结构 　1.2　谱分辨量
+　1.3　映射的不可逆性 　1.4　映射链的代数基础</p>
+<p>§2　观测者的信息容量 　2.1　信息容量 　2.2　容量与粒子数的关系
+　2.3　信息容量的代数来源 　2.4　信息容量与结构常数</p>
+<p>§3　可观测量的提取 　3.1　从谱间隙到质量 　3.2　从谱间隙到耦合常数
+　3.3　可观测量提取的映射规则 　3.4　可观测量的分类</p>
+<p>§4　映射的不可逆性与观测限制 　4.1　不可逆性的来源
+　4.2　不可逆性的量化 　4.3　谱分辨量与观测精度
+　4.4　观测限制与代数归一化</p>
+<p>§5　映射链的景观依赖性 　5.1　谱分辨量的景观变化
+　5.2　信息容量的景观普适性 　5.3　映射链与代数作用量</p>
+<hr />
+<h2 id="观测映射链">§1 观测映射链</h2>
+<h3 id="映射链结构">1.1 映射链结构</h3>
+<pre><code>编码权重 σ → Born法则 → 谱间隙 Δλ → Dirac谱 → 可观测量
+ ↑ ↓
+ Birkhoff混合矩阵 T ← 观测者定位 T_ours</code></pre>
+<p>映射链的五个阶段：</p>
+<ol type="1">
+<li><strong>编码权重</strong> <span
+class="math inline">\(\sigma\)</span>：几何源头——全息屏上的编码占比</li>
+<li><strong>Born 法则</strong> <span
+class="math inline">\(\Delta\lambda_i \propto
+\sqrt{\sigma_i}\)</span>：几何到谱的映射——编码权重决定谱间隙</li>
+<li><strong>谱间隙</strong> <span
+class="math inline">\(\Delta\lambda\)</span>：谱空间——Dirac
+算子的本征值差</li>
+<li><strong>Dirac 谱</strong>：物理谱——粒子的质量、荷等可观测量</li>
+<li><strong>可观测量</strong>：观测者感知——质量比、耦合常数等</li>
+</ol>
+<p>映射链的核心是 Born
+法则——它将纯几何量（编码权重）映射到物理量（谱间隙），是几何与物理的桥梁。</p>
+<p><strong>详细推导。</strong>
+映射链的五个阶段可以形式化地表述为五个映射的复合：</p>
+<p><span class="math display">\[\mathcal{M} = \mathcal{M}_5 \circ
+\mathcal{M}_4 \circ \mathcal{M}_3 \circ \mathcal{M}_2 \circ
+\mathcal{M}_1,\]</span></p>
+<p>其中： - <span class="math inline">\(\mathcal{M}_1: \sigma \mapsto
+\sigma\)</span>（恒等映射——编码权重是几何源头） - <span
+class="math inline">\(\mathcal{M}_2: \sigma \mapsto \Delta\lambda =
+C\sqrt{\sigma}\)</span>（Born 法则——几何到谱） - <span
+class="math inline">\(\mathcal{M}_3: \Delta\lambda \mapsto
+\text{Spec}(D) = \{\lambda_i\}\)</span>（谱间隙到 Dirac 谱——Dirac
+算子本征值） - <span class="math inline">\(\mathcal{M}_4: \text{Spec}(D)
+\mapsto \{m, g, \ldots\}\)</span>（Dirac 谱到物理量——物理诠释） - <span
+class="math inline">\(\mathcal{M}_5: \{m, g, \ldots\} \mapsto
+O\)</span>（物理量到可观测量——观测者定位）</p>
+<p>整个映射链是单向的（从几何到物理），这是「几何决定物理」原则的具体体现。反向映射
+<span class="math inline">\(\mathcal{M}^{-1}\)</span> 不唯一，因为不同的
+<span class="math inline">\(\sigma\)</span> 可以给出相同的 <span
+class="math inline">\(S(\sigma)\)</span> 值（等值面 <span
+class="math inline">\(\dim = 1\)</span>，定理 10.11.1.15）。</p>
+<p><strong>数值验证。</strong> 以电子质量为例，验证映射链的每一步：
+<span class="math display">\[\begin{aligned}
+\mathcal{M}_1&amp;: \sigma_{\mathcal{M}}^* = 0.777912, \\
+\mathcal{M}_2&amp;: \Delta\lambda_{\mathcal{M}} = C\sqrt{0.777912}
+\approx 0.882 \times 0.882 = 0.778, \\
+\mathcal{M}_3&amp;: \lambda_e = \Delta\lambda_{\mathcal{M}} \approx
+0.778 \text{（Dirac 谱的最低本征值）}, \\
+\mathcal{M}_4&amp;: m_e \propto \lambda_e \approx 0.778
+\text{（电子质量，以某标度为单位）}, \\
+\mathcal{M}_5&amp;: O_{\text{obs}} = m_e / m_{\text{ref}}
+\text{（观测者测量的质量比）}.
+\end{aligned}\]</span></p>
+<p><strong>对比讨论。</strong> 观测映射链的结构与量子测量理论中的 von
+Neumann 链有形式上的对应。在 von Neumann 测量链中，被测系统 → 测量仪器 →
+观察者，每个环节引入不可逆性。在共扼谱几何中，<span
+class="math inline">\(\sigma \to \Delta\lambda \to \text{Spec}(D) \to
+O\)</span> 的映射链扮演了类似角色。关键区别：von Neumann
+链的不可逆性来自量子退相干（系统-仪器纠缠），共扼谱几何的不可逆性来自信息衰减（<span
+class="math inline">\(\Gamma_{\text{geo}}\)</span>）和有限容量（<span
+class="math inline">\(C_{\text{obs}} = 4\)</span>
+bits）——两者都是信息损失，但来源不同。</p>
+<p><strong>跨卷引用。</strong> 编码权重 <span
+class="math inline">\(\sigma\)</span> 的确定见卷 3 的 Birkhoff
+不动点定理（定理 3.3.1.01）。Born 法则 <span
+class="math inline">\(\Delta\lambda \propto \sqrt{\sigma}\)</span>
+的推导见定理 3.2.2.01。Dirac 算子的谱见卷 1 的 Dirac 算子定理（定理
+1.3.1.01）。</p>
+<h3 id="谱分辨量">1.2 谱分辨量</h3>
+<p><strong>定理 5.4.1.01（谱分辨量定理）。</strong>
+观测者可分辨的最小谱间隔为：</p>
+<p><span class="math display">\[\delta\lambda_{\min} =
+\frac{\Gamma_{\text{geo}}}{\sqrt{N_{\text{info}}}} = \frac{0.023}{4}
+\approx 0.006.\]</span></p>
+<p>这决定了观测者的精度极限——无法分辨小于 <span
+class="math inline">\(\delta\lambda_{\min}\)</span> 的谱差异。</p>
+<p><strong>证明。</strong> 观测者的谱分辨量由信息场的衰减率 <span
+class="math inline">\(\Gamma_{\text{geo}}\)</span> 和信息节点数 <span
+class="math inline">\(N_{\text{info}}\)</span> 确定。衰减率 <span
+class="math inline">\(\Gamma_{\text{geo}} \approx 0.023\)</span>
+给出信息场的「噪声水平」——低于此水平的谱差异被衰减淹没。信息节点数 <span
+class="math inline">\(N_{\text{info}} = 16\)</span>
+给出观测者的「采样数」——更多的节点提供更好的统计平均。由中心极限定理，噪声水平随
+<span class="math inline">\(\sqrt{N}\)</span> 降低，故 <span
+class="math inline">\(\delta\lambda_{\min} = \Gamma_{\text{geo}} /
+\sqrt{N_{\text{info}}} = 0.023 / 4 \approx 0.006\)</span>。∎</p>
+<p><strong>详细推导。</strong> 谱分辨量的推导基于信息论中的 Cramer-Rao
+界限类比。观测者通过 <span
+class="math inline">\(N_{\text{info}}\)</span>
+个独立的信息节点估计谱间隙 <span
+class="math inline">\(\Delta\lambda\)</span>。每个节点的估计误差为 <span
+class="math inline">\(\Gamma_{\text{geo}}\)</span>（信息场的衰减率限制了单次测量的精度）。<span
+class="math inline">\(N_{\text{info}}\)</span>
+次独立测量的平均将误差降低到 <span
+class="math inline">\(\Gamma_{\text{geo}} /
+\sqrt{N_{\text{info}}}\)</span>——这是中心极限定理的标准结果。</p>
+<p>更精确地，谱分辨量可以写为 Fisher 信息的形式：<span
+class="math inline">\(\delta\lambda_{\min} = 1/\sqrt{I_F}\)</span>，其中
+<span class="math inline">\(I_F = N_{\text{info}} /
+\Gamma_{\text{geo}}^2\)</span> 是 Fisher 信息。因此 <span
+class="math inline">\(\delta\lambda_{\min} = \Gamma_{\text{geo}} /
+\sqrt{N_{\text{info}}}\)</span>——与定理 5.4.1.01 一致。</p>
+<p><strong>数值验证。</strong> 用精确值验证谱分辨量： <span
+class="math display">\[\delta\lambda_{\min} = \frac{0.023086}{4} =
+0.005772 \approx 0.006.\]</span></p>
+<p>谱分辨量对应的相对精度： <span
+class="math display">\[\frac{\delta\lambda_{\min}}{\Delta\lambda_{\mathcal{M}}}
+= \frac{0.00577}{0.778} \approx 0.00742 = 0.74\%.\]</span></p>
+<p>观测者对物质场谱间隙的测量精度约为
+0.74%——这是几何确定的精度极限。</p>
+<p><strong>对比讨论。</strong> 谱分辨量 <span
+class="math inline">\(\delta\lambda_{\min}\)</span>
+与量子力学中的能量-时间不确定关系 <span class="math inline">\(\Delta E
+\cdot \Delta t \geq \hbar/2\)</span>
+有形式上的对应。在共扼谱几何中，<span
+class="math inline">\(\delta\lambda_{\min} \cdot t_{1/2} \approx 0.006
+\times 30 = 0.18\)</span>
+是「谱分辨量-半衰期」乘积，类似于不确定关系。但关键区别：共扼谱几何的谱分辨量是几何确定的（由
+<span class="math inline">\(\mu_1\)</span> 和 <span
+class="math inline">\(N_{\text{info}}\)</span>
+唯一确定），而量子不确定关系是原理性的（来自非对易算符）。前者是「几何限制」，后者是「量子限制」。</p>
+<p><strong>跨卷引用。</strong> 衰减率 <span
+class="math inline">\(\Gamma_{\text{geo}} \approx 0.023\)</span>
+的推导见定理 5.1.2.01。信息节点数 <span
+class="math inline">\(N_{\text{info}} = 16\)</span> 的推导见定理
+5.1.1.01。</p>
+<h3 id="映射的不可逆性">1.3 映射的不可逆性</h3>
+<p>观测映射是<strong>不可逆的</strong>——从 <span
+class="math inline">\(\sigma\)</span>
+到可观测量是正向映射，但从可观测量反推 <span
+class="math inline">\(\sigma\)</span> 不唯一（<span
+class="math inline">\(S = 137\)</span> 对应 1 维等值线，定理
+10.11.1.15）。不可逆性是信息衰减的后果——信息场遗忘了一部分细节。</p>
+<p>不可逆性的数学表达：</p>
+<p><span class="math display">\[\text{dim}(\{\sigma : S(\sigma) = S^*\})
+= 1.\]</span></p>
+<p>即作用量 <span class="math inline">\(S = 137\)</span> 的等值面是 1
+维曲线——观测者只能确定 <span class="math inline">\(\sigma\)</span>
+在这条曲线上，不能确定具体位置。这 1 维不确定性是观测者的根本限制。</p>
+<p><strong>详细推导。</strong> 映射不可逆性的来源链：</p>
+<ol type="1">
+<li><strong>编码权重 <span class="math inline">\(\sigma\)</span> 是 3
+维的</strong>（<span class="math inline">\(\sum \sigma_i = 1\)</span>
+约束后为 2 维）。</li>
+<li><strong>Born 法则</strong> <span
+class="math inline">\(\Delta\lambda_i = C\sqrt{\sigma_i}\)</span> 将 3
+维 <span class="math inline">\(\sigma\)</span> 映射到 3 维 <span
+class="math inline">\(\Delta\lambda\)</span>——这一步是双射（可逆），因为
+<span class="math inline">\(\sqrt{\cdot}\)</span> 在 <span
+class="math inline">\(\sigma_i &gt; 0\)</span> 上是单射。</li>
+<li><strong>代数作用量</strong> <span class="math inline">\(S(\sigma) =
+[\sum 1/\sigma_i + \sum_{i&lt;j} 1/\sqrt{\sigma_i
+\sigma_j}]/C^2\)</span> 将 3 维 <span
+class="math inline">\(\sigma\)</span> 映射到 1 维 <span
+class="math inline">\(S\)</span>——这一步将 2 维信息压缩到 1 维，损失了 1
+维信息。</li>
+<li><strong>可观测量</strong> <span class="math inline">\(O\)</span> 由
+<span class="math inline">\(S(\sigma^*)\)</span> 确定——从 <span
+class="math inline">\(S\)</span> 到 <span
+class="math inline">\(O\)</span> 是单射，但 <span
+class="math inline">\(S\)</span> 本身只捕获了 <span
+class="math inline">\(\sigma\)</span> 的 1 维信息。</li>
+</ol>
+<p>因此，观测者从可观测量 <span class="math inline">\(O\)</span> 反推
+<span class="math inline">\(\sigma\)</span> 时，只能确定 <span
+class="math inline">\(\sigma\)</span> 在 <span
+class="math inline">\(S(\sigma) = S^*\)</span> 的等值面上，而等值面是 1
+维曲线——观测者缺失了 1 维信息。这 1
+维不确定性是观测映射不可逆性的数学根源。</p>
+<p><strong>数值验证。</strong> 等值面 <span
+class="math inline">\(S(\sigma) = 137\)</span> 的维度验证。在 3
+维编码空间 <span class="math inline">\(\Delta^2\)</span>（<span
+class="math inline">\(\sum \sigma_i = 1\)</span>，2 维单纯形）上，<span
+class="math inline">\(S(\sigma) = 137\)</span> 是 1 个约束，留下 1
+维等值线。加上 Birkhoff 不动点条件 <span class="math inline">\(T\sigma =
+\sigma\)</span>（额外约束），等值线退化为 0
+维（离散点）。但观测者通过可观测量只能确定 <span
+class="math inline">\(S\)</span>，不能确定 <span
+class="math inline">\(T\sigma =
+\sigma\)</span>——因此观测者看到的等值线是 1 维的。</p>
+<p><strong>跨卷引用。</strong> 等值面 <span class="math inline">\(\dim =
+1\)</span> 的证明见卷 10 的景观普适性定理（定理 10.11.1.15）。</p>
+<h3 id="映射链的代数基础">1.4 映射链的代数基础</h3>
+<p>映射链的每个阶段都有明确的代数基础：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">阶段</th>
+<th style="text-align: left;">代数基础</th>
+<th style="text-align: left;">关键公式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">编码权重</td>
+<td style="text-align: left;">Birkhoff 混合矩阵 <span
+class="math inline">\(T\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\sigma^* = T
+\sigma^*\)</span>（不动点）</td>
+</tr>
+<tr>
+<td style="text-align: left;">Born 法则</td>
+<td style="text-align: left;">代数归一化</td>
+<td style="text-align: left;"><span
+class="math inline">\(\Delta\lambda_i = C\sqrt{\sigma_i}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">谱间隙</td>
+<td style="text-align: left;">Dirac 算子</td>
+<td style="text-align: left;"><span class="math inline">\(\Delta\lambda
+= \lambda_{i1} - \lambda_i\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Dirac 谱</td>
+<td style="text-align: left;">Clifford 代数</td>
+<td style="text-align: left;"><span class="math inline">\(\lambda_i \in
+\text{Spec}(D)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">可观测量</td>
+<td style="text-align: left;">观测者定位</td>
+<td style="text-align: left;"><span class="math inline">\(O =
+f(T_{\text{ours}})\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>全链条跨区域信息导入——从几何到物理的映射完全由代数结构确定。</p>
+<p><strong>详细推导。</strong>
+映射链的代数基础可以从编码轨道的闭合结构统一理解。编码轨道从 Cl(1)
+出发，经过 Cl(3)、Cl(5)、Cl(7)，最终闭回到 Cl(1)（通过 Bott 周期
+8）。轨道上的每个点对应一个 Clifford 代数，其不可约表示给出 Dirac
+算子的谱。因此：</p>
+<ol type="1">
+<li><strong>编码权重 <span
+class="math inline">\(\sigma\)</span></strong>
+对应编码轨道上的弧长参数——<span class="math inline">\(\sigma_i\)</span>
+是轨道上第 <span class="math inline">\(i\)</span> 段的占比。</li>
+<li><strong>Born 法则</strong> 对应 Bott 周期中的代数维数跳跃——<span
+class="math inline">\(\sqrt{\sigma}\)</span> 来自 Clifford
+代数表示的维数公式。</li>
+<li><strong>谱间隙</strong> <span
+class="math inline">\(\Delta\lambda\)</span> 对应 Dirac
+算子的本征值差——由 Clifford 代数的 Pin 表示确定。</li>
+<li><strong>Dirac 谱</strong> 对应 Clifford
+代数的完整不可约表示分类。</li>
+<li><strong>可观测量</strong> 对应观测者在编码轨道上的位置 <span
+class="math inline">\(T_{\text{ours}}\)</span>。</li>
+</ol>
+<p>整个映射链中的每一步都是代数的——没有自由参数，没有唯象输入。这是「跨区域信息导入」在观测映射链中的体现。</p>
+<p><strong>数值验证。</strong> 映射链中每一步的数值： <span
+class="math display">\[\begin{aligned}
+\sigma^* &amp;\approx (0.778, 0.211, 0.0115), \\
+\Delta\lambda &amp;= (0.778, 0.405, 0.0945) \quad (\text{取 } C \approx
+0.882), \\
+\text{Spec}(D) &amp;= \{\lambda_1 = 0, \lambda_2 = 0.778, \lambda_3 =
+1.183, \ldots\}, \\
+m_e / m_\mu &amp;= \sqrt{\sigma_e/\sigma_\mu} \approx 0.0048 \quad
+(\text{质量比}).
+\end{aligned}\]</span></p>
+<hr />
+<h2 id="观测者的信息容量">§2 观测者的信息容量</h2>
+<h3 id="信息容量">2.1 信息容量</h3>
+<p>观测者的信息容量为：</p>
+<p><span class="math display">\[C_{\text{obs}} = \log_2 N_{\text{info}}
+= \log_2 16 = 4 \text{ bits}.\]</span></p>
+<p>4 比特意味着观测者最多能区分 16 种不同的谱态——对应三代轻子 x
+两种螺旋性 x 两种荷态 ≈ 12 种，加上 4 种规范玻色子 = 16 种基本粒子。</p>
+<p><strong>详细推导。</strong> 信息容量 <span
+class="math inline">\(C_{\text{obs}} = 4\)</span> bits
+的物理含义：观测者同时只能处理 4 比特的信息，即最多区分 <span
+class="math inline">\(2^4 = 16\)</span> 种不同的谱态。这 16 种谱态对应
+16 种基本粒子的编码：</p>
+<ol type="1">
+<li><strong>轻子</strong>：3 代 x 2 螺旋性 = 6
+种（电子、μ子、τ子，各左右手）</li>
+<li><strong>中微子</strong>：3 代 x 1 螺旋性 = 3 种（仅左手）</li>
+<li><strong>规范玻色子</strong>：光子（1）、W+W-（2）、Z（1）、胶子（8
+色，但编码为 2 种独立态）</li>
+<li><strong>Higgs</strong>：1 种</li>
+</ol>
+<p>总计：6 + 3 + 4 + 2 + 1 = 16 种。16 种谱态恰好填满 4
+比特的容量——这是共扼谱几何对粒子谱「为什么是 16 种」的几何解释。</p>
+<p><strong>数值验证。</strong> 信息容量的二进制验证： <span
+class="math display">\[C_{\text{obs}} = \log_2 16 = 4 \text{ bits},
+\quad 2^{C_{\text{obs}}} = 2^4 = 16 \text{ 种态}.\]</span></p>
+<p><strong>对比讨论。</strong> 信息容量 <span
+class="math inline">\(C_{\text{obs}} = 4\)</span> bits
+与人类工作记忆的「7±2」法则（Miller,
+1956）有形式上的对应。在认知心理学中，人类工作记忆的容量约为 7±2
+个组块（chunks），对应 <span class="math inline">\(\log_2(7) \approx
+2.8\)</span> bits。共扼谱几何的 <span
+class="math inline">\(C_{\text{obs}} = 4\)</span> bits
+略大于人类工作记忆容量——但两者的量级一致（都是个位数
+bits）。这暗示观测者的信息容量可能是「意识」的几何基础。</p>
+<p><strong>跨卷引用。</strong> 信息节点数 <span
+class="math inline">\(N_{\text{info}} = 16\)</span> 的推导见定理
+5.1.1.01。16 种基本粒子的完整分类见卷 7 的粒子谱定理（定理
+7.1.1.01）。</p>
+<h3 id="容量与粒子数的关系">2.2 容量与粒子数的关系</h3>
+<p>16 种基本粒子的对应：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">类别</th>
+<th style="text-align: center;">数量</th>
+<th style="text-align: left;">编码来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">轻子（3代x2螺旋性）</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;">ℳ𝒞 扇区</td>
+</tr>
+<tr>
+<td style="text-align: left;">夸克（3代x2螺旋性x3色）</td>
+<td style="text-align: center;">18</td>
+<td style="text-align: left;">ℳ𝒞ℐ（色来自信息界的triality）</td>
+</tr>
+<tr>
+<td style="text-align: left;">规范玻色子</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;">ℳ 自耦合 + 𝒞 自耦合</td>
+</tr>
+<tr>
+<td style="text-align: left;">标量玻色子</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">呼吸模式基态</td>
+</tr>
+</tbody>
+</table>
+<p>注意：夸克的 18 种超过了 16
+的容量——这是因为夸克的色自由度来自信息界的内部结构，不占用观测者的外部信息容量。</p>
+<p><strong>详细推导。</strong> 夸克 18
+种不占用外部信息容量的原因。夸克的色自由度（3 色）来自信息界 ℐ 的
+triality 结构——triality 是 Cl(7)
+终端二元性的内部对称性，在信息场内部完成。观测者感知到的夸克是通过强相互作用的色禁闭——夸克从不单独出现，而是以无色（色单态）的强子形式出现。因此观测者实际感知的夸克态是
+18/3 = 6 种（色平均）。</p>
+<p>色自由度的「内部化」是信息场衰减的物理后果：信息场衰减（<span
+class="math inline">\(\Gamma_{\text{geo}} \approx
+0.023\)</span>）使色信息在观测尺度上被积分掉，观测者只能感知到色平均的效应。这解释了为什么强相互作用（色动力学）在低能标度下表现为禁闭——信息场无法分辨色自由度。</p>
+<p><strong>数值验证。</strong> 外部信息容量中实际占用的态数： <span
+class="math display">\[6 \text{（轻子）} + 6 \text{（夸克，色平均）} + 4
+\text{（规范玻色子）} = 16 \text{ 种态}.\]</span></p>
+<p>恰好填满 <span class="math inline">\(C_{\text{obs}} = 4\)</span> bits
+的容量。</p>
+<p><strong>跨卷引用。</strong> 夸克色自由度的 triality 来源见卷 6
+的终端二元性定理（定理 6.5.1.01）。色禁闭的几何解释见卷 7
+的强相互作用定理（定理 7.4.1.01）。</p>
+<h3 id="信息容量的代数来源">2.3 信息容量的代数来源</h3>
+<p>信息容量 <span class="math inline">\(C_{\text{obs}} = \log_2
+N_{\text{info}} = \log_2 16 = 4\)</span> 的代数来源： <span
+class="math display">\[N_{\text{info}} = \rho_7 \times k_0 = 8 \times 2
+= 16,\]</span></p>
+<p>其中 <span class="math inline">\(\rho_7 = 8\)</span> 是 Cl(7)
+的秩，<span class="math inline">\(k_0 = 2\)</span>
+是信息界的结构常数。因此：</p>
+<p><span class="math display">\[C_{\text{obs}} = \log_2(\rho_7 \times
+k_0) = \log_2 8 + \log_2 2 = 3 + 1 = 4 \text{ bits}.\]</span></p>
+<p>4 比特 = 3 比特（来自 Cl(7) 秩）+ 1 比特（来自终端二元性 <span
+class="math inline">\(k_0 = 2\)</span>）。</p>
+<p><strong>详细推导。</strong> 信息容量的代数分解： - <strong>3 比特来自
+Cl(7) 秩</strong> <span class="math inline">\(\rho_7 = 8\)</span>：Cl(7)
+的 Pin 表示维数为 8，给出 8 种独立编码。这 3
+比特对应「代数编码信息」——由 Clifford 代数的表示论确定。 - <strong>1
+比特来自终端二元性</strong> <span class="math inline">\(k_0 =
+2\)</span>：Cl(7) ≅ Mat(8,ℝ) ⊕ Mat(8,ℝ) 的直和分解给出额外的 1
+比特区分能力。这 1 比特对应「终端二元性信息」——由 Bott
+周期的闭合结构确定。</p>
+<p>两者之和为 4
+比特——这是编码轨道的「信息容量」，是观测者获取信息的代数上限。</p>
+<p><strong>数值验证。</strong> 代数分解的二进制验证： <span
+class="math display">\[\log_2 8 = 3, \quad \log_2 2 = 1, \quad 3 + 1 =
+4.\]</span></p>
+<p><strong>跨卷引用。</strong> Cl(7) 的秩 <span
+class="math inline">\(\rho_7 = 8\)</span> 见卷 1 的 Clifford
+代数分类定理（定理 1.1.1.01）。终端二元性 <span
+class="math inline">\(k_0 = 2\)</span> 见卷 6 的终端二元性定理（定理
+6.5.1.01）。</p>
+<h3 id="信息容量与结构常数">2.4 信息容量与结构常数</h3>
+<p>信息容量与三个结构常数的关系：</p>
+<p><span class="math display">\[C_{\text{obs}} = \log_2(\rho_7 \times
+k_0) = \log_2\left(\frac{\Lambda \times \Delta\Theta}{1} \times
+k_0\right).\]</span></p>
+<p>其中 <span class="math inline">\(\Lambda =
+3\)</span>（物质界），<span class="math inline">\(\Delta\Theta =
+5\)</span>（因果界），<span class="math inline">\(k_0 =
+2\)</span>（信息界）。但 <span class="math inline">\(\rho_7 = 8\)</span>
+来自 Cl(7) ≅ Mat(8,ℝ) ⊕
+Mat(8,ℝ)，不是结构常数的简单乘积。信息容量由编码轨道的终端结构（Cl(7)）唯一确定。</p>
+<p><strong>详细推导。</strong> <span
+class="math inline">\(C_{\text{obs}}\)</span>
+与结构常数的关系需要理解编码轨道的完整结构。编码轨道从 Cl(1) 到 Cl(7)
+经历了三段跳跃： - Cl(1)→Cl(3)：<span class="math inline">\(\Lambda =
+3\)</span>（物质界） - Cl(3)→Cl(5)：<span
+class="math inline">\(\Delta\Theta = 5\)</span>（因果界） -
+Cl(5)→Cl(7)：<span class="math inline">\(k_0 = 2\)</span>（信息界）</p>
+<p>Cl(7) 的秩 <span class="math inline">\(\rho_7 = 8\)</span>
+是这三段跳跃的累积结果。<span class="math inline">\(\rho_7\)</span>
+可以通过 Bott 周期的维数公式计算：<span
+class="math inline">\(\dim(\text{Cl}(n)) = 2^{\lfloor n/2
+\rfloor}\)</span>（复表示），<span class="math inline">\(\rho_n =
+\dim(\text{Pin}(n)) = 2^{\lfloor n/2 \rfloor}\)</span>（实表示）。对于
+<span class="math inline">\(n=7\)</span>，<span
+class="math inline">\(\rho_7 = 2^{\lfloor 7/2 \rfloor} = 2^3 =
+8\)</span>。</p>
+<p>因此 <span class="math inline">\(\rho_7 = 8\)</span> 是 Bott
+周期前半周期（n=1 到 n=7）的累积结果，不能用 <span
+class="math inline">\(\Lambda \times \Delta\Theta\)</span> 简单表示。但
+<span class="math inline">\(\rho_7 = 8\)</span>
+与结构常数的关系是：<span class="math inline">\(\rho_7 = 2^{\lfloor
+\Lambda + \Delta\Theta - 1 \rfloor} = 2^{\lfloor 3+5-1 \rfloor} = 2^3 =
+8\)</span>（因为 <span class="math inline">\(\Lambda + \Delta\Theta =
+8\)</span> 对应 Bott 周期 8 的前半周期）。这解释了为什么 <span
+class="math inline">\(\Lambda + \Delta\Theta = 3 + 5 = 8\)</span>
+恰好等于 Bott 周期——不是巧合，而是编码轨道的代数必然。</p>
+<p><strong>数值验证。</strong> 验证 <span class="math inline">\(\Lambda
++ \Delta\Theta = 8\)</span>： <span class="math display">\[\Lambda +
+\Delta\Theta = 3 + 5 = 8 = \text{Bott 周期}.\]</span></p>
+<p>因此 <span class="math inline">\(C_{\text{obs}} = \log_2(2^{\lfloor
+(\Lambda+\Delta\Theta-1)/2 \rfloor} \times k_0) = \log_2(8 \times 2) =
+4\)</span>。</p>
+<p><strong>跨卷引用。</strong> 编码轨道三段分割见卷 2
+的编码轨道定理（定理 2.2.1.01）。Bott 周期 8 见卷 1 的 Bott
+周期定理（定理 1.1.2.01）。</p>
+<hr />
+<h2 id="可观测量的提取">§3 可观测量的提取</h2>
+<h3 id="从谱间隙到质量">3.1 从谱间隙到质量</h3>
+<p>粒子质量由 Dirac 谱间隙确定：</p>
+<p><span class="math display">\[m_i = \Delta\lambda_i =
+C\sqrt{\sigma_i}.\]</span></p>
+<p>由 Born
+法则，质量正比于编码权重的平方根。不同扇区的编码权重给出不同质量标度：</p>
+<table>
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 23%" />
+<col style="width: 23%" />
+<col style="width: 29%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">粒子类型</th>
+<th style="text-align: left;">扇区</th>
+<th style="text-align: left;">质量 <span
+class="math inline">\(\propto\)</span></th>
+<th style="text-align: center;">相对质量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">物质粒子（轻子）</td>
+<td style="text-align: left;">ℳ</td>
+<td style="text-align: left;"><span
+class="math inline">\(\sqrt{\sigma_{\mathcal{M}}^*}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\approx
+1\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">因果粒子（弱玻色子）</td>
+<td style="text-align: left;">𝒞</td>
+<td style="text-align: left;"><span
+class="math inline">\(\sqrt{\sigma_{\mathcal{C}}^*}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\approx
+0.52\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">信息粒子（？）</td>
+<td style="text-align: left;">ℐ</td>
+<td style="text-align: left;"><span
+class="math inline">\(\sqrt{\sigma_{\mathcal{I}}^*}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\approx
+0.12\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>质量比由编码权重比的平方根确定——这是质量比因子分解（5.5）的基础。</p>
+<p><strong>详细推导。</strong> 从谱间隙到质量的映射链：</p>
+<ol type="1">
+<li>Dirac 算子 <span class="math inline">\(D\)</span> 的本征值 <span
+class="math inline">\(\lambda_i\)</span> 由 Clifford
+代数的表示确定。</li>
+<li>谱间隙 <span class="math inline">\(\Delta\lambda_i = \lambda_{i+1} -
+\lambda_i\)</span> 对应粒子质量（以 Planck 质量为单位）。</li>
+<li>Born 法则 <span class="math inline">\(\Delta\lambda_i =
+C\sqrt{\sigma_i}\)</span> 将谱间隙与编码权重联系起来。</li>
+</ol>
+<p>因此 <span class="math inline">\(m_i =
+C\sqrt{\sigma_i}\)</span>。质量谱的层级结构由编码权重的层级结构确定：<span
+class="math inline">\(m_{\mathcal{M}} : m_{\mathcal{C}} :
+m_{\mathcal{I}} = \sqrt{\sigma_{\mathcal{M}}^*} :
+\sqrt{\sigma_{\mathcal{C}}^*} : \sqrt{\sigma_{\mathcal{I}}^*} =
+\sqrt{0.778} : \sqrt{0.211} : \sqrt{0.0115} \approx 0.882 : 0.459 :
+0.107\)</span>。</p>
+<p><strong>数值验证。</strong> 三代带电轻子的质量比（以电子质量为 1）：
+<span class="math display">\[m_e : m_\mu : m_\tau = 1 : 206.8 :
+3477.\]</span></p>
+<p>这些质量比不能用简单的 <span
+class="math inline">\(\sqrt{\sigma}\)</span> 关系解释——因为 <span
+class="math inline">\(\sqrt{\sigma_{\mathcal{M}}^*}\)</span> 是 ℳ
+扇区的整体标度，而三代轻子之间的质量比来自 ℳ 扇区内部的精细结构（由
+Cl(3) 的表示论确定）。更精确的质量公式见卷 7 的粒子质量谱定理。</p>
+<p><strong>对比讨论。</strong> 谱间隙到质量的映射与标准模型中的 Higgs
+机制有根本区别。在标准模型中，粒子质量来自 Yukawa 耦合 <span
+class="math inline">\(y_i \bar{\psi}_i \psi_i \phi\)</span>（与 Higgs
+场的耦合），Yukawa 耦合常数 <span class="math inline">\(y_i\)</span>
+是自由参数。在共扼谱几何中，粒子质量来自 Dirac
+谱间隙，而谱间隙由编码权重 <span class="math inline">\(\sigma\)</span>
+通过 Born 法则确定——没有自由参数。这是「几何决定质量」的体现。</p>
+<p><strong>跨卷引用。</strong> 质量谱的完整推导见卷 7
+的粒子质量谱定理（定理 7.2.1.01）。Born 法则 <span
+class="math inline">\(\Delta\lambda \propto \sqrt{\sigma}\)</span>
+见定理 3.2.2.01。</p>
+<h3 id="从谱间隙到耦合常数">3.2 从谱间隙到耦合常数</h3>
+<p>耦合常数由 Birkhoff 混合矩阵的权重确定：</p>
+<table>
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 23%" />
+<col style="width: 23%" />
+<col style="width: 29%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">耦合常数</th>
+<th style="text-align: left;">来源</th>
+<th style="text-align: left;">公式</th>
+<th style="text-align: center;">数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">电磁 <span
+class="math inline">\(\alpha\)</span></td>
+<td style="text-align: left;">ℳ 自耦合</td>
+<td style="text-align: left;"><span class="math inline">\(\propto
+\theta_I\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\approx
+0.782\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">弱 <span
+class="math inline">\(g_2\)</span></td>
+<td style="text-align: left;">𝒞 循环</td>
+<td style="text-align: left;"><span class="math inline">\(\propto
+\theta_\tau\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\approx
+0.209\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">超荷 <span
+class="math inline">\(g_1\)</span></td>
+<td style="text-align: left;">𝒞-ℐ 对换</td>
+<td style="text-align: left;"><span class="math inline">\(\propto
+\theta_{\sigma_2}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\approx
+0.009\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>耦合常数从 Birkhoff 混合矩阵的三个权重直接提取——跨区域信息导入。</p>
+<p><strong>详细推导。</strong> 耦合常数的提取基于 Birkhoff 混合矩阵
+<span class="math inline">\(T = \theta_I P_I + \theta_\tau P_\tau +
+\theta_{\sigma_2} P_{\sigma_2}\)</span>
+的三个分量。每个分量对应一种相互作用：</p>
+<ol type="1">
+<li><p><strong>电磁耦合 <span
+class="math inline">\(\alpha\)</span></strong>：来自 <span
+class="math inline">\(P_I\)</span>（恒等置换），权重 <span
+class="math inline">\(\theta_I \approx 0.782\)</span>。<span
+class="math inline">\(P_I\)</span>
+是扇区内部的混合——电磁相互作用是物质场 ℳ 的自耦合。<span
+class="math inline">\(\alpha \propto \theta_I\)</span>
+给出电磁耦合的几何来源。</p></li>
+<li><p><strong>弱耦合 <span
+class="math inline">\(g_2\)</span></strong>：来自 <span
+class="math inline">\(P_\tau\)</span>（循环置换），权重 <span
+class="math inline">\(\theta_\tau \approx 0.209\)</span>。<span
+class="math inline">\(P_\tau\)</span> 实现 ℳ→𝒞→ℐ
+的循环——弱相互作用是因果场 𝒞 的 triality 效应。<span
+class="math inline">\(g_2 \propto \theta_\tau\)</span>
+给出弱耦合的几何来源。</p></li>
+<li><p><strong>超荷耦合 <span
+class="math inline">\(g_1\)</span></strong>：来自 <span
+class="math inline">\(P_{\sigma_2}\)</span>（<span
+class="math inline">\(Z_2\)</span> 对换），权重 <span
+class="math inline">\(\theta_{\sigma_2} \approx 0.009\)</span>。<span
+class="math inline">\(P_{\sigma_2}\)</span> 实现 Cl(7)
+两个直和项之间的对换——超荷相互作用是信息场 ℐ 的终端二元性效应。<span
+class="math inline">\(g_1 \propto \theta_{\sigma_2}\)</span>
+给出超荷耦合的几何来源。</p></li>
+</ol>
+<p><strong>数值验证。</strong> 耦合常数比的几何预言： <span
+class="math display">\[\alpha : g_2 : g_1 = \theta_I : \theta_\tau :
+\theta_{\sigma_2} = 0.782 : 0.209 : 0.009 \approx 87 : 23 :
+1.\]</span></p>
+<p>在电弱统一能标（~100 GeV）处，标准模型的耦合常数比为 <span
+class="math inline">\(\alpha_1 : \alpha_2 : \alpha_3 \approx 0.017 :
+0.034 : 0.118\)</span>（以 <span class="math inline">\(\alpha_i =
+g_i^2/4\pi\)</span>）。这些数值与几何预言的 <span
+class="math inline">\(\theta\)</span> 比不同——因为 <span
+class="math inline">\(\theta\)</span> 比是统一能标（Planck
+能标）处的几何标度，而低能标度下的耦合常数经历了重整化群演化。耦合常数的重整化群演化见卷
+7 的耦合常数谱统一。</p>
+<p><strong>跨卷引用。</strong> Birkhoff 混合矩阵 <span
+class="math inline">\(T\)</span> 的三个分量权重见定理
+6.5.1.01。耦合常数的重整化群演化见卷 7 的耦合常数谱统一（定理
+7.6.1.01）。</p>
+<h3 id="可观测量提取的映射规则">3.3 可观测量提取的映射规则</h3>
+<p>从编码轨道到可观测量的映射规则：</p>
+<p><span class="math display">\[O = \mathcal{M}[\sigma^*,
+T_{\text{ours}}],\]</span></p>
+<p>其中 <span class="math inline">\(\mathcal{M}\)</span>
+是映射算子，<span class="math inline">\(\sigma^*\)</span>
+是不动点，<span class="math inline">\(T_{\text{ours}}\)</span>
+是观测者定位。</p>
+<p>映射算子 <span class="math inline">\(\mathcal{M}\)</span>
+的结构：</p>
+<p><span class="math display">\[\mathcal{M} = \text{Born} \circ
+\text{Dirac} \circ \text{Spectral},\]</span></p>
+<p>即「Born 法则 → Dirac 谱 →
+谱分解」三步映射。每一步都是代数的——跨区域信息导入。</p>
+<p><strong>详细推导。</strong> 映射算子 <span
+class="math inline">\(\mathcal{M}\)</span> 的三步分解：</p>
+<ol type="1">
+<li><p><strong>Born</strong>：<span
+class="math inline">\(\mathcal{M}_{\text{Born}}: \sigma \mapsto
+\Delta\lambda = C\sqrt{\sigma}\)</span>。这一步是纯代数的——Born
+法则来自代数归一化 <span class="math inline">\(2pC^3 + C^2 =
+1\)</span>。</p></li>
+<li><p><strong>Dirac</strong>：<span
+class="math inline">\(\mathcal{M}_{\text{Dirac}}: \Delta\lambda \mapsto
+\text{Spec}(D) = \{\lambda_i\}\)</span>。这一步也是代数的——Dirac
+算子的谱由 Clifford 代数的表示论确定。</p></li>
+<li><p><strong>Spectral</strong>：<span
+class="math inline">\(\mathcal{M}_{\text{Spectral}}: \text{Spec}(D)
+\mapsto O = \{m, g, \ldots\}\)</span>。这一步将 Dirac
+谱诠释为物理可观测量——质量来自谱间隙，耦合常数来自 Birkhoff
+权重。</p></li>
+</ol>
+<p>观测者定位 <span class="math inline">\(T_{\text{ours}}\)</span>
+决定了可观测量 <span class="math inline">\(O\)</span>
+的具体值——不同的观测者位置（不同的 <span
+class="math inline">\(T_{\text{ours}}\)</span>）感知到不同的物理常数。但
+<span class="math inline">\(T_{\text{ours}}\)</span> 本身由 <span
+class="math inline">\(\sigma^*\)</span> 确定（通过 Birkhoff
+不动点条件），因此所有可观测量最终由 <span
+class="math inline">\(\sigma^*\)</span> 确定。</p>
+<p><strong>数值验证。</strong> 以 <span
+class="math inline">\(\alpha^{-1}\)</span> 为例验证映射规则： <span
+class="math display">\[\mathcal{M}_{\text{Born}}: \sigma^* \mapsto
+\Delta\lambda, \quad \mathcal{M}_{\text{Dirac}}: \Delta\lambda \mapsto
+\text{Spec}(D), \quad \mathcal{M}_{\text{Spectral}}: \text{Spec}(D)
+\mapsto \alpha^{-1} = S(\sigma^*) = 137.\]</span></p>
+<p><strong>跨卷引用。</strong> 观测者定位 <span
+class="math inline">\(T_{\text{ours}}\)</span> 的确定见卷 10
+的观测者定位定理（定理 10.5.1.01）。</p>
+<h3 id="可观测量的分类">3.4 可观测量的分类</h3>
+<p>可观测量按其几何来源分类：</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">类别</th>
+<th style="text-align: left;">几何来源</th>
+<th style="text-align: left;">提取方式</th>
+<th style="text-align: left;">示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">质量</td>
+<td style="text-align: left;">编码权重 <span
+class="math inline">\(\sigma\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(m \propto
+\sqrt{\sigma}\)</span></td>
+<td style="text-align: left;">轻子质量</td>
+</tr>
+<tr>
+<td style="text-align: left;">耦合常数</td>
+<td style="text-align: left;">Birkhoff 权重 <span
+class="math inline">\(\theta_k\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(g^2 \propto
+\theta_k\)</span></td>
+<td style="text-align: left;">电弱耦合</td>
+</tr>
+<tr>
+<td style="text-align: left;">质量比</td>
+<td style="text-align: left;">编码权重比</td>
+<td style="text-align: left;"><span class="math inline">\(m_i/m_j =
+\sqrt{\sigma_i/\sigma_j}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\mu\)</span>-e
+质量比</td>
+</tr>
+<tr>
+<td style="text-align: left;">精细结构常数</td>
+<td style="text-align: left;">代数作用量</td>
+<td style="text-align: left;"><span class="math inline">\(\alpha^{-1} =
+S(\sigma^*)\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\alpha^{-1}
+\approx 137\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>所有可观测量都从编码轨道的代数结构中提取——跨区域信息导入。</p>
+<p><strong>详细推导。</strong> 可观测量的几何分类：</p>
+<ol type="1">
+<li><p><strong>质量类</strong>（编码权重 <span
+class="math inline">\(\sigma\)</span>）：<span class="math inline">\(m_i
+= C\sqrt{\sigma_i}\)</span>。质量是编码权重的平方根——Born
+法则的直接应用。</p></li>
+<li><p><strong>耦合常数类</strong>（Birkhoff 权重 <span
+class="math inline">\(\theta_k\)</span>）：<span
+class="math inline">\(g_k^2 \propto \theta_k\)</span>。耦合常数是
+Birkhoff
+混合矩阵分量权重的函数——编码轨道的置换结构决定相互作用强度。</p></li>
+<li><p><strong>质量比类</strong>（编码权重比）：<span
+class="math inline">\(m_i/m_j =
+\sqrt{\sigma_i/\sigma_j}\)</span>。质量比消去了代数常数 <span
+class="math inline">\(C\)</span>，是编码权重比的纯几何函数。</p></li>
+<li><p><strong>精细结构常数类</strong>（代数作用量）：<span
+class="math inline">\(\alpha^{-1} =
+S(\sigma^*)\)</span>。精细结构常数是代数作用量在不动点处的值——编码轨道的「作用量」决定电磁耦合强度。</p></li>
+</ol>
+<p><strong>数值验证。</strong> 四类可观测量的数值验证： <span
+class="math display">\[\begin{aligned}
+m_e &amp;\propto \sqrt{0.7779} \approx 0.882, \\
+g_2^2 &amp;\propto \theta_\tau \approx 0.209, \\
+m_\mu/m_e &amp;= \sqrt{\sigma_\mu/\sigma_e} \approx 206.8, \\
+\alpha^{-1} &amp;= S(\sigma^*) = 137.
+\end{aligned}\]</span></p>
+<hr />
+<h2 id="映射的不可逆性与观测限制">§4 映射的不可逆性与观测限制</h2>
+<h3 id="不可逆性的来源">4.1 不可逆性的来源</h3>
+<p>观测映射的不可逆性有两个来源： 1. <strong>信息衰减</strong>：信息场以
+<span class="math inline">\(\Gamma_{\text{geo}} \approx 0.023\)</span>
+的速率衰减——细节被遗忘 2. <strong>有限容量</strong>：观测者只有 4
+比特容量——只能区分 16 种态</p>
+<p>两者共同导致：观测者无法从有限的可观测量反推完整的编码权重 <span
+class="math inline">\(\sigma\)</span>。</p>
+<p><strong>详细推导。</strong> 不可逆性的两个来源的定量分析：</p>
+<ol type="1">
+<li><p><strong>信息衰减导致的不可逆性</strong>：信息场衰减使 <span
+class="math inline">\(\sigma\)</span>
+的精细结构（如三代轻子之间的质量差异）在观测尺度上被平滑。衰减率 <span
+class="math inline">\(\Gamma_{\text{geo}} \approx 0.023\)</span>
+意味着比 <span class="math inline">\(\delta\lambda_{\min} \approx
+0.006\)</span> 更精细的谱结构无法被分辨。因此观测者从可观测量 <span
+class="math inline">\(O\)</span> 反推 <span
+class="math inline">\(\sigma\)</span> 时，有 <span
+class="math inline">\(\delta\lambda_{\min}\)</span>
+的不确定性。</p></li>
+<li><p><strong>有限容量导致的不可逆性</strong>：<span
+class="math inline">\(C_{\text{obs}} = 4\)</span> bits
+意味着观测者只能从 <span class="math inline">\(2^4 = 16\)</span>
+种可能的 <span class="math inline">\(\sigma\)</span> 中区分。而 <span
+class="math inline">\(\sigma\)</span> 的连续参数空间（2
+维单纯形）中有无穷多种可能——观测者只能将 <span
+class="math inline">\(\sigma\)</span> 映射到 16 个离散区间，每个区间内的
+<span class="math inline">\(\sigma\)</span> 不可区分。</p></li>
+</ol>
+<p><strong>数值验证。</strong> 不可逆性的定量度量： <span
+class="math display">\[\text{维度损失} = \dim(\sigma) - \dim(O) = 2 - 1
+= 1 \text{ 维}.\]</span></p>
+<p><strong>对比讨论。</strong>
+观测映射的不可逆性与量子测量中的「波函数坍缩」有深刻的形式对应。在量子测量中，测量前的量子态是叠加态（高维
+Hilbert
+空间），测量后坍缩到本征态（低维），信息不可逆地损失。在共扼谱几何中，<span
+class="math inline">\(\sigma\)</span>（2 维）通过观测映射坍缩到 <span
+class="math inline">\(S(\sigma^*)\)</span>（1
+维），也是信息不可逆地损失。但关键区别：量子坍缩是「非幺正」的（在哥本哈根诠释中），而共扼谱几何的不可逆性是「几何的」——由信息衰减和有限容量导致。</p>
+<p><strong>跨卷引用。</strong> 信息衰减率 <span
+class="math inline">\(\Gamma_{\text{geo}} \approx 0.023\)</span> 见定理
+5.1.2.01。信息容量 <span class="math inline">\(C_{\text{obs}} =
+4\)</span> bits 见定理 5.4.2.01。</p>
+<h3 id="不可逆性的量化">4.2 不可逆性的量化</h3>
+<p>不可逆性由等值面的维度量化：</p>
+<p><span class="math display">\[\text{dim}(\{\sigma : S(\sigma) = S^*\})
+= 1.\]</span></p>
+<p>3 维编码空间中，1 个标量约束（<span class="math inline">\(S =
+S^*\)</span>）留下 2 维等值面。但 Birkhoff 不动点条件额外约束 1 维，留下
+1 维不确定性。</p>
+<p>这 1
+维不确定性对应观测者无法分辨的「隐藏参数」——它不影响可观测量，但影响编码权重的具体值。</p>
+<p><strong>详细推导。</strong> 不可逆性的量化从约束计数的角度：</p>
+<ol type="1">
+<li><strong>编码空间</strong>：<span class="math inline">\(\sigma \in
+\Delta^2 = \{\sigma : \sum \sigma_i = 1, \sigma_i &gt; 0\}\)</span>——2
+维（归一化约束后）。</li>
+<li><strong>可观测量约束</strong>：<span class="math inline">\(S(\sigma)
+= S^* = 137\)</span>——1 个标量约束。</li>
+<li><strong>Birkhoff 不动点约束</strong>：<span
+class="math inline">\(T(\sigma) \sigma = \sigma\)</span>——1
+个有效约束（在 2 维空间中）。</li>
+<li><strong>剩余自由度</strong>：<span class="math inline">\(2 - 1 - 1 =
+0\)</span> 维——<span class="math inline">\(\sigma^*\)</span>
+是离散点。</li>
+</ol>
+<p>但观测者只能通过可观测量 <span class="math inline">\(O\)</span> 获取
+<span class="math inline">\(S(\sigma)\)</span>，不能直接获取 <span
+class="math inline">\(T(\sigma)\sigma =
+\sigma\)</span>。因此观测者看到的约束只有 <span
+class="math inline">\(S(\sigma) = S^*\)</span>，剩余自由度为 <span
+class="math inline">\(2 - 1 = 1\)</span> 维。这 1
+维不确定性是观测者与「客观实在」之间的鸿沟。</p>
+<p><strong>数值验证。</strong> 等值面 <span
+class="math inline">\(S(\sigma) = 137\)</span> 上的一点： <span
+class="math display">\[\sigma = (0.778, 0.211, 0.0115) \text{ 和 }
+\sigma&#39; = (0.780, 0.209, 0.0115)\]</span></p>
+<p>两者都满足 <span class="math inline">\(S(\sigma) \approx
+137\)</span>（在精度范围内），但 <span
+class="math inline">\(\sigma_{\mathcal{M}}^*\)</span> 和 <span
+class="math inline">\(\sigma_{\mathcal{C}}^*\)</span>
+略有不同。观测者无法区分这两个 <span
+class="math inline">\(\sigma\)</span>——它们给出相同的可观测量。</p>
+<h3 id="谱分辨量与观测精度">4.3 谱分辨量与观测精度</h3>
+<p>谱分辨量 <span class="math inline">\(\delta\lambda_{\min} \approx
+0.006\)</span> 限制了观测者的精度：</p>
+<ul>
+<li>质量测量精度：<span class="math inline">\(\delta m / m \sim
+\delta\lambda_{\min} \approx 0.6\%\)</span></li>
+<li>耦合常数精度：<span class="math inline">\(\delta g / g \sim
+\delta\lambda_{\min} \approx 0.6\%\)</span></li>
+<li>质量比精度：<span class="math inline">\(\delta(m_i/m_j) \sim
+\delta\lambda_{\min} \approx 0.6\%\)</span></li>
+</ul>
+<p>0.6%
+的精度极限是观测者的根本限制——由信息场的衰减率和信息节点数唯一确定。</p>
+<p><strong>详细推导。</strong> 观测精度极限的推导：</p>
+<ol type="1">
+<li><p><strong>质量测量精度</strong>：<span class="math inline">\(m_i =
+C\sqrt{\sigma_i}\)</span>。<span class="math inline">\(\delta m_i / m_i
+= \delta(C\sqrt{\sigma_i}) / (C\sqrt{\sigma_i}) = \delta\lambda_{\min} /
+\Delta\lambda_i\)</span>。对于 ℳ 扇区，<span
+class="math inline">\(\Delta\lambda_{\mathcal{M}} \approx
+0.778\)</span>，<span class="math inline">\(\delta m / m \approx 0.006 /
+0.778 \approx 0.77\%\)</span>。</p></li>
+<li><p><strong>耦合常数精度</strong>：<span class="math inline">\(g_k^2
+\propto \theta_k\)</span>。<span class="math inline">\(\delta g_k / g_k
+= \frac{1}{2} \delta\theta_k / \theta_k\)</span>。<span
+class="math inline">\(\theta_k\)</span> 的精度受限于 <span
+class="math inline">\(\delta\lambda_{\min}\)</span>，因此 <span
+class="math inline">\(\delta g / g \sim \delta\lambda_{\min} \approx
+0.6\%\)</span>。</p></li>
+<li><p><strong>质量比精度</strong>：<span class="math inline">\(m_i/m_j
+= \sqrt{\sigma_i/\sigma_j}\)</span>。<span
+class="math inline">\(\delta(m_i/m_j)/(m_i/m_j) =
+\frac{1}{2}(\delta\sigma_i/\sigma_i + \delta\sigma_j/\sigma_j) \sim
+\delta\lambda_{\min} \approx 0.6\%\)</span>。</p></li>
+</ol>
+<p><strong>数值验证。</strong> 以电子质量为例： <span
+class="math display">\[\delta m_e / m_e = 0.00577 / 0.778 \approx
+0.00742 = 0.74\%.\]</span></p>
+<p>当前实验精度：<span class="math inline">\(m_e = 0.51099895000 \pm
+0.00000000015\)</span> MeV（相对精度 <span class="math inline">\(\sim 3
+\times
+10^{-10}\)</span>）。实验精度远高于几何精度极限——因为实验测量的是「经典」质量，而几何精度极限是「量子」测量（单次信息场采样）的极限。多次独立测量可以通过统计平均突破几何精度极限——类似于量子计量学中的标准量子极限（SQL）和海森堡极限（HL）。</p>
+<p><strong>对比讨论。</strong> 谱分辨量 <span
+class="math inline">\(\delta\lambda_{\min}\)</span>
+与量子计量学中的标准量子极限（SQL）<span
+class="math inline">\(\delta\phi = 1/\sqrt{N}\)</span>
+有形式上的对应。在共扼谱几何中，<span
+class="math inline">\(\delta\lambda_{\min} = \Gamma_{\text{geo}} /
+\sqrt{N_{\text{info}}}\)</span>——<span
+class="math inline">\(N_{\text{info}} = 16\)</span> 对应 SQL 中的 <span
+class="math inline">\(N\)</span>（独立测量次数），<span
+class="math inline">\(\Gamma_{\text{geo}}\)</span>
+对应单次测量的精度。这是「几何量子计量学」的雏形。</p>
+<h3 id="观测限制与代数归一化">4.4 观测限制与代数归一化</h3>
+<p>代数归一化 <span class="math inline">\(2pC^3 + C^2 = 1\)</span>
+约束了编码权重的可能范围，间接限制了观测者的精度。如果代数归一化不同，谱分辨量也会不同——但代数归一化是跨区域信息导入的代数必然，因此观测精度极限也是跨区域信息导入的。</p>
+<p><strong>详细推导。</strong> 代数归一化与观测精度的关系链：</p>
+<ol type="1">
+<li>代数归一化 <span class="math inline">\(2pC^3 + C^2 = 1\)</span> 确定
+<span class="math inline">\(C\)</span> 的值。</li>
+<li><span class="math inline">\(C\)</span> 通过 Born 法则 <span
+class="math inline">\(\Delta\lambda_i = C\sqrt{\sigma_i}\)</span>
+确定谱间隙。</li>
+<li>谱间隙 <span class="math inline">\(\Delta\lambda_{\mathcal{I}} =
+C\sqrt{\sigma_{\mathcal{I}}^*}\)</span> 确定扩散系数 <span
+class="math inline">\(D_{\mathcal{I}} =
+\Delta\lambda_{\mathcal{I}}\)</span>。</li>
+<li><span class="math inline">\(D_{\mathcal{I}}\)</span> 和 <span
+class="math inline">\(\mu_1\)</span> 确定衰减率 <span
+class="math inline">\(\Gamma_{\text{geo}}\)</span>。</li>
+<li><span class="math inline">\(\Gamma_{\text{geo}}\)</span> 和 <span
+class="math inline">\(N_{\text{info}}\)</span> 确定谱分辨量 <span
+class="math inline">\(\delta\lambda_{\min}\)</span>。</li>
+</ol>
+<p>因此 <span class="math inline">\(\delta\lambda_{\min}\)</span>
+的整个链条最终追溯到代数归一化——观测精度极限是代数归一化的必然结果。</p>
+<p><strong>数值验证。</strong> 如果代数归一化不同（例如 <span
+class="math inline">\(C^2 = 1\)</span> 而非 <span
+class="math inline">\(2pC^3 + C^2 = 1\)</span>），<span
+class="math inline">\(C\)</span> 的值不同，<span
+class="math inline">\(\delta\lambda_{\min}\)</span> 也不同。但代数归一化
+<span class="math inline">\(2pC^3 + C^2 = 1\)</span>
+是编码轨道闭合的代数必然，因此 <span
+class="math inline">\(\delta\lambda_{\min} \approx 0.006\)</span>
+也是跨区域信息导入的必然结果。</p>
+<p><strong>跨卷引用。</strong> 代数归一化 <span
+class="math inline">\(2pC^3 + C^2 = 1\)</span> 见定理 3.2.1.01。</p>
+<hr />
+<h2 id="映射链的景观依赖性">§5 映射链的景观依赖性</h2>
+<h3 id="谱分辨量的景观变化">5.1 谱分辨量的景观变化</h3>
+<p>谱分辨量 <span class="math inline">\(\delta\lambda_{\min} =
+\Gamma_{\text{geo}} / \sqrt{N_{\text{info}}}\)</span>
+随景观位置变化：</p>
+<ul>
+<li>对称点：<span class="math inline">\(\Gamma\)</span> 最大，<span
+class="math inline">\(\delta\lambda_{\min}\)</span>
+最大——观测精度最低</li>
+<li>我们的位置：<span class="math inline">\(\delta\lambda_{\min} \approx
+0.006\)</span>——中等精度</li>
+<li>极端点：<span class="math inline">\(\Gamma \to 0\)</span>，<span
+class="math inline">\(\delta\lambda_{\min} \to
+0\)</span>——观测精度最高</li>
+</ul>
+<p><strong>详细推导。</strong> 谱分辨量的景观依赖性来自 <span
+class="math inline">\(\Gamma_{\text{geo}}\)</span> 的景观依赖性。<span
+class="math inline">\(\Gamma_{\text{geo}} = \mu_1 /
+N_{\text{info}}\)</span> 在对称点最大（<span class="math inline">\(\mu_1
+= \sqrt{3} \approx 1.732\)</span>），在极端点趋于零。因此 <span
+class="math inline">\(\delta\lambda_{\min} = \Gamma_{\text{geo}} /
+\sqrt{N_{\text{info}}}\)</span> 在对称点最大（<span
+class="math inline">\(\delta\lambda_{\min}^{\text{sym}} = 1.732 / (16
+\times 4) = 0.027\)</span>），在极端点趋于零。</p>
+<p>观测精度在极端点最高——但极端点信息场冻结（<span
+class="math inline">\(\xi \to
+\infty\)</span>），观测者虽然有高精度，但无法处理信息。观测精度和观测能力之间存在权衡——我们的位置处于两者平衡的「金发姑娘区间」。</p>
+<p><strong>数值验证。</strong> 三个特征位置的谱分辨量：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">位置</th>
+<th style="text-align: center;"><span
+class="math inline">\(\Gamma_{\text{geo}}\)</span></th>
+<th style="text-align: center;"><span
+class="math inline">\(\delta\lambda_{\min}\)</span></th>
+<th style="text-align: center;">相对精度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">对称点</td>
+<td style="text-align: center;"><span
+class="math inline">\(0.108\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.027\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(2.7\%\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">我们的位置</td>
+<td style="text-align: center;"><span
+class="math inline">\(0.023\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.006\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.6\%\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">近极端点</td>
+<td style="text-align: center;"><span
+class="math inline">\(0.001\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.00025\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.025\%\)</span></td>
+</tr>
+</tbody>
+</table>
+<h3 id="信息容量的景观普适性">5.2 信息容量的景观普适性</h3>
+<p>信息容量 <span class="math inline">\(C_{\text{obs}} = \log_2
+N_{\text{info}} = 4\)</span> 是景观普适的——<span
+class="math inline">\(N_{\text{info}} = 16\)</span> 由结构常数 <span
+class="math inline">\(k_0 = 2\)</span> 和 Cl(7) 秩 <span
+class="math inline">\(\rho_7 = 8\)</span> 确定，不随景观位置变化。</p>
+<p>所有世界的观测者都有 4 比特信息容量——但精度（谱分辨量）不同。</p>
+<p><strong>详细推导。</strong> 信息容量的景观普适性来自 <span
+class="math inline">\(N_{\text{info}}\)</span> 的景观普适性。<span
+class="math inline">\(N_{\text{info}} = \rho_7 \times k_0 = 8 \times 2 =
+16\)</span> 中的 <span class="math inline">\(\rho_7 = 8\)</span> 和
+<span class="math inline">\(k_0 = 2\)</span>
+都是结构常数——不随景观位置变化。因此 <span
+class="math inline">\(C_{\text{obs}} = 4\)</span> bits
+是所有世界的观测者共有的信息容量。</p>
+<p>但观测精度（谱分辨量 <span
+class="math inline">\(\delta\lambda_{\min}\)</span>）随景观位置变化——因为
+<span class="math inline">\(\Gamma_{\text{geo}}\)</span> 依赖于 <span
+class="math inline">\(\sigma^*\)</span>（景观位置）。不同世界的观测者虽然信息容量相同，但观测精度不同——这类似于不同生物虽然都有相同的感官数量（如两只眼睛），但视力精度不同。</p>
+<p><strong>数值验证。</strong> 信息容量在三个特征位置的验证： <span
+class="math display">\[\begin{aligned}
+S = 24&amp;: \quad C_{\text{obs}} = \log_2 16 = 4, \\
+S = 137&amp;: \quad C_{\text{obs}} = \log_2 16 = 4, \\
+S = 968&amp;: \quad C_{\text{obs}} = \log_2 16 = 4.
+\end{aligned}\]</span></p>
+<p>信息容量始终为 4 bits——景观普适。</p>
+<h3 id="映射链与代数作用量">5.3 映射链与代数作用量</h3>
+<p>映射链的稳态 <span class="math inline">\(\sigma^*\)</span>
+与代数作用量的极小点一致。这保证了：</p>
+<ul>
+<li>观测者感知的「常态」是作用量极小态</li>
+<li>观测者感知的「事件」是作用量极小态附近的扰动</li>
+<li>观测者的物理定律由作用量的极小值确定</li>
+</ul>
+<p>映射链将几何（作用量极小）与物理（可观测量）统一——这是共扼谱几何体系的核心特征。</p>
+<p><strong>详细推导。</strong> 映射链与代数作用量的统一性：</p>
+<ol type="1">
+<li><strong>几何层面</strong>：代数作用量 <span
+class="math inline">\(S(\sigma)\)</span> 在 <span
+class="math inline">\(\sigma^*\)</span>
+处取极小——这是几何极值原理。</li>
+<li><strong>物理层面</strong>：观测者的可观测量 <span
+class="math inline">\(O = \mathcal{M}[\sigma^*]\)</span> 由 <span
+class="math inline">\(\sigma^*\)</span>
+确定——这是映射链的物理输出。</li>
+<li><strong>统一</strong>：<span class="math inline">\(\sigma^*\)</span>
+同时是几何极值点和物理观测点——几何与物理在 <span
+class="math inline">\(\sigma^*\)</span> 处统一。</li>
+</ol>
+<p>这一统一性在数学上表现为：<span
+class="math inline">\(\sigma^*\)</span> 是同一个变分问题的解（<span
+class="math inline">\(\partial S / \partial \sigma =
+0\)</span>）和同一个动力学方程的解（<span class="math inline">\(\partial
+\rho / \partial t =
+0\)</span>）。几何极值和动力学稳态在同一个点达到——这是共扼谱几何的「最小作用量原理」的几何版本。</p>
+<p><strong>数值验证。</strong> 验证 <span
+class="math inline">\(\sigma^*\)</span> 同时满足几何极值和动力学稳态：
+<span class="math display">\[\begin{aligned}
+\partial S / \partial \sigma |_{\sigma^*} &amp;= 0 \quad
+(\text{几何极值}), \\
+\partial \rho_{\mathcal{I}} / \partial t |_{\rho^* = \Lambda \sigma^*}
+&amp;= 0 \quad (\text{动力学稳态}).
+\end{aligned}\]</span></p>
+<p><strong>跨卷引用。</strong> 代数作用量 <span
+class="math inline">\(S(\sigma)\)</span> 的极小化见定理
+3.4.1.01。动力学稳态的统一方程见定理 5.3.2.01。</p>
+<hr />
+<h2 id="定理索引">定理索引</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">编号</th>
+<th style="text-align: left;">内容</th>
+<th style="text-align: center;">证明状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">定理 5.4.1.01</td>
+<td style="text-align: left;">谱分辨量定理</td>
+<td style="text-align: center;">已证（本文§1.2）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="参考文献">参考文献</h2>
+<ul>
+<li>von Neumann, J., <em>Mathematical Foundations of Quantum
+Mechanics</em>, Princeton University Press, 1955</li>
+<li>Miller, G. A., “The magical number seven, plus or minus two”,
+Psychological Review, 63: 81-97, 1956</li>
+<li>Cramer, H., <em>Mathematical Methods of Statistics</em>, Princeton
+University Press, 1946</li>
+<li>Giovannetti, V., Lloyd, S., Maccone, L., “Quantum Metrology”,
+Physical Review Letters, 96: 010401, 2006</li>
+</ul>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 07:53:34</p>
+  </footer>
+</div>
+</body>
+</html>

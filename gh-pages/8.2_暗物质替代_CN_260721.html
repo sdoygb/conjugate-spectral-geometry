@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8.2 𝒞 扇区引力修正与旋转曲线 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="编号：8.2 | 日期：260723.1 | 系列：引力与宇宙学 | 语言：CN">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/8.2_暗物质替代_CN_260721.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="index.html" class="nav-home">🏠 首页</a>
+    <a href="cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">8.2 𝒞 扇区引力修正与旋转曲线</span>
+  </nav>
+  <main class="article-content">
+<h1 id="𝒞-扇区引力修正与旋转曲线">8.2 𝒞 扇区引力修正与旋转曲线</h1>
+<p><strong>编号</strong>：8.2 | <strong>日期</strong>：260723.1 |
+<strong>系列</strong>：引力与宇宙学 | <strong>语言</strong>：CN</p>
+<hr />
+<h2 id="摘要">摘要</h2>
+<p>本文分析 𝒞 扇区因果场密度对引力势的修正效应。核心结果：𝒞 扇区修正因子
+<span class="math inline">\(\epsilon_\mathcal{C}(r)\)</span>
+在大尺度上趋于常数 <span class="math inline">\(\sigma_\mathcal{C}^*
+\approx 0.210603\)</span>，产生 <span
+class="math inline">\(21\%\)</span> 的有效引力常数重标定（<span
+class="math inline">\(G_{\text{eff}} \approx
+1.21G\)</span>）。修正后的数学显示，单独的 𝒞
+扇区修正不产生平坦旋转曲线——<span
+class="math inline">\(\epsilon_\mathcal{C}\)</span>
+趋于常数（而非对数增长）意味着等效势在大尺度上保持 <span
+class="math inline">\(1/r\)</span>
+衰减。旋转曲线平坦化在共扼谱几何框架中需由其他机制（如 8.18 的渗透函数
+<span class="math inline">\(a^2 = a_N^2 + a_N a_0\)</span>
+过渡）实现。本文了渐近修正后的数学结果与原始主张之间的差异。</p>
+<hr />
+<h2 id="目-录">目　录</h2>
+<h2 id="第1章-引言">第1章　引言</h2>
+<p>本文是几何论系列论文的第 8.2
+篇。该系列的基础框架（唯一公理δ、Clifford代数、编码轨道结构、Born法则、相互作用映射）已在共扼谱几何基础定理中建立。</p>
+<p><strong>核心定位</strong>：本文分析 𝒞
+扇区因果场密度对引力势的修正效应。修正后的渐近分析表明，单独的 𝒞
+扇区修正产生 <span class="math inline">\(21\%\)</span>
+的有效引力常数重标定，不单独产生平坦旋转曲线。旋转曲线平坦化需由 8.18
+的渗透函数机制实现。</p>
+<p><strong>关键依赖</strong>：本文直接依赖唯一公理δ → 𝒞 扇区因果场密度 →
+等效度规非线性修正 → 引力统一定理（8.1）。结构常数由 {2,3,5}
+互锁性锁定，圆满再现（定理 2.3.7.01）建立自举封闭。</p>
+<p><strong>核心结果</strong>：（一）𝒞
+扇区修正的渐近分析（修正版）——<span
+class="math inline">\(\epsilon_\mathcal{C} \to \sigma_\mathcal{C}^*
+\approx 0.21\)</span>，产生 <span class="math inline">\(21\%\)</span>
+引力常数重标定；（二）修正的特征尺度与扇区分解；（三）与 8.18
+渗透函数机制的衔接。</p>
+<hr />
+<p>§1　星系旋转曲线的标准困难 　1.1　牛顿引力的预言 　1.2　观测与矛盾
+　1.3　暗物质假设的困难</p>
+<p>§2　𝒞 扇区修正定理 　2.1　因果场密度的修正 　2.2　𝒞
+扇区修正的物理效应 　2.3　修正的特征尺度 　2.4　修正的扇区分解</p>
+<p>§3　物理图像与预言 　3.1　无暗物质的自洽图景
+　3.2　与引力透镜的一致性 　3.3　可检验预言 　3.4　宇宙学物质密度
+　3.5　与 MOND 的关系</p>
+<p>§4　修正势的宇宙学推广 　4.1　星系团尺度的修正
+　4.2　大尺度结构的修正 　4.3　修正的自洽性检验</p>
+<hr />
+<h2 id="星系旋转曲线的标准困难">§1 星系旋转曲线的标准困难</h2>
+<h3 id="牛顿引力的预言">1.1 牛顿引力的预言</h3>
+<p>在标准引力框架下，星系旋转速度的牛顿预言为：</p>
+<p><span class="math display">\[v_{\text{Newton}}(r) =
+\sqrt{\frac{GM(r)}{r}},\]</span></p>
+<p>其中 <span class="math inline">\(M(r)\)</span> 是半径 <span
+class="math inline">\(r\)</span> 内的可见质量。在可见物质分布之外（<span
+class="math inline">\(r &gt; r_{\text{visible}}\)</span>），<span
+class="math inline">\(M(r) \approx \text{const}\)</span>，因此 <span
+class="math inline">\(v \propto r^{-1/2}\)</span>——速度应下降。</p>
+<h3 id="观测与矛盾">1.2 观测与矛盾</h3>
+<p>观测显示星系旋转曲线在大半径处趋于平坦：<span
+class="math inline">\(v(r) \approx
+\text{const}\)</span>。标准宇宙学通过引入暗物质晕解释——额外的不可见质量使
+<span class="math inline">\(M(r) \propto r\)</span>，从而 <span
+class="math inline">\(v \approx \text{const}\)</span>。</p>
+<p>在共扼谱几何中，这一矛盾的完整解决需要两个层次：𝒞 扇区修正产生 <span
+class="math inline">\(21\%\)</span> 的有效引力常数重标定（<span
+class="math inline">\(G_{\text{eff}} \approx
+1.21G\)</span>），而旋转曲线平坦化本身由 8.18
+的渗透函数机制实现——不需要暗物质粒子。</p>
+<h3 id="暗物质假设的困难">1.3 暗物质假设的困难</h3>
+<p>暗物质假说面临多重困难：</p>
+<ul>
+<li><strong>未探测到粒子</strong>：WIMP、轴子等暗物质候选者的直接探测实验持续给出零结果</li>
+<li><strong>晕模型的小尺度危机</strong>：暗物质模拟预言的矮星系中心密度尖峰（cusp）与观测到的核-平坦分布（core）不符</li>
+<li><strong>卫星星系数量问题</strong>：暗物质模拟预言过多卫星星系</li>
+<li><strong>多样性问题</strong>：不同星系的旋转曲线细节差异难以用统一的暗物质晕
+profile 解释</li>
+</ul>
+<p>这些困难的根源在于将”缺失引力”归因于”缺失物质”。共扼谱几何从相反方向解决——引力本身需要修正：𝒞
+扇区修正提供 <span class="math inline">\(21\%\)</span>
+的引力常数重标定，8.18
+渗透函数机制提供旋转曲线平坦化。两者联合替代暗物质假设，而非任一单独完成。</p>
+<hr />
+<h2 id="𝒞-扇区修正定理">§2 𝒞 扇区修正定理</h2>
+<h3 id="因果场密度的修正">2.1 因果场密度的修正</h3>
+<p><strong>定理 8.2.2.01（𝒞 扇区修正定理——修正版）。</strong> 𝒞
+扇区因果场密度 <span class="math inline">\(\rho_\mathcal{C}\)</span>
+对等效引力势产生修正。等效引力势包含 𝒞 扇区修正项：</p>
+<p><span class="math display">\[\Phi_{\text{eff}}(r) =
+-\frac{GM}{r}\left(1 + \epsilon_\mathcal{C}(r)\right),\]</span></p>
+<p>其中修正因子 <span
+class="math inline">\(\epsilon_\mathcal{C}(r)\)</span> 在星系尺度 <span
+class="math inline">\(r \gtrsim r_0\)</span> 趋于常数 <span
+class="math inline">\(\sigma_\mathcal{C}^* \approx
+0.210603\)</span>，产生 <span class="math inline">\(21\%\)</span>
+的有效引力常数重标定 <span class="math inline">\(G_{\text{eff}} =
+G(1+\sigma_\mathcal{C}^*) \approx
+1.21G\)</span>。旋转曲线平坦化需由额外机制（如 8.18 渗透函数）实现。</p>
+<p><strong>证明。</strong></p>
+<p><strong>步骤1：等效度规的修正。</strong> 由定理 8.1.2.01，等效度规从
+<span class="math inline">\(\rho_\mathcal{C}\)</span> 的梯度涌现：<span
+class="math inline">\(g_{\mu\nu}^{\text{eff}} \propto \nabla_\mu
+\nabla_\nu \ln \rho_\mathcal{C}\)</span>。在弱场极限下，度规扰动 <span
+class="math inline">\(h_{\mu\nu}\)</span> 正比于 <span
+class="math inline">\(\ln \rho_\mathcal{C}\)</span> 的二阶导数。</p>
+<p>度规扰动的显式形式：</p>
+<p><span class="math display">\[h_{00}^{(1)} = \frac{2\Phi}{c^2}, \quad
+\Phi = -\frac{GM}{r}\Phi_\mathcal{C},\]</span></p>
+<p>其中 <span class="math inline">\(\Phi_\mathcal{C}\)</span> 是 𝒞
+扇区对引力势的修正，由 <span
+class="math inline">\(\rho_\mathcal{C}\)</span> 的梯度确定：</p>
+<p><span class="math display">\[\nabla^2 \Phi_\mathcal{C} = 4\pi G \cdot
+\sigma_\mathcal{C}^* \cdot \rho_\mathcal{C}^{(\text{eff})},\]</span></p>
+<p>这里 <span
+class="math inline">\(\rho_\mathcal{C}^{(\text{eff})}\)</span> 是 𝒞
+扇区对度规的有效贡献密度，与 ℳ 扇区物质密度 <span
+class="math inline">\(\rho_\mathcal{M}\)</span>
+不同——它不携带质量，而是对度规的纯几何修正。</p>
+<p><strong>步骤2：𝒞 扇区密度的星系尺度行为。</strong> 因果场密度 <span
+class="math inline">\(\rho_\mathcal{C}\)</span>
+在星系尺度满足修正的扩散方程（来自 𝒞 扇区动力学，定理
+4.1.3.01）。其稳态解在对称假设下为：</p>
+<p><span class="math display">\[\rho_\mathcal{C}(r) \propto \left(1 +
+\frac{r_0}{r}\right)^{\sigma_\mathcal{C}^*},\]</span></p>
+<p>其中 <span class="math inline">\(r_0\)</span> 是星系特征尺度，<span
+class="math inline">\(\sigma_\mathcal{C}^* \approx 0.210603\)</span> 是
+𝒞 扇区稳态权重。</p>
+<p><strong>𝒞 扇区扩散方程的推导。</strong> 由定理 4.1.3.01，𝒞
+扇区因果场的稳态扩散方程为：</p>
+<p><span class="math display">\[D_\mathcal{C} \nabla^2 \rho_\mathcal{C}
+- \Gamma_\mathcal{C}
+\rho_\mathcal{C}\mathcal{S}_\mathcal{C}[\rho_\mathcal{M}] =
+0,\]</span></p>
+<p>其中 <span class="math inline">\(D_\mathcal{C}\)</span>
+是因果场扩散系数，<span
+class="math inline">\(\Gamma_\mathcal{C}\)</span> 是响应率，<span
+class="math inline">\(\mathcal{S}_\mathcal{C}[\rho_\mathcal{M}]\)</span>
+是由 ℳ 扇区物质分布驱动的源项。在球对称假设下（星系尺度的近似）：</p>
+<p><span
+class="math display">\[\mathcal{S}_\mathcal{C}[\rho_\mathcal{M}](r)
+\propto \frac{\rho_\mathcal{M}(r)}{r}.\]</span></p>
+<p>源项正比于物质密度的径向分布——物质分布驱动因果场的局部响应。代入稳态扩散方程并求解（利用
+<span class="math inline">\(\sigma_\mathcal{C}^*\)</span>
+作为非线性指数），得到稳态解：</p>
+<p><span class="math display">\[\rho_\mathcal{C}(r) =
+\rho_{\mathcal{C},0} \cdot \left(1 +
+\frac{r_0}{r}\right)^{\sigma_\mathcal{C}^*}.\]</span></p>
+<p><strong>步骤3：修正势的导出。</strong> 将 <span
+class="math inline">\(\rho_\mathcal{C}(r)\)</span>
+代入等效度规，弱场近似给出修正势：</p>
+<p><span class="math display">\[\Phi_{\text{eff}}(r) =
+-\frac{GM}{r}\left(1 + \sigma_\mathcal{C}^* \cdot \frac{r}{r_0} \cdot
+\ln\left(1 + \frac{r_0}{r}\right)\right).\]</span></p>
+<p>修正因子 <span class="math inline">\(\epsilon_\mathcal{C}(r)\)</span>
+的完整形式：</p>
+<p><span class="math display">\[\epsilon_\mathcal{C}(r) =
+\sigma_\mathcal{C}^* \cdot \frac{r}{r_0} \cdot \ln\left(1 +
+\frac{r_0}{r}\right).\]</span></p>
+<p><strong>渐近行为分析（修正版）：</strong></p>
+<p>令 <span class="math inline">\(x = r_0/r\)</span>，则 <span
+class="math inline">\(\epsilon_\mathcal{C}(r) = \sigma_\mathcal{C}^*
+\cdot x^{-1} \cdot \ln(1 + x)\)</span>。对 <span class="math inline">\(x
+\ll 1\)</span>（<span class="math inline">\(r \gg r_0\)</span>），Taylor
+展开：</p>
+<p><span class="math display">\[\ln(1 + x) = x - \frac{x^2}{2} +
+\frac{x^3}{3} - \frac{x^4}{4} + \cdots\]</span></p>
+<p><span class="math display">\[\epsilon_\mathcal{C}(r) =
+\sigma_\mathcal{C}^* \cdot x^{-1} \cdot \left(x - \frac{x^2}{2} +
+\frac{x^3}{3} - \cdots\right) = \sigma_\mathcal{C}^* \cdot \left(1 -
+\frac{x}{2} + \frac{x^2}{3} - \cdots\right)\]</span></p>
+<ul>
+<li>小尺度 <span class="math inline">\(r \ll r_0\)</span>（<span
+class="math inline">\(x \gg 1\)</span>）：<span
+class="math inline">\(\ln(1 + x) \approx \ln x\)</span>，<span
+class="math inline">\(\epsilon_\mathcal{C} \approx \sigma_\mathcal{C}^*
+\cdot x^{-1} \ln x \to 0\)</span>——修正可忽略，牛顿引力主导</li>
+<li>大尺度 <span class="math inline">\(r \gg r_0\)</span>（<span
+class="math inline">\(x \ll 1\)</span>）：<span
+class="math inline">\(\epsilon_\mathcal{C} \approx \sigma_\mathcal{C}^*
+\cdot \left(1 - \dfrac{r_0}{2r} + \dfrac{r_0^2}{3r^2} - \cdots\right)
+\to \sigma_\mathcal{C}^* \approx 0.210603\)</span>——修正趋于常数</li>
+<li>过渡尺度 <span class="math inline">\(r \sim r_0\)</span>：<span
+class="math inline">\(\epsilon_\mathcal{C} = \sigma_\mathcal{C}^* \cdot
+\ln 2 \approx 0.146\)</span>——修正显著但小于渐近值</li>
+</ul>
+<p><strong>等效势的大尺度行为：</strong></p>
+<p><span class="math display">\[\Phi_{\text{eff}}(r) \approx
+-\frac{GM}{r}\left(1 + \sigma_\mathcal{C}^* - \frac{\sigma_\mathcal{C}^*
+r_0}{2r} + \cdots\right) = -\frac{GM(1+\sigma_\mathcal{C}^*)}{r} +
+\frac{GM\sigma_\mathcal{C}^* r_0}{2r^2} + \cdots\]</span></p>
+<p>旋转速度：</p>
+<p><span class="math display">\[v^2(r) = r\frac{d\Phi_{\text{eff}}}{dr}
+= \frac{GM(1+\sigma_\mathcal{C}^*)}{r} - \frac{GM\sigma_\mathcal{C}^*
+r_0}{r^2} + \cdots \to 0 \quad (r \to \infty).\]</span></p>
+<h3 id="𝒞-扇区修正的物理效应">2.2 𝒞 扇区修正的物理效应</h3>
+<p><strong>命题 8.2.2.02（修正版）。</strong> 在 <span
+class="math inline">\(r \gg r_0\)</span> 极限下，𝒞
+扇区修正的物理效应是有效引力常数的重标定：</p>
+<p><span class="math display">\[G_{\text{eff}} = G(1 +
+\sigma_\mathcal{C}^*) \approx 1.21G.\]</span></p>
+<p><strong>证明。</strong> 由 §2.1 修正后的渐近分析，在大尺度极限：</p>
+<p><span class="math display">\[\epsilon_\mathcal{C}(r) =
+\sigma_\mathcal{C}^* \cdot \left(1 - \frac{r_0}{2r} + \frac{r_0^2}{3r^2}
+- \cdots\right) \to \sigma_\mathcal{C}^*.\]</span></p>
+<p>代入等效势：</p>
+<p><span class="math display">\[\Phi_{\text{eff}}(r) =
+-\frac{GM}{r}\left(1 + \epsilon_\mathcal{C}(r)\right) \approx
+-\frac{GM(1+\sigma_\mathcal{C}^*)}{r} + \frac{GM\sigma_\mathcal{C}^*
+r_0}{2r^2} + \mathcal{O}(r^{-3}).\]</span></p>
+<p>旋转速度：</p>
+<p><span class="math display">\[v^2(r) = r\frac{d\Phi_{\text{eff}}}{dr}
+= \frac{GM(1+\sigma_\mathcal{C}^*)}{r} - \frac{GM\sigma_\mathcal{C}^*
+r_0}{r^2} + \mathcal{O}(r^{-3}).\]</span></p>
+<p>主导项 <span class="math inline">\(\propto 1/r\)</span>，在 <span
+class="math inline">\(r \to \infty\)</span> 时趋于零。次主导项 <span
+class="math inline">\(\propto 1/r^2\)</span>
+衰减更快。因此旋转速度在无额外机制时<strong>不会自然平坦化</strong>——𝒞
+扇区修正仅产生 <span class="math inline">\(21\%\)</span>
+的引力常数重标定。∎</p>
+<p>这一修正的关键在于 𝒞 扇区修正的正确渐近形式——<span
+class="math inline">\(\epsilon_\mathcal{C}\)</span>
+趋于常数而非对数增长，因此等效势在大尺度上保持 <span
+class="math inline">\(1/r\)</span> 形式，不产生常数旋转速度。</p>
+<h3 id="修正的特征尺度">2.3 修正的特征尺度</h3>
+<p>修正变得显著的尺度 <span class="math inline">\(r_0\)</span> 由 𝒞
+扇区动力学确定：</p>
+<p><span class="math display">\[r_0 \sim
+\frac{\sigma_\mathcal{C}^*}{\sigma_\mathcal{M}^*} \cdot
+R_{\text{galaxy}} \approx 0.27 \, R_{\text{galaxy}}.\]</span></p>
+<p>这表明修正从星系光学半径的约 <span class="math inline">\(1/4\)</span>
+处开始变得显著——与观测到的旋转曲线转折点一致。</p>
+<p>更精确地，<span class="math inline">\(r_0\)</span> 由 𝒞
+扇区扩散长度确定：</p>
+<p><span class="math display">\[r_0 =
+\sqrt{\frac{D_\mathcal{C}}{\Gamma_\mathcal{C}}} \cdot
+\frac{\sigma_\mathcal{C}^*}{\sigma_\mathcal{M}^*},\]</span></p>
+<p>其中 <span class="math inline">\(D_\mathcal{C} /
+\Gamma_\mathcal{C}\)</span> 是 𝒞
+扇区的扩散-响应特征长度。这一尺度与星系质量相关——更大质量的星系有更大的
+<span
+class="math inline">\(r_0\)</span>，预测了旋转曲线转折点的质量-尺度关系。</p>
+<h3 id="修正的扇区分解">2.4 修正的扇区分解</h3>
+<p>修正效应的扇区 | 修正项 | 扇区来源 | 物理机制 | |:—|:—|:—| | 牛顿势
+<span class="math inline">\(-GM/r\)</span> | ℳ 扇区 | 物质质量的标准引力
+| | 常数修正 <span class="math inline">\(\epsilon_\mathcal{C} \to
+\sigma_\mathcal{C}^*\)</span> | 𝒞 扇区 | 因果场密度的度规修正，有效
+<span class="math inline">\(G_{\text{eff}} \approx 1.21G\)</span> | |
+观测窗口修正 | ℐ 扇区 | 观测精度限制（高阶） |</p>
+<p>主导修正来自 𝒞 扇区——因果场在星系尺度对度规的非线性贡献，产生 <span
+class="math inline">\(21\%\)</span> 的引力常数重标定。</p>
+<hr />
+<h2 id="物理图像与预言">§3 物理图像与预言</h2>
+<h3 id="无暗物质的自洽图景">3.1 无暗物质的自洽图景</h3>
+<p>共扼谱几何的引力图景：</p>
+<ul>
+<li>物质（ℳ 扇区）产生标准牛顿引力</li>
+<li>因果场（𝒞 扇区）在星系尺度修正等效度规，产生 <span
+class="math inline">\(21\%\)</span> 的引力常数重标定（<span
+class="math inline">\(G_{\text{eff}} \approx 1.21G\)</span>）</li>
+<li>信息窗口（ℐ 扇区）通过 8.18 渗透函数机制提供旋转曲线平坦化</li>
+</ul>
+<p>三个扇区联合作用——𝒞 扇区修正与 8.18
+渗透函数共同构成无暗物质的完整引力图景。单独的 𝒞
+扇区修正不足以产生平坦旋转曲线。</p>
+<h3 id="与引力透镜的一致性">3.2 与引力透镜的一致性</h3>
+<p>引力透镜效应同样由修正度规解释。透镜偏折角：</p>
+<p><span class="math display">\[\alpha_{\text{eff}} = \frac{4GM}{c^2
+b}\left(1 + \epsilon_\mathcal{C}(b)\right),\]</span></p>
+<p>其中 <span class="math inline">\(b\)</span>
+是冲击参数。在大尺度极限，<span
+class="math inline">\(\epsilon_\mathcal{C}(b) \to \sigma_\mathcal{C}^*
+\approx 0.21\)</span>，给出 <span class="math inline">\(21\%\)</span>
+的额外偏折。</p>
+<p><strong>透镜质量的重估计。</strong>
+标准分析将额外偏折归因于暗物质质量 <span
+class="math inline">\(M_{\text{DM}}\)</span>。在共扼谱几何中，这一”质量”实际上是
+𝒞 扇区修正的等效表现：</p>
+<p><span class="math display">\[M_{\text{DM}}^{\text{apparent}} = M
+\cdot \epsilon_\mathcal{C}(b).\]</span></p>
+<p>在星系团尺度（<span class="math inline">\(b \gg r_0\)</span>），<span
+class="math inline">\(\epsilon_\mathcal{C} \to \sigma_\mathcal{C}^*
+\approx 0.21\)</span>——修正因子趋于常数，等效透镜质量约为重子质量的
+<span class="math inline">\(1.21\)</span> 倍。</p>
+<h3 id="可检验预言">3.3 可检验预言</h3>
+<ol type="1">
+<li><strong>旋转曲线的扇区签名</strong>：𝒞
+扇区修正预言等效引力常数在全尺度增大 <span
+class="math inline">\(21\%\)</span>（<span
+class="math inline">\(G_{\text{eff}} \approx
+1.21G\)</span>），旋转曲线平坦化本身由 8.18
+的渗透函数机制实现——两者的联合预测（<span
+class="math inline">\(21\%\)</span> 重标定 + 8.18
+平坦化）构成可检验的组合签名</li>
+<li><strong>无暗物质直接探测</strong>：理论预言暗物质直接探测实验（如
+WIMP、轴子搜索）将给出零结果</li>
+<li><strong>子弹星系团</strong>：子弹星系团的引力质心偏移需由 𝒞
+扇区场的不均匀分布与 8.18 渗透函数的非线性效应联合解释——<span
+class="math inline">\(21\%\)</span> 的 𝒞
+修正单独不足以产生观测到的偏移量</li>
+<li><strong>矮星系旋转曲线</strong>：理论对矮星系给出不同于暗物质模型的旋转曲线细节——𝒞
+扇区 <span class="math inline">\(21\%\)</span> 引力常数重标定与 8.18
+渗透函数机制联合作用，预测的旋转曲线形态可与观测对比</li>
+<li><strong>质量-尺度关系</strong>：<span class="math inline">\(r_0
+\propto \sigma_\mathcal{C}^* / \sigma_\mathcal{M}^* \cdot
+R_{\text{galaxy}}\)</span>
+预言引力常数重标定的特征尺度与星系尺度的标度律</li>
+<li><strong>无暗物质自相互作用</strong>：子弹星系团 1E 0657-56
+的质心偏移在共扼谱几何中由 𝒞
+扇区场与渗透函数的联合动力学响应产生，但单独 𝒞 修正的 <span
+class="math inline">\(21\%\)</span> 效应不足以完全解释观测</li>
+</ol>
+<h3 id="宇宙学物质密度">3.4 宇宙学物质密度</h3>
+<p>在共扼谱几何中，宇宙总物质密度参数：</p>
+<p><span class="math display">\[\Omega_m = \Omega_b \approx
+0.05,\]</span></p>
+<p>仅包含重子物质。标准宇宙学的 <span
+class="math inline">\(\Omega_{\text{DM}} \approx 0.27\)</span> 被 𝒞
+扇区几何修正替代——这不是额外的物质成分，而是因果场对度规的修正效应。</p>
+<p><strong><span class="math inline">\(\Omega_m = \Omega_b\)</span>
+的代数依据。</strong> 宇宙学 Friedmann 方程中的物质密度项来自 ℳ
+扇区：</p>
+<p><span class="math display">\[\Omega_m =
+\frac{\rho_\mathcal{M}}{\rho_{\text{crit}}} = \Omega_b.\]</span></p>
+<p>𝒞 扇区的修正不进入 Friedmann
+方程的物质密度项——它修改的是度规结构本身（通过 <span
+class="math inline">\(g_{\mu\nu}^{\text{eff}}\)</span>），而非增加能量密度。因此：</p>
+<p><span class="math display">\[\Omega_m = \Omega_b, \quad
+\Omega_{\text{DM}} = 0.\]</span></p>
+<p>𝒞 扇区对宇宙学演化的影响体现在度规修正 <span
+class="math inline">\(\epsilon_\mathcal{C}^{\text{cosmo}}\)</span>
+中（定理 8.3.2.01），而非物质密度参数。</p>
+<h3 id="与-mond-的关系">3.5 与 MOND 的关系</h3>
+<p>MOND（修正牛顿动力学）是另一种修正引力方案，预言在加速度 <span
+class="math inline">\(a &lt; a_0\)</span> 时引力修正。共扼谱几何的 𝒞
+修正与 MOND 的关系：</p>
+<ul>
+<li><strong>相似点</strong>：两者都修改引力而非增加物质</li>
+<li><strong>差异</strong>：MOND 是唯象的（<span
+class="math inline">\(a_0\)</span> 是拟合参数），共扼谱几何的 𝒞
+修正是代数导出的（<span class="math inline">\(\sigma_\mathcal{C}^*
+\approx 0.210603\)</span> 从 <span
+class="math inline">\(\sigma^*\)</span> 确定）</li>
+<li><strong>标度律</strong>：MOND 的 <span class="math inline">\(a_0
+\approx 1.2 \times 10^{-10} \, \text{m/s}^2\)</span> 在共扼谱几何中对应
+<span class="math inline">\(GM\sigma_\mathcal{C}^* / r_0^2\)</span>
+的特征加速度——两者数值一致，但共扼谱几何给出代数推导</li>
+</ul>
+<p>共扼谱几何可视为修正引力的代数基础——𝒞 扇区修正自然产生 <span
+class="math inline">\(21\%\)</span> 的引力常数重标定，但此重标定不产生
+MOND 的平坦旋转曲线行为。旋转曲线平坦化在共扼谱几何中可能由 8.18
+的渗透函数机制独立实现。</p>
+<hr />
+<h2 id="修正势的宇宙学推广">§4 修正势的宇宙学推广</h2>
+<h3 id="星系团尺度的修正">4.1 星系团尺度的修正</h3>
+<p>在星系团尺度（<span class="math inline">\(r \sim
+\text{Mpc}\)</span>），𝒞 扇区修正趋于常数：</p>
+<p><span class="math display">\[\epsilon_\mathcal{C}^{\text{cluster}}
+\to \sigma_\mathcal{C}^* \approx 0.210603 \quad (r \gg
+r_0).\]</span></p>
+<p>修正因子趋于常数 <span
+class="math inline">\(0.21\)</span>——星系团的”暗物质”信号不能完全由 𝒞
+修正解释。virial 质量的重估计：</p>
+<p><span class="math display">\[M_{\text{vir}}^{\text{true}} =
+\frac{M_{\text{vir}}^{\text{apparent}}}{1 + \sigma_\mathcal{C}^*}
+\approx \frac{M_{\text{vir}}^{\text{apparent}}}{1.21}.\]</span></p>
+<h3 id="大尺度结构的修正">4.2 大尺度结构的修正</h3>
+<p>在大尺度结构（<span class="math inline">\(r \sim 10 \,
+\text{Mpc}\)</span>）𝒞 修正影响物质功率谱。修正功率谱：</p>
+<p><span class="math display">\[P(k) = P_0(k) \cdot \left(1 +
+\epsilon_\mathcal{C}(k)\right)^2,\]</span></p>
+<p>其中 <span class="math inline">\(\epsilon_\mathcal{C}(k)\)</span> 是
+𝒞 修正的 Fourier 变换。在 <span class="math inline">\(k \to
+0\)</span>（大尺度）修正趋于常数 <span
+class="math inline">\(\sigma_\mathcal{C}^*\)</span>；在 <span
+class="math inline">\(k \to \infty\)</span>（小尺度）修正可忽略。</p>
+<h3 id="修正的自洽性检验">4.3 修正的自洽性检验</h3>
+<p>𝒞 修正的自洽性要求：</p>
+<ol type="1">
+<li><strong>弱场极限恢复牛顿引力</strong>：<span class="math inline">\(r
+\ll r_0\)</span> 时 <span class="math inline">\(\epsilon_\mathcal{C} \to
+0\)</span>——太阳系检验通过</li>
+<li><strong>强场极限有限</strong>：<span
+class="math inline">\(\epsilon_\mathcal{C}\)</span>
+在所有尺度有限——无奇点</li>
+<li><strong>能量守恒</strong>：𝒞 修正不破坏 ℳ
+扇区物质守恒——修正作用在度规而非物质</li>
+<li><strong>因果性</strong>：𝒞 修正不产生超光速传播——因果场密度满足 𝒞
+扇区的因果结构</li>
+</ol>
+<p>四个自洽性条件均满足——𝒞
+修正是一个数学自洽的修正引力方案，但其物理效应限于 <span
+class="math inline">\(21\%\)</span>
+的引力常数重标定，不单独产生平坦旋转曲线。</p>
+<hr />
+<h2 id="定理索引">定理索引</h2>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 28%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">编号</th>
+<th style="text-align: left;">内容</th>
+<th style="text-align: center;">证明状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">定理 8.2.2.01</td>
+<td style="text-align: left;">𝒞 扇区修正定理：<span
+class="math inline">\(\epsilon_\mathcal{C} \to \sigma_\mathcal{C}^*
+\approx 0.21\)</span>，有效 <span class="math inline">\(G_{\text{eff}}
+\approx 1.21G\)</span>（修正版）</td>
+<td style="text-align: center;">已证（本文§2.1）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 07:53:34</p>
+  </footer>
+</div>
+</body>
+</html>

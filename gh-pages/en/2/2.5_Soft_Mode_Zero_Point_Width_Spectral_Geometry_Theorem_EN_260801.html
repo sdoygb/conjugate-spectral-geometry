@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.5 Spectral Geometry Theorem of the Soft Mode Zero-Point Width | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="——Pure Geometric Derivation of δ₀^single">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/2/2.5_Soft_Mode_Zero_Point_Width_Spectral_Geometry_Theorem_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">2.5 Spectral Geometry Theorem of the Soft Mode Zero-Point Width</span>
+  </nav>
+  <main class="article-content">
+<h1 id="spectral-geometry-theorem-of-the-soft-mode-zero-point-width">2.5
+Spectral Geometry Theorem of the Soft Mode Zero-Point Width</h1>
+<p><strong>——Pure Geometric Derivation of δ₀^single</strong></p>
+<p><strong>Version</strong>: 260722.1</p>
+<p><strong>Positioning</strong>: Pure geometric theorem — δ₀^single is a
+geometric property of the sector parameter space, not
+electron-specific</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>This article proves: the single-chain zero-point width <span
+class="math inline">\(\delta_0^{\text{single}}\)</span> is not a
+property of the electron, but a spectral geometric property of the
+<strong>sector parameter space</strong> (the Lagrange submanifold
+induced by the Born Rule, a Berry phase <span class="math inline">\(=
+2\pi\)</span> entity). <span
+class="math inline">\(\delta_0^{\text{single}}(\theta_\mathcal{I},
+\lambda_1)\)</span> is a scalar function on <span
+class="math inline">\(\Sigma\)</span> — given the coordinates <span
+class="math inline">\(\theta_\mathcal{I}\)</span> and the soft mode
+eigenvalue <span class="math inline">\(\lambda_1\)</span> at any point
+on <span class="math inline">\(\Sigma\)</span>, this function outputs
+the zero-point width at that point. The electron merely happens to be
+located at a particular coordinate position on <span
+class="math inline">\(\Sigma\)</span> — the formula itself is a
+geometric invariant of the parameter space, independent of the choice of
+any particular coordinate point.</p>
+<p>The derivation chain relies only on the symplectic geometric
+structure induced by the Born Rule (Theorem 1.4.3.01) and the
+second-order spectral structure at the fixed point of the Birkhoff
+mixing matrix, without passing through any physical mass or coupling
+constant.</p>
+<hr />
+<h2 id="contents">Contents</h2>
+<p>§1 Sector Parameter Space as a Berry=2π Entity 　1.1 Definition of
+the Parameter Space 　1.2 Symplectic Structure of Σ — Proof of Berry=2π
+　1.3 Local Coordinates on Σ</p>
+<p>§2 Definition of δ₀ — Pure Calculus, Independent of Any Physical
+Quantity</p>
+<p>§3 Soft Mode Zero-Point Width — Pure Symplectic Geometry 　3.1
+Second-Order Structure at the Birkhoff Fixed Point and the Soft Mode
+　3.2 Harmonic Oscillator Zero-Point Width 　3.3 Projection of the Soft
+Mode in the <span
+class="math inline">\(\mathcal{I}\)</span>-Direction</p>
+<p>§4 Theorem 49: Spectral Geometry Formula for δ₀^single</p>
+<p>§5 Corollaries</p>
+<p>§6 Relation to Cataloged Theorems</p>
+<hr />
+<h2 id="sector-parameter-space-as-a-berry2π-entity">§1 Sector Parameter
+Space as a Berry=2π Entity</h2>
+<h3 id="definition-of-the-parameter-space">1.1 Definition of the
+Parameter Space</h3>
+<p>From the Born Rule (Theorem 1.4.3.01) and the sector structure
+(Theorem 1.1.5.01–15), the coding weights of the three sectors <span
+class="math inline">\(\mathcal{M}, \mathcal{C}, \mathcal{I}\)</span>
+satisfy the normalization constraint:</p>
+<p><span
+class="math display">\[\sigma_\mathcal{M}\sigma_\mathcal{C}\sigma_\mathcal{I}
+= 1\]</span></p>
+<p>Under the parameterization of the Birkhoff mixing matrix (Theorem
+2.1.4.01), this is equivalently expressed in angular parameters:</p>
+<p><span class="math display">\[\theta_\mathcal{M} + \theta_\mathcal{C}
++ \theta_\mathcal{I} = \frac{\pi}{2}\]</span></p>
+<p>Define the sector parameter space <span
+class="math inline">\(\Sigma\)</span> as the 2-dimensional submanifold
+satisfying this condition, embedded in the three-sector angular
+parameter space <span class="math inline">\((\theta_\mathcal{M},
+\theta_\mathcal{C}, \theta_\mathcal{I}) \in (0, \pi/2)^3\)</span>.</p>
+<h3 id="symplectic-structure-of-σ-proof-of-berry2π">1.2 Symplectic
+Structure of Σ — Proof of Berry=2π</h3>
+<p>On <span class="math inline">\(\Sigma\)</span>, from the algebraic
+structure of the Born Rule (Theorem 1.4.3.01), there exists a symplectic
+form:</p>
+<p><span class="math display">\[\omega =
+\left(\frac{1}{\sin^2\theta_\mathcal{M}} +
+\frac{1}{\sin^2\theta_\mathcal{C}} +
+\frac{1}{\sin^2\theta_\mathcal{I}}\right) \mathrm{d}\theta_\mathcal{M}
+\wedge \mathrm{d}\theta_\mathcal{C}\]</span></p>
+<p><span class="math inline">\((\Sigma, \omega)\)</span> is a symplectic
+manifold.</p>
+<p><strong>Berry phase of Σ as a global geometric entity</strong>:
+Consider a closed loop <span class="math inline">\(\gamma\)</span> on
+<span class="math inline">\(\Sigma\)</span> encircling <span
+class="math inline">\(\theta_\mathcal{I}\)</span> from <span
+class="math inline">\(0 \to \pi/2\)</span> (traversing the complete
+domain of definition of the <span
+class="math inline">\(\mathcal{I}\)</span>-sector). The Berry phase
+accumulated by <span class="math inline">\(\gamma\)</span> on the spinor
+bundle is <span class="math inline">\(2\pi\)</span> — because <span
+class="math inline">\(\gamma\)</span> encloses the topologically
+nontrivial region of the <span
+class="math inline">\(\mathcal{I}\)</span>-sector, the loop passes
+through two singularities, and its Gauss-Bonnet integral is <span
+class="math inline">\(2\pi\)</span>.</p>
+<p><strong>Conclusion</strong>: <span
+class="math inline">\(\Sigma\)</span> is a global geometric entity with
+Berry <span class="math inline">\(= 2\pi\)</span>. This is consistent
+with the Completeness Criterion — the Bott periodicity <span
+class="math inline">\(\delta^8 = 2\pi\)</span> Berry phase projected
+onto the sector parameter space.</p>
+<h3 id="local-coordinates-on-σ">1.3 Local Coordinates on Σ</h3>
+<p>Introduce section coordinates:</p>
+<p><span class="math display">\[\xi = \theta_\mathcal{I} -
+\theta_\mathcal{I}^0, \quad \eta = (\theta_\mathcal{I} +
+\theta_\mathcal{C}) - (\theta_\mathcal{I}^0 +
+\theta_\mathcal{C}^0)\]</span></p>
+<p>where <span class="math inline">\(\theta_i^0 = \pi/6 = 30°\)</span>
+is the symmetric reference point. Inverse solution:</p>
+<p><span class="math display">\[\theta_\mathcal{I} =
+\theta_\mathcal{I}^0 + \xi, \quad \theta_\mathcal{C} =
+\theta_\mathcal{C}^0 + \eta - \xi, \quad \theta_\mathcal{M} =
+\theta_\mathcal{M}^0 - \eta\]</span></p>
+<hr />
+<h2
+id="definition-of-δ₀-pure-calculus-independent-of-any-physical-quantity">§2
+Definition of δ₀ — Pure Calculus, Independent of Any Physical
+Quantity</h2>
+<h3 id="definition">Definition</h3>
+<p>On the sector parameter space <span
+class="math inline">\(\Sigma\)</span>, at any point <span
+class="math inline">\((\theta_\mathcal{M}, \theta_\mathcal{C},
+\theta_\mathcal{I})\)</span>, the <strong>projection narrowing</strong>
+<span class="math inline">\(\delta_0\)</span> is defined as the relative
+change of the <span class="math inline">\(\mathcal{I}\)</span>-sector
+projection <span
+class="math inline">\(\sin\theta_\mathcal{I}\)</span>:</p>
+<p><span class="math display">\[\delta_0 \equiv
+\frac{|\Delta\sin\theta_\mathcal{I}|}{\sin\theta_\mathcal{I}}\]</span></p>
+<h3 id="lemma-2.5.2.01-small-fluctuation-approximation">Lemma 2.5.2.01
+(Small Fluctuation Approximation)</h3>
+<p>For small fluctuations <span
+class="math inline">\(\delta\theta_\mathcal{I} \ll 1\)</span>:</p>
+<p><span class="math display">\[\delta_0 = |\delta\theta_\mathcal{I}|
+\cdot \cot\theta_\mathcal{I} +
+O(\delta\theta_\mathcal{I}^2)\]</span></p>
+<p><strong>Proof</strong> (pure calculus, no physical assumptions
+needed):</p>
+<p><span class="math display">\[\sin(\theta_\mathcal{I} +
+\delta\theta_\mathcal{I}) =
+\sin\theta_\mathcal{I}\cos\delta\theta_\mathcal{I} +
+\cos\theta_\mathcal{I}\sin\delta\theta_\mathcal{I}\]</span></p>
+<p><span class="math inline">\(\cos\delta\theta_\mathcal{I} \approx
+1\)</span>, <span class="math inline">\(\sin\delta\theta_\mathcal{I}
+\approx \delta\theta_\mathcal{I}\)</span>:</p>
+<p><span class="math display">\[\Delta\sin\theta_\mathcal{I} \approx
+\cos\theta_\mathcal{I} \cdot \delta\theta_\mathcal{I}\]</span></p>
+<p><span class="math display">\[\delta_0 = \frac{|\cos\theta_\mathcal{I}
+\cdot \delta\theta_\mathcal{I}|}{\sin\theta_\mathcal{I}} =
+|\delta\theta_\mathcal{I}| \cdot \cot\theta_\mathcal{I} \quad
+\square\]</span></p>
+<p><strong>Key point</strong>: <span
+class="math inline">\(\cot\theta_\mathcal{I}\)</span> appears in the
+formula solely because the definition of <span
+class="math inline">\(\delta_0\)</span> chooses <span
+class="math inline">\(\sin\theta_\mathcal{I}\)</span> as the projected
+quantity. This is a parameterization choice of the <span
+class="math inline">\(\mathcal{I}\)</span>-sector coordinate on <span
+class="math inline">\(\Sigma\)</span> — a purely geometric convention,
+independent of any fermion.</p>
+<hr />
+<h2 id="soft-mode-zero-point-width-pure-symplectic-geometry">§3 Soft
+Mode Zero-Point Width — Pure Symplectic Geometry</h2>
+<h3
+id="second-order-structure-at-the-birkhoff-fixed-point-and-the-soft-mode">3.1
+Second-Order Structure at the Birkhoff Fixed Point and the Soft
+Mode</h3>
+<p>At the symmetric reference point <span class="math inline">\((30°,
+30°, 30°)\)</span> of <span class="math inline">\(\Sigma\)</span>, the
+constrained second-order structure matrix of the algebraic action <span
+class="math inline">\(S(\sigma)\)</span> (Theorem 1.6.4.01) is:</p>
+<p><span class="math display">\[H_{(\xi,\eta)} = \begin{pmatrix}
+H_{\xi\xi} &amp; H_{\xi\eta} \\ H_{\eta\xi} &amp; H_{\eta\eta}
+\end{pmatrix}\]</span></p>
+<p>Eigenvalues: <strong>soft mode</strong> <span
+class="math inline">\(\lambda_1\)</span> (<span
+class="math inline">\(\eta\)</span> direction), <strong>hard
+mode</strong> <span class="math inline">\(\lambda_2\)</span> (<span
+class="math inline">\(\xi\)</span> direction).</p>
+<p><span class="math display">\[\lambda_2 / \lambda_1 \approx 150 = k_0
+\times \Lambda \times (\Delta\Theta)^2 = 2 \times 3 \times
+5^2\]</span></p>
+<p>This ratio is the geometric curvature asymmetry of <span
+class="math inline">\(\Sigma\)</span> — a purely geometric quantity,
+uniquely determined by the second-order derivative structure of the
+algebraic action at the fixed point. It is consistent with the <span
+class="math inline">\(\Lambda_H\)</span> structure identity (2.3 §2.7),
+given by the product of the three structure constants <span
+class="math inline">\(k_0=2\)</span>, <span
+class="math inline">\(\Lambda=3\)</span>, <span
+class="math inline">\(\Delta\Theta=5\)</span>.</p>
+<h3 id="harmonic-oscillator-zero-point-width">3.2 Harmonic Oscillator
+Zero-Point Width</h3>
+<p>In the Darboux neighborhood of the fixed point, the Hamiltonian in
+the soft mode direction <span class="math inline">\(\eta\)</span>
+is:</p>
+<p><span class="math display">\[H_{\text{soft}} = \frac{1}{2}\lambda_1
+\cdot \eta^2\]</span></p>
+<p>In geometric units <span class="math inline">\(\hbar=1\)</span>, the
+harmonic oscillator ground state wavefunction:</p>
+<p><span class="math display">\[\psi_0(\eta) =
+\left(\frac{\sqrt{\lambda_1}}{\pi}\right)^{1/4}
+\exp\left(-\frac{\sqrt{\lambda_1}}{2}\eta^2\right)\]</span></p>
+<p>Zero-point width (root-mean-square):</p>
+<p><span class="math display">\[\langle\eta^2\rangle_0 =
+\frac{1}{2\sqrt{\lambda_1}}\]</span></p>
+<p><span class="math display">\[\sigma_\eta =
+\sqrt{\langle\eta^2\rangle_0} =
+\frac{1}{\sqrt{2}\,\lambda_1^{1/4}}\]</span></p>
+<p><strong>This is a purely symplectic geometric quantity on <span
+class="math inline">\(\Sigma\)</span></strong> — depending only on the
+soft mode eigenvalue <span class="math inline">\(\lambda_1\)</span> and
+Darboux linearization (the local coordinate transformation uniquely
+guaranteed by the symplectic structure).</p>
+<h3 id="projection-of-the-soft-mode-in-the-mathcali-direction">3.3
+Projection of the Soft Mode in the <span
+class="math inline">\(\mathcal{I}\)</span>-Direction</h3>
+<p>The soft mode coordinate <span class="math inline">\(\eta =
+(\theta_\mathcal{I} + \theta_\mathcal{C}) - (\theta_\mathcal{I}^0 +
+\theta_\mathcal{C}^0)\)</span>. Near the symmetric reference point, the
+soft mode eigenvector has components <span
+class="math inline">\((1/\sqrt{2}, 1/\sqrt{2})\)</span> in the <span
+class="math inline">\((\theta_\mathcal{I}, \theta_\mathcal{C})\)</span>
+plane (symmetry).</p>
+<p>The amplitude of the soft mode zero-point fluctuation projected onto
+the <span class="math inline">\(\theta_\mathcal{I}\)</span>
+direction:</p>
+<p><span class="math display">\[\sigma_{\theta_\mathcal{I}} =
+\sigma_\eta \cdot |v_\mathcal{I}| =
+\frac{|v_\mathcal{I}|}{\sqrt{2}\,\lambda_1^{1/4}}\]</span></p>
+<p>where <span class="math inline">\(|v_\mathcal{I}|\)</span> is the
+projection component of the soft mode eigenvector in the <span
+class="math inline">\(\theta_\mathcal{I}\)</span> direction. At the
+symmetric reference point, <span class="math inline">\(|v_\mathcal{I}| =
+1/\sqrt{2}\)</span>.</p>
+<hr />
+<h2 id="theorem-49-spectral-geometry-formula-for-δ₀single">§4 Theorem
+49: Spectral Geometry Formula for δ₀^single</h2>
+<h3 id="statement">Statement</h3>
+<p><strong>Theorem 2.5.4.01 (Spectral Geometry Formula for the
+Single-Chain Zero-Point Width).</strong> On the sector parameter space
+<span class="math inline">\(\Sigma\)</span>, at a point with <span
+class="math inline">\(\mathcal{I}\)</span>-sector angular coordinate
+<span class="math inline">\(\theta_\mathcal{I}\)</span> and soft mode
+eigenvalue <span class="math inline">\(\lambda_1\)</span>, the
+single-chain zero-point width is:</p>
+<p><span
+class="math display">\[\delta_0^{\text{single}}(\theta_\mathcal{I},
+\lambda_1) = \frac{|v_\mathcal{I}|}{\sqrt{2}\,\lambda_1^{1/4}} \cdot
+\cot\theta_\mathcal{I}.\]</span></p>
+<h3 id="derivation-chain-each-step-supported-by-a-theorem">Derivation
+Chain (each step supported by a theorem)</h3>
+<ol type="1">
+<li><span class="math inline">\(\delta_0 = |\delta\theta_\mathcal{I}|
+\cdot \cot\theta_\mathcal{I}\)</span> (Lemma 2.5.2.01, small fluctuation
+approximation)</li>
+<li><span class="math inline">\(|\delta\theta_\mathcal{I}| =
+\sigma_{\theta_\mathcal{I}}\)</span> (the quantum fluctuation in <span
+class="math inline">\(\theta_\mathcal{I}\)</span> is the projection of
+the soft mode zero-point width)</li>
+<li><span class="math inline">\(\sigma_{\theta_\mathcal{I}} =
+\sigma_\eta \cdot |v_\mathcal{I}|\)</span> (projection of the soft mode
+onto the <span
+class="math inline">\(\mathcal{I}\)</span>-direction)</li>
+<li><span class="math inline">\(\sigma_\eta =
+1/(\sqrt{2}\,\lambda_1^{1/4})\)</span> (harmonic oscillator zero-point
+width, §3.2)</li>
+<li>Therefore <span class="math inline">\(\delta_0^{\text{single}} =
+(|v_\mathcal{I}|/(\sqrt{2}\,\lambda_1^{1/4})) \cdot
+\cot\theta_\mathcal{I}\)</span>.</li>
+</ol>
+<h3 id="remarks">Remarks</h3>
+<p>The formula involves only geometric quantities: <span
+class="math inline">\(\theta_\mathcal{I}\)</span> (coordinate on <span
+class="math inline">\(\Sigma\)</span>), <span
+class="math inline">\(\lambda_1\)</span> (soft mode eigenvalue), <span
+class="math inline">\(|v_\mathcal{I}|\)</span> (eigenvector projection).
+No physical mass, coupling constant, or fermion identity appears
+anywhere in the derivation.</p>
+<hr />
+<h2 id="corollaries">§5 Corollaries</h2>
+<h3 id="corollary-5.1-value-at-the-symmetric-reference-point">Corollary
+5.1 (Value at the Symmetric Reference Point)</h3>
+<p>At the symmetric reference point <span
+class="math inline">\((\theta_\mathcal{I}^0 = \pi/6)\)</span>:</p>
+<p><span class="math display">\[\delta_0^{\text{single}}(\pi/6,
+\lambda_1^0) = \frac{1}{2\lambda_1^{1/4}} \cdot \sqrt{3}.\]</span></p>
+<h3 id="corollary-5.2-form-at-a-general-point">Corollary 5.2 (Form at a
+General Point)</h3>
+<p>At a general point on <span
+class="math inline">\(\Sigma\)</span>:</p>
+<p><span
+class="math display">\[\delta_0^{\text{single}}(\theta_\mathcal{I},
+\lambda_1) = \delta_0^{\text{single}}(\pi/6, \lambda_1^0) \cdot
+\frac{\cot\theta_\mathcal{I}}{\cot(\pi/6)} \cdot
+\left(\frac{\lambda_1^0}{\lambda_1}\right)^{1/4}.\]</span></p>
+<h3
+id="corollary-5.3-physical-instantiation-for-cross-validation-only">Corollary
+5.3 (Physical Instantiation — for Cross-Validation Only)</h3>
+<p>When the <span class="math inline">\(\mathcal{I}\)</span>-sector
+coordinate is evaluated at the electron’s position, the formula
+reproduces the experimentally measured <span
+class="math inline">\(\delta_0^{\text{single}}\)</span> for the
+electron. This is a cross-validation, not a derivation — the formula
+itself is a geometric invariant of <span
+class="math inline">\(\Sigma\)</span>, and the electron is merely a
+particular coordinate point on <span
+class="math inline">\(\Sigma\)</span>.</p>
+<hr />
+<h2 id="relation-to-cataloged-theorems">§6 Relation to Cataloged
+Theorems</h2>
+<h3 id="berry2π-entity-that-this-theorem-attaches-to">Berry=2π Entity
+That This Theorem “Attaches” To</h3>
+<p>This theorem attaches to the sector parameter space <span
+class="math inline">\(\Sigma\)</span> — a Berry <span
+class="math inline">\(= 2\pi\)</span> global geometric entity. The
+zero-point width <span
+class="math inline">\(\delta_0^{\text{single}}\)</span> is a local
+scalar function on this entity.</p>
+<h3 id="interlock-with-cataloged-theorems">Interlock with Cataloged
+Theorems</h3>
+<p>This theorem interlocks with: - Theorem 1.4.3.01 (Born Rule —
+provides the symplectic structure on <span
+class="math inline">\(\Sigma\)</span>) - Theorem 1.6.4.01 (Algebraic
+Action — provides the Hessian structure at the fixed point) - Theorem
+2.1.4.01 (Birkhoff Mixing Matrix — provides the angular
+parameterization) - Theorem 2.3.2.04 (<span
+class="math inline">\(\Lambda_H\)</span> Structure Identity — provides
+<span class="math inline">\(\lambda_2/\lambda_1 = 150\)</span>)</p>
+<hr />
+<h2 id="section">§7</h2>
+<p>…</p>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 07:53:34</p>
+  </footer>
+</div>
+</body>
+</html>

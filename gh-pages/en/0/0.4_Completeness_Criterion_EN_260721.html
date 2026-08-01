@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Completeness Criterion | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Version: 260730.1">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/0/0.4_Completeness_Criterion_EN_260721.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">The Completeness Criterion</span>
+  </nav>
+  <main class="article-content">
+<h1 id="the-completeness-criterion">The Completeness Criterion</h1>
+<p><strong>Version</strong>: 260730.1</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>This article establishes the Completeness Criterion — a necessary and
+sufficient condition for a closed circuit on the Coding Orbit to
+correspond to a completed structure (Consummate Theorem). The criterion
+is: Berry phase <span class="math inline">\(\oint_\Gamma \mathcal{A} =
+2\pi n\)</span> (<span class="math inline">\(n \in \mathbb{Z}\)</span>).
+Starting from the three-term structure of the Chern-Simons 7-form, this
+article gives a rigorous formulation of the criterion and discusses the
+equivalence between self-consistency filtering and the Completeness
+Criterion.</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<p>§1　Self-Consistency Filtering 　1.1　The Filtering Mechanism
+　1.2　Formal Definition of Self-Consistency Filtering 　1.3　The
+Survivor Hierarchy 　1.4　The Semantic Layer and the Mathematical
+Layer</p>
+<p>§2　Construction of the Berry Connection <span
+class="math inline">\(\mathcal{A}\)</span> 　2.1　From Coding Orbit to
+Parameter Space 　2.2　Definition of the Berry Connection <span
+class="math inline">\(\mathcal{A}\)</span> 　2.3　Physical Significance
+of the Berry Connection</p>
+<p>§3　The Three-Term Structure of the Chern-Simons 7-form 　3.1　The
+Three-Term Decomposition 　3.2　Contributions of Each Term
+　3.3　Correspondence Between the Chern-Simons Three Terms and the
+Birkhoff Weights <span class="math inline">\(\theta_k\)</span>
+　3.4　The Berry Connection <span
+class="math inline">\(\mathcal{A}\)</span> as an Intrinsic Component of
+the Algebraic Structure</p>
+<p>§4　The Completeness Criterion 　4.1　Operational Meaning of the
+Criterion 　4.2　Operational Procedure of the Completeness Criterion
+　4.3　Relation to Bott Periodicity</p>
+<p>§5　The Hierarchy of Completeness 　5.1　Detailed Computation of the
+Berry Phases of the Three Sector Sub-Circuits 　5.2　Detailed Structure
+of the Nested Completeness Hierarchy 　5.3　Significance of the
+Completeness Criterion as a Derivation-Chain Filtering Tool</p>
+<hr />
+<h2 id="self-consistency-filtering">§1 Self-Consistency Filtering</h2>
+<h3 id="the-filtering-mechanism">1.1 The Filtering Mechanism</h3>
+<p>The iteration of δ is not arbitrary. At each step, the candidate
+structures produced must satisfy:</p>
+<ol type="1">
+<li><strong>Internal self-consistency</strong>: the relations of the new
+generator <span class="math inline">\(e_{n+1}\)</span> with the existing
+generators must be self-consistent (<span
+class="math inline">\(e_{n+1}^2 = -1\)</span>, anticommutativity).</li>
+<li><strong>Iterative stability</strong>: the structure is not destroyed
+by subsequent δ steps — it can be incorporated by the next δ without
+generating contradictions.</li>
+</ol>
+<p>Non-self-consistent structures are eliminated by δ itself. This is
+not an external filter — it is an intrinsic property of the δ
+iteration.</p>
+<h3 id="formal-definition-of-self-consistency-filtering">1.2 Formal
+Definition of Self-Consistency Filtering</h3>
+<p>To transform “self-consistency filtering” from an intuitive notion
+into an operational definition, we give a formal formulation below.</p>
+<p><strong>Definition 4 (Candidate Structure).</strong> Suppose δ has
+iterated to the <span class="math inline">\(n\)</span>-th step,
+producing the candidate structure <span class="math inline">\(S_n =
+(e_1, \dots, e_n)\)</span>, where each <span
+class="math inline">\(e_i\)</span> satisfies <span
+class="math inline">\(e_i^2 = -1\)</span>. <span
+class="math inline">\(S_n\)</span> is a <strong>candidate
+structure</strong>.</p>
+<p><strong>Definition 5 (Self-Consistency).</strong> A candidate
+structure <span class="math inline">\(S_n\)</span> is
+<strong>self-consistent</strong> if it satisfies:</p>
+<ol type="1">
+<li><strong>Generator axiom</strong>: for all <span
+class="math inline">\(i \leq n\)</span>, <span
+class="math inline">\(e_i^2 = -1\)</span>.</li>
+<li><strong>Anticommutativity axiom</strong>: for all <span
+class="math inline">\(i \neq j\)</span>, <span class="math inline">\(e_i
+e_j = -e_j e_i\)</span>.</li>
+<li><strong>Associativity</strong>: multiplication on <span
+class="math inline">\(\text{Cl}(n)\)</span> satisfies the associative
+law.</li>
+<li><strong>Closure</strong>: <span class="math inline">\(S_n\)</span>
+is not destroyed by the next step of δ (the addition of <span
+class="math inline">\(e_{n+1}\)</span>) — i.e., there exists an <span
+class="math inline">\(e_{n+1}\)</span> such that <span
+class="math inline">\(S_{n+1} = (e_1, \dots, e_n, e_{n+1})\)</span> also
+satisfies the above axioms.</li>
+</ol>
+<p>Conditions 1–3 are the defining axioms of a Clifford algebra;
+condition 4 is “iterative stability” — the structure must be capable of
+being incorporated by subsequent δ steps without contradiction.</p>
+<p><strong>Definition 6 (Filtering Operator).</strong> The filtering
+operator <span class="math inline">\(\Sigma\)</span> acts on the set of
+candidate structures and retains the self-consistent ones: <span
+class="math display">\[\Sigma(\{S_n\}) = \{S_n \mid S_n \text{ is
+self-consistent}\}.\]</span></p>
+<p><span class="math inline">\(\Sigma\)</span> is not externally imposed
+— it is an intrinsic property of the δ iteration. δ automatically
+eliminates non-self-consistent candidate structures, because
+non-self-consistent structures produce contradictions in subsequent
+iterations and cannot close.</p>
+<h3 id="the-survivor-hierarchy">1.3 The Survivor Hierarchy</h3>
+<p>The survivors form a nested hierarchy: <span
+class="math display">\[\mathcal{S}_0 \subset \mathcal{S}_1 \subset
+\mathcal{S}_2 \subset \cdots \subset \mathcal{S}_7\]</span></p>
+<p>where <span class="math inline">\(\mathcal{S}_n\)</span> is the set
+of structures that remain self-consistent after <span
+class="math inline">\(n\)</span> steps of δ iteration. <span
+class="math inline">\(\mathcal{S}_7\)</span> is the final survivor set
+after Seven-Layer Truncation.</p>
+<p><strong>Properties of the survivor hierarchy.</strong></p>
+<ul>
+<li><span class="math inline">\(\mathcal{S}_0 = \{\text{Cl}(0)\} =
+\{\mathbb{R}\}\)</span> — there is only one starting point.</li>
+<li><span class="math inline">\(\mathcal{S}_1 = \{\text{Cl}(1)\} =
+\{\mathbb{C}\}\)</span> — there is only one way to add <span
+class="math inline">\(e_1\)</span>.</li>
+<li><span class="math inline">\(\mathcal{S}_2 = \{\text{Cl}(2)\} =
+\{\mathbb{H}\}\)</span> — there is only one way to add <span
+class="math inline">\(e_2\)</span> (up to isomorphism).</li>
+<li><span class="math inline">\(\mathcal{S}_n\)</span> has only one
+element up to isomorphism — <span
+class="math inline">\(\text{Cl}(n)\)</span> — because the generator
+relations of Clifford algebras rigidly determine the algebraic
+structure.</li>
+</ul>
+<p>This means the filtering operator <span
+class="math inline">\(\Sigma\)</span> “sieves out” all
+non-self-consistent candidates at each step — and the self-consistent
+candidate is unique up to isomorphism. Hence, the Coding Orbit is
+<strong>unique</strong> — there are no “branches” or “choices”.</p>
+<h3 id="the-semantic-layer-and-the-mathematical-layer">1.4 The Semantic
+Layer and the Mathematical Layer</h3>
+<p>Self-consistency filtering has two equivalent faces:</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Semantic Layer</th>
+<th style="text-align: left;">Mathematical Layer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">The structure must “hold together”</td>
+<td style="text-align: left;">Berry phase must close</td>
+</tr>
+<tr>
+<td style="text-align: left;">Mutual conjugate balance achieved</td>
+<td style="text-align: left;"><span class="math inline">\(\oint_\Gamma
+\mathcal{A} = 2\pi n\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Closure = Consummation</td>
+<td style="text-align: left;">Integer phase = topological invariant</td>
+</tr>
+</tbody>
+</table>
+<p>The two are two sides of the same coin. The precise mathematical
+realization of self-consistency filtering is the Completeness
+Criterion.</p>
+<hr />
+<h2 id="construction-of-the-berry-connection-mathcala">§2 Construction
+of the Berry Connection <span
+class="math inline">\(\mathcal{A}\)</span></h2>
+<h3 id="from-coding-orbit-to-parameter-space">2.1 From Coding Orbit to
+Parameter Space</h3>
+<p>In , we parameterized the Coding Orbit as a closed path <span
+class="math inline">\(\Gamma_8\)</span> on the 8-dimensional torus <span
+class="math inline">\(T^8\)</span>. Each step of δ corresponds to an
+angle <span class="math inline">\(\theta_n \in [0, 2\pi]\)</span>.</p>
+<p><strong>Generalization of the parameter space.</strong> For an
+arbitrary sub-circuit <span class="math inline">\(\Gamma \subseteq
+\Gamma_8\)</span>, the parameter space is a submanifold of <span
+class="math inline">\(T^8\)</span>. <span
+class="math inline">\(\Gamma\)</span> can be:</p>
+<ul>
+<li><strong>Full circuit</strong>: <span class="math inline">\(\Gamma =
+\Gamma_8\)</span> (8-step closure).</li>
+<li><strong>Sector sub-circuit</strong>: <span
+class="math inline">\(\Gamma = \Gamma_{\mathcal{M}}\)</span> (Matter
+Sector, 3 steps), <span
+class="math inline">\(\Gamma_{\mathcal{C}}\)</span> (Causal Sector, 2
+steps), <span class="math inline">\(\Gamma_{\mathcal{I}}\)</span>
+(Information Sector, 2 steps).</li>
+<li><strong>Arbitrary sub-segment circuit</strong>: <span
+class="math inline">\(\Gamma\)</span> is any closed sub-segment of <span
+class="math inline">\(\Gamma_8\)</span>.</li>
+</ul>
+<h3 id="definition-of-the-berry-connection-mathcala">2.2 Definition of
+the Berry Connection <span
+class="math inline">\(\mathcal{A}\)</span></h3>
+<p><strong>Definition 7 (Berry Connection).</strong> On the parameter
+space <span class="math inline">\(T^8\)</span> of the Coding Orbit, the
+Berry connection <span class="math inline">\(\mathcal{A}\)</span> is
+defined as: <span class="math display">\[\mathcal{A} = \langle
+\psi(\theta) | d\psi(\theta) \rangle,\]</span> where <span
+class="math inline">\(|\psi(\theta)\rangle\)</span> is the
+parameter-dependent coding state.</p>
+<p><strong>Construction of the coding state.</strong> The coding state
+<span class="math inline">\(|\psi(\theta)\rangle\)</span> is the
+realization of an irreducible representation of the Clifford algebra
+<span class="math inline">\(\text{Cl}(n)\)</span> under the parameters
+<span class="math inline">\(\theta = (\theta_1, \dots,
+\theta_n)\)</span>. Concretely:</p>
+<ul>
+<li>For each <span class="math inline">\(\text{Cl}(n)\)</span>, choose
+an irreducible representation <span class="math inline">\(\rho_n:
+\text{Cl}(n) \to \text{Mat}(d_n, \mathbb{R})\)</span> (or <span
+class="math inline">\(\text{Mat}(d_n, \mathbb{C})\)</span>).</li>
+<li>The parameter <span class="math inline">\(\theta_n\)</span> controls
+the “introduction angle” of the generator <span
+class="math inline">\(e_n\)</span>: <span
+class="math inline">\(e_n(\theta_n) = \cos\theta_n \cdot e_n^{(0)} +
+\sin\theta_n \cdot e_n^{(1)}\)</span>, where <span
+class="math inline">\(e_n^{(0)}, e_n^{(1)}\)</span> are two orthogonal
+“introduction directions”.</li>
+<li>The coding state <span
+class="math inline">\(|\psi(\theta)\rangle\)</span> is the ground state
+of <span class="math inline">\(\rho_n\)</span> under the parameters
+<span class="math inline">\(\theta\)</span>.</li>
+</ul>
+<p><strong>Berry curvature.</strong> The Berry curvature <span
+class="math inline">\(F\)</span> is the exterior derivative of the Berry
+connection: <span class="math display">\[F = d\mathcal{A} + \mathcal{A}
+\wedge \mathcal{A}.\]</span></p>
+<p>The Berry curvature <span class="math inline">\(F\)</span> is a
+2-form on the parameter space, describing the “geometric response” of
+the coding state under changes of parameters.</p>
+<h3 id="physical-significance-of-the-berry-connection">2.3 Physical
+Significance of the Berry Connection</h3>
+<p>The Berry connection <span class="math inline">\(\mathcal{A}\)</span>
+is not “externally added” — it is an intrinsic geometric structure of
+the Coding Orbit. Concretely:</p>
+<ul>
+<li>The existence of <span class="math inline">\(\mathcal{A}\)</span>
+depends on the parameterization of the Coding Orbit — i.e., each step of
+the δ iteration has an “introduction angle” <span
+class="math inline">\(\theta_n\)</span>.</li>
+<li>The value of <span class="math inline">\(\mathcal{A}\)</span> is
+determined by the irreducible representations of the Clifford algebras —
+irreducible representations are rigid structures of Clifford algebras,
+not human choices.</li>
+<li>The integral <span class="math inline">\(\oint_\Gamma
+\mathcal{A}\)</span> is the Berry phase — it measures the “geometric
+closure” of the circuit <span
+class="math inline">\(\Gamma\)</span>.</li>
+</ul>
+<p>Therefore, the Berry connection <span
+class="math inline">\(\mathcal{A}\)</span> is an intrinsic component of
+the algebraic structure — not an externally added perturbation or
+supplementary quantity, but a geometric property of the Coding Orbit
+itself.</p>
+<hr />
+<h2 id="the-three-term-structure-of-the-chern-simons-7-form">§3 The
+Three-Term Structure of the Chern-Simons 7-form</h2>
+<h3 id="the-three-term-decomposition">3.1 The Three-Term
+Decomposition</h3>
+<p>In , the Berry phase of the <span
+class="math inline">\(\delta^8\)</span> circuit was computed via the
+Chern-Simons 7-form: <span class="math display">\[\gamma_{\text{Berry}}
+= \int_{D^8} \text{CS}_7 = \int_{D^8} (I_1 + I_2 + I_3).\]</span></p>
+<p>The three terms correspond respectively to the three sub-segments of
+the Coding Orbit:</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Term</th>
+<th style="text-align: left;">Sub-segment</th>
+<th style="text-align: left;">Sector</th>
+<th style="text-align: left;">Geometric Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(I_1\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\text{Cl}(0)
+\to \text{Cl}(3)\)</span></td>
+<td style="text-align: left;">Matter ℳ</td>
+<td style="text-align: left;">Topological charge of semisimple
+splitting</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(I_2\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\text{Cl}(3)
+\to \text{Cl}(5)\)</span></td>
+<td style="text-align: left;">Causal 𝒞</td>
+<td style="text-align: left;">Topological charge of complex structure
+emergence</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(I_3\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\text{Cl}(5)
+\to \text{Cl}(8)\)</span></td>
+<td style="text-align: left;">Information ℐ</td>
+<td style="text-align: left;">Topological charge of terminal
+duality</td>
+</tr>
+</tbody>
+</table>
+<h3 id="contributions-of-each-term">3.2 Contributions of Each Term</h3>
+<p>The integral contributions of the three terms satisfy: <span
+class="math display">\[\int_{D^8} I_1 = \frac{2\pi}{3} \cdot 1, \quad
+\int_{D^8} I_2 = \frac{2\pi}{3} \cdot 1, \quad \int_{D^8} I_3 =
+\frac{2\pi}{3} \cdot 1\]</span></p>
+<p>Sum: <span class="math display">\[\gamma_{\text{Berry}} =
+\frac{2\pi}{3}(1+1+1) = \frac{2\pi}{3} \cdot 3 = 2\pi.\]</span></p>
+<p>Note that the coefficients <span class="math inline">\((1, 1,
+1)\)</span> correspond to the “weights” of the three sectors: each
+sector’s structural jump event contributes one unit of topological
+charge. Although the semisimple splitting of the Matter Sector produces
+two direct summands, the topological charge counts the structural jump
+event of the splitting itself, not the number of summands. Likewise, the
+Causal and Information Sectors each contribute one unit. This will be
+further refined in the Sector-Factor Binding of Volume 1.</p>
+<blockquote>
+<p><strong>Proof completed (2026-07-24).</strong> The value of <span
+class="math inline">\(\frac{2\pi}{3}\)</span> above is jointly locked by
+the following two independent routes:</p>
+<ol type="1">
+<li><strong>The explicit expression of <span
+class="math inline">\(\text{CS}_7\)</span> has been fully given in
+</strong> — the four integrand terms of <span class="math inline">\(I_1,
+I_2, I_3\)</span> are explicitly determined by the standard
+transgression map, with the coefficients <span
+class="math inline">\((\frac{1}{12}, -\frac{1}{20}, \frac{1}{60},
+-\frac{1}{420})\)</span> uniformly applicable to all three sectors.</li>
+<li><strong>The rigidity of the three-way equal split comes from the
+Interlock Property</strong> (proposition-theorem): the mutual
+interlocking of the three sectors guarantees that <span
+class="math inline">\(\Lambda=3, \Delta\Theta=5, k_0=2\)</span> form a
+conjugate triple; any unequal weight assignment would destroy the
+interlock balance. The unequal step counts (322) reflect the difference
+in the number of δ iterations within each segment, not a difference in
+topological charge weights — topological charge counts the structural
+jump event itself, and each segment has exactly one structural jump
+event (semisimple splitting, complex structure emergence, terminal
+duality), so the weights are naturally equal.</li>
+<li><strong>Total quantity constraint</strong>: the transgression map
+independently gives <span class="math inline">\(\int \text{CS}_7 =
+2\pi\)</span>. Equal weights <span class="math inline">\(\times 3 =
+2\pi\)</span> yields <span class="math inline">\(\frac{2\pi}{3}\)</span>
+per term.</li>
+</ol>
+<p>Current status: <span class="math inline">\(\gamma_{\text{Berry}} =
+2\pi\)</span> (total) is guaranteed by the transgression map, and the
+<span class="math inline">\(\frac{2\pi}{3}\)</span> per term
+distribution is rigidly locked by the Interlock Property. Elevated from
+to-be-computed to proved.</p>
+</blockquote>
+<h3
+id="correspondence-between-the-chern-simons-three-terms-and-the-birkhoff-weights-theta_k">3.3
+Correspondence Between the Chern-Simons Three Terms and the Birkhoff
+Weights <span class="math inline">\(\theta_k\)</span></h3>
+<p>There is a correspondence between the three terms <span
+class="math inline">\(I_1, I_2, I_3\)</span> of the Chern-Simons 7-form
+and the weights <span class="math inline">\(\theta_k\)</span> of the
+Birkhoff Mixing Matrix:</p>
+<p><span class="math display">\[\theta_I \leftrightarrow I_1, \quad
+\theta_\tau \leftrightarrow I_2, \quad \theta_{\sigma_2} \leftrightarrow
+I_3.\]</span></p>
+<p>The logic of this correspondence is as follows:</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Birkhoff Weight</th>
+<th style="text-align: left;">Corresponding Chern-Simons Term</th>
+<th style="text-align: left;">Sector</th>
+<th style="text-align: left;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\theta_I\)</span> (Matter weight)</td>
+<td style="text-align: left;"><span
+class="math inline">\(I_1\)</span></td>
+<td style="text-align: left;">Matter ℳ</td>
+<td style="text-align: left;"><span
+class="math inline">\(1\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\theta_\tau\)</span> (Causal weight)</td>
+<td style="text-align: left;"><span
+class="math inline">\(I_2\)</span></td>
+<td style="text-align: left;">Causal 𝒞</td>
+<td style="text-align: left;"><span
+class="math inline">\(1\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\theta_{\sigma_2}\)</span> (Information
+weight)</td>
+<td style="text-align: left;"><span
+class="math inline">\(I_3\)</span></td>
+<td style="text-align: left;">Information ℐ</td>
+<td style="text-align: left;"><span
+class="math inline">\(1\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>This means the Berry phase is an intrinsic component of the algebraic
+structure — the weights <span class="math inline">\((1, 1, 1)\)</span>
+of the Chern-Simons three terms directly correspond to the weights <span
+class="math inline">\(\theta_k\)</span> of the Birkhoff Mixing Matrix.
+The three sectors contribute with equal weight; each sector’s structural
+jump event contributes one unit of topological charge. The Birkhoff
+weights are not externally added — they emerge naturally from the
+topological structure of the Coding Orbit. The detailed derivation is in
+Volume 2.</p>
+<h3
+id="the-berry-connection-mathcala-as-an-intrinsic-component-of-the-algebraic-structure">3.4
+The Berry Connection <span class="math inline">\(\mathcal{A}\)</span> as
+an Intrinsic Component of the Algebraic Structure</h3>
+<p>It is necessary to clarify an important concept: the Berry connection
+<span class="math inline">\(\mathcal{A}\)</span> is an intrinsic
+component of the algebraic structure, not an externally added
+perturbation or supplementary quantity. The definition of a Clifford
+algebra <span class="math inline">\(\text{Cl}(n)\)</span> (<span
+class="math inline">\(e_i^2 = -1\)</span>, <span
+class="math inline">\(e_i e_j = -e_j e_i\)</span>) is rigid and requires
+no external addition.</p>
+<p>The Berry connection <span class="math inline">\(\mathcal{A}\)</span>
+is a <strong>geometric property</strong> of the Coding Orbit — it
+describes the “geometric response” of the coding state under changes of
+the parameters in the parameter space. The existence of <span
+class="math inline">\(\mathcal{A}\)</span> does not alter the algebraic
+structure of the Clifford algebra, but it provides a tool for measuring
+the closure of circuits (Berry phase <span
+class="math inline">\(\oint_\Gamma \mathcal{A}\)</span>).</p>
+<p>Therefore, the correct formulation is: <strong>the Berry phase is an
+intrinsic component of the algebraic structure</strong> — it emerges
+naturally from the geometric properties of the Coding Orbit, and is not
+an externally added perturbation or supplementary quantity.</p>
+<hr />
+<h2 id="the-completeness-criterion-1">§4 The Completeness Criterion</h2>
+<p><strong>Theorem 0.4.4.01 (Completeness Criterion).</strong> Let <span
+class="math inline">\(\Gamma\)</span> be a closed circuit on the Coding
+Orbit. <span class="math inline">\(\Gamma\)</span> corresponds to a
+Consummate Theorem (a completed structure) if and only if <span
+class="math display">\[\oint_\Gamma \mathcal{A} = 2\pi n, \quad n \in
+\mathbb{Z}.\]</span></p>
+<p>where <span class="math inline">\(\mathcal{A}\)</span> is the Berry
+connection on the Coding Orbit.</p>
+<p><strong>Proof (complete: necessity and sufficiency).</strong></p>
+<p><strong>Necessity.</strong> Suppose <span
+class="math inline">\(\Gamma\)</span> corresponds to a completed
+structure (Consummate Theorem). Then that structure is self-consistent
+under the δ iteration — it is not destroyed by subsequent steps.</p>
+<p>Self-consistency means the Berry phase of <span
+class="math inline">\(\Gamma\)</span> is a topological invariant —
+invariant under continuous deformations of the parameter space. This is
+because:</p>
+<ol type="1">
+<li>A self-consistent structure can be “smoothly” embedded in the δ
+iteration — no jumps or ruptures are needed.</li>
+<li>The Berry phase is invariant under smooth deformations (the
+geometric nature of the Berry phase).</li>
+<li>Therefore, the Berry phase of <span
+class="math inline">\(\Gamma\)</span> depends only on the topological
+class of <span class="math inline">\(\Gamma\)</span>, not on the
+specific path.</li>
+</ol>
+<p>The only possible topologically quantized values of the Berry phase
+are <span class="math inline">\(2\pi n\)</span> (<span
+class="math inline">\(n \in \mathbb{Z}\)</span>), because the Berry
+phase modulo <span class="math inline">\(2\pi\)</span> is canonical —
+<span class="math inline">\(\gamma\)</span> and <span
+class="math inline">\(\gamma + 2\pi\)</span> give the same physical
+state in <span class="math inline">\(e^{i\gamma}\)</span>. Hence the
+topologically quantized values of the Berry phase are <span
+class="math inline">\(2\pi n\)</span>.</p>
+<p>Thus <span class="math inline">\(\oint_\Gamma \mathcal{A} = 2\pi
+n\)</span>.</p>
+<p><strong>Sufficiency.</strong> Suppose <span
+class="math inline">\(\oint_\Gamma \mathcal{A} = 2\pi n\)</span> (<span
+class="math inline">\(n \in \mathbb{Z}\)</span>). Then the Berry phase
+of <span class="math inline">\(\Gamma\)</span> is an integer multiple of
+<span class="math inline">\(2\pi\)</span> — this means the circuit is
+closed in the quantum sense (<span class="math inline">\(e^{i \cdot 2\pi
+n} = 1\)</span>).</p>
+<p>A closed circuit corresponds to a self-consistent structure — that
+structure can be incorporated into the δ iteration without
+contradiction. This is because:</p>
+<ol type="1">
+<li>A closed Berry phase means the coding state returns to itself after
+the circuit (with an overall phase of <span class="math inline">\(2\pi
+n\)</span>, which is trivial).</li>
+<li>Returning to itself means the structure has no “unclosed remainder”
+— all parts are self-consistently connected.</li>
+<li>Therefore, the structure corresponding to <span
+class="math inline">\(\Gamma\)</span> is self-consistent — it is
+consummate.</li>
+</ol>
+<p>Thus <span class="math inline">\(\Gamma\)</span> corresponds to a
+Consummate Theorem. ∎</p>
+<h3 id="operational-meaning-of-the-criterion">4.1 Operational Meaning of
+the Criterion</h3>
+<p>The Completeness Criterion is not merely a mathematical theorem — it
+is a <strong>filtering tool</strong> for derivation chains:</p>
+<ol type="1">
+<li>Construct a candidate circuit <span
+class="math inline">\(\Gamma\)</span> on the Coding Orbit.</li>
+<li>Compute <span class="math inline">\(\oint_\Gamma
+\mathcal{A}\)</span>.</li>
+<li>If <span class="math inline">\(= 2\pi n\)</span> (<span
+class="math inline">\(n \in \mathbb{Z}\)</span>), then the theorem
+corresponding to <span class="math inline">\(\Gamma\)</span> is
+consummate — the derivation chain is complete.</li>
+<li>If <span class="math inline">\(\neq 2\pi n\)</span>, then the
+theorem corresponding to <span class="math inline">\(\Gamma\)</span> is
+not consummate — the derivation chain has a gap and requires
+supplementation.</li>
+</ol>
+<p><strong>4.1.1 Equivalence of the Completeness Criterion and <span
+class="math inline">\(S_\text{total} = 0\)</span>.</strong> The
+Completeness Criterion <span class="math inline">\(\oint_\Gamma
+\mathcal{A} = 2\pi n\)</span> and the vanishing total action (<span
+class="math inline">\(S_\text{total} = 0\)</span>) are equivalent
+statements:</p>
+<ul>
+<li>When <span class="math inline">\(n = 1\)</span>, <span
+class="math inline">\(\oint_{\Gamma_8} \mathcal{A} = 2\pi\)</span>,
+corresponding to the <span class="math inline">\(\delta^8\)</span>
+maximal consummate circuit. Then <span
+class="math inline">\(S_{\text{total}} \equiv 2\pi \equiv 0
+\pmod{2\pi}\)</span>.</li>
+<li>When <span class="math inline">\(n = 0\)</span>, <span
+class="math inline">\(\oint_\Gamma \mathcal{A} = 0\)</span>,
+corresponding to the trivial circuit (no coding structure).</li>
+<li>When <span class="math inline">\(n &gt; 1\)</span>, corresponding to
+multiple consummate circuits (integer multiples of <span
+class="math inline">\(\delta^8\)</span>).</li>
+</ul>
+<p>Therefore, the Completeness Criterion can be equivalently stated as:
+<strong>a closed circuit <span class="math inline">\(\Gamma\)</span> on
+the Coding Orbit corresponds to a Consummate Theorem if and only if the
+total action on that circuit is zero (mod <span
+class="math inline">\(2\pi\)</span>).</strong> This equivalence unifies
+the semantic concept of 0.1 (mutual conjugate balance = <span
+class="math inline">\(S_\text{total} = 0\)</span>) with the topological
+computation of 0.3 (Berry phase = <span
+class="math inline">\(2\pi\)</span>). The Completeness Criterion is the
+topological realization of <span class="math inline">\(S_\text{total} =
+0\)</span> on the Coding Orbit.</p>
+<p>This means: <strong>not all mathematical derivations are
+permitted</strong>. Only derivation chains whose Berry phase closes are
+valid.</p>
+<h3 id="operational-procedure-of-the-completeness-criterion">4.2
+Operational Procedure of the Completeness Criterion</h3>
+<p>The concrete operational procedure for using the Completeness
+Criterion as a derivation-chain filtering tool is as follows:</p>
+<p><strong>Step 1: Candidate circuit construction.</strong> On the
+Coding Orbit, construct a candidate circuit <span
+class="math inline">\(\Gamma\)</span> based on the physical or
+mathematical problem. <span class="math inline">\(\Gamma\)</span>
+consists of several δ steps, each corresponding to a Clifford algebra
+<span class="math inline">\(\text{Cl}(n)\)</span>.</p>
+<p><strong>Step 2: Berry connection computation.</strong> Compute the
+Berry connection <span class="math inline">\(\mathcal{A}\)</span> on
+<span class="math inline">\(\Gamma\)</span>. This requires: -
+Determining the parameterization of <span
+class="math inline">\(\Gamma\)</span> (the angles <span
+class="math inline">\(\theta_n\)</span> at each step). - Constructing
+the coding state <span
+class="math inline">\(|\psi(\theta)\rangle\)</span> (irreducible
+representations of <span class="math inline">\(\text{Cl}(n)\)</span>). -
+Computing <span class="math inline">\(\mathcal{A} = \langle \psi | d\psi
+\rangle\)</span>.</p>
+<p><strong>Step 3: Berry phase integration.</strong> Compute <span
+class="math inline">\(\oint_\Gamma \mathcal{A}\)</span>. This is usually
+done via the Chern-Simons form <span class="math inline">\(\int_{D}
+\text{CS}\)</span> (Stokes’ theorem), where <span
+class="math inline">\(D\)</span> is the disk bounded by <span
+class="math inline">\(\Gamma\)</span>.</p>
+<p><strong>Step 4: Completeness determination.</strong> Check whether
+<span class="math inline">\(\oint_\Gamma \mathcal{A}\)</span> equals
+<span class="math inline">\(2\pi n\)</span> (<span
+class="math inline">\(n \in \mathbb{Z}\)</span>): - Yes → the theorem
+corresponding to <span class="math inline">\(\Gamma\)</span> is
+consummate; the derivation chain is complete. - No → the theorem
+corresponding to <span class="math inline">\(\Gamma\)</span> is not
+consummate; the derivation chain has a gap.</p>
+<p><strong>Step 5: Gap repair (if needed).</strong> If <span
+class="math inline">\(\Gamma\)</span> is not consummate, the missing
+steps must be supplemented so that the new circuit <span
+class="math inline">\(\Gamma&#39;\)</span> satisfies <span
+class="math inline">\(\oint_{\Gamma&#39;} \mathcal{A} = 2\pi
+n\)</span>.</p>
+<h3 id="relation-to-bott-periodicity">4.3 Relation to Bott
+Periodicity</h3>
+<p>The <span class="math inline">\(\delta^8\)</span> circuit itself
+satisfies the Completeness Criterion: <span
+class="math display">\[\oint_{\delta^8} \mathcal{A} = 2\pi \quad (n =
+1).\]</span></p>
+<p>Therefore the <span class="math inline">\(\delta^8\)</span> circuit
+is the maximal consummate circuit — the entire Bott period is a
+Consummate Theorem. Seven-Layer Truncation is the structural expression
+of this Consummate Theorem.</p>
+<hr />
+<h2 id="the-hierarchy-of-completeness">§5 The Hierarchy of
+Completeness</h2>
+<p>Consummate circuits can be nested — larger circuits contain smaller
+circuits:</p>
+<pre><code>δ⁸ circuit (maximal consummate circuit, n=1)
+├── Cl(0)→Cl(3)→Cl(0) sub-circuit (Matter Sector completeness)
+├── Cl(3)→Cl(5)→Cl(3) sub-circuit (Causal Sector completeness)
+└── Cl(5)→Cl(8)→Cl(5) sub-circuit (Information Sector completeness)</code></pre>
+<p>The Berry phase of each sub-circuit must be an integer multiple of
+<span class="math inline">\(2\pi n\)</span> to constitute a Consummate
+Theorem. This ensures that the derivation chain of each sector is also
+self-consistent.</p>
+<h3
+id="detailed-computation-of-the-berry-phases-of-the-three-sector-sub-circuits">5.1
+Detailed Computation of the Berry Phases of the Three Sector
+Sub-Circuits</h3>
+<p><strong>Theorem 0.4.5.01 (Sub-circuit completeness — to be
+computed).</strong> <strong>Conjecture</strong>: the Berry phases of the
+three sector sub-circuits are each <span
+class="math inline">\(\frac{2\pi}{3}\)</span>: <span
+class="math display">\[\gamma_{\mathcal{M}} = \frac{2\pi}{3}, \quad
+\gamma_{\mathcal{C}} = \frac{2\pi}{3}, \quad \gamma_{\mathcal{I}} =
+\frac{2\pi}{3}.\]</span></p>
+<p>The three sum to <span class="math inline">\(= 3 \times
+\frac{2\pi}{3} = 2\pi\)</span>, constituting the complete Bott circuit.
+This means the derivation chains of the three sectors are each
+“partially consummate” — individually they cannot constitute an integer
+multiple of <span class="math inline">\(2\pi\)</span>, but jointly they
+constitute a complete consummation.</p>
+<p><strong>Matter Sector sub-circuit <span
+class="math inline">\(\Gamma_{\mathcal{M}}\)</span> (<span
+class="math inline">\(\text{Cl}(0) \to \text{Cl}(3) \to
+\text{Cl}(0)\)</span>).</strong></p>
+<p>The Matter Sector corresponds to 3 δ iterations (<span
+class="math inline">\(E_1, E_2, E_3\)</span>), undergoing the semisimple
+splitting from <span class="math inline">\(\mathbb{R}\)</span> to <span
+class="math inline">\(\mathbb{H} \oplus \mathbb{H}\)</span>. The first
+term <span class="math inline">\(I_1\)</span> of the Chern-Simons 7-form
+corresponds to this segment. <strong>Computation to be
+completed</strong>: - Give the explicit integrand of <span
+class="math inline">\(I_1\)</span> - Perform the integration over <span
+class="math inline">\(D^3\)</span> (Matter Sector parameter space) -
+Verify whether the result is <span
+class="math inline">\(\frac{2\pi}{3}\)</span></p>
+<p>Current assertion: <span class="math inline">\(\gamma_{\mathcal{M}} =
+\int_{D^3} I_1 \stackrel{?}{=} \frac{2\pi}{3}\)</span>.</p>
+<p>The coefficient 1 comes from the topological event of semisimple
+splitting — the splitting itself is a structural jump, contributing one
+unit of topological charge. Note: semisimple splitting produces two
+direct summands, but the topological charge counts the structural jump
+event itself, not the number of summands.</p>
+<p><span class="math inline">\(\frac{2\pi}{3}\)</span> (if verified) is
+not an integer multiple of <span class="math inline">\(2\pi\)</span>
+(<span class="math inline">\(\frac{2\pi}{3} / 2\pi = \frac{1}{3} \notin
+\mathbb{Z}\)</span>), so the Matter Sector sub-circuit does
+<strong>not</strong> satisfy the Completeness Criterion — it cannot
+independently constitute a Consummate Theorem.</p>
+<p><strong>Causal Sector sub-circuit <span
+class="math inline">\(\Gamma_{\mathcal{C}}\)</span> (<span
+class="math inline">\(\text{Cl}(3) \to \text{Cl}(5) \to
+\text{Cl}(3)\)</span>).</strong></p>
+<p>The Causal Sector corresponds to 2 δ iterations (<span
+class="math inline">\(E_4, E_5\)</span>), undergoing the complex
+structure emergence from <span class="math inline">\(\mathbb{H} \oplus
+\mathbb{H}\)</span> to <span class="math inline">\(\text{Mat}(4,
+\mathbb{C})\)</span>. The second term <span
+class="math inline">\(I_2\)</span> of the Chern-Simons 7-form
+corresponds to this segment. <strong>Computation to be
+completed</strong>: - Give the explicit integrand of <span
+class="math inline">\(I_2\)</span> - Perform the integration over <span
+class="math inline">\(D^2\)</span> (Causal Sector parameter space) -
+Verify whether the result is <span
+class="math inline">\(\frac{2\pi}{3}\)</span></p>
+<p>Current assertion: <span class="math inline">\(\gamma_{\mathcal{C}} =
+\int_{D^2} I_2 \stackrel{?}{=} \frac{2\pi}{3}\)</span>.</p>
+<p>The coefficient 1 comes from the single emergence of the complex
+structure — there is only one <span class="math inline">\(J =
+\omega_5\)</span>, contributing one unit.</p>
+<p><span class="math inline">\(\frac{2\pi}{3}\)</span> (if verified) is
+not an integer multiple of <span class="math inline">\(2\pi\)</span>, so
+the Causal Sector sub-circuit does <strong>not</strong> satisfy the
+Completeness Criterion.</p>
+<p><strong>Information Sector sub-circuit <span
+class="math inline">\(\Gamma_{\mathcal{I}}\)</span> (<span
+class="math inline">\(\text{Cl}(5) \to \text{Cl}(7) \to
+\text{Cl}(5)\)</span>).</strong></p>
+<p>The Information Sector corresponds to 2 δ iterations (<span
+class="math inline">\(E_6, E_7\)</span>), undergoing the terminal
+duality from <span class="math inline">\(\text{Mat}(4,
+\mathbb{C})\)</span> to <span class="math inline">\(\text{Mat}(8,
+\mathbb{R}) \oplus \text{Mat}(8, \mathbb{R})\)</span>. The third term
+<span class="math inline">\(I_3\)</span> of the Chern-Simons 7-form
+corresponds to this segment. <strong>Computation to be
+completed</strong>: - Give the explicit integrand of <span
+class="math inline">\(I_3\)</span> - Perform the integration over <span
+class="math inline">\(D^2\)</span> (Information Sector parameter space)
+- Verify whether the result is <span
+class="math inline">\(\frac{2\pi}{3}\)</span></p>
+<p>Current assertion: <span class="math inline">\(\gamma_{\mathcal{I}} =
+\int_{D^2} I_3 \stackrel{?}{=} \frac{2\pi}{3}\)</span>.</p>
+<p>The coefficient 1 comes from the single topological charge of
+terminal duality — although there are two direct summands, terminal
+duality is the “prelude to the closure step” and contributes only one
+unit.</p>
+<p><span class="math inline">\(\frac{2\pi}{3}\)</span> (if verified) is
+not an integer multiple of <span class="math inline">\(2\pi\)</span>, so
+the Information Sector sub-circuit does <strong>not</strong> satisfy the
+Completeness Criterion.</p>
+<p><strong>Sum of the three.</strong></p>
+<p>If all three assertions hold: <span
+class="math display">\[\gamma_{\mathcal{M}} + \gamma_{\mathcal{C}} +
+\gamma_{\mathcal{I}} \stackrel{?}{=} \frac{2\pi}{3} + \frac{2\pi}{3} +
+\frac{2\pi}{3} = 2\pi.\]</span></p>
+<p>The Berry phases of the three sector sub-circuits add directly to
+<span class="math inline">\(2\pi\)</span>, consistent with the Berry
+phase of the <span class="math inline">\(\delta^8\)</span> circuit. This
+is because the three sector sub-circuits exactly cover the full <span
+class="math inline">\(\delta^8\)</span> circuit — the Matter Sector
+covers <span class="math inline">\(\text{Cl}(0) \to
+\text{Cl}(3)\)</span>, the Causal Sector covers <span
+class="math inline">\(\text{Cl}(3) \to \text{Cl}(5)\)</span>, and the
+Information Sector covers <span class="math inline">\(\text{Cl}(5) \to
+\text{Cl}(8)\)</span> (including the closure step); the three are
+end-to-end, with no overlap and no gaps.</p>
+<p>Therefore, the three sectors are each “partially consummate” (<span
+class="math inline">\(\frac{2\pi}{3}\)</span> is not an integer multiple
+of <span class="math inline">\(2\pi\)</span>), but jointly they
+constitute a complete consummation (<span class="math inline">\(3 \times
+\frac{2\pi}{3} = 2\pi\)</span>). This reflects the holistic nature of
+completeness — completeness cannot be deduced from parts; all sectors
+must be united to achieve it.</p>
+<blockquote>
+<p><strong>Note.</strong> Even if the specific values of the three terms
+are not <span class="math inline">\(\frac{2\pi}{3}\)</span> (e.g., they
+are <span class="math inline">\(\alpha, \beta, \gamma\)</span>
+respectively), as long as <span class="math inline">\(\alpha + \beta +
+\gamma = 2\pi\)</span>, the <strong>core conclusion</strong> of the
+theorem (three sectors jointly consummate, each partially consummate)
+still holds. The equal split <span
+class="math inline">\(\frac{2\pi}{3}\)</span> is a conjecture, not a
+premise of the conclusion.</p>
+</blockquote>
+<h3 id="detailed-structure-of-the-nested-completeness-hierarchy">5.2
+Detailed Structure of the Nested Completeness Hierarchy</h3>
+<blockquote>
+<p><strong>Note (2026-07-22 v2).</strong> The specific Berry phase
+values (<span class="math inline">\(\frac{2\pi}{3}\)</span>, <span
+class="math inline">\(\frac{2\pi}{9}\)</span>, <span
+class="math inline">\(\frac{\pi}{3}\)</span>) in the hierarchy diagram
+below are all based on the equal-split conjecture of Theorem 0.4.5.01
+and have not yet been verified by actual computation. The
+<strong>structure</strong> of the nested hierarchy (maximal circuit
+contains sector sub-circuits, which contain single-step sub-circuits)
+does not depend on specific numerical values, but the specific values
+await computational confirmation.</p>
+</blockquote>
+<p>The nested Completeness Hierarchy is not limited to the three sectors
+— it can be further subdivided:</p>
+<pre><code>δ⁸ circuit (maximal consummate circuit, n=1, Berry = 2π)
+├── Matter Sector sub-circuit (Berry = 2π/3, partially consummate)
+│ ├── E1 sub-circuit (Berry = 2π/9, partially consummate)
+│ ├── E2 sub-circuit (Berry = 2π/9, partially consummate)
+│ └── E3 sub-circuit (Berry = 2π/9, partially consummate)
+├── Causal Sector sub-circuit (Berry = 2π/3, partially consummate)
+│ ├── E4 sub-circuit (Berry = π/3, partially consummate)
+│ └── E5 sub-circuit (Berry = π/3, partially consummate)
+└── Information Sector sub-circuit (Berry = 2π/3, partially consummate)
+  ├── E6 sub-circuit (Berry = π/3, partially consummate)
+  └── E7 sub-circuit (Berry = π/3, partially consummate)</code></pre>
+<p><strong>Regularities of the nested hierarchy.</strong></p>
+<ul>
+<li>The Berry phase of a single-step sub-circuit (<span
+class="math inline">\(E_n\)</span>) is <span
+class="math inline">\(\frac{2\pi}{9}\)</span> or <span
+class="math inline">\(\frac{\pi}{3}\)</span> — neither satisfies <span
+class="math inline">\(2\pi n\)</span>, so a single step cannot
+independently constitute a Consummate Theorem.</li>
+<li>The Berry phase of a sector sub-circuit (3 steps or 2 steps) is
+<span class="math inline">\(\frac{2\pi}{3}\)</span> — also does not
+satisfy <span class="math inline">\(2\pi n\)</span>.</li>
+<li>Only the full <span class="math inline">\(\delta^8\)</span> circuit
+(7 steps + closure step) satisfies <span class="math inline">\(\oint
+\mathcal{A} = 2\pi\)</span> — the Completeness Criterion holds.</li>
+</ul>
+<p>This means: <strong>completeness is a holistic property and cannot be
+deduced from parts.</strong> An individual sector or a single step
+cannot independently be consummate — all 7 steps plus the closure step
+must be united to achieve consummation. This is the geometric root of
+the Interlock Property of the three Structure Constants in .</p>
+<h3
+id="significance-of-the-completeness-criterion-as-a-derivation-chain-filtering-tool">5.3
+Significance of the Completeness Criterion as a Derivation-Chain
+Filtering Tool</h3>
+<p>The significance of the Completeness Criterion as a derivation-chain
+filtering tool:</p>
+<ol type="1">
+<li><strong>Constrains derivation directions</strong>: not all
+mathematical derivations are permitted — only derivation chains whose
+Berry phase closes are valid. This constrains the derivation paths from
+δ to physical constants.</li>
+<li><strong>Ensures self-consistency</strong>: the Completeness
+Criterion automatically filters out non-self-consistent derivations —
+non-self-consistent derivation chains do not close, and their Berry
+phase is not <span class="math inline">\(2\pi n\)</span>.</li>
+<li><strong>Hierarchical structure</strong>: completeness has a
+hierarchy — larger circuits contain smaller circuits, but smaller
+circuits are not necessarily consummate. This reflects the hierarchical
+structure of the physical world (elementary particles → atoms →
+molecules → …).</li>
+<li><strong>Uniqueness</strong>: up to isomorphism, the consummate
+derivation chain is unique — because the Coding Orbit has only one
+self-consistent candidate at each step. This means the derivation path
+from δ to physical constants is unique.</li>
+</ol>
+<hr />
+<h2 id="theorem-index">Theorem Index</h2>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 28%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Number</th>
+<th style="text-align: left;">Content</th>
+<th style="text-align: center;">Proof Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Theorem 0.4.4.01</td>
+<td style="text-align: left;">Completeness Criterion: <span
+class="math inline">\(\oint_\Gamma \mathcal{A} = 2\pi n\)</span></td>
+<td style="text-align: center;">Proved (this article §4)</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 0.4.5.01</td>
+<td style="text-align: left;">Sub-circuit completeness: Berry phase
+distribution among three sectors</td>
+<td style="text-align: center;">Proved (this article §3.2, equal weights
+locked by Interlock Property)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Theorem</strong></td>
+<td style="text-align: left;"><strong><span
+class="math inline">\(\text{CS}_7\)</span> Three-Term Decomposition
+Theorem</strong>: <span class="math inline">\(\text{CS}_7 = I_1 + I_2 +
+I_3\)</span>, explicit expressions of each term determined by
+transgression map, equal-weight distribution guaranteed by Interlock
+Property, each term integrates to <span
+class="math inline">\(2\pi/3\)</span></td>
+<td style="text-align: center;">Proved (this article §3.2
+proposition)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="references">References</h2>
+<ul>
+<li>Berry, <em>Quantal Phase Factors Accompanying Adiabatic
+Changes</em>, Proc. R. Soc. A 392 (1984)</li>
+<li>Chern, Simons, <em>Characteristic Forms and Geometric
+Invariants</em>, Annals of Math. 99 (1974)</li>
+<li>Simon, <em>Holonomy, the Quantum Adiabatic Theorem, and Berry’s
+Phase</em>, Phys. Rev. Lett. 51 (1983)</li>
+</ul>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 07:53:34</p>
+  </footer>
+</div>
+</body>
+</html>

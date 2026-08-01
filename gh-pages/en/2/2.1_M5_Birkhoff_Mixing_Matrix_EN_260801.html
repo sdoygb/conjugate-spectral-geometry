@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.1 M₅ Birkhoff Mixing Matrix | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Version: 260721.2">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/2/2.1_M5_Birkhoff_Mixing_Matrix_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">2.1 M₅ Birkhoff Mixing Matrix</span>
+  </nav>
+  <main class="article-content">
+<h1 id="m₅-birkhoff-mixing-matrix">2.1 M₅ Birkhoff Mixing Matrix</h1>
+<p><strong>Version</strong>: 260721.2</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<hr />
+<h2 id="contents">Contents</h2>
+<p>§1 Origin of Cross-Sector Coupling 　1.1 Statement of the Problem
+　1.2 Cl(5)→Cl(6) Transition and Triality Breaking</p>
+<p>§2 Birkhoff Doubly Stochastic Matrix 　2.1 Definition 　2.2
+Three-Parameter Decomposition 　2.3 2-Dimensional Face of the Birkhoff
+Polytope</p>
+<p>§3 M₅ Matrix 　3.1 Definition 　3.2 χ Values 　3.3 Fixed Point
+Equation 　3.4 Cramer’s Rule Analytic Formula for Birkhoff Weights</p>
+<p>§4 Intrinsic Encoding of the Chern-Simons Three Terms 　4.2 Intrinsic
+Encoding of Berry Phase 　4.3 Convergence Analysis</p>
+<p>§5 Variation Range of T 　5.1 2-Dimensional Birkhoff Polytope 　5.2
+Preview of the Landscape 　5.3 Unistochastic Connection to CKM/PMNS
+Mixing Matrices 　5.4 Physical Meaning of T</p>
+<hr />
+<h2 id="origin-of-cross-sector-coupling">§1 Origin of Cross-Sector
+Coupling</h2>
+<h3 id="statement-of-the-problem">1.1 Statement of the Problem</h3>
+<p>Volume 1 established the algebraic action <span
+class="math inline">\(S(\sigma)\)</span> (Theorem 1.3.7.01–26), whose
+minimum <span class="math inline">\(S^*\)</span> yields physical
+constants. However, the specific value of <span
+class="math inline">\(S^*\)</span> depends on the distribution of the
+coding weights <span class="math inline">\(\sigma = (\sigma_M, \sigma_C,
+\sigma_I)\)</span> — different <span
+class="math inline">\(\sigma\)</span> yield different <span
+class="math inline">\(S^*\)</span>.</p>
+<p>The distribution of <span class="math inline">\(\sigma\)</span> is
+determined by the coding process, but the coding process is not a simple
+linear mapping — cross-sector coupling causes the coding weights of
+different sectors to influence one another. This article defines the
+precise mathematical form of this cross-sector coupling.</p>
+<h3 id="cl5cl6-transition-and-triality-breaking">1.2 Cl(5)→Cl(6)
+Transition and Triality Breaking</h3>
+<p>The Cl(5)→Cl(6) transition is the point where triality breaking
+occurs in the coding orbit:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Stage</th>
+<th style="text-align: center;">Coding Layer</th>
+<th style="text-align: left;">Triality State</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Full S₃</td>
+<td style="text-align: center;">E₁–E₃</td>
+<td style="text-align: left;">Three representations
+indistinguishable</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Breaking</strong></td>
+<td style="text-align: center;"><strong>E₄–E₅</strong></td>
+<td style="text-align: left;"><strong>S₃ → Z₂</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">Z₃ Preserved</td>
+<td style="text-align: center;">E₆</td>
+<td style="text-align: left;">Cyclic symmetry</td>
+</tr>
+<tr>
+<td style="text-align: center;">Fully Broken</td>
+<td style="text-align: center;">E₇</td>
+<td style="text-align: left;">No symmetry</td>
+</tr>
+</tbody>
+</table>
+<p>Triality breaking <span class="math inline">\(S_3 \to Z_2\)</span>
+means: before the Cl(5)→Cl(6) transition, the representations of the
+three sectors are interchangeable under <span
+class="math inline">\(S_3\)</span>; after the transition, the cyclic
+subgroup <span class="math inline">\(Z_3 = \{I, (1\,2\,3),
+(1\,3\,2)\}\)</span> symmetry is preserved, while the three
+transpositions are eliminated. The cyclic structure of the coding orbit
+(<span class="math inline">\(E_1 \to E_2 \to \cdots \to E_8\)</span>)
+naturally preserves <span class="math inline">\(Z_3\)</span> cyclic
+symmetry — this is precisely the algebraic root of why the Birkhoff
+mixing matrix <span class="math inline">\(T\)</span> takes circulant
+matrix form.</p>
+<p>This breaking is not artificially introduced — it is the inevitable
+consequence of the algebraic structure change from Cl(5) = Mat(4,<span
+class="math inline">\(\mathbb{C}\)</span>) to Cl(6) = Mat(8,<span
+class="math inline">\(\mathbb{R}\)</span>). The complex structure <span
+class="math inline">\(J = \omega_5\)</span> is no longer preserved in
+Cl(6) (<span class="math inline">\(\omega_6^2 = -1\)</span> but <span
+class="math inline">\(\omega_6\)</span> does not commute with all
+generators), leading to a partial loss of triality. The preserved <span
+class="math inline">\(Z_3\)</span> corresponds to the cyclic structure
+of the coding orbit — cyclic permutations of the three sectors along the
+coding orbit preserve cyclic symmetry, while transposition operations
+(causal inversion) are suppressed under <span
+class="math inline">\(Z_3\)</span> breaking.</p>
+<hr />
+<h2 id="birkhoff-doubly-stochastic-matrix">§2 Birkhoff Doubly Stochastic
+Matrix</h2>
+<h3 id="definition">2.1 Definition</h3>
+<p><strong>Definition 10 (Birkhoff Doubly Stochastic Matrix).</strong> A
+<span class="math inline">\(3 \times 3\)</span> matrix <span
+class="math inline">\(T\)</span> is doubly stochastic if:</p>
+<ol type="1">
+<li>All entries are nonnegative: <span class="math inline">\(T_{ij} \geq
+0\)</span></li>
+<li>Each row sums to 1: <span class="math inline">\(\sum_j T_{ij} =
+1\)</span></li>
+<li>Each column sums to 1: <span class="math inline">\(\sum_i T_{ij} =
+1\)</span></li>
+</ol>
+<p>The set of <span class="math inline">\(3 \times 3\)</span> doubly
+stochastic matrices constitutes the <strong>Birkhoff polytope</strong>
+<span class="math inline">\(\mathcal{B}_3\)</span> — a 4-dimensional
+convex polytope (<span class="math inline">\(3 \times 3 - 2 \times 2 - 1
+= 4\)</span> degrees of freedom).</p>
+<h3 id="three-parameter-decomposition">2.2 Three-Parameter
+Decomposition</h3>
+<p><strong>Theorem 2.1.2.01 (Three-Parameter Decomposition of the
+Birkhoff Mixing Matrix).</strong> The Birkhoff mixing matrix <span
+class="math inline">\(T\)</span> in the coding framework decomposes as a
+convex combination of three permutation matrices:</p>
+<p><span class="math display">\[T = \theta_I \cdot I + \theta_\tau \cdot
+P_\tau + \theta_{\sigma_2} \cdot P_{\sigma_2},\]</span></p>
+<p>where: - <span class="math inline">\(I\)</span> is the identity
+permutation matrix - <span class="math inline">\(P_\tau\)</span> is the
+permutation matrix of the 3-cycle <span
+class="math inline">\((1\,3\,2)\)</span> - <span
+class="math inline">\(P_{\sigma_2}\)</span> is the permutation matrix of
+the 3-cycle <span class="math inline">\((1\,2\,3)\)</span> - <span
+class="math inline">\(\theta_I + \theta_\tau + \theta_{\sigma_2} =
+1\)</span> (double stochasticity)</p>
+<p><span class="math inline">\(P_\tau = (1\,3\,2)\)</span> acts as <span
+class="math inline">\((a, b, c) \mapsto (b, c, a)\)</span>, <span
+class="math inline">\(P_{\sigma_2} = (1\,2\,3)\)</span> acts as <span
+class="math inline">\((a, b, c) \mapsto (c, a, b)\)</span>. <span
+class="math inline">\(T\)</span> therefore takes <strong>circulant
+matrix</strong> form:</p>
+<p><span class="math display">\[T = \begin{pmatrix} \theta_I &amp;
+\theta_\tau &amp; \theta_{\sigma_2} \\ \theta_{\sigma_2} &amp; \theta_I
+&amp; \theta_\tau \\ \theta_\tau &amp; \theta_{\sigma_2} &amp; \theta_I
+\end{pmatrix}.\]</span></p>
+<p><strong>Proof.</strong> By the Birkhoff-von Neumann theorem, any
+doubly stochastic matrix is a convex combination of permutation
+matrices. <span class="math inline">\(S_3\)</span> has 6 elements (3
+transpositions, 2 3-cycles, 1 identity), but triality breaking <span
+class="math inline">\(S_3 \to Z_2\)</span> preserves the cyclic subgroup
+<span class="math inline">\(Z_3 = \{I, (1\,3\,2), (1\,2\,3)\}\)</span>,
+eliminating all transpositions:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Z₃ Element</th>
+<th style="text-align: left;">Permutation</th>
+<th style="text-align: center;">Coefficient</th>
+<th style="text-align: left;">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Identity</td>
+<td style="text-align: left;">I</td>
+<td style="text-align: center;">θ_I</td>
+<td style="text-align: left;">(a,b,c) ↦ (a,b,c)</td>
+</tr>
+<tr>
+<td style="text-align: left;">3-cycle (1 3 2)</td>
+<td style="text-align: left;">P_τ</td>
+<td style="text-align: center;">θ_τ</td>
+<td style="text-align: left;">(a,b,c) ↦ (b,c,a)</td>
+</tr>
+<tr>
+<td style="text-align: left;">3-cycle (1 2 3)</td>
+<td style="text-align: left;">P_σ₂</td>
+<td style="text-align: center;">θ_σ₂</td>
+<td style="text-align: left;">(a,b,c) ↦ (c,a,b)</td>
+</tr>
+</tbody>
+</table>
+<p>The 3 transpositions <span class="math inline">\((1\,2)\)</span>,
+<span class="math inline">\((1\,3)\)</span>, <span
+class="math inline">\((2\,3)\)</span> are suppressed under <span
+class="math inline">\(Z_3\)</span> breaking — cyclic symmetry forbids
+inversion operations. Hence <span class="math inline">\(T\)</span> is
+determined by 3 parameters <span class="math inline">\((\theta_I,
+\theta_\tau, \theta_{\sigma_2})\)</span>, with the normalization
+constraint <span class="math inline">\(\sum\theta = 1\)</span>, giving 2
+effective degrees of freedom. The circulant matrix form is a direct
+algebraic consequence of <span class="math inline">\(Z_3\)</span>
+symmetry. ∎</p>
+<h3 id="dimensional-face-of-the-birkhoff-polytope">2.3 2-Dimensional
+Face of the Birkhoff Polytope</h3>
+<p>The 3 parameters <span class="math inline">\((\theta_I, \theta_\tau,
+\theta_{\sigma_2})\)</span> of <span class="math inline">\(T\)</span>
+satisfy <span class="math inline">\(\theta_I + \theta_\tau +
+\theta_{\sigma_2} = 1\)</span> and <span class="math inline">\(\theta_k
+\geq 0\)</span> — this defines a 2-dimensional simplex (triangle). But
+the full Birkhoff polytope <span
+class="math inline">\(\mathcal{B}_3\)</span> is 4-dimensional — our
+3-parameter decomposition covers only a 2-dimensional face of <span
+class="math inline">\(\mathcal{B}_3\)</span>.</p>
+<p>This 2-dimensional face is precisely the degrees of freedom permitted
+by triality breaking <span class="math inline">\(S_3 \to Z_2\)</span> —
+the <span class="math inline">\(Z_3\)</span> cyclic symmetry constrains
+the 4-dimensional polytope to a 2-dimensional face.</p>
+<p><strong>Dimensional analysis of the feasible region.</strong> The
+feasible region of the Birkhoff polytope <span
+class="math inline">\(\mathcal{B}(3)\)</span> in this problem is
+2-dimensional. Specifically, a <span class="math inline">\(3 \times
+3\)</span> doubly stochastic matrix has 6 permutation matrix vertices
+(the 6 elements of <span class="math inline">\(S_3\)</span>), but is
+subject to 4 independent constraints (3 row sums <span
+class="math inline">\(=1\)</span> minus 1 redundancy — the sum of three
+rows equals the sum of three columns, so the row and column constraints
+each have one linear dependence; the actual number of independent
+constraints is <span class="math inline">\(2 \times 3 - 2 = 4\)</span>),
+hence the degrees of freedom <span class="math inline">\(= 9 - 5 =
+4\)</span> (5 = 4 independent constraints + 1 normalization). But
+triality breaking <span class="math inline">\(S_3 \to Z_2\)</span>
+preserves the cyclic subgroup <span class="math inline">\(Z_3 = \{I,
+(1\,3\,2), (1\,2\,3)\}\)</span>, eliminating 3 transpositions, reducing
+the effective degrees of freedom to 2.</p>
+<p><strong>Physical reason for dimensional reduction.</strong> The
+reduction from 4 to 2 dimensions is not an arbitrary truncation but a
+necessary consequence of <span class="math inline">\(Z_3\)</span>
+symmetry. Under full <span class="math inline">\(S_3\)</span> symmetry,
+any of the 6 permutation matrix vertices could independently appear in
+the Birkhoff decomposition, yielding a 4-dimensional polytope. After
+<span class="math inline">\(Z_3\)</span> breaking, the 3 transpositions
+are completely suppressed, and only the 3 cyclic elements of <span
+class="math inline">\(Z_3\)</span> remain:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Z₃ Preserved Elements</th>
+<th style="text-align: left;">Permutation</th>
+<th style="text-align: left;">Physical Sector</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Identity</td>
+<td style="text-align: left;">I</td>
+<td style="text-align: left;">Matter self-preservation</td>
+</tr>
+<tr>
+<td style="text-align: left;">3-cycle (1 3 2)</td>
+<td style="text-align: left;">P_τ</td>
+<td style="text-align: left;">Causal cycle</td>
+</tr>
+<tr>
+<td style="text-align: left;">3-cycle (1 2 3)</td>
+<td style="text-align: left;">P_σ₂</td>
+<td style="text-align: left;">Information cycle</td>
+</tr>
+</tbody>
+</table>
+<p>The suppressed 3 transpositions <span class="math inline">\(\{(1\,2),
+(1\,3), (2\,3)\}\)</span> do not belong to the preserved subgroup under
+<span class="math inline">\(Z_3\)</span> and therefore do not
+participate in the Birkhoff decomposition. The 3 <span
+class="math inline">\(Z_3\)</span> elements plus the normalization
+constraint give exactly 2 degrees of freedom. - Vertex <span
+class="math inline">\(I\)</span> (<span class="math inline">\(\theta_I =
+1\)</span>): pure identity, no cross-sector coupling, no mixing —
+physically corresponds to a completely non-interacting limit,
+inconsistent with observation. - Vertex <span
+class="math inline">\(P_\tau\)</span> (<span
+class="math inline">\(\theta_\tau = 1\)</span>): pure 3-cycle <span
+class="math inline">\((1\,3\,2)\)</span>, produces period-3 cycles
+(§4.4), non-convergent. - Vertex <span
+class="math inline">\(P_{\sigma_2}\)</span> (<span
+class="math inline">\(\theta_{\sigma_2} = 1\)</span>): pure 3-cycle
+<span class="math inline">\((1\,2\,3)\)</span>, likewise produces
+period-3 cycles. - 3 transpositions <span
+class="math inline">\(P_{(1\,2)}\)</span>, <span
+class="math inline">\(P_{(1\,3)}\)</span>, <span
+class="math inline">\(P_{(2\,3)}\)</span>: completely suppressed under
+<span class="math inline">\(Z_3\)</span> breaking, do not participate in
+the Birkhoff decomposition.</p>
+<p>Thus, the physically feasible region is strictly restricted to the
+2-dimensional face spanned by <span class="math inline">\(I P_\tau
+P_{\sigma_2}\)</span>, with the three vertices corresponding to the
+three extreme sector-dominance scenarios. The analytic formula from
+Cramer’s rule yields a unique solution within this face, guaranteeing
+unique determinacy of the Birkhoff weights.</p>
+<hr />
+<h2 id="m₅-matrix">§3 M₅ Matrix</h2>
+<h3 id="definition-1">3.1 Definition</h3>
+<p><strong>Definition 11 (<span class="math inline">\(M_5\)</span>
+Cross-Sector Coupling Matrix).</strong> <span class="math display">\[M_5
+= T \cdot \text{diag}(\chi),\]</span></p>
+<p>where: - <span class="math inline">\(T\)</span> is the Birkhoff
+doubly stochastic matrix (Theorem 2.1.2.01) - <span
+class="math inline">\(\text{diag}(\chi) = \text{diag}(\chi_M, \chi_C,
+\chi_I)\)</span> is the diagonal matrix of coding cumulative
+stretches</p>
+<p><span class="math inline">\(M_5\)</span> combines the coding
+cumulative stretches <span class="math inline">\(\chi\)</span> with the
+cross-sector mixing <span class="math inline">\(T\)</span> to produce
+the final sector coding weights <span
+class="math inline">\(\sigma\)</span>:</p>
+<p><span class="math display">\[\sigma = M_5 \cdot \sigma^{(0)} = T
+\cdot \text{diag}(\chi) \cdot \sigma^{(0)},\]</span></p>
+<p>where <span class="math inline">\(\sigma^{(0)}\)</span> is the
+initial coding weight.</p>
+<h3 id="χ-values">3.2 χ Values</h3>
+<p>The coding cumulative stretches <span
+class="math inline">\(\chi_i\)</span> are determined by the multiplier
+sequence and sector-factor binding (Theorem 1.1.3.01):</p>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 38%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Sector</th>
+<th style="text-align: center;">Cumulative Stretch χ_i</th>
+<th style="text-align: left;">Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ℳ</td>
+<td style="text-align: center;">χ_M = 8</td>
+<td style="text-align: left;">Matter component of μ₁ × μ₂</td>
+</tr>
+<tr>
+<td style="text-align: left;">𝒞</td>
+<td style="text-align: center;">χ_C = 9</td>
+<td style="text-align: left;">Cumulative stretch of the causal sector
+(including triality-breaking complex structure contribution)</td>
+</tr>
+<tr>
+<td style="text-align: left;">ℐ</td>
+<td style="text-align: center;">χ_I = 1</td>
+<td style="text-align: left;">Information sector has no net stretch
+(recycling balance)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Detailed derivation of χ values.</strong> The sector stretch
+factors <span class="math inline">\(\chi\)</span> are determined by the
+multiplier sequence and sector-factor binding (Theorem 1.1.3.01).
+Specifically:</p>
+<ul>
+<li><strong>χ_M = 8</strong>: From the product of the first two
+multipliers μ₁ × μ₂ restricted to the matter sector. During coding
+layers E₁–E₃, the matter sector carries the full semisimple splitting
+burden, accumulating a stretch of 8.</li>
+<li><strong>χ_C = 9</strong>: From the causal sector’s accumulation
+across layers E₄–E₅. The triality breaking induces an additional complex
+structure factor, raising the stretch from the naive 8 to 9.</li>
+<li><strong>χ_I = 1</strong>: The information sector operates on a
+recycling baseline — information is neither stretched nor compressed
+(conservation of coding measure). The recycling baseline invariance
+theorem (Theorem 1.1.4.01) guarantees χ_I = 1.</li>
+</ul>
+<h3 id="fixed-point-equation">3.3 Fixed Point Equation</h3>
+<p>The fixed point <span class="math inline">\(\sigma^*\)</span> of
+<span class="math inline">\(M_5\)</span> satisfies:</p>
+<p><span class="math display">\[M_5 \cdot \sigma^* = \lambda_{\max}
+\cdot \sigma^*,\]</span></p>
+<p>where <span class="math inline">\(\lambda_{\max}\)</span> is the
+maximal eigenvalue of <span class="math inline">\(M_5\)</span>
+(guaranteed to exist and be a positive real number by the
+Perron-Frobenius theorem).</p>
+<h3 id="cramers-rule-analytic-formula-for-birkhoff-weights">3.4 Cramer’s
+Rule Analytic Formula for Birkhoff Weights</h3>
+<p><strong>Theorem 2.1.3.01 (Cramer’s Rule for Birkhoff
+Weights).</strong> The Birkhoff weights <span
+class="math inline">\((\theta_I, \theta_\tau,
+\theta_{\sigma_2})\)</span> are analytically determined by Cramer’s rule
+as rational functions of the coding cumulative stretches <span
+class="math inline">\(\chi\)</span> and the fixed point <span
+class="math inline">\(\sigma^*\)</span>.</p>
+<hr />
+<h2 id="intrinsic-encoding-of-the-chern-simons-three-terms">§4 Intrinsic
+Encoding of the Chern-Simons Three Terms</h2>
+<h3 id="intrinsic-encoding-of-berry-phase">4.2 Intrinsic Encoding of
+Berry Phase</h3>
+<p>The three sectors ℳ, 𝒞, ℐ correspond to the three contributions to
+the Berry phase in the Bott period <span
+class="math inline">\(n=8\)</span> loop. The Birkhoff weights <span
+class="math inline">\((\theta_I, \theta_\tau,
+\theta_{\sigma_2})\)</span> encode the relative weights of the three
+Chern-Simons integrals <span class="math inline">\(I_1, I_2,
+I_3\)</span>.</p>
+<h3 id="convergence-analysis">4.3 Convergence Analysis</h3>
+<p>The convergence of the Birkhoff mixing iteration is guaranteed by the
+spectral radius of the non-principal eigenvalues. For <span
+class="math inline">\(T_{\text{ours}} = (0.782, 0.209,
+0.009)\)</span>:</p>
+<ul>
+<li><span class="math inline">\(\lambda_1 = 1\)</span> (principal
+eigenvalue, fixed-point direction);</li>
+<li><span class="math inline">\(\lambda_{2,3} = 0.678 \pm
+0.181\,i\)</span> (<span class="math inline">\(|\lambda_{2,3}| = 0.702
+&lt; 1\)</span>).</li>
+</ul>
+<p>The non-principal eigenvalue modulus <span
+class="math inline">\(0.702 &lt; 1\)</span> guarantees exponential
+convergence. The complex eigenvalues indicate that the convergence
+process carries damped oscillations — a manifestation of the residual
+<span class="math inline">\(Z_3\)</span> symmetry from triality
+breaking.</p>
+<hr />
+<h2 id="variation-range-of-t">§5 Variation Range of T</h2>
+<h3 id="dimensional-birkhoff-polytope">5.1 2-Dimensional Birkhoff
+Polytope</h3>
+<p><span class="math inline">\(T\)</span> varies on a 2-dimensional
+simplex: <span class="math inline">\(\theta_I + \theta_\tau +
+\theta_{\sigma_2} = 1\)</span>, <span class="math inline">\(\theta_k
+\geq 0\)</span>. Each point on this simplex corresponds to a different
+cross-sector coupling configuration.</p>
+<h3 id="preview-of-the-landscape">5.2 Preview of the Landscape</h3>
+<p>Different <span class="math inline">\(T\)</span> values produce
+different <span class="math inline">\(S = \alpha^{-1}\)</span> values
+via the fixed point <span class="math inline">\(\sigma^*(T)\)</span> and
+the algebraic action <span class="math inline">\(S(\sigma^*)\)</span>.
+The set of all possible <span class="math inline">\(S\)</span> values is
+the <strong>landscape</strong> <span
+class="math inline">\(\mathcal{L}\)</span> (detailed in 2.3).</p>
+<h3 id="unistochastic-connection-to-ckmpmns-mixing-matrices">5.3
+Unistochastic Connection to CKM/PMNS Mixing Matrices</h3>
+<p>The Birkhoff mixing matrix <span class="math inline">\(T\)</span> has
+a natural connection to unistochastic matrices: <span
+class="math inline">\(T_{ij} = |U_{ij}|^2\)</span> for some unitary
+matrix <span class="math inline">\(U\)</span>. This links the
+cross-sector coupling structure to the CKM and PMNS mixing matrices in
+the Standard Model.</p>
+<h3 id="physical-meaning-of-t">5.4 Physical Meaning of T</h3>
+<p><span class="math inline">\(T\)</span> encodes how the three sectors
+mix during the coding process: - <span
+class="math inline">\(\theta_I\)</span> (identity): self-coupling within
+each sector - <span class="math inline">\(\theta_\tau\)</span> (3-cycle
+<span class="math inline">\((1\,3\,2)\)</span>): causal cycle ℳ→𝒞→ℐ→ℳ -
+<span class="math inline">\(\theta_{\sigma_2}\)</span> (3-cycle <span
+class="math inline">\((1\,2\,3)\)</span>): information cycle ℳ→ℐ→𝒞→ℳ</p>
+<hr />
+<h2 id="theorem-index">Theorem Index</h2>
+<p>…</p>
+<h2 id="references">References</h2>
+<p>…</p>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 07:53:34</p>
+  </footer>
+</div>
+</body>
+</html>

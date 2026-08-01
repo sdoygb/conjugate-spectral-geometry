@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6.1 三场耦合拓扑综述 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="版本: 260721.1">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/6.1_三场耦合拓扑综述_CN_260721.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="index.html" class="nav-home">🏠 首页</a>
+    <a href="cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">6.1 三场耦合拓扑综述</span>
+  </nav>
+  <main class="article-content">
+<h1 id="三场耦合拓扑综述">6.1 三场耦合拓扑综述</h1>
+<p><strong>版本</strong>: 260721.1</p>
+<hr />
+<h2 id="摘要">摘要</h2>
+<p>本文综述 ℳ𝒞ℐ 三扇区联合耦合的拓扑结构。三场耦合通过 Birkhoff 混合矩阵
+<span class="math inline">\(T\)</span> 的三个置换分量实现：恒等 <span
+class="math inline">\(I\)</span>（ℳ自耦合）、3-循环 <span
+class="math inline">\(P_\tau\)</span>（ℳ-𝒞-ℐ 腰边）、逆 3-循环 <span
+class="math inline">\(P_{\tau^{-1}}\)</span>（ℳ-ℐ-𝒞
+反向循环）。联合截面构成三场耦合的完整拓扑。本文进一步给出三场耦合矩阵的完整构造、扇区间耦合通道的代数封闭性、拓扑不变量的系统分析，以及四种相互作用在统一拓扑图景中的层级起源。</p>
+<hr />
+<h2 id="目-录">目　录</h2>
+<p>§1　联合截面拓扑 　1.1　三场耦合图 　1.2　耦合矩阵 　1.3　拓扑不变量
+　1.4　三场耦合矩阵的构造细节 　1.5　扇区间耦合通道
+　1.6　耦合通道的方向性</p>
+<p>§2　四种相互作用的统一图景 　2.1　从耦合到相互作用
+　2.2　强相互作用的特殊位置 　2.3　相互作用强度的层级
+　2.4　耦合通道的封闭性 　2.5　层级的几何因子分解</p>
+<p>§3　三场耦合的自洽性 　3.1　双随机性保证 　3.2　不动点的唯一性
+　3.3　收敛性的本征值分析 　3.4　双随机性与 Perron-Frobenius 定理</p>
+<p>§4　三场耦合的拓扑分类 　4.1　耦合图的同构类 　4.2　耦合图的亏格
+　4.3　拓扑分类与物理对应</p>
+<p>§5　扇区耦合的代数封闭性 　5.1　封闭性的定义
+　5.2　封闭性与跨区域信息导入 　5.3　封闭性的可证伪性</p>
+<hr />
+<h2 id="联合截面拓扑">§1 联合截面拓扑</h2>
+<h3 id="三场耦合图">1.1 三场耦合图</h3>
+<p>三场耦合的拓扑结构：</p>
+<pre><code> ℳ ←──θ_I──→ ℳ (自耦合，电磁)
+ │ ↗
+ θ_τ θ_σ₂
+ │ ↗
+ ↓ ↗
+ 𝒞 ←──?──→ ℐ (经 ℳ 中转)</code></pre>
+<p>三个直接耦合： - ℳ→ℳ：<span
+class="math inline">\(\theta_I\)</span>（自耦合，电磁相互作用） -
+ℳ→𝒞→ℐ→ℳ：<span
+class="math inline">\(\theta_\tau\)</span>（3-循环，弱相互作用） -
+ℳ↔︎ℐ：<span class="math inline">\(\theta_{\sigma_2}\)</span>（逆 3-循环
+<span class="math inline">\(P_{\tau^{-1}}\)</span>，引力相互作用）</p>
+<p>三场耦合图的关键特征是：因果界 𝒞 与信息界 ℐ
+之间没有直接边——它们之间的耦合必须经过物质界 ℳ 中转。这一拓扑非完备性是
+triality 破缺后 <span class="math inline">\(Z_2\)</span>
+残余对称性只保留 ℳ-ℐ 对换，𝒞-ℐ 直接耦合被消除。</p>
+<h3 id="耦合矩阵">1.2 耦合矩阵</h3>
+<p><strong>定理 6.1.1.01（三场耦合矩阵）。</strong> 三场联合耦合由 <span
+class="math inline">\(M_5 = T \cdot \text{diag}(\chi)\)</span>
+完整描述：</p>
+<p><span class="math display">\[M_5 = \begin{pmatrix} \theta_I \chi_M
+&amp; \theta_\tau \chi_M &amp; \theta_{\sigma_2} \chi_M \\
+\theta_{\sigma_2} \chi_C &amp; \theta_I \chi_C &amp; \theta_\tau \chi_C
+\\ \theta_\tau \chi_I &amp; \theta_{\sigma_2} \chi_I &amp; \theta_I
+\chi_I \end{pmatrix}.\]</span></p>
+<ul>
+<li>对角元：扇区自耦合（<span
+class="math inline">\(\theta_I\)</span>）</li>
+<li>非对角元：跨扇区耦合（<span
+class="math inline">\(\theta_\tau\)</span> 或 <span
+class="math inline">\(\theta_{\sigma_2}\)</span>）</li>
+</ul>
+<p><strong>证明。</strong> 由定理 2.3.7.02，Birkhoff 混合矩阵 <span
+class="math inline">\(T = \theta_I \cdot I + \theta_\tau \cdot P_\tau +
+\theta_{\sigma_2} \cdot
+P_{\tau^{-1}}\)</span>。三个置换矩阵的具体形式为：</p>
+<p><span class="math display">\[I = \begin{pmatrix} 1 &amp; 0 &amp; 0 \\
+0 &amp; 1 &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{pmatrix}, \quad P_\tau =
+\begin{pmatrix} 0 &amp; 1 &amp; 0 \\ 0 &amp; 0 &amp; 1 \\ 1 &amp; 0
+&amp; 0 \end{pmatrix}, \quad P_{\tau^{-1}} = \begin{pmatrix} 0 &amp; 0
+&amp; 1 \\ 1 &amp; 0 &amp; 0 \\ 0 &amp; 1 &amp; 0
+\end{pmatrix}.\]</span></p>
+<p>其中 <span class="math inline">\(P_\tau\)</span> 实现 3-循环 <span
+class="math inline">\((1\,2\,3)\)</span>，<span
+class="math inline">\(P_{\tau^{-1}}\)</span> 实现逆 3-循环 <span
+class="math inline">\((1\,3\,2)\)</span>。累积拉伸对角矩阵 <span
+class="math inline">\(\text{diag}(\chi) = \text{diag}(8, 9,
+1)\)</span>（定理 2.3.7.02 §3.2）。矩阵乘积 <span
+class="math inline">\(M_5 = T \cdot \text{diag}(\chi)\)</span> 的每一列
+<span class="math inline">\(j\)</span> 是 <span
+class="math inline">\(T\)</span> 的第 <span
+class="math inline">\(j\)</span> 列乘以 <span
+class="math inline">\(\chi_j\)</span>，直接给出上述显式形式。∎</p>
+<h3 id="拓扑不变量">1.3 拓扑不变量</h3>
+<p>三场耦合图的拓扑不变量：</p>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 38%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">不变量</th>
+<th style="text-align: center;">值</th>
+<th style="text-align: left;">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">节点数</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">三个扇区</td>
+</tr>
+<tr>
+<td style="text-align: left;">边数</td>
+<td style="text-align: center;">6（含自环）</td>
+<td style="text-align: left;">完全图自环</td>
+</tr>
+<tr>
+<td style="text-align: left;">连通度</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">三连通</td>
+</tr>
+<tr>
+<td style="text-align: left;">环路数</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">前向3-循环+反向3-循环</td>
+</tr>
+<tr>
+<td style="text-align: left;">Euler 示性数</td>
+<td style="text-align: center;"><span
+class="math inline">\(-1\)</span></td>
+<td style="text-align: left;">环面挖一圆盘：<span
+class="math inline">\(\chi = 2 - 2g - b = 2 - 2 - 1 = -1\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">自同构群</td>
+<td style="text-align: center;"><span
+class="math inline">\(Z_2\)</span></td>
+<td style="text-align: left;">triality 破缺残余对称</td>
+</tr>
+</tbody>
+</table>
+<p>三场耦合图的非平凡 Euler 示性数 <span class="math inline">\(\chi =
+-1\)</span> 表明该图对应的曲面不是平面（<span class="math inline">\(\chi
+= 2\)</span>）而是环面（<span class="math inline">\(g =
+1\)</span>）挖去一个开圆盘（<span class="math inline">\(b =
+1\)</span>）。这一拓扑非平凡性与 Berry 相位 <span
+class="math inline">\(2\pi\)</span>
+的全局结构一致：编码轨道在环面上闭合，但 7 步截断留下一个「开口」——第 8
+步（Bott 周期闭合）尚未完成。</p>
+<h3 id="三场耦合矩阵的构造细节">1.4 三场耦合矩阵的构造细节</h3>
+<p>三场耦合矩阵 <span class="math inline">\(M_5\)</span>
+的构造由两个独立代数结构合成：Birkhoff 混合 <span
+class="math inline">\(T\)</span> 和累积拉伸 <span
+class="math inline">\(\text{diag}(\chi)\)</span>。两者分别来自不同的代数层级，合成方式具有刚性。</p>
+<p><strong>Birkhoff 混合 <span class="math inline">\(T\)</span>
+的构造。</strong> <span class="math inline">\(T\)</span> 由 triality
+破缺 <span class="math inline">\(S_3 \to Z_2\)</span>
+后的三个置换轨道确定（定理 2.3.7.02 §2.2）。三个轨道权重 <span
+class="math inline">\((\theta_I, \theta_\tau,
+\theta_{\sigma_2})\)</span> 满足归一化约束 <span
+class="math inline">\(\theta_I + \theta_\tau + \theta_{\sigma_2} =
+1\)</span>，有效自由度为 2。观测者位置的权重 <span
+class="math inline">\((0.782, 0.209, 0.009)\)</span> 由 Cramer
+法则解析公式（定理 2.3.7.02 §3.4）从不动点 <span
+class="math inline">\(\sigma^*\)</span> 和拉伸因子 <span
+class="math inline">\(\chi\)</span> 唯一确定。</p>
+<p><strong>累积拉伸 <span class="math inline">\(\chi\)</span>
+的构造。</strong> <span class="math inline">\(\chi = (8, 9, 1)\)</span>
+由乘子序列（定理 10.11.1.14）和扇区-因子绑定（定理
+1.2.3.01）确定。具体地：</p>
+<table>
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 27%" />
+<col style="width: 22%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">扇区</th>
+<th style="text-align: center;"><span
+class="math inline">\(\chi\)</span> 值</th>
+<th style="text-align: left;">来源</th>
+<th style="text-align: center;">绑定因子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ℳ</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;"><span class="math inline">\(\mu_1 \times
+\mu_2\)</span> 物质分量 <span class="math inline">\(2 \times
+4\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\gamma_1
+\leftrightarrow 2\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">𝒞</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: left;">triality 破缺复结构贡献 <span
+class="math inline">\(3^2\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\gamma_2
+\leftrightarrow 3\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">ℐ</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">回收平衡（零净拉伸）</td>
+<td style="text-align: center;"><span class="math inline">\(\gamma_3
+\leftrightarrow 5\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><strong>合成的刚性。</strong> <span class="math inline">\(M_5 = T
+\cdot \text{diag}(\chi)\)</span> 的合成不引入任何新自由参数——<span
+class="math inline">\(T\)</span> 的 2 个自由度被不动点方程锁定，<span
+class="math inline">\(\chi\)</span> 的 3 个值被 Bott 周期锁定。因此
+<span class="math inline">\(M_5\)</span> 的 9
+个矩阵元完全由代数结构确定，不可调节。</p>
+<p><span class="math inline">\(M_5\)</span> 的行列式为：</p>
+<p><span class="math display">\[\det(M_5) = \det(T) \cdot \chi_M \chi_C
+\chi_I.\]</span></p>
+<p>由 <span class="math inline">\(T\)</span> 的本征值 <span
+class="math inline">\(\lambda_1 = 1\)</span>, <span
+class="math inline">\(\lambda_{2,3} = 0.678 \pm 0.181i\)</span>，得
+<span class="math inline">\(\det(T) = \lambda_1 \lambda_2 \lambda_3 =
+|\lambda_{2,3}|^2 = 0.702^2 \approx 0.493\)</span>。因此：</p>
+<p><span class="math display">\[\det(M_5) = 0.493 \times 8 \times 9
+\times 1 \approx 35.5.\]</span></p>
+<p><span class="math inline">\(M_5\)</span> 非奇异（<span
+class="math inline">\(\det \neq
+0\)</span>），保证不动点方程有唯一解。</p>
+<h3 id="扇区间耦合通道">1.5 扇区间耦合通道</h3>
+<p>三场耦合矩阵 <span class="math inline">\(M_5\)</span> 定义了 9
+条耦合通道（3 条对角、6
+条非对角）。每条通道对应一个特定的物理相互作用：</p>
+<table>
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 22%" />
+<col style="width: 18%" />
+<col style="width: 18%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">通道</th>
+<th style="text-align: center;">矩阵元</th>
+<th style="text-align: left;">耦合路径</th>
+<th style="text-align: left;">物理对应</th>
+<th style="text-align: center;">强度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ℳ→ℳ</td>
+<td style="text-align: center;"><span class="math inline">\(\theta_I
+\chi_M\)</span></td>
+<td style="text-align: left;">自耦合</td>
+<td style="text-align: left;">电磁</td>
+<td style="text-align: center;">6.256</td>
+</tr>
+<tr>
+<td style="text-align: left;">𝒞→𝒞</td>
+<td style="text-align: center;"><span class="math inline">\(\theta_I
+\chi_C\)</span></td>
+<td style="text-align: left;">自耦合</td>
+<td style="text-align: left;">因果序保持</td>
+<td style="text-align: center;">7.038</td>
+</tr>
+<tr>
+<td style="text-align: left;">ℐ→ℐ</td>
+<td style="text-align: center;"><span class="math inline">\(\theta_I
+\chi_I\)</span></td>
+<td style="text-align: left;">自耦合</td>
+<td style="text-align: left;">信息保持</td>
+<td style="text-align: center;">0.782</td>
+</tr>
+<tr>
+<td style="text-align: left;">ℳ→𝒞</td>
+<td style="text-align: center;"><span class="math inline">\(\theta_\tau
+\chi_M\)</span></td>
+<td style="text-align: left;">腰边（3-循环）</td>
+<td style="text-align: left;">弱作用（ℳ→𝒞）</td>
+<td style="text-align: center;">1.672</td>
+</tr>
+<tr>
+<td style="text-align: left;">𝒞→ℐ</td>
+<td style="text-align: center;"><span class="math inline">\(\theta_\tau
+\chi_C\)</span></td>
+<td style="text-align: left;">腰边（3-循环）</td>
+<td style="text-align: left;">弱作用（𝒞→ℐ）</td>
+<td style="text-align: center;">1.881</td>
+</tr>
+<tr>
+<td style="text-align: left;">ℐ→ℳ</td>
+<td style="text-align: center;"><span class="math inline">\(\theta_\tau
+\chi_I\)</span></td>
+<td style="text-align: left;">腰边（3-循环）</td>
+<td style="text-align: left;">弱作用（ℐ→ℳ）</td>
+<td style="text-align: center;">0.209</td>
+</tr>
+<tr>
+<td style="text-align: left;">ℳ→ℐ</td>
+<td style="text-align: center;"><span
+class="math inline">\(\theta_{\sigma_2} \chi_M\)</span></td>
+<td style="text-align: left;">逆 3-循环（<span
+class="math inline">\(P_{\tau^{-1}}\)</span>）</td>
+<td style="text-align: left;">引力（ℳ→ℐ）</td>
+<td style="text-align: center;">0.072</td>
+</tr>
+<tr>
+<td style="text-align: left;">𝒞→ℳ</td>
+<td style="text-align: center;"><span
+class="math inline">\(\theta_{\sigma_2} \chi_C\)</span></td>
+<td style="text-align: left;">逆 3-循环（<span
+class="math inline">\(P_{\tau^{-1}}\)</span>）</td>
+<td style="text-align: left;">引力（𝒞→ℳ）</td>
+<td style="text-align: center;">0.081</td>
+</tr>
+<tr>
+<td style="text-align: left;">ℐ→𝒞</td>
+<td style="text-align: center;"><span
+class="math inline">\(\theta_{\sigma_2} \chi_I\)</span></td>
+<td style="text-align: left;">逆 3-循环（<span
+class="math inline">\(P_{\tau^{-1}}\)</span>）</td>
+<td style="text-align: left;">引力（ℐ→𝒞）</td>
+<td style="text-align: center;">0.009</td>
+</tr>
+</tbody>
+</table>
+<p>通道强度由 Birkhoff
+权重和累积拉伸的乘积确定。电磁通道（ℳ→ℳ）最强（<span
+class="math inline">\(\theta_I \chi_M =
+6.256\)</span>），引力通道（ℐ→𝒞）最弱（<span
+class="math inline">\(\theta_{\sigma_2} \chi_I =
+0.009\)</span>），强度比约为 <span
+class="math inline">\(700:1\)</span>。</p>
+<p><strong>通道的代数封闭性。</strong> 6 条非对角通道不是独立的——它们受
+Birkhoff 双随机性约束。具体地，每行的非对角元之和等于 <span
+class="math inline">\(1 - \theta_I\)</span>：</p>
+<p><span class="math display">\[\theta_\tau \chi_j + \theta_{\sigma_2}
+\chi_j = (1 - \theta_I) \chi_j.\]</span></p>
+<p>这意味着跨扇区耦合的总强度由 <span
+class="math inline">\(\theta_I\)</span> 唯一确定——<span
+class="math inline">\(\theta_I\)</span>
+越大（物质界越自保持），跨扇区耦合越弱。观测者位置 <span
+class="math inline">\(\theta_I = 0.782\)</span> 给出跨扇区总强度 <span
+class="math inline">\(1 - 0.782 =
+0.218\)</span>，约为自耦合强度的四分之一。</p>
+<h3 id="耦合通道的方向性">1.6 耦合通道的方向性</h3>
+<p>三场耦合通道具有明确的方向性——3-循环 <span
+class="math inline">\(P_\tau\)</span> 是有向的，逆 3-循环 <span
+class="math inline">\(P_{\tau^{-1}}\)</span>
+同样是有向的（反向循环）。</p>
+<p><strong>3-循环通道的方向性。</strong> <span
+class="math inline">\(P_\tau\)</span> 实现 <span
+class="math inline">\(\mathcal{M} \to \mathcal{C} \to \mathcal{I} \to
+\mathcal{M}\)</span>
+的有向循环。这一方向性对应时间箭头——因果序从物质界出发，经因果界到信息界，再回到物质界。循环的不可逆性（3
+步才能回到起点）对应时间箭头的不可逆性。</p>
+<p><strong>逆 3-循环通道的对称性。</strong> <span
+class="math inline">\(P_{\tau^{-1}}\)</span> 实现 <span
+class="math inline">\(\mathcal{M} \to \mathcal{I} \to \mathcal{C} \to
+\mathcal{M}\)</span> 的反向循环。<span
+class="math inline">\(P_{\tau^{-1}}^3 = I\)</span>（与 <span
+class="math inline">\(P_\tau\)</span> 同为 3
+阶循环）保证循环的闭合性。<span
+class="math inline">\(P_{\tau^{-1}}\)</span> 与 <span
+class="math inline">\(P_\tau\)</span>
+互为逆——前向循环与反向循环构成完整的 <span
+class="math inline">\(S_3\)</span> 群结构。注意：<span
+class="math inline">\(P_{\tau^{-1}}\)</span> 并非 <span
+class="math inline">\(S_3\to Z_2\)</span> 破缺后保留的对换 <span
+class="math inline">\(\sigma_2\)</span>（<span
+class="math inline">\(P_{\sigma_2}^2=I\)</span> 的对合性），而是 3
+阶循环元。其对换性的缺失（<span class="math inline">\(P_{\tau^{-1}}^2
+\neq I\)</span>）与 triality
+破缺中丢失对换生成元的物理事实一致。引力相互作用通过 <span
+class="math inline">\(P_{\tau^{-1}}\)</span> 通道实现——其方向性（<span
+class="math inline">\(\mathcal{M}\to\mathcal{I}\to\mathcal{C}\to\mathcal{M}\)</span>）对应引力将物质信息耦合到因果结构的不可逆过程。</p>
+<p>方向性与循环性的共存是三场耦合的核心特征：弱相互作用沿前向循环 <span
+class="math inline">\(P_\tau\)</span>（时间箭头），引力相互作用沿反向循环
+<span
+class="math inline">\(P_{\tau^{-1}}\)</span>（信息→物质→因果），电磁相互作用是自耦合（无方向概念）。</p>
+<hr />
+<h2 id="四种相互作用的统一图景">§2 四种相互作用的统一图景</h2>
+<h3 id="从耦合到相互作用">2.1 从耦合到相互作用</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">相互作用</th>
+<th style="text-align: left;">耦合路径</th>
+<th style="text-align: center;">Birkhoff 分量</th>
+<th style="text-align: center;">强度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">电磁</td>
+<td style="text-align: left;">ℳ→ℳ</td>
+<td style="text-align: center;"><span
+class="math inline">\(\theta_I\)</span></td>
+<td style="text-align: center;">0.782</td>
+</tr>
+<tr>
+<td style="text-align: left;">弱</td>
+<td style="text-align: left;">ℳ→𝒞→ℐ→ℳ</td>
+<td style="text-align: center;"><span
+class="math inline">\(\theta_\tau\)</span></td>
+<td style="text-align: center;">0.209</td>
+</tr>
+<tr>
+<td style="text-align: left;">强</td>
+<td style="text-align: left;">𝒞 内部（复结构triality）</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">（第7卷）</td>
+</tr>
+<tr>
+<td style="text-align: left;">引力</td>
+<td style="text-align: left;">ℳ↔︎ℐ</td>
+<td style="text-align: center;"><span
+class="math inline">\(\theta_{\sigma_2}\)</span></td>
+<td style="text-align: center;">0.009</td>
+</tr>
+</tbody>
+</table>
+<h3 id="强相互作用的特殊位置">2.2 强相互作用的特殊位置</h3>
+<p>强相互作用不直接来自 <span class="math inline">\(T\)</span>
+的分量——它来自因果界 Cl(5) 的复结构 <span class="math inline">\(J =
+\omega_5\)</span> 的triality。<span class="math inline">\(J\)</span>
+的三重表示（<span class="math inline">\(V, S^+, S^-\)</span>）产生 SU(3)
+色规范结构。强相互作用的强度由 <span class="math inline">\(\Delta\Theta
+= 5\)</span> 的代数结构确定，而非 Birkhoff 权重。详细推导在第 7 卷。</p>
+<p>强相互作用的特殊位置反映了三场耦合的层次结构：电磁、弱、引力三种相互作用直接由
+<span class="math inline">\(T\)</span>
+的分量产生，而强相互作用由因果界内部的代数结构产生。这一层次结构的代数根源在于
+Cl(5) 的复结构 <span class="math inline">\(J = \omega_5\)</span> 具有
+Spin(8) triality 之外的triality——这是 <span
+class="math inline">\(\Delta\Theta = 5\)</span> 的额外代数遗产。</p>
+<h3 id="相互作用强度的层级">2.3 相互作用强度的层级</h3>
+<p>四种相互作用的强度层级：</p>
+<p><span class="math display">\[\alpha_{\text{em}} \sim \theta_I \gg
+\alpha_W \sim \theta_\tau \gg \alpha_s \sim f(\Delta\Theta) \gg \alpha_G
+\sim \theta_{\sigma_2}.\]</span></p>
+<p>这一层级由 Birkhoff 权重 <span class="math inline">\(\theta_I \gg
+\theta_\tau \gg \theta_{\sigma_2}\)</span> 和结构常数 <span
+class="math inline">\(\Delta\Theta\)</span> 联合确定。</p>
+<p>层级的代数起源可以追溯到 triality 破缺 <span
+class="math inline">\(S_3 \to Z_2\)</span>。在完整 <span
+class="math inline">\(S_3\)</span> 对称下，三个置换轨道等权重（<span
+class="math inline">\(\theta_I = \theta_\tau = \theta_{\sigma_2} =
+1/3\)</span>），四种相互作用强度相同。triality 破缺将 <span
+class="math inline">\(S_3\)</span> 的 6 个元素分为 3
+个轨道，且破缺的能量代价使三个轨道权重产生分裂：恒等轨道（<span
+class="math inline">\(\theta_I\)</span>）最稳定（无破缺代价），对换轨道（<span
+class="math inline">\(\theta_\tau\)</span>）次之（单次翻转代价），循环轨道（<span
+class="math inline">\(\theta_{\sigma_2}\)</span>）最不稳定（三次循环代价）。这一破缺代价的递增直接对应相互作用强度的递减。</p>
+<h3 id="耦合通道的封闭性">2.4 耦合通道的封闭性</h3>
+<p>四种相互作用对应三场耦合的 6
+条通道，但这些通道不是独立的——它们受两个代数约束封闭：</p>
+<p><strong>约束1：行和约束（Birkhoff 双随机性）。</strong>
+每行通道强度之和为常数：</p>
+<p><span class="math display">\[\sum_j (M_5)_{ij} / \chi_j = \theta_I +
+\theta_\tau + \theta_{\sigma_2} = 1.\]</span></p>
+<p>这一约束保证编码信息在三场之间守恒——不创生也不消灭。</p>
+<p><strong>约束2：列和约束。</strong> 每列通道强度之和也为常数：</p>
+<p><span class="math display">\[\sum_i (M_5)_{ij} / \chi_j = \theta_I +
+\theta_\tau + \theta_{\sigma_2} = 1.\]</span></p>
+<p>列和约束保证每个扇区接收的总编码等于其发出的总编码——三场耦合是「收支平衡」的。</p>
+<p>两个约束联合，6 条通道的有效自由度为 <span class="math inline">\(6 -
+2 = 4\)</span>。但 triality 破缺进一步将 6 条通道分为 3
+组（恒等、对换、循环），每组内通道等权重，有效自由度降为
+2。因此四种相互作用的强度由 2
+个参数完全确定——这是共扼谱几何跨区域信息导入特征的拓扑根源。</p>
+<h3 id="层级的几何因子分解">2.5 层级的几何因子分解</h3>
+<p>四种相互作用的强度层级也可通过几何因子分解（定理
+5.5.1.01）理解。每种相互作用由一个主导几何因子确定：</p>
+<table>
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 27%" />
+<col style="width: 22%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">相互作用</th>
+<th style="text-align: center;">Birkhoff 分量</th>
+<th style="text-align: left;">主导因子</th>
+<th style="text-align: center;">因子值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">电磁</td>
+<td style="text-align: center;"><span
+class="math inline">\(\theta_I\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(f_1 =
+\sqrt{\Lambda} = \sqrt{3}\)</span></td>
+<td style="text-align: center;">1.732</td>
+</tr>
+<tr>
+<td style="text-align: left;">弱</td>
+<td style="text-align: center;"><span
+class="math inline">\(\theta_\tau\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(f_2 =
+\sqrt{\Delta\Theta/\Lambda} = \sqrt{5/3}\)</span></td>
+<td style="text-align: center;">1.291</td>
+</tr>
+<tr>
+<td style="text-align: left;">强</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: left;"><span class="math inline">\(f_3 =
+\sqrt{k_0} = \sqrt{2}\)</span></td>
+<td style="text-align: center;">1.414</td>
+</tr>
+<tr>
+<td style="text-align: left;">引力</td>
+<td style="text-align: center;"><span
+class="math inline">\(\theta_{\sigma_2}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(f_4 =
+1/\sqrt{2\pi}\)</span></td>
+<td style="text-align: center;">0.399</td>
+</tr>
+</tbody>
+</table>
+<p>Birkhoff
+权重和几何因子的乘积给出相互作用的完整强度。电磁相互作用的强度由 <span
+class="math inline">\(\theta_I \cdot \sqrt{3} \approx 1.354\)</span>
+确定，弱相互作用由 <span class="math inline">\(\theta_\tau \cdot
+\sqrt{5/3} \approx 0.270\)</span> 确定，引力相互作用由 <span
+class="math inline">\(\theta_{\sigma_2} \cdot 1/\sqrt{2\pi} \approx
+0.0036\)</span> 确定。这一双层结构——Birkhoff
+权重（动力学）与几何因子（结构）——给出了相互作用强度的完整代数描述。</p>
+<hr />
+<h2 id="三场耦合的自洽性">§3 三场耦合的自洽性</h2>
+<h3 id="双随机性保证">3.1 双随机性保证</h3>
+<p><span class="math inline">\(T\)</span>
+的双随机性（行和=列和=1）保证三场耦合的自洽性：</p>
+<p><span class="math display">\[\sum_j T_{ij} = 1 \implies
+\text{每个扇区的总输出} = \text{总输入}.\]</span></p>
+<p>这意味着编码信息在三场之间守恒——不创生也不消灭。</p>
+<p>双随机性的深层含义是<strong>编码守恒律</strong>。将三场耦合视为编码信息的流动网络：物质界
+ℳ 的编码信息通过 <span class="math inline">\(P_\tau\)</span> 流向
+𝒞（弱作用通道），通过 <span class="math inline">\(P_{\sigma_2}\)</span>
+流向 ℐ（引力通道），同时接收来自 𝒞 和 ℐ
+的回流。双随机性保证每个扇区的净流出等于净流入——编码信息在三场耦合网络中守恒。</p>
+<p>这一守恒律的代数表述为：对任意时刻 <span
+class="math inline">\(t\)</span>，三场编码权重之和恒为 1：</p>
+<p><span class="math display">\[\sigma_{\mathcal{M}}(t) +
+\sigma_{\mathcal{C}}(t) + \sigma_{\mathcal{I}}(t) = 1, \quad \forall
+t.\]</span></p>
+<p>这是归一化条件的动力学推论——双随机性保证归一化在时间演化下保持。</p>
+<h3 id="不动点的唯一性">3.2 不动点的唯一性</h3>
+<p>三场耦合的不动点 <span class="math inline">\(\sigma^*\)</span>
+唯一存在（定理 2.3.2.01），且 Jacobian 谱半径 <span
+class="math inline">\(\rho = 0.124 &lt; 1\)</span>
+保证指数收敛。三场系统是全局稳定的。</p>
+<p>不动点 <span class="math inline">\(\sigma^* \approx (0.777912,
+0.210603, 0.011484)\)</span>
+的三个分量对应三个扇区的稳态编码权重。物质界权重 <span
+class="math inline">\(\sigma_{\mathcal{M}}^* \approx 0.777912\)</span>
+最大——物质主导；信息界权重 <span
+class="math inline">\(\sigma_{\mathcal{I}}^* \approx 0.011484\)</span>
+最小——信息容量有限。这一分布与观测一致：我们生活在一个物质主导、信息容量有限的宇宙中。</p>
+<p>不动点的唯一性由两个因素联合保证：</p>
+<ol type="1">
+<li><strong><span class="math inline">\(M_5\)</span>
+的非奇异性</strong>：<span class="math inline">\(\det(M_5) \approx 35.5
+\neq 0\)</span>，不动点方程 <span class="math inline">\(M_5 \sigma^* = Z
+\sigma^*\)</span> 有唯一解。</li>
+<li><strong>Jacobian 压缩性</strong>：<span class="math inline">\(\rho =
+0.124 &lt; 1\)</span>，不动点是吸引子，从任意初始态出发都收敛到 <span
+class="math inline">\(\sigma^*\)</span>。</li>
+</ol>
+<h3 id="收敛性的本征值分析">3.3 收敛性的本征值分析</h3>
+<p>三场耦合的收敛性由 <span class="math inline">\(T\)</span>
+的本征值确定。<span class="math inline">\(T\)</span>
+的特征多项式为：</p>
+<p><span class="math display">\[\det(T - \lambda I) = (\lambda -
+1)(\lambda^2 - 2\text{Re}(\lambda_2)\lambda + |\lambda_2|^2) =
+0.\]</span></p>
+<p>三个本征值为：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">本征值</th>
+<th style="text-align: center;">模</th>
+<th style="text-align: left;">物理意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span class="math inline">\(\lambda_1 =
+1\)</span></td>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">主本征值，不动点方向</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="math inline">\(\lambda_2 =
+0.678 + 0.181i\)</span></td>
+<td style="text-align: center;">0.702</td>
+<td style="text-align: left;">衰减振荡模式</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="math inline">\(\lambda_3 =
+0.678 - 0.181i\)</span></td>
+<td style="text-align: center;">0.702</td>
+<td style="text-align: left;">衰减振荡模式（共轭）</td>
+</tr>
+</tbody>
+</table>
+<p>主本征值 <span class="math inline">\(\lambda_1 = 1\)</span>
+对应不动点方向——这一方向不衰减，是稳态。非主本征值 <span
+class="math inline">\(\lambda_{2,3}\)</span> 的模 <span
+class="math inline">\(|\lambda_{2,3}| = 0.702 &lt;
+1\)</span>，对应衰减模式——任何偏离不动点的扰动都以速率 <span
+class="math inline">\(|\lambda_{2,3}|^n \to 0\)</span> 指数衰减。</p>
+<p>复数本征值表明收敛过程带有阻尼振荡——振荡的虚部 <span
+class="math inline">\(\text{Im}(\lambda_{2,3}) = \pm 0.181\)</span> 对应
+<span class="math inline">\(Z_2\)</span>
+残余对称性的翻转操作，衰减的实部 <span
+class="math inline">\(\text{Re}(\lambda_{2,3}) = 0.678\)</span> 对应
+Birkhoff 混合的收敛趋势。振荡周期为 <span class="math inline">\(2\pi /
+0.181 \approx 34.7\)</span> 个时间步——在约 35 步内完成一次完整振荡。</p>
+<h3 id="双随机性与-perron-frobenius-定理">3.4 双随机性与
+Perron-Frobenius 定理</h3>
+<p><span class="math inline">\(T\)</span>
+是非负不可约双随机矩阵，Perron-Frobenius 定理保证：</p>
+<ol type="1">
+<li><strong>主本征值为 1</strong>：<span class="math inline">\(\lambda_1
+= 1\)</span> 是 <span class="math inline">\(T\)</span>
+的最大本征值，对应正特征向量 <span class="math inline">\(\sigma^* &gt;
+0\)</span>。</li>
+<li><strong>唯一性</strong>：<span class="math inline">\(\lambda_1 =
+1\)</span> 的代数重数为 1（因为 <span class="math inline">\(T\)</span>
+是本原矩阵——<span class="math inline">\(T^3 &gt;
+0\)</span>），不动点唯一。</li>
+<li><strong>其余本征值模小于 1</strong>：<span
+class="math inline">\(|\lambda_{2,3}| &lt; 1\)</span>，保证收敛。</li>
+</ol>
+<p>Perron-Frobenius 定理的应用条件（非负、不可约、本原）全部满足：</p>
+<ul>
+<li><strong>非负</strong>：<span class="math inline">\(\theta_I,
+\theta_\tau, \theta_{\sigma_2} \geq 0\)</span>。</li>
+<li><strong>不可约</strong>：<span class="math inline">\(T\)</span>
+的耦合图是强连通的（3-循环保证任意两个扇区之间有路径）。</li>
+<li><strong>本原</strong>：<span class="math inline">\(T^3\)</span>
+的所有元素为正（3-循环对换的组合使 3 步内任意扇区可达任意扇区）。</li>
+</ul>
+<p>因此三场耦合的不动点存在性、唯一性和全局稳定性都是 Birkhoff
+双随机性的代数推论——不需要任何额外假设。</p>
+<hr />
+<h2 id="三场耦合的拓扑分类">§4 三场耦合的拓扑分类</h2>
+<h3 id="耦合图的同构类">4.1 耦合图的同构类</h3>
+<p>三场耦合图的自同构群为 <span
+class="math inline">\(Z_2\)</span>——triality 破缺后 <span
+class="math inline">\(Z_2\)</span> 残余对称性将 ℳ 和 ℐ 对换（<span
+class="math inline">\(P_{\sigma_2}\)</span>），保持 𝒞
+不变。这一自同构将三场耦合图分为两个等价类：</p>
+<ul>
+<li><strong>类 A</strong>：ℳ 主导（<span
+class="math inline">\(\sigma_{\mathcal{M}} &gt;
+\sigma_{\mathcal{I}}\)</span>）——观测者所在类</li>
+<li><strong>类 B</strong>：ℐ 主导（<span
+class="math inline">\(\sigma_{\mathcal{I}} &gt;
+\sigma_{\mathcal{M}}\)</span>）——<span
+class="math inline">\(Z_2\)</span> 对偶类</li>
+</ul>
+<p>两个类在 <span class="math inline">\(Z_2\)</span>
+下等价——它们的物理定律相同，但可观测量值不同。类 A
+对应物质主导的宇宙（我们的宇宙），类 B
+对应信息主导的宇宙（对偶宇宙）。</p>
+<h3 id="耦合图的亏格">4.2 耦合图的亏格</h3>
+<p>三场耦合图嵌入在带边曲面上——由 Euler 示性数 <span
+class="math inline">\(\chi = -1\)</span> 和带边曲面公式 <span
+class="math inline">\(\chi = 2 - 2g - b\)</span>（<span
+class="math inline">\(g\)</span> 为亏格，<span
+class="math inline">\(b\)</span> 为边界分量数），得 <span
+class="math inline">\(2g + b = 3\)</span>。最自然的解是 <span
+class="math inline">\(g = 1\)</span>（环面）和 <span
+class="math inline">\(b =
+1\)</span>（一个边界分量）——即环面挖去一个开圆盘。边界对应编码轨道的开口——Berry
+相位 <span class="math inline">\(2\pi\)</span>
+闭合的「最后一步」尚未完成。这一拓扑结构反映了编码轨道的 7 步截断：前 7
+步产生三场耦合图，第 8 步闭合产生完整环面。</p>
+<h3 id="拓扑分类与物理对应">4.3 拓扑分类与物理对应</h3>
+<p>三场耦合的拓扑分类与物理相互作用的对应：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">拓扑特征</th>
+<th style="text-align: left;">代数结构</th>
+<th style="text-align: left;">物理对应</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">自环（ℳ→ℳ）</td>
+<td style="text-align: left;"><span
+class="math inline">\(I\)</span>（恒等）</td>
+<td style="text-align: left;">电磁（U(1)）</td>
+</tr>
+<tr>
+<td style="text-align: left;">3-循环</td>
+<td style="text-align: left;"><span
+class="math inline">\(P_\tau\)</span>（triality 循环）</td>
+<td style="text-align: left;">弱（SU(2)）</td>
+</tr>
+<tr>
+<td style="text-align: left;">逆 3-循环</td>
+<td style="text-align: left;"><span
+class="math inline">\(P_{\tau^{-1}}\)</span>（反向循环）</td>
+<td style="text-align: left;">引力（度规）</td>
+</tr>
+<tr>
+<td style="text-align: left;">复结构triality</td>
+<td style="text-align: left;"><span class="math inline">\(J =
+\omega_5\)</span></td>
+<td style="text-align: left;">强（SU(3)）</td>
+</tr>
+</tbody>
+</table>
+<p>四种相互作用对应四种不同的拓扑特征——自环、3-循环、逆
+3-循环和复结构triality。这一对应表明，四种基本相互作用不是独立引入的，而是三场耦合拓扑的必然产物。</p>
+<hr />
+<h2 id="扇区耦合的代数封闭性">§5 扇区耦合的代数封闭性</h2>
+<h3 id="封闭性的定义">5.1 封闭性的定义</h3>
+<p>三场耦合的代数封闭性是指：三场耦合矩阵 <span
+class="math inline">\(M_5\)</span>
+的所有矩阵元都可以从代数结构（Birkhoff 混合矩阵 <span
+class="math inline">\(T\)</span> 和累积拉伸 <span
+class="math inline">\(\chi\)</span>）导出，不需要外部输入。封闭性的验证：</p>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 30%" />
+<col style="width: 38%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">矩阵元</th>
+<th style="text-align: left;">代数来源</th>
+<th style="text-align: center;">外部输入</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span class="math inline">\((M_5)_{11} =
+\theta_I \chi_M\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\theta_I\)</span>（Cramer 法则）, <span
+class="math inline">\(\chi_M\)</span>（Bott 周期）</td>
+<td style="text-align: center;">无</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="math inline">\((M_5)_{12} =
+\theta_\tau \chi_M\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\theta_\tau\)</span>（Cramer 法则）, <span
+class="math inline">\(\chi_M\)</span>（Bott 周期）</td>
+<td style="text-align: center;">无</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="math inline">\((M_5)_{13} =
+\theta_{\sigma_2} \chi_M\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\theta_{\sigma_2}\)</span>（归一化）, <span
+class="math inline">\(\chi_M\)</span>（Bott 周期）</td>
+<td style="text-align: center;">无</td>
+</tr>
+<tr>
+<td style="text-align: left;">其余 6 元</td>
+<td style="text-align: left;">同上</td>
+<td style="text-align: center;">无</td>
+</tr>
+</tbody>
+</table>
+<p>所有 9 个矩阵元都从代数结构导出——三场耦合矩阵是代数封闭的。</p>
+<h3 id="封闭性与跨区域信息导入">5.2 封闭性与跨区域信息导入</h3>
+<p>代数封闭性是共扼谱几何跨区域信息导入特征的三场层面表现。在第 1
+卷中，五层互扼锁定（定理 1.6.3.01）保证了编码框架的跨区域信息导入；在第
+2 卷中，Birkhoff 混合矩阵的 Cramer 法则解析公式（定理 2.3.7.02
+§3.4）保证了物理常数的跨区域信息导入；在本卷中，三场耦合矩阵的代数封闭性保证了四种相互作用强度的跨区域信息导入。</p>
+<p>跨区域信息导入的层次结构：</p>
+<pre><code>第1卷：编码框架跨区域信息导入（五层互扼锁定）
+ └→ 第2卷：物理常数跨区域信息导入（Cramer 法则）
+ └→ 第6卷：相互作用强度跨区域信息导入（代数封闭性）</code></pre>
+<p>每一层的跨区域信息导入特征都是上一层的推论——整个体系从零之动 <span
+class="math inline">\(\delta\)</span>
+出发，经代数刚性层层导出，最终给出四种相互作用强度的确定值。</p>
+<h3 id="封闭性的可证伪性">5.3 封闭性的可证伪性</h3>
+<p>代数封闭性给出了<strong>可证伪预言</strong>：如果共扼谱几何正确，四种相互作用强度必须满足
+<span class="math inline">\(M_5\)</span> 的代数关系。具体地：</p>
+<ol type="1">
+<li>电磁强度 <span class="math inline">\(\alpha_{\text{em}} \propto
+\theta_I \chi_M\)</span>——由 <span
+class="math inline">\(\theta_I\)</span> 和 <span
+class="math inline">\(\chi_M\)</span> 确定</li>
+<li>弱强度 <span class="math inline">\(\alpha_W \propto \theta_\tau
+\chi_C\)</span>——由 <span class="math inline">\(\theta_\tau\)</span> 和
+<span class="math inline">\(\chi_C\)</span> 确定</li>
+<li>引力强度 <span class="math inline">\(\alpha_G \propto
+\theta_{\sigma_2} \chi_I\)</span>——由 <span
+class="math inline">\(\theta_{\sigma_2}\)</span> 和 <span
+class="math inline">\(\chi_I\)</span> 确定</li>
+</ol>
+<p>三个强度由三个 Birkhoff 权重 <span class="math inline">\((\theta_I,
+\theta_\tau, \theta_{\sigma_2})\)</span> 和三个拉伸因子 <span
+class="math inline">\((\chi_M, \chi_C, \chi_I)\)</span> 确定，但 6
+个参数受 3 个约束（归一化Cramer 法则的 2 个方程），有效自由度为
+3。因此三个相互作用强度由 3 个有效参数确定——存在 0 个可调参数（3
+个参数由代数结构锁定）。</p>
+<p>如果实验测量的三种相互作用强度不满足 <span
+class="math inline">\(M_5\)</span>
+的代数关系，则共扼谱几何的三场耦合理论被证伪。这是本体系最强可检验预言之一。</p>
+<hr />
+<h2 id="定理索引">定理索引</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">编号</th>
+<th style="text-align: left;">内容</th>
+<th style="text-align: center;">证明状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">定理 6.1.1.01</td>
+<td style="text-align: left;">三场耦合矩阵定理</td>
+<td style="text-align: center;">已证（本文§1.2）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 07:53:34</p>
+  </footer>
+</div>
+</body>
+</html>

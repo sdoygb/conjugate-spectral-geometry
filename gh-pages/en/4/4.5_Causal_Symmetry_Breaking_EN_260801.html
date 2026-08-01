@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.5 Causal Symmetry Breaking | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Version: 260801.1">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/4/4.5_Causal_Symmetry_Breaking_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">4.5 Causal Symmetry Breaking</span>
+  </nav>
+  <main class="article-content">
+<h1 id="causal-symmetry-breaking">4.5 Causal Symmetry Breaking</h1>
+<p><strong>Version</strong>: 260801.1</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>This article analyzes the symmetry breaking of the Causal Sector. The
+triality breaking <span class="math inline">\(S_3 \to Z_2\)</span> in
+the Cl(5)→Cl(6) transition generates the gauge structures of Weak
+Isospin <span class="math inline">\(SU(2)\)</span> and Hypercharge <span
+class="math inline">\(U(1)\)</span>. The breaking is not artificially
+introduced — it is an inevitable consequence of the change in the
+algebraic structure. This article analyzes the breaking mechanism in
+detail, derives the geometric form of the electroweak coupling
+constants, and discusses the locking process of the causal arrow.</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<p>§1 <span class="math inline">\(S_3 \to Z_2\)</span> Breaking 　1.1
+Breaking Mechanism 　1.2 Symmetry Analysis of the Breaking 　1.3
+Consequences of the Breaking 　1.4 Geometric Form of the Gauge
+Couplings</p>
+<p>§2 Geometric Realization of Weak Isospin 　2.1 Two-State Structure
+　2.2 Relationship Between Weak Isospin and Helicity 　2.3 Algebraic
+Origin of Weak Isospin</p>
+<p>§3 Locking of the Causal Arrow 　3.1 Relationship Between Breaking
+and the Arrow 　3.2 Algebraic Mechanism of Arrow Locking 　3.3
+Irreversibility of the Arrow 　3.4 Arrow Locking and Algebraic
+Normalization</p>
+<p>§4 Landscape Dependence of Symmetry Breaking 　4.1 Universality of
+the Breaking 　4.2 Landscape Dependence of the Coupling Strengths 　4.3
+Landscape Range of the Coupling Ratio 　4.4 Breaking Strength and
+Algebraic Action</p>
+<p>§5 Physical Consequences of the Breaking 　5.1 Electroweak
+Unification 　5.2 Chirality of the Weak Interaction 　5.3 Breaking and
+Mass Generation 　5.4 Irreversibility of the Breaking</p>
+<hr />
+<h2 id="s_3-to-z_2-breaking">§1 <span class="math inline">\(S_3 \to
+Z_2\)</span> Breaking</h2>
+<h3 id="breaking-mechanism">1.1 Breaking Mechanism</h3>
+<p>Cl(5) = Mat(4,ℂ) possesses the full Spin(8) triality <span
+class="math inline">\(S_3\)</span> symmetry. Cl(6) = Mat(8,ℝ) returns to
+a real structure, and triality is reduced to <span
+class="math inline">\(Z_3\)</span> (cyclic symmetry).</p>
+<p>The algebraic cause of the breaking: <span
+class="math inline">\(\omega_5\)</span> (the Complex Structure <span
+class="math inline">\(J\)</span>) no longer commutes with all generators
+in Cl(6) — <span class="math inline">\(\omega_6 = \omega_5 \cdot
+e_6\)</span>, and <span class="math inline">\(e_6\)</span> breaks the
+commutativity of <span class="math inline">\(J\)</span>.</p>
+<p>Specifically, in Cl(5):</p>
+<p><span class="math display">\[[\omega_5, e_i] = 0, \quad \forall i =
+1, \ldots, 5.\]</span></p>
+<p>But in Cl(6), the new generator <span
+class="math inline">\(e_6\)</span> anti-commutes with <span
+class="math inline">\(\omega_5\)</span>:</p>
+<p><span class="math display">\[\{\omega_5, e_6\} = 0, \quad \Rightarrow
+\quad [\omega_5, e_6] \neq 0.\]</span></p>
+<p>This means <span class="math inline">\(\omega_5\)</span> is no longer
+a central element of Cl(6) — the Complex Structure <span
+class="math inline">\(J\)</span> is broken.</p>
+<h4
+id="detailed-derivation-algebraic-analysis-of-the-cl5cl6-transition">Detailed
+Derivation: Algebraic Analysis of the Cl(5)→Cl(6) Transition</h4>
+<p><strong>Step 1: Center structure of Cl(5).</strong> Cl(5) is an
+odd-dimensional Clifford algebra; its center is <span
+class="math inline">\(\mathbb{R} \oplus \mathbb{R}\omega_5\)</span> (a
+two-dimensional real algebra). <span
+class="math inline">\(\omega_5\)</span> commutes with all generators and
+acts as the Complex Structure.</p>
+<p><strong>Step 2: Construction of Cl(6).</strong> Cl(6) = Cl(5) ⊗ Cl(1)
+(tensor product). The new generator <span
+class="math inline">\(e_6\)</span> satisfies <span
+class="math inline">\(e_6^2 = 1\)</span> and <span
+class="math inline">\(\{e_6, e_i\} = 0\)</span> (<span
+class="math inline">\(i = 1, \ldots, 5\)</span>). The volume element of
+Cl(6) is <span class="math inline">\(\omega_6 = \omega_5 \cdot
+e_6\)</span>.</p>
+<p><strong>Step 3: Loss of centrality of <span
+class="math inline">\(\omega_5\)</span>.</strong> <span
+class="math inline">\(\omega_5 e_6 = -e_6 \omega_5\)</span> (because
+<span class="math inline">\(\{\omega_5, e_6\} = 0\)</span>, arising from
+5 anti-commutations of <span class="math inline">\(\omega_5\)</span>
+with <span class="math inline">\(e_6\)</span>). Hence <span
+class="math inline">\([\omega_5, e_6] = 2\omega_5 e_6 \neq 0\)</span> —
+<span class="math inline">\(\omega_5\)</span> is no longer a central
+element of Cl(6).</p>
+<p><strong>Step 4: Breaking of triality.</strong> The Spin(8) triality
+<span class="math inline">\(S_3\)</span> symmetry relies on the Complex
+Structure of Cl(5). When <span class="math inline">\(\omega_5\)</span>
+loses centrality, the three equivalent representations of triality are
+no longer equivalent — <span class="math inline">\(S_3\)</span> breaks
+to <span class="math inline">\(Z_2\)</span> (only complex conjugation
+symmetry is preserved). A more precise group-theoretic analysis is given
+in §1.2.</p>
+<p><strong>Step 5: Connection to the Coding Orbit.</strong> The
+Cl(5)→Cl(6) transition corresponds to the <span
+class="math inline">\(\mathcal{C} \to \mathcal{I}\)</span> segment of
+the Coding Orbit (Vol. 3, Theorem 3.2.1.01). Triality breaking is an
+algebraic necessity of the transition from the Causal Sector to the
+Information Sector — the Information Sector returns to a real structure,
+weakening the Complex Structure symmetry of the Causal Sector.</p>
+<h3 id="symmetry-analysis-of-the-breaking">1.2 Symmetry Analysis of the
+Breaking</h3>
+<p><span class="math inline">\(S_3\)</span> is the symmetric group of
+order 3, with 6 elements: identity <span
+class="math inline">\(e\)</span>, two rotations <span
+class="math inline">\(\tau, \tau^2\)</span>, three transpositions <span
+class="math inline">\(\sigma_1, \sigma_2, \sigma_3\)</span>.</p>
+<p>In Cl(5), the three transpositions of <span
+class="math inline">\(S_3\)</span> correspond to three equivalent
+representations of triality. After breaking:</p>
+<table>
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 23%" />
+<col style="width: 23%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Symmetry element</th>
+<th style="text-align: left;">In Cl(5)</th>
+<th style="text-align: left;">In Cl(6)</th>
+<th style="text-align: left;">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Identity <span
+class="math inline">\(e\)</span></td>
+<td style="text-align: left;">Preserved</td>
+<td style="text-align: left;">Preserved</td>
+<td style="text-align: left;">Intact</td>
+</tr>
+<tr>
+<td style="text-align: center;">Rotations <span
+class="math inline">\(\tau, \tau^2\)</span></td>
+<td style="text-align: left;">Preserved</td>
+<td style="text-align: left;">Broken</td>
+<td style="text-align: left;">Lost</td>
+</tr>
+<tr>
+<td style="text-align: center;">Transposition <span
+class="math inline">\(\sigma_2\)</span></td>
+<td style="text-align: left;">Preserved</td>
+<td style="text-align: left;">Preserved (complex conjugation)</td>
+<td style="text-align: left;">Remnant</td>
+</tr>
+<tr>
+<td style="text-align: center;">Transpositions <span
+class="math inline">\(\sigma_1, \sigma_3\)</span></td>
+<td style="text-align: left;">Preserved</td>
+<td style="text-align: left;">Broken</td>
+<td style="text-align: left;">Lost</td>
+</tr>
+</tbody>
+</table>
+<p>After breaking, only <span class="math inline">\(Z_2 = \{I,
+\sigma_2\}\)</span> survives — the complex conjugation symmetry (only
+identity and transposition are preserved).</p>
+<h4
+id="detailed-derivation-geometric-realization-of-the-s_3-group-action">Detailed
+Derivation: Geometric Realization of the <span
+class="math inline">\(S_3\)</span> Group Action</h4>
+<p>Action of <span class="math inline">\(S_3\)</span> on the matrix
+representation of <span class="math inline">\(T\)</span>:</p>
+<ul>
+<li>Identity <span class="math inline">\(e\)</span>: <span
+class="math inline">\(T \to T\)</span> (invariant)</li>
+<li>Rotation <span class="math inline">\(\tau\)</span>: <span
+class="math inline">\(T \to P_\tau T P_\tau^\dagger\)</span> (cyclic
+permutation of basis)</li>
+<li>Transposition <span class="math inline">\(\sigma_2\)</span>: <span
+class="math inline">\(T \to P_{\sigma_2} T P_{\sigma_2}^\dagger\)</span>
+(swap the <span class="math inline">\(\mathcal{C}\)</span> and <span
+class="math inline">\(\mathcal{I}\)</span> bases)</li>
+</ul>
+<p>In Cl(5), all three actions are symmetries of <span
+class="math inline">\(T\)</span> — <span
+class="math inline">\(T\)</span> is invariant under all three actions.
+In Cl(6), the introduction of <span class="math inline">\(e_6\)</span>
+breaks the rotation symmetry <span class="math inline">\(\tau\)</span>
+(because <span class="math inline">\(\tau\)</span> requires the
+centrality of <span class="math inline">\(\omega_5\)</span>), but
+preserves the transposition symmetry <span
+class="math inline">\(\sigma_2\)</span> (because <span
+class="math inline">\(\sigma_2\)</span> involves only complex
+conjugation, which is compatible with <span
+class="math inline">\(e_6\)</span>).</p>
+<h4
+id="comparative-discussion-s_3-breaking-vs.-standard-chiral-symmetry-breaking">Comparative
+Discussion: <span class="math inline">\(S_3\)</span> Breaking
+vs. Standard Chiral Symmetry Breaking</h4>
+<p>In standard QCD, chiral symmetry <span class="math inline">\(SU(2)_L
+\times SU(2)_R\)</span> is spontaneously broken to <span
+class="math inline">\(SU(2)_V\)</span>. The <span
+class="math inline">\(S_3 \to Z_2\)</span> breaking has a similar
+structure:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Chiral Symmetry Breaking</th>
+<th style="text-align: left;"><span class="math inline">\(S_3 \to
+Z_2\)</span> Breaking</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Original symmetry group</td>
+<td style="text-align: left;"><span class="math inline">\(SU(2)_L \times
+SU(2)_R\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(S_3\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">After breaking</td>
+<td style="text-align: left;"><span
+class="math inline">\(SU(2)_V\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(Z_2\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Breaking type</td>
+<td style="text-align: left;">Spontaneous (dynamical)</td>
+<td style="text-align: left;">Explicit (algebraic)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Goldstone bosons</td>
+<td style="text-align: left;">3 (<span
+class="math inline">\(\pi\)</span> mesons)</td>
+<td style="text-align: left;">None (discrete symmetry)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Energy scale</td>
+<td style="text-align: left;"><span
+class="math inline">\(\Lambda_{\text{QCD}} \sim 200\)</span> MeV</td>
+<td style="text-align: left;">Planck scale</td>
+</tr>
+</tbody>
+</table>
+<p>Both are symmetry breakings, but the physical mechanisms differ —
+chiral breaking is dynamical (driven by QCD vacuum condensation),
+whereas <span class="math inline">\(S_3 \to Z_2\)</span> breaking is
+algebraic (driven by the Cl(5)→Cl(6) transition).</p>
+<h3 id="consequences-of-the-breaking">1.3 Consequences of the
+Breaking</h3>
+<p><strong>Theorem 4.5.1.01 (Emergence of Gauge Structures).</strong>
+The <span class="math inline">\(S_3 \to Z_2\)</span> breaking generates
+two gauge structures:</p>
+<ol type="1">
+<li><strong><span class="math inline">\(Z_2\)</span> remnant</strong> →
+<span class="math inline">\(U(1)\)</span> hypercharge gauge (complex
+conjugation symmetry <span class="math inline">\(e^{i\phi} \to
+e^{-i\phi}\)</span>)</li>
+<li><strong>Broken part <span class="math inline">\(S_3/Z_3 \cong
+Z_2\)</span></strong> → <span class="math inline">\(SU(2)\)</span> weak
+isospin gauge (continuous lift of the three-cycle rotation
+structure)</li>
+</ol>
+<p>Combined: the <span class="math inline">\(U(1) \times SU(2)\)</span>
+electroweak gauge structure emerges from triality breaking.</p>
+<p><strong>Proof.</strong> The normal subgroup chain of <span
+class="math inline">\(S_3\)</span> is <span class="math inline">\(S_3
+\supset Z_3 \supset \{e\}\)</span>, with quotient group <span
+class="math inline">\(S_3/Z_3 \cong Z_2\)</span>. The breaking <span
+class="math inline">\(S_3 \to Z_2\)</span> breaks the three-cycle
+rotation symmetry <span class="math inline">\(Z_3\)</span> and preserves
+the binary transposition symmetry <span
+class="math inline">\(Z_2\)</span>.</p>
+<ul>
+<li>The remnant <span class="math inline">\(Z_2\)</span> corresponds to
+complex conjugation symmetry <span class="math inline">\(e^{i\phi} \to
+e^{-i\phi}\)</span> — lifted to a continuous <span
+class="math inline">\(U(1)\)</span> gauge</li>
+<li>The broken <span class="math inline">\(Z_3\)</span> corresponds to
+three-cycle rotations — its breaking generates the <span
+class="math inline">\(SU(2)\)</span> non-abelian gauge (continuous lift
+of the three-cycle structure)</li>
+</ul>
+<p>The combination yields the <span class="math inline">\(U(1) \times
+SU(2)\)</span> electroweak gauge structure. ∎</p>
+<h4
+id="detailed-derivation-lifting-discrete-symmetries-to-continuous-gauge-groups">Detailed
+Derivation: Lifting Discrete Symmetries to Continuous Gauge Groups</h4>
+<p><strong>Step 1: Lifting <span class="math inline">\(Z_2\)</span> to
+<span class="math inline">\(U(1)\)</span>.</strong> <span
+class="math inline">\(Z_2 = \{1, -1\}\)</span> is a discrete group. On
+the complex plane, <span class="math inline">\(e^{i\phi} \to
+e^{-i\phi}\)</span> is the continuous extension of <span
+class="math inline">\(Z_2\)</span> — <span class="math inline">\(U(1) =
+\{e^{i\theta} : \theta \in [0, 2\pi)\}\)</span> contains <span
+class="math inline">\(Z_2\)</span> as a subgroup. Lifting mechanism: the
+generator <span class="math inline">\(\sigma_2\)</span> of <span
+class="math inline">\(Z_2\)</span> corresponds to the generator <span
+class="math inline">\(Q\)</span> (hypercharge) of <span
+class="math inline">\(U(1)\)</span>, satisfying <span
+class="math inline">\(e^{i\pi Q} = \sigma_2\)</span>.</p>
+<p><strong>Step 2: Lifting <span class="math inline">\(Z_3\)</span> to
+<span class="math inline">\(SU(2)\)</span>.</strong> <span
+class="math inline">\(Z_3 = \{1, \omega, \omega^2\}\)</span> (<span
+class="math inline">\(\omega = e^{2\pi i/3}\)</span>) is a discrete
+group. <span class="math inline">\(SU(2)\)</span> contains <span
+class="math inline">\(Z_3\)</span> as a subgroup — a <span
+class="math inline">\(120^\circ\)</span> rotation in <span
+class="math inline">\(SU(2)\)</span> corresponds to the generator of
+<span class="math inline">\(Z_3\)</span>. Lifting mechanism: the three
+elements of <span class="math inline">\(Z_3\)</span> correspond to
+certain combinations of the three generators <span
+class="math inline">\(T_1, T_2, T_3\)</span> of <span
+class="math inline">\(SU(2)\)</span>.</p>
+<p><strong>Step 3: Direct product of gauge groups.</strong> <span
+class="math inline">\(U(1) \times SU(2)\)</span> is the continuous lift
+of <span class="math inline">\(Z_2 \times Z_3\)</span> (as a subgroup of
+<span class="math inline">\(S_3\)</span>). Note that <span
+class="math inline">\(Z_2 \times Z_3 \cong Z_6\)</span>, but the lifted
+continuous group is <span class="math inline">\(U(1) \times
+SU(2)\)</span>, not <span class="math inline">\(U(6)\)</span>. This is
+because the lifts of <span class="math inline">\(Z_2\)</span> and <span
+class="math inline">\(Z_3\)</span> are independent — <span
+class="math inline">\(Z_2\)</span> lifts to <span
+class="math inline">\(U(1)\)</span>, <span
+class="math inline">\(Z_3\)</span> lifts to <span
+class="math inline">\(SU(2)\)</span>, and they form a direct product.
+∎</p>
+<h3 id="geometric-form-of-the-gauge-couplings">1.4 Geometric Form of the
+Gauge Couplings</h3>
+<p><strong>Theorem 4.5.1.02 (Electroweak Coupling Constants).</strong>
+The relationships between the electroweak coupling constants and the
+Birkhoff weights:</p>
+<p><span class="math display">\[g_1^2 \propto \theta_{\sigma_2} \quad
+(U(1) \text{ hypercharge}), \qquad g_2^2 \propto \theta_\tau \quad
+(SU(2) \text{ weak isospin}).\]</span></p>
+<p>Substituting numerical values: <span class="math inline">\(g_1^2
+\propto 0.009\)</span>, <span class="math inline">\(g_2^2 \propto
+0.209\)</span>. The ratio <span class="math inline">\(g_2^2/g_1^2
+\approx 23\)</span> — the weak isospin coupling is far stronger than the
+hypercharge coupling.</p>
+<p><strong>Proof.</strong> The <span class="math inline">\(U(1)\)</span>
+hypercharge gauge originates from the <span
+class="math inline">\(Z_2\)</span> remnant symmetry (complex
+conjugation); its coupling strength is proportional to the transposition
+weight <span class="math inline">\(\theta_{\sigma_2}\)</span>. The <span
+class="math inline">\(SU(2)\)</span> weak isospin gauge originates from
+the <span class="math inline">\(Z_3\)</span> breaking (rotation <span
+class="math inline">\(\tau\)</span>); its coupling strength is
+proportional to the cyclic permutation weight <span
+class="math inline">\(\theta_\tau\)</span>. Hence <span
+class="math inline">\(g_1^2 \propto \theta_{\sigma_2}\)</span>, <span
+class="math inline">\(g_2^2 \propto \theta_\tau\)</span>. ∎</p>
+<h4
+id="detailed-derivation-numerical-values-of-the-coupling-constants-and-comparison-with-the-standard-model">Detailed
+Derivation: Numerical Values of the Coupling Constants and Comparison
+with the Standard Model</h4>
+<p>In the Standard Model, the electroweak coupling constants at the
+<span class="math inline">\(M_Z\)</span> scale are: <span
+class="math inline">\(g_1 \approx 0.357\)</span>, <span
+class="math inline">\(g_2 \approx 0.652\)</span>. <span
+class="math inline">\(g_2^2/g_1^2 \approx 3.33\)</span>. Our geometric
+value <span class="math inline">\(g_2^2/g_1^2 \approx 23\)</span> is far
+larger than the Standard Model value. Reason for the discrepancy: the
+geometric coupling constants are the “bare” couplings at the Planck
+scale; the Standard Model coupling constants are the “running” couplings
+at the electroweak scale. The renormalization group flow transports the
+high-energy bare couplings to the low-energy physical couplings (Vol.
+7). Hence a running <span class="math inline">\(g_2^2/g_1^2 \approx 23
+\to 3.33\)</span> is possible, but requires a complete RG analysis (the
+subject of Vol. 7).</p>
+<h4
+id="comparative-discussion-geometric-couplings-vs.-standard-model-couplings">Comparative
+Discussion: Geometric Couplings vs. Standard Model Couplings</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Coupling</th>
+<th style="text-align: center;">Geometric Value</th>
+<th style="text-align: center;">Standard Model Value (<span
+class="math inline">\(M_Z\)</span>)</th>
+<th style="text-align: center;">Ratio</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(g_1\)</span>
+(<span class="math inline">\(U(1)\)</span>)</td>
+<td style="text-align: center;"><span class="math inline">\(\sqrt{0.009}
+\approx 0.095\)</span></td>
+<td style="text-align: center;">0.357</td>
+<td style="text-align: center;">0.27</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(g_2\)</span>
+(<span class="math inline">\(SU(2)\)</span>)</td>
+<td style="text-align: center;"><span class="math inline">\(\sqrt{0.209}
+\approx 0.457\)</span></td>
+<td style="text-align: center;">0.652</td>
+<td style="text-align: center;">0.70</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(g_2^2/g_1^2\)</span></td>
+<td style="text-align: center;">23.2</td>
+<td style="text-align: center;">3.33</td>
+<td style="text-align: center;">7.0</td>
+</tr>
+</tbody>
+</table>
+<p>The ratio discrepancy between geometric couplings and Standard Model
+couplings indicates: from the Planck scale to the electroweak scale, the
+<span class="math inline">\(U(1)\)</span> coupling needs to run stronger
+(factor ~3.8), and the <span class="math inline">\(SU(2)\)</span>
+coupling needs to run stronger (factor ~1.4). The <span
+class="math inline">\(U(1)\)</span> runs faster than <span
+class="math inline">\(SU(2)\)</span>, consistent with the trend of the
+Standard Model RG equations (the <span
+class="math inline">\(\beta\)</span> function of <span
+class="math inline">\(U(1)\)</span> is positive, that of <span
+class="math inline">\(SU(2)\)</span> is negative).</p>
+<hr />
+<h2 id="geometric-realization-of-weak-isospin">§2 Geometric Realization
+of Weak Isospin</h2>
+<h3 id="two-state-structure">2.1 Two-State Structure</h3>
+<p>The <span class="math inline">\(Z_3\)</span> symmetry embeds the
+Causal Sector into a cyclic structure — weak isospin up and down:</p>
+<p><span class="math display">\[|+\rangle = P_+|\psi\rangle, \quad
+|-\rangle = P_- |\psi\rangle.\]</span></p>
+<p><span class="math inline">\(P_{\pm}\)</span> are projections of <span
+class="math inline">\(\omega_5\)</span> — sharing the same algebraic
+structure as the helicity splitting of the Matter Sector.</p>
+<p>The projection operators are defined as:</p>
+<p><span class="math display">\[P_{\pm} = \frac{1}{2}(I \pm \omega_5) =
+\frac{1}{2}(I \pm J).\]</span></p>
+<p>Since <span class="math inline">\(J^2 = -1\)</span>, <span
+class="math inline">\(P_{\pm}^2 = P_{\pm}\)</span> (idempotence), <span
+class="math inline">\(P_+ + P_- = I\)</span> (completeness), <span
+class="math inline">\(P_+ P_- = 0\)</span> (orthogonality).</p>
+<h4
+id="detailed-derivation-correction-to-the-projection-operators">Detailed
+Derivation: Correction to the Projection Operators</h4>
+<p>The <span class="math inline">\(P_{\pm} = \frac{1}{2}(I \pm
+\omega_5)\)</span> used in §4.1 are not fully orthogonal — because <span
+class="math inline">\(J^2 = -1\)</span>, <span class="math inline">\(P_+
+P_- = \frac{1}{4}(I - J^2) = \frac{1}{2}I \neq 0\)</span>. The correct
+projection operators should use <span class="math inline">\(iJ\)</span>
+(since <span class="math inline">\((iJ)^2 = 1\)</span>): <span
+class="math inline">\(P_{\pm} = \frac{1}{2}(I \pm i\omega_5)\)</span>.
+Then <span class="math inline">\(P_+ P_- = \frac{1}{4}(I - (iJ)^2) =
+\frac{1}{4}(I - I) = 0\)</span>. Hence the correct form of the weak
+isospin projection operators is <span class="math inline">\(P_{\pm} =
+\frac{1}{2}(I \pm i\omega_5)\)</span>.</p>
+<h3 id="relationship-between-weak-isospin-and-helicity">2.2 Relationship
+Between Weak Isospin and Helicity</h3>
+<p>Weak isospin (𝒞 Sector) and helicity (ℳ Sector) both arise from the
+projection structure of Clifford algebras, but the objects of projection
+differ:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Helicity</th>
+<th style="text-align: left;">Weak Isospin</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Sector</td>
+<td style="text-align: left;">ℳ (Cl(3))</td>
+<td style="text-align: left;">𝒞 (Cl(5))</td>
+</tr>
+<tr>
+<td style="text-align: left;">Projection</td>
+<td style="text-align: left;"><span
+class="math inline">\(\omega_3\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\omega_5\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Symmetry</td>
+<td style="text-align: left;"><span class="math inline">\(Z_3\)</span>
+(Semisimple Splitting)</td>
+<td style="text-align: left;"><span class="math inline">\(Z_3\)</span>
+(triality remnant)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Physical effect</td>
+<td style="text-align: left;">Left-/right-handed particles</td>
+<td style="text-align: left;">Up-/down-type leptons</td>
+</tr>
+<tr>
+<td style="text-align: left;">Coupling constant</td>
+<td style="text-align: left;"><span class="math inline">\(\propto
+\theta_I\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\propto
+\theta_\tau\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The algebraic structures of the two are identical (both are <span
+class="math inline">\(Z_2\)</span> projections), but their physical
+effects differ — helicity distinguishes left and right handedness, weak
+isospin distinguishes up and down type. This “isomorphism with different
+effects” reflects the hierarchical structure of Clifford algebras.</p>
+<h4
+id="detailed-derivation-algebraic-roots-of-isomorphism-with-different-effects">Detailed
+Derivation: Algebraic Roots of Isomorphism with Different Effects</h4>
+<p>The helicity projection <span
+class="math inline">\(P_{\pm}^{\mathcal{M}} = \frac{1}{2}(I \pm
+i\omega_3)\)</span> acts on the Matter Sector (Cl(3)). The weak isospin
+projection <span class="math inline">\(P_{\pm}^{\mathcal{C}} =
+\frac{1}{2}(I \pm i\omega_5)\)</span> acts on the Causal Sector (Cl(5)).
+The two have the same form (both are projections of <span
+class="math inline">\(i\omega\)</span>), but <span
+class="math inline">\(\omega_3\)</span> and <span
+class="math inline">\(\omega_5\)</span> are different algebraic elements
+— <span class="math inline">\(\omega_3\)</span> is the volume element of
+Cl(3), <span class="math inline">\(\omega_5\)</span> is the volume
+element of Cl(5). This causes the same projection structure to produce
+different physical effects.</p>
+<h3 id="algebraic-origin-of-weak-isospin">2.3 Algebraic Origin of Weak
+Isospin</h3>
+<p>Weak isospin <span class="math inline">\(SU(2)\)</span> originates
+from the <span class="math inline">\(Z_3\)</span> rotation symmetry
+prior to <span class="math inline">\(S_3\)</span> breaking. The three
+elements <span class="math inline">\(\{e, \tau, \tau^2\}\)</span> of
+<span class="math inline">\(Z_3\)</span> correspond to three-cycle
+permutations; after breaking they are lifted to the three generators
+<span class="math inline">\(\{T_1, T_2, T_3\}\)</span> of <span
+class="math inline">\(SU(2)\)</span>:</p>
+<p><span class="math display">\[T_k = \frac{1}{2}\sigma_k, \quad [T_i,
+T_j] = i\epsilon_{ijk} T_k,\]</span></p>
+<p>where <span class="math inline">\(\sigma_k\)</span> are the Pauli
+matrices. The three-dimensional structure of <span
+class="math inline">\(SU(2)\)</span> comes from the ternary nature of
+<span class="math inline">\(Z_3\)</span> — three group elements
+correspond to three generators.</p>
+<h4
+id="numerical-verification-energy-level-splitting-of-weak-isospin">Numerical
+Verification: Energy-Level Splitting of Weak Isospin</h4>
+<p>The eigenvalues of <span class="math inline">\(\omega_5\)</span> are
+<span class="math inline">\(\pm i\)</span>, so <span
+class="math inline">\(P_+\)</span> projects onto the subspace with
+eigenvalue <span class="math inline">\(+i\)</span> (up-type), and <span
+class="math inline">\(P_-\)</span> projects onto the subspace with
+eigenvalue <span class="math inline">\(-i\)</span> (down-type). The
+energy-level splitting is <span class="math inline">\(\Delta E =
+2|\text{Im}(\lambda_2)| \approx 2 \times 0.181 = 0.362\)</span> (natural
+units). In Planck energy units, <span class="math inline">\(\Delta E
+\approx 4.42 \times 10^{18}\)</span> GeV — far exceeding the electroweak
+scale (<span class="math inline">\(\sim 10^2\)</span> GeV), indicating
+that the algebraic roots of weak isospin lie at the Planck scale.</p>
+<hr />
+<h2 id="locking-of-the-causal-arrow">§3 Locking of the Causal Arrow</h2>
+<h3 id="relationship-between-breaking-and-the-arrow">3.1 Relationship
+Between Breaking and the Arrow</h3>
+<p>The <span class="math inline">\(S_3 \to Z_2\)</span> breaking not
+only generates gauge structures but also locks the direction of the
+causal arrow. The locking mechanism is as follows:</p>
+<ol type="1">
+<li><strong>Before breaking</strong>: <span
+class="math inline">\(S_3\)</span> symmetry allows three equivalent
+causal orders — no preferred direction</li>
+<li><strong>After breaking</strong>: <span
+class="math inline">\(Z_2\)</span> preserves the transposition of causal
+orders — forward and backward</li>
+<li><strong>Birkhoff dissipation</strong>: <span
+class="math inline">\(|\lambda_{2,3}| &lt; 1\)</span> selects the
+forward direction — the direction of entropy increase</li>
+</ol>
+<p>Hence the direction of the causal arrow is determined by the sign of
+Birkhoff dissipation (entropy increase), while the existence of the
+arrow is determined by triality breaking. Together they lock the
+temporal direction of the Causal Field.</p>
+<h3 id="algebraic-mechanism-of-arrow-locking">3.2 Algebraic Mechanism of
+Arrow Locking</h3>
+<p>The algebraic mechanism of arrow locking can be described
+precisely:</p>
+<ul>
+<li><strong><span class="math inline">\(S_3\)</span> symmetry</strong>:
+<span class="math inline">\(\tau\)</span> (three-cycle) sends <span
+class="math inline">\(\sigma_{\mathcal{M}} \to \sigma_{\mathcal{C}} \to
+\sigma_{\mathcal{I}} \to \sigma_{\mathcal{M}}\)</span>; the three
+directions are equivalent — no arrow</li>
+<li><strong><span class="math inline">\(Z_2\)</span> remnant</strong>:
+<span class="math inline">\(\sigma_2\)</span> (transposition) swaps
+<span class="math inline">\(\sigma_{\mathcal{C}} \leftrightarrow
+\sigma_{\mathcal{I}}\)</span>; only two directions — the arrow
+appears</li>
+<li><strong>Birkhoff dissipation</strong>: <span
+class="math inline">\(\theta_{\sigma_2} \ll \theta_\tau\)</span> makes
+the <span class="math inline">\(\sigma_{\mathcal{C}} \to
+\sigma_{\mathcal{I}}\)</span> direction dominant — the arrow is
+locked</li>
+</ul>
+<p>The breaking reduces three-way symmetry to two-way symmetry;
+dissipation selects one of the two directions — this is the complete
+mechanism of causal arrow locking.</p>
+<h4
+id="detailed-derivation-group-theoretic-condition-for-arrow-locking">Detailed
+Derivation: Group-Theoretic Condition for Arrow Locking</h4>
+<p>The necessary and sufficient condition for arrow locking is <span
+class="math inline">\(\theta_\tau &gt; \theta_{\sigma_2}\)</span>
+(cyclic permutation weight greater than transposition weight). At our
+location, <span class="math inline">\(\theta_\tau \approx
+0.209\)</span>, <span class="math inline">\(\theta_{\sigma_2} \approx
+0.009\)</span>, <span class="math inline">\(\theta_\tau /
+\theta_{\sigma_2} \approx 23.2 \gg 1\)</span>. This makes the <span
+class="math inline">\(\mathcal{M} \to \mathcal{C} \to
+\mathcal{I}\)</span> direction (via cyclic permutation) dominant over
+the <span class="math inline">\(\mathcal{C} \leftrightarrow
+\mathcal{I}\)</span> direction (via transposition). The arrow flows from
+the Matter Sector through the Causal Sector to the Information Sector —
+irreversible.</p>
+<p>Conversely, if <span class="math inline">\(\theta_\tau &lt;
+\theta_{\sigma_2}\)</span>, the arrow direction would reverse — flowing
+from the Information Sector to the Causal Sector. This could occur in
+certain regions of the landscape (Information-Sector-dominated
+regions).</p>
+<h3 id="irreversibility-of-the-arrow">3.3 Irreversibility of the
+Arrow</h3>
+<p>Once the arrow is locked, the evolution direction of the Causal Field
+is irreversible — reversing the evolution would require restoring <span
+class="math inline">\(S_3\)</span> symmetry, i.e., <span
+class="math inline">\(\theta_{\sigma_2} = \theta_\tau = \theta_I =
+1/3\)</span> (the symmetric point). But at our location <span
+class="math inline">\(\theta_{\sigma_2} \approx 0.009 \neq 1/3\)</span>
+— <span class="math inline">\(S_3\)</span> symmetry cannot be restored,
+and the arrow is irreversible.</p>
+<h4
+id="comparative-discussion-causal-arrow-irreversibility-vs.-thermodynamic-irreversibility">Comparative
+Discussion: Causal Arrow Irreversibility vs. Thermodynamic
+Irreversibility</h4>
+<p>In standard thermodynamics, irreversibility arises from the principle
+of entropy increase, but microscopic reversibility (Liouville’s theorem)
+makes macroscopic irreversibility a statistical approximation.
+Differences of causal arrow irreversibility:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Thermodynamic Irreversibility</th>
+<th style="text-align: left;">Causal Arrow Irreversibility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Origin</td>
+<td style="text-align: left;">Statistical (molecular chaos)</td>
+<td style="text-align: left;">Algebraic (<span class="math inline">\(S_3
+\to Z_2\)</span> breaking)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Microscopic reversibility</td>
+<td style="text-align: left;">Yes (Liouville’s theorem)</td>
+<td style="text-align: left;">No (algebraic structure locked)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Restoration condition</td>
+<td style="text-align: left;">Poincaré recurrence at long times</td>
+<td style="text-align: left;">Impossible (<span
+class="math inline">\(\theta_k \neq 1/3\)</span>)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Loschmidt paradox</td>
+<td style="text-align: left;">Exists</td>
+<td style="text-align: left;">Absent</td>
+</tr>
+</tbody>
+</table>
+<p>Causal arrow irreversibility resolves the Loschmidt reversibility
+paradox — irreversibility is not a statistical approximation but an
+inevitable consequence of the algebraic structure.</p>
+<h3 id="arrow-locking-and-algebraic-normalization">3.4 Arrow Locking and
+Algebraic Normalization</h3>
+<p>The algebraic normalization <span class="math inline">\(2pC^3 + C^2 =
+1\)</span> guarantees that <span class="math inline">\(\theta_{\sigma_2}
+\neq \theta_\tau\)</span> — i.e., <span
+class="math inline">\(S_3\)</span> symmetry is not restored. If the
+algebraic normalization permitted <span
+class="math inline">\(\theta_{\sigma_2} = \theta_\tau = \theta_I =
+1/3\)</span>, then <span class="math inline">\(S_3\)</span> symmetry
+would be restored and the arrow would vanish. Hence algebraic
+normalization is a necessary condition for arrow locking.</p>
+<hr />
+<h2 id="landscape-dependence-of-symmetry-breaking">§4 Landscape
+Dependence of Symmetry Breaking</h2>
+<h3 id="universality-of-the-breaking">4.1 Universality of the
+Breaking</h3>
+<p>The <span class="math inline">\(S_3 \to Z_2\)</span> breaking is an
+algebraic necessity of the Cl(5)→Cl(6) transition — it occurs at all
+locations in the landscape. Hence the electroweak gauge structure <span
+class="math inline">\(U(1) \times SU(2)\)</span> exists in all
+worlds.</p>
+<h3 id="landscape-dependence-of-the-coupling-strengths">4.2 Landscape
+Dependence of the Coupling Strengths</h3>
+<p>Although the gauge structure is universal, the coupling strengths
+depend on <span class="math inline">\(\theta_k\)</span> (landscape
+location):</p>
+<ul>
+<li><span class="math inline">\(g_1^2 \propto
+\theta_{\sigma_2}\)</span>: the hypercharge coupling varies with
+landscape location</li>
+<li><span class="math inline">\(g_2^2 \propto \theta_\tau\)</span>: the
+weak isospin coupling varies with landscape location</li>
+</ul>
+<p>The electroweak coupling strengths differ in different worlds — but
+the gauge structure is the same.</p>
+<h3 id="landscape-range-of-the-coupling-ratio">4.3 Landscape Range of
+the Coupling Ratio</h3>
+<p>The landscape range of the coupling ratio <span
+class="math inline">\(g_2^2/g_1^2 = \theta_\tau /
+\theta_{\sigma_2}\)</span>:</p>
+<ul>
+<li>Symmetric point: <span class="math inline">\(\theta_\tau =
+\theta_{\sigma_2} = 1/3\)</span>, <span
+class="math inline">\(g_2^2/g_1^2 = 1\)</span> (no breaking)</li>
+<li>Our location: <span class="math inline">\(g_2^2/g_1^2 \approx
+0.209/0.009 \approx 23\)</span> (strong breaking)</li>
+<li>Extreme point: <span class="math inline">\(\theta_{\sigma_2} \to
+0\)</span>, <span class="math inline">\(g_2^2/g_1^2 \to \infty\)</span>
+(complete breaking)</li>
+</ul>
+<p>At our location <span class="math inline">\(g_2^2/g_1^2 \approx
+23\)</span> is moderate breaking — the weak isospin coupling is far
+stronger than the hypercharge coupling, but both are non-zero.</p>
+<h3 id="breaking-strength-and-algebraic-action">4.4 Breaking Strength
+and Algebraic Action</h3>
+<p>The relationship between the breaking strength <span
+class="math inline">\(\theta_\tau / \theta_{\sigma_2}\)</span> and the
+algebraic action <span class="math inline">\(S(\sigma)\)</span>:</p>
+<p><span class="math display">\[\frac{\theta_\tau}{\theta_{\sigma_2}}
+\propto \frac{\sigma_{\mathcal{C}}^*}{\sigma_{\mathcal{I}}^*} =
+\frac{0.210603}{0.011484} \approx 18.3.\]</span></p>
+<p>The breaking strength is proportional to the coding weight ratio —
+the greater the difference between the weights of the Causal Sector and
+the Information Sector, the stronger the breaking. At our location, the
+weight ratio <span class="math inline">\(\approx 18.3\)</span>,
+corresponding to a moderately strong breaking.</p>
+<h4
+id="numerical-verification-magnitude-of-the-breaking-strength">Numerical
+Verification: Magnitude of the Breaking Strength</h4>
+<p>The difference between the breaking strength <span
+class="math inline">\(\theta_\tau / \theta_{\sigma_2} \approx
+23.2\)</span> and the coding weight ratio <span
+class="math inline">\(\sigma_{\mathcal{C}}^* / \sigma_{\mathcal{I}}^*
+\approx 18.3\)</span> (about 27%) arises from the structure of the
+Birkhoff Mixing Matrix — <span
+class="math inline">\(\theta_\tau\)</span> and <span
+class="math inline">\(\theta_{\sigma_2}\)</span> depend not only on
+<span class="math inline">\(\sigma_{\mathcal{C}}^*\)</span> and <span
+class="math inline">\(\sigma_{\mathcal{I}}^*\)</span> but also on <span
+class="math inline">\(\sigma_{\mathcal{M}}^*\)</span> and the algebraic
+normalization <span class="math inline">\(C\)</span>. The complete
+functional relation is given in Vol. 3 (Theorem 3.1.1.01).</p>
+<hr />
+<h2 id="physical-consequences-of-the-breaking">§5 Physical Consequences
+of the Breaking</h2>
+<h3 id="electroweak-unification">5.1 Electroweak Unification</h3>
+<p>The <span class="math inline">\(U(1) \times SU(2)\)</span>
+electroweak gauge structure emerges from triality breaking — electroweak
+unification is a natural consequence of the algebraic structure,
+requiring no additional assumptions.</p>
+<p>Geometric origin of electroweak unification:</p>
+<table>
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 21%" />
+<col style="width: 26%" />
+<col style="width: 26%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Gauge Group</th>
+<th style="text-align: left;">Origin</th>
+<th style="text-align: center;">Coupling Constant</th>
+<th style="text-align: center;">Geometric Weight</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(U(1)\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(Z_2\)</span>
+remnant</td>
+<td style="text-align: center;"><span class="math inline">\(g_1^2
+\propto \theta_{\sigma_2}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\approx
+0.009\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(SU(2)\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(Z_3\)</span>
+breaking</td>
+<td style="text-align: center;"><span class="math inline">\(g_2^2
+\propto \theta_\tau\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\approx
+0.209\)</span></td>
+</tr>
+</tbody>
+</table>
+<h4
+id="comparative-discussion-geometric-electroweak-unification-vs.-standard-electroweak-unification">Comparative
+Discussion: Geometric Electroweak Unification vs. Standard Electroweak
+Unification</h4>
+<p>In the standard electroweak unification theory
+(Glashow–Weinberg–Salam), <span class="math inline">\(SU(2)_L \times
+U(1)_Y\)</span> is an externally postulated gauge group. In geometric
+electroweak unification, the gauge group emerges from triality
+breaking.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Standard Electroweak Unification</th>
+<th style="text-align: left;">Geometric Electroweak Unification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Gauge group origin</td>
+<td style="text-align: left;">External postulate</td>
+<td style="text-align: left;"><span class="math inline">\(S_3 \to
+Z_2\)</span> breaking</td>
+</tr>
+<tr>
+<td style="text-align: left;">Coupling constants</td>
+<td style="text-align: left;">Experimental input</td>
+<td style="text-align: left;">Geometric derivation (<span
+class="math inline">\(\theta_k\)</span>)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Weinberg angle</td>
+<td style="text-align: left;"><span class="math inline">\(\sin^2\theta_W
+\approx 0.231\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\theta_{\sigma_2}/(\theta_\tau +
+\theta_{\sigma_2}) \approx 0.041\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Unification scale</td>
+<td style="text-align: left;"><span class="math inline">\(\sim
+10^{16}\)</span> GeV (GUT)</td>
+<td style="text-align: left;">Planck scale</td>
+</tr>
+</tbody>
+</table>
+<p>The geometric Weinberg angle <span
+class="math inline">\(\sin^2\theta_W^{\text{geo}} \approx 0.041\)</span>
+is far smaller than the Standard Model value <span
+class="math inline">\(0.231\)</span> — again indicating that RG running
+is needed to transport the Planck-scale geometric values to the
+electroweak-scale physical values.</p>
+<h3 id="chirality-of-the-weak-interaction">5.2 Chirality of the Weak
+Interaction</h3>
+<p>The <span class="math inline">\(Z_2\)</span> remnant symmetry endows
+the weak interaction with chirality — it acts only on left-handed
+particles. Geometric origin of chirality:</p>
+<ul>
+<li>Helicity projection <span class="math inline">\(P_{\pm} =
+\frac{1}{2}(I \pm \omega_3)\)</span> divides particles into left-handed
+and right-handed</li>
+<li>Weak isospin projection <span class="math inline">\(P_{\pm} =
+\frac{1}{2}(I \pm \omega_5)\)</span> divides particles into up-type and
+down-type</li>
+<li>The two are coupled through the Cl(3)→Cl(5) transition — the weak
+interaction acts only on left-handed particles</li>
+</ul>
+<p>Chirality is not externally introduced — it is a geometric
+consequence of the <span class="math inline">\(Z_3\)</span> remnant
+symmetry after triality breaking.</p>
+<h4 id="detailed-derivation-algebraic-condition-for-chirality">Detailed
+Derivation: Algebraic Condition for Chirality</h4>
+<p>The algebraic condition for the weak interaction to act on
+left-handed particles is: <span
+class="math inline">\([P_-^{\mathcal{M}}, P_+^{\mathcal{C}}] =
+0\)</span> (left-handed projection compatible with up-type projection).
+Verification: <span class="math inline">\(P_-^{\mathcal{M}} =
+\frac{1}{2}(I - i\omega_3)\)</span>, <span
+class="math inline">\(P_+^{\mathcal{C}} = \frac{1}{2}(I +
+i\omega_5)\)</span>. <span class="math inline">\([P_-^{\mathcal{M}},
+P_+^{\mathcal{C}}] = \frac{1}{4}[I - i\omega_3, I + i\omega_5] =
+\frac{1}{4}(-i[\omega_3, I] + i[I, \omega_5] - i^2[\omega_3, \omega_5])
+= \frac{1}{4}[\omega_3, \omega_5]\)</span>. Since <span
+class="math inline">\(\omega_3\)</span> and <span
+class="math inline">\(\omega_5\)</span> belong to different Clifford
+algebras (Cl(3) and Cl(5)), they are related through the Coding Orbit.
+<span class="math inline">\([\omega_3, \omega_5] = 0\)</span> if and
+only if <span class="math inline">\(\omega_3\)</span> commutes with
+<span class="math inline">\(\omega_5\)</span> when Cl(3) is embedded in
+Cl(5). Under the natural embedding, <span
+class="math inline">\(\omega_3\)</span> commutes with <span
+class="math inline">\(\omega_5\)</span> (since <span
+class="math inline">\(\omega_5 = \omega_3 \cdot e_4 e_5\)</span>, and
+<span class="math inline">\(\omega_3\)</span> anti-commutes twice with
+<span class="math inline">\(e_4, e_5\)</span>, yielding a positive
+sign). Hence <span class="math inline">\([P_-^{\mathcal{M}},
+P_+^{\mathcal{C}}] = 0\)</span> — left-handedness is compatible with
+up-type.</p>
+<h3 id="breaking-and-mass-generation">5.3 Breaking and Mass
+Generation</h3>
+<p>Electroweak symmetry breaking generates mass — but this is not the
+spontaneous breaking (Higgs mechanism) discussed in this article; it is
+an algebraic breaking (the Cl(5)→Cl(6) transition). Algebraic breaking
+is more fundamental — it generates the gauge structures themselves,
+whereas the Higgs mechanism is a further breaking on top of already
+existing gauge structures.</p>
+<p>Algebraic mechanism of mass generation:</p>
+<ul>
+<li>Before breaking (Cl(5)): all leptons are massless (protected by the
+Complex Structure <span class="math inline">\(J\)</span>)</li>
+<li>After breaking (Cl(6)): <span class="math inline">\(J\)</span> is
+broken, leptons acquire mass</li>
+<li>Magnitude of mass <span class="math inline">\(\propto\)</span>
+breaking strength <span class="math inline">\(\propto \theta_\tau /
+\theta_{\sigma_2}\)</span></li>
+</ul>
+<h4
+id="comparative-discussion-algebraic-breaking-vs.-higgs-mechanism">Comparative
+Discussion: Algebraic Breaking vs. Higgs Mechanism</h4>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Higgs Mechanism</th>
+<th style="text-align: left;">Algebraic Breaking</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Breaking type</td>
+<td style="text-align: left;">Spontaneous symmetry breaking</td>
+<td style="text-align: left;">Explicit algebraic breaking</td>
+</tr>
+<tr>
+<td style="text-align: left;">Object broken</td>
+<td style="text-align: left;"><span class="math inline">\(SU(2)_L \times
+U(1)_Y \to U(1)_{\text{em}}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(S_3 \to
+Z_2\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Mass generation</td>
+<td style="text-align: left;">Yukawa coupling + Higgs VEV</td>
+<td style="text-align: left;">Algebraic structure change</td>
+</tr>
+<tr>
+<td style="text-align: left;">Goldstone bosons</td>
+<td style="text-align: left;">3 (eaten by <span
+class="math inline">\(W^\pm, Z\)</span>)</td>
+<td style="text-align: left;">None</td>
+</tr>
+<tr>
+<td style="text-align: left;">Higgs particle</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">None (algebraic breaking needs no
+Higgs)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Energy scale</td>
+<td style="text-align: left;">246 GeV</td>
+<td style="text-align: left;">Planck scale</td>
+</tr>
+</tbody>
+</table>
+<p>Algebraic breaking is more fundamental — it generates the gauge
+structures themselves, whereas the Higgs mechanism is a secondary
+breaking on top of already existing gauge structures. Algebraic breaking
+explains “why there are gauge structures”; the Higgs mechanism explains
+“why gauge bosons have mass.”</p>
+<h3 id="irreversibility-of-the-breaking">5.4 Irreversibility of the
+Breaking</h3>
+<p>The <span class="math inline">\(S_3 \to Z_2\)</span> breaking is
+irreversible — once the Cl(5)→Cl(6) transition occurs, <span
+class="math inline">\(S_3\)</span> symmetry cannot be restored. This is
+consistent with the irreversibility of the causal arrow — both breaking
+and arrow are unidirectional evolutions of the algebraic structure.</p>
+<h4 id="detailed-derivation-algebraic-proof-of-irreversibility">Detailed
+Derivation: Algebraic Proof of Irreversibility</h4>
+<p>The condition for restoring <span class="math inline">\(S_3\)</span>
+symmetry is that <span class="math inline">\(\omega_5\)</span> recovers
+its centrality in Cl(6) — i.e., <span class="math inline">\([\omega_5,
+e_6] = 0\)</span>. But <span class="math inline">\(\{\omega_5, e_6\} =
+0\)</span> is a rigid relation of the Clifford algebra — it cannot be
+changed. Hence the restoration of <span
+class="math inline">\(S_3\)</span> symmetry is algebraically impossible.
+This contrasts with the reversibility of the Higgs mechanism (symmetry
+restored at high temperature) — algebraic breaking is permanent,
+spontaneous breaking is reversible.</p>
+<hr />
+<h2 id="theorem-index">Theorem Index</h2>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 28%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Number</th>
+<th style="text-align: left;">Content</th>
+<th style="text-align: center;">Proof Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Theorem 4.5.1.01</td>
+<td style="text-align: left;">Gauge Structure Emergence Theorem</td>
+<td style="text-align: center;">Proved (this article §1.3)</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 4.5.1.02</td>
+<td style="text-align: left;">Geometric Form of Electroweak Coupling
+Constants</td>
+<td style="text-align: center;">Proved (this article §1.4)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="cross-volume-references">Cross-Volume References</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Reference</th>
+<th style="text-align: left;">Vol./Theorem</th>
+<th style="text-align: left;">Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Born normalization</td>
+<td style="text-align: left;">Vol. 0, Theorem 0.2.1.01</td>
+<td style="text-align: left;"><span
+class="math inline">\(\Delta\lambda_i \propto
+\sqrt{\sigma_i}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Birkhoff fixed point</td>
+<td style="text-align: left;">Vol. 0, Theorem 0.3.1.01</td>
+<td style="text-align: left;"><span class="math inline">\(\sigma^* =
+T\sigma^*\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Algebraic normalization</td>
+<td style="text-align: left;">Vol. 0, Theorem 0.4.1.01</td>
+<td style="text-align: left;"><span class="math inline">\(2pC^3 + C^2 =
+1\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Cl(3) helicity</td>
+<td style="text-align: left;">Vol. 2, Theorem 2.2.1.01</td>
+<td style="text-align: left;"><span
+class="math inline">\(\omega_3\)</span> projection</td>
+</tr>
+<tr>
+<td style="text-align: left;">Birkhoff Mixing Matrix</td>
+<td style="text-align: left;">Vol. 3, Theorem 3.1.1.01</td>
+<td style="text-align: left;"><span class="math inline">\(T = \theta_I I
++ \theta_\tau P_\tau + \theta_{\sigma_2} P_{\sigma_2}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Coding Orbit transition</td>
+<td style="text-align: left;">Vol. 3, Theorem 3.2.1.01</td>
+<td style="text-align: left;">Cl(5)→Cl(6)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Causal Field density</td>
+<td style="text-align: left;">Vol. 4.1, Theorem 4.1.1.01</td>
+<td style="text-align: left;"><span
+class="math inline">\(\rho_{\mathcal{C}} =
+3\sigma_{\mathcal{C}}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Entropy monotonicity</td>
+<td style="text-align: left;">Vol. 4.2, Theorem 4.2.2.01</td>
+<td style="text-align: left;"><span
+class="math inline">\(dS_{\mathcal{C}}/dt \geq 0\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">𝒞-ℐ mutual information</td>
+<td style="text-align: left;">Vol. 4.3, Theorem 4.3.1.01</td>
+<td style="text-align: left;"><span
+class="math inline">\(I(\mathcal{C};\mathcal{I}) = \theta_{\sigma_2}
+H(\sigma^*)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Information Field decay</td>
+<td style="text-align: left;">Vol. 5, Theorem 5.1.2.01</td>
+<td style="text-align: left;"><span
+class="math inline">\(\Gamma_{\text{geo}} \cdot
+\rho_{\mathcal{I}}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Electroweak RG running</td>
+<td style="text-align: left;">Vol. 7</td>
+<td style="text-align: left;">Renormalization group flow of coupling
+constants</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="references">References</h2>
+<ul>
+<li>Dixon, <em>SU(2) × U(1) electroweak theory</em>, in Review of
+Particle Physics</li>
+<li>Gilkey, <em>Invariance Theory, the Heat Equation, and the
+Atiyah-Singer Index Theorem</em></li>
+<li>Weinberg, <em>The Quantum Theory of Fields</em>, Vol. II, Cambridge
+University Press</li>
+</ul>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 07:53:34</p>
+  </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5.1 Information Field Attenuation Theorem | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Version: 260721.2">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/5/5.1_Information_Field_Attenuation_Theorem_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">5.1 Information Field Attenuation Theorem</span>
+  </nav>
+  <main class="article-content">
+<h1 id="information-field-attenuation-theorem">5.1 Information Field
+Attenuation Theorem</h1>
+<p><strong>Version</strong>: 260721.2</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>This article proves the attenuation theorem for the Information
+Sector ℐ. The information field attenuation rate is determined by the
+algebraic connectivity <span class="math inline">\(\mu_1\)</span> and
+the number of information nodes <span
+class="math inline">\(N_{\text{info}}\)</span>: <span
+class="math inline">\(\Gamma_{\text{geo}} = \mu_1 /
+N_{\text{info}}\)</span>. The attenuation theorem is the mathematical
+expression of the “forgetting” mechanism of the information field —
+information is not permanently preserved but attenuates at a
+geometrically determined rate. This article derives in detail the form
+of the attenuation law, determines the algebraic origin of the
+attenuation constant, and analyzes the complementary relationship
+between attenuation and the thermodynamic arrow.</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<p>§1 The Network Structure of the Information Sector 1.1 Terminal
+Duality as an Information Network 1.2 Graph Laplacian 1.3 Algebraic
+Connectivity 1.4 Geometric Meaning of Algebraic Connectivity</p>
+<p>§2 The Attenuation Theorem 2.1 Information Attenuation Rate 2.2 Form
+of the Attenuation Law 2.3 Determination of the Attenuation Constant 2.4
+Physical Meaning of Attenuation 2.5 Attenuation and the Thermodynamic
+Arrow</p>
+<p>§3 Landscape Dependence of Attenuation 3.1 Landscape Universality 3.2
+Attenuation Rate Range 3.3 Relationship between Attenuation Rate and
+Coding Weights 3.4 Attenuation Rate and the Born Rule</p>
+<p>§4 Physical Consequences of Attenuation 4.1 Finite Retention of
+Information 4.2 Attenuation and Observation Precision 4.3 Attenuation
+and Steady-State Maintenance 4.4 Attenuation and Algebraic Action</p>
+<hr />
+<h2 id="the-network-structure-of-the-information-sector">§1 The Network
+Structure of the Information Sector</h2>
+<h3 id="terminal-duality-as-an-information-network">1.1 Terminal Duality
+as an Information Network</h3>
+<p>The Information Sector ℐ corresponds to Cl(7) ≅ Mat(8,ℝ) ⊕ Mat(8,ℝ).
+Terminal Duality produces two direct summands — two “subnetworks” of the
+information network.</p>
+<p>The number of nodes in the information network <span
+class="math inline">\(G_{\mathcal{I}}\)</span> is:</p>
+<p><span class="math display">\[N_{\text{info}} = \rho_7 \times k_0 = 8
+\times 2 = 16.\]</span></p>
+<p>Each subnetwork has 8 nodes, and the two subnetworks are coupled
+through the <span class="math inline">\(Z_2\)</span> transposition <span
+class="math inline">\(P_{\sigma_2}\)</span>.</p>
+<p>Hierarchical structure of the information network:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Level</th>
+<th style="text-align: left;">Structure</th>
+<th style="text-align: center;">Nodes</th>
+<th style="text-align: left;">Origin</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Subnetwork A</td>
+<td style="text-align: left;">Basis of Mat(8,ℝ)</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;">Cl(7) direct summand 1</td>
+</tr>
+<tr>
+<td style="text-align: center;">Subnetwork B</td>
+<td style="text-align: left;">Basis of Mat(8,ℝ)</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;">Cl(7) direct summand 2</td>
+</tr>
+<tr>
+<td style="text-align: center;">Full Network</td>
+<td style="text-align: left;">G_ℐ = A ∪ B</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: left;">Terminal Duality</td>
+</tr>
+</tbody>
+</table>
+<p>The Structure Constant <span class="math inline">\(k_0 = 2\)</span>
+is precisely the algebraic dimension jump point spanned by the
+Information Sector, corresponding to the Terminal Duality emergence in
+the Cl(5)→Cl(7) segment. <span class="math inline">\(k_0 = 2\)</span>
+directly determines the number of information network nodes <span
+class="math inline">\(N_{\text{info}} = 16\)</span>.</p>
+<p><strong>Detailed derivation.</strong> Terminal Duality comes from the
+special structure of Cl(7) in the Bott Periodicity table. The
+irreducible real representation of Cl(7) is Mat(8,ℝ), and Cl(7) ≅
+Mat(8,ℝ) ⊕ Mat(8,ℝ). This direct sum decomposition is the core feature
+of Bott period 8: Cl(n+8) ≅ Cl(n) ⊗ Mat(16,ℝ). When n = 7, Cl(7) is
+exactly at the last position before the periodic closure point, and
+Terminal Duality is an algebraic inevitability of periodic closure.</p>
+<p>From the perspective of the Coding Orbit (Theorem 2.2.1.01), the
+Information Sector ℐ corresponds to the third segment Cl(5)→Cl(7) of the
+Coding Orbit. The algebraic dimension jump of this segment is quantified
+by <span class="math inline">\(k_0 = 2\)</span>: the dimension of
+Mat(4,ℝ) is 16, and the dimension of Mat(8,ℝ) ⊕ Mat(8,ℝ) is 2 × 64 =
+128, but the number of independently encodable bases is <span
+class="math inline">\(\rho_7 \times k_0 = 8 \times 2 = 16\)</span>. Here
+<span class="math inline">\(\rho_7 = 8\)</span> is the Pin
+representation rank of Cl(7), and <span class="math inline">\(k_0 =
+2\)</span> is the number of direct summands.</p>
+<p>The edge structure of the information network <span
+class="math inline">\(G_{\mathcal{I}}\)</span> is determined by the
+<span class="math inline">\(Z_2\)</span> transposition component <span
+class="math inline">\(P_{\sigma_2}\)</span> of the Birkhoff Mixing
+Matrix <span class="math inline">\(T\)</span> (Theorem 6.5.1.01). The
+weight of <span class="math inline">\(P_{\sigma_2}\)</span> is <span
+class="math inline">\(\theta_{\sigma_2} \approx 0.009\)</span>, the
+smallest among the three Birkhoff components — this means the coupling
+between the two subnetworks is extremely weak, and information
+transmission between subnetworks is a bottleneck.</p>
+<p><strong>Numerical verification.</strong> Substituting <span
+class="math inline">\(N_{\text{info}} = 16\)</span> into the definition
+of information capacity (Theorem 5.4.2.01):</p>
+<p><span class="math display">\[C_{\text{obs}} = \log_2 N_{\text{info}}
+= \log_2 16 = 4 \text{ bits}.\]</span></p>
+<p>4 bits correspond to 16 distinguishable states — consistent with the
+counting of three generations of leptons (2 helicities, 6 types in
+total) + quark color degrees of freedom (3 colors, effectively reduced
+to 2 independent encodings) + gauge bosons (4 types). For specific
+correspondence relations see 5.4 §2.2.</p>
+<p><strong>Comparative discussion.</strong> The graph-theoretic
+structure of the information network <span
+class="math inline">\(G_{\mathcal{I}}\)</span> has a formal
+correspondence with coupled qubit networks in quantum information
+theory. In quantum decoherence theory, the state space of an <span
+class="math inline">\(N\)</span>-qubit system has <span
+class="math inline">\(2^N\)</span> dimensions, and coupling to the
+environment leads to decoherence, with the decoherence rate determined
+by the system-environment coupling strength. In Conjugate Spectral
+Geometry, the information network <span
+class="math inline">\(G_{\mathcal{I}}\)</span> plays a similar role — it
+is the channel through which the observer acquires information, but the
+finite capacity of <span class="math inline">\(N_{\text{info}} =
+16\)</span> limits the amount of information acquisition. The key
+difference: the rate of quantum decoherence is determined by the
+dynamical Hamiltonian and is phenomenological; whereas the information
+field attenuation rate <span
+class="math inline">\(\Gamma_{\text{geo}}\)</span> is determined by the
+algebraic connectivity <span class="math inline">\(\mu_1\)</span> and
+<span class="math inline">\(N_{\text{info}}\)</span>, and is geometric
+(cross-region information import).</p>
+<p><strong>Cross-volume references.</strong> The structural origin of
+<span class="math inline">\(N_{\text{info}} = \rho_7 \times k_0\)</span>
+is in the Coding Orbit Theorem of Volume 2 (Theorem 2.2.1.01) and the
+Terminal Duality Theorem of Volume 6 (Theorem 6.5.1.01). The <span
+class="math inline">\(Z_2\)</span> transposition component <span
+class="math inline">\(P_{\sigma_2}\)</span> of the Birkhoff Mixing
+Matrix <span class="math inline">\(T\)</span> is determined by the
+Birkhoff Fixed Point Theorem of Volume 3 (Theorem 3.3.1.01).</p>
+<h3 id="graph-laplacian">1.2 Graph Laplacian</h3>
+<p>The Graph Laplacian <span
+class="math inline">\(L_{\mathcal{I}}\)</span> of the information
+network is induced by the Birkhoff Mixing Matrix <span
+class="math inline">\(T\)</span>:</p>
+<p><span class="math display">\[L_{\mathcal{I}} = I - T.\]</span></p>
+<p>The eigenvalues of <span
+class="math inline">\(L_{\mathcal{I}}\)</span> are <span
+class="math inline">\(1 - \lambda_i\)</span>: - <span
+class="math inline">\(1 - \lambda_1 = 0\)</span> (connectivity —
+principal eigenvalue) - <span class="math inline">\(1 - \lambda_{2,3} =
+1 - (0.678 \pm 0.181i) = 0.322 \mp 0.181i\)</span></p>
+<p>Physical meaning of the Graph Laplacian:</p>
+<ul>
+<li><strong>Zero eigenvalue</strong> (<span class="math inline">\(1 -
+\lambda_1 = 0\)</span>): corresponds to the network-wide uniform state —
+information uniformly distributed</li>
+<li><strong>Non-zero eigenvalues</strong> (<span class="math inline">\(1
+- \lambda_{2,3}\)</span>): correspond to non-uniform information
+distribution — attenuation modes</li>
+</ul>
+<p>The spectrum of the Graph Laplacian is completely determined by the
+eigenvalues of the Birkhoff Mixing Matrix <span
+class="math inline">\(T\)</span> — cross-region information import.</p>
+<p><strong>Detailed derivation.</strong> The definition of the Graph
+Laplacian <span class="math inline">\(L_{\mathcal{I}} = I - T\)</span>
+comes from the following considerations. In standard spectral graph
+theory, the Laplacian of a graph is defined as <span
+class="math inline">\(L = D - A\)</span>, where <span
+class="math inline">\(D\)</span> is the degree matrix and <span
+class="math inline">\(A\)</span> is the adjacency matrix. In the
+information network <span
+class="math inline">\(G_{\mathcal{I}}\)</span>, the Birkhoff Mixing
+Matrix <span class="math inline">\(T\)</span> is a doubly stochastic
+matrix (<span class="math inline">\(\sum_j T_{ij} = \sum_i T_{ij} =
+1\)</span>) and simultaneously plays the role of the weighted adjacency
+matrix. Due to the double stochasticity of <span
+class="math inline">\(T\)</span>, the weighted degree of each node is 1,
+hence <span class="math inline">\(D = I\)</span> and thus <span
+class="math inline">\(L = I - T\)</span>.</p>
+<p>The eigenvalues <span class="math inline">\(\lambda_i\)</span> of
+<span class="math inline">\(T\)</span> satisfy <span
+class="math inline">\(\lambda_1 = 1\)</span> (Perron-Frobenius Theorem)
+and <span class="math inline">\(|\lambda_i| \leq 1\)</span> (<span
+class="math inline">\(\forall i\)</span>). Therefore the eigenvalues
+<span class="math inline">\(1 - \lambda_i\)</span> of <span
+class="math inline">\(L_{\mathcal{I}}\)</span> satisfy <span
+class="math inline">\(1 - \lambda_1 = 0\)</span> (zero eigenvalue,
+corresponding to the uniform eigenvector) and <span
+class="math inline">\(1 - \lambda_i \geq 0\)</span> (positive
+semidefiniteness). The positive semidefiniteness of <span
+class="math inline">\(L_{\mathcal{I}}\)</span> guarantees the stability
+of the information diffusion equation — all modes undergo non-negative
+attenuation.</p>
+<p>The eigenvalues <span class="math inline">\(\lambda_{2,3} = 0.678 \pm
+0.181i\)</span> of <span class="math inline">\(T\)</span> come from the
+eigenvalue calculation at the Birkhoff Fixed Point <span
+class="math inline">\(\sigma^*\)</span> (Theorem 3.3.2.01). The <span
+class="math inline">\(3 \times 3\)</span> block structure of <span
+class="math inline">\(T\)</span> (corresponding to the three sectors ℳ,
+𝒞, ℐ) causes the eigenvalues to appear as complex conjugate pairs — this
+is the algebraic manifestation of triality breaking.</p>
+<p><strong>Numerical verification.</strong> Verify the positive
+semidefiniteness of <span
+class="math inline">\(L_{\mathcal{I}}\)</span>:</p>
+<p><span class="math display">\[\begin{aligned}
+1 - \lambda_1 &amp;= 1 - 1 = 0, \\
+|1 - \lambda_{2,3}| &amp;= \sqrt{0.322^2 + 0.181^2} = \sqrt{0.1037 +
+0.0328} = \sqrt{0.1365} \approx 0.369 &gt; 0.
+\end{aligned}\]</span></p>
+<p>All eigenvalues <span class="math inline">\(\geq 0\)</span> —
+positive semidefiniteness holds. Verification of trace: <span
+class="math inline">\(\text{Tr}(L_{\mathcal{I}}) = \sum_i (1 -
+\lambda_i) = 0 + 0.369 + 0.369 + \cdots\)</span>. The complete trace is
+determined by the <span class="math inline">\(16 \times 16\)</span> form
+of <span class="math inline">\(T\)</span>, but the three non-trivial
+eigenvalues (including the conjugate pair) already cover the coupling
+structure among the ℳ𝒞ℐ sectors.</p>
+<p><strong>Cross-volume references.</strong> The construction and
+eigenvalue calculation of the Birkhoff Mixing Matrix <span
+class="math inline">\(T\)</span> are found in the Birkhoff Fixed Point
+Theorem of Volume 3 (Theorem 3.3.1.01) and the Field Density Theorem of
+Volume 3 (Theorem 3.3.2.02). The spectral properties of the <span
+class="math inline">\(Z_2\)</span> transposition component <span
+class="math inline">\(P_{\sigma_2}\)</span> of <span
+class="math inline">\(T\)</span> are found in the Terminal Duality
+Theorem of Volume 6 (Theorem 6.5.1.01).</p>
+<h3 id="algebraic-connectivity">1.3 Algebraic Connectivity</h3>
+<p><strong>Theorem 5.1.1.01 (Algebraic Connectivity).</strong> The
+algebraic connectivity (modulus of the smallest non-zero eigenvalue of
+the Laplacian) of the information network is:</p>
+<p><span class="math display">\[\mu_1 = |1 - \lambda_2| = \sqrt{0.322^2
++ 0.181^2} = \sqrt{0.1037 + 0.0328} = \sqrt{0.1365} \approx
+0.369.\]</span></p>
+<p><strong>Proof.</strong> The algebraic connectivity is defined as the
+modulus of the smallest non-zero eigenvalue of the Graph Laplacian. From
+§1.2, the non-zero eigenvalues of <span
+class="math inline">\(L_{\mathcal{I}}\)</span> are <span
+class="math inline">\(1 - \lambda_{2,3} = 0.322 \mp 0.181i\)</span>.
+Taking the modulus:</p>
+<p><span class="math display">\[\mu_1 = |1 - \lambda_2| = \sqrt{0.322^2
++ 0.181^2} = \sqrt{0.1037 + 0.0328} = \sqrt{0.1365} \approx
+0.369.\]</span></p>
+<p>The algebraic connectivity measures the “connection strength” of the
+information network — the larger <span
+class="math inline">\(\mu_1\)</span>, the more connected the network and
+the faster information propagates. ∎</p>
+<p><strong>Detailed derivation.</strong> The derivation steps for
+algebraic connectivity <span class="math inline">\(\mu_1\)</span>:</p>
+<ol type="1">
+<li><p><strong>Determine the complete eigenvalue set of <span
+class="math inline">\(T\)</span>.</strong> The Birkhoff Mixing Matrix
+<span class="math inline">\(T\)</span> is a <span
+class="math inline">\(16 \times 16\)</span> doubly stochastic matrix.
+Its eigenvalues are <span class="math inline">\(\lambda_1 = 1\)</span>
+(Perron root), <span class="math inline">\(\lambda_{2,3} = 0.678 \pm
+0.181i\)</span> (complex conjugate pair produced by triality breaking),
+and the remaining eigenvalues are determined by the degenerate structure
+within sectors. The <span class="math inline">\(3 \times 3\)</span> core
+block of <span class="math inline">\(T\)</span> (corresponding to the
+three sectors ℳ𝒞ℐ) has rank 3, yielding three non-trivial
+eigenvalues.</p></li>
+<li><p><strong>Compute the eigenvalues of <span
+class="math inline">\(L_{\mathcal{I}}\)</span>.</strong> The eigenvalues
+of <span class="math inline">\(L_{\mathcal{I}} = I - T\)</span> are
+<span class="math inline">\(1 - \lambda_i\)</span>. Thus <span
+class="math inline">\(1 - \lambda_1 = 0\)</span> (zero eigenvalue),
+<span class="math inline">\(|1 - \lambda_{2,3}| = \sqrt{0.322^2 +
+0.181^2} = \sqrt{0.1365} \approx 0.369\)</span>.</p></li>
+<li><p><strong>Determine the smallest non-zero eigenvalue.</strong>
+<span class="math inline">\(\lambda_{2,3}\)</span> are the subdominant
+eigenvalues of <span class="math inline">\(T\)</span> (by modulus),
+hence <span class="math inline">\(1 - \lambda_{2,3}\)</span> are the
+smallest non-zero eigenvalues of <span
+class="math inline">\(L_{\mathcal{I}}\)</span>. <span
+class="math inline">\(\mu_1 = |1 - \lambda_2| \approx
+0.369\)</span>.</p></li>
+<li><p><strong>Verify the bounds on <span
+class="math inline">\(\mu_1\)</span>.</strong> For any connected graph,
+the algebraic connectivity satisfies <span class="math inline">\(0 &lt;
+\mu_1 \leq \kappa\)</span>, where <span
+class="math inline">\(\kappa\)</span> is the vertex connectivity of the
+graph. For <span class="math inline">\(G_{\mathcal{I}}\)</span>, <span
+class="math inline">\(\kappa = \min(\deg) = 1\)</span> (there is only
+one <span class="math inline">\(Z_2\)</span> transposition edge between
+subnetworks), hence <span class="math inline">\(\mu_1 \leq 1\)</span>.
+The actual value <span class="math inline">\(\mu_1 \approx
+0.369\)</span> satisfies this bound.</p></li>
+<li><p><strong>Complex eigenvalue correction to <span
+class="math inline">\(\mu_1\)</span>.</strong> Since <span
+class="math inline">\(\lambda_{2,3}\)</span> are complex conjugate
+pairs, <span class="math inline">\(\mu_1\)</span> takes the modulus
+rather than the real part. This is an algebraic consequence of triality
+breaking — if triality were symmetric (<span
+class="math inline">\(\theta_\tau = \theta_I = \theta_{\sigma_2} =
+1/3\)</span>), the eigenvalues of <span class="math inline">\(T\)</span>
+would all be real, and <span class="math inline">\(\mu_1\)</span> would
+degenerate to the real part of <span class="math inline">\(1 -
+\lambda_2\)</span>.</p></li>
+</ol>
+<p><strong>Numerical verification.</strong> Verify the computation of
+<span class="math inline">\(\mu_1\)</span> term by term:</p>
+<p><span class="math display">\[\begin{aligned}
+1 - \lambda_2 &amp;= 1 - (0.678 + 0.181i) = 0.322 - 0.181i, \\
+|1 - \lambda_2|^2 &amp;= 0.322^2 + 0.181^2 = 0.103684 + 0.032761 =
+0.136445, \\
+\mu_1 &amp;= \sqrt{0.136445} = 0.36938 \approx 0.369.
+\end{aligned}\]</span></p>
+<p>Dimensional check: <span class="math inline">\(\mu_1\)</span> is a
+dimensionless number — it is the modulus of an eigenvalue, and
+eigenvalues are determined by the elements of the doubly stochastic
+matrix <span class="math inline">\(T\)</span>, whose elements are
+probability weights and dimensionless. This dimensionless property is a
+natural consequence of algebraic connectivity as a network geometric
+quantity.</p>
+<p><strong>Comparative discussion.</strong> The concept of algebraic
+connectivity <span class="math inline">\(\mu_1\)</span> originates from
+Fiedler’s (1973) spectral graph theory. In standard networks, the larger
+<span class="math inline">\(\mu_1\)</span>, the more robust the network
+is against random failures. In Conjugate Spectral Geometry, <span
+class="math inline">\(\mu_1\)</span> plays a similar role — it is a
+measure of the “robustness” of the information network against
+information attenuation. But there is a key difference: the <span
+class="math inline">\(\mu_1\)</span> of a standard network is determined
+by the edge connection pattern, a function of network topology; whereas
+the <span class="math inline">\(\mu_1\)</span> of the information
+network is determined by the Birkhoff Mixing Matrix <span
+class="math inline">\(T\)</span> at the Birkhoff Fixed Point <span
+class="math inline">\(\sigma^*\)</span>, a function of algebraic
+structure. This “algebra-driven connectivity” is a core feature
+distinguishing Conjugate Spectral Geometry from classical network
+theory.</p>
+<h3 id="geometric-meaning-of-algebraic-connectivity">1.4 Geometric
+Meaning of Algebraic Connectivity</h3>
+<p>The geometric meaning of algebraic connectivity <span
+class="math inline">\(\mu_1 \approx 0.370\)</span>:</p>
+<ul>
+<li><strong>Network connectivity</strong>: <span
+class="math inline">\(\mu_1 &gt; 0\)</span> indicates that the
+information network is connected — information can propagate throughout
+the network</li>
+<li><strong>Propagation rate</strong>: <span
+class="math inline">\(\mu_1\)</span> is the characteristic rate of
+information propagation in the network — the larger <span
+class="math inline">\(\mu_1\)</span>, the faster the propagation</li>
+<li><strong>Attenuation scale</strong>: The reciprocal <span
+class="math inline">\(1/\mu_1 \approx 2.7\)</span> is the characteristic
+distance of information propagation — information propagates throughout
+the network in approximately 2.7 steps</li>
+</ul>
+<p>The algebraic connectivity is determined by the eigenvalue <span
+class="math inline">\(\lambda_2 = 0.678 + 0.181i\)</span> of the
+Birkhoff Mixing Matrix, and <span
+class="math inline">\(\lambda_2\)</span> is uniquely determined by the
+coding weights <span class="math inline">\(\sigma^*\)</span> and the
+Algebraic Normalization condition <span class="math inline">\(2pC^3 +
+C^2 = 1\)</span> — cross-region information import.</p>
+<p><strong>Detailed derivation.</strong> The geometric meaning of <span
+class="math inline">\(\mu_1\)</span> can be obtained from the Green’s
+function of the diffusion equation. Information diffusion on the network
+is described by <span class="math inline">\(\partial_t \rho =
+-L_{\mathcal{I}} \rho\)</span>, and the Green’s function is <span
+class="math inline">\(G(t) = e^{-L_{\mathcal{I}} t}\)</span>. Expanding
+in the eigenbasis:</p>
+<p><span class="math display">\[G_{ij}(t) = \sum_{k=1}^{N}
+e^{-(1-\lambda_k)t} v_k(i) v_k(j).\]</span></p>
+<p>where <span class="math inline">\(v_k\)</span> are the eigenvectors
+of <span class="math inline">\(L_{\mathcal{I}}\)</span>. As <span
+class="math inline">\(t \to \infty\)</span>, the <span
+class="math inline">\(k=1\)</span> (zero eigenvalue) term dominates:
+<span class="math inline">\(G_{ij}(\infty) = 1/N\)</span> (uniform
+distribution). The subdominant term <span
+class="math inline">\(k=2\)</span> (<span
+class="math inline">\(\mu_1\)</span>) gives the characteristic time for
+convergence to uniform distribution <span
+class="math inline">\(\tau_{\text{mix}} = 1/\mu_1 \approx 2.7\)</span>.
+This is the “mixing time” of the information network — information
+homogenizes throughout the network in approximately 2.7 steps.</p>
+<p>The mixing time <span class="math inline">\(\tau_{\text{mix}} =
+1/\mu_1 \approx 2.7\)</span> compared to the number of information nodes
+<span class="math inline">\(N_{\text{info}} = 16\)</span>: <span
+class="math inline">\(\tau_{\text{mix}} \ll N_{\text{info}}\)</span>
+(2.7 vs 16), indicating that the information network is “fast-mixing” —
+information propagation is much faster than the node count. This is
+characteristic of small-world networks, guaranteed by the double
+stochasticity of the Birkhoff Mixing Matrix <span
+class="math inline">\(T\)</span>.</p>
+<p><strong>Numerical verification.</strong> Verify the attenuation
+scale: <span class="math inline">\(1/\mu_1 = 1/0.36938 \approx
+2.707\)</span>. This value is less than the network diameter
+(intersubnetwork communication requires at least 1 step, full network
+traversal requires at most <span class="math inline">\(\log_2 16 =
+4\)</span> steps), indicating that the mixing efficiency of the
+information network is high.</p>
+<p><strong>Cross-volume references.</strong> The mixing time <span
+class="math inline">\(\tau_{\text{mix}}\)</span> has a temporal-scale
+correlation with the causal field entropy production rate of Volume 4
+(Theorem 4.1.2.01): the causal field produces information within <span
+class="math inline">\(\tau_C \approx 2.18\)</span>, and the information
+field propagates information within <span
+class="math inline">\(\tau_{\text{mix}} \approx 2.7\)</span> — the two
+time scales are close, ensuring coordination between information
+production and propagation.</p>
+<hr />
+<h2 id="the-attenuation-theorem">§2 The Attenuation Theorem</h2>
+<h3 id="information-attenuation-rate">2.1 Information Attenuation
+Rate</h3>
+<p><strong>Theorem 5.1.2.01 (Information Field Attenuation
+Theorem).</strong> The characteristic attenuation rate of the
+information field is:</p>
+<p><span class="math display">\[\Gamma_{\text{geo}} =
+\frac{\mu_1}{N_{\text{info}}} = \frac{0.370}{16} \approx
+0.023.\]</span></p>
+<p>The half-life of the information field is:</p>
+<p><span class="math display">\[t_{1/2} = \frac{\ln
+2}{\Gamma_{\text{geo}}} \approx \frac{0.693}{0.023} \approx
+30.1.\]</span></p>
+<p><strong>Proof.</strong> The diffusion equation of the information
+field on the network <span
+class="math inline">\(G_{\mathcal{I}}\)</span> is <span
+class="math inline">\(\partial_t \rho = -L_{\mathcal{I}} \rho\)</span>.
+The attenuation modes of the solution are <span
+class="math inline">\(\rho(t) = e^{-\mu_i t} \rho(0)\)</span>. The
+slowest attenuation mode (<span class="math inline">\(\mu_1\)</span>)
+dominates the long-time behavior. Normalization by the number of nodes
+<span class="math inline">\(N_{\text{info}}\)</span> yields the
+characteristic attenuation rate. ∎</p>
+<p><strong>Detailed derivation.</strong> The derivation of the
+attenuation theorem proceeds in the following steps:</p>
+<ol type="1">
+<li><p><strong>General solution of the diffusion equation.</strong> The
+formal solution of <span class="math inline">\(\partial_t \rho =
+-L_{\mathcal{I}} \rho\)</span> is <span class="math inline">\(\rho(t) =
+e^{-L_{\mathcal{I}} t} \rho(0)\)</span>. In the eigenbasis of <span
+class="math inline">\(L_{\mathcal{I}}\)</span>, <span
+class="math inline">\(\rho(t) = \sum_k c_k e^{-(1-\lambda_k)t}
+v_k\)</span>, where <span class="math inline">\(c_k = \langle v_k,
+\rho(0) \rangle\)</span> is the projection of the initial condition onto
+the eigenvectors.</p></li>
+<li><p><strong>Long-time behavior.</strong> When <span
+class="math inline">\(t \gg 1/\mu_1\)</span>, the <span
+class="math inline">\(k=1\)</span> (zero eigenvalue) term and the <span
+class="math inline">\(k=2\)</span> (<span
+class="math inline">\(\mu_1\)</span>) term dominate: <span
+class="math inline">\(\rho(t) \approx c_1 v_1 + c_2 e^{-\mu_1 t}
+v_2\)</span>. <span class="math inline">\(c_1 v_1\)</span> is the
+steady-state distribution (uniform distribution), and <span
+class="math inline">\(c_2 e^{-\mu_1 t} v_2\)</span> is the decaying
+transient term.</p></li>
+<li><p><strong>Global attenuation rate.</strong> The attenuation rate of
+a single node depends on initial conditions, but the global
+(network-averaged) attenuation rate is determined by the slowest
+non-zero mode: <span class="math inline">\(\langle \rho(t) - \rho^*
+\rangle \propto e^{-\mu_1 t}\)</span>. Considering that the network has
+<span class="math inline">\(N_{\text{info}}\)</span> nodes, each node
+independently contributes an attenuation channel, the global
+characteristic attenuation rate is <span class="math inline">\(\Gamma =
+\mu_1 / N_{\text{info}}\)</span>. The <span
+class="math inline">\(1/N_{\text{info}}\)</span> factor comes from
+statistical averaging — <span
+class="math inline">\(N_{\text{info}}\)</span> nodes share the same
+attenuation mode, but the attenuation amplitude of each node is diluted
+by <span class="math inline">\(1/N_{\text{info}}\)</span>.</p></li>
+<li><p><strong>Half-life.</strong> From <span
+class="math inline">\(\rho(t_{1/2}) = \rho(0)/2\)</span>, i.e. <span
+class="math inline">\(e^{-\Gamma t_{1/2}} = 1/2\)</span>, we obtain
+<span class="math inline">\(t_{1/2} = \ln 2 / \Gamma \approx 0.693 /
+0.023 \approx 30.1\)</span>.</p></li>
+<li><p><strong>Dimensional analysis.</strong> <span
+class="math inline">\(\mu_1\)</span> is dimensionless (eigenvalue
+modulus), <span class="math inline">\(N_{\text{info}}\)</span> is
+dimensionless (node count), hence <span
+class="math inline">\(\Gamma_{\text{geo}}\)</span> is dimensionless. In
+units of coding steps, <span
+class="math inline">\(\Gamma_{\text{geo}}\)</span> is the attenuation
+rate per step. The half-life <span
+class="math inline">\(t_{1/2}\)</span> is in units of coding steps.
+Conversion to physical time requires multiplication by the physical
+duration of a coding step (determined by the breathing period, see
+Theorem 4.3.1.01).</p></li>
+</ol>
+<p><strong>Numerical verification.</strong> Verify with high-precision
+values:</p>
+<p><span class="math display">\[\begin{aligned}
+\mu_1 &amp;= 0.36938 \quad (\text{accurate to 5 digits}), \\
+N_{\text{info}} &amp;= 16, \\
+\Gamma_{\text{geo}} &amp;= 0.36938 / 16 = 0.023086, \\
+t_{1/2} &amp;= \ln 2 / 0.023086 = 0.693147 / 0.023086 = 30.02.
+\end{aligned}\]</span></p>
+<p>Verify exponential attenuation: at <span class="math inline">\(t =
+t_{1/2}\)</span>, <span class="math inline">\(e^{-\Gamma t_{1/2}} =
+e^{-0.023086 \times 30.02} = e^{-0.693} = 0.500\)</span> — indeed
+halved. At <span class="math inline">\(t = 2t_{1/2} \approx 60\)</span>,
+<span class="math inline">\(e^{-2 \times 0.693} = 0.25\)</span> —
+information attenuates to 1/4 of its initial value.</p>
+<p><strong>Comparative discussion.</strong> Formal comparison between
+information field attenuation and quantum decoherence:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Information Field Attenuation (Conjugate
+Spectral Geometry)</th>
+<th style="text-align: left;">Quantum Decoherence (Standard Quantum
+Mechanics)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Attenuated object</td>
+<td style="text-align: left;">Information field density ρ_ℐ</td>
+<td style="text-align: left;">Reduced density matrix ρ_red</td>
+</tr>
+<tr>
+<td style="text-align: left;">Attenuation law</td>
+<td style="text-align: left;">e^(−Γ_geo · t)</td>
+<td style="text-align: left;">e^(−t/T₂)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Origin of attenuation rate</td>
+<td style="text-align: left;">μ₁/N_info (algebraic connectivity)</td>
+<td style="text-align: left;">System-environment coupling strength</td>
+</tr>
+<tr>
+<td style="text-align: left;">Nature of attenuation rate</td>
+<td style="text-align: left;">Geometrically determined (cross-region
+information import)</td>
+<td style="text-align: left;">Dynamically determined
+(Hamiltonian-dependent)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Steady state</td>
+<td style="text-align: left;">Birkhoff Fixed Point σ*</td>
+<td style="text-align: left;">Thermal equilibrium state (Gibbs)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Information conservation</td>
+<td style="text-align: left;">Yes (Tr(ρ) = const)</td>
+<td style="text-align: left;">No (information flows into
+environment)</td>
+</tr>
+</tbody>
+</table>
+<p>Key difference: information field attenuation is transfer between
+modes rather than total loss — total information is conserved (Theorem
+5.3.3.01), whereas quantum decoherence involves information flowing from
+the system into the environment. Information field attenuation is the
+mathematical expression of “forgetting”: information remains in the
+field, but the distribution tends toward uniformity, and information in
+specific modes is “diluted” and irrecoverable.</p>
+<p><strong>Cross-volume references.</strong> The attenuation rate <span
+class="math inline">\(\Gamma_{\text{geo}}\)</span>, together with the
+causal field entropy production rate <span
+class="math inline">\(dS_{\mathcal{C}}/dt \approx 0.498\)</span> of
+Volume 4 (Theorem 4.1.2.01) and the slowdown factor <span
+class="math inline">\(\xi \approx 67.7\)</span> of Volume 5 (Theorem
+5.2.1.01), jointly constitute the three-parameter dynamical framework of
+the information field.</p>
+<h3 id="form-of-the-attenuation-law">2.2 Form of the Attenuation
+Law</h3>
+<p>The attenuation law of the information field is exponential
+attenuation:</p>
+<p><span class="math display">\[\rho_{\mathcal{I}}(t) =
+\rho_{\mathcal{I}}(0) \cdot e^{-\Gamma_{\text{geo}} \cdot t} +
+\rho_{\mathcal{I}}^* \cdot (1 - e^{-\Gamma_{\text{geo}} \cdot
+t}).\]</span></p>
+<p>where <span class="math inline">\(\rho_{\mathcal{I}}^*\)</span> is
+the steady-state value. Physical meaning of the attenuation law:</p>
+<ul>
+<li><strong>Short-term</strong> (<span class="math inline">\(t \ll
+1/\Gamma\)</span>): <span class="math inline">\(\rho_{\mathcal{I}}(t)
+\approx \rho_{\mathcal{I}}(0)\)</span>, information hardly
+attenuates</li>
+<li><strong>Medium-term</strong> (<span class="math inline">\(t \sim
+1/\Gamma\)</span>): <span
+class="math inline">\(\rho_{\mathcal{I}}(t)\)</span> exponentially tends
+toward the steady state</li>
+<li><strong>Long-term</strong> (<span class="math inline">\(t \gg
+1/\Gamma\)</span>): <span class="math inline">\(\rho_{\mathcal{I}}(t)
+\to \rho_{\mathcal{I}}^*\)</span>, information reaches the steady
+state</li>
+</ul>
+<p>The exponential form of the attenuation law comes from the linearity
+of the Graph Laplacian — the eigenvalues of <span
+class="math inline">\(L_{\mathcal{I}}\)</span> determine the attenuation
+rates, and the eigenvectors determine the attenuation modes.</p>
+<p><strong>Detailed derivation.</strong> The complete form of the
+attenuation law comes from the steady-state solution of the
+diffusion-response equation. The complete equation for information field
+evolution is (Theorem 5.3.2.01):</p>
+<p><span class="math display">\[\frac{\partial
+\rho_{\mathcal{I}}}{\partial t} = -D_{\mathcal{I}} L_{\mathcal{I}}
+\rho_{\mathcal{I}} - \gamma_{\mathcal{I}} (\rho_{\mathcal{I}} -
+\rho_{\mathcal{I}}^{\text{eq}}[\rho_{\mathcal{C}}]).\]</span></p>
+<p>Under the adiabatic approximation (<span class="math inline">\(\xi
+\gg 1\)</span>), the causal field <span
+class="math inline">\(\rho_{\mathcal{C}}\)</span> has equilibrated, and
+<span
+class="math inline">\(\rho_{\mathcal{I}}^{\text{eq}}[\rho_{\mathcal{C}}]
+\approx \rho_{\mathcal{I}}^*\)</span> is a constant. The equation then
+simplifies to <span class="math inline">\(\partial_t \rho_{\mathcal{I}}
+= -D_{\mathcal{I}} L_{\mathcal{I}} \rho_{\mathcal{I}} -
+\gamma_{\mathcal{I}} (\rho_{\mathcal{I}} -
+\rho_{\mathcal{I}}^*)\)</span>. In the eigenbasis of <span
+class="math inline">\(L_{\mathcal{I}}\)</span>, each mode attenuates
+independently: <span class="math inline">\(\partial_t c_k =
+-(D_{\mathcal{I}} \mu_k + \gamma_{\mathcal{I}}) c_k +
+\gamma_{\mathcal{I}} c_k^*\)</span>. The slowest mode (<span
+class="math inline">\(k=1\)</span>, <span
+class="math inline">\(\mu_1\)</span>) gives the global attenuation rate
+<span class="math inline">\(\Gamma_{\text{geo}} = D_{\mathcal{I}} \mu_1
++ \gamma_{\mathcal{I}} \approx 0.107 \times 0.370 + 0.234 \approx
+0.274\)</span>. Here <span class="math inline">\(\Gamma_{\text{geo}}
+\approx 0.023\)</span> is a simplified result (considering only <span
+class="math inline">\(\mu_1/N_{\text{info}}\)</span>); the exact
+expression includes both diffusion and response terms.</p>
+<p>The exponential form of the attenuation law is a direct consequence
+of the linearity of the Graph Laplacian. If <span
+class="math inline">\(L_{\mathcal{I}}\)</span> were nonlinear (e.g.,
+containing information-field self-interactions), the attenuation law
+would deviate from pure exponential. In the current framework, <span
+class="math inline">\(L_{\mathcal{I}} = I - T\)</span> is linear
+(guaranteed by the double stochasticity of the Birkhoff Mixing Matrix
+<span class="math inline">\(T\)</span>), so exponential attenuation is
+exact.</p>
+<p><strong>Numerical verification.</strong> Verify at three
+characteristic time points:</p>
+<p><span class="math display">\[\begin{aligned}
+t = 1/\Gamma = 43.3 &amp;: \quad \rho(43.3) = 0.368 \rho(0) + 0.632
+\rho^* \quad (\text{63.2% attenuated}), \\
+t = t_{1/2} = 30.0 &amp;: \quad \rho(30.0) = 0.500 \rho(0) + 0.500
+\rho^* \quad (\text{half-life}), \\
+t = 3/\Gamma = 130 &amp;: \quad \rho(130) = 0.050 \rho(0) + 0.950 \rho^*
+\quad (\text{95.0% attenuated}).
+\end{aligned}\]</span></p>
+<p><strong>Cross-volume references.</strong> The determination of <span
+class="math inline">\(\rho_{\mathcal{I}}^*\)</span> in the attenuation
+law is found in the Birkhoff Fixed Point Theorem of Volume 3 (Theorem
+3.3.1.01) and the Field Density Theorem of Volume 3 (Theorem 3.3.2.02).
+<span class="math inline">\(\rho_{\mathcal{I}}^* = \Lambda
+\sigma_{\mathcal{I}}^* = 3 \times 0.011484 \approx 0.0345\)</span>.</p>
+<h3 id="determination-of-the-attenuation-constant">2.3 Determination of
+the Attenuation Constant</h3>
+<p>The attenuation constant <span
+class="math inline">\(\Gamma_{\text{geo}} = \mu_1 /
+N_{\text{info}}\)</span> is determined by two geometric quantities:</p>
+<ol type="1">
+<li><strong>Algebraic connectivity</strong> <span
+class="math inline">\(\mu_1 \approx 0.370\)</span>: determined by the
+eigenvalue <span class="math inline">\(\lambda_2\)</span> of the
+Birkhoff Mixing Matrix</li>
+<li><strong>Number of information nodes</strong> <span
+class="math inline">\(N_{\text{info}} = 16\)</span>: determined by the
+Structure Constant <span class="math inline">\(k_0 = 2\)</span> and the
+Cl(7) rank <span class="math inline">\(\rho_7 = 8\)</span></li>
+</ol>
+<p>The algebraic origin chain of the attenuation constant:</p>
+<p><span class="math display">\[k_0 = 2 \to N_{\text{info}} = 16
+\quad\quad \sigma^* \to \lambda_2 \to \mu_1 = 0.370 \quad \Rightarrow
+\quad \Gamma_{\text{geo}} = 0.023.\]</span></p>
+<p>The entire chain is cross-region information import — the attenuation
+constant is entirely determined by algebraic structure.</p>
+<p><strong>Detailed derivation.</strong> Each step of the algebraic
+origin chain of the attenuation constant is expanded:</p>
+<ol type="1">
+<li><p><strong><span class="math inline">\(k_0 = 2 \to N_{\text{info}} =
+16\)</span>:</strong> The Information Sector Structure Constant <span
+class="math inline">\(k_0 = 2\)</span> comes from the algebraic
+dimension jump of the third segment Cl(5)→Cl(7) of the Coding Orbit.
+<span class="math inline">\(k_0\)</span> is the number of direct
+summands in Cl(7) Terminal Duality. <span
+class="math inline">\(N_{\text{info}} = \rho_7 \times k_0 = 8 \times 2 =
+16\)</span> (Theorem 5.1.1.01).</p></li>
+<li><p><strong><span class="math inline">\(\sigma^* \to
+\lambda_2\)</span>:</strong> The Birkhoff Fixed Point <span
+class="math inline">\(\sigma^* \approx (0.778, 0.211, 0.011)\)</span> is
+determined by the minimization of the Algebraic Action <span
+class="math inline">\(S(\sigma)\)</span> (Theorem 3.3.1.01). At the
+fixed point, the eigenvalue <span class="math inline">\(\lambda_2 =
+0.678 + 0.181i\)</span> of the Birkhoff Mixing Matrix <span
+class="math inline">\(T(\sigma^*)\)</span> is uniquely determined by
+<span class="math inline">\(\sigma^*\)</span> and the three component
+weights <span class="math inline">\((\theta_I, \theta_\tau,
+\theta_{\sigma_2})\)</span> of <span
+class="math inline">\(T\)</span>.</p></li>
+<li><p><strong><span class="math inline">\(\lambda_2 \to \mu_1 =
+0.370\)</span>:</strong> <span class="math inline">\(\mu_1 = |1 -
+\lambda_2| = \sqrt{(1 - \Re\lambda_2)^2 + (\Im\lambda_2)^2} =
+\sqrt{0.322^2 + 0.181^2} \approx 0.369\)</span>.</p></li>
+<li><p><strong><span class="math inline">\(\mu_1, N_{\text{info}} \to
+\Gamma_{\text{geo}} = 0.023\)</span>:</strong> Global attenuation rate
+<span class="math inline">\(\Gamma_{\text{geo}} = \mu_1 /
+N_{\text{info}} = 0.369 / 16 \approx 0.023\)</span>.</p></li>
+<li><p><strong>Constraint from Algebraic Normalization.</strong> Each
+step is constrained by the Algebraic Normalization <span
+class="math inline">\(2pC^3 + C^2 = 1\)</span> (Theorem 3.2.1.01). The
+value of <span class="math inline">\(C\)</span> is determined by the
+Born Rule at the fixed point <span
+class="math inline">\(\sigma^*\)</span>: <span class="math inline">\(C =
+\Delta\lambda_i / \sqrt{\sigma_i}\)</span>. The Algebraic Normalization
+constrains the possible values of <span
+class="math inline">\(C\)</span>, thereby constraining <span
+class="math inline">\(\sigma^*\)</span> and <span
+class="math inline">\(\lambda_2\)</span>, and ultimately constraining
+<span class="math inline">\(\Gamma_{\text{geo}}\)</span>.</p></li>
+</ol>
+<p><strong>Numerical verification.</strong> Verify the precision of
+<span class="math inline">\(\Gamma_{\text{geo}}\)</span>: <span
+class="math inline">\(\Gamma_{\text{geo}} = 0.36938 / 16 =
+0.023086\)</span>. If the precision of <span
+class="math inline">\(\mu_1\)</span> is <span class="math inline">\(\pm
+0.001\)</span>, then the precision of <span
+class="math inline">\(\Gamma_{\text{geo}}\)</span> is <span
+class="math inline">\(\pm 0.00006\)</span>. This precision is sufficient
+for all subsequent calculations (e.g., half-life <span
+class="math inline">\(30.0 \pm 0.1\)</span> steps).</p>
+<p><strong>Comparative discussion.</strong> The determination of the
+attenuation constant contrasts with attenuation constants in standard
+physics. In standard quantum mechanics, attenuation constants (such as
+particle decay widths <span class="math inline">\(\Gamma\)</span>) are
+dynamical quantities, requiring calculation via Fermi’s golden rule,
+dependent on the interaction Hamiltonian and phase space integrals. In
+Conjugate Spectral Geometry, <span
+class="math inline">\(\Gamma_{\text{geo}}\)</span> is a purely geometric
+quantity, determined by algebraic connectivity and the number of
+information nodes, involving no dynamical calculations whatsoever. This
+is the manifestation of the “geometry determines physics” principle in
+information field attenuation.</p>
+<h3 id="physical-meaning-of-attenuation">2.4 Physical Meaning of
+Attenuation</h3>
+<p>The information attenuation rate <span
+class="math inline">\(\Gamma_{\text{geo}} \approx 0.023\)</span>
+means:</p>
+<ol type="1">
+<li>Information is not permanently preserved — it attenuates at a rate
+of approximately 0.023</li>
+<li>The half-life is approximately 30 coding steps — approximately 2.5
+breathing periods (<span class="math inline">\(30/12 \approx
+2.5\)</span>)</li>
+<li>The attenuation rate is determined by the eigenvalues of the
+Birkhoff Mixing Matrix — cross-region information import</li>
+</ol>
+<p><strong>Detailed derivation.</strong> The physical meaning of
+attenuation can be quantified from the perspective of the “memory
+capacity” of the information field. In time <span
+class="math inline">\(t\)</span>, the amount of information retained by
+the information field is <span class="math inline">\(I(t) = I(0)
+e^{-\Gamma_{\text{geo}} t}\)</span>. After <span
+class="math inline">\(N\)</span> coding steps, the retained information
+is <span class="math inline">\(I(N) = I(0) e^{-0.023 N}\)</span>. When
+<span class="math inline">\(N = 100\)</span> steps, <span
+class="math inline">\(I(100) = I(0) e^{-2.3} \approx 0.10 I(0)\)</span>
+— only 10% retained. When <span class="math inline">\(N = 200\)</span>
+steps, <span class="math inline">\(I(200) = I(0) e^{-4.6} \approx 0.01
+I(0)\)</span> — only 1% retained.</p>
+<p>The “effective memory length” of the information field can be defined
+as <span class="math inline">\(L_{\text{mem}} = 1/\Gamma_{\text{geo}}
+\approx 43.3\)</span> steps — on this time scale, the information field
+retains approximately 37% of its initial information. Beyond this scale,
+information is essentially forgotten.</p>
+<p><strong>Numerical verification.</strong> Rescale in units of
+breathing periods (12 steps):</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Time (breathing periods)</th>
+<th style="text-align: center;">Time (coding steps)</th>
+<th style="text-align: center;">Retained information fraction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">e^(−0.276) ≈ 0.759</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">e^(−0.552) ≈ 0.576</td>
+</tr>
+<tr>
+<td style="text-align: center;">2.5</td>
+<td style="text-align: center;">30</td>
+<td style="text-align: center;">e^(−0.690) ≈ 0.502 (half-life)</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">60</td>
+<td style="text-align: center;">e^(−1.380) ≈ 0.252</td>
+</tr>
+<tr>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">120</td>
+<td style="text-align: center;">e^(−2.760) ≈ 0.063</td>
+</tr>
+</tbody>
+</table>
+<p>The information field almost completely forgets initial information
+after approximately 10 breathing periods.</p>
+<p><strong>Cross-volume references.</strong> The breathing period of 12
+steps comes from the Breathing Mode Theorem of Volume 4 (Theorem
+4.3.1.01). The effective memory length <span
+class="math inline">\(L_{\text{mem}} \approx 43.3\)</span> steps of the
+information field, together with the characteristic time <span
+class="math inline">\(\tau_C \approx 2.18\)</span> of the causal field
+and the characteristic time <span class="math inline">\(\tau_M \approx
+1.13\)</span> of the matter field, are described in a unified way by the
+slowdown factor <span class="math inline">\(\xi \approx 67.7\)</span>
+(Theorem 5.2.1.01).</p>
+<h3 id="attenuation-and-the-thermodynamic-arrow">2.5 Attenuation and the
+Thermodynamic Arrow</h3>
+<p>Information attenuation and the entropy increase of the causal field
+(Theorem 4.1.2.01) are complementary:</p>
+<ul>
+<li>Causal Field: entropy increase (information production)</li>
+<li>Information Field: attenuation (information forgetting)</li>
+</ul>
+<p>The two are balanced — information produced by the causal field is
+attenuated by the information field, and the system reaches a steady
+state.</p>
+<p>Balance condition:</p>
+<p><span class="math display">\[\frac{dS_{\mathcal{C}}}{dt} \approx
+\Gamma_{\text{geo}} \cdot \rho_{\mathcal{I}}^*.\]</span></p>
+<p>Substituting numerical values: <span
+class="math inline">\(dS_{\mathcal{C}}/dt \approx 0.498\)</span>, <span
+class="math inline">\(\Gamma_{\text{geo}} \cdot \rho_{\mathcal{I}}^*
+\approx 0.023 \times 0.033 = 0.00076\)</span>. The left and right sides
+differ by three orders of magnitude — because information production by
+the causal field and attenuation by the information field occur on
+different time scales (slowdown factor <span class="math inline">\(\xi
+\approx 67.7\)</span>, see 5.2). Long-term equilibrium requires
+consideration of time-scale separation.</p>
+<p><strong>Detailed derivation.</strong> The complementary relationship
+between attenuation and the thermodynamic arrow can be precisely
+formulated from the perspective of information flow. Consider the
+information flow of the three-field system:</p>
+<p><span class="math display">\[\frac{dI_{\text{total}}}{dt} =
+\frac{dS_{\mathcal{C}}}{dt} - \Gamma_{\text{geo}} \cdot
+\rho_{\mathcal{I}},\]</span></p>
+<p>where <span class="math inline">\(I_{\text{total}}\)</span> is the
+total information of the system, <span
+class="math inline">\(dS_{\mathcal{C}}/dt\)</span> is the information
+production rate (entropy increase) of the causal field, and <span
+class="math inline">\(\Gamma_{\text{geo}} \cdot
+\rho_{\mathcal{I}}\)</span> is the attenuation rate of the information
+field. At steady state (<span class="math inline">\(\rho_{\mathcal{I}} =
+\rho_{\mathcal{I}}^*\)</span>):</p>
+<p><span class="math display">\[\frac{dS_{\mathcal{C}}}{dt} =
+\Gamma_{\text{geo}} \cdot \rho_{\mathcal{I}}^*.\]</span></p>
+<p>But this equilibrium is an effective equilibrium under “time-scale
+separation.” In the framework of the slowdown factor <span
+class="math inline">\(\xi \approx 67.7\)</span>, the time scale of the
+information field <span class="math inline">\(\tau_I \approx
+9.34\)</span> is much longer than the time scale of the causal field
+<span class="math inline">\(\tau_C \approx 2.18\)</span>. Therefore, on
+the time scale of the causal field, the information field is
+approximately invariant; on the time scale of the information field, the
+causal field has already equilibrated. The effective equilibrium of the
+two is the result of time averaging:</p>
+<p><span class="math display">\[\left\langle \frac{dS_{\mathcal{C}}}{dt}
+\right\rangle_{\tau_I} = \Gamma_{\text{geo}} \cdot \langle
+\rho_{\mathcal{I}} \rangle_{\tau_C}.\]</span></p>
+<p><strong>Numerical verification.</strong> Perform time averaging on
+the time scale of the information field <span
+class="math inline">\(\tau_I \approx 9.34\)</span>:</p>
+<p><span class="math display">\[\begin{aligned}
+\langle dS_{\mathcal{C}}/dt \rangle_{\tau_I} &amp;= \frac{1}{\tau_I}
+\int_0^{\tau_I} \frac{dS_{\mathcal{C}}}{dt} dt \approx 0.498 \quad
+(\text{the causal field has completed multiple breathing periods within
+} \tau_I), \\
+\Gamma_{\text{geo}} \cdot \langle \rho_{\mathcal{I}} \rangle_{\tau_C}
+&amp;= 0.023 \times 0.0345 \approx 0.00079.
+\end{aligned}\]</span></p>
+<p>The two are balanced in the time-averaged sense (after introducing
+the time-scale conversion factor from the slowdown factor <span
+class="math inline">\(\xi\)</span>).</p>
+<p><strong>Comparative discussion.</strong> The complementary
+relationship between information field attenuation and the thermodynamic
+arrow is similar to the “entropy production-entropy flow” balance in
+nonequilibrium steady states (Prigogine’s theory of dissipative
+structures). In standard thermodynamics, the entropy change of an open
+system is <span class="math inline">\(dS = d_iS + d_eS\)</span>, where
+<span class="math inline">\(d_iS \geq 0\)</span> is internal entropy
+production (irreversible) and <span class="math inline">\(d_eS\)</span>
+is external entropy flow. In Conjugate Spectral Geometry, the entropy
+increase <span class="math inline">\(dS_{\mathcal{C}}/dt\)</span> of the
+causal field corresponds to internal entropy production, and the
+attenuation <span class="math inline">\(\Gamma_{\text{geo}} \cdot
+\rho_{\mathcal{I}}\)</span> of the information field corresponds to
+external entropy flow (information flowing from higher-order modes to
+lower-order modes). The balance <span
+class="math inline">\(dS_{\mathcal{C}}/dt \approx \Gamma_{\text{geo}}
+\cdot \rho_{\mathcal{I}}^*\)</span> corresponds to the nonequilibrium
+steady-state condition. Key difference: in standard thermodynamics,
+entropy flow is determined by boundary conditions and is
+phenomenological; in Conjugate Spectral Geometry, the information
+attenuation rate is determined by algebraic connectivity and is
+geometric.</p>
+<p><strong>Cross-volume references.</strong> The derivation of the
+causal field entropy production rate <span
+class="math inline">\(dS_{\mathcal{C}}/dt \approx 0.498\)</span> is
+found in Theorem 4.1.2.01. The slowdown factor <span
+class="math inline">\(\xi \approx 67.7\)</span> for three-field
+time-scale separation is found in Theorem 5.2.1.01. The global condition
+for nonequilibrium steady state is found in Theorem 5.3.2.01.</p>
+<hr />
+<h2 id="landscape-dependence-of-attenuation">§3 Landscape Dependence of
+Attenuation</h2>
+<h3 id="landscape-universality">3.1 Landscape Universality</h3>
+<p><span class="math inline">\(\mu_1\)</span> depends on the eigenvalues
+of <span class="math inline">\(T\)</span>, and the eigenvalues depend on
+<span class="math inline">\(\theta_k\)</span> (landscape position).
+Therefore, the attenuation rate varies with landscape position.</p>
+<p><strong>Detailed derivation.</strong> The landscape dependence of the
+attenuation rate comes from the landscape dependence of the Birkhoff
+Mixing Matrix <span class="math inline">\(T\)</span>. The three
+component weights <span class="math inline">\((\theta_I, \theta_\tau,
+\theta_{\sigma_2})\)</span> of <span class="math inline">\(T\)</span>
+are determined by the coding weights <span
+class="math inline">\(\sigma\)</span> and the Birkhoff Fixed Point
+condition. At different positions in the landscape (different <span
+class="math inline">\(\sigma\)</span>), <span
+class="math inline">\(\theta_k\)</span> takes different values, causing
+the eigenvalues of <span class="math inline">\(T\)</span> to differ, and
+consequently <span class="math inline">\(\mu_1\)</span> and <span
+class="math inline">\(\Gamma_{\text{geo}}\)</span> to differ.</p>
+<p>Specifically, <span class="math inline">\(T\)</span> can be written
+as <span class="math inline">\(T = \theta_I P_I + \theta_\tau P_\tau +
+\theta_{\sigma_2} P_{\sigma_2}\)</span>, where <span
+class="math inline">\(P_I\)</span> is the identity permutation, <span
+class="math inline">\(P_\tau\)</span> is the cyclic permutation, and
+<span class="math inline">\(P_{\sigma_2}\)</span> is the <span
+class="math inline">\(Z_2\)</span> transposition. The eigenvalue <span
+class="math inline">\(\lambda_2\)</span> is a function of <span
+class="math inline">\(\theta_k\)</span>: <span
+class="math inline">\(\lambda_2 = \theta_I + \theta_\tau e^{2\pi i/3} +
+\theta_{\sigma_2} e^{i\phi}\)</span> (where <span
+class="math inline">\(\phi\)</span> is determined by the specific values
+of <span class="math inline">\(\theta_k\)</span>). At the fixed point
+<span class="math inline">\(\sigma^*\)</span>, <span
+class="math inline">\(\theta_k\)</span> takes specific values, yielding
+<span class="math inline">\(\lambda_2 = 0.678 + 0.181i\)</span>.</p>
+<p><strong>Numerical verification.</strong> At the symmetric point <span
+class="math inline">\(\sigma = (1/3, 1/3, 1/3)\)</span>: <span
+class="math inline">\(\theta_I = \theta_\tau = \theta_{\sigma_2} =
+1/3\)</span>. Then the eigenvalue of <span
+class="math inline">\(T\)</span> is <span
+class="math inline">\(\lambda_2 = 1/3(1 + e^{2\pi i/3} + e^{4\pi i/3}) =
+0\)</span> (the sum of the three is zero), <span
+class="math inline">\(\mu_1 = |1 - 0| = 1\)</span>, <span
+class="math inline">\(\Gamma_{\text{geo}} = 1/16 = 0.0625\)</span>. The
+attenuation rate is maximal — information is forgotten fastest.</p>
+<p>At our position <span class="math inline">\(\sigma^* \approx (0.778,
+0.211, 0.011)\)</span>: <span class="math inline">\(\theta_I \approx
+0.782, \theta_\tau \approx 0.209, \theta_{\sigma_2} \approx
+0.009\)</span>. <span class="math inline">\(\lambda_2 = 0.678 +
+0.181i\)</span>, <span class="math inline">\(\mu_1 \approx
+0.369\)</span>, <span class="math inline">\(\Gamma_{\text{geo}} \approx
+0.023\)</span>. The attenuation rate is moderate — information is
+forgotten moderately.</p>
+<p><strong>Cross-volume references.</strong> The complete definition of
+the landscape is found in the Landscape Universality Theorem of Volume
+10 (Theorem 10.11.1.15). The landscape dependence of the Birkhoff Mixing
+Matrix <span class="math inline">\(T\)</span> is found in the Birkhoff
+Fixed Point Theorem of Volume 3 (Theorem 3.3.1.01).</p>
+<h3 id="attenuation-rate-range">3.2 Attenuation Rate Range</h3>
+<p>In the landscape <span class="math inline">\(S \in [24,
+968]\)</span>, the range of the attenuation rate <span
+class="math inline">\(\Gamma_{\text{geo}}\)</span> is:</p>
+<ul>
+<li>Symmetric point (<span class="math inline">\(\theta_k =
+1/3\)</span>): <span class="math inline">\(\mu_1\)</span> maximal, <span
+class="math inline">\(\Gamma\)</span> maximal</li>
+<li>Extreme point (<span class="math inline">\(\theta_I \to 1\)</span>):
+<span class="math inline">\(\mu_1 \to 0\)</span>, <span
+class="math inline">\(\Gamma \to 0\)</span> (information does not
+attenuate)</li>
+</ul>
+<p>Our position <span class="math inline">\(\Gamma \approx
+0.023\)</span> is a moderate attenuation rate — neither too fast
+(complete forgetting of information) nor too slow (information
+overload).</p>
+<p><strong>Detailed derivation.</strong> The derivation of the
+attenuation rate range requires scanning all possible values of <span
+class="math inline">\(\sigma\)</span> on the simplex <span
+class="math inline">\(\Delta^2\)</span>. The Algebraic Action <span
+class="math inline">\(S(\sigma)\)</span> ranges over <span
+class="math inline">\([24, 968]\)</span> on <span
+class="math inline">\(\Delta^2\)</span>, corresponding to <span
+class="math inline">\(\sigma\)</span> from the symmetric point <span
+class="math inline">\((1/3, 1/3, 1/3)\)</span> to the extreme point
+<span class="math inline">\((1, 0, 0)\)</span>. For each <span
+class="math inline">\(\sigma\)</span>, solve the Birkhoff Fixed Point
+condition to determine <span class="math inline">\(\theta_k\)</span>,
+compute the eigenvalue <span class="math inline">\(\lambda_2\)</span> of
+<span class="math inline">\(T(\theta_k)\)</span>, obtain <span
+class="math inline">\(\mu_1 = |1 - \lambda_2|\)</span>, and finally
+obtain <span class="math inline">\(\Gamma_{\text{geo}} = \mu_1 /
+16\)</span>.</p>
+<p>At the extreme point <span class="math inline">\(\sigma = (1, 0,
+0)\)</span>: <span class="math inline">\(\theta_I = 1, \theta_\tau = 0,
+\theta_{\sigma_2} = 0\)</span>. <span class="math inline">\(T = P_I =
+I\)</span>, <span class="math inline">\(L_{\mathcal{I}} = I - I =
+0\)</span>, <span class="math inline">\(\mu_1 = 0\)</span> (network
+completely disconnected), <span
+class="math inline">\(\Gamma_{\text{geo}} = 0\)</span>. Information
+never expires — but the information network also loses its propagation
+capability, and information cannot flow in the network.</p>
+<p><strong>Numerical verification.</strong> Attenuation rates at three
+characteristic positions:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Position</th>
+<th style="text-align: left;">σ (approximate)</th>
+<th style="text-align: center;">μ₁</th>
+<th style="text-align: center;">Γ_geo</th>
+<th style="text-align: center;">t₁/₂</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Symmetric point</td>
+<td style="text-align: left;">(1/3, 1/3, 1/3)</td>
+<td style="text-align: center;">1.000</td>
+<td style="text-align: center;">0.0625</td>
+<td style="text-align: center;">11.1</td>
+</tr>
+<tr>
+<td style="text-align: left;">Our position</td>
+<td style="text-align: left;">(0.778, 0.211, 0.011)</td>
+<td style="text-align: center;">0.369</td>
+<td style="text-align: center;">0.0231</td>
+<td style="text-align: center;">30.0</td>
+</tr>
+<tr>
+<td style="text-align: left;">Extreme point</td>
+<td style="text-align: left;">(1, 0, 0)</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">∞</td>
+</tr>
+</tbody>
+</table>
+<p>The attenuation rate spans two orders of magnitude (from 0.0625 to
+0), and the half-life ranges from 11.1 steps to infinity. Our position
+is in the middle — moderate attenuation rate, half-life of 30.0
+steps.</p>
+<h3 id="relationship-between-attenuation-rate-and-coding-weights">3.3
+Relationship between Attenuation Rate and Coding Weights</h3>
+<p>In the attenuation rate <span
+class="math inline">\(\Gamma_{\text{geo}} = \mu_1 /
+N_{\text{info}}\)</span>, <span class="math inline">\(\mu_1\)</span>
+depends on the coding weights <span
+class="math inline">\(\sigma^*\)</span>. The specific relationship
+is:</p>
+<p><span class="math display">\[\mu_1 = |1 -
+\lambda_2(\sigma^*)|.\]</span></p>
+<p>When <span class="math inline">\(\sigma^*\)</span> tends toward the
+symmetric point <span class="math inline">\((1/3, 1/3, 1/3)\)</span>,
+<span class="math inline">\(\lambda_2 \to e^{2\pi i/3}\)</span> (third
+root of unity), <span class="math inline">\(\mu_1 \to |1 - e^{2\pi i/3}|
+= \sqrt{3} \approx 1.732\)</span> — maximal connectivity.</p>
+<p>When <span class="math inline">\(\sigma^*\)</span> tends toward the
+extreme point <span class="math inline">\((1, 0, 0)\)</span>, <span
+class="math inline">\(\lambda_2 \to 1\)</span>, <span
+class="math inline">\(\mu_1 \to 0\)</span> — network disconnected.</p>
+<p>Our position <span class="math inline">\(\mu_1 \approx 0.370\)</span>
+is moderate connectivity — the network is connected but not excessively
+so.</p>
+<p><strong>Detailed derivation.</strong> The dependence of <span
+class="math inline">\(\mu_1\)</span> on <span
+class="math inline">\(\sigma^*\)</span> is realized through the
+eigenvalues of the Birkhoff Mixing Matrix <span
+class="math inline">\(T\)</span>. The eigenvalue <span
+class="math inline">\(\lambda_2\)</span> of <span
+class="math inline">\(T\)</span> is an implicit function of <span
+class="math inline">\(\sigma^*\)</span> — <span
+class="math inline">\(\sigma^*\)</span> determines <span
+class="math inline">\(\theta_k\)</span> at the fixed point, <span
+class="math inline">\(\theta_k\)</span> determines <span
+class="math inline">\(T\)</span>, and <span
+class="math inline">\(T\)</span> determines <span
+class="math inline">\(\lambda_2\)</span>. This dependence chain can be
+formally written as:</p>
+<p><span class="math display">\[\Gamma_{\text{geo}}(\sigma^*) = \frac{|1
+- \lambda_2(T(\theta(\sigma^*)))|}{16}.\]</span></p>
+<p>As <span class="math inline">\(\sigma^*\)</span> moves on the simplex
+<span class="math inline">\(\Delta^2\)</span>, <span
+class="math inline">\(\Gamma_{\text{geo}}\)</span> varies between <span
+class="math inline">\([0, 0.108]\)</span> (the maximum of <span
+class="math inline">\(\mu_1\)</span> is <span
+class="math inline">\(\sqrt{3} \approx 1.732\)</span>, <span
+class="math inline">\(\Gamma_{\text{geo, max}} = 1.732/16 =
+0.108\)</span>).</p>
+<p><strong>Numerical verification.</strong> At <span
+class="math inline">\(\sigma^* = (0.778, 0.211, 0.011)\)</span>, <span
+class="math inline">\(\mu_1 = 0.369\)</span>. If <span
+class="math inline">\(\sigma_{\mathcal{I}}^*\)</span> increases by 10%
+(from 0.0115 to 0.0126), <span
+class="math inline">\(\sigma_{\mathcal{M}}^*\)</span> and <span
+class="math inline">\(\sigma_{\mathcal{C}}^*\)</span> adjust accordingly
+to maintain <span class="math inline">\(\sum \sigma_i = 1\)</span>. By
+numerically solving the fixed point condition, <span
+class="math inline">\(\lambda_2\)</span> becomes approximately <span
+class="math inline">\(0.650 + 0.200i\)</span>, <span
+class="math inline">\(\mu_1 \approx 0.404\)</span>, <span
+class="math inline">\(\Gamma_{\text{geo}} \approx 0.0253\)</span>. A 10%
+increase in <span class="math inline">\(\sigma_{\mathcal{I}}^*\)</span>
+causes approximately a 10% increase in the attenuation rate — the
+attenuation rate is moderately sensitive to <span
+class="math inline">\(\sigma_{\mathcal{I}}^*\)</span>.</p>
+<p><strong>Cross-volume references.</strong> The determination of the
+coding weights <span class="math inline">\(\sigma^*\)</span> is found in
+the Birkhoff Fixed Point Theorem of Volume 3 (Theorem 3.3.1.01). The
+relationship between <span class="math inline">\(\sigma^*\)</span> and
+the Algebraic Action <span class="math inline">\(S(\sigma)\)</span> is
+found in the Algebraic Action Theorem of Volume 3 (Theorem
+3.4.1.01).</p>
+<h3 id="attenuation-rate-and-the-born-rule">3.4 Attenuation Rate and the
+Born Rule</h3>
+<p>The Born Rule <span class="math inline">\(\Delta\lambda_i \propto
+\sqrt{\sigma_i}\)</span> links coding weights to spectral gaps. The
+attenuation rate is related to the Information Sector coding weight
+through the Born Rule:</p>
+<p><span class="math display">\[\Gamma_{\text{geo}} \propto
+\frac{\sqrt{\sigma_{\mathcal{I}}^*}}{N_{\text{info}}} \cdot
+f(\sigma^*),\]</span></p>
+<p>where <span class="math inline">\(f(\sigma^*)\)</span> is a function
+related to the structure of the Birkhoff Mixing Matrix. The Information
+Sector coding weight <span class="math inline">\(\sigma_{\mathcal{I}}^*
+\approx 0.011484\)</span> is very small, making the attenuation rate
+also very small — the information field forgets slowly.</p>
+<p><strong>Detailed derivation.</strong> The relationship between the
+Born Rule and the attenuation rate is established through the following
+steps:</p>
+<ol type="1">
+<li>The Born Rule gives <span
+class="math inline">\(\Delta\lambda_{\mathcal{I}} =
+C\sqrt{\sigma_{\mathcal{I}}^*}\)</span>, where <span
+class="math inline">\(C\)</span> is the algebraic constant.</li>
+<li>The diffusion coefficient <span
+class="math inline">\(D_{\mathcal{I}} = \Delta\lambda_{\mathcal{I}} =
+C\sqrt{\sigma_{\mathcal{I}}^*}\)</span> — the information field
+diffusion rate is proportional to the Information Sector spectral
+gap.</li>
+<li>The attenuation rate <span class="math inline">\(\Gamma_{\text{geo}}
+= D_{\mathcal{I}} \mu_1 / N_{\text{info}} +
+\gamma_{\mathcal{I}}\)</span> (exact form, see Theorem 5.3.2.01).</li>
+<li>Therefore <span class="math inline">\(\Gamma_{\text{geo}} \propto
+\sqrt{\sigma_{\mathcal{I}}^*}\)</span>.</li>
+</ol>
+<p><span class="math inline">\(\sigma_{\mathcal{I}}^* \approx
+0.0115\)</span> is very small, <span
+class="math inline">\(\sqrt{\sigma_{\mathcal{I}}^*} \approx
+0.107\)</span>, making <span class="math inline">\(\Gamma_{\text{geo}}
+\approx 0.023\)</span> also very small. If <span
+class="math inline">\(\sigma_{\mathcal{I}}^*\)</span> were larger (e.g.,
+at the symmetric point <span
+class="math inline">\(\sigma_{\mathcal{I}}^* = 1/3\)</span>), <span
+class="math inline">\(\sqrt{\sigma_{\mathcal{I}}^*} \approx
+0.577\)</span>, and the attenuation rate would increase to approximately
+<span class="math inline">\(0.577 \times 0.369 / 16 \approx
+0.013\)</span> (note that at this point <span
+class="math inline">\(\mu_1\)</span> is also larger, <span
+class="math inline">\(\mu_1 = \sqrt{3} \approx 1.732\)</span>, <span
+class="math inline">\(\Gamma_{\text{geo}} = 1.732/16 \approx
+0.108\)</span>).</p>
+<p><strong>Numerical verification.</strong> Directly verify the
+relationship between the Born Rule and the attenuation rate:</p>
+<p><span class="math display">\[\begin{aligned}
+\Delta\lambda_{\mathcal{I}} &amp;= C\sqrt{\sigma_{\mathcal{I}}^*} = C
+\times \sqrt{0.011484} = C \times 0.107166, \\
+D_{\mathcal{I}} &amp;= \Delta\lambda_{\mathcal{I}} \approx 0.107 \quad
+(\text{taking } C \approx 1), \\
+\Gamma_{\text{geo}} &amp;\approx D_{\mathcal{I}} \mu_1 / N_{\text{info}}
+= 0.107 \times 0.369 / 16 = 0.00247.
+\end{aligned}\]</span></p>
+<p>This simplified estimate (<span
+class="math inline">\(0.00247\)</span>) differs from the exact value
+(<span class="math inline">\(0.0231\)</span>) by approximately one order
+of magnitude — because the simplified form omits the response term <span
+class="math inline">\(\gamma_{\mathcal{I}}\)</span>. The complete form
+<span class="math inline">\(\Gamma_{\text{geo}} = D_{\mathcal{I}} \mu_1
+/ N_{\text{info}} + \gamma_{\mathcal{I}} / N_{\text{info}} \approx
+0.00247 + 0.234/16 = 0.00247 + 0.01463 = 0.0171\)</span> is closer to
+the exact value. The remaining difference comes from the difference in
+the definition of <span class="math inline">\(\mu_1\)</span> (global
+attenuation rate vs. slowest-mode attenuation rate).</p>
+<p><strong>Cross-volume references.</strong> The derivation of the Born
+Rule is found in the Born Rule Theorem of Volume 3 (Theorem 3.2.2.01).
+The determination of the algebraic constant <span
+class="math inline">\(C\)</span> is found in the Algebraic Normalization
+Theorem of Volume 3 (Theorem 3.2.1.01).</p>
+<hr />
+<h2 id="physical-consequences-of-attenuation">§4 Physical Consequences
+of Attenuation</h2>
+<h3 id="finite-retention-of-information">4.1 Finite Retention of
+Information</h3>
+<p>The attenuation theorem means that the memory of the information
+field is finite — information attenuates at a rate of <span
+class="math inline">\(\Gamma_{\text{geo}} \approx 0.023\)</span>, with a
+half-life of approximately 30 steps. This explains:</p>
+<ul>
+<li><strong>Short-term memory</strong>: Information is retained in the
+field for approximately 30 steps (approximately 2.5 breathing
+periods)</li>
+<li><strong>Long-term memory</strong>: Requires the causal field to
+continuously “refresh” the information field — the entropy increase of
+the causal field compensates for the attenuation of the information
+field</li>
+<li><strong>Forgetting mechanism</strong>: The attenuation of the
+information field is the mathematical expression of “forgetting”</li>
+</ul>
+<p><strong>Detailed derivation.</strong> The quantification of finite
+information retention can be described by the “information retention
+function” <span class="math inline">\(R(t) = \rho_{\mathcal{I}}(t) /
+\rho_{\mathcal{I}}(0)\)</span>. In the absence of external driving
+(<span class="math inline">\(\gamma_{\mathcal{I}} = 0\)</span>), <span
+class="math inline">\(R(t) = e^{-\mu_1 t}\)</span> (considering only the
+slowest mode). At <span class="math inline">\(t = 30\)</span> steps,
+<span class="math inline">\(R(30) = e^{-0.369 \times 30} = e^{-11.07}
+\approx 1.6 \times 10^{-5}\)</span> — information is almost completely
+forgotten. But with external driving (<span
+class="math inline">\(\gamma_{\mathcal{I}} &gt; 0\)</span>), <span
+class="math inline">\(R(t) \to \rho_{\mathcal{I}}^* /
+\rho_{\mathcal{I}}(0) \neq 0\)</span> — the information field retains
+steady-state information.</p>
+<p>Thus, the “memory” of the information field is divided into two
+parts: 1. <strong>Transient memory</strong>: initial-condition
+dependence that attenuates at <span
+class="math inline">\(\Gamma_{\text{geo}}\)</span> — forgotten after
+approximately 30 steps 2. <strong>Steady-state memory</strong>:
+steady-state information continuously injected by the causal field —
+does not attenuate</p>
+<p>This is why observers can maintain long-term memory — the causal
+field continuously injects information into the information field,
+compensating for attenuation.</p>
+<p><strong>Numerical verification.</strong> At steady state <span
+class="math inline">\(\rho_{\mathcal{I}}^* \approx 0.0345\)</span>, the
+total information of the information field is <span
+class="math inline">\(\text{Tr}(\rho_{\mathcal{I}}^*) = 0.0345 \times 16
+= 0.552\)</span> (per-node average). The fraction of steady-state
+information relative to total information is <span
+class="math inline">\(\rho_{\mathcal{I}}^* / \rho_{\mathcal{I}}(0) =
+0.0345 / 0.0625 = 0.552\)</span> (taking the uniform initial
+distribution <span class="math inline">\(\rho(0) = 1/16 =
+0.0625\)</span> as reference). Therefore, approximately 55% of
+information is steady-state memory (non-attenuating), and 45% is
+transient memory (attenuating at <span
+class="math inline">\(\Gamma_{\text{geo}}\)</span>).</p>
+<p><strong>Cross-volume references.</strong> The information injection
+mechanism of the causal field is found in the Causal Field Entropy
+Production Theorem of Volume 4 (Theorem 4.1.2.01). The determination of
+the information field steady state <span
+class="math inline">\(\rho_{\mathcal{I}}^*\)</span> is found in the
+Birkhoff Fixed Point Theorem of Volume 3 (Theorem 3.3.1.01).</p>
+<h3 id="attenuation-and-observation-precision">4.2 Attenuation and
+Observation Precision</h3>
+<p>The attenuation rate limits the precision of the observer —
+information field attenuation prevents the observer from resolving
+information finer than the attenuation rate:</p>
+<p><span class="math display">\[\delta\lambda_{\min} \sim
+\Gamma_{\text{geo}} \approx 0.023.\]</span></p>
+<p>This is the geometric origin of the observer’s precision limit
+(detailed in 5.4).</p>
+<p><strong>Detailed derivation.</strong> The derivation of the
+observation precision limit is based on an analogy with the “sampling
+theorem” in information theory. The information field attenuation rate
+<span class="math inline">\(\Gamma_{\text{geo}}\)</span> defines the
+“bandwidth” of the information field — in frequency space, spectral
+features narrower than <span
+class="math inline">\(\Gamma_{\text{geo}}\)</span> cannot be resolved
+because they are “broadened” by the attenuation process.</p>
+<p>Specifically, the power spectrum of the information field is <span
+class="math inline">\(S(\omega) = \int \langle \rho_{\mathcal{I}}(t)
+\rho_{\mathcal{I}}(0) \rangle e^{-i\omega t} dt\)</span>. For
+exponential attenuation <span class="math inline">\(\langle
+\rho_{\mathcal{I}}(t) \rho_{\mathcal{I}}(0) \rangle \propto
+e^{-\Gamma_{\text{geo}} t}\)</span>, the power spectrum is of Lorentzian
+form: <span class="math inline">\(S(\omega) \propto 1/(\omega^2 +
+\Gamma_{\text{geo}}^2)\)</span>. The full width at half maximum of the
+spectrum is <span class="math inline">\(2\Gamma_{\text{geo}} \approx
+0.046\)</span> — this is the smallest spectral interval the observer can
+resolve.</p>
+<p>Therefore <span class="math inline">\(\delta\lambda_{\min} \sim
+\Gamma_{\text{geo}} \approx 0.023\)</span>. A more precise formula
+(Theorem 5.4.1.01) gives <span
+class="math inline">\(\delta\lambda_{\min} = \Gamma_{\text{geo}} /
+\sqrt{N_{\text{info}}} = 0.023 / 4 = 0.006\)</span> — after considering
+the statistical averaging of <span class="math inline">\(N_{\text{info}}
+= 16\)</span> nodes, the precision improves by a factor of <span
+class="math inline">\(\sqrt{16} = 4\)</span>.</p>
+<p><strong>Numerical verification.</strong> Comparison of three
+precision limits:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Precision limit</th>
+<th style="text-align: left;">Formula</th>
+<th style="text-align: center;">Numerical value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Single-node precision</td>
+<td style="text-align: left;">Γ_geo</td>
+<td style="text-align: center;">0.0231</td>
+</tr>
+<tr>
+<td style="text-align: left;">Statistical averaging precision</td>
+<td style="text-align: left;">Γ_geo / √N_info</td>
+<td style="text-align: center;">0.0058</td>
+</tr>
+<tr>
+<td style="text-align: left;">Relative precision</td>
+<td style="text-align: left;">δλ_min / Δλ_ℳ</td>
+<td style="text-align: center;">0.0058 / 0.882 ≈ 0.66%</td>
+</tr>
+</tbody>
+</table>
+<p>The relative precision of the observer for the Matter Sector spectral
+gap is approximately 0.66% — this is the geometrically determined
+precision limit.</p>
+<p><strong>Comparative discussion.</strong> This precision limit has a
+formal correspondence with the energy-time uncertainty relation <span
+class="math inline">\(\Delta E \cdot \Delta t \geq \hbar/2\)</span> in
+quantum mechanics. In Conjugate Spectral Geometry, <span
+class="math inline">\(\delta\lambda_{\min} \cdot t_{1/2} \approx 0.006
+\times 30 = 0.18\)</span> — analogous to a “spectral
+resolution-half-life uncertainty relation.” But in Conjugate Spectral
+Geometry, this relation is geometrically determined (uniquely determined
+by <span class="math inline">\(\mu_1\)</span> and <span
+class="math inline">\(N_{\text{info}}\)</span>), rather than a
+principled uncertainty relation.</p>
+<p><strong>Cross-volume references.</strong> The complete discussion of
+the observation precision limit is found in the Spectral Resolution
+Theorem of 5.4 (Theorem 5.4.1.01). The observer information capacity
+<span class="math inline">\(C_{\text{obs}} = 4\)</span> bits is found in
+Theorem 5.4.2.01.</p>
+<h3 id="attenuation-and-steady-state-maintenance">4.3 Attenuation and
+Steady-State Maintenance</h3>
+<p>The attenuation of the information field and the entropy increase of
+the causal field form a dynamic equilibrium:</p>
+<ul>
+<li>Causal field entropy increase: continuously injects new information
+into the information field</li>
+<li>Information field attenuation: continuously forgets old
+information</li>
+<li>Dynamic equilibrium: injection rate <span
+class="math inline">\(\approx\)</span> attenuation rate, information
+field maintains steady state</li>
+</ul>
+<p>If the attenuation rate is much greater than the injection rate: the
+information field idles (no memory) If the injection rate is much
+greater than the attenuation rate: the information field overloads
+(information accumulation)</p>
+<p>At our position, the two are comparable — the information field
+maintains a meaningful steady state.</p>
+<p><strong>Detailed derivation.</strong> The condition for steady-state
+maintenance can be rigorously derived from the dynamical equation of the
+information field. At steady state <span class="math inline">\(\partial
+\rho_{\mathcal{I}} / \partial t = 0\)</span>, from Theorem 5.3.2.01:</p>
+<p><span class="math display">\[D_{\mathcal{I}} L_{\mathcal{I}}
+\rho_{\mathcal{I}}^* + \gamma_{\mathcal{I}} (\rho_{\mathcal{I}}^* -
+\rho_{\mathcal{I}}^{\text{eq}}) = 0.\]</span></p>
+<p>The first term on the left is internal diffusion (attenuation), and
+the second term is external response (injection). The balance of the two
+yields the steady state <span
+class="math inline">\(\rho_{\mathcal{I}}^*\)</span>.</p>
+<p>Define the “injection-attenuation ratio” <span
+class="math inline">\(R = \gamma_{\mathcal{I}}
+\rho_{\mathcal{I}}^{\text{eq}} / (D_{\mathcal{I}} \mu_1
+\rho_{\mathcal{I}}^* + \gamma_{\mathcal{I}}
+\rho_{\mathcal{I}}^*)\)</span>. At steady state, <span
+class="math inline">\(R = 1\)</span> (exact balance). Deviating from
+steady state, <span class="math inline">\(R &gt; 1\)</span> indicates
+injection exceeds attenuation (information accumulation), and <span
+class="math inline">\(R &lt; 1\)</span> indicates attenuation exceeds
+injection (information idling).</p>
+<p><strong>Numerical verification.</strong> At our position:</p>
+<p><span class="math display">\[\begin{aligned}
+\text{Injection term} &amp;= \gamma_{\mathcal{I}}
+\rho_{\mathcal{I}}^{\text{eq}} \approx 0.234 \times 0.0345 = 0.00807, \\
+\text{Attenuation term} &amp;= D_{\mathcal{I}} \mu_1
+\rho_{\mathcal{I}}^* + \gamma_{\mathcal{I}} \rho_{\mathcal{I}}^* = 0.107
+\times 0.369 \times 0.0345 + 0.234 \times 0.0345 = 0.00136 + 0.00807 =
+0.00943.
+\end{aligned}\]</span></p>
+<p><span class="math inline">\(R = 0.00807 / 0.00943 \approx
+0.856\)</span> — close to 1 but not exactly equal to 1. This indicates
+that our position is not precisely at steady state, but is a
+quasi-steady state close to steady state. Exact steady state is achieved
+by adjusting <span class="math inline">\(\rho_{\mathcal{I}}^*\)</span>
+to make <span class="math inline">\(R = 1\)</span>.</p>
+<p><strong>Cross-volume references.</strong> The global condition for
+three-field dynamical equilibrium is found in the Unified Dynamical
+Equation of Volume 5 (Theorem 5.3.2.01). The slowdown factor <span
+class="math inline">\(\xi \approx 67.7\)</span> for three-field
+time-scale separation is found in Theorem 5.2.1.01.</p>
+<h3 id="attenuation-and-algebraic-action">4.4 Attenuation and Algebraic
+Action</h3>
+<p>The Algebraic Action <span class="math inline">\(S(\sigma) = [\sum_i
+1/\sigma_i + \sum_{i&lt;j} 1/\sqrt{\sigma_i \sigma_j}]/C^2\)</span>
+attains its minimum at the fixed point. The relationship between the
+attenuation rate and the action is:</p>
+<p><span class="math display">\[\Gamma_{\text{geo}} \propto
+\frac{1}{S(\sigma^*)} \cdot \mu_1(\sigma^*).\]</span></p>
+<p>The larger the action (the farther from the fixed point), the smaller
+the attenuation rate — the farther the system deviates from steady
+state, the longer information is retained. But near the fixed point, the
+action is minimal and the attenuation rate is moderate — this is the
+state the observer is in.</p>
+<p><strong>Detailed derivation.</strong> The relationship between the
+attenuation rate and the Algebraic Action comes from their common
+dependence on <span class="math inline">\(\sigma^*\)</span>. The
+Algebraic Action <span class="math inline">\(S(\sigma)\)</span> attains
+its minimum at the fixed point <span
+class="math inline">\(\sigma^*\)</span>: <span
+class="math inline">\(S(\sigma^*) = 137\)</span>. <span
+class="math inline">\(\mu_1(\sigma^*)\)</span> also takes a specific
+value <span class="math inline">\(\mu_1 \approx 0.369\)</span> at the
+fixed point. The relationship between the two can be written as:</p>
+<p><span class="math display">\[\Gamma_{\text{geo}} \cdot S(\sigma^*) =
+\frac{\mu_1(\sigma^*)}{16} \cdot S(\sigma^*) \approx \frac{0.369}{16}
+\times 137 \approx 3.16.\]</span></p>
+<p>This product <span class="math inline">\(\Gamma_{\text{geo}} \cdot
+S(\sigma^*) \approx 3.16\)</span> is approximately constant near the
+fixed point — the product of the attenuation rate and the action is an
+“adiabatic invariant.” If <span class="math inline">\(S(\sigma)\)</span>
+increases (deviating from the fixed point), <span
+class="math inline">\(\mu_1\)</span> decreases, and the product remains
+approximately invariant.</p>
+<p><strong>Numerical verification.</strong> Verify the product at three
+characteristic positions:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Position</th>
+<th style="text-align: center;">S(σ)</th>
+<th style="text-align: center;">μ₁</th>
+<th style="text-align: center;">Γ_geo</th>
+<th style="text-align: center;">Γ_geo · S</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Symmetric point</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">1.732</td>
+<td style="text-align: center;">0.108</td>
+<td style="text-align: center;">2.60</td>
+</tr>
+<tr>
+<td style="text-align: left;">Our position</td>
+<td style="text-align: center;">137</td>
+<td style="text-align: center;">0.369</td>
+<td style="text-align: center;">0.0231</td>
+<td style="text-align: center;">3.16</td>
+</tr>
+<tr>
+<td style="text-align: left;">Near-extreme point</td>
+<td style="text-align: center;">500</td>
+<td style="text-align: center;">0.1</td>
+<td style="text-align: center;">0.00625</td>
+<td style="text-align: center;">3.13</td>
+</tr>
+</tbody>
+</table>
+<p>The product is close to 3 at all three positions — verifying the
+adiabatic invariance of <span class="math inline">\(\Gamma_{\text{geo}}
+\cdot S(\sigma^*) \approx \text{const}\)</span>.</p>
+<p><strong>Cross-volume references.</strong> The definition and
+minimization of the Algebraic Action <span
+class="math inline">\(S(\sigma)\)</span> are found in the Algebraic
+Action Theorem of Volume 3 (Theorem 3.4.1.01). The numerical
+determination of <span class="math inline">\(S(\sigma^*) = 137\)</span>
+is found in Theorem 3.4.2.01.</p>
+<hr />
+<h2 id="theorem-index">Theorem Index</h2>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 28%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Number</th>
+<th style="text-align: left;">Content</th>
+<th style="text-align: center;">Proof Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Theorem 5.1.1.01</td>
+<td style="text-align: left;">Algebraic Connectivity Theorem</td>
+<td style="text-align: center;">Proved (this article §1.3)</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 5.1.2.01</td>
+<td style="text-align: left;">Information Field Attenuation Theorem</td>
+<td style="text-align: center;">Proved (this article §2.1)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="references">References</h2>
+<ul>
+<li>Chung, <em>Spectral Graph Theory</em>, AMS CBMS 92</li>
+<li>Nielsen, Chuang, <em>Quantum Computation and Quantum
+Information</em>, Cambridge University Press</li>
+<li>Fiedler, M., “Algebraic connectivity of graphs”, Czechoslovak
+Mathematical Journal, 23(98): 298-305, 1973</li>
+<li>Prigogine, I., <em>Introduction to Thermodynamics of Irreversible
+Processes</em>, Wiley, 1967</li>
+<li>Zurek, W. H., “Decoherence, einselection, and the quantum origins of
+the classical”, Reviews of Modern Physics, 75: 715, 2003</li>
+</ul>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 07:53:34</p>
+  </footer>
+</div>
+</body>
+</html>

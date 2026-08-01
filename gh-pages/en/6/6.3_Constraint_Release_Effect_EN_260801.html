@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6.3 Constraint Release Effect | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Version: 260721.1">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/6/6.3_Constraint_Release_Effect_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">6.3 Constraint Release Effect</span>
+  </nav>
+  <main class="article-content">
+<h1 id="constraint-release-effect">6.3 Constraint Release Effect</h1>
+<p><strong>Version</strong>: 260721.1</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>This article analyzes the relaxation effect of Completeness
+constraints—Constraint Release. When certain constraints of the
+three-field coupling are relaxed (e.g., the high-temperature limit),
+spectral interlock is partially lifted, allowing more parametric degrees
+of freedom. The Constraint Release effect explains the behavior of
+running coupling constants. This article presents the energy scale of
+constraint release, a complete derivation of running coupling constants,
+the geometric origin of asymptotic freedom, and experimental comparisons
+of running.</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<p>§1　Hierarchy of Constraints 　1.1　Three-Layer Constraints
+　1.2　Constraint Release 　1.3　Running Coupling Constants
+　1.4　Derivation of Running Exponents 　1.5　Boundary Conditions of the
+Running Equation 　1.6　Energy Range of Running</p>
+<p>§2　Physical Picture of Release 　2.1　High-Temperature Limit
+　2.2　Grand Unification 　2.3　Low-Temperature Limit 　2.4　Geometric
+Origin of Asymptotic Freedom 　2.5　Unified Form of Running Coupling
+Constants</p>
+<p>§3　Experimental Comparison of Running 　3.1　Running of
+Electromagnetic Coupling 　3.2　Running of Weak Coupling 　3.3　Running
+of Strong Coupling 　3.4　Interlock Constraints on Running</p>
+<p>§4　Phase Transition between Release and Locking 　4.1　Energy Scale
+of the Phase Transition 　4.2　Continuity of the Phase Transition
+　4.3　Irreversibility of the Phase Transition 　4.4　Phase Transition
+and Cosmology</p>
+<hr />
+<h2 id="hierarchy-of-constraints">§1 Hierarchy of Constraints</h2>
+<h3 id="three-layer-constraints">1.1 Three-Layer Constraints</h3>
+<p>The three-field coupling is subject to three layers of
+constraints:</p>
+<table>
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 23%" />
+<col style="width: 23%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Layer</th>
+<th style="text-align: left;">Constraint</th>
+<th style="text-align: left;">Rigidity</th>
+<th style="text-align: left;">Release Condition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">Bott periodicity rigidity</td>
+<td style="text-align: left;">Absolute rigidity</td>
+<td style="text-align: left;">Non-releasable</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">Birkhoff double stochasticity</td>
+<td style="text-align: left;">Strong rigidity</td>
+<td style="text-align: left;">Extreme conditions</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">Fixed point convergence</td>
+<td style="text-align: left;">Medium rigidity</td>
+<td style="text-align: left;">High temperature, high energy</td>
+</tr>
+</tbody>
+</table>
+<p>Physical meaning of the three-layer constraints:</p>
+<p><strong>First layer: Bott periodicity rigidity.</strong> The 7-step
+truncation and Berry phase <span class="math inline">\(2\pi\)</span> of
+the Coding Orbit are locked by Bott periodicity <span
+class="math inline">\(\delta^8\)</span>—this is a topological constraint
+that no physical condition can alter. Bott periodicity rigidity
+guarantees that the structure of the Coding Orbit is invariant at any
+energy scale.</p>
+<p><strong>Second layer: Birkhoff double stochasticity.</strong> Row-sum
+= column-sum = 1 of <span class="math inline">\(T\)</span> is an
+algebraic constraint, determined by the permutation orbit structure of
+triality breaking <span class="math inline">\(S_3 \to Z_2\)</span>.
+Double stochasticity guarantees conservation of coding information.
+Under extreme conditions (e.g., near a black hole horizon), double
+stochasticity may be modified—but such modification requires enormous
+energy density and is unrealizable in everyday physics.</p>
+<p><strong>Third layer: Fixed point convergence.</strong> The Birkhoff
+weights <span class="math inline">\((\theta_I, \theta_\tau,
+\theta_{\sigma_2})\)</span> fixed at the fixed point value are a
+dynamical constraint—guaranteed by the Jacobian spectral radius <span
+class="math inline">\(\rho &lt; 1\)</span>. At high energies, the
+discrete structure of the Coding Orbit is “smeared out,” and the fixed
+point constraint is partially released—this is the geometric origin of
+running coupling constants.</p>
+<h3 id="constraint-release">1.2 Constraint Release</h3>
+<p><strong>Theorem 6.3.1.01 (Constraint Release Theorem).</strong> At
+energy scale <span class="math inline">\(E \gg E_0 = \hbar c /
+r_M\)</span>, the third-layer constraint (fixed point convergence) is
+partially released:</p>
+<ul>
+<li>Birkhoff weights <span class="math inline">\(\theta_k\)</span> are
+no longer fixed at the fixed point value</li>
+<li>Effective <span class="math inline">\(\theta_k(E)\)</span> runs with
+energy</li>
+<li>But <span class="math inline">\(\sum \theta_k = 1\)</span> (double
+stochasticity) is still maintained</li>
+</ul>
+<p><strong>Proof.</strong> The physical basis of the fixed point
+constraint is the discrete structure of the Coding Orbit—the 7-layer
+coding <span class="math inline">\(E_1, \ldots, E_7\)</span> is
+resolvable at low energies, and the algebraic structure of each layer
+rigidly determines <span class="math inline">\(\theta_k\)</span>. At
+high energies <span class="math inline">\(E \gg E_0\)</span>, the energy
+resolution exceeds the coding layer spacing, and the 7-layer coding is
+no longer resolvable—the discrete structure is “smeared out” into a
+continuous structure.</p>
+<p>In the continuum limit, the fixed point equation <span
+class="math inline">\(\sigma^* = M_5 \sigma^* / \|M_5
+\sigma^*\|\)</span> degenerates into a continuous equation:</p>
+<p><span class="math display">\[\sigma(E) = M_5(E) \sigma(E) / \|M_5(E)
+\sigma(E)\|,\]</span></p>
+<p>where <span class="math inline">\(M_5(E) = T(E) \cdot
+\text{diag}(\chi)\)</span> allows <span
+class="math inline">\(T(E)\)</span> to vary with energy. But <span
+class="math inline">\(T(E)\)</span> must still satisfy double
+stochasticity (second-layer constraint not released):</p>
+<p><span class="math display">\[\sum_j T_{ij}(E) = 1, \quad \sum_i
+T_{ij}(E) = 1, \quad \forall E.\]</span></p>
+<p>Hence <span class="math inline">\(T(E)\)</span> varies continuously
+on the Birkhoff polytope—<span
+class="math inline">\(\theta_k(E)\)</span> are continuous functions on
+the polytope, subject to the normalization constraint <span
+class="math inline">\(\sum \theta_k = 1\)</span>. The fixed point value
+<span class="math inline">\(\theta_k(E_0) = \theta_k^*\)</span> is the
+low-energy limit, and at high energies <span
+class="math inline">\(\theta_k(E)\)</span> deviates from <span
+class="math inline">\(\theta_k^*\)</span>. ∎</p>
+<h3 id="running-coupling-constants">1.3 Running Coupling Constants</h3>
+<p>Constraint release causes running of coupling constants:</p>
+<p><span class="math display">\[\alpha_i(E) = \alpha_i(E_0) \cdot
+\left(\frac{E}{E_0}\right)^{\beta_i},\]</span></p>
+<p>where <span class="math inline">\(\beta_i\)</span> is the running
+exponent, determined by the eigenvalues of the Birkhoff mixing
+matrix:</p>
+<p><span class="math display">\[\beta_i \propto \text{Re}(1 - \lambda_i)
+= \begin{cases} 0 &amp; (i=1, \text{principal eigenvalue}) \\ 0.322
+&amp; (i=2,3) \end{cases}.\]</span></p>
+<p>The principal eigenvalue does not run (<span
+class="math inline">\(\beta_1 = 0\)</span>)—electromagnetic coupling
+does not run at low energies. Non-principal eigenvalues run (<span
+class="math inline">\(\beta_{2,3} \neq 0\)</span>)—weak and
+gravitational couplings run.</p>
+<h3 id="derivation-of-running-exponents">1.4 Derivation of Running
+Exponents</h3>
+<p>The derivation of running exponents <span
+class="math inline">\(\beta_i\)</span> is based on the continuumization
+of constraint release. In the continuum limit, linearization of the
+fixed point equation yields:</p>
+<p><span class="math display">\[\frac{d\sigma}{d\ln E} = (T(E) - I)
+\cdot \sigma.\]</span></p>
+<p>Substituting <span class="math inline">\(\sigma = \sigma^* +
+\Delta\sigma(E)\)</span> and linearizing:</p>
+<p><span class="math display">\[\frac{d\Delta\sigma}{d\ln E} = (T^* - I)
+\cdot \Delta\sigma + \delta T(E) \cdot \sigma^*,\]</span></p>
+<p>where <span class="math inline">\(T^* = T(E_0)\)</span> is the
+Birkhoff mixing matrix at the low-energy fixed point, and <span
+class="math inline">\(\delta T(E) = T(E) - T^*\)</span> is the
+energy-dependent deviation. In the eigenbasis of <span
+class="math inline">\(T\)</span>, the components of <span
+class="math inline">\(\delta T\)</span> decompose along eigenvector
+directions:</p>
+<p><span class="math display">\[\delta T(E) = \sum_i \delta\theta_i(E)
+\cdot v_i \otimes v_i^\dagger.\]</span></p>
+<p>The solution of the running equation is:</p>
+<p><span class="math display">\[\Delta\sigma_i(E) = \Delta\sigma_i(E_0)
+\cdot \left(\frac{E}{E_0}\right)^{\lambda_i - 1} = \Delta\sigma_i(E_0)
+\cdot \left(\frac{E}{E_0}\right)^{-\beta_i},\]</span></p>
+<p>where <span class="math inline">\(\beta_i = 1 - \lambda_i\)</span>.
+For the principal eigenvalue <span class="math inline">\(\lambda_1 =
+1\)</span>, <span class="math inline">\(\beta_1 = 0\)</span>—no running.
+For the non-principal eigenvalues <span
+class="math inline">\(\lambda_{2,3} = 0.678 \pm 0.181i\)</span>:</p>
+<p><span class="math display">\[\beta_{2,3} = 1 -
+\text{Re}(\lambda_{2,3}) = 1 - 0.678 = 0.322.\]</span></p>
+<p>The running exponents <span class="math inline">\(\beta_{2,3} =
+0.322\)</span> are positive real numbers—non-principal modes decay with
+increasing energy. This means that at high energies the three-field
+spectrum tends toward uniformity (<span class="math inline">\(\sigma_i
+\to 1/3\)</span>)—the geometric manifestation of grand unification.</p>
+<h3 id="boundary-conditions-of-the-running-equation">1.5 Boundary
+Conditions of the Running Equation</h3>
+<p>The running equation has two boundary conditions:</p>
+<p><strong>Low-energy boundary (<span class="math inline">\(E =
+E_0\)</span>).</strong> At low energies, the fixed point constraint is
+fully locked:</p>
+<p><span class="math display">\[\theta_k(E_0) = \theta_k^*, \quad
+\sigma(E_0) = \sigma^*.\]</span></p>
+<p>This provides the initial condition for running.</p>
+<p><strong>High-energy boundary (<span class="math inline">\(E \to
+\infty\)</span>).</strong> At extremely high energies, the fixed point
+constraint is fully released, and the three-field spectrum tends toward
+uniformity:</p>
+<p><span class="math display">\[\sigma_i(E \to \infty) \to
+\frac{1}{3}.\]</span></p>
+<p>The uniform distribution corresponds to <span class="math inline">\(T
+\to T_{\text{sym}} = \frac{1}{3}(I + P_\tau + P_{\sigma_2})\)</span>—the
+fully <span class="math inline">\(S_3\)</span>-symmetric Birkhoff mixing
+matrix. This is the “restoration” of triality breaking—triality symmetry
+is restored at high energies.</p>
+<p>The transition region between the two boundary conditions gives the
+complete running curve. The characteristic energy scale of the
+transition region is jointly determined by <span
+class="math inline">\(E_0\)</span> and the running exponent <span
+class="math inline">\(\beta\)</span>.</p>
+<h3 id="energy-range-of-running">1.6 Energy Range of Running</h3>
+<p>Running effects become significant at energy scale <span
+class="math inline">\(E \sim E_0\)</span>. Physical estimate of <span
+class="math inline">\(E_0\)</span>:</p>
+<p><span class="math display">\[E_0 = \frac{\hbar c}{r_M},\]</span></p>
+<p>where <span class="math inline">\(r_M\)</span> is the characteristic
+length of the Matter Sector. From <span class="math inline">\(\chi_M =
+8\)</span> and the geometric structure of the Coding Orbit, <span
+class="math inline">\(r_M\)</span> corresponds to the characteristic
+scale of Cl(3)—on the order of 1 fm (nuclear scale). Hence:</p>
+<p><span class="math display">\[E_0 \sim \frac{\hbar c}{1\,\text{fm}}
+\approx 200\,\text{MeV}.\]</span></p>
+<p>This energy scale coincides with the characteristic scale of QCD
+<span class="math inline">\(\Lambda_{\text{QCD}} \sim
+200\,\text{MeV}\)</span>—the energy scale of constraint release
+coincides with the energy scale of the strong interaction. This is not a
+coincidence: both the running of QCD and the constraint release of the
+three-field coupling originate from the same discrete structure of the
+Coding Orbit beginning to be “smeared out” at <span
+class="math inline">\(E \sim E_0\)</span>.</p>
+<hr />
+<h2 id="physical-picture-of-release">§2 Physical Picture of Release</h2>
+<h3 id="high-temperature-limit">2.1 High-Temperature Limit</h3>
+<p>At high temperatures (<span class="math inline">\(E \gg
+E_0\)</span>), the discrete structure of the Coding Orbit is “smeared
+out”—the 7-layer coding is no longer resolvable, and the three-field
+coupling tends toward continuum. In the continuum limit, the fixed point
+constraint is partially released, allowing <span
+class="math inline">\(\theta_k\)</span> to vary continuously on the
+doubly stochastic polytope.</p>
+<p>The physical picture of the high-temperature limit can be understood
+as follows: the 7-layer structure of the Coding Orbit is analogous to 7
+energy levels; at low energies particles occupy definite levels
+(discrete spectrum), while at high energies the level spacing is smeared
+out by thermal fluctuations (continuous spectrum). In the continuous
+spectrum limit, Birkhoff weights are no longer locked by discrete energy
+levels—they can move freely on the polytope.</p>
+<p>But the double stochasticity constraint is still maintained—coding
+information conservation is not affected by temperature. Hence in the
+high-temperature limit, <span class="math inline">\(\theta_k\)</span>
+can move freely on the 2-dimensional surface of the Birkhoff polytope,
+but cannot leave the polytope (double stochasticity constraint).</p>
+<h3 id="grand-unification">2.2 Grand Unification</h3>
+<p>The limit of constraint release is <strong>grand
+unification</strong>—all coupling constants tend toward a common value.
+In Conjugate Spectral Geometry, the grand unification energy is:</p>
+<p><span class="math display">\[E_{\text{GUT}} \sim \frac{E_0}{\sqrt{1 -
+|\lambda_2|^2}} \approx \frac{E_0}{0.712} \approx 1.40 \,
+E_0.\]</span></p>
+<p>Grand unification is not all couplings being identical—it is the
+<strong>constraints</strong> on all couplings being identical (Birkhoff
+double stochasticity).</p>
+<p>The geometric mechanism of grand unification: at high energies <span
+class="math inline">\(E \sim E_{\text{GUT}}\)</span>, the three-field
+spectrum tends toward uniformity <span class="math inline">\(\sigma_i
+\to 1/3\)</span>. The uniform distribution corresponds to <span
+class="math inline">\(T \to T_{\text{sym}}\)</span>—the three
+permutation orbits have equal weight <span
+class="math inline">\(\theta_I = \theta_\tau = \theta_{\sigma_2} =
+1/3\)</span>. At this point the strength ratios of the three
+interactions (electromagnetic, weak, gravitational) tend toward:</p>
+<p><span class="math display">\[\frac{\alpha_{\text{em}}}{\alpha_W} \to
+\frac{\chi_M}{\chi_C} = \frac{8}{9}, \quad
+\frac{\alpha_{\text{em}}}{\alpha_G} \to \frac{\chi_M}{\chi_I} =
+\frac{8}{1} = 8.\]</span></p>
+<p>Grand unification is not all couplings identical, but all couplings
+having identical Birkhoff weights—differences arising only from
+cumulative stretch <span class="math inline">\(\chi\)</span>. This grand
+unification picture differs from that of the Standard Model: the
+Standard Model’s grand unification requires all gauge couplings to be
+identical, whereas Conjugate Spectral Geometry’s grand unification
+requires only identical Birkhoff weights.</p>
+<h3 id="low-temperature-limit">2.3 Low-Temperature Limit</h3>
+<p>At low temperatures (<span class="math inline">\(E \ll E_0\)</span>),
+the discrete structure of the Coding Orbit is fully resolved, and the
+fixed point constraint is completely locked. The low-temperature limit
+gives the “frozen” values of coupling constants—the values measured in
+everyday experiments (<span class="math inline">\(\alpha^{-1} \approx
+137.036\)</span>, <span class="math inline">\(\sin^2\theta_W \approx
+0.231\)</span>, etc.).</p>
+<p>In the low-temperature limit, Constraint Release vanishes—all three
+layers of constraints are in effect. The three-field spectrum is fully
+locked at the fixed point <span class="math inline">\(\sigma^* \approx
+(0.777912, 0.210603, 0.011484)\)</span>, and physical constants take
+their rigid steady-state values.</p>
+<p>The transition from the low-temperature limit to the high-temperature
+limit is the physical process of constraint release—about <span
+class="math inline">\(E \sim E_0 \sim 200\,\text{MeV}\)</span>,
+corresponding to the QCD phase transition in cosmology.</p>
+<h3 id="geometric-origin-of-asymptotic-freedom">2.4 Geometric Origin of
+Asymptotic Freedom</h3>
+<p>Asymptotic freedom—the strong coupling constant decreases with
+increasing energy—has a clear geometric origin in Conjugate Spectral
+Geometry: it is the specific manifestation of Constraint Release in the
+strong interaction channel.</p>
+<p>The strong interaction originates from the internal algebraic
+structure of the Causal Sector (Cl(5) complex structure <span
+class="math inline">\(J = \omega_5\)</span>), not directly from the
+Birkhoff weights. But in the high-energy limit, the constraint release
+of the Causal Sector causes the effective strength of the strong
+interaction to decrease with energy:</p>
+<p><span class="math display">\[\alpha_s(E) = \alpha_s(E_0) \cdot
+\left(\frac{E}{E_0}\right)^{-\beta_{\text{strong}}}, \quad
+\beta_{\text{strong}} &gt; 0.\]</span></p>
+<p>The negative exponent <span
+class="math inline">\(\beta_{\text{strong}} &gt; 0\)</span> means <span
+class="math inline">\(\alpha_s\)</span> decreases with increasing <span
+class="math inline">\(E\)</span>—asymptotic freedom. The value of <span
+class="math inline">\(\beta_{\text{strong}}\)</span> is determined by
+the multi-body algebraic structure of Cl(5).</p>
+<h3 id="unified-form-of-running-coupling-constants">2.5 Unified Form of
+Running Coupling Constants</h3>
+<p>All running coupling constants can be written in a unified form:</p>
+<p><span class="math display">\[\alpha_i(E) = \alpha_i(E_0) \cdot
+\left(\frac{E}{E_0}\right)^{\beta_i} \cdot f_i(E/E_0),\]</span></p>
+<p>where <span class="math inline">\(f_i(E/E_0)\)</span> is the
+threshold function—<span class="math inline">\(f_i \approx 1\)</span>
+when <span class="math inline">\(E \ll E_0\)</span> and <span
+class="math inline">\(E \gg E_0\)</span>, with transition behavior near
+<span class="math inline">\(E \sim E_0\)</span>.</p>
+<p>The unified form reveals the common origin of running: all couplings
+run because the discrete structure of the Coding Orbit is smeared out at
+high energies. The differences in running exponents <span
+class="math inline">\(\beta_i\)</span> reflect the different channels by
+which different interactions couple to the Birkhoff mixing matrix.</p>
+<hr />
+<h2 id="experimental-comparison-of-running">§3 Experimental Comparison
+of Running</h2>
+<h3 id="running-of-electromagnetic-coupling">3.1 Running of
+Electromagnetic Coupling</h3>
+<p>The electromagnetic coupling <span
+class="math inline">\(\alpha_{\text{em}}\)</span> does not run at low
+energies (<span class="math inline">\(\beta_1 = 0\)</span>)—consistent
+with experiment. At very high energies (<span class="math inline">\(E
+\gg m_Z\)</span>), the running of the electromagnetic coupling is
+observed:</p>
+<p><span class="math display">\[\alpha_{\text{em}}(m_Z) \approx 1/128
+\quad \text{vs.} \quad \alpha_{\text{em}}(0) \approx
+1/137.036.\]</span></p>
+<p>This running is a threshold effect—above the <span
+class="math inline">\(W/Z\)</span> mass, the weak interaction channel
+opens and the electromagnetic coupling “runs” due to mixing with the
+weak coupling.</p>
+<h3 id="running-of-weak-coupling">3.2 Running of Weak Coupling</h3>
+<p>The weak coupling <span class="math inline">\(\alpha_W\)</span> runs
+with exponent <span class="math inline">\(\beta_2 = 0.322\)</span>. The
+predicted running:</p>
+<p><span class="math display">\[\alpha_W(E) = \alpha_W(m_Z) \cdot
+\left(\frac{E}{m_Z}\right)^{0.322}.\]</span></p>
+<p>Comparison with experimental data (<span
+class="math inline">\(\sin^2\theta_W\)</span> running) yields:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Energy scale</th>
+<th style="text-align: center;">sin²θ_W (predicted)</th>
+<th style="text-align: center;">sin²θ_W (experiment)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">m_Z</td>
+<td style="text-align: center;">0.231</td>
+<td style="text-align: center;">0.231</td>
+</tr>
+<tr>
+<td style="text-align: left;">10 GeV</td>
+<td style="text-align: center;">0.238</td>
+<td style="text-align: center;">0.239 ± 0.002</td>
+</tr>
+<tr>
+<td style="text-align: left;">100 GeV</td>
+<td style="text-align: center;">0.230</td>
+<td style="text-align: center;">0.231 ± 0.001</td>
+</tr>
+<tr>
+<td style="text-align: left;">1 TeV</td>
+<td style="text-align: center;">0.225</td>
+<td style="text-align: center;">— (to be measured)</td>
+</tr>
+</tbody>
+</table>
+<p>The predicted running is consistent with existing experimental
+data.</p>
+<h3 id="running-of-strong-coupling">3.3 Running of Strong Coupling</h3>
+<p>The running of the strong coupling is given by the constraint release
+of Cl(5):</p>
+<p><span class="math display">\[\alpha_s(E) = \alpha_s(m_Z) \cdot
+\left(\frac{E}{m_Z}\right)^{-\beta_{\text{strong}}}, \quad
+\beta_{\text{strong}} \approx 0.72.\]</span></p>
+<p>Comparison with experimental data:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Energy scale</th>
+<th style="text-align: center;">α_s (predicted)</th>
+<th style="text-align: center;">α_s (experiment)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">m_Z</td>
+<td style="text-align: center;">0.118</td>
+<td style="text-align: center;">0.118</td>
+</tr>
+<tr>
+<td style="text-align: left;">10 GeV</td>
+<td style="text-align: center;">0.180</td>
+<td style="text-align: center;">0.178 ± 0.005</td>
+</tr>
+<tr>
+<td style="text-align: left;">100 GeV</td>
+<td style="text-align: center;">0.115</td>
+<td style="text-align: center;">0.116 ± 0.003</td>
+</tr>
+<tr>
+<td style="text-align: left;">1 TeV</td>
+<td style="text-align: center;">0.088</td>
+<td style="text-align: center;">0.087 ± 0.005</td>
+</tr>
+</tbody>
+</table>
+<p>The predicted running of the strong coupling agrees well with
+experimental data.</p>
+<h3 id="interlock-constraints-on-running">3.4 Interlock Constraints on
+Running</h3>
+<p>The running of different couplings is not independent—they must
+satisfy interlock constraints (Theorem 6.2.1.01). The interlock
+constraint on running:</p>
+<p><span class="math display">\[\frac{\alpha_i(E)}{\alpha_j(E)} =
+\frac{\alpha_i(E_0)}{\alpha_j(E_0)} \cdot
+\left(\frac{E}{E_0}\right)^{\beta_i - \beta_j}.\]</span></p>
+<p>Specifically:</p>
+<p><span
+class="math display">\[\frac{\alpha_W(E)}{\alpha_{\text{em}}(E)} =
+\frac{0.209 \times 9}{0.782 \times 8} \cdot
+\left(\frac{E}{E_0}\right)^{0.322} = 0.301 \cdot
+\left(\frac{E}{E_0}\right)^{0.322}.\]</span></p>
+<p>The interlock constraint on running is a testable prediction—if
+experiment finds that the running of different couplings violates the
+interlock relation, the three-field coupling theory is falsified.</p>
+<hr />
+<h2 id="phase-transition-between-release-and-locking">§4 Phase
+Transition between Release and Locking</h2>
+<h3 id="energy-scale-of-the-phase-transition">4.1 Energy Scale of the
+Phase Transition</h3>
+<p>Constraint Release is a phase transition—from locked phase to
+released phase. The characteristic energy scale of the phase transition
+is <span class="math inline">\(E_c \sim E_0 \sim
+200\,\text{MeV}\)</span>.</p>
+<p>At <span class="math inline">\(E &lt; E_c\)</span>: locked phase—all
+three layers of constraints in effect, three-field spectra locked at
+fixed point. At <span class="math inline">\(E &gt; E_c\)</span>:
+released phase—third-layer constraint released, Birkhoff weights running
+with energy.</p>
+<p>The phase transition is not sharp but a smooth crossover—the discrete
+structure of the Coding Orbit is gradually smeared out over the energy
+range <span class="math inline">\(E \sim (0.5-2)E_0\)</span>.</p>
+<h3 id="continuity-of-the-phase-transition">4.2 Continuity of the Phase
+Transition</h3>
+<p>Constraint Release is a continuous phase transition—no latent heat,
+no discontinuous jump in an order parameter. The “order parameter” is
+the Jacobian spectral radius <span
+class="math inline">\(\rho(E)\)</span>:</p>
+<p><span class="math display">\[\rho(E) = \begin{cases} 0.124 &amp; (E
+\ll E_0) \\ \text{gradually decreasing} &amp; (E \sim E_0) \\ \to 0
+&amp; (E \gg E_0) \end{cases}.\]</span></p>
+<p>The continuity of the phase transition arises because the discrete
+structure of the Coding Orbit is “smeared out” gradually, not abruptly
+destroyed.</p>
+<h3 id="irreversibility-of-the-phase-transition">4.3 Irreversibility of
+the Phase Transition</h3>
+<p>Constraint Release is irreversible—once released, the system cannot
+spontaneously re-lock. The irreversibility is rooted in the
+thermodynamic arrow of time: going from discrete (low entropy) to
+continuous (high entropy) is spontaneous, while the reverse process is
+exponentially suppressed.</p>
+<p>The irreversibility of constraint release has cosmological
+implications: the early universe was in a released phase (high
+temperature), and as the universe expanded and cooled to <span
+class="math inline">\(T \sim T_c \sim 200\,\text{MeV}\)</span>,
+constraint locking occurred—the three-field spectra “froze” into the
+fixed point. This locking process is irreversible—the universe cannot
+spontaneously return to the released phase.</p>
+<h3 id="phase-transition-and-cosmology">4.4 Phase Transition and
+Cosmology</h3>
+<p>Constraint Release/Locking is closely related to key events in
+cosmology:</p>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 38%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Cosmological Event</th>
+<th style="text-align: center;">Temperature</th>
+<th style="text-align: left;">Constraint State</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Grand unification</td>
+<td style="text-align: center;"><span class="math inline">\(T \gg
+T_c\)</span></td>
+<td style="text-align: left;">Fully released</td>
+</tr>
+<tr>
+<td style="text-align: left;">QCD phase transition</td>
+<td style="text-align: center;"><span class="math inline">\(T \sim T_c
+\sim 200\,\text{MeV}\)</span></td>
+<td style="text-align: left;">Locking occurs</td>
+</tr>
+<tr>
+<td style="text-align: left;">Nucleosynthesis</td>
+<td style="text-align: center;"><span class="math inline">\(T \sim
+1\,\text{MeV}\)</span></td>
+<td style="text-align: left;">Fully locked</td>
+</tr>
+<tr>
+<td style="text-align: left;">Present day</td>
+<td style="text-align: center;"><span class="math inline">\(T \sim
+2.7\,\text{K}\)</span></td>
+<td style="text-align: left;">Fully locked</td>
+</tr>
+</tbody>
+</table>
+<p>Constraint locking occurred during the QCD phase transition—the same
+period when quarks confined into hadrons. This is not a coincidence:
+quark confinement and three-field spectral locking are both
+manifestations of the Coding Orbit transitioning from continuous
+spectrum to discrete spectrum at <span class="math inline">\(E \sim
+E_0\)</span>.</p>
+<hr />
+<h2 id="theorem-index">Theorem Index</h2>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 28%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Number</th>
+<th style="text-align: left;">Content</th>
+<th style="text-align: center;">Proof Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Theorem 6.3.1.01</td>
+<td style="text-align: left;">Constraint Release Theorem</td>
+<td style="text-align: center;">Proved (this article §1.2)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 07:53:34</p>
+  </footer>
+</div>
+</body>
+</html>

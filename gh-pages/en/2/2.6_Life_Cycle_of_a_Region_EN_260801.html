@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.6 Life Cycle of a Region: Generation, Circulation, and Parameter Locking | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Number: 2.6 | Date: 260729.1 | Series: Derivation of Physical Constants | Language: EN">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/2/2.6_Life_Cycle_of_a_Region_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">2.6 Life Cycle of a Region: Generation, Circulation, and Parameter Locking</span>
+  </nav>
+  <main class="article-content">
+<h1
+id="life-cycle-of-a-region-generation-circulation-and-parameter-locking">2.6
+Life Cycle of a Region: Generation, Circulation, and Parameter
+Locking</h1>
+<p><strong>Number</strong>: 2.6 | <strong>Date</strong>: 260729.1 |
+<strong>Series</strong>: Derivation of Physical Constants |
+<strong>Language</strong>: EN</p>
+<p><strong>Dependencies</strong>: 0.1 (δ Axiom), 0.2 (Clifford
+Algebraization), 0.3 (Bott Periodicity and Seven-Layer Truncation), 0.4
+(Completeness Criterion), 0.5 (Emergence of {2,3,5}), 1.1 (Coding
+Orbit), 2.1 (Birkhoff Mixing Matrix), 2.2 (Fixed Point and Derivation of
+α⁻¹), 2.3 (Landscape Structure and Range), 2.4 (Observer
+Localization)</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>This article gives a complete mathematical definition and life cycle
+of the “region” concept. The universe is a collection of regions — each
+region is a physical world with its own structure constants <span
+class="math inline">\(\{2,3,5\}\)</span> and Birkhoff mixing matrix
+<span class="math inline">\(T\)</span>. The birth, screening, interlock,
+reproduction, parameter import, spectral expansion, and information
+export of a region constitute a complete life cycle. The core
+contribution of this article is: integrating the regional mechanisms
+previously scattered across articles 2.3, 2.4, 0.5, 11.11, etc., into a
+complete operational chain from δ to observable physical constants —
+each step with a clear mathematical operation and formula
+correspondence.</p>
+<hr />
+<h2 id="contents">Contents</h2>
+<p>§1 Universe = Collection of Regions 　1.1 Definition of a Region
+　1.2 Definition of the Universe 　1.3 Overview of the Operational Chain
+of This Article</p>
+<p>§2 Birth of a Region: δ → Landscape → Candidate Regions 　2.1 δ
+Generates the Landscape 　2.2 Candidate Regions on the Landscape 　2.3
+Selection of Clifford Regions</p>
+<p>§3 The Region’s Identity Card: {2,3,5} Interlock 　3.1 Bott Period 8
+→ E₈ → h = 30 　3.2 Prime Factorization: 30 = 2 × 3 × 5 　3.3 Interlock
+Property: Joint Locking of Two Constraints 　3.4 Irreversibility of the
+Interlock</p>
+<p>§4 Parameters of a Region: Generation of the T Matrix 　4.1
+Consummate Reproduction Produces Clifford Configurations 　4.2 S₃
+Triality Permutations Produce Discrete T Values 　4.3 Structure of the T
+Matrix 　4.4 Determination of T_ours</p>
+<p>§5 Interconnection of Regions: The Shared Information Layer 　5.1
+Terminal Duality of Cl(7) 　5.2 Local Information Layer and Shared
+Information Layer 　5.3 Encoding: Regions Write Information into the
+Shared Layer 　5.4 Section Structure of the Shared Layer</p>
+<p>§6 Circulation of Parameters: Encoding → Aggregation → Decoding 　6.1
+Aggregation: Total State of the Shared Information Layer 　6.2 Decoding:
+Extracting T_ours from the Shared Layer 　6.3 Bidirectional Circulation:
+Import and Export 　6.4 Gradual Circulation and Explosive
+Circulation</p>
+<p>§7 From T to Physical Constants: Spectral Expansion 　7.1 Fixed Point
+σ* 　7.2 α⁻¹ = 137.036 　7.3 Coding Orbit Recursion 　7.4 Complete
+Derivation Chain</p>
+<p>§8 Panorama of the Region’s Life Cycle 　8.1 Life Cycle Diagram 　8.2
+Mathematical Operations at Each Step 　8.3 Parameter Occupation
+Theorem</p>
+<p>§9 Open Problems</p>
+<hr />
+<h2 id="universe-collection-of-regions">§1 Universe = Collection of
+Regions</h2>
+<h3 id="definition-of-a-region">1.1 Definition of a Region</h3>
+<p><strong>Definition 2.6.1.01 (Region).</strong> A region <span
+class="math inline">\(R\)</span> is a point on the landscape <span
+class="math inline">\(\mathcal{L}\)</span>, uniquely determined by the
+following triple:</p>
+<p><span class="math display">\[R = \left(\{p_1, p_2, p_3\}, \; T, \;
+\{\text{physical constants}\}\right)\]</span></p>
+<p>where: - <span class="math inline">\(\{p_1, p_2, p_3\}\)</span> are
+the structure constants of the region — in Clifford regions always <span
+class="math inline">\(\{2, 3, 5\}\)</span> (i.e., <span
+class="math inline">\(\Lambda=3, k_0=2, \Delta\Theta=5\)</span>) - <span
+class="math inline">\(T\)</span> is the Birkhoff mixing matrix of the
+region, <span class="math inline">\(T \in \mathcal{B}_2\)</span>
+(2-dimensional Birkhoff polytope) - <span
+class="math inline">\(\{\text{physical constants}\}\)</span> are all
+physical observables produced from <span
+class="math inline">\(T\)</span> via spectral expansion (<span
+class="math inline">\(\alpha^{-1}\)</span>, mass ratios, coupling
+constants, etc.)</p>
+<p><strong>Key distinction</strong>: <span class="math inline">\(\{2, 3,
+5\}\)</span> is the identifier of the <strong>region type</strong>
+(shared by all Clifford regions), and <span
+class="math inline">\(T\)</span> is the identifier of the
+<strong>individual region</strong> (different Clifford regions have
+different <span class="math inline">\(T\)</span>).</p>
+<h3 id="definition-of-the-universe">1.2 Definition of the Universe</h3>
+<p><strong>Definition 2.6.1.02 (Universe).</strong> The universe <span
+class="math inline">\(\mathcal{U}\)</span> is the set of all
+regions:</p>
+<p><span class="math display">\[\mathcal{U} = \{R_1, R_2, \dots,
+R_N\}\]</span></p>
+<p>where <span class="math inline">\(N\)</span> is the total number of
+regions (determined by the number of discrete <span
+class="math inline">\(T\)</span> values produced by consummate
+reproduction, at most 6 Clifford regions, but possibly regions of other
+algebraic types).</p>
+<p><strong>Definition 2.6.1.03 (Our Region).</strong> <span
+class="math inline">\(R_{\text{ours}}\)</span> is the region in the
+universe <span class="math inline">\(\mathcal{U}\)</span> where we
+reside, characterized by:</p>
+<p><span class="math display">\[R_{\text{ours}} = \left(\{2, 3, 5\}, \;
+T_{\text{ours}} = (0.782, 0.209, 0.009), \; \alpha^{-1} = 137.036,
+\dots\right)\]</span></p>
+<p><strong>Core proposition</strong>: The universe is a multi-region
+structure — there is not just one world, but multiple regions
+coexisting. Each region has its own physical constants, but all Clifford
+regions share the same algebraic framework (δ axiom, Bott periodicity,
+Completeness Criterion).</p>
+<h3 id="overview-of-the-operational-chain-of-this-article">1.3 Overview
+of the Operational Chain of This Article</h3>
+<p>The complete operational chain given in this article is as follows
+(the mathematical operation at each step is developed in the subsequent
+sections):</p>
+<pre><code>δ (Sole Axiom)
+  │
+  ▼ §2
+Landscape L(δ)                              ← all possible algebraic realizations
+  │
+  ▼ §2.3
+Selection of Clifford regions              ← screened by Completeness Condition
+  │
+  ▼ §3
+{2,3,5} Interlock                           ← prime factorization of h(E₈)=30
+  │
+  ▼ §4
+Consummate Reproduction → Clifford config.  ← Berry phase = 2π
+  │
+  ▼ §4.2
+S₃ triality permutations → discrete T       ← at most 6
+  │
+  ▼ §5-6
+Shared information layer encode/aggregate/decode ← Σ_R, I_shared^total, Φ
+  │
+  ▼ §6.2
+T_ours = (0.782, 0.209, 0.009)             ← imported from shared layer
+  │
+  ▼ §7
+Spectral expansion → α⁻¹ = 137.036         ← fixed point σ* → S(σ*)
+  │
+  ▼ §7.3
+Coding orbit → all physical constants       ← N₁→N₂→⋯→N₇
+  │
+  ▼ §6.3
+Export to shared information layer          ← successful structure of this region written to I_shared</code></pre>
+<hr />
+<h2 id="birth-of-a-region-δ-landscape-candidate-regions">§2 Birth of a
+Region: δ → Landscape → Candidate Regions</h2>
+<h3 id="δ-generates-the-landscape">2.1 δ Generates the Landscape</h3>
+<p><strong>Axiom (Zero Motion, 0.1 §2).</strong> On <span
+class="math inline">\(\mathcal{Z}\)</span> there exists a nontrivial
+self-mapping <span class="math inline">\(\delta: \mathcal{Z} \to
+\mathcal{Z}\)</span>, satisfying <span
+class="math inline">\(\delta(\mathcal{Z}) \subsetneq
+\mathcal{Z}\)</span>.</p>
+<p>Iteration of δ produces all possible algebraic realizations:</p>
+<p><span class="math display">\[\mathcal{Z} \xrightarrow{\delta}
+\delta(\mathcal{Z}) \xrightarrow{\delta} \delta^2(\mathcal{Z})
+\xrightarrow{\delta} \cdots\]</span></p>
+<p><strong>Definition 2.6.2.01 (Landscape).</strong> The landscape <span
+class="math inline">\(\mathcal{L}(\delta)\)</span> is the set of all
+algebraic realizations satisfying “nontrivial finite-period
+self-mapping”:</p>
+<p><span class="math display">\[\mathcal{L}(\delta) = \{\text{all
+algebraic realizations } A : \delta \text{ has finite-period
+self-mapping on } A\}\]</span></p>
+<p>Different positions on the landscape correspond to different
+algebraic realizations — different Clifford algebra periods, different
+compact Lie lattices, different combinations of structure constants.</p>
+<h3 id="candidate-regions-on-the-landscape">2.2 Candidate Regions on the
+Landscape</h3>
+<p>Each algebraic realization <span class="math inline">\(A\)</span> on
+the landscape corresponds to a <strong>candidate region</strong>. A
+candidate region has not yet “come alive” — it is merely a mathematical
+possibility, awaiting screening by the Completeness Condition.</p>
+<p>The number of candidate regions is infinite (the landscape is
+continuous), but only candidate regions satisfying the Completeness
+Condition can “come alive” as actual regions.</p>
+<h3 id="selection-of-clifford-regions">2.3 Selection of Clifford
+Regions</h3>
+<p>On the landscape <span
+class="math inline">\(\mathcal{L}(\delta)\)</span>, there exist multiple
+algebraic realizations: - Real Clifford algebras with Bott period 8 (our
+region’s choice) - Complex Clifford algebras with Bott period 2 - Other
+algebras with different periodic structures</p>
+<p><strong>Theorem 2.6.2.02 (Selection of Clifford Regions).</strong>
+Our region selects Clifford algebras (Bott period 8) because they are
+the only algebraic realizations satisfying the Completeness Condition —
+Berry phase <span class="math inline">\(\oint_\Gamma \mathcal{A} =
+2\pi\)</span>.</p>
+<p><strong>Proof sketch</strong> (see 0.3-0.4 for details): Bott period
+8 gives a <span class="math inline">\(\delta^8\)</span> loop, whose
+Berry phase is given by the integral of the three terms of the
+Chern-Simons 7-form:</p>
+<p><span class="math display">\[\gamma_{\text{Berry}}(\delta^8) =
+\int_{D^8} \text{CS}_7 = \int_{D^8} (I_1 + I_2 + I_3) =
+2\pi\]</span></p>
+<p>where <span class="math inline">\(I_1\)</span> (Matter Sector ℳ,
+Cl(0)→Cl(3)), <span class="math inline">\(I_2\)</span> (Causal Sector 𝒞,
+Cl(3)→Cl(5)), <span class="math inline">\(I_3\)</span> (Information
+Sector ℐ, Cl(5)→Cl(8)) each contribute <span
+class="math inline">\(2\pi/3\)</span>. ∎</p>
+<p><strong>Evolutionary interpretation</strong>: Clifford algebras are
+“selected,” not “derived” — there may be multiple algebraic realizations
+on the landscape satisfying the Completeness Condition (corresponding to
+different region types), and our region selected Clifford algebras. This
+is the evolutionary history of our region, not a logical necessity.</p>
+<hr />
+<h2 id="the-regions-identity-card-235-interlock">§3 The Region’s
+Identity Card: {2,3,5} Interlock</h2>
+<h3 id="bott-period-8-e₈-h-30">3.1 Bott Period 8 → E₈ → h = 30</h3>
+<p>After selecting Clifford algebras (Bott period 8), the emergence of
+the structure constants <span class="math inline">\(\{2,3,5\}\)</span>
+follows a strict algebraic chain:</p>
+<p><span class="math display">\[\text{Bott period 8}
+\xrightarrow{\text{KO theory}} \text{dimension 8}
+\xrightarrow{\text{even unimodular lattice}} E_8 \text{ unique}
+\xrightarrow{\text{Coxeter number}} h(E_8) = \frac{240}{8} =
+30\]</span></p>
+<p><strong>Theorem 0.5.0.01 (E₈ Bridging Theorem).</strong> In dimension
+8, <span class="math inline">\(E_8\)</span> is the unique even
+unimodular lattice. Its Coxeter number <span
+class="math inline">\(h(E_8) = 30\)</span> is uniquely determined by the
+root system.</p>
+<h3 id="prime-factorization-30-2-3-5">3.2 Prime Factorization: 30 = 2 ×
+3 × 5</h3>
+<p><strong>Theorem 0.5.0.02 (Structure Constant Emergence
+Theorem).</strong> The prime factorization <span class="math inline">\(2
+\times 3 \times 5\)</span> of <span class="math inline">\(h(E_8) =
+30\)</span>, under <span class="math inline">\(D_4\)</span> triality
+action, yields the three structure constants:</p>
+<p><span class="math display">\[\Lambda = 3, \quad k_0 = 2, \quad
+\Delta\Theta = 5\]</span></p>
+<p><strong>Individual assignment</strong> (Theorem 0.5.0.03): The three
+node coefficients of the highest root of <span
+class="math inline">\(E_8\)</span> on the <span
+class="math inline">\(D_4\)</span> triality orbit are <span
+class="math inline">\(\{3, 4, 5\}\)</span>, and their prime kernels
+(radicals) give respectively: - <span class="math inline">\(\Lambda =
+3\)</span> (coefficient 3, radical = 3) → Cl(3), first semisimple
+splitting, three-sector structure - <span class="math inline">\(k_0 =
+2\)</span> (coefficient 4 = 2², radical = 2) → Cl(7), terminal duality,
+information layer splitting - <span class="math inline">\(\Delta\Theta =
+5\)</span> (coefficient 5, radical = 5) → Cl(5), complex structure
+emergence, Causal Sector</p>
+<h3 id="interlock-property-joint-locking-of-two-constraints">3.3
+Interlock Property: Joint Locking of Two Constraints</h3>
+<p><strong>Proposition 0.5.2.01 ({2,3,5} Interlock Property).</strong>
+The three structure constants do not each independently “succeed” — they
+survive only by <strong>mutually locking</strong> one another. The
+interlock property is jointly guaranteed by two constraints:</p>
+<p><strong>Constraint 1 (Product constraint):</strong> <span
+class="math display">\[\Lambda \cdot k_0 \cdot \Delta\Theta = h(E_8) =
+30\]</span></p>
+<p><strong>Constraint 2 (Assignment constraint):</strong> The three
+parameters must be assignable to <span
+class="math inline">\(D_4\)</span> triality orbit coefficients. The
+prime factorization <span class="math inline">\(2 \times 3 \times
+5\)</span> of 30 is the unique decomposition simultaneously satisfying
+both constraints — other decompositions (such as <span
+class="math inline">\(1 \times 5 \times 6\)</span>, <span
+class="math inline">\(1 \times 3 \times 10\)</span>) cannot
+simultaneously satisfy primality and triality orbit assignment.</p>
+<p><strong>Mathematical meaning of interlock</strong>: <span
+class="math inline">\(\Lambda=3\)</span> survives because <span
+class="math inline">\(k_0=2\)</span> and <span
+class="math inline">\(\Delta\Theta=5\)</span> simultaneously survive;
+<span class="math inline">\(k_0=2\)</span> survives because <span
+class="math inline">\(\Lambda=3\)</span> and <span
+class="math inline">\(\Delta\Theta=5\)</span> simultaneously survive;
+<span class="math inline">\(\Delta\Theta=5\)</span> survives because
+<span class="math inline">\(\Lambda=3\)</span> and <span
+class="math inline">\(k_0=2\)</span> simultaneously survive. If any one
+is missing, the entire structure collapses.</p>
+<h3 id="irreversibility-of-the-interlock">3.4 Irreversibility of the
+Interlock</h3>
+<p><strong>Theorem 2.6.3.01 (Irreversibility of the Interlock).</strong>
+Once the {2,3,5} interlock is achieved, it cannot be dismantled.</p>
+<p><strong>Proof.</strong> You cannot change <span
+class="math inline">\(\Lambda=3\)</span> alone while keeping <span
+class="math inline">\(k_0=2\)</span> and <span
+class="math inline">\(\Delta\Theta=5\)</span> unchanged — because the
+product constraint <span class="math inline">\(\Lambda \cdot k_0 \cdot
+\Delta\Theta = 30\)</span> would be violated. Nor can you replace <span
+class="math inline">\(2 \times 3 \times 5\)</span> with <span
+class="math inline">\(1 \times 6 \times 5\)</span> — because 6 is not
+prime and cannot be assigned to a triality orbit. ∎</p>
+<p><strong>Evolutionary interpretation</strong>: This is an
+“irreversible lock-in” in evolution. Once a successful combination
+forms, it solidifies — not because it is “logically necessary,” but
+because changing any one element would destroy the whole, and
+destruction of the whole means structural collapse. This is why our
+region’s parameters are 2, 3, 5 rather than others — not because other
+combinations are “impossible,” but because other combinations “cannot
+survive.”</p>
+<hr />
+<h2 id="parameters-of-a-region-generation-of-the-t-matrix">§4 Parameters
+of a Region: Generation of the T Matrix</h2>
+<h3 id="consummate-reproduction-produces-clifford-configurations">4.1
+Consummate Reproduction Produces Clifford Configurations</h3>
+<p><strong>Theorem 2.3.7.01 (Consummate Reproduction Theorem).</strong>
+The iteration of <span class="math inline">\(\delta\)</span> generates
+candidate parameters on the coding orbit. The parameter set <span
+class="math inline">\((p_1, p_2, p_3)\)</span>
+<strong>reproduces</strong> as an algebraic configuration if and only if
+it satisfies the <strong>Completeness Condition</strong>.</p>
+<p>The Completeness Condition comprises three sub-conditions: 1.
+<strong>Interlock property</strong> (§3 proved): <span
+class="math inline">\(p_1 \cdot p_2 \cdot p_3 = h(E_8) = 30\)</span>,
+and <span class="math inline">\((p_1, p_2, p_3)\)</span> is assignable
+to <span class="math inline">\(D_4\)</span> triality orbit coefficients
+2. <strong>Berry phase closure</strong>: <span
+class="math inline">\(\oint_\Gamma \mathcal{A} = 2\pi\)</span> 3.
+<strong>Reproduction</strong>: After consummation, the parameter set
+reproduces across three layers — stored in the information layer,
+relations established in the causal layer, activated as structure
+constants in the physical layer</p>
+<p><span class="math inline">\(\{2, 3, 5\}\)</span> satisfies the above
+three conditions and therefore <strong>reproduces</strong> on the coding
+orbit as a complete Bott period 8 Clifford algebraic structure.</p>
+<h3 id="s₃-triality-permutations-produce-discrete-t-values">4.2 S₃
+Triality Permutations Produce Discrete T Values</h3>
+<p><strong>Theorem 2.3.7.02 (T Value Generation Theorem).</strong> After
+consummate reproduction of the conjugate parameters, the <span
+class="math inline">\(D_4\)</span> triality group <span
+class="math inline">\(S_3\)</span> permutes the three sector labels
+<span class="math inline">\((\mathcal{M}, \mathcal{C},
+\mathcal{I})\)</span>, producing discrete <span
+class="math inline">\(T\)</span> values. <span
+class="math inline">\(S_3\)</span> has 6 elements:</p>
+<p><span class="math display">\[S_3 = \{e, (MC), (MI), (CI), (MCI),
+(MIC)\}\]</span></p>
+<ul>
+<li>The identity permutation <span class="math inline">\(e\)</span>
+yields <span class="math inline">\(T_{\text{ours}}\)</span> — this is
+the determinate output of our region</li>
+<li>The other permutations yield different <span
+class="math inline">\(T\)</span> values — corresponding to other
+Clifford regions</li>
+</ul>
+<p><strong>Determination of <span
+class="math inline">\(T_{\text{ours}}\)</span></strong> (Theorem
+2.4.4.01):</p>
+<p><span class="math display">\[T_{\text{ours}} = (\theta_I,
+\theta_\tau, \theta_{\sigma_2}) = (0.782, 0.209, 0.009)\]</span></p>
+<p><strong>Current status</strong>: <span
+class="math inline">\(T_{\text{ours}}\)</span> has been determined. The
+exact number of other <span class="math inline">\(T\)</span> values is
+an <strong>open problem</strong> — possibly <span
+class="math inline">\(\leq 6\)</span> (if all <span
+class="math inline">\(S_3\)</span> permutations yield legal <span
+class="math inline">\(T\)</span>), possibly fewer (if <span
+class="math inline">\(E_8\)</span> breaking screens out some
+permutations).</p>
+<h3 id="structure-of-the-t-matrix">4.3 Structure of the T Matrix</h3>
+<p><strong>Theorem 2.1.2.01 (Three-Parameter Decomposition of the
+Birkhoff Mixing Matrix).</strong></p>
+<p><span class="math display">\[T = \theta_I \cdot I + \theta_\tau \cdot
+P_\tau + \theta_{\sigma_2} \cdot P_{\sigma_2}\]</span></p>
+<p><span class="math inline">\(T\)</span> takes circulant matrix
+form:</p>
+<p><span class="math display">\[T = \begin{pmatrix} \theta_I &amp;
+\theta_\tau &amp; \theta_{\sigma_2} \\ \theta_{\sigma_2} &amp; \theta_I
+&amp; \theta_\tau \\ \theta_\tau &amp; \theta_{\sigma_2} &amp; \theta_I
+\end{pmatrix}\]</span></p>
+<p>where <span class="math inline">\(\theta_I + \theta_\tau +
+\theta_{\sigma_2} = 1\)</span> (double stochasticity), with 2 effective
+degrees of freedom. Triality breaking <span class="math inline">\(S_3
+\to Z_2\)</span> preserves the cyclic subgroup <span
+class="math inline">\(Z_3\)</span>, constraining the 4-dimensional
+Birkhoff polytope to a 2-dimensional face.</p>
+<p><strong>Physical meaning of T</strong>: <span
+class="math inline">\(T\)</span> is the mixing weight matrix among the
+three sectors <span class="math inline">\(\mathcal{M}, \mathcal{C},
+\mathcal{I}\)</span>. <span class="math inline">\(\theta_I\)</span> is
+sector self-coupling (identity permutation), <span
+class="math inline">\(\theta_\tau\)</span> is the <span
+class="math inline">\(\mathcal{M} \to \mathcal{C} \to \mathcal{I} \to
+\mathcal{M}\)</span> cycle, <span
+class="math inline">\(\theta_{\sigma_2}\)</span> is the <span
+class="math inline">\(\mathcal{M} \to \mathcal{I} \to \mathcal{C} \to
+\mathcal{M}\)</span> reverse cycle.</p>
+<h3 id="determination-of-t_ours">4.4 Determination of T_ours</h3>
+<p>The determination of <span class="math inline">\(T_{\text{ours}} =
+(0.782, 0.209, 0.009)\)</span> has two complementary narratives:</p>
+<p><strong>Narrative A (algebraic derivation)</strong>: The algebraic
+structure of the coding weights (2.2 §1.4) yields the zeroth-order
+approximation, and Bott period echo corrections (2.2 §5) yield the
+precise value. The rational structure of the coding weights comes from
+the algebraic constraints of the coding framework.</p>
+<p><strong>Narrative B (cross-region import)</strong>: <span
+class="math inline">\(T_{\text{ours}}\)</span> is imported from the
+shared information layer <span
+class="math inline">\(\mathcal{I}_{\text{shared}}\)</span>, not
+calibrated from our region’s observed <span
+class="math inline">\(\alpha^{-1}\)</span> value (Theorem 2.3.5.03). The
+cross-region import mechanism is detailed in §5-6.</p>
+<p><strong>Unification of the two narratives</strong>: The zeroth-order
+<span class="math inline">\(T\)</span> from the algebraic derivation is
+a “candidate parameter” — it is generated by our region’s algebraic
+structure. The import mechanism of <span
+class="math inline">\(\mathcal{I}_{\text{shared}}\)</span> is a
+“weighted validation” of these candidate parameters — only <span
+class="math inline">\(T\)</span> values consistent with the successful
+experience of other regions in the shared information layer are
+ultimately locked in. The determination of <span
+class="math inline">\(T_{\text{ours}}\)</span> is the joint result of
+<strong>our region’s algebraic structure + cross-region information
+validation</strong>.</p>
+<hr />
+<h2 id="interconnection-of-regions-the-shared-information-layer">§5
+Interconnection of Regions: The Shared Information Layer</h2>
+<h3 id="terminal-duality-of-cl7">5.1 Terminal Duality of Cl(7)</h3>
+<p>When the coding orbit recurs to layer 7, the Clifford algebra reaches
+terminal duality:</p>
+<p><span class="math display">\[\text{Cl}(7) \cong \text{Mat}(8,
+\mathbb{R}) \oplus \text{Mat}(8, \mathbb{R})\]</span></p>
+<p>The two direct summands have exactly the same algebraic structure
+(both are <span
+class="math inline">\(\text{Mat}(8,\mathbb{R})\)</span>), but different
+physical roles.</p>
+<h3 id="local-information-layer-and-shared-information-layer">5.2 Local
+Information Layer and Shared Information Layer</h3>
+<p><strong>Theorem 2.3.5.01 (Information Layer Sharing
+Theorem).</strong> The information layer <span
+class="math inline">\(\mathcal{I}\)</span> (Cl(5-7)) splits into two
+direct summands:</p>
+<p><span class="math display">\[\mathcal{I} = \mathcal{I}_{\text{local}}
+\oplus \mathcal{I}_{\text{shared}}\]</span></p>
+<p>where: - <span class="math inline">\(\mathcal{I}_{\text{local}} =
+\text{Mat}(8, \mathbb{R})\)</span> (first direct summand): <strong>local
+information</strong> — the coding state of this region, containing
+physical information accessible to observers in this region - <span
+class="math inline">\(\mathcal{I}_{\text{shared}} = \text{Mat}(8,
+\mathbb{R})\)</span> (second direct summand): <strong>shared
+information</strong> — a cross-region information channel, carrying the
+successful structures of all regions</p>
+<p><strong>Key properties</strong>: - <span
+class="math inline">\(\mathcal{I}_{\text{local}}\)</span> is
+<strong>region-private</strong> — each region has its own independent
+local information layer - <span
+class="math inline">\(\mathcal{I}_{\text{shared}}\)</span> is
+<strong>shared by all regions</strong> — it is a global information
+channel connecting all regions - The algebraic connectedness between the
+two direct summands is guaranteed by the multiplicative structure of
+Cl(7) — information can flow between the local and the shared</p>
+<h3 id="encoding-regions-write-information-into-the-shared-layer">5.3
+Encoding: Regions Write Information into the Shared Layer</h3>
+<p><strong>Theorem 2.3.5.01-5 (Encoding Map).</strong> Region <span
+class="math inline">\(R\)</span> encodes its Birkhoff weights as an
+element in <span
+class="math inline">\(\mathcal{I}_{\text{shared}}\)</span>:</p>
+<p><span class="math display">\[\Sigma_R(T_R) = \theta_\mathcal{M} U +
+\theta_\mathcal{C} J - \theta_\mathcal{I} I_8\]</span></p>
+<p>where: - <span class="math inline">\(U =
+\pi_-(\text{vol}_3)\)</span>: projection of the Cl(3) volume element,
+corresponding to the Matter Sector <span
+class="math inline">\(\mathcal{M}\)</span> - <span
+class="math inline">\(J = \pi_-(\text{vol}_5)\)</span>: projection of
+the Cl(5) volume element, corresponding to the Causal Sector <span
+class="math inline">\(\mathcal{C}\)</span> - <span
+class="math inline">\(-I_8 = \pi_-(\text{vol}_7)\)</span>: projection of
+the Cl(7) volume element, corresponding to the Information Sector <span
+class="math inline">\(\mathcal{I}\)</span> - <span
+class="math inline">\(\theta_\mathcal{M}, \theta_\mathcal{C},
+\theta_\mathcal{I}\)</span> are the Birkhoff weights of region <span
+class="math inline">\(R\)</span> (i.e., the three components of <span
+class="math inline">\(T_R\)</span>)</p>
+<p>The three reference elements <span class="math inline">\(U, J,
+-I_8\)</span> are <strong>trace-orthogonal</strong> (Theorem I-4), hence
+the encoding map <span class="math inline">\(\Sigma_R\)</span> is
+injective — different <span class="math inline">\(T_R\)</span> produce
+different encodings.</p>
+<p><strong>Physical meaning of encoding</strong>: <span
+class="math inline">\(\Sigma_R(T_R)\)</span> is region <span
+class="math inline">\(R\)</span>’s “contribution” to the shared
+information layer — it tells other regions: “I tried <span
+class="math inline">\(T_R\)</span>, it is successful (because it passed
+the Completeness Condition), you may refer to it.”</p>
+<h3 id="section-structure-of-the-shared-layer">5.4 Section Structure of
+the Shared Layer</h3>
+<p>The state of the shared information layer can be formalized as a
+<strong>section</strong> over the landscape:</p>
+<p><span class="math display">\[\Sigma: \mathcal{L} \to
+\mathcal{I}_{\text{shared}}, \quad \Sigma(R) = \text{information
+contributed by region } R \text{ to the shared layer}\]</span></p>
+<p><strong>Theorem 2.3.5.02 (Information Layer Infinite Parameters
+Theorem).</strong> The shared information layer <span
+class="math inline">\(\mathcal{I}_{\text{shared}}\)</span> carries
+infinitely many independent parameters. The section space <span
+class="math inline">\(\Gamma(\mathcal{L}, \text{Mat}(8,
+\mathbb{R}))\)</span> is infinite-dimensional — it is the function space
+from a 2-dimensional manifold to a 64-dimensional matrix space.</p>
+<hr />
+<h2 id="circulation-of-parameters-encoding-aggregation-decoding">§6
+Circulation of Parameters: Encoding → Aggregation → Decoding</h2>
+<h3 id="aggregation-total-state-of-the-shared-information-layer">6.1
+Aggregation: Total State of the Shared Information Layer</h3>
+<p><strong>Theorem 2.3.5.01-6 (Aggregation Theorem).</strong> The total
+state of the shared information layer is the weighted aggregation of the
+contributions from all regions:</p>
+<p><span
+class="math display">\[\mathcal{I}_{\text{shared}}^{\text{total}} =
+\sum_{R \in \text{Regions}} w_R \cdot \Sigma_R(T_R)\]</span></p>
+<p>where the weights <span class="math inline">\(w_R\)</span> are the
+Jeffreys prior (the volume form of the Fisher information metric):</p>
+<p><span class="math display">\[w_R = \mu(T_R) =
+\frac{1}{\pi\sqrt{\theta_\mathcal{M} \theta_\mathcal{C}
+\theta_\mathcal{I}}}\]</span></p>
+<p><strong>Algebraic origin of the Jeffreys prior</strong> (Theorem
+2.3.6.01-02): The generators of the Clifford algebra have a Gaussian
+distribution in the spinor representation. The Born Rule maps the
+Gaussian amplitudes to a probability distribution, yielding a
+Dirichlet(1/2, 1/2, 1/2) distribution, equivalent to the Jeffreys prior.
+Hence the weights <span class="math inline">\(w_R\)</span> are not
+arbitrary — they are uniquely determined by <span
+class="math inline">\(\delta \to\)</span> Clifford algebra <span
+class="math inline">\(\to\)</span> Gaussian structure <span
+class="math inline">\(\to\)</span> Born Rule.</p>
+<p><strong>Physical meaning of aggregation</strong>: <span
+class="math inline">\(\mathcal{I}_{\text{shared}}^{\text{total}}\)</span>
+is the “weighted average” of the successful experience of all regions.
+Regions with larger weights <span class="math inline">\(w_R\)</span>
+(more typical regions under the Jeffreys prior) contribute more to the
+aggregation.</p>
+<h3 id="decoding-extracting-t_ours-from-the-shared-layer">6.2 Decoding:
+Extracting T_ours from the Shared Layer</h3>
+<p><strong>Theorem 2.3.5.01-7 (Decoding Map).</strong> The decoding map
+<span class="math inline">\(\Phi\)</span> extracts <span
+class="math inline">\(T_{\text{ours}}\)</span> of our region from the
+total state of the shared information layer:</p>
+<p><span
+class="math display">\[\Phi(\mathcal{I}_{\text{shared}}^{\text{total}})
+= T_{\text{ours}}\]</span></p>
+<p>Concretely, using the trace-orthogonality of the three reference
+elements:</p>
+<p><span class="math display">\[\Phi(\mathcal{I}) = \frac{(\langle U,
+\mathcal{I}\rangle, \langle J, \mathcal{I}\rangle, \langle -I_8,
+\mathcal{I}\rangle)}{\langle U, \mathcal{I}\rangle + \langle J,
+\mathcal{I}\rangle + \langle -I_8, \mathcal{I}\rangle}\]</span></p>
+<p>where <span class="math inline">\(\langle A, B \rangle =
+\text{Tr}(A^T B)\)</span> is the Frobenius inner product.</p>
+<p><strong>Physical meaning of decoding</strong>: <span
+class="math inline">\(\Phi\)</span> is a “projection” — it extracts from
+the successful experience of all regions the <span
+class="math inline">\(T\)</span> value that best matches the algebraic
+structure (<span class="math inline">\(U, J, -I_8\)</span>) of our
+region. <span class="math inline">\(T_{\text{ours}}\)</span> is not
+“independently decided” by our region — it is the <strong>projection
+onto our region’s algebraic structure of the successful experience of
+all regions</strong>.</p>
+<p><strong>Equivalent form</strong> (weighted average):</p>
+<p><span class="math display">\[T_{\text{ours}} = \frac{\sum_{R} w_R
+\cdot T_R}{\sum_{R} w_R}\]</span></p>
+<p>i.e., <span class="math inline">\(T_{\text{ours}}\)</span> is the
+Jeffreys-weighted average of the <span class="math inline">\(T\)</span>
+values of all regions.</p>
+<h3 id="bidirectional-circulation-import-and-export">6.3 Bidirectional
+Circulation: Import and Export</h3>
+<p>The function of the shared information layer <span
+class="math inline">\(\mathcal{I}_{\text{shared}}\)</span> is
+<strong>bidirectional</strong>:</p>
+<p><strong>Import — from the shared layer to our region:</strong> <span
+class="math display">\[T_{\text{ours}} =
+\Phi(\mathcal{I}_{\text{shared}}^{\text{total}})\]</span></p>
+<p>Our region receives successful structures from other regions via the
+shared information layer — including locked parameter combinations,
+proven theorems, solidified constraints. <span
+class="math inline">\(T_{\text{ours}}\)</span> is the core result of
+import.</p>
+<p><strong>Export — from our region to the shared layer:</strong> <span
+class="math display">\[\Sigma_{\text{ours}}(T_{\text{ours}}) =
+\theta_\mathcal{M} U + \theta_\mathcal{C} J - \theta_\mathcal{I}
+I_8\]</span></p>
+<p>The consummate reproduction structure of our region is written into
+the shared information layer for reference by other regions. <span
+class="math inline">\(\alpha^{-1} = 137.036\)</span> may be being
+“consulted” by the evolution of another region.</p>
+<p><strong>Conservation of circulation</strong>: The amount of
+information exported and imported is conserved — the <span
+class="math inline">\(\Sigma_R(T_R)\)</span> written by each region to
+the shared layer is an element of <span
+class="math inline">\(\text{Mat}(8,\mathbb{R})\)</span> (64 real
+numbers), while the <span class="math inline">\(T_{\text{ours}}\)</span>
+read by each region from the shared layer is 3 real numbers (2 degrees
+of freedom after normalization). The amount of information read is far
+less than the amount written — this is because the decoding map <span
+class="math inline">\(\Phi\)</span> performs a weighted average,
+compressing the information.</p>
+<h3 id="gradual-circulation-and-explosive-circulation">6.4 Gradual
+Circulation and Explosive Circulation</h3>
+<p>Parameter circulation has two speeds (11.11 §9.2):</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Circulation Mode</th>
+<th style="text-align: left;">Speed</th>
+<th style="text-align: left;">Mechanism</th>
+<th style="text-align: left;">Mathematical Correspondence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Gradual</strong></td>
+<td style="text-align: left;">Slow</td>
+<td style="text-align: left;">δ iteration within this region,
+step-by-step trial and error</td>
+<td style="text-align: left;">Coding orbit layer-by-layer recursion N₁ →
+N₂ → ⋯ → N₇</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Explosive</strong></td>
+<td style="text-align: left;">Fast</td>
+<td style="text-align: left;">Import from ℐ_shared of successful
+structures already locked by other regions</td>
+<td style="text-align: left;">Shared information layer imports T_ours or
+whole chains of proven theorems</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Alternation of the two modes</strong>: Gradual is “routine” —
+δ iterates every day, generating new candidates every day. When a
+region’s structure is proven successful (consummate reproduction), it is
+written into <span
+class="math inline">\(\mathcal{I}_{\text{shared}}\)</span> — at that
+point, other regions can import it “explosively.” After import, the
+imported structure becomes new infrastructure for the importing region,
+and the next round of gradual evolution continues from this higher
+starting point.</p>
+<hr />
+<h2 id="from-t-to-physical-constants-spectral-expansion">§7 From T to
+Physical Constants: Spectral Expansion</h2>
+<h3 id="fixed-point-σ">7.1 Fixed Point σ*</h3>
+<p>Given <span class="math inline">\(T_{\text{ours}}\)</span>, the fixed
+point <span class="math inline">\(\sigma^*\)</span> is uniquely
+determined by the Birkhoff fixed point equation:</p>
+<p><span class="math display">\[\sigma^* = T_{\text{ours}} \cdot
+\text{diag}(\chi) \cdot \sigma^*\]</span></p>
+<p>where <span class="math inline">\(\chi = (\chi_M, \chi_C, \chi_I) =
+(8, 9, 1)\)</span> are the sector coding weights (Theorem 2.1.3.01).</p>
+<p><strong>Theorem 2.2.2.01 (Fixed Point).</strong> For <span
+class="math inline">\(T_{\text{ours}} = (0.782, 0.209, 0.009)\)</span>,
+the fixed point is:</p>
+<p><span class="math display">\[\sigma^* = (\sigma_\mathcal{M}^*,
+\sigma_\mathcal{C}^*, \sigma_\mathcal{I}^*) = (0.777912, 0.210603,
+0.011484)\]</span></p>
+<h3 id="α¹-137.036">7.2 α⁻¹ = 137.036</h3>
+<p><strong>Theorem 2.2.2.01 (Derivation of α⁻¹).</strong> The value of
+the algebraic action <span class="math inline">\(S(\sigma)\)</span> at
+the fixed point <span class="math inline">\(\sigma^*\)</span> is:</p>
+<p><span class="math display">\[S(\sigma^*) = \frac{\sum_i 1/\sigma_i^*
++ \sum_{i&lt;j} 1/\sqrt{\sigma_i^* \sigma_j^*}}{C^2} =
+137.036\]</span></p>
+<p>where <span class="math inline">\(C\)</span> is determined by the
+algebraic normalization equation <span class="math inline">\(2p C^3 +
+C^2 = 1\)</span> (<span class="math inline">\(p = \sqrt{\sigma_1^*
+\sigma_2^* \sigma_3^*}\)</span>).</p>
+<p>The deviation from the experimental value <span
+class="math inline">\(\alpha^{-1}_{\text{exp}} = 137.035999084\)</span>
+is approximately <span class="math inline">\(6.7 \times
+10^{-9}\)</span>.</p>
+<p><strong>Core logic</strong>: <span class="math inline">\(\alpha^{-1}
+= 137.036\)</span> is the <strong>output</strong> of <span
+class="math inline">\(T_{\text{ours}}\)</span>, not the
+<strong>input</strong> of <span
+class="math inline">\(T_{\text{ours}}\)</span>. <span
+class="math inline">\(T_{\text{ours}}\)</span> is imported from the
+shared information layer, <span class="math inline">\(\sigma^*\)</span>
+is determined by <span class="math inline">\(T_{\text{ours}}\)</span>,
+and <span class="math inline">\(S(\sigma^*) = 137.036\)</span> is
+determined by <span class="math inline">\(\sigma^*\)</span>. <span
+class="math inline">\(\alpha^{-1}\)</span> appears only once in the
+entire chain — as the output in the final step. Circular reasoning is
+broken.</p>
+<h3 id="coding-orbit-recursion">7.3 Coding Orbit Recursion</h3>
+<p>Given <span class="math inline">\(\sigma^*\)</span> and <span
+class="math inline">\(\{2,3,5\}\)</span>, the coding orbit recurs from
+the ground state <span class="math inline">\(N_1\)</span> to the
+terminal <span class="math inline">\(N_7\)</span>:</p>
+<p><strong>Theorem 1.1.1.01 (Coding Ground State).</strong></p>
+<p><span class="math display">\[N_1 = 6000 = 2^4 \cdot 3 \cdot
+5^3\]</span></p>
+<p><strong>Theorem 1.1.3.01 (Multiplier Sequence).</strong></p>
+<p><span class="math display">\[\mu_1 = 6, \quad \mu_2 = \frac{100}{3},
+\quad \mu_3 = 10, \quad \mu_4 = 10, \quad \mu_5 = \frac{9}{8}, \quad
+\mu_6 = 2\]</span></p>
+<p><strong>Coding orbit recursion:</strong></p>
+<p><span class="math display">\[N_1 = 6000 \xrightarrow{\mu_1=6} N_2 =
+36000 \xrightarrow{\mu_2=100/3} N_3 = 1.2\times10^6
+\xrightarrow{\mu_3=10} N_4 = 1.2\times10^7 \xrightarrow{\mu_4=10} N_5 =
+1.2\times10^8 \xrightarrow{\mu_5=9/8} N_6 = 1.35\times10^8
+\xrightarrow{\mu_6=2} N_7 = 2.7\times10^8\]</span></p>
+<p>Each layer of the coding orbit corresponds to a physical scale: <span
+class="math inline">\(N_1 \to\)</span> three-generation algebra, <span
+class="math inline">\(N_2 \to\)</span> second-generation mass benchmark,
+<span class="math inline">\(N_3 \to\)</span> third-generation mass
+benchmark, <span class="math inline">\(N_4 \to\)</span> higher-order
+corrections, <span class="math inline">\(N_5 \to\)</span> low-energy
+convergence, <span class="math inline">\(N_6 \to\)</span> terminal
+duality closure, <span class="math inline">\(N_7 \to\)</span> Planck
+scale.</p>
+<h3 id="complete-derivation-chain">7.4 Complete Derivation Chain</h3>
+<p>Stringing together all the above steps yields the complete derivation
+chain from δ to physical constants:</p>
+<p><span class="math display">\[\boxed{\delta
+\xrightarrow{\text{generates}} \mathcal{L}(\delta)
+\xrightarrow{\text{consummate screening}} \text{Clifford region}
+\xrightarrow{E_8} \{2,3,5\} \xrightarrow{\text{consummate reproduction}}
+\text{Clifford config.} \xrightarrow{S_3} \text{discrete } T
+\xrightarrow{\Sigma_R} \mathcal{I}_{\text{shared}}^{\text{total}}
+\xrightarrow{\Phi} T_{\text{ours}} \xrightarrow{\sigma^*} \alpha^{-1} =
+137.036 \xrightarrow{\text{coding orbit}} \text{all physical
+constants}}\]</span></p>
+<p><strong>Mathematical operations at each step</strong>:</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Step</th>
+<th style="text-align: left;">Input</th>
+<th style="text-align: left;">Operation</th>
+<th style="text-align: left;">Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">1. Generate landscape</td>
+<td style="text-align: left;">δ</td>
+<td style="text-align: left;">Iteration produces all algebraic
+realizations</td>
+<td style="text-align: left;">ℒ(δ)</td>
+</tr>
+<tr>
+<td style="text-align: left;">2. Consummate screening</td>
+<td style="text-align: left;">ℒ(δ)</td>
+<td style="text-align: left;">Berry phase criterion ∮ 𝒜 = 2π</td>
+<td style="text-align: left;">Clifford regions</td>
+</tr>
+<tr>
+<td style="text-align: left;">3. Structure constants</td>
+<td style="text-align: left;">Bott period 8</td>
+<td style="text-align: left;">E₈ Coxeter number h=30, prime
+factorization</td>
+<td style="text-align: left;">{2,3,5}</td>
+</tr>
+<tr>
+<td style="text-align: left;">4. Consummate reproduction</td>
+<td style="text-align: left;">{2,3,5}</td>
+<td style="text-align: left;">Berry phase closure, three-layer
+reproduction</td>
+<td style="text-align: left;">Clifford config.</td>
+</tr>
+<tr>
+<td style="text-align: left;">5. Discrete T</td>
+<td style="text-align: left;">Clifford config.</td>
+<td style="text-align: left;">S₃ triality permutations</td>
+<td style="text-align: left;">{T₁, T₂, …}</td>
+</tr>
+<tr>
+<td style="text-align: left;">6. Encoding</td>
+<td style="text-align: left;">T_R</td>
+<td style="text-align: left;">Σ_R(T_R) = θ_M U + θ_C J − θ_I I₈</td>
+<td style="text-align: left;">Write to ℐ_shared</td>
+</tr>
+<tr>
+<td style="text-align: left;">7. Aggregation</td>
+<td style="text-align: left;">All Σ_R(T_R)</td>
+<td style="text-align: left;">ℐ_shared^total = Σ_R w_R Σ_R(T_R)</td>
+<td style="text-align: left;">Shared layer total state</td>
+</tr>
+<tr>
+<td style="text-align: left;">8. Decoding</td>
+<td style="text-align: left;">ℐ_shared^total</td>
+<td style="text-align: left;">Φ = Frobenius inner product
+projection</td>
+<td style="text-align: left;">T_ours</td>
+</tr>
+<tr>
+<td style="text-align: left;">9. Fixed point</td>
+<td style="text-align: left;">T_ours</td>
+<td style="text-align: left;">σ* = T_ours · diag(χ) · σ*</td>
+<td style="text-align: left;">σ*</td>
+</tr>
+<tr>
+<td style="text-align: left;">10. Spectral expansion</td>
+<td style="text-align: left;">σ*</td>
+<td style="text-align: left;">S(σ<em>) = (Σ 1/σ_i</em> + Σ
+1/√(σ_i<em>σ_j</em>))/C²</td>
+<td style="text-align: left;">α⁻¹ = 137.036</td>
+</tr>
+<tr>
+<td style="text-align: left;">11. Coding orbit</td>
+<td style="text-align: left;">{2,3,5}, σ*</td>
+<td style="text-align: left;">N₁ → N₂ → ⋯ → N₇</td>
+<td style="text-align: left;">All physical constants</td>
+</tr>
+<tr>
+<td style="text-align: left;">12. Export</td>
+<td style="text-align: left;">T_ours</td>
+<td style="text-align: left;">Σ_ours(T_ours) writes to ℐ_shared</td>
+<td style="text-align: left;">For reference by other regions</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="panorama-of-the-regions-life-cycle">§8 Panorama of the Region’s
+Life Cycle</h2>
+<h3 id="life-cycle-diagram">8.1 Life Cycle Diagram</h3>
+<pre><code>                     ┌──────────────────────────────────────────┐
+                     │         Shared Information Layer          │
+                     │    I_shared = Mat(8,ℝ)                   │
+                     │                                          │
+                     │  ┌──────────────────────────────────┐    │
+                     │  │  I_shared^total = Σ_R w_R Σ_R(T_R) │   │
+                     │  └──────────────────────────────────┘    │
+                     │       ↑ encode write       ↓ decode extract│
+                     └───────┼────────────────────┼─────────────┘
+                             │                    │
+    ╔══════════════════════════════════════════════════════════════╗
+    ║                    Region  R_ours                           ║
+    ║                                                            ║
+    ║  ┌──────┐   ┌──────────┐   ┌─────────┐   ┌─────────────┐  ║
+    ║  │  δ   │ → │Landscape │ → │Consummate│ → │{2,3,5}      │  ║
+    ║  │      │   │   L(δ)   │   │screening │   │  interlock  │  ║
+    ║  └──────┘   └──────────┘   └─────────┘   └─────────────┘  ║
+    ║                                                ↓           ║
+    ║                                          ┌──────────┐      ║
+    ║                                          │Consummate│      ║
+    ║                                          │reproduction│    ║
+    ║                                          └──────────┘      ║
+    ║                                                ↓           ║
+    ║                                    ┌──────────────────┐    ║
+    ║                                    │S₃ permutations   │    ║
+    ║                                    │→ discrete T      │    ║
+    ║                                    └──────────────────┘    ║
+    ║                                                ↓           ║
+    ║                              ┌──────────────────────────┐  ║
+    ║                              │ Import T_ours ← decode Φ │  ║
+    ║                              └──────────────────────────┘  ║
+    ║                                                ↓           ║
+    ║                              ┌──────────────────────────┐  ║
+    ║                              │ σ* → α⁻¹ = 137.036      │  ║
+    ║                              └──────────────────────────┘  ║
+    ║                                                ↓           ║
+    ║                              ┌──────────────────────────┐  ║
+    ║                              │ Coding orbit → physical  │  ║
+    ║                              │        constants         │  ║
+    ║                              └──────────────────────────┘  ║
+    ║                                                ↓           ║
+    ║                     Export Σ_ours(T_ours) → I_shared ──────┼──→ other regions
+    ╚══════════════════════════════════════════════════════════════╝</code></pre>
+<h3 id="mathematical-operations-at-each-step">8.2 Mathematical
+Operations at Each Step</h3>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Step</th>
+<th style="text-align: left;">Mathematical Operation</th>
+<th style="text-align: left;">Key Formula</th>
+<th style="text-align: left;">Theorem</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Birth</strong></td>
+<td style="text-align: left;">δ iteration generates landscape</td>
+<td style="text-align: left;">ℒ(δ) = {A : δ has finite period on A}</td>
+<td style="text-align: left;">Axiom δ</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Screening</strong></td>
+<td style="text-align: left;">Completeness Condition screening</td>
+<td style="text-align: left;">∮_Γ 𝒜 = 2π</td>
+<td style="text-align: left;">0.4.2.01</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Identity card</strong></td>
+<td style="text-align: left;">E₈ → {2,3,5}</td>
+<td style="text-align: left;">Λ · k₀ · ΔΘ = 30</td>
+<td style="text-align: left;">0.5.0.01-03</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Reproduction</strong></td>
+<td style="text-align: left;">Reproduce as Clifford config.</td>
+<td style="text-align: left;">Berry phase closure + three-layer
+reproduction</td>
+<td style="text-align: left;">2.3.7.01</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Parameterization</strong></td>
+<td style="text-align: left;">S₃ permutations → discrete T</td>
+<td style="text-align: left;">T ∈ {T₁, …, T_{≤6}}</td>
+<td style="text-align: left;">2.3.7.02</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Encoding</strong></td>
+<td style="text-align: left;">Region writes to shared layer</td>
+<td style="text-align: left;">Σ_R(T_R) = θ_M U + θ_C J − θ_I I₈</td>
+<td style="text-align: left;">2.3.5.01-5</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Aggregation</strong></td>
+<td style="text-align: left;">Weighted aggregation of all regions</td>
+<td style="text-align: left;">ℐ_shared^total = Σ_R w_R Σ_R(T_R)</td>
+<td style="text-align: left;">2.3.5.01-6</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Decoding</strong></td>
+<td style="text-align: left;">Extract T_ours from shared layer</td>
+<td style="text-align: left;">Φ(ℐ) = (⟨U, ℐ⟩, ⟨J, ℐ⟩, ⟨−I₈,
+ℐ⟩)/norm</td>
+<td style="text-align: left;">2.3.5.01-7</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Fixed point</strong></td>
+<td style="text-align: left;">Compute σ*</td>
+<td style="text-align: left;">σ* = T_ours · diag(χ) · σ*</td>
+<td style="text-align: left;">2.2.2.01</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Spectral expansion</strong></td>
+<td style="text-align: left;">Compute α⁻¹</td>
+<td style="text-align: left;">S(σ*) = 137.036</td>
+<td style="text-align: left;">2.2.2.01</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Recursion</strong></td>
+<td style="text-align: left;">Coding orbit</td>
+<td style="text-align: left;">N₁ → N₂ → ⋯ → N₇</td>
+<td style="text-align: left;">1.1.3.01</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Export</strong></td>
+<td style="text-align: left;">This region writes to shared layer</td>
+<td style="text-align: left;">Σ_ours(T_ours)</td>
+<td style="text-align: left;">2.3.5.01-5</td>
+</tr>
+</tbody>
+</table>
+<h3 id="parameter-occupation-theorem">8.3 Parameter Occupation
+Theorem</h3>
+<p><strong>Theorem 2.3.7.03 (Parameter Occupation Theorem).</strong> In
+the landscape <span class="math inline">\(\mathcal{L}\)</span>, each
+parameter set (configurational discrete <span
+class="math inline">\(T\)</span>) is <strong>occupied by at most one
+region</strong>. Once region <span class="math inline">\(R\)</span>
+forms and acquires the parameter set <span class="math inline">\((C_R,
+T_R)\)</span>, there does not exist another region <span
+class="math inline">\(R&#39; \neq R\)</span> such that <span
+class="math inline">\((C_{R&#39;}, T_{R&#39;}) = (C_R,
+T_R)\)</span>.</p>
+<p><strong>Proof sketch</strong>: The encoding map <span
+class="math inline">\(\Sigma_R\)</span> of the shared information layer
+is injective (the three reference elements <span
+class="math inline">\(U, J, -I_8\)</span> are trace-orthogonal) —
+different <span class="math inline">\(T_R\)</span> produce different
+encodings. If two regions had the same <span
+class="math inline">\(T\)</span>, they would write the same encoding to
+the shared information layer, causing degeneracy in aggregation. The
+weighting mechanism of the Jeffreys prior ensures that such degeneracy
+does not occur — the same <span class="math inline">\(T\)</span> value
+is counted only once in the aggregation. ∎</p>
+<p><strong>Physical meaning</strong>: Parameter sets are “exclusive
+resources” — each <span class="math inline">\(T\)</span> value can be
+occupied by only one region. This is analogous to the Pauli Exclusion
+Principle: two identical fermions cannot occupy the same quantum state.
+The Parameter Occupation Theorem is a direct consequence of the
+injectivity of the information layer encoding.</p>
+<hr />
+<h2 id="open-problems">§9 Open Problems</h2>
+<ol type="1">
+<li><p><strong>Exact number of other T values</strong>: Among the 6
+permutations of <span class="math inline">\(S_3\)</span>, how many yield
+legal <span class="math inline">\(T\)</span> values? What is the
+screening mechanism of <span class="math inline">\(E_8\)</span>
+breaking? The current theory has determined <span
+class="math inline">\(T_{\text{ours}}\)</span>, but the exact number of
+other <span class="math inline">\(T\)</span> values is an open problem —
+possibly <span class="math inline">\(\leq 6\)</span>, possibly more (if
+additional parameters in the information layer continuously modulate
+<span class="math inline">\(T\)</span>).</p></li>
+<li><p><strong>Topological structure of the shared information
+layer</strong>: <span
+class="math inline">\(\mathcal{I}_{\text{shared}}\)</span> connects all
+landscape regions — what is its topological structure? Does there exist
+a “distance” between regions (some regions’ results are more easily
+imported)? Is the “bandwidth” of import limited? A complete topological
+description of <span
+class="math inline">\(\mathcal{I}_{\text{shared}}\)</span> is an open
+problem.</p></li>
+<li><p><strong>Possibility of other region types</strong>: This article
+focuses on Clifford regions (Bott period 8). Do there exist other
+algebraic types on the landscape (such as complex Clifford algebra
+regions with Bott period 2)? If so, do they also have their own
+{structure constants} and shared information layers? Can different
+region types share information with one another?</p></li>
+<li><p><strong>Rigorous construction of the decoding map Φ</strong>: The
+current natural candidate for Φ is the Chern-Simons functional, whose
+three-term structure naturally corresponds to the three sectors. But a
+rigorous mathematical construction of Φ (including a proof of its
+equivalence to the Frobenius inner product) is future work.</p></li>
+<li><p><strong>Switching condition between gradual and
+explosive</strong>: Is there a pattern in the switching between gradual
+trial-and-error within this region and cross-region explosive import?
+Does there exist some “condition” that triggers import (e.g., when this
+region’s trial-and-error reaches a certain stage and encounters an
+insurmountable “bottleneck,” it turns to <span
+class="math inline">\(\mathcal{I}_{\text{shared}}\)</span> for a
+breakthrough)?</p></li>
+<li><p><strong>Rigorous analysis of S₃ occupation constraints</strong>:
+The note of Theorem 2.3.7.02 points out: if all 6 permutation images of
+<span class="math inline">\(S_3\)</span> were occupied, the weighted
+average would give <span class="math inline">\(\bar{T} = (1/3, 1/3,
+1/3)\)</span>, corresponding to <span class="math inline">\(S \approx 72
+\neq 137\)</span>. Hence in a landscape that yields <span
+class="math inline">\(S = 137\)</span>, not all 6 <span
+class="math inline">\(S_3\)</span> permutations are occupied — some
+permutation images must be empty. Determining which permutation images
+are occupied (and why) is an open problem.</p></li>
+</ol>
+<hr />
+<h2 id="theorem-index">Theorem Index</h2>
+<p>…</p>
+<h2 id="references">References</h2>
+<p>…</p>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 07:53:34</p>
+  </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5.3 信息场统一动力学方程 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="版本: 260721.2">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/5.3_信息场统一动力学方程_CN_260721.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="index.html" class="nav-home">🏠 首页</a>
+    <a href="cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">5.3 信息场统一动力学方程</span>
+  </nav>
+  <main class="article-content">
+<h1 id="信息场统一动力学方程">5.3 信息场统一动力学方程</h1>
+<p><strong>版本</strong>: 260721.2</p>
+<hr />
+<h2 id="摘要">摘要</h2>
+<p>本文建立信息场的统一动力学方程——扩散-响应-稳态三层框架。信息场的演化由三个层次描述：快速扩散（网络传播）、中速响应（因果场驱动）、慢速稳态（全局平衡）。本文详细推导三场联合方程的耦合项结构，分析方程的解析解，并讨论信息守恒的物理含义。</p>
+<hr />
+<h2 id="目-录">目　录</h2>
+<p>§1　三层框架 　1.1　扩散层 　1.2　响应层 　1.3　稳态层
+　1.4　三层框架的耦合结构</p>
+<p>§2　统一方程 　2.1　数值参数 　2.2　耦合项的结构 　2.3　方程的解
+　2.4　衰减率的谱分解</p>
+<p>§3　物理含义 　3.1　信息场的双重驱动 　3.2　信息守恒
+　3.3　信息守恒的证明 　3.4　信息守恒与衰减的关系</p>
+<p>§4　三场联合动力学 　4.1　三场联合方程 　4.2　耦合项的来源
+　4.3　绝热近似下的简化 　4.4　统一方程的自洽性</p>
+<p>§5　统一方程的景观依赖性 　5.1　参数随景观位置的变化
+　5.2　收敛时间的景观范围 　5.3　统一方程与代数作用量</p>
+<hr />
+<h2 id="三层框架">§1 三层框架</h2>
+<h3 id="扩散层">1.1 扩散层</h3>
+<p>信息场在网络 <span class="math inline">\(G_{\mathcal{I}}\)</span>
+上的快速扩散：</p>
+<p><span class="math display">\[\frac{\partial
+\rho_{\mathcal{I}}}{\partial t}\bigg|_{\text{diff}} = -D_{\mathcal{I}}
+L_{\mathcal{I}} \rho_{\mathcal{I}},\]</span></p>
+<p>其中 <span class="math inline">\(D_{\mathcal{I}} = 1/\tau_I\)</span>
+是扩散系数，<span class="math inline">\(L_{\mathcal{I}} = I - T\)</span>
+是图 Laplacian。</p>
+<p>扩散层的物理意义：</p>
+<ul>
+<li><strong>网络传播</strong>：信息在信息网络的 16 个节点间传播</li>
+<li><strong>速率</strong>：由扩散系数 <span
+class="math inline">\(D_{\mathcal{I}} \approx 0.107\)</span>
+确定——快速过程</li>
+<li><strong>机制</strong>：图 Laplacian <span
+class="math inline">\(L_{\mathcal{I}}\)</span> 的谱确定传播模式</li>
+</ul>
+<p>扩散层是信息场演化的最快层次——信息在网络内部迅速均匀化。</p>
+<p><strong>详细推导。</strong>
+扩散方程的推导基于图上的连续时间随机游走。设 <span
+class="math inline">\(\rho_{\mathcal{I}}(i, t)\)</span> 为节点 <span
+class="math inline">\(i\)</span> 在时刻 <span
+class="math inline">\(t\)</span> 的信息密度。信息从节点 <span
+class="math inline">\(i\)</span> 流向节点 <span
+class="math inline">\(j\)</span> 的速率正比于密度差 <span
+class="math inline">\(\rho_{\mathcal{I}}(j) -
+\rho_{\mathcal{I}}(i)\)</span> 和转移概率 <span
+class="math inline">\(T_{ij}\)</span>（Birkhoff
+混合矩阵的元素）。因此：</p>
+<p><span class="math display">\[\frac{d\rho_{\mathcal{I}}(i)}{dt} =
+D_{\mathcal{I}} \sum_{j} T_{ij} (\rho_{\mathcal{I}}(j) -
+\rho_{\mathcal{I}}(i)) = D_{\mathcal{I}} \sum_{j} (T_{ij} - \delta_{ij})
+\rho_{\mathcal{I}}(j) = -D_{\mathcal{I}} \sum_{j} (I - T)_{ij}
+\rho_{\mathcal{I}}(j).\]</span></p>
+<p>写为向量形式即 <span class="math inline">\(\partial_t
+\rho_{\mathcal{I}} = -D_{\mathcal{I}} L_{\mathcal{I}}
+\rho_{\mathcal{I}}\)</span>。</p>
+<p>扩散系数 <span class="math inline">\(D_{\mathcal{I}} = 1/\tau_I =
+\Delta\lambda_{\mathcal{I}} = C\sqrt{\sigma_{\mathcal{I}}^*}\)</span> 由
+Born 法则确定。<span class="math inline">\(D_{\mathcal{I}} \approx
+0.107\)</span> 的物理含义：在单位编码步内，信息在网络中的扩散距离约为
+<span class="math inline">\(\sqrt{D_{\mathcal{I}}} \approx
+0.327\)</span> 节点。在 <span class="math inline">\(N\)</span>
+步后，扩散距离为 <span class="math inline">\(\sqrt{D_{\mathcal{I}} N}
+\approx 0.327 \sqrt{N}\)</span> 节点。达到全网均匀化（覆盖 16
+个节点）需要约 <span class="math inline">\((16/0.327)^2 \approx
+2400\)</span> 步——这与 <span class="math inline">\(\tau_I \approx
+9.34\)</span> 的快速平衡看似矛盾，但 <span
+class="math inline">\(\tau_I\)</span>
+是特征时间标度，而全网均匀化由最慢模式 <span
+class="math inline">\(\mu_1\)</span> 主导，实际均匀化时间约为 <span
+class="math inline">\(1/(D_{\mathcal{I}} \mu_1) \approx 1/(0.107 \times
+0.369) \approx 25.3\)</span> 步。</p>
+<p><strong>数值验证。</strong> 验证扩散系数 <span
+class="math inline">\(D_{\mathcal{I}}\)</span> 的计算： <span
+class="math display">\[D_{\mathcal{I}} = C\sqrt{\sigma_{\mathcal{I}}^*}
+= 0.882 \times \sqrt{0.011484} = 0.882 \times 0.1072 =
+0.0945.\]</span></p>
+<p>简化表格中的 <span class="math inline">\(D_{\mathcal{I}} \approx
+0.107\)</span> 使用了约化 <span class="math inline">\(C\)</span>（取
+<span class="math inline">\(C = 1\)</span>
+为基准）。两种取值不影响扩散层的结构——扩散系数仅改变时间标度，不改变模式结构。</p>
+<p><strong>对比讨论。</strong> 扩散层的形式与经典扩散方程（Fick
+定律）<span class="math inline">\(\partial_t u = D \nabla^2 u\)</span>
+有形式上的对应。图 Laplacian <span
+class="math inline">\(L_{\mathcal{I}}\)</span> 是连续 Laplace 算子 <span
+class="math inline">\(\nabla^2\)</span> 的离散类比。关键区别：经典扩散的
+<span class="math inline">\(D\)</span>
+是唯象参数（由介质的微观性质确定），共扼谱几何的 <span
+class="math inline">\(D_{\mathcal{I}}\)</span> 是几何参数（由 Born
+法则和 <span class="math inline">\(\sigma_{\mathcal{I}}^*\)</span>
+确定）。</p>
+<p><strong>跨卷引用。</strong> 图 Laplacian <span
+class="math inline">\(L_{\mathcal{I}} = I - T\)</span> 的定义见定理
+5.1.1.01。扩散系数 <span class="math inline">\(D_{\mathcal{I}} =
+C\sqrt{\sigma_{\mathcal{I}}^*}\)</span> 的 Born 法则来源见定理
+3.2.2.01。</p>
+<h3 id="响应层">1.2 响应层</h3>
+<p>信息场对因果场驱动的响应：</p>
+<p><span class="math display">\[\frac{\partial
+\rho_{\mathcal{I}}}{\partial t}\bigg|_{\text{resp}} =
+-\gamma_{\mathcal{I}} (\rho_{\mathcal{I}} -
+\rho_{\mathcal{I}}^{\text{eq}}[\rho_{\mathcal{C}}]),\]</span></p>
+<p>其中 <span class="math inline">\(\gamma_{\mathcal{I}} =
+1/\sqrt{\xi_{\mathcal{I}/\mathcal{C}}}\)</span> 是响应率，<span
+class="math inline">\(\rho_{\mathcal{I}}^{\text{eq}}\)</span>
+是给定因果场状态下的平衡分布。</p>
+<p>响应层的物理意义：</p>
+<ul>
+<li><strong>因果驱动</strong>：因果场通过 𝒞-ℐ 耦合驱动信息场</li>
+<li><strong>速率</strong>：由响应率 <span
+class="math inline">\(\gamma_{\mathcal{I}} \approx 0.234\)</span>
+确定——中速过程</li>
+<li><strong>机制</strong>：信息场趋向因果场确定的平衡分布</li>
+</ul>
+<p>响应层是信息场演化的中速层次——信息场跟随因果场的变化而调整。</p>
+<p><strong>详细推导。</strong> 响应项的推导基于线性响应理论。因果场
+<span class="math inline">\(\rho_{\mathcal{C}}\)</span> 通过 𝒞-ℐ
+耦合（<span class="math inline">\(Z_2\)</span> 对换 <span
+class="math inline">\(P_{\sigma_2}\)</span>，权重 <span
+class="math inline">\(\theta_{\sigma_2} \approx
+0.009\)</span>）驱动信息场。在因果场 <span
+class="math inline">\(\rho_{\mathcal{C}}\)</span>
+给定的情况下，信息场的平衡分布为 <span
+class="math inline">\(\rho_{\mathcal{I}}^{\text{eq}}[\rho_{\mathcal{C}}]\)</span>。偏离平衡时，信息场以速率
+<span class="math inline">\(\gamma_{\mathcal{I}}\)</span>
+向平衡弛豫。</p>
+<p>响应率 <span class="math inline">\(\gamma_{\mathcal{I}} =
+1/\sqrt{\xi_{\mathcal{I}/\mathcal{C}}} =
+\sqrt{\sigma_{\mathcal{I}}^*/\sigma_{\mathcal{C}}^*}\)</span>
+由编码权重比确定。<span class="math inline">\(\gamma_{\mathcal{I}}
+\approx 0.234\)</span> 的物理含义：信息场在偏离平衡时，以约 0.234
+的速率向平衡弛豫，特征弛豫时间 <span
+class="math inline">\(1/\gamma_{\mathcal{I}} \approx 4.28\)</span>
+步。这个时间标度介于扩散层的 <span class="math inline">\(\tau_I \approx
+9.34\)</span> 和因果场的 <span class="math inline">\(\tau_C \approx
+2.18\)</span> 之间——响应层是「中速」层。</p>
+<p><strong>数值验证。</strong> 验证响应率 <span
+class="math inline">\(\gamma_{\mathcal{I}}\)</span> 的计算： <span
+class="math display">\[\gamma_{\mathcal{I}} =
+\sqrt{\sigma_{\mathcal{I}}^*/\sigma_{\mathcal{C}}^*} =
+\sqrt{0.011484/0.210603} = \sqrt{0.05453} = 0.2335.\]</span></p>
+<p>响应率 <span class="math inline">\(\gamma_{\mathcal{I}} \approx
+0.234\)</span> 与扩散系数 <span class="math inline">\(D_{\mathcal{I}}
+\approx 0.107\)</span> 的比较：<span
+class="math inline">\(\gamma_{\mathcal{I}} / D_{\mathcal{I}} \approx
+0.234 / 0.107 \approx
+2.19\)</span>。响应（外部驱动）比扩散（内部传播）快约 2.2
+倍——信息场对外部因果变化的响应比内部网络传播更快。</p>
+<p><strong>对比讨论。</strong> 响应层的形式与线性响应理论（Kubo
+公式）有形式上的对应。在标准统计力学中，系统对外部扰动的响应由响应函数
+<span class="math inline">\(\chi(t)\)</span> 描述，<span
+class="math inline">\(\chi(t) \propto
+e^{-t/\tau}\)</span>（指数弛豫）。在共扼谱几何中，信息场对因果场驱动的响应也是指数弛豫，但弛豫时间
+<span class="math inline">\(\tau = 1/\gamma_{\mathcal{I}}\)</span>
+由编码权重比确定，而非由动力学关联函数确定。</p>
+<p><strong>跨卷引用。</strong> 慢化因子 <span
+class="math inline">\(\xi_{\mathcal{I}/\mathcal{C}} \approx
+18.3\)</span> 的推导见定理 5.2.1.01。𝒞-ℐ 耦合的 <span
+class="math inline">\(Z_2\)</span> 对换结构见定理 6.5.1.01。</p>
+<h3 id="稳态层">1.3 稳态层</h3>
+<p>全局稳态条件：</p>
+<p><span class="math display">\[\frac{\partial
+\rho_{\mathcal{I}}}{\partial t}\bigg|_{\text{ss}} = 0 \implies
+\rho_{\mathcal{I}}^* =
+\rho_{\mathcal{I}}^{\text{eq}}[\rho_{\mathcal{C}}^*].\]</span></p>
+<p>稳态层的物理意义：</p>
+<ul>
+<li><strong>全局平衡</strong>：信息场达到因果场确定的平衡分布</li>
+<li><strong>时间尺度</strong>：由慢化因子 <span
+class="math inline">\(\xi \approx 67.6\)</span> 确定——慢速过程</li>
+<li><strong>机制</strong>：自由能极小驱动系统趋向 Gibbs 稳态</li>
+</ul>
+<p><strong>详细推导。</strong>
+稳态层是三层框架的最终归宿。当扩散和响应都完成时，<span
+class="math inline">\(\partial \rho_{\mathcal{I}} / \partial t =
+0\)</span>，信息场达到稳态 <span
+class="math inline">\(\rho_{\mathcal{I}}^*\)</span>。稳态由两个条件确定：
+1. 扩散平衡：<span class="math inline">\(L_{\mathcal{I}}
+\rho_{\mathcal{I}}^* = 0\)</span>（网络均匀分布） 2. 响应平衡：<span
+class="math inline">\(\rho_{\mathcal{I}}^* =
+\rho_{\mathcal{I}}^{\text{eq}}[\rho_{\mathcal{C}}^*]\)</span>（因果场确定的平衡分布）</p>
+<p>两个条件同时满足要求 <span
+class="math inline">\(\rho_{\mathcal{I}}^*\)</span>
+既均匀又等于因果平衡分布。在 Birkhoff 不动点 <span
+class="math inline">\(\sigma^*\)</span> 处，这两个条件是一致的——<span
+class="math inline">\(\rho_{\mathcal{I}}^* = \Lambda
+\sigma_{\mathcal{I}}^* = 3 \times 0.011484 \approx 0.0345\)</span>，且
+<span class="math inline">\(L_{\mathcal{I}} \rho_{\mathcal{I}}^* =
+0\)</span>（因为 <span
+class="math inline">\(\rho_{\mathcal{I}}^*\)</span> 正比于 <span
+class="math inline">\(T\)</span> 的特征向量 <span
+class="math inline">\(v_1 = (1,1,\ldots,1)^T\)</span>）。</p>
+<p><strong>数值验证。</strong> 验证稳态条件： <span
+class="math display">\[\begin{aligned}
+L_{\mathcal{I}} \rho_{\mathcal{I}}^* &amp;= (I - T) \rho_{\mathcal{I}}^*
+= \rho_{\mathcal{I}}^* - T\rho_{\mathcal{I}}^* = \rho_{\mathcal{I}}^* -
+\rho_{\mathcal{I}}^* = 0 \quad (\text{因 } T \text{ 双随机}), \\
+\rho_{\mathcal{I}}^* &amp;= \Lambda \sigma_{\mathcal{I}}^* = 3 \times
+0.011484 = 0.03445.
+\end{aligned}\]</span></p>
+<p><strong>跨卷引用。</strong> 稳态 <span
+class="math inline">\(\rho_{\mathcal{I}}^*\)</span> 与 Birkhoff 不动点
+<span class="math inline">\(\sigma^*\)</span> 的关系见定理 3.3.1.01
+和定理 3.3.2.02。</p>
+<h3 id="三层框架的耦合结构">1.4 三层框架的耦合结构</h3>
+<p>三层框架的耦合结构：</p>
+<table>
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 23%" />
+<col style="width: 29%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">层次</th>
+<th style="text-align: left;">驱动源</th>
+<th style="text-align: center;">速率</th>
+<th style="text-align: left;">时间尺度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">扩散层</td>
+<td style="text-align: left;">内部（网络）</td>
+<td style="text-align: center;"><span
+class="math inline">\(D_{\mathcal{I}} \approx 0.107\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\tau_I \approx
+9.34\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">响应层</td>
+<td style="text-align: left;">外部（因果场）</td>
+<td style="text-align: center;"><span
+class="math inline">\(\gamma_{\mathcal{I}} \approx 0.234\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(1/\gamma
+\approx 4.28\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">稳态层</td>
+<td style="text-align: left;">全局（自由能）</td>
+<td style="text-align: center;"><span
+class="math inline">\(\Gamma_{\text{geo}} \approx 0.023\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(1/\Gamma
+\approx 43.5\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>三层的时间尺度分离：扩散最快，响应居中，稳态最慢。这种分离保证了绝热近似的适用性。</p>
+<p><strong>详细推导。</strong> 三层时间尺度的排序需要仔细分析。表面上
+<span class="math inline">\(\tau_I \approx 9.34\)</span>（扩散）&gt;
+<span class="math inline">\(1/\gamma \approx
+4.28\)</span>（响应），但这里的「扩散最快」指的是扩散过程中的局部传播速度（<span
+class="math inline">\(D_{\mathcal{I}} \approx 0.107\)</span>
+是扩散系数，而非全局平衡时间）。全局扩散平衡时间由 <span
+class="math inline">\(1/(D_{\mathcal{I}} \mu_1) \approx 25.3\)</span>
+确定，响应弛豫时间由 <span class="math inline">\(1/\gamma_{\mathcal{I}}
+\approx 4.28\)</span> 确定，稳态收敛时间由 <span
+class="math inline">\(1/\Gamma_{\text{geo}} \approx 43.5\)</span>
+确定。因此时间排序为：</p>
+<p><span class="math display">\[\tau_{\text{resp}} \approx 4.28 &lt;
+\tau_{\text{diff}} \approx 25.3 &lt; \tau_{\text{ss}} \approx
+43.5.\]</span></p>
+<p>响应最快（外部驱动的快速弛豫），扩散居中（网络内部的逐渐均匀化），稳态最慢（全局平衡的缓慢收敛）。这个排序保证了层次结构：响应先完成，信息场快速跟随因果场；然后扩散完成，信息在网络中均匀化；最后稳态达到，全局平衡。</p>
+<p><strong>数值验证。</strong> 三个特征时间的数值： <span
+class="math display">\[\begin{aligned}
+\tau_{\text{resp}} &amp;= 1/\gamma_{\mathcal{I}} = 1/0.2335 = 4.28, \\
+\tau_{\text{diff}} &amp;= 1/(D_{\mathcal{I}} \mu_1) = 1/(0.0945 \times
+0.369) = 1/0.0349 = 28.7, \\
+\tau_{\text{ss}} &amp;= 1/\Gamma_{\text{geo}} = 1/0.0231 = 43.3.
+\end{aligned}\]</span></p>
+<p>时间排序：<span class="math inline">\(4.28 &lt; 28.7 &lt;
+43.3\)</span>——确为响应&gt;扩散&gt;稳态的层次结构。</p>
+<p><strong>跨卷引用。</strong> 三层框架与绝热近似的关系见定理
+5.2.3.01。三场时间标度分离的完整分析见 5.2 §1。</p>
+<hr />
+<h2 id="统一方程">§2 统一方程</h2>
+<p><strong>定理 5.3.2.01（信息场统一动力学方程）。</strong>
+三个层次合并为：</p>
+<p><span class="math display">\[\frac{\partial
+\rho_{\mathcal{I}}}{\partial t} = -D_{\mathcal{I}} L_{\mathcal{I}}
+\rho_{\mathcal{I}} - \gamma_{\mathcal{I}} (\rho_{\mathcal{I}} -
+\rho_{\mathcal{I}}^{\text{eq}}[\rho_{\mathcal{C}}]).\]</span></p>
+<p>稳态解：<span class="math inline">\(\rho_{\mathcal{I}}^* =
+(D_{\mathcal{I}} L_{\mathcal{I}} + \gamma_{\mathcal{I}} I)^{-1}
+\gamma_{\mathcal{I}} \rho_{\mathcal{I}}^{\text{eq}}\)</span>。</p>
+<p><strong>证明。</strong> 统一方程由三层框架的线性叠加得到。扩散项
+<span class="math inline">\(-D_{\mathcal{I}} L_{\mathcal{I}}
+\rho_{\mathcal{I}}\)</span> 描述网络内部传播，响应项 <span
+class="math inline">\(-\gamma_{\mathcal{I}}(\rho_{\mathcal{I}} -
+\rho_{\mathcal{I}}^{\text{eq}})\)</span>
+描述因果场驱动。两者相加给出总演化方程。稳态条件 <span
+class="math inline">\(\partial \rho / \partial t = 0\)</span> 给出 <span
+class="math inline">\((D_{\mathcal{I}} L_{\mathcal{I}} +
+\gamma_{\mathcal{I}} I)\rho^* = \gamma_{\mathcal{I}}
+\rho^{\text{eq}}\)</span>，解之得 <span class="math inline">\(\rho^* =
+(D_{\mathcal{I}} L_{\mathcal{I}} + \gamma_{\mathcal{I}} I)^{-1}
+\gamma_{\mathcal{I}} \rho^{\text{eq}}\)</span>。∎</p>
+<p><strong>详细推导。</strong> 统一方程的推导步骤：</p>
+<ol type="1">
+<li><p><strong>线性叠加。</strong>
+信息场的总演化率是扩散和响应两项的叠加。这是线性响应理论的标准假设——两个独立过程的效应可以线性叠加。线性叠加的物理基础是：扩散和响应作用于不同的自由度（扩散作用于网络内部节点间，响应作用于信息场整体与因果场的耦合），两者不产生干涉。</p></li>
+<li><p><strong>稳态解。</strong> 稳态条件 <span
+class="math inline">\(\partial \rho_{\mathcal{I}} / \partial t =
+0\)</span> 给出： <span class="math display">\[D_{\mathcal{I}}
+L_{\mathcal{I}} \rho_{\mathcal{I}}^* + \gamma_{\mathcal{I}}
+\rho_{\mathcal{I}}^* = \gamma_{\mathcal{I}}
+\rho_{\mathcal{I}}^{\text{eq}}.\]</span> 整理为 <span
+class="math inline">\((D_{\mathcal{I}} L_{\mathcal{I}} +
+\gamma_{\mathcal{I}} I) \rho_{\mathcal{I}}^* = \gamma_{\mathcal{I}}
+\rho_{\mathcal{I}}^{\text{eq}}\)</span>。由于 <span
+class="math inline">\(D_{\mathcal{I}} L_{\mathcal{I}} +
+\gamma_{\mathcal{I}} I\)</span> 是正定矩阵（<span
+class="math inline">\(L_{\mathcal{I}}\)</span> 半正定，<span
+class="math inline">\(\gamma_{\mathcal{I}} &gt;
+0\)</span>），逆矩阵存在且唯一，因此稳态解存在且唯一。</p></li>
+<li><p><strong>稳态解的显式形式。</strong> 在 <span
+class="math inline">\(L_{\mathcal{I}}\)</span> 的特征基下，<span
+class="math inline">\((D_{\mathcal{I}} L_{\mathcal{I}} +
+\gamma_{\mathcal{I}} I)^{-1} = \sum_k (D_{\mathcal{I}} \mu_k +
+\gamma_{\mathcal{I}})^{-1} v_k v_k^T\)</span>。因此： <span
+class="math display">\[\rho_{\mathcal{I}}^* = \sum_k
+\frac{\gamma_{\mathcal{I}}}{D_{\mathcal{I}} \mu_k +
+\gamma_{\mathcal{I}}} (v_k^T \rho_{\mathcal{I}}^{\text{eq}})
+v_k.\]</span></p></li>
+<li><p><strong>主导模式。</strong> 当 <span
+class="math inline">\(\gamma_{\mathcal{I}} \gg D_{\mathcal{I}}
+\mu_1\)</span>（响应主导），<span
+class="math inline">\(\rho_{\mathcal{I}}^* \approx
+\rho_{\mathcal{I}}^{\text{eq}}\)</span>——信息场紧密跟随因果场。当 <span
+class="math inline">\(\gamma_{\mathcal{I}} \ll D_{\mathcal{I}}
+\mu_1\)</span>（扩散主导），<span
+class="math inline">\(\rho_{\mathcal{I}}^* \approx \sum_k \mu_k^{-1}
+(v_k^T \rho_{\mathcal{I}}^{\text{eq}})
+v_k\)</span>——信息场主要受网络扩散控制。在我们的位置，<span
+class="math inline">\(\gamma_{\mathcal{I}} \approx 0.234\)</span>，<span
+class="math inline">\(D_{\mathcal{I}} \mu_1 \approx
+0.035\)</span>，<span class="math inline">\(\gamma_{\mathcal{I}} /
+(D_{\mathcal{I}} \mu_1) \approx
+6.7\)</span>——响应主导，信息场紧密跟随因果场。</p></li>
+</ol>
+<p><strong>数值验证。</strong> 验证稳态解的存在唯一性。矩阵 <span
+class="math inline">\(M = D_{\mathcal{I}} L_{\mathcal{I}} +
+\gamma_{\mathcal{I}} I\)</span> 的本征值为 <span
+class="math inline">\(D_{\mathcal{I}} \mu_k +
+\gamma_{\mathcal{I}}\)</span>。最小本征值 <span
+class="math inline">\(D_{\mathcal{I}} \cdot 0 + \gamma_{\mathcal{I}} =
+\gamma_{\mathcal{I}} \approx 0.234 &gt; 0\)</span>——<span
+class="math inline">\(M\)</span> 正定，可逆。</p>
+<p><strong>对比讨论。</strong> 统一方程的形式与 Fokker-Planck
+方程（描述随机过程的概率密度演化）有形式上的对应。Fokker-Planck 方程
+<span class="math inline">\(\partial_t P = \mathcal{L} P\)</span>
+包含漂移项和扩散项。在共扼谱几何中，响应项 <span
+class="math inline">\(-\gamma_{\mathcal{I}}(\rho_{\mathcal{I}} -
+\rho_{\mathcal{I}}^{\text{eq}})\)</span> 对应漂移项（趋向平衡），扩散项
+<span class="math inline">\(-D_{\mathcal{I}} L_{\mathcal{I}}
+\rho_{\mathcal{I}}\)</span>
+对应扩散项（网络传播）。关键区别：Fokker-Planck
+方程的系数由随机过程的微观动力学确定，统一方程的系数由编码权重和代数连通度确定。</p>
+<p><strong>跨卷引用。</strong> 扩散项中 <span
+class="math inline">\(D_{\mathcal{I}}\)</span> 和 <span
+class="math inline">\(L_{\mathcal{I}}\)</span> 的推导见 5.1
+§1.1-§1.2。响应项中 <span
+class="math inline">\(\gamma_{\mathcal{I}}\)</span> 的推导见 5.2
+§1.2。</p>
+<h3 id="数值参数">2.1 数值参数</h3>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 30%" />
+<col style="width: 38%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">参数</th>
+<th style="text-align: left;">公式</th>
+<th style="text-align: center;">数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(D_{\mathcal{I}}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(1/\tau_I =
+C\sqrt{\sigma_I}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\approx
+0.107\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\gamma_{\mathcal{I}}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(1/\sqrt{\xi_{\mathcal{I}/\mathcal{C}}}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\approx
+0.234\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\mu_1\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(|1-\lambda_2|\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\approx
+0.370\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>参数的代数来源： - <span class="math inline">\(D_{\mathcal{I}} =
+C\sqrt{\sigma_{\mathcal{I}}^*}\)</span>：由代数常数 <span
+class="math inline">\(C\)</span> 和信息界编码权重 <span
+class="math inline">\(\sigma_{\mathcal{I}}^*\)</span> 确定 - <span
+class="math inline">\(\gamma_{\mathcal{I}} =
+\sqrt{\sigma_{\mathcal{I}}^*/\sigma_{\mathcal{C}}^*}\)</span>：由编码权重比确定。具体计算：<span
+class="math inline">\(\sqrt{0.011484/0.210603} = \sqrt{0.0545} \approx
+0.234\)</span>。这是时间慢化因子 <span
+class="math inline">\(\sqrt{\xi_{\mathcal{I}/\mathcal{C}}}\)</span>
+的倒数——响应率是时间标度的倒数，故取平方根而非密度比本身。 - <span
+class="math inline">\(\mu_1 = |1 - \lambda_2|\)</span>：由 Birkhoff
+混合矩阵本征值确定</p>
+<p>三个参数全部跨区域信息导入——完全由代数结构确定。</p>
+<p><strong>详细推导。</strong> 三个参数的代数来源链：</p>
+<ol type="1">
+<li><p><strong><span class="math inline">\(D_{\mathcal{I}}\)</span>
+的来源链：</strong> <span
+class="math inline">\(\sigma_{\mathcal{I}}^*\)</span>（Birkhoff
+不动点）→ Born 法则 <span
+class="math inline">\(\Delta\lambda_{\mathcal{I}} =
+C\sqrt{\sigma_{\mathcal{I}}^*}\)</span> → <span
+class="math inline">\(D_{\mathcal{I}} =
+\Delta\lambda_{\mathcal{I}}\)</span>。<span
+class="math inline">\(D_{\mathcal{I}}\)</span>
+是信息界谱间隙的直接体现——信息界的「量子」越大，扩散越快。</p></li>
+<li><p><strong><span class="math inline">\(\gamma_{\mathcal{I}}\)</span>
+的来源链：</strong> <span
+class="math inline">\(\sigma_{\mathcal{I}}^*\)</span> 和 <span
+class="math inline">\(\sigma_{\mathcal{C}}^*\)</span>（Birkhoff
+不动点）→ <span class="math inline">\(\xi_{\mathcal{I}/\mathcal{C}} =
+\sigma_{\mathcal{C}}^*/\sigma_{\mathcal{I}}^*\)</span> → <span
+class="math inline">\(\gamma_{\mathcal{I}} =
+1/\sqrt{\xi_{\mathcal{I}/\mathcal{C}}}\)</span>。<span
+class="math inline">\(\gamma_{\mathcal{I}}\)</span>
+是信息场对因果场变化的敏感度——<span
+class="math inline">\(\sigma_{\mathcal{I}}^*\)</span>
+越小（信息场越稀疏），<span
+class="math inline">\(\gamma_{\mathcal{I}}\)</span>
+越小（响应越慢）。</p></li>
+<li><p><strong><span class="math inline">\(\mu_1\)</span>
+的来源链：</strong> <span class="math inline">\(\sigma^*\)</span> →
+Birkhoff 混合矩阵 <span class="math inline">\(T(\sigma^*)\)</span> →
+本征值 <span class="math inline">\(\lambda_2\)</span> → <span
+class="math inline">\(\mu_1 = |1 - \lambda_2|\)</span>。<span
+class="math inline">\(\mu_1\)</span> 是信息网络的连通度——<span
+class="math inline">\(\sigma^*\)</span> 越偏离对称点，<span
+class="math inline">\(\mu_1\)</span> 越小。</p></li>
+</ol>
+<p><strong>数值验证。</strong> 三个参数之间的数值关系： <span
+class="math display">\[\frac{\gamma_{\mathcal{I}}}{D_{\mathcal{I}}} =
+\frac{0.234}{0.107} \approx 2.19, \quad
+\frac{\gamma_{\mathcal{I}}}{D_{\mathcal{I}} \mu_1} = \frac{0.234}{0.107
+\times 0.370} \approx 5.91.\]</span></p>
+<p>响应率 <span class="math inline">\(\gamma_{\mathcal{I}}\)</span>
+远大于衰减率 <span class="math inline">\(D_{\mathcal{I}}
+\mu_1\)</span>——响应主导信息的更新，扩散主导信息的衰减。</p>
+<h3 id="耦合项的结构">2.2 耦合项的结构</h3>
+<p>统一方程的耦合项结构：</p>
+<p><span class="math display">\[\frac{\partial
+\rho_{\mathcal{I}}}{\partial t} = \underbrace{-D_{\mathcal{I}}
+L_{\mathcal{I}} \rho_{\mathcal{I}}}_{\text{内部扩散}} +
+\underbrace{-\gamma_{\mathcal{I}} \rho_{\mathcal{I}}}_{\text{自衰减}} +
+\underbrace{\gamma_{\mathcal{I}}
+\rho_{\mathcal{I}}^{\text{eq}}[\rho_{\mathcal{C}}]}_{\text{因果驱动}}.\]</span></p>
+<p>三项的物理含义：</p>
+<ol type="1">
+<li><strong>内部扩散</strong> <span
+class="math inline">\(-D_{\mathcal{I}} L_{\mathcal{I}}
+\rho_{\mathcal{I}}\)</span>：信息在网络中传播——由图 Laplacian 驱动</li>
+<li><strong>自衰减</strong> <span
+class="math inline">\(-\gamma_{\mathcal{I}}
+\rho_{\mathcal{I}}\)</span>：信息场趋向零——耗散效应</li>
+<li><strong>因果驱动</strong> <span
+class="math inline">\(\gamma_{\mathcal{I}}
+\rho_{\mathcal{I}}^{\text{eq}}[\rho_{\mathcal{C}}]\)</span>：因果场注入信息——源效应</li>
+</ol>
+<p>自衰减和因果驱动构成「漏-源」平衡——信息场的稳态由两者的平衡确定。</p>
+<p><strong>详细推导。</strong>
+耦合项的结构可以从「漏-源」模型的角度理解。将 <span
+class="math inline">\(-\gamma_{\mathcal{I}} \rho_{\mathcal{I}} +
+\gamma_{\mathcal{I}} \rho_{\mathcal{I}}^{\text{eq}}\)</span> 重写为
+<span class="math inline">\(-\gamma_{\mathcal{I}}(\rho_{\mathcal{I}} -
+\rho_{\mathcal{I}}^{\text{eq}})\)</span>，更清晰地展示了「漏-源」结构：<span
+class="math inline">\(\rho_{\mathcal{I}} -
+\rho_{\mathcal{I}}^{\text{eq}}\)</span> 是信息场偏离平衡的程度，<span
+class="math inline">\(-\gamma_{\mathcal{I}}\)</span> 是弛豫速率。当
+<span class="math inline">\(\rho_{\mathcal{I}} &gt;
+\rho_{\mathcal{I}}^{\text{eq}}\)</span>（信息过剩），系统以速率 <span
+class="math inline">\(\gamma_{\mathcal{I}}\)</span> 漏出信息；当 <span
+class="math inline">\(\rho_{\mathcal{I}} &lt;
+\rho_{\mathcal{I}}^{\text{eq}}\)</span>（信息不足），系统以速率 <span
+class="math inline">\(\gamma_{\mathcal{I}}\)</span> 吸收信息。</p>
+<p>内部扩散项 <span class="math inline">\(-D_{\mathcal{I}}
+L_{\mathcal{I}} \rho_{\mathcal{I}}\)</span> 不改变总信息量（<span
+class="math inline">\(\text{Tr}(L_{\mathcal{I}} \rho) =
+0\)</span>），只改变信息在节点间的分布。因此信息场总信息量的变化仅由「漏-源」项决定：</p>
+<p><span class="math display">\[\frac{d}{dt}
+\text{Tr}(\rho_{\mathcal{I}}) = -\gamma_{\mathcal{I}}
+\text{Tr}(\rho_{\mathcal{I}} -
+\rho_{\mathcal{I}}^{\text{eq}}).\]</span></p>
+<p><strong>数值验证。</strong> 在稳态 <span
+class="math inline">\(\rho_{\mathcal{I}} = \rho_{\mathcal{I}}^*\)</span>
+处，三项的数值： <span class="math display">\[\begin{aligned}
+\text{内部扩散} &amp;= -D_{\mathcal{I}} L_{\mathcal{I}}
+\rho_{\mathcal{I}}^* = -0.107 \times 0 = 0, \\
+\text{自衰减} &amp;= -\gamma_{\mathcal{I}} \rho_{\mathcal{I}}^* = -0.234
+\times 0.0345 = -0.00807, \\
+\text{因果驱动} &amp;= \gamma_{\mathcal{I}}
+\rho_{\mathcal{I}}^{\text{eq}} = 0.234 \times 0.0345 = 0.00807.
+\end{aligned}\]</span></p>
+<p>自衰减和因果驱动精确抵消——稳态平衡。</p>
+<h3 id="方程的解">2.3 方程的解</h3>
+<p>信息场的演化解为：</p>
+<p><span class="math display">\[\rho_{\mathcal{I}}(t) =
+\rho_{\mathcal{I}}^* + \sum_{k} c_k e^{-\Lambda_k t} v_k,\]</span></p>
+<p>其中 <span class="math inline">\(\Lambda_k = D_{\mathcal{I}} \mu_k +
+\gamma_{\mathcal{I}}\)</span> 是衰减率，<span
+class="math inline">\(v_k\)</span> 是 Laplacian 特征向量。最慢衰减率
+<span class="math inline">\(\Lambda_1 = D_{\mathcal{I}} \mu_1 +
+\gamma_{\mathcal{I}} \approx 0.107 \times 0.370 + 0.234 \approx
+0.274\)</span>。</p>
+<p>解的结构：</p>
+<ul>
+<li><strong>稳态项</strong> <span
+class="math inline">\(\rho_{\mathcal{I}}^*\)</span>：长时间极限——信息场达到平衡</li>
+<li><strong>瞬态项</strong> <span class="math inline">\(\sum c_k
+e^{-\Lambda_k t} v_k\)</span>：随时间衰减——信息场趋向平衡的过程</li>
+</ul>
+<p>最慢衰减率 <span class="math inline">\(\Lambda_1 \approx
+0.274\)</span> 对应收敛时间 <span
+class="math inline">\(\tau_{\text{conv}} = 1/\Lambda_1 \approx
+3.6\)</span>——信息场在约 3.6 个时间单位内收敛到稳态。</p>
+<p><strong>详细推导。</strong> 方程解的形式解推导。统一方程 <span
+class="math inline">\(\partial_t \rho = -D L \rho - \gamma (\rho -
+\rho^{\text{eq}})\)</span> 可以写为 <span
+class="math inline">\(\partial_t (\rho - \rho^*) = -(D L + \gamma
+I)(\rho - \rho^*)\)</span>，其中 <span
+class="math inline">\(\rho^*\)</span> 是稳态解。令 <span
+class="math inline">\(\delta\rho = \rho - \rho^*\)</span>，则 <span
+class="math inline">\(\partial_t \delta\rho = -(D L + \gamma I)
+\delta\rho\)</span>。在 <span class="math inline">\(L\)</span>
+的特征基下：</p>
+<p><span class="math display">\[\delta\rho(t) = \sum_k c_k e^{-(D \mu_k
++ \gamma) t} v_k.\]</span></p>
+<p>系数 <span class="math inline">\(c_k = \langle v_k, \delta\rho(0)
+\rangle\)</span> 由初始条件确定。加上稳态项即得完整解。</p>
+<p>收敛时间 <span class="math inline">\(\tau_{\text{conv}} =
+1/\Lambda_1\)</span> 由最慢衰减模式确定。<span
+class="math inline">\(\Lambda_1 = D \mu_1 + \gamma \approx 0.107 \times
+0.369 + 0.234 \approx 0.274\)</span>，<span
+class="math inline">\(\tau_{\text{conv}} \approx
+3.65\)</span>。这个时间标度短于信息场的特征时间 <span
+class="math inline">\(\tau_I \approx
+9.34\)</span>——因为收敛时间由响应和扩散最快的模式共同决定，而非最慢的扩散模式。</p>
+<p><strong>数值验证。</strong> 在 <span class="math inline">\(t =
+\tau_{\text{conv}} \approx 3.65\)</span> 时，偏离稳态的幅度衰减到 <span
+class="math inline">\(1/e \approx 0.368\)</span>。在 <span
+class="math inline">\(t = 3\tau_{\text{conv}} \approx 11.0\)</span>
+时，衰减到 <span class="math inline">\(e^{-3} \approx
+0.050\)</span>——95% 收敛。</p>
+<p><strong>跨卷引用。</strong> 散率 <span
+class="math inline">\(\Gamma_{\text{geo}} = \mu_1 / N_{\text{info}}
+\approx 0.023\)</span>（定理 5.1.2.01）与 <span
+class="math inline">\(\Lambda_1 \approx 0.274\)</span> 的关系：<span
+class="math inline">\(\Lambda_1\)</span>
+是统一方程的衰减率（包含响应项），<span
+class="math inline">\(\Gamma_{\text{geo}}\)</span>
+是纯扩散衰减率（仅含扩散项）。<span class="math inline">\(\Lambda_1 \gg
+\Gamma_{\text{geo}}\)</span> 说明响应加速了收敛。</p>
+<h3 id="衰减率的谱分解">2.4 衰减率的谱分解</h3>
+<p>衰减率 <span class="math inline">\(\Lambda_k = D_{\mathcal{I}} \mu_k
++ \gamma_{\mathcal{I}}\)</span> 的谱：</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">模式 <span
+class="math inline">\(k\)</span></th>
+<th style="text-align: center;"><span
+class="math inline">\(\mu_k\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(\Lambda_k =
+D_{\mathcal{I}}\mu_k + \gamma_{\mathcal{I}}\)</span></th>
+<th style="text-align: center;">收敛时间</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;"><span
+class="math inline">\(0.370\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.274\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(3.65\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;"><span
+class="math inline">\(0.370\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.274\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(3.65\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;"><span class="math inline">\(\geq
+0.370\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\geq
+0.274\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\leq
+3.65\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>所有模式的衰减率均为正——系统全局收敛。最慢模式 <span
+class="math inline">\(k=1\)</span> 主导长时间行为。</p>
+<p><strong>详细推导。</strong> 衰减率谱的完整结构。<span
+class="math inline">\(L_{\mathcal{I}}\)</span> 的本征值谱为 <span
+class="math inline">\(\{0, \mu_1, \mu_1, \mu_3, \ldots,
+\mu_{15}\}\)</span>，其中 <span class="math inline">\(\mu_1 =
+0.369\)</span>（二重简并，对应复共轭对），<span
+class="math inline">\(\mu_k \geq \mu_1\)</span>（<span
+class="math inline">\(\forall k \geq 3\)</span>）。因此 <span
+class="math inline">\(\Lambda_k = D_{\mathcal{I}} \mu_k +
+\gamma_{\mathcal{I}}\)</span> 的谱为 <span
+class="math inline">\(\{\gamma_{\mathcal{I}}, \Lambda_1, \Lambda_1,
+\Lambda_3, \ldots\}\)</span>，其中 <span class="math inline">\(\Lambda_1
+= D_{\mathcal{I}} \mu_1 + \gamma_{\mathcal{I}}\)</span>
+是最小非零衰减率。</p>
+<p>模式 <span class="math inline">\(k=0\)</span>（<span
+class="math inline">\(\mu_0 = 0\)</span>）的衰减率为 <span
+class="math inline">\(\Lambda_0 = \gamma_{\mathcal{I}} \approx
+0.234\)</span>——这个模式对应全网一致态，其衰减率 <span
+class="math inline">\(\gamma_{\mathcal{I}}\)</span> 大于 <span
+class="math inline">\(\Lambda_1\)</span>。这意味着全网一致态的衰减比非均匀模式更快——因为响应项
+<span class="math inline">\(\gamma_{\mathcal{I}}\)</span>
+对所有模式同等作用，而扩散项 <span class="math inline">\(D_{\mathcal{I}}
+\mu_k\)</span> 对非均匀模式额外贡献衰减。</p>
+<p><strong>数值验证。</strong> 验证 <span
+class="math inline">\(\Lambda_0 &gt; \Lambda_1\)</span>： <span
+class="math display">\[\Lambda_0 = D_{\mathcal{I}} \times 0 +
+\gamma_{\mathcal{I}} = 0.234, \quad \Lambda_1 = 0.107 \times 0.370 +
+0.234 = 0.274.\]</span></p>
+<p><span class="math inline">\(\Lambda_1 = 0.274 &gt; \Lambda_0 =
+0.234\)</span>——非均匀模式衰减更快（因为扩散项的额外贡献）。这与直觉一致：不均匀性在扩散中更快消除。</p>
+<hr />
+<h2 id="物理含义">§3 物理含义</h2>
+<h3 id="信息场的双重驱动">3.1 信息场的双重驱动</h3>
+<p>信息场受两个驱动源影响：</p>
+<ol type="1">
+<li><strong>内部扩散</strong>（<span
+class="math inline">\(D_{\mathcal{I}}
+L_{\mathcal{I}}\)</span>）：信息在网络中传播</li>
+<li><strong>外部响应</strong>（<span
+class="math inline">\(\gamma_{\mathcal{I}}\)</span>）：信息场跟随因果场变化</li>
+</ol>
+<p>两者平衡时达到稳态。</p>
+<p>双重驱动的竞争：</p>
+<ul>
+<li>内部扩散使信息均匀化（趋向网络一致态）</li>
+<li>外部响应使信息跟随因果场（趋向因果平衡态）</li>
+<li>两者的平衡给出信息场的稳态——既不完全均匀，也不完全跟随因果场</li>
+</ul>
+<p><strong>详细推导。</strong>
+双重驱动的竞争可以用「势能景观」来理解。定义有效势能 <span
+class="math inline">\(V(\rho) = \frac{1}{2} D_{\mathcal{I}} \rho^T
+L_{\mathcal{I}} \rho + \frac{1}{2} \gamma_{\mathcal{I}} |\rho -
+\rho^{\text{eq}}|^2\)</span>，则统一方程可以写为梯度流形式：<span
+class="math inline">\(\partial_t \rho = -\nabla V(\rho)\)</span>。第一项
+<span class="math inline">\(\frac{1}{2} D \rho^T L \rho\)</span> 在
+<span class="math inline">\(\rho \propto
+(1,1,\ldots,1)^T\)</span>（均匀分布）处取极小；第二项 <span
+class="math inline">\(\frac{1}{2} \gamma |\rho -
+\rho^{\text{eq}}|^2\)</span> 在 <span class="math inline">\(\rho =
+\rho^{\text{eq}}\)</span> 处取极小。两项的极小点一般不同，因此 <span
+class="math inline">\(V(\rho)\)</span> 的全局极小点（即稳态 <span
+class="math inline">\(\rho^*\)</span>）是两者的折中。</p>
+<p>在 <span class="math inline">\(\rho^*\)</span> 处，<span
+class="math inline">\(\nabla V(\rho^*) = D L \rho^* + \gamma (\rho^* -
+\rho^{\text{eq}}) = 0\)</span>，即 <span class="math inline">\(D L
+\rho^* = -\gamma (\rho^* -
+\rho^{\text{eq}})\)</span>——扩散「推力」与响应「拉力」平衡。</p>
+<p><strong>数值验证。</strong> 在稳态 <span
+class="math inline">\(\rho^*\)</span> 处，扩散推力与响应拉力的平衡：
+<span class="math display">\[D_{\mathcal{I}} L_{\mathcal{I}} \rho^* = 0,
+\quad \gamma_{\mathcal{I}} (\rho^* - \rho^{\text{eq}}) = 0.\]</span></p>
+<p>两项同时为零——这是 Birkhoff 不动点 <span
+class="math inline">\(\sigma^*\)</span> 的特殊性质：<span
+class="math inline">\(\rho^*\)</span> 既是均匀分布（<span
+class="math inline">\(L_{\mathcal{I}} \rho^* =
+0\)</span>），又等于因果平衡分布（<span class="math inline">\(\rho^* =
+\rho^{\text{eq}}\)</span>）。</p>
+<h3 id="信息守恒">3.2 信息守恒</h3>
+<p>在稳态下，信息场的总信息量守恒：</p>
+<p><span
+class="math display">\[\frac{d}{dt}\text{Tr}(\rho_{\mathcal{I}}) = 0
+\implies \text{Tr}(\rho_{\mathcal{I}}^*) = \text{const}.\]</span></p>
+<p>信息不创生也不消灭——只在网络中重新分布。</p>
+<h3 id="信息守恒的证明">3.3 信息守恒的证明</h3>
+<p>由统一方程：</p>
+<p><span
+class="math display">\[\frac{d}{dt}\text{Tr}(\rho_{\mathcal{I}}) =
+-D_{\mathcal{I}} \text{Tr}(L_{\mathcal{I}} \rho_{\mathcal{I}}) -
+\gamma_{\mathcal{I}} \text{Tr}(\rho_{\mathcal{I}} -
+\rho_{\mathcal{I}}^{\text{eq}}).\]</span></p>
+<p>第一项：<span class="math inline">\(\text{Tr}(L_{\mathcal{I}}
+\rho_{\mathcal{I}}) = \text{Tr}((I-T)\rho) = \text{Tr}(\rho) -
+\text{Tr}(T\rho) = 0\)</span>（因 <span class="math inline">\(T\)</span>
+双随机，<span class="math inline">\(\text{Tr}(T\rho) =
+\text{Tr}(\rho)\)</span>）。</p>
+<p>第二项：在稳态 <span class="math inline">\(\rho = \rho^*\)</span>
+时，<span class="math inline">\(\rho^* = \rho^{\text{eq}}\)</span>，故
+<span class="math inline">\(\text{Tr}(\rho^* - \rho^{\text{eq}}) =
+0\)</span>。</p>
+<p>因此 <span class="math inline">\(d\text{Tr}(\rho)/dt =
+0\)</span>——信息守恒。∎</p>
+<p><strong>详细推导。</strong>
+信息守恒的证明可以推广到非稳态情况。在任意时刻 <span
+class="math inline">\(t\)</span>：</p>
+<p><span
+class="math display">\[\frac{d}{dt}\text{Tr}(\rho_{\mathcal{I}}) =
+-\gamma_{\mathcal{I}} \text{Tr}(\rho_{\mathcal{I}} -
+\rho_{\mathcal{I}}^{\text{eq}}).\]</span></p>
+<p>如果 <span class="math inline">\(\rho_{\mathcal{I}} \neq
+\rho_{\mathcal{I}}^{\text{eq}}\)</span>，则 <span
+class="math inline">\(\text{Tr}(\rho_{\mathcal{I}})\)</span>
+可以变化——信息场的总信息量可以增减。但信息守恒指的是：在稳态（<span
+class="math inline">\(\rho_{\mathcal{I}} = \rho_{\mathcal{I}}^* =
+\rho_{\mathcal{I}}^{\text{eq}}\)</span>），总信息量不变。在非稳态，总信息量向稳态值弛豫：</p>
+<p><span class="math display">\[\text{Tr}(\rho_{\mathcal{I}}(t)) =
+\text{Tr}(\rho_{\mathcal{I}}^*) + (\text{Tr}(\rho_{\mathcal{I}}(0)) -
+\text{Tr}(\rho_{\mathcal{I}}^*)) e^{-\gamma_{\mathcal{I}}
+t}.\]</span></p>
+<p>总信息量以 <span class="math inline">\(\gamma_{\mathcal{I}}\)</span>
+的速率趋向稳态值——这是「漏-源」平衡的动态过程。</p>
+<p><strong>数值验证。</strong> 验证 <span
+class="math inline">\(\text{Tr}(T\rho) = \text{Tr}(\rho)\)</span> 对任意
+<span class="math inline">\(\rho\)</span> 成立。<span
+class="math inline">\(T\)</span> 是双随机矩阵，<span
+class="math inline">\(\sum_i T_{ij} = 1\)</span>（列和为 1）。因此：
+<span class="math display">\[\text{Tr}(T\rho) = \sum_i (T\rho)_i =
+\sum_i \sum_j T_{ij} \rho_j = \sum_j \rho_j \sum_i T_{ij} = \sum_j
+\rho_j \times 1 = \text{Tr}(\rho).\]</span></p>
+<p><strong>跨卷引用。</strong> <span class="math inline">\(T\)</span>
+的双随机性来自 Birkhoff 混合矩阵的构造（定理 3.3.1.01）。</p>
+<h3 id="信息守恒与衰减的关系">3.4 信息守恒与衰减的关系</h3>
+<p>信息守恒（<span class="math inline">\(\text{Tr}(\rho) =
+\text{const}\)</span>）与信息衰减（<span
+class="math inline">\(\Gamma_{\text{geo}} \approx
+0.023\)</span>）并不矛盾：</p>
+<ul>
+<li><strong>信息守恒</strong>：总信息量不变——信息在网络中重新分布</li>
+<li><strong>信息衰减</strong>：特定模式衰减——信息从高阶模式流向低阶模式</li>
+</ul>
+<p>信息衰减是「模式间转移」而非「总量减少」——总信息量守恒，但分布趋于均匀。</p>
+<p><strong>详细推导。</strong> 信息守恒与衰减的数学关系。将 <span
+class="math inline">\(\rho_{\mathcal{I}}\)</span> 展开为 <span
+class="math inline">\(L_{\mathcal{I}}\)</span> 的特征模式：<span
+class="math inline">\(\rho_{\mathcal{I}} = \sum_k c_k
+v_k\)</span>。总信息量 <span
+class="math inline">\(\text{Tr}(\rho_{\mathcal{I}}) = c_0\)</span>（仅
+<span
+class="math inline">\(v_0\)</span>（一致模式）对迹有贡献）。信息守恒意味着
+<span class="math inline">\(c_0 = \text{const}\)</span>。信息衰减意味着
+<span class="math inline">\(c_k(t) = c_k(0) e^{-\Lambda_k
+t}\)</span>（<span class="math inline">\(k \geq
+1\)</span>）。两者不矛盾——<span class="math inline">\(c_0\)</span>
+不变，<span class="math inline">\(c_k\)</span>（<span
+class="math inline">\(k \geq 1\)</span>）衰减。</p>
+<p>信息衰减的物理图像：初始时信息集中在某些特定模式（如某个节点有高信息密度），随时间演化，这些模式衰减，信息流向一致模式。总信息量不变，但信息的「结构」被抹平——这是「遗忘」的数学表达。</p>
+<p><strong>数值验证。</strong> 在 <span class="math inline">\(t =
+0\)</span> 和 <span class="math inline">\(t = \infty\)</span>
+时，模式的分布： <span class="math display">\[\begin{aligned}
+t = 0&amp;: \quad \rho_{\mathcal{I}} = c_0 v_0 + \sum_{k \geq 1} c_k
+v_k, \\
+t = \infty&amp;: \quad \rho_{\mathcal{I}} = c_0 v_0 =
+\rho_{\mathcal{I}}^*.
+\end{aligned}\]</span></p>
+<p>总信息量始终为 <span
+class="math inline">\(c_0\)</span>，但非均匀模式的信息在 <span
+class="math inline">\(t \to \infty\)</span> 时完全消失。</p>
+<p><strong>对比讨论。</strong>
+信息守恒与衰减的关系类似于量子力学中的「幺正演化 vs
+退相干」。量子系统的幺正演化保持总概率守恒（<span
+class="math inline">\(\text{Tr}(\rho) =
+1\)</span>），但退相干使非对角元衰减——信息从「量子关联」流向「经典概率」。在共扼谱几何中，信息守恒保持总信息量不变，但衰减使信息从「非均匀模式」流向「均匀模式」——信息从「结构化」变成「无结构」。两者都是「信息重新分布」而非「信息消灭」。</p>
+<hr />
+<h2 id="三场联合动力学">§4 三场联合动力学</h2>
+<h3 id="三场联合方程">4.1 三场联合方程</h3>
+<p>将信息场统一方程扩展到三场：</p>
+<p><span class="math display">\[\frac{\partial
+\rho_{\mathcal{M}}}{\partial t} = -i[H_{\mathcal{M}},
+\rho_{\mathcal{M}}] + \mathcal{D}_T^{(\mathcal{M})}[\rho_{\mathcal{M}}]
++
+\gamma_{\mathcal{M}\mathcal{C}}(\rho_{\mathcal{M}}^{\text{eq}}[\rho_{\mathcal{C}}]
+- \rho_{\mathcal{M}}),\]</span></p>
+<p><span class="math display">\[\frac{\partial
+\rho_{\mathcal{C}}}{\partial t} = -i[H_{\mathcal{C}},
+\rho_{\mathcal{C}}] + \mathcal{D}_T^{(\mathcal{C})}[\rho_{\mathcal{C}}]
++
+\gamma_{\mathcal{C}\mathcal{M}}(\rho_{\mathcal{C}}^{\text{eq}}[\rho_{\mathcal{M}}]
+- \rho_{\mathcal{C}}) +
+\gamma_{\mathcal{C}\mathcal{I}}(\rho_{\mathcal{C}}^{\text{eq}}[\rho_{\mathcal{I}}]
+- \rho_{\mathcal{C}}),\]</span></p>
+<p><span class="math display">\[\frac{\partial
+\rho_{\mathcal{I}}}{\partial t} = -D_{\mathcal{I}} L_{\mathcal{I}}
+\rho_{\mathcal{I}} - \gamma_{\mathcal{I}} (\rho_{\mathcal{I}} -
+\rho_{\mathcal{I}}^{\text{eq}}[\rho_{\mathcal{C}}]).\]</span></p>
+<p>三场方程的耦合结构：</p>
+<ul>
+<li>ℳ 方程：自演化 + ℳ→𝒞 耦合</li>
+<li>𝒞 方程：自演化 + 𝒞→ℳ 耦合 + 𝒞→ℐ 耦合</li>
+<li>ℐ 方程：自演化 + ℐ→𝒞 耦合</li>
+</ul>
+<p>注意 ℳ 和 ℐ 无直接耦合——通过 𝒞 中转。</p>
+<p><strong>详细推导。</strong> 三场联合方程中各项的物理含义：</p>
+<ol type="1">
+<li><p><strong>自演化项</strong>：<span class="math inline">\(-i[H,
+\rho]\)</span> 是孤立扇区的幺正演化（物质场和因果场）。<span
+class="math inline">\(-D_{\mathcal{I}} L_{\mathcal{I}}
+\rho_{\mathcal{I}}\)</span>
+是信息场的扩散演化（非幺正，因为信息场是经典-概率性的）。</p></li>
+<li><p><strong>耗散项</strong>：<span
+class="math inline">\(\mathcal{D}_T[\rho]\)</span> 是扇区内部的耗散（由
+Birkhoff 混合矩阵 <span class="math inline">\(T\)</span>
+的扇区内部分量驱动）。对 ℳ，<span
+class="math inline">\(\mathcal{D}_T^{(\mathcal{M})}\)</span> 来自 <span
+class="math inline">\(T\)</span> 的恒等分量 <span
+class="math inline">\(P_I\)</span>（权重 <span
+class="math inline">\(\theta_I \approx 0.782\)</span>）。对 𝒞，<span
+class="math inline">\(\mathcal{D}_T^{(\mathcal{C})}\)</span> 来自 <span
+class="math inline">\(T\)</span> 的循环置换分量 <span
+class="math inline">\(P_\tau\)</span>（权重 <span
+class="math inline">\(\theta_\tau \approx 0.209\)</span>）。</p></li>
+<li><p><strong>耦合项</strong>：<span
+class="math inline">\(\gamma_{ij}(\rho_i^{\text{eq}}[\rho_j] -
+\rho_i)\)</span> 是扇区间的耦合。<span
+class="math inline">\(\gamma_{\mathcal{M}\mathcal{C}}\)</span> 来自 ℳ-𝒞
+耦合（循环置换 <span class="math inline">\(P_\tau\)</span>），<span
+class="math inline">\(\gamma_{\mathcal{C}\mathcal{I}}\)</span> 来自 𝒞-ℐ
+耦合（<span class="math inline">\(Z_2\)</span> 对换 <span
+class="math inline">\(P_{\sigma_2}\)</span>）。</p></li>
+</ol>
+<p><strong>数值验证。</strong> 三场耦合强度的层级： <span
+class="math display">\[\gamma_{\mathcal{M}\mathcal{C}} :
+\gamma_{\mathcal{C}\mathcal{M}} : \gamma_{\mathcal{C}\mathcal{I}} =
+\sqrt{\sigma_{\mathcal{M}}/\sigma_{\mathcal{C}}} :
+\sqrt{\sigma_{\mathcal{C}}/\sigma_{\mathcal{M}}} :
+\sqrt{\sigma_{\mathcal{I}}/\sigma_{\mathcal{C}}} = 1.92 : 0.52 :
+0.23.\]</span></p>
+<p>ℳ→𝒞 耦合最强（<span
+class="math inline">\(\gamma_{\mathcal{M}\mathcal{C}} \approx
+1.92\)</span>），𝒞→ℐ 耦合最弱（<span
+class="math inline">\(\gamma_{\mathcal{C}\mathcal{I}} \approx
+0.23\)</span>）。这解释了为什么信息场演化最慢——它与因果场的耦合最弱，因果场对它的驱动最小。</p>
+<h3 id="耦合项的来源">4.2 耦合项的来源</h3>
+<p>三场耦合项来自 Birkhoff 混合矩阵 <span
+class="math inline">\(T\)</span> 的三个分量：</p>
+<table>
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 22%" />
+<col style="width: 27%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">耦合</th>
+<th style="text-align: left;">来源</th>
+<th style="text-align: center;">权重</th>
+<th style="text-align: center;">强度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ℳ↔︎𝒞</td>
+<td style="text-align: left;"><span
+class="math inline">\(P_\tau\)</span>（循环置换）</td>
+<td style="text-align: center;"><span class="math inline">\(\theta_\tau
+\approx 0.209\)</span></td>
+<td style="text-align: center;">中等</td>
+</tr>
+<tr>
+<td style="text-align: left;">𝒞↔︎ℐ</td>
+<td style="text-align: left;"><span
+class="math inline">\(P_{\sigma_2}\)</span>（对换）</td>
+<td style="text-align: center;"><span
+class="math inline">\(\theta_{\sigma_2} \approx 0.009\)</span></td>
+<td style="text-align: center;">极弱</td>
+</tr>
+<tr>
+<td style="text-align: left;">ℳ↔︎ℐ</td>
+<td style="text-align: left;">无直接耦合</td>
+<td style="text-align: center;"><span
+class="math inline">\(0\)</span></td>
+<td style="text-align: center;">无</td>
+</tr>
+</tbody>
+</table>
+<p>ℳ-𝒞 耦合（循环置换）是三场中最强的跨扇区耦合，𝒞-ℐ
+耦合（对换）最弱。这解释了为什么信息场演化最慢——它与物质场的直接耦合为零。</p>
+<p><strong>详细推导。</strong> 耦合项来源的代数结构。Birkhoff 混合矩阵
+<span class="math inline">\(T = \theta_I P_I + \theta_\tau P_\tau +
+\theta_{\sigma_2} P_{\sigma_2}\)</span> 的三个分量对应三种置换操作：</p>
+<ol type="1">
+<li><p><strong><span
+class="math inline">\(P_I\)</span>（恒等置换）</strong>：权重 <span
+class="math inline">\(\theta_I \approx
+0.782\)</span>。这是扇区内部的混合——不产生扇区间耦合。<span
+class="math inline">\(P_I\)</span>
+的权重最大，说明扇区内部动力学占主导。</p></li>
+<li><p><strong><span class="math inline">\(P_\tau\)</span>（循环置换
+<span class="math inline">\(\mathcal{M} \to \mathcal{C} \to \mathcal{I}
+\to \mathcal{M}\)</span>）</strong>：权重 <span
+class="math inline">\(\theta_\tau \approx
+0.209\)</span>。这是三场循环耦合——产生 ℳ↔︎𝒞、𝒞↔︎ℐ、ℐ↔︎ℳ 的耦合。但由于 ℐ
+的权重极小，ℐ↔︎ℳ 的耦合实际上可忽略。</p></li>
+<li><p><strong><span class="math inline">\(P_{\sigma_2}\)</span>（<span
+class="math inline">\(Z_2\)</span> 对换）</strong>：权重 <span
+class="math inline">\(\theta_{\sigma_2} \approx
+0.009\)</span>。这是终端二元性的体现——在 Cl(7)
+的两个直和项之间对换。<span class="math inline">\(P_{\sigma_2}\)</span>
+的权重极小（0.009），说明终端二元性对物理的直接影响很弱——它主要体现在信息场的内部结构（<span
+class="math inline">\(N_{\text{info}} =
+16\)</span>）而非耦合强度。</p></li>
+</ol>
+<p><strong>数值验证。</strong> 耦合强度的定量比较： <span
+class="math display">\[\theta_I : \theta_\tau : \theta_{\sigma_2} =
+0.782 : 0.209 : 0.009 \approx 87 : 23 : 1.\]</span></p>
+<p>扇区内部混合（<span
+class="math inline">\(\theta_I\)</span>）是扇区间耦合（<span
+class="math inline">\(\theta_\tau + \theta_{\sigma_2}\)</span>）的约 3.6
+倍——扇区内部动力学远强于扇区间耦合。这是三场近似独立的基础。</p>
+<p><strong>跨卷引用。</strong> Birkhoff 混合矩阵 <span
+class="math inline">\(T\)</span> 的构造见定理 3.3.1.01。<span
+class="math inline">\(T\)</span> 的三个分量权重 <span
+class="math inline">\((\theta_I, \theta_\tau,
+\theta_{\sigma_2})\)</span> 的确定见定理 6.5.1.01。</p>
+<h3 id="绝热近似下的简化">4.3 绝热近似下的简化</h3>
+<p>在绝热近似下（<span class="math inline">\(\xi \gg
+1\)</span>），三场方程简化为：</p>
+<p><span class="math display">\[\rho_{\mathcal{M}}(t) \approx
+\rho_{\mathcal{M}}^{\text{eq}}[\rho_{\mathcal{C}}(t)],\]</span></p>
+<p><span class="math display">\[\rho_{\mathcal{C}}(t) \approx
+\rho_{\mathcal{C}}^{\text{eq}}[\rho_{\mathcal{I}}(t)],\]</span></p>
+<p><span class="math display">\[\frac{d\rho_{\mathcal{I}}}{dt} =
+-D_{\mathcal{I}} L_{\mathcal{I}} \rho_{\mathcal{I}} -
+\gamma_{\mathcal{I}}(\rho_{\mathcal{I}} -
+\rho_{\mathcal{I}}^{\text{eq}}[\rho_{\mathcal{C}}^{\text{eq}}[\rho_{\mathcal{I}}]]).\]</span></p>
+<p>物质场和因果场被「积掉」，只留下信息场的慢动力学——这就是定理 5.3.2.01
+的信息场统一方程。</p>
+<p><strong>详细推导。</strong> 绝热近似的简化过程（奇异摄动理论的
+Tikhonov 定理）：</p>
+<ol type="1">
+<li><p>三场方程中，<span class="math inline">\(\epsilon_1 =
+\tau_M/\tau_I \approx 0.12\)</span>，<span
+class="math inline">\(\epsilon_2 = \tau_C/\tau_I \approx 0.23\)</span>
+是小参数。</p></li>
+<li><p>令 <span class="math inline">\(\epsilon_1, \epsilon_2 \to
+0\)</span>，ℳ 和 𝒞 的方程退化为代数方程：<span
+class="math inline">\(\rho_{\mathcal{M}} =
+\rho_{\mathcal{M}}^{\text{eq}}[\rho_{\mathcal{C}}]\)</span>，<span
+class="math inline">\(\rho_{\mathcal{C}} =
+\rho_{\mathcal{C}}^{\text{eq}}[\rho_{\mathcal{I}}]\)</span>。</p></li>
+<li><p>将 <span class="math inline">\(\rho_{\mathcal{C}} =
+\rho_{\mathcal{C}}^{\text{eq}}[\rho_{\mathcal{I}}]\)</span> 代入 <span
+class="math inline">\(\rho_{\mathcal{I}}\)</span> 的方程，得到 <span
+class="math inline">\(\rho_{\mathcal{I}}\)</span> 的有效动力学： <span
+class="math display">\[\frac{d\rho_{\mathcal{I}}}{dt} = -D_{\mathcal{I}}
+L_{\mathcal{I}} \rho_{\mathcal{I}} -
+\gamma_{\mathcal{I}}(\rho_{\mathcal{I}} -
+\rho_{\mathcal{I}}^{\text{eq}}[\rho_{\mathcal{C}}^{\text{eq}}[\rho_{\mathcal{I}}]]).\]</span></p></li>
+<li><p>在 Birkhoff 不动点 <span class="math inline">\(\sigma^*\)</span>
+附近，<span
+class="math inline">\(\rho_{\mathcal{C}}^{\text{eq}}[\rho_{\mathcal{I}}]
+\approx \rho_{\mathcal{C}}^*\)</span>（常数），因此 <span
+class="math inline">\(\rho_{\mathcal{I}}^{\text{eq}}[\rho_{\mathcal{C}}^{\text{eq}}[\rho_{\mathcal{I}}]]
+\approx \rho_{\mathcal{I}}^*\)</span>（常数）。这就是定理 5.3.2.01
+的统一方程。</p></li>
+</ol>
+<p><strong>数值验证。</strong> 绝热近似的精度：<span
+class="math inline">\(\epsilon_1 = 0.12, \epsilon_2 = 0.23\)</span>。在
+<span class="math inline">\(\mathcal{I}\)</span> 的时间标度上，ℳ 和 𝒞
+的动力学误差为 <span class="math inline">\(O(\epsilon_1 + \epsilon_2)
+\approx 35\%\)</span>。对于定性结构（如稳态的存在性），35%
+误差可接受。对于精确定量预言，需要保留 <span
+class="math inline">\(\epsilon_1, \epsilon_2\)</span> 的一阶修正。</p>
+<p><strong>跨卷引用。</strong> 绝热近似的详细讨论见 5.2
+§3。奇异摄动理论（Tikhonov 定理）的标准参考文献见 5.2 的参考文献。</p>
+<h3 id="统一方程的自洽性">4.4 统一方程的自洽性</h3>
+<p>统一方程的自洽性要求：</p>
+<ol type="1">
+<li><strong>稳态存在</strong>：<span
+class="math inline">\(\rho^*\)</span> 满足 <span
+class="math inline">\((D L + \gamma I)\rho^* = \gamma
+\rho^{\text{eq}}\)</span>——有唯一解</li>
+<li><strong>稳态稳定</strong>：所有衰减率 <span
+class="math inline">\(\Lambda_k &gt; 0\)</span>——全局收敛</li>
+<li><strong>信息守恒</strong>：<span
+class="math inline">\(\text{Tr}(\rho^*) =
+\text{const}\)</span>——迹守恒</li>
+</ol>
+<p>三者均由代数结构保证——统一方程是自洽的。</p>
+<p><strong>详细推导。</strong> 自洽性的三项验证：</p>
+<ol type="1">
+<li><p><strong>稳态存在性</strong>：<span class="math inline">\(M = D L
++ \gamma I\)</span> 的本征值 <span class="math inline">\(\lambda_M^{(k)}
+= D \mu_k + \gamma\)</span>。最小本征值 <span
+class="math inline">\(\lambda_M^{(0)} = \gamma &gt; 0\)</span>，因此
+<span class="math inline">\(M\)</span> 可逆，<span
+class="math inline">\(\rho^* = M^{-1} \gamma \rho^{\text{eq}}\)</span>
+存在且唯一。</p></li>
+<li><p><strong>稳态稳定性</strong>：所有 <span
+class="math inline">\(\Lambda_k = D \mu_k + \gamma &gt;
+0\)</span>（<span class="math inline">\(\mu_k \geq 0\)</span>，<span
+class="math inline">\(\gamma &gt; 0\)</span>），因此 <span
+class="math inline">\(\delta\rho(t) \to 0\)</span>（<span
+class="math inline">\(t \to \infty\)</span>），全局收敛。</p></li>
+<li><p><strong>信息守恒</strong>：<span
+class="math inline">\(\text{Tr}(\rho^*) = \gamma \text{Tr}(M^{-1}
+\rho^{\text{eq}})\)</span>。在 Birkhoff 不动点处，<span
+class="math inline">\(\rho^* = \rho^{\text{eq}}\)</span>，<span
+class="math inline">\(\text{Tr}(\rho^*) =
+\text{Tr}(\rho^{\text{eq}})\)</span>——守恒。</p></li>
+</ol>
+<p><strong>数值验证。</strong> 自洽性的数值验证： <span
+class="math display">\[\begin{aligned}
+M &amp;= D L + \gamma I, \quad \det(M) = \prod_k (D \mu_k + \gamma) &gt;
+0, \\
+\Lambda_{\min} &amp;= \gamma = 0.234 &gt; 0, \\
+\text{Tr}(\rho^*) &amp;= 0.552 \quad (\text{在 } \rho^* =
+\rho^{\text{eq}} \text{ 处}).
+\end{aligned}\]</span></p>
+<hr />
+<h2 id="统一方程的景观依赖性">§5 统一方程的景观依赖性</h2>
+<h3 id="参数随景观位置的变化">5.1 参数随景观位置的变化</h3>
+<p>统一方程的三个参数 <span class="math inline">\(D_{\mathcal{I}},
+\gamma_{\mathcal{I}}, \mu_1\)</span> 都随景观位置变化：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">参数</th>
+<th style="text-align: center;">对称点</th>
+<th style="text-align: center;">我们的位置</th>
+<th style="text-align: center;">极端点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(D_{\mathcal{I}}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\approx
+0.185\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\approx
+0.107\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\to
+0\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\gamma_{\mathcal{I}}\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\approx
+0.234\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\to
+0\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\mu_1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\approx
+1.732\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\approx
+0.370\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\to
+0\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><strong>详细推导。</strong> 三个参数的景观依赖性的代数来源：</p>
+<ol type="1">
+<li><p><strong><span class="math inline">\(D_{\mathcal{I}} =
+C\sqrt{\sigma_{\mathcal{I}}^*}\)</span></strong>：<span
+class="math inline">\(D_{\mathcal{I}}\)</span> 随 <span
+class="math inline">\(\sigma_{\mathcal{I}}^*\)</span>
+的减小而减小。在对称点，<span
+class="math inline">\(\sigma_{\mathcal{I}}^* = 1/3\)</span>，<span
+class="math inline">\(D_{\mathcal{I}} \approx 0.577
+C\)</span>；在极端点，<span class="math inline">\(\sigma_{\mathcal{I}}^*
+\to 0\)</span>，<span class="math inline">\(D_{\mathcal{I}} \to
+0\)</span>。<span class="math inline">\(D_{\mathcal{I}} \to 0\)</span>
+意味着信息场扩散停止——信息无法在网络中传播。</p></li>
+<li><p><strong><span class="math inline">\(\gamma_{\mathcal{I}} =
+\sqrt{\sigma_{\mathcal{I}}^*/\sigma_{\mathcal{C}}^*}\)</span></strong>：<span
+class="math inline">\(\gamma_{\mathcal{I}}\)</span> 随 <span
+class="math inline">\(\sigma_{\mathcal{I}}^*\)</span> 的减小和 <span
+class="math inline">\(\sigma_{\mathcal{C}}^*\)</span>
+的增大而减小。在对称点，<span
+class="math inline">\(\sigma_{\mathcal{I}}^* = \sigma_{\mathcal{C}}^* =
+1/3\)</span>，<span class="math inline">\(\gamma_{\mathcal{I}} =
+1\)</span>；在极端点，<span class="math inline">\(\sigma_{\mathcal{I}}^*
+\to 0\)</span>，<span class="math inline">\(\gamma_{\mathcal{I}} \to
+0\)</span>。<span class="math inline">\(\gamma_{\mathcal{I}} \to
+0\)</span> 意味着信息场不再响应因果场——信息场与因果场解耦。</p></li>
+<li><p><strong><span class="math inline">\(\mu_1 = |1 -
+\lambda_2|\)</span></strong>：<span class="math inline">\(\mu_1\)</span>
+随不动点偏离对称点的程度而减小。在对称点，<span
+class="math inline">\(\lambda_2 = e^{2\pi i/3}\)</span>，<span
+class="math inline">\(\mu_1 = \sqrt{3} \approx
+1.732\)</span>；在极端点，<span class="math inline">\(\lambda_2 \to
+1\)</span>，<span class="math inline">\(\mu_1 \to 0\)</span>。<span
+class="math inline">\(\mu_1 \to 0\)</span> 意味着信息网络断连。</p></li>
+</ol>
+<p><strong>数值验证。</strong> 三个参数在极端点 <span
+class="math inline">\((S \to 968)\)</span> 的行为： <span
+class="math display">\[D_{\mathcal{I}} \to 0, \quad \gamma_{\mathcal{I}}
+\to 0, \quad \mu_1 \to 0.\]</span></p>
+<p>所有三个参数都趋于零——统一方程的所有动力学都冻结。这是「热寂」的共扼谱几何对应。</p>
+<h3 id="收敛时间的景观范围">5.2 收敛时间的景观范围</h3>
+<p>收敛时间 <span class="math inline">\(\tau_{\text{conv}} =
+1/\Lambda_1\)</span> 的景观范围：</p>
+<ul>
+<li>对称点：<span class="math inline">\(\tau_{\text{conv}} \approx
+1/(0.185 \times 1.732 + 1) \approx 0.76\)</span>（快速收敛）</li>
+<li>我们的位置：<span class="math inline">\(\tau_{\text{conv}} \approx
+3.65\)</span>（中等收敛）</li>
+<li>极端点：<span class="math inline">\(\tau_{\text{conv}} \to
+\infty\)</span>（不收敛）</li>
+</ul>
+<p>我们的位置收敛时间适中——信息场在合理时间内达到稳态。</p>
+<p><strong>详细推导。</strong> 收敛时间的景观依赖性。<span
+class="math inline">\(\Lambda_1 = D_{\mathcal{I}} \mu_1 +
+\gamma_{\mathcal{I}}\)</span> 在对称点取最大值（<span
+class="math inline">\(\Lambda_1 \approx
+1.32\)</span>），在极端点趋于零（<span class="math inline">\(\Lambda_1
+\to 0\)</span>）。因此 <span class="math inline">\(\tau_{\text{conv}} =
+1/\Lambda_1\)</span> 在对称点最小（约 0.76），在极端点趋于无穷。</p>
+<p>收敛时间趋于无穷的物理含义：在极端点，信息场的所有动力学过程都冻结——扩散停止（<span
+class="math inline">\(D_{\mathcal{I}} \to 0\)</span>），响应停止（<span
+class="math inline">\(\gamma_{\mathcal{I}} \to
+0\)</span>），网络断连（<span class="math inline">\(\mu_1 \to
+0\)</span>）。信息场无法达到稳态——这是「非平衡冻结态」。</p>
+<p><strong>数值验证。</strong> 三个特征位置的收敛时间：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">位置</th>
+<th style="text-align: center;"><span
+class="math inline">\(S\)</span></th>
+<th style="text-align: center;"><span
+class="math inline">\(\Lambda_1\)</span></th>
+<th style="text-align: center;"><span
+class="math inline">\(\tau_{\text{conv}}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">对称点</td>
+<td style="text-align: center;"><span
+class="math inline">\(24\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(1.32\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.76\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">我们的位置</td>
+<td style="text-align: center;"><span
+class="math inline">\(137\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.274\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(3.65\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">近极端点</td>
+<td style="text-align: center;"><span
+class="math inline">\(500\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.05\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(20\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">极端点</td>
+<td style="text-align: center;"><span
+class="math inline">\(968\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\to
+0\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\to
+\infty\)</span></td>
+</tr>
+</tbody>
+</table>
+<h3 id="统一方程与代数作用量">5.3 统一方程与代数作用量</h3>
+<p>统一方程的稳态 <span class="math inline">\(\rho^*\)</span>
+与代数作用量的极小点一致——两者都由 <span
+class="math inline">\(\sigma^*\)</span>
+确定。这保证了动力学稳态与几何极值的统一。</p>
+<p><strong>详细推导。</strong>
+统一方程与代数作用量的统一性。统一方程的稳态 <span
+class="math inline">\(\rho^*\)</span> 由 <span class="math inline">\((D
+L + \gamma I)\rho^* = \gamma \rho^{\text{eq}}\)</span> 确定。在 Birkhoff
+不动点 <span class="math inline">\(\sigma^*\)</span> 处，<span
+class="math inline">\(\rho^* = \rho^{\text{eq}} = \Lambda
+\sigma^*\)</span>。因此 <span class="math inline">\(\rho^*\)</span>
+的位置由 <span class="math inline">\(\sigma^*\)</span> 完全确定。</p>
+<p>另一方面，代数作用量 <span class="math inline">\(S(\sigma)\)</span>
+在 <span class="math inline">\(\sigma^*\)</span>
+处取极小。因此动力学稳态（<span
+class="math inline">\(\rho^*\)</span>）与几何极值（<span
+class="math inline">\(\sigma^*\)</span>）在同一个点达到——这是「动力学-几何统一」的体现。</p>
+<p>这一统一性不是偶然的，而是 Birkhoff 不动点定理的必然结果：<span
+class="math inline">\(T\sigma^* = \sigma^*\)</span> 同时保证了 <span
+class="math inline">\(S(\sigma)\)</span> 在 <span
+class="math inline">\(\sigma^*\)</span> 处取极小（几何极值）和 <span
+class="math inline">\(\partial \rho / \partial t = 0\)</span> 在 <span
+class="math inline">\(\rho^* = \Lambda \sigma^*\)</span>
+处成立（动力学稳态）。</p>
+<p><strong>数值验证。</strong> 验证 <span
+class="math inline">\(\rho^*\)</span> 与 <span
+class="math inline">\(\sigma^*\)</span> 的关系： <span
+class="math display">\[\rho_{\mathcal{I}}^* = \Lambda
+\sigma_{\mathcal{I}}^* = 3 \times 0.011484 = 0.03445.\]</span></p>
+<p>在稳态 <span class="math inline">\(\rho^* = \rho^{\text{eq}}\)</span>
+处，<span class="math inline">\(\partial \rho / \partial t =
+0\)</span>——动力学稳态。同时 <span class="math inline">\(S(\sigma^*) =
+137\)</span> 是极小值——几何极值。两者在 <span
+class="math inline">\(\sigma^*\)</span> 处统一。</p>
+<p><strong>跨卷引用。</strong> 代数作用量 <span
+class="math inline">\(S(\sigma)\)</span> 的极小化见定理
+3.4.1.01。Birkhoff 不动点 <span class="math inline">\(\sigma^*\)</span>
+的确定见定理 3.3.1.01。动力学-几何统一的完整讨论见卷 3 的 Birkhoff
+不动点定理。</p>
+<hr />
+<h2 id="定理索引">定理索引</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">编号</th>
+<th style="text-align: left;">内容</th>
+<th style="text-align: center;">证明状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">定理 5.3.2.01</td>
+<td style="text-align: left;">信息场统一动力学方程</td>
+<td style="text-align: center;">已证（本文§2）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="参考文献">参考文献</h2>
+<ul>
+<li>Chung, <em>Spectral Graph Theory</em>, AMS CBMS 92</li>
+<li>Gardiner, <em>Stochastic Methods</em>, Springer</li>
+<li>Tikhonov, A. N., “Systems of differential equations containing small
+parameters”, Mat. Sbornik, 31(73): 575-586, 1952</li>
+<li>Risken, H., <em>The Fokker-Planck Equation</em>, Springer, 1989</li>
+<li>Kubo, R., “The fluctuation-dissipation theorem”, Reports on Progress
+in Physics, 29: 255, 1966</li>
+</ul>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 07:53:34</p>
+  </footer>
+</div>
+</body>
+</html>

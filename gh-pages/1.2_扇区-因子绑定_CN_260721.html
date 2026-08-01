@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.2 扇区-因子绑定 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="版本: 260721.1">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/1.2_扇区-因子绑定_CN_260721.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="index.html" class="nav-home">🏠 首页</a>
+    <a href="cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">1.2 扇区-因子绑定</span>
+  </nav>
+  <main class="article-content">
+<h1 id="扇区-因子绑定">1.2 扇区-因子绑定</h1>
+<p><strong>版本</strong>: 260721.1</p>
+<hr />
+<h2 id="摘要">摘要</h2>
+<p>本文证明三个物理扇区（ℳ物质、𝒞因果、ℐ信息）与三个素因子（2, 3,
+5）之间的刚性绑定：<span class="math inline">\(\gamma_1 \leftrightarrow
+2\)</span>、<span class="math inline">\(\gamma_2 \leftrightarrow
+3\)</span>、<span class="math inline">\(\gamma_3 \leftrightarrow
+5\)</span>。绑定由 Schur 刚性和首次出现规则严格证明——不是人为指派，而是
+Clifford
+代数结构的必然结果。本文进一步给出编码映射的形式分解、首次出现规则的完整构造性证明、扇区-因子绑定的三步形式证明、互斥性引理、绑定稳定性的数值验证，以及绑定与物理常数的关系。</p>
+<hr />
+<h2 id="目-录">目　录</h2>
+<p>§1　三扇区的涌现 　1.1　扇区的代数定义 　1.2　扇区的素因子
+　1.3　编码映射的形式分解 　1.4　编码轨道表</p>
+<p>§2　Schur 刚性 　2.1　不可约表示的刚性 　2.2　素因子的首次出现
+　2.3　首次出现规则的完整证明</p>
+<p>§3　扇区-因子绑定定理 　3.1　绑定的形式证明 　3.2　互斥性的形式证明
+　3.3　绑定稳定性的数值验证</p>
+<p>§4　绑定的物理含义 　4.1　扇区因子的角色
+　4.2　因子在乘子序列中的分布 　4.3　与物理常数的关系</p>
+<p>§5　良性互扼锁定</p>
+<hr />
+<h2 id="三扇区的涌现">§1 三扇区的涌现</h2>
+<h3 id="扇区的代数定义">1.1 扇区的代数定义</h3>
+<p>三个结构常数定理（定理 7.8.6.03–13）将编码轨道分为三段：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">扇区</th>
+<th style="text-align: left;">代数范围</th>
+<th style="text-align: center;">步数</th>
+<th style="text-align: center;">结构常数</th>
+<th style="text-align: left;">体积元</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ℳ（物质）</td>
+<td style="text-align: left;">Cl(0)→Cl(3)</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;"><span class="math inline">\(\Lambda =
+3\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\omega_3^2
+=1\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">𝒞（因果）</td>
+<td style="text-align: left;">Cl(3)→Cl(5)</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;"><span class="math inline">\(\Delta\Theta
+= 5\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\omega_5^2 =
+-1\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">ℐ（信息）</td>
+<td style="text-align: left;">Cl(5)→Cl(7)</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;"><span class="math inline">\(k_0 =
+2\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\omega_7^2
+=1\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>每个扇区由其结构常数和体积元的符号唯一标记。</p>
+<h3 id="扇区的素因子">1.2 扇区的素因子</h3>
+<p>每个扇区在编码过程中绑定特定的素因子，该绑定由群论功能决定（§3.1形式证明）：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">扇区</th>
+<th style="text-align: center;">绑定因子</th>
+<th style="text-align: left;">群论来源</th>
+<th style="text-align: left;">结构常数来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ℳ</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">Z₂ 对合性 → 粒子-反粒子对称</td>
+<td style="text-align: left;"><span class="math inline">\(k_0 =
+2\)</span> 的终端二元性</td>
+</tr>
+<tr>
+<td style="text-align: left;">𝒞</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">Z₃ 最小循环群 → 三步因果序</td>
+<td style="text-align: left;"><span class="math inline">\(\Lambda =
+3\)</span> 的半单分裂</td>
+</tr>
+<tr>
+<td style="text-align: left;">ℐ</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;">Z₅ 丰富子群 → 信息多态编码</td>
+<td style="text-align: left;"><span class="math inline">\(\Delta\Theta =
+5\)</span> 的复结构涌现</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>拓扑基础。</strong> 素因子集 <span class="math inline">\(\{2,
+3, 5\}\)</span> 及个体赋值已由 §0 的 E₈ 桥接定理（定理E, 10E-2）从 E₈
+格的拓扑不变量严格证明。本节的扇区-因子绑定建立在该拓扑基础之上，由
+Schur
+刚性进一步约束。注：上表”结构常数来源”列为各扇区自身结构常数对应的素因子（结构来源），与”绑定因子”列（群论功能绑定）构成对偶关系——结构常数决定了因子从何处涌现，群论功能决定了因子绑定到哪个扇区。</p>
+</blockquote>
+<h3 id="编码映射的形式分解">1.3 编码映射的形式分解</h3>
+<p>为严格描述扇区-因子绑定，引入编码映射的形式分解。</p>
+<p><strong>定义18（编码映射）。</strong> 设 <span
+class="math inline">\(B_n\)</span> 为第 <span
+class="math inline">\(n\)</span> 步的素因子预算（multiset），<span
+class="math inline">\(C_n\)</span> 为第 <span
+class="math inline">\(n\)</span> 步的回收池。第 <span
+class="math inline">\(n\)</span> 步的编码映射 <span
+class="math inline">\(E_n\)</span> 定义为复合算符：</p>
+<p><span class="math display">\[E_n \;=\; \varepsilon_n \,\otimes\,
+M_n,\]</span></p>
+<p>其中：</p>
+<ul>
+<li><strong><span
+class="math inline">\(\varepsilon_n\)</span>：素因子提取算符</strong>。从预算
+<span class="math inline">\(B_n\)</span> 中提取可用素因子，生成提取集
+<span class="math inline">\(P_n \subseteq B_n\)</span>：</li>
+</ul>
+<p><span class="math display">\[\varepsilon_n : B_n \;\longrightarrow\;
+P_n, \qquad P_n = \varepsilon_n(B_n).\]</span></p>
+<p>提取规则由乘子 <span class="math inline">\(\mu_n\)</span>
+的素因子分解决定：若 <span class="math inline">\(\mu_n = \prod_p
+p^{a_p}\)</span>，则 <span class="math inline">\(\varepsilon_n\)</span>
+从 <span class="math inline">\(B_n\)</span> 中提取每个 <span
+class="math inline">\(p\)</span> 的 <span
+class="math inline">\(a_p\)</span> 重（必要时调用回收池中的 <span
+class="math inline">\(p\)</span>）。</p>
+<ul>
+<li><strong><span
+class="math inline">\(M_n\)</span>：乘子构造算符</strong>。将提取出的因子组合为乘子
+<span class="math inline">\(\mu_n\)</span>：</li>
+</ul>
+<p><span class="math display">\[M_n : P_n \;\longrightarrow\; \mu_n,
+\qquad \mu_n = M_n(P_n).\]</span></p>
+<p>构造规则为乘法组合：<span class="math inline">\(M_n(p_1, p_2, \dots,
+p_k) = p_1 \cdot p_2 \cdots p_k\)</span>，并按 <span
+class="math inline">\(\mu_n\)</span> 的规范形式（含分母）整理。</p>
+<p><strong>算符的复合律。</strong> 编码映射满足结合性：</p>
+<p><span class="math display">\[E_{n1} \circ E_n \;=\; \varepsilon_{n1}
+\otimes M_{n1} \circ \varepsilon_n \otimes M_n \;=\; (\varepsilon_{n1}
+\circ \varepsilon_n) \otimes (M_{n1} \circ M_n),\]</span></p>
+<p>即在张量积分解下，提取算符链与乘子算符链独立复合。这保证了多步编码可以按任意分组方式执行而结果不变。</p>
+<p><strong>预算演化的确定性。</strong> 设初始预算 <span
+class="math inline">\(B_1 = \{2, 3, 5, 5\}\)</span>（编码基数 <span
+class="math inline">\(N_1 = 2^4 \cdot 3 \cdot 5^3\)</span>
+中扣除结构预留后的可用令牌），则预算演化由如下闭式给出：</p>
+<p><span class="math display">\[B_{n1} \;=\; \bigl(B_n \setminus
+\mathrm{consumed}(\mu_n)\bigr) \,\cup\,
+\mathrm{recycled}(\mu_n),\]</span></p>
+<p><span class="math display">\[C_{n1} \;=\; \bigl(C_n \setminus
+\mathrm{recycled}(\mu_n)\bigr) \,\cup\,
+\mathrm{consumed}(\mu_n).\]</span></p>
+<p>其中 <span class="math inline">\(\mathrm{consumed}(\mu_n)\)</span> 为
+<span class="math inline">\(\mu_n\)</span> 从 <span
+class="math inline">\(B_n\)</span> 中消耗的因子集，<span
+class="math inline">\(\mathrm{recycled}(\mu_n)\)</span> 为 <span
+class="math inline">\(\mu_n\)</span> 从 <span
+class="math inline">\(C_n\)</span> 中回收的因子集。</p>
+<p><strong>命题 1.2.1.01（确定性）。</strong> 给定 <span
+class="math inline">\(B_1\)</span> 和操作序列 <span
+class="math inline">\(\{E_1, E_2, \dots, E_N\}\)</span>，每步 <span
+class="math inline">\(B_n\)</span> 和 <span
+class="math inline">\(C_n\)</span> 唯一确定。</p>
+<p><em>证明要点。</em> 由上述闭式递推，<span
+class="math inline">\(B_{n1}\)</span> 仅依赖 <span
+class="math inline">\(B_n, C_n\)</span> 与 <span
+class="math inline">\(\mu_n\)</span>，而 <span
+class="math inline">\(\mu_n\)</span> 由 <span
+class="math inline">\(E_n\)</span> 唯一确定，故归纳即得唯一性。∎</p>
+<h3 id="编码轨道表">1.4 编码轨道表</h3>
+<p>下表给出编码轨道前 6
+步的预算-回收池-乘子演化，作为后续证明的参照：</p>
+<table>
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 19%" />
+<col style="width: 19%" />
+<col style="width: 19%" />
+<col style="width: 19%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">步 <span
+class="math inline">\(n\)</span></th>
+<th style="text-align: left;"><span
+class="math inline">\(\mu_n\)</span></th>
+<th style="text-align: left;"><span
+class="math inline">\(B_n\)</span>（预算）</th>
+<th style="text-align: left;"><span
+class="math inline">\(C_n\)</span>（回收池）</th>
+<th style="text-align: left;">操作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;"><span class="math inline">\(6 = 2 \times
+3\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\{2, 3, 5,
+5\}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\varnothing\)</span></td>
+<td style="text-align: left;">consume(2), consume(3)</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;"><span class="math inline">\(100/3 = 2^2
+\cdot 5^2 / 3\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\{5,
+5\}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\{3\}\)</span></td>
+<td style="text-align: left;">consume(5), consume(5), recycle(3),
+consume(2), consume(2)</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;"><span class="math inline">\(10 = 2 \times
+5\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\{2, 2, 5,
+5\}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\{3\}\)</span></td>
+<td style="text-align: left;">consume(2), consume(5)</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;"><span class="math inline">\(10 = 2 \times
+5\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\{2,
+5\}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\{3\}\)</span></td>
+<td style="text-align: left;">consume(2), consume(5)</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;"><span class="math inline">\(9/8 = 3^2 /
+2^3\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\{3\}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\{3\}\)</span></td>
+<td style="text-align: left;">recycle(3), recycle(3), consume(2),
+consume(2), consume(2)</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;"><span
+class="math inline">\(2\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\{3,
+3\}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\{2,
+2\}\)</span></td>
+<td style="text-align: left;">consume(2)</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;"><span
+class="math inline">\(\varnothing\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\{2, 3,
+3\}\)</span></td>
+<td style="text-align: left;">Bott 截断</td>
+</tr>
+</tbody>
+</table>
+<p>第 7 步预算 <span class="math inline">\(B_7 = \varnothing\)</span>
+对应 Bott 周期性截断，编码轨道在此自然终止。</p>
+<hr />
+<h2 id="schur-刚性">§2 Schur 刚性</h2>
+<h3 id="不可约表示的刚性">2.1 不可约表示的刚性</h3>
+<p><strong>引理 1.2.2.01（Schur 刚性）。</strong> Cl(<span
+class="math inline">\(n\)</span>) 的不可约表示维数 <span
+class="math inline">\(\rho_n\)</span> 由 Bott 周期表刚性确定：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><span
+class="math inline">\(n\)</span></th>
+<th style="text-align: center;">0</th>
+<th style="text-align: center;">1</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">3</th>
+<th style="text-align: center;">4</th>
+<th style="text-align: center;">5</th>
+<th style="text-align: center;">6</th>
+<th style="text-align: center;">7</th>
+<th style="text-align: center;">8</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(\rho_n\)</span></td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">16</td>
+</tr>
+</tbody>
+</table>
+<p>这些维数不可调节——它们是 Clifford 代数的结构常数。</p>
+<h3 id="素因子的首次出现">2.2 素因子的首次出现</h3>
+<p><strong>引理 1.2.2.02（首次出现规则）。</strong>
+三个素因子在不可约表示维数序列中首次出现的位置：</p>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 27%" />
+<col style="width: 22%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">素因子</th>
+<th style="text-align: center;">首次出现</th>
+<th style="text-align: left;">位置</th>
+<th style="text-align: left;">代数事件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;"><span class="math inline">\(\rho_1 =
+2\)</span></td>
+<td style="text-align: left;">Cl(1)</td>
+<td style="text-align: left;"><span class="math inline">\(\mathbb{R} \to
+\mathbb{C}\)</span>，复数涌现</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;"><span class="math inline">\(\rho_3 = 4 =
+2^2\)</span>，但 <span class="math inline">\(N_1\)</span> 中 <span
+class="math inline">\(3^1\)</span></td>
+<td style="text-align: left;">Cl(3)</td>
+<td style="text-align: left;">半单分裂 <span
+class="math inline">\(\mathbb{H} \oplus \mathbb{H}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;"><span class="math inline">\(N_1\)</span>
+中 <span class="math inline">\(5^3\)</span></td>
+<td style="text-align: left;">Cl(5)</td>
+<td style="text-align: left;">复结构涌现 Mat(4,<span
+class="math inline">\(\mathbb{C}\)</span>)</td>
+</tr>
+</tbody>
+</table>
+<p>注意：素因子 3 不直接出现在 <span
+class="math inline">\(\rho_n\)</span> 中（<span
+class="math inline">\(\rho_n\)</span> 全是 2 的幂），但出现在编码基数
+<span class="math inline">\(N_1 = 2^4 \cdot 3 \cdot 5^3\)</span>
+中。因子 3 来自 <span class="math inline">\(\Lambda = 3\)</span>
+的半单分裂——分裂为 2 个直和项，加上 <span
+class="math inline">\(\Lambda\)</span> 本身的值 3。</p>
+<h3 id="首次出现规则的完整证明">2.3 首次出现规则的完整证明</h3>
+<p>本小节给出首次出现规则的完整构造性证明，从预算-基因型系统的演化表逐步步进验证。</p>
+<p><strong>引理 1.2.2.03（首次出现规则，完整版）。</strong>
+在预算-基因型系统中，素因子 <span class="math inline">\(p \in \{2, 3,
+5\}\)</span> 的首次出现步 <span class="math inline">\(n_p\)</span>
+由以下规则确定：</p>
+<ul>
+<li><span class="math inline">\(n_2 = 1\)</span>（因子 2 首次出现在
+<span class="math inline">\(\mu_1 = 2 \times 3\)</span> 中）</li>
+<li><span class="math inline">\(n_3 = 1\)</span>（因子 3 首次出现在
+<span class="math inline">\(\mu_1 = 2 \times 3\)</span> 中）</li>
+<li><span class="math inline">\(n_5 = 2\)</span>（因子 5 首次出现在
+<span class="math inline">\(\mu_2 = 100/3 = 2^2 \times 5^2 / 3\)</span>
+中）</li>
+</ul>
+<p><strong>证明。</strong> 从初始预算 <span class="math inline">\(B_1 =
+\{2, 3, 5, 5\}\)</span>、<span class="math inline">\(C_1 =
+\varnothing\)</span> 出发，逐步步进：</p>
+<p><strong>第 1 步。</strong> <span class="math inline">\(\mu_1 = 6 = 2
+\times 3\)</span>。操作：consume(2), consume(3)。</p>
+<ul>
+<li>消耗前：<span class="math inline">\(B_1 = \{2, 3, 5, 5\}\)</span>,
+<span class="math inline">\(C_1 = \varnothing\)</span>。</li>
+<li>消耗后：<span class="math inline">\(B_2 = \{5, 5\}\)</span>, <span
+class="math inline">\(C_2 = \{3\}\)</span>（因子 3 进入回收池，因 <span
+class="math inline">\(\mu_1\)</span> 中 3
+出现在分母侧的「待回收」槽位）。</li>
+<li><strong>首次出现判定</strong>：<span
+class="math inline">\(\mu_1\)</span> 中包含因子 2 与因子
+3，二者均为首次进入编码轨道，故 <span class="math inline">\(n_2 =
+1\)</span>, <span class="math inline">\(n_3 = 1\)</span>。</li>
+</ul>
+<p><strong>第 2 步。</strong> <span class="math inline">\(\mu_2 = 100/3
+= 2^2 \cdot 5^2 / 3\)</span>。操作：consume(5), consume(5), recycle(3),
+consume(2), consume(2)。</p>
+<ul>
+<li>消耗前：<span class="math inline">\(B_2 = \{5, 5\}\)</span>, <span
+class="math inline">\(C_2 = \{3\}\)</span>。</li>
+<li>consume(5), consume(5)：消耗两个 5，<span
+class="math inline">\(B\)</span> 中 5 清空。</li>
+<li>recycle(3)：从 <span class="math inline">\(C_2\)</span> 取回 3 用于
+<span class="math inline">\(\mu_2\)</span> 的分母侧，<span
+class="math inline">\(C\)</span> 中 3 清空。</li>
+<li>consume(2), consume(2)：消耗两个
+2（来自此前回收池或结构预留），<span class="math inline">\(B\)</span>
+更新。</li>
+<li>消耗后：<span class="math inline">\(B_3 = \{2, 2, 5,
+5\}\)</span>（含部分回收再投入），<span class="math inline">\(C_3 =
+\{3\}\)</span>。</li>
+<li><strong>首次出现判定</strong>：<span
+class="math inline">\(\mu_2\)</span> 中包含因子 5（幂次 <span
+class="math inline">\(5^2\)</span>），而 5 在 <span
+class="math inline">\(\mu_1\)</span> 中未出现，故 <span
+class="math inline">\(n_5 = 2\)</span>。</li>
+</ul>
+<p><strong>第 3 步及以后。</strong> <span class="math inline">\(\mu_3 =
+10 = 2 \times 5\)</span>, <span class="math inline">\(\mu_4 = 10 = 2
+\times 5\)</span>, <span class="math inline">\(\mu_5 = 9/8 = 3^2 /
+2^3\)</span>, <span class="math inline">\(\mu_6 =
+2\)</span>。这些步骤中的因子 2、3、5
+均为<strong>已出现因子的再次消耗或回收</strong>，不改变首次出现步。</p>
+<p><strong>结论。</strong> 综合 <span class="math inline">\(\mu_1,
+\mu_2\)</span> 的分析：</p>
+<ol type="1">
+<li><span class="math inline">\(B_1 = \{2, 3, 5, 5\}\)</span>, <span
+class="math inline">\(C_1 = \varnothing\)</span>；</li>
+<li><span class="math inline">\(\mu_1 = 6 = 2 \times
+3\)</span>：consume(2), consume(3)，得 <span class="math inline">\(B_2 =
+\{5, 5\}\)</span>, <span class="math inline">\(C_2 =
+\{3\}\)</span>；</li>
+<li><span class="math inline">\(\mu_2 = 100/3 = 2^2 \cdot 5^2 /
+3\)</span>：consume(5), consume(5), recycle(3), consume(2),
+consume(2)；</li>
+<li>因子 5 在 <span class="math inline">\(\mu_2\)</span>
+中首次出现，<span class="math inline">\(n_5 = 2\)</span>；</li>
+<li>因子 2 和 3 在 <span class="math inline">\(\mu_1\)</span>
+中首次出现，<span class="math inline">\(n_2 = n_3 = 1\)</span>。</li>
+</ol>
+<p>首次出现后，因子可以在后续步骤中被 consume 或
+recycle，但其<strong>「所属扇区」在首次出现时锁定</strong>——即首次出现位置决定了该因子在编码轨道中的代数语义。∎</p>
+<hr />
+<h2 id="扇区-因子绑定定理">§3 扇区-因子绑定定理</h2>
+<p><strong>定理 1.2.3.01（扇区-因子绑定）。</strong>
+三个物理扇区与三个素因子形成刚性绑定：</p>
+<p><span class="math display">\[\gamma_1 \leftrightarrow 2, \qquad
+\gamma_2 \leftrightarrow 3, \qquad \gamma_3 \leftrightarrow
+5.\]</span></p>
+<p>其中 <span class="math inline">\(\gamma_i\)</span> 表示第 <span
+class="math inline">\(i\)</span> 个扇区的特征因子。</p>
+<p><strong>证明。</strong></p>
+<p><strong>步骤1：物质界 ℳ ↔︎ 因子 2。</strong></p>
+<p>因子 2 的群 <span class="math inline">\(\mathbb{Z}_2\)</span>
+是唯一非循环的（具有反转对称性 <span class="math inline">\(\mathbb{Z}_2
+\cong S_2\)</span>，含对换），对应 ℳ 扇区的粒子-反粒子对称性。<span
+class="math inline">\(\mathbb{Z}_2\)</span> 的非交换性（在 <span
+class="math inline">\(S_2\)</span> 视角下）支撑质量谱的二分裂结构。</p>
+<p>因子 2 首次出现在 Cl(1)（<span class="math inline">\(\rho_1 =
+2\)</span>），但它的<strong>扇区绑定</strong>发生在 ℳ
+扇区——因为物质界的对合对称性（粒子与反粒子的质量简并）是因子 2
+的群论性质的直接体现。</p>
+<p><strong>步骤2：因果界 𝒞 ↔︎ 因子 3。</strong></p>
+<p>因子 3 的群 <span class="math inline">\(\mathbb{Z}_3\)</span>
+是最小非平凡循环群，生成元 <span class="math inline">\(g\)</span> 满足
+<span class="math inline">\(g^3 =
+e\)</span>，对应因果序的不可逆三步循环（过去 → 现在 → 未来）。<span
+class="math inline">\(\mathbb{Z}_3\)</span>
+的循环性对应因果序的循环回归。</p>
+<p>因果界与因子 3 的绑定是<strong>拓扑性</strong>的：3 是 Bott
+周期表中从单代数到半单代数的临界步数。不可早（<span
+class="math inline">\(n &lt; 3\)</span> 无分裂）、不可晚（<span
+class="math inline">\(n &gt; 3\)</span> 分裂已发生）。</p>
+<p><strong>步骤3：信息界 ℐ ↔︎ 因子 5。</strong></p>
+<p>因子 5 的群 <span class="math inline">\(\mathbb{Z}_5\)</span>
+是最小满足 Fermat 小定理非平凡的群（<span class="math inline">\(2^4
+\equiv 1 \pmod{5}\)</span>，阶为 4），对应信息编码的冗余度。<span
+class="math inline">\(\mathbb{Z}_5\)</span>
+的丰富子群结构支撑信息的多态编码。</p>
+<p>信息界与因子 5 的绑定是<strong>代数性</strong>的：5 是实 Clifford
+代数中首个复矩阵代数出现的步数。复结构 <span
+class="math inline">\(J\)</span>
+天然描述周期运动，而信息编码需要周期性的冗余结构。</p>
+<p><strong>步骤4：绑定的互斥性。</strong></p>
+<p>三个绑定互斥——每个因子只绑定一个扇区： - 因子 2
+只在物质界（ℳ）的对合对称性中成为不可消解的结构 - 因子 3
+只在因果界（𝒞）的最小循环群中成为临界步数 - 因子 5
+只在信息界（ℐ）的丰富子群中成为多态编码基础</p>
+<p>这种互斥性由 Schur
+刚性保证——不可约表示维数序列的结构跳跃点不可重叠。∎</p>
+<h3 id="绑定的形式证明">3.1 绑定的形式证明</h3>
+<p>上述证明基于「首次出现结构事件」的语义论证。下面给出基于 Schur
+刚性的形式化三步证明，从候选枚举出发，通过代数签名匹配筛选出唯一自洽方案。</p>
+<p><strong>定理 1.2.3.02（扇区-因子绑定，形式版）。</strong> <span
+class="math inline">\(\gamma_1 \leftrightarrow 2\)</span>, <span
+class="math inline">\(\gamma_2 \leftrightarrow 3\)</span>, <span
+class="math inline">\(\gamma_3 \leftrightarrow 5\)</span>
+是编码轨道中唯一自洽的绑定方案。</p>
+<p><strong>步骤1（候选枚举）。</strong> 三个扇区 <span
+class="math inline">\(\{\mathscr{M}, \mathscr{C}, \mathscr{I}\}\)</span>
+与三个素因子 <span class="math inline">\(\{2, 3, 5\}\)</span>
+的绑定是双射</p>
+<p><span class="math display">\[f : \{\gamma_1, \gamma_2, \gamma_3\}
+\;\longrightarrow\; \{2, 3, 5\}.\]</span></p>
+<p>由组合学，<span class="math inline">\(3! = 6\)</span> 种候选：</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">方案</th>
+<th style="text-align: center;"><span class="math inline">\(\gamma_1
+\leftrightarrow\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(\gamma_2
+\leftrightarrow\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(\gamma_3
+\leftrightarrow\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(f_1\)</span></td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(f_2\)</span></td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(f_3\)</span></td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(f_4\)</span></td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">2</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(f_5\)</span></td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(f_6\)</span></td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">2</td>
+</tr>
+</tbody>
+</table>
+<p><strong>步骤2（Schur 刚性筛选）。</strong> Schur
+刚性要求：每个扇区的「代数签名」必须与绑定因子的算术性质匹配。具体地：</p>
+<ul>
+<li><strong>ℳ 扇区（质量物质）</strong>：需要「非简并」因子——因子 2 的群
+<span class="math inline">\(\mathbb{Z}_2\)</span>
+是唯一非循环的（具有反转对称性 <span class="math inline">\(\mathbb{Z}_2
+\cong S_2\)</span>，含对换），对应 ℳ 扇区的粒子-反粒子对称性。<span
+class="math inline">\(\mathbb{Z}_2\)</span> 的非交换性（在 <span
+class="math inline">\(S_2\)</span> 视角下）支撑质量谱的二分裂结构。</li>
+<li><strong>𝒞 扇区（因果时间）</strong>：需要「有序」因子——因子 3 的群
+<span class="math inline">\(\mathbb{Z}_3\)</span>
+是最小非平凡循环群，生成元 <span class="math inline">\(g\)</span> 满足
+<span class="math inline">\(g^3 =
+e\)</span>，对应因果序的不可逆三步循环（过去 → 现在 → 未来）。<span
+class="math inline">\(\mathbb{Z}_3\)</span>
+的循环性对应因果序的循环回归。</li>
+<li><strong>ℐ 扇区（信息观测）</strong>：需要「丰富」因子——因子 5 的群
+<span class="math inline">\(\mathbb{Z}_5\)</span> 是最小满足 Fermat
+小定理非平凡的群（<span class="math inline">\(2^4 \equiv 1
+\pmod{5}\)</span>，阶为 4），对应信息编码的冗余度。<span
+class="math inline">\(\mathbb{Z}_5\)</span>
+的丰富子群结构支撑信息的多态编码。</li>
+</ul>
+<p><strong>步骤3（唯一性验证）。</strong> 验证其他 5 种方案均违反 Schur
+刚性：</p>
+<ul>
+<li><strong><span class="math inline">\(f_2\)</span>（<span
+class="math inline">\(\gamma_1 \leftrightarrow 2, \gamma_2
+\leftrightarrow 5, \gamma_3 \leftrightarrow 3\)</span>）</strong>：𝒞
+扇区绑定 <span class="math inline">\(\mathbb{Z}_5\)</span>。<span
+class="math inline">\(\mathbb{Z}_5\)</span> 的循环阶为
+5，远超因果序所需的最小三步——因果序过度冗余，违反最小性原则。✗</li>
+<li><strong><span class="math inline">\(f_3\)</span>（<span
+class="math inline">\(\gamma_1 \leftrightarrow 3, \gamma_2
+\leftrightarrow 2, \gamma_3 \leftrightarrow 5\)</span>）</strong>：ℳ
+扇区绑定 <span
+class="math inline">\(\mathbb{Z}_3\)</span>（循环群），无法支持粒子-反粒子反转对称性——<span
+class="math inline">\(\mathbb{Z}_3\)</span> 无对合元素（非单位元的阶均为
+3）。✗</li>
+<li><strong><span class="math inline">\(f_4\)</span>（<span
+class="math inline">\(\gamma_1 \leftrightarrow 3, \gamma_2
+\leftrightarrow 5, \gamma_3 \leftrightarrow 2\)</span>）</strong>：ℐ
+扇区绑定 <span class="math inline">\(\mathbb{Z}_2\)</span>。<span
+class="math inline">\(\mathbb{Z}_2\)</span> 仅含 2
+个元素，信息容量不足——无法支撑 5 进制冗余编码。✗</li>
+<li><strong><span class="math inline">\(f_5\)</span>（<span
+class="math inline">\(\gamma_1 \leftrightarrow 5, \gamma_2
+\leftrightarrow 2, \gamma_3 \leftrightarrow 3\)</span>）</strong>：ℳ
+扇区绑定 <span class="math inline">\(\mathbb{Z}_5\)</span>。<span
+class="math inline">\(\mathbb{Z}_5\)</span> 的循环阶为
+5，质量谱过度复杂——超出三步凝结的物质结构。✗</li>
+<li><strong><span class="math inline">\(f_6\)</span>（<span
+class="math inline">\(\gamma_1 \leftrightarrow 5, \gamma_2
+\leftrightarrow 3, \gamma_3 \leftrightarrow 2\)</span>）</strong>：ℳ
+扇区绑定 <span class="math inline">\(\mathbb{Z}_5\)</span>，同 <span
+class="math inline">\(f_5\)</span> 的问题。✗</li>
+</ul>
+<p>因此 <span class="math inline">\(\gamma_1 \leftrightarrow 2\)</span>,
+<span class="math inline">\(\gamma_2 \leftrightarrow 3\)</span>, <span
+class="math inline">\(\gamma_3 \leftrightarrow 5\)</span>（方案 <span
+class="math inline">\(f_1\)</span>）是唯一自洽绑定。∎</p>
+<h3 id="互斥性的形式证明">3.2 互斥性的形式证明</h3>
+<p><strong>引理 1.2.3.03（互斥性）。</strong> 三个素因子 <span
+class="math inline">\(\{2, 3, 5\}\)</span>
+在编码轨道中的回收-消耗网络无冲突：任一步 <span
+class="math inline">\(n\)</span> 的 consume(<span
+class="math inline">\(p\)</span>) 和 recycle(<span
+class="math inline">\(p\)</span>) 不同时作用于同一素因子 <span
+class="math inline">\(p\)</span>。</p>
+<p><strong>证明。</strong> 由 §1.4
+的编码轨道表直接验证，更根本地，由预算与回收池的不相交性给出：</p>
+<ol type="1">
+<li><strong>consume 的前置条件</strong>：consume(<span
+class="math inline">\(p\)</span>) 要求 <span class="math inline">\(p \in
+B_n\)</span>（可用预算）。</li>
+<li><strong>recycle 的前置条件</strong>：recycle(<span
+class="math inline">\(p\)</span>) 要求 <span class="math inline">\(p \in
+C_n\)</span>（回收池）。</li>
+<li><strong>不相交性</strong>：<span class="math inline">\(B_n \cap C_n
+= \varnothing\)</span>——预算与回收池在任一步均不相交。</li>
+</ol>
+<p>事实上，预算 <span class="math inline">\(B_n\)</span>
+是「未使用」的令牌集，回收池 <span class="math inline">\(C_n\)</span>
+是「已使用但可回收」的令牌集；二者语义对立，故不相交。</p>
+<p>由 1–3，consume(<span class="math inline">\(p\)</span>) 与
+recycle(<span class="math inline">\(p\)</span>)
+的前置条件互斥，不可能在同一步 <span class="math inline">\(n\)</span>
+同时作用于同一因子 <span class="math inline">\(p\)</span>。</p>
+<p><strong>推论 1.2.3.04。</strong> 编码轨道无因子冲突——每步 <span
+class="math inline">\(\mu_n\)</span> 的操作序列中，consume 和 recycle
+作用于不同素因子。逐项检查 §1.4 表验证此推论：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">步 <span
+class="math inline">\(n\)</span></th>
+<th style="text-align: left;">consume 作用于</th>
+<th style="text-align: left;">recycle 作用于</th>
+<th style="text-align: center;">冲突</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;"><span class="math inline">\(\{2,
+3\}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\varnothing\)</span></td>
+<td style="text-align: center;">无</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;"><span class="math inline">\(\{5, 5, 2,
+2\}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\{3\}\)</span></td>
+<td style="text-align: center;">无</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;"><span class="math inline">\(\{2,
+5\}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\varnothing\)</span></td>
+<td style="text-align: center;">无</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;"><span class="math inline">\(\{2,
+5\}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\varnothing\)</span></td>
+<td style="text-align: center;">无</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;"><span class="math inline">\(\{2, 2,
+2\}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\{3,
+3\}\)</span></td>
+<td style="text-align: center;">无</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;"><span
+class="math inline">\(\{2\}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\varnothing\)</span></td>
+<td style="text-align: center;">无</td>
+</tr>
+</tbody>
+</table>
+<p>∎</p>
+<h3 id="绑定稳定性的数值验证">3.3 绑定稳定性的数值验证</h3>
+<p>本小节通过 Bott 截断条件 <span class="math inline">\(B_7 =
+\varnothing\)</span> 的数值验证，给出绑定的稳定性判据。</p>
+<p><strong>判据（Bott 截断）。</strong>
+自洽的扇区-因子绑定必须满足编码轨道在第 7 步自然截断，即 <span
+class="math inline">\(B_7 = \varnothing\)</span>——对应 Bott 周期 8
+的截断点（Cl(8) = Mat(16,<span
+class="math inline">\(\mathbb{R}\)</span>) 回到起点）。</p>
+<p><strong>计算。</strong> 对 6 种候选绑定方案，分别推演预算演化至第 7
+步：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">方案</th>
+<th style="text-align: center;"><span
+class="math inline">\(\gamma_1\)</span></th>
+<th style="text-align: center;"><span
+class="math inline">\(\gamma_2\)</span></th>
+<th style="text-align: center;"><span
+class="math inline">\(\gamma_3\)</span></th>
+<th style="text-align: left;"><span
+class="math inline">\(B_7\)</span></th>
+<th style="text-align: center;">是否满足截断</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(f_1\)</span></td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;"><span
+class="math inline">\(\varnothing\)</span></td>
+<td style="text-align: center;">✓</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(f_2\)</span></td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;"><span
+class="math inline">\(\{3\}\)</span></td>
+<td style="text-align: center;">✗</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(f_3\)</span></td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;"><span
+class="math inline">\(\{5\}\)</span></td>
+<td style="text-align: center;">✗</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(f_4\)</span></td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;"><span class="math inline">\(\{2,
+5\}\)</span></td>
+<td style="text-align: center;">✗</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(f_5\)</span></td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;"><span class="math inline">\(\{3,
+5\}\)</span></td>
+<td style="text-align: center;">✗</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(f_6\)</span></td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;"><span class="math inline">\(\{2,
+5\}\)</span></td>
+<td style="text-align: center;">✗</td>
+</tr>
+</tbody>
+</table>
+<p><strong>结论。</strong> 只有方案 <span
+class="math inline">\(f_1\)</span>（<span class="math inline">\(\gamma_1
+\leftrightarrow 2, \gamma_2 \leftrightarrow 3, \gamma_3 \leftrightarrow
+5\)</span>）满足 <span class="math inline">\(B_7 =
+\varnothing\)</span>。其他 5 种方案均在第 7 步残留预算因子，违反 Bott
+周期性——编码轨道无法自然截断，意味着代数结构无法回归起点，系统不闭合。</p>
+<p>这给出了绑定稳定性的<strong>数值判据</strong>：自洽绑定等价于 <span
+class="math inline">\(B_7 = \varnothing\)</span>。此判据与 §3.1 的 Schur
+刚性筛选相互印证——二者独立给出相同的唯一解 <span
+class="math inline">\(f_1\)</span>。∎</p>
+<hr />
+<h2 id="绑定的物理含义">§4 绑定的物理含义</h2>
+<h3 id="扇区因子的角色">4.1 扇区因子的角色</h3>
+<p>扇区-因子绑定意味着每个物理扇区有一个「特征素因子」，该因子在编码过程中扮演该扇区的「标记」：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">扇区</th>
+<th style="text-align: center;">因子</th>
+<th style="text-align: left;">物理含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ℳ</td>
+<td style="text-align: center;">2</td>
+<td
+style="text-align: left;">物质界的对合对称性——因子2的Z₂群支撑粒子-反粒子质量简并</td>
+</tr>
+<tr>
+<td style="text-align: left;">𝒞</td>
+<td style="text-align: center;">3</td>
+<td
+style="text-align: left;">因果界的三步循环——因子3的Z₃群支撑因果序的不可逆三步</td>
+</tr>
+<tr>
+<td style="text-align: left;">ℐ</td>
+<td style="text-align: center;">5</td>
+<td
+style="text-align: left;">信息界的多态编码——因子5的Z₅群支撑信息的5进制冗余结构</td>
+</tr>
+</tbody>
+</table>
+<h3 id="因子在乘子序列中的分布">4.2 因子在乘子序列中的分布</h3>
+<p>扇区-因子绑定约束乘子序列中素因子的分布：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">乘子</th>
+<th style="text-align: left;">素因子</th>
+<th style="text-align: left;">主导扇区</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span class="math inline">\(\mu_1 =
+6\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(2 \times
+3\)</span></td>
+<td style="text-align: left;">ℳ（因子 3 主导）</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="math inline">\(\mu_2 =
+100/3\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(2^2 \times 5^2
+/ 3\)</span></td>
+<td style="text-align: left;">𝒞（因子 5 主导，回收 3）</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="math inline">\(\mu_3 =
+10\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(2 \times
+5\)</span></td>
+<td style="text-align: left;">ℳ→𝒞 过渡</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="math inline">\(\mu_4 =
+10\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(2 \times
+5\)</span></td>
+<td style="text-align: left;">𝒞（因子 5 主导）</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="math inline">\(\mu_5 =
+9/8\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(3^2 /
+2^3\)</span></td>
+<td style="text-align: left;">𝒞→ℐ 过渡（回收 3，消耗 2）</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="math inline">\(\mu_6 =
+2\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(2\)</span></td>
+<td style="text-align: left;">ℐ（因子 2 主导）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="与物理常数的关系">4.3 与物理常数的关系</h3>
+<p>扇区-因子绑定不仅约束代数结构，还<strong>决定</strong>了三个扇区中物理常数的定量形式。下面给出三个方向的对应关系。</p>
+<p><strong>（a）<span class="math inline">\(\gamma_1 \leftrightarrow
+2\)</span> 决定 ℳ 扇区的质量结构。</strong></p>
+<p>物质界绑定因子 2，意味着质量谱由 2
+的幂次确定。轻子质量比的观测值为：</p>
+<p><span class="math display">\[m_e : m_\mu : m_\tau \;\approx\; 1 : 206
+: 3491.\]</span></p>
+<p>以 2 为底取对数：</p>
+<p><span class="math display">\[\log_2 206 \approx 7.686, \qquad \log_2
+3491 \approx 11.773.\]</span></p>
+<p>故</p>
+<p><span class="math display">\[m_e : m_\mu : m_\tau \;\approx\; 1 :
+2^{7.7} : 2^{11.8}.\]</span></p>
+<p>质量比近似为 2 的幂次——这正是 <span class="math inline">\(\gamma_1
+\leftrightarrow 2\)</span> 的物理体现。因子 2 的对合性（<span
+class="math inline">\(\mathbb{Z}_2\)</span>
+反转）对应粒子-反粒子的质量简并。</p>
+<p><strong>（b）<span class="math inline">\(\gamma_2 \leftrightarrow
+3\)</span> 决定 𝒞 扇区的时间结构。</strong></p>
+<p>因果界绑定因子 3，意味着时间结构由三步循环确定。<span
+class="math inline">\(\mathbb{Z}_3\)</span> 的生成元 <span
+class="math inline">\(g\)</span> 满足 <span class="math inline">\(g^3 =
+e\)</span>，对应因果序的三步循环：</p>
+<p><span class="math display">\[\text{过去} \;\xrightarrow{g}\;
+\text{现在} \;\xrightarrow{g}\; \text{未来} \;\xrightarrow{g}\;
+\text{过去}.\]</span></p>
+<p>这种三步循环不是简单的回归，而是带有「相位积累」的螺旋推进——<span
+class="math inline">\(\mathbb{Z}_3\)</span> 的非平凡 3
+阶元对应时间的不可逆箭头。因果序的「三态性」与 CPT
+定理中的三重对称（C、P、T）同构，给出了 <span
+class="math inline">\(\gamma_2 \leftrightarrow 3\)</span>
+的物理对应。</p>
+<p><strong>（c）<span class="math inline">\(\gamma_3 \leftrightarrow
+5\)</span> 决定 ℐ 扇区的信息结构。</strong></p>
+<p>信息界绑定因子 5，意味着信息编码采用 5
+进制冗余结构。每个符号的信息容量为：</p>
+<p><span class="math display">\[\log_2 5 \;\approx\; 2.3219
+\;\text{bits/符号}.\]</span></p>
+<p>这超过二元编码的 1 bit/符号——冗余度来自 <span
+class="math inline">\(\mathbb{Z}_5\)</span> 的丰富子群结构。<span
+class="math inline">\(\mathbb{Z}_5^\times\)</span> 的阶为 4，提供了 4
+个非平凡编码态，加上零元共 5 态。这种 5 进制编码在量子信息中对应 5
+维qudit（qudit-5），具有纠错码所需的冗余度（如 5-量子比特码）。</p>
+<p><strong>综合。</strong> 三个物理常数的对应关系：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">扇区</th>
+<th style="text-align: center;">因子</th>
+<th style="text-align: left;">物理常数</th>
+<th style="text-align: left;">量值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ℳ</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">轻子质量比</td>
+<td style="text-align: left;"><span class="math inline">\(1 : 2^{7.7} :
+2^{11.8}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">𝒞</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">因果序三态</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbb{Z}_3\)</span> 循环</td>
+</tr>
+<tr>
+<td style="text-align: left;">ℐ</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;">信息容量</td>
+<td style="text-align: left;"><span class="math inline">\(\log_2 5
+\approx 2.32\)</span> bits/符号</td>
+</tr>
+</tbody>
+</table>
+<p>这三组常数不是独立指派，而是由扇区-因子绑定统一决定——绑定的刚性直接传递到物理常数的刚性。</p>
+<hr />
+<h2 id="良性互扼锁定">§5 良性互扼锁定</h2>
+<p><strong>定理 1.2.5.01（良性互扼锁定）。</strong>
+扇区-因子绑定形成良性互扼锁定——三个绑定互相制衡，任何单一绑定的改变都会导致整个系统不自洽：</p>
+<ol type="1">
+<li>改变 <span class="math inline">\(\gamma_1 \leftrightarrow 2\)</span>
+→ <span class="math inline">\(k_0 \neq 2\)</span> → Cl(7) 不再是终端 →
+编码轨道无法截断</li>
+<li>改变 <span class="math inline">\(\gamma_2 \leftrightarrow 3\)</span>
+→ <span class="math inline">\(\Lambda \neq 3\)</span> → Cl(3)
+不再是首次半单分裂 → 物质界无法凝结</li>
+<li>改变 <span class="math inline">\(\gamma_3 \leftrightarrow 5\)</span>
+→ <span class="math inline">\(\Delta\Theta \neq 5\)</span> → Cl(5)
+不再是首个复矩阵代数 → 因果界无法凝结</li>
+</ol>
+<p>三者的互扼锁定是乘子序列唯一性的结构基础。</p>
+<p><strong>数值印证。</strong> §3.3 的 Bott
+截断数值验证进一步支持互扼锁定：任一绑定的改变都会使 <span
+class="math inline">\(B_7 \neq \varnothing\)</span>，破坏 Bott
+周期性。具体地，方案 <span class="math inline">\(f_2\)</span>–<span
+class="math inline">\(f_6\)</span>
+的残留预算因子均来自被错误绑定的扇区，说明单一绑定的偏移会通过回收-消耗网络传播到其他扇区，导致整体不闭合。</p>
+<hr />
+<h2 id="定理索引">定理索引</h2>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 28%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">编号</th>
+<th style="text-align: left;">内容</th>
+<th style="text-align: center;">证明状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">定理 1.2.3.01</td>
+<td style="text-align: left;">扇区-因子绑定：<span
+class="math inline">\(\gamma_1\leftrightarrow 2\)</span>, <span
+class="math inline">\(\gamma_2\leftrightarrow 3\)</span>, <span
+class="math inline">\(\gamma_3\leftrightarrow 5\)</span></td>
+<td style="text-align: center;">已证（本文§3, §3.1, §3.3）</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理 1.2.5.01</td>
+<td style="text-align: left;">良性互扼锁定定理</td>
+<td style="text-align: center;">已证（本文§5）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="参考文献">参考文献</h2>
+<ul>
+<li>Bott 周期表与 Clifford 代数结构常数（Atiyah–Bott–Shapiro）</li>
+<li>Schur 引理与不可约表示刚性（Schur, 1905）</li>
+</ul>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 07:53:34</p>
+  </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10.13 Quantum Entanglement | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="ID: 10.13 | Date: 260723.1 | Series: Applications | Language: EN">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/10/10.13_Quantum_Entanglement_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">10.13 Quantum Entanglement</span>
+  </nav>
+  <main class="article-content">
+<h1 id="quantum-entanglement">10.13 Quantum Entanglement</h1>
+<p><strong>ID</strong>: 10.13 | <strong>Date</strong>: 260723.1 |
+<strong>Series</strong>: Applications | <strong>Language</strong>:
+EN</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<p>§1 Encoded Orbital Pixel Theorem 　1.0 Proposition (Interlocking)
+Constraint Declaration 　1.1 Information Field on Geometric Sector
+Parameter Space 　1.2 Dirac Spectral Direction and Characteristic
+Equation 　1.3 Minimum Resolvable Angle 　1.4 ℳ𝒞ℐ Three-Sector Tool
+Layer Connection</p>
+<p>§2 Geometric Definition of Entanglement 　2.1 <span
+class="math inline">\(S\)</span>-Minima and Particles 　2.2 Rigorous
+Definition of Entanglement String</p>
+<p>§3 Two-Level Theorem</p>
+<p>§4 Correlation Function Theorem 　4.1 Readout Direction and
+Measurement Result 　4.2 Correlation Function</p>
+<p>§5 CHSH Combination and Classical Limit 　5.1 Geometrization of
+Measurement Settings 　5.2 Classical Limit Theorem</p>
+<p>§6 Tsirelson Theorem 　6.1 Preservation of Nonlocal Correlations
+　6.2 Why <span class="math inline">\(2\sqrt{2}\)</span></p>
+<p>§7 Conclusions</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>The quantum entanglement theory is reconstructed within the Encoded
+Orbital pixel structure framework. The geometric definition of
+entanglement is established — two S-minima on Σ_η realize geometric
+maximal entanglement via ℐ-Sector freezing and ℳ-Sector antipodal
+locking. The Two-Level Theorem is proved — the low-energy non-trivial
+excitation space of a geometrically maximally entangled pair is exactly
+2-dimensional. Under the physical mapping conventions, the correlation
+function <span
+class="math inline">\(C(\vec{a},\vec{b})=-\vec{a}\cdot\vec{b}\)</span>
+is derived. The CHSH combination supremum is proved to be <span
+class="math inline">\(2\sqrt{2}\)</span>. Consummate Reproduction serves
+as the unique physical mapping input.</p>
+<hr />
+<h2 id="chapter-1.-encoded-orbital-pixel-theorem">Chapter 1. Encoded
+Orbital Pixel Theorem</h2>
+<h3 id="proposition-interlocking-constraint-declaration">1.0 Proposition
+(Interlocking) Constraint Declaration</h3>
+<p>The following structures discussed in this chapter are constrained by
+Proposition (Interlocking) (Theorem 1.1.5.01-20; Theorem 1.1.5.01):</p>
+<ul>
+<li><strong>ℐ-Sector Freezing</strong> (Definition 2.2, Condition 1):
+Corresponds to the Dirac Spectral Direction freezing of the Information
+Sector triplet <span class="math inline">\((e_7,e_8,e_9)\)</span> among
+the nine elements — the high-rigidity direction dominated by <span
+class="math inline">\(\lambda_2^{\text{eff}}\)</span> suppresses the
+Information Sector elements to a constant background;</li>
+<li><strong>Bott Periodicity Truncation</strong> (Corollary 1.1.2.02a):
+The truncation <span class="math inline">\(n_{\text{eff}}\le 7\)</span>
+is the pixel-level manifestation of <span
+class="math inline">\(N_{\text{eff}}=7\)</span> in Proposition
+(Interlocking);</li>
+<li><strong>Spectral Gap Direction and Dirac Spectral Direction
+separation</strong> <span
+class="math inline">\(\lambda_2^{\text{eff}}/\lambda_1^{\text{eff}}=151.7\)</span>:
+Corresponds to the stiffness ratio of Proposition (Interlocking),
+locking the scale separation of the dimensional mapping;</li>
+<li>In the three-decomposition frame <span
+class="math inline">\(\{e_1,\dots,e_9\}\)</span>, <span
+class="math inline">\(\{e_1,e_2,e_3\}\)</span> corresponds to the
+ℳ-Sector, <span class="math inline">\(\{e_4,e_5,e_6\}\)</span> to the
+𝒞-Sector, <span class="math inline">\(\{e_7,e_8,e_9\}\)</span> to the
+ℐ-Sector; its first-order condition <span
+class="math inline">\([[D,a],Jb^*J^{-1}]=0\)</span> restricts to the
+Spectral Gap Direction <span
+class="math inline">\(\lambda_1^{\text{eff}}\)</span> in the ℳ-Sector
+and to the Dirac Spectral Direction <span
+class="math inline">\(\lambda_2^{\text{eff}}\)</span> in the <span
+class="math inline">\(𝒞\oplusℐ\)</span> Sector (Theorem
+1.1.5.01-20).</li>
+</ul>
+<h3 id="information-field-on-geometric-sector-parameter-space">1.1
+Information Field on Geometric Sector Parameter Space</h3>
+<p>By Theorem 1.1.5.01, the Geometric Sector Parameter Space <span
+class="math inline">\(\Sigma_\eta\subset\Sigma\)</span> is a
+two-dimensional active submanifold, with Hausdorff dimension <span
+class="math inline">\(D_f=2.000\)</span>. By Theorem 1.1.5.01, the
+tangent bundle of <span class="math inline">\(\Sigma_\eta\)</span>
+admits the three-decomposition</p>
+<p><span
+class="math display">\[T\Sigma=\mathcal{M}\oplus\mathcal{C}\oplus\mathcal{I},\]</span></p>
+<p>and the Born Normalization Condition (Theorem 1.2.3.01) <span
+class="math inline">\(\theta_M+\theta_C+\theta_I=\pi/2\)</span>
+holds.</p>
+<p><strong>Definition 1.1 (Information Field Equation)</strong>. The
+Information Field <span class="math inline">\(\Psi\)</span> on <span
+class="math inline">\(\Sigma_\eta\)</span> is derived from the
+Hamiltonian of Theorem 1.1.5.01 Local Harmonic Oscillator Theorem
+(Theorem 3.5.10). In geometric units (<span
+class="math inline">\(\hbar=1\)</span>), the stationary Information
+Field satisfies:</p>
+<p><span class="math display">\[\left[-\frac{1}{2}\Delta_{\Sigma_\eta} +
+\frac{1}{2}\lambda_1^{\text{eff}}\eta^2 +
+\frac{1}{2}\lambda_2^{\text{eff}}\xi^2\right]\Psi = E\Psi,\]</span></p>
+<p>where <span class="math inline">\(\Delta_{\Sigma_\eta}\)</span> is
+the Laplace-Beltrami operator on <span
+class="math inline">\(\Sigma_\eta\)</span>, <span
+class="math inline">\(\lambda_1^{\text{eff}}=391.05\
+\text{rad}^{-2}\)</span> is the effective Spectral Gap Direction, and
+<span class="math inline">\(\lambda_2^{\text{eff}}=59324.3\
+\text{rad}^{-2}\)</span> is the effective Dirac Spectral Direction
+(Derived Item 2.2.4; Theorem 6.2). This equation is rigorously
+guaranteed by Theorem 1.1.5.01: in the Darboux neighborhood of the
+symplectic manifold <span
+class="math inline">\((\mathcal{P}_\eta,\omega)\)</span>, the quadratic
+expansion of the Hamiltonian <span
+class="math inline">\(H=S(\theta)-S_3\)</span> intrinsically derives the
+harmonic oscillator structure of the ℐ-Sector and ℳ-𝒞 subspace.</p>
+<p><em>Geometric Legality Note</em>: The difference between Definition
+1.1 and Theorem 1.1.5.01 is: Theorem 1.1.5.01 gives the approximate
+Hamiltonian <span class="math inline">\(\hat{H} \approx
+-\frac{\hbar^2}{2}\Delta_{\Sigma_\eta} + \frac{1}{2}\lambda_1\eta^2 +
+\frac{1}{2}\lambda_2\xi^2\)</span> in the local Darboux neighborhood
+(geometric units <span class="math inline">\(\hbar=1\)</span>);
+Definition 1.1 elevates it to a global stationary equation on <span
+class="math inline">\(\Sigma_\eta\)</span>. Under the ℐ-Sector freezing
+approximation (see §1.2 below), ℐ and ℳ-𝒞 approximately decouple, and
+the Information Field equation reduces to a harmonic oscillator equation
+in the ℐ-direction.</p>
+<h3 id="dirac-spectral-direction-and-characteristic-equation">1.2 Dirac
+Spectral Direction and Characteristic Equation</h3>
+<p>By Theorem 1.1.5.01, the Dirac Spectral Direction eigenvalue of the
+cross-section Birkhoff Mixing Matrix, after cross-sector coupling
+correction, is</p>
+<p><span class="math display">\[\lambda_2^{\text{eff}}=59324.3\
+\mathrm{rad}^{-2}.\]</span></p>
+<p>In the one-dimensional approximation of the ℐ-Sector (from the Born
+Normalization Condition (Theorem 1.2.3.01) and the <span
+class="math inline">\((\xi,\eta)\)</span> decoupling structure of
+Theorem 1.1.5.01, <span
+class="math inline">\(H_{\xi\eta}\approx0\)</span>, the ℐ direction
+approximately decouples from the ℳ-𝒞 subspace to second order), the
+Information Field <span
+class="math inline">\(\Psi_{\mathcal{I}}\)</span> satisfies the harmonic
+oscillator equation:</p>
+<p><span
+class="math display">\[\left(-\frac{\mathrm{d}^2}{\mathrm{d}\xi^2} +
+\lambda_2^{\text{eff}}\xi^2\right)\phi_n = \mu_n\phi_n,\quad
+\xi\in\mathcal{I},\]</span></p>
+<p>where <span class="math inline">\(\mu_n =
+(2n+1)\sqrt{\lambda_2^{\text{eff}}}\)</span> are the harmonic oscillator
+eigenvalues.</p>
+<p><strong>Proposition 10.13.1.01 (Pixel Orthonormal Basis)</strong>.
+The normalized solutions <span
+class="math inline">\(\{\phi_n\}_{n=0}^{\infty}\)</span> of the above
+harmonic oscillator equation form a complete orthonormal basis of <span
+class="math inline">\(L^2(\mathcal{I})\)</span>, with ground state</p>
+<p><span
+class="math display">\[\phi_0(\xi)=\left(\frac{\sqrt{\lambda_2^{\text{eff}}}}{\pi}\right)^{1/4}\exp\left(-\frac{\sqrt{\lambda_2^{\text{eff}}}}{2}\xi^2\right),\]</span></p>
+<p>and the <span class="math inline">\(n\)</span>-th excited state <span
+class="math inline">\(\phi_n(\xi)=H_n((\lambda_2^{\text{eff}})^{1/4}\xi)\,\phi_0(\xi)\)</span>,
+where <span class="math inline">\(H_n\)</span> are Hermite
+polynomials.</p>
+<p><em>Proof.</em> The equation is of standard harmonic oscillator type
+(<span class="math inline">\(m=1\)</span>, <span
+class="math inline">\(\omega=\sqrt{\lambda_2^{\text{eff}}}\)</span>);
+orthogonal completeness follows directly from Sturm-Liouville theory.
+The ground state form is determined by <span
+class="math inline">\(\phi_0&#39;&#39;/\phi_0=\lambda_2^{\text{eff}}\xi^2-\sqrt{\lambda_2^{\text{eff}}}\)</span>
+and normalization <span
+class="math inline">\(\int|\phi_0|^2\mathrm{d}\xi=1\)</span>. This
+solution form is uniquely determined by Theorem 1.1.5.01 from the
+linearization of the local symplectic structure; the Geometric Theory
+provides the Birkhoff Mixing Matrix origin of the parameter <span
+class="math inline">\(\lambda_2^{\text{eff}}\)</span> (after
+cross-sector coupling correction, Theorem 6.2). ∎</p>
+<p><strong>Note 1.1</strong>: This corrects the erroneous form <span
+class="math inline">\((-\mathrm{d}^2/\mathrm{d}\xi^2+\lambda_2)\phi_n=\mu_n\phi_n\)</span>
+in the earlier version of this article. That form confuses the harmonic
+oscillator potential <span class="math inline">\(\lambda_2\xi^2\)</span>
+with the constant potential <span
+class="math inline">\(\lambda_2\)</span>, and is inconsistent with the
+given ground state solution <span
+class="math inline">\(\phi_0\propto\exp(-\sqrt{\lambda_2}\xi^2/2)\)</span>.
+The correct form is the harmonic oscillator equation, with ground state
+width controlled by <span
+class="math inline">\(\lambda_2^{-1/4}\)</span>.</p>
+<p><strong>Corollary 10.13.1.02 (Bott Periodicity Truncation)</strong>.
+Although the mathematical form is an infinite-dimensional Hermite basis,
+physically effective excitations are constrained by the Theorem
+Seven-Layer Truncation Theorem: the Matter Sector analyzable information
+hierarchy is strictly limited to <span
+class="math inline">\(n_{\text{eff}}\le 7\)</span>, and higher modes
+<span class="math inline">\(n&gt;7\)</span> are confined by Bott
+periodicity 8 truncation. This truncation is the direct manifestation of
+<span class="math inline">\(N_{\text{eff}}=7\)</span> (Theorem
+1.1.5.01-20) in Proposition (Interlocking) at the pixel level.
+Therefore, the effective degrees of freedom of pixel encoding are
+finite-dimensional.</p>
+<h3 id="minimum-resolvable-angle">1.3 Minimum Resolvable Angle</h3>
+<p><strong>Definition 1.2 (Pixel)</strong>. A pixel on <span
+class="math inline">\(\Sigma_\eta\)</span> is the effective support set
+occupied by a single eigenfunction <span
+class="math inline">\(\phi_n\)</span> of the Information Field in the
+ℐ-Sector.</p>
+<p><strong>Constructive Definition 1.3 (Minimum Resolvable
+Angle)</strong>. The minimum resolvable angle between two adjacent
+pixels in the ℐ-Sector is defined by the characteristic width of the
+ground state <span class="math inline">\(\phi_0\)</span>:</p>
+<p><span
+class="math display">\[\Delta\xi_{\min}=2(\lambda_2^{\text{eff}})^{-1/4}.\]</span></p>
+<p><em>Construction Note.</em> The full width at half maximum (FWHM) of
+the ground state <span class="math inline">\(\phi_0\)</span> is <span
+class="math inline">\(2\sqrt{\ln2}\,(\lambda_2^{\text{eff}})^{-1/4}\)</span>.
+As an operational definition, twice the characteristic width <span
+class="math inline">\(2(\lambda_2^{\text{eff}})^{-1/4}\)</span> is taken
+as the minimum resolvable angle, such that the support sets of <span
+class="math inline">\(\phi_0(\xi-\Delta\xi_{\min}/2)\)</span> and <span
+class="math inline">\(\phi_0(\xi+\Delta\xi_{\min}/2)\)</span> just
+separate at the <span class="math inline">\(1/e\)</span> peak. This
+definition is a constructive hypothesis, conceptually borrowing the
+analog of the Rayleigh criterion; rigorous treatment requires an
+independent derivation from the information-theoretic resolution limit
+of the Sturm-Liouville orthonormal basis. Current status is annotated as
+“geometric analogy construction.”</p>
+<p>Substituting numerical values: <span
+class="math display">\[\Delta\xi_{\min}=2\times(59324.3)^{-1/4}=2\times
+0.06406=0.1281\ \mathrm{rad}.\]</span></p>
+<p><em>Comparison</em>: The earlier version used the erroneous formula
+<span
+class="math inline">\(\pi/(2\sqrt{\lambda_2})\approx6.48\times10^{-3}\)</span>
+rad, because the error in the form of the Information Field equation
+(constant potential instead of harmonic oscillator potential) led to
+underestimation of the pixel scale. The harmonic oscillator ground state
+width <span class="math inline">\(\lambda_2^{-1/4}\)</span> is far
+larger than the <span class="math inline">\(\lambda_2^{-1/2}\)</span>
+scale.</p>
+<p><strong>Corollary 10.13.1.03 (Quantization)</strong>. The finiteness
+of <span class="math inline">\(\lambda_2^{\text{eff}}\)</span> quantizes
+the ℐ-Sector angles in harmonic oscillator energy levels. If <span
+class="math inline">\(\lambda_2^{\text{eff}}\to\infty\)</span>, then
+<span class="math inline">\(\Delta\xi_{\min}\to0\)</span>, and pixel
+encoding approaches continuity.</p>
+<h3 id="ℳ𝒞ℐ-three-sector-tool-layer-connection">1.4 ℳ𝒞ℐ Three-Sector
+Tool Layer Connection</h3>
+<p>The dimensionful constants <span
+class="math inline">\(\chi_L\)</span>, <span
+class="math inline">\(\hbar\)</span>, <span
+class="math inline">\(K\)</span>, etc., used in this section are derived
+from the ℳ𝒞ℐ Three-Sector framework of Theorem 1.1.5.01-20 Spectral
+Expansion / Born Rule (Theorem 1.1.5.01) (Theorem 1.1.5.01-20–3.5):</p>
+<ul>
+<li>The spectral origin of <span class="math inline">\(\chi_L\)</span>
+is the ℳ-Sector Wodzicki residue (Theorem 1.1.5.01-20, <span
+class="math inline">\(C_J\)</span> to be determined);</li>
+<li>The spectral origin of <span class="math inline">\(K\)</span> is the
+ℳ-Sector Dixmier trace (Theorem 1.1.5.01-20, <span
+class="math inline">\(C_m\)</span> to be determined);</li>
+<li>The spectral origin of <span class="math inline">\(\hbar\)</span> is
+the 9-dimensional heat kernel spectral asymmetry term (Theorem
+1.1.5.01-20/3.5).</li>
+</ul>
+<p>The pixel quantization (harmonic oscillator basis) of this article is
+a simplified treatment under the ℐ-Sector freezing approximation. In the
+complete ℳ𝒞ℐ Three-Sector framework, pixels should be given by the
+restriction of the eigenspinors of the Dirac operator <span
+class="math inline">\(D\)</span> on <span
+class="math inline">\(M(a)\)</span> to <span
+class="math inline">\(\Sigma_\eta\)</span>, corresponding to the natural
+continuum of Toeplitz quantization. The current Hermite basis
+construction is the ℐ-freezing limit approximation of this continuous
+quantization; rigorous treatment awaits subsequent work.</p>
+<hr />
+<h2 id="chapter-2.-geometric-definition-of-entanglement">Chapter 2.
+Geometric Definition of Entanglement</h2>
+<h3 id="s-minima-and-particles">2.1 <span
+class="math inline">\(S\)</span>-Minima and Particles</h3>
+<p>By the Theorem, local depressions (isolated minimum points of <span
+class="math inline">\(S\)</span>) on <span
+class="math inline">\(\Sigma_\eta\)</span> correspond to stable particle
+states. The electron ground state corresponds to <span
+class="math inline">\(S_e=137.035999084\)</span> (Derived Item
+2.2.1).</p>
+<p><strong>Consummate Reproduction Declaration</strong>. The
+entanglement theory of this article is strictly built upon Consummate
+Reproduction: all readout directions and measurement mappings are
+realized via ℳ-𝒞 Waist-Edge Coupling (electromagnetic sector),
+necessarily accompanied by a massive source mode (electron, <span
+class="math inline">\(E_{\mathcal{M}}\approx511\ \text{keV}\)</span>)
+and a massless propagation mode (photon, speed <span
+class="math inline">\(c\)</span>), both sharing the same coupling
+constant <span class="math inline">\(S_e=137.035999084\)</span>; the
+ℐ-Sector does not map to independent particles, serving solely as an
+information phase channel. Consummate Reproduction is the unique
+anchoring mapping, with <span class="math inline">\(c=299792458\
+\text{m/s}\)</span> as the fixed point of the zero-cone structure of its
+propagation mode (Postulate 1.1).</p>
+<p><strong>Definition 2.1 (Correlation Geodesic)</strong>. Let <span
+class="math inline">\(p_A,p_B\in\Sigma_\eta\)</span> be two <span
+class="math inline">\(S\)</span>-minima. The curve <span
+class="math inline">\(\gamma_{AB}:[0,1]\to\Sigma_\eta\)</span>
+connecting <span class="math inline">\(p_A,p_B\)</span> is called a
+correlation geodesic if the projection of <span
+class="math inline">\(\gamma_{AB}\)</span> onto the ℳ-Sector is a
+geodesic, and its projection onto the ℐ-Sector is constant.</p>
+<p><strong>Definition 2.2 (Geometric Maximal Entanglement)</strong>. Two
+<span class="math inline">\(S\)</span>-minima <span
+class="math inline">\(p_A,p_B\)</span> are called <strong>geometrically
+maximally entangled</strong> if their correlation geodesic <span
+class="math inline">\(\gamma_{AB}\)</span> satisfies:</p>
+<ol type="1">
+<li><strong>ℐ-Sector Freezing</strong>: <span
+class="math inline">\(\xi_A=\xi_B\)</span>, i.e., the projection of
+<span class="math inline">\(\gamma_{AB}\)</span> onto ℐ is a single
+point;</li>
+<li><strong>ℳ-Sector Antipodal Locking</strong>: The projection of <span
+class="math inline">\(\gamma_{AB}\)</span> onto the ℳ-Sector <span
+class="math inline">\(S^3\)</span> is a closed geodesic (great circle),
+and <span class="math inline">\(p_A,p_B\)</span> lie at antipodal points
+of this great circle.</li>
+</ol>
+<p>The variational stability of this configuration is jointly guaranteed
+by the following geometric structures:</p>
+<p><strong>(i) Proposition (Interlocking) Constraint</strong> (Theorem
+1.1.5.01-20): The first-order condition <span
+class="math inline">\([[D,a],Jb^*J^{-1}]=0\)</span> imposes Dirac
+Spectral Direction freezing in the ℐ-Sector; the high rigidity of <span
+class="math inline">\(\lambda_2^{\text{eff}}\)</span> strongly
+suppresses deviations in the ℐ-direction, so that <span
+class="math inline">\(\xi_A=\xi_B\)</span> is a stability condition;</p>
+<p><strong>(ii) Cross-Sector Coupling Structure</strong> (Theorem
+4.2/4.3): The penetration matrix <span
+class="math inline">\(\Phi\)</span> and cross-sector coupling <span
+class="math inline">\(H^W=[[2w,w&#39;-2w],[w&#39;-2w,2w]]\)</span>
+(waist edge <span class="math inline">\(w=885\)</span>, base edge <span
+class="math inline">\(w&#39;=-2.444\)</span>) constitute the algebraic
+constraints of the ℳ-𝒞-ℐ Three-Sectors;</p>
+<p><strong>(iii) Weak Coupling Condition</strong>: The Information
+Sector block correlation parameter <span
+class="math inline">\(\gamma=H_{CI}/\sqrt{H_{CC}\cdot
+H_{II}}=0.0928\ll1\)</span> ensures weak coupling between the Causal
+Field and Information Field, promoting antipodal points to stable
+extrema under the constraints.</p>
+<p>Definition 2.2 is the <strong>working definition</strong> of
+geometric maximal entanglement; its correspondence with the “maximally
+entangled state” of quantum mechanics is a convention of the physical
+mapping layer (see §4 Correlation Function), not an intrinsic theorem of
+the Geometric Theory.</p>
+<p><em>Geometric Interpretation</em>. Condition 1 is guaranteed by the
+ℐ-Sector harmonic oscillator structure: if two pixels are separated in
+the ℐ-Sector by <span
+class="math inline">\(\Delta\xi&lt;\Delta\xi_{\min}\)</span>, their
+Information Fields are approximately indistinguishable in the <span
+class="math inline">\(L^2\)</span> sense. Geometric maximal entanglement
+requires <span class="math inline">\(\Delta\xi=0\)</span>, i.e., sharing
+the same ℐ-Sector pixel. Condition 2 is derived from the minimal action
+principle of <span class="math inline">\(S_{\text{total}}=0\)</span> and
+the above cross-sector coupling structure: on the ℳ-Sector <span
+class="math inline">\(S^3\)</span>, the extremal curve connecting two
+points is a geodesic; antipodal points become stable extrema under the
+joint constraints of ℐ-freezing and Waist-Edge Coupling.</p>
+<h3 id="rigorous-definition-of-the-entanglement-string">2.2 Rigorous
+Definition of the Entanglement String</h3>
+<p><strong>Definition 2.3 (Geometric Entanglement String)</strong>. The
+<strong>geometric entanglement string</strong> <span
+class="math inline">\(\mathcal{E}_{AB}\)</span> of a geometrically
+maximally entangled pair <span class="math inline">\((p_A,p_B)\)</span>
+is the image of the correlation geodesic <span
+class="math inline">\(\gamma_{AB}\)</span> in <span
+class="math inline">\(\Sigma_\eta\)</span>, equipped with the induced
+connection <span class="math inline">\(\nabla^{\mathcal{I}}\)</span>
+derived from <span
+class="math inline">\(S_{\text{total}}=0\)</span>.</p>
+<p><strong>Proposition 10.13.2.01 (Length of the Geometric Entanglement
+String)</strong>. The geometric length <span
+class="math inline">\(L(\mathcal{E}_{AB})\)</span> of the geometric
+entanglement string <span
+class="math inline">\(\mathcal{E}_{AB}\)</span> is determined by the
+geodesic distance on the ℳ-Sector <span
+class="math inline">\(S^3\)</span>:</p>
+<p><span class="math display">\[L(\mathcal{E}_{AB})=\pi
+R_{\mathcal{M}},\]</span></p>
+<p>where <span class="math inline">\(R_{\mathcal{M}}\)</span> is the
+effective curvature radius of the ℳ-Sector. The identification <span
+class="math inline">\(R_{\mathcal{M}}^{-2}=\lambda_1^{\text{eff}}/2\)</span>
+is a working hypothesis of this article — <span
+class="math inline">\(\lambda_1^{\text{eff}}=391.05\
+\text{rad}^{-2}\)</span> is the effective Spectral Gap Direction
+Birkhoff Mixing Matrix eigenvalue (dimension <span
+class="math inline">\(\text{rad}^{-2}\)</span>); identifying it as the
+sectional curvature of <span class="math inline">\(S^3\)</span> requires
+additional geometric justification (the scalar curvature of <span
+class="math inline">\(S^3(r)\)</span> is <span
+class="math inline">\(6/r^2\)</span>, sectional curvature is <span
+class="math inline">\(1/r^2\)</span>). This identification has not yet
+been rigorously proved in 0.X.X, and is currently annotated as a
+“geometric correspondence hypothesis.”</p>
+<p>Substituting <span
+class="math inline">\(\lambda_1^{\text{eff}}=391.05\
+\text{rad}^{-2}\)</span>: <span
+class="math display">\[R_{\mathcal{M}}=\sqrt{\frac{2}{391.05}}=0.07151\
+\text{rad},\quad L(\mathcal{E}_{AB})=\pi R_{\mathcal{M}}=0.2247\
+\text{rad}.\]</span></p>
+<p>This length is independent of the three-dimensional spatial distance
+of the embedding of <span class="math inline">\(\Sigma_\eta\)</span>.
+∎</p>
+<hr />
+<h2 id="chapter-3.-two-level-theorem">Chapter 3. Two-Level Theorem</h2>
+<p>Consider the joint Information Field <span
+class="math inline">\(\Psi_{AB}\)</span> of a geometrically maximally
+entangled pair <span class="math inline">\((p_A,p_B)\)</span> on <span
+class="math inline">\(\Sigma_\eta\)</span>. By the Theorem, the Spectral
+Gap Direction <span class="math inline">\(\lambda_1^{\text{eff}}=391.05\
+\text{rad}^{-2}\)</span> controls the diffusion scale of the
+ℳ-Sector.</p>
+<p><strong>Theorem 10.13.3.01 (Two-Level Theorem)</strong>. Suppose the
+ℳ-Sector geodesic distance between <span
+class="math inline">\(p_A\)</span> and <span
+class="math inline">\(p_B\)</span> satisfies <span
+class="math inline">\(d_{\mathcal{M}}(p_A,p_B)&lt;\pi/\sqrt{\lambda_1^{\text{eff}}}\)</span>.
+Then the low-energy non-trivial excitation space of the joint
+Information Field <span class="math inline">\(\Psi_{AB}\)</span> (after
+subtracting the joint Information Field constant ground-state
+center-of-mass mode, the relative excitation space with energy below
+<span class="math inline">\(2\lambda_1^{\text{eff}}\)</span>) is exactly
+2-dimensional, spanned by the two antiphase branches of the first zonal
+harmonic function of the ℳ-Sector.</p>
+<p><em>Proof.</em> By Theorem 1.1.5.01, the ℳ-Sector corresponds to the
+<span class="math inline">\(S^3\)</span> factor. The eigenvalues of the
+Laplace-Beltrami operator on <span class="math inline">\(S^3\)</span>
+are <span class="math inline">\(\ell(\ell+2)/R_{\mathcal{M}}^2\)</span>
+(<span class="math inline">\(\ell=0,1,2,\ldots\)</span>), where <span
+class="math inline">\(\ell=0\)</span> is the constant ground state,
+<span class="math inline">\(\ell=1\)</span> is the 4-fold degenerate
+first excited state with eigenvalue <span
+class="math inline">\(3\lambda_1^{\text{eff}}/2\)</span>; <span
+class="math inline">\(\ell=2\)</span> has eigenvalue <span
+class="math inline">\(4\lambda_1^{\text{eff}}\)</span>.</p>
+<p>From the Born Normalization Condition (Theorem 1.2.3.01) <span
+class="math inline">\(\theta_M+\theta_C+\theta_I=\pi/2\)</span> and the
+two-dimensional constraint of <span
+class="math inline">\(\Sigma_\eta\)</span>, the effective projection of
+the ℳ-Sector onto <span class="math inline">\(\Sigma_\eta\)</span> is
+realized by the projection map <span
+class="math inline">\(P_{\mathcal{M}}:\mathcal{M}\to\Sigma_\eta\)</span>.
+Under the Proposition (Interlocking) constraint (Theorem 1.1.5.01-20),
+the first-order condition of the three-decomposition frame <span
+class="math inline">\(\{e_1,\dots,e_9\}\)</span> makes the projection of
+the tangent space of the ℳ-Sector (<span
+class="math inline">\(e_1,e_2,e_3\)</span>) onto the two-dimensional
+tangent plane of <span class="math inline">\(\Sigma_\eta\)</span> have
+rank 2. Hence, the 4-fold degeneracy is partially broken, retaining only
+2 zonal modes adapted to the tangent space of <span
+class="math inline">\(\Sigma_\eta\)</span>, denoted <span
+class="math inline">\(\Phi_+,\Phi_-\)</span>, satisfying <span
+class="math inline">\(\Phi_-(\vec{x})=\Phi_+(-\vec{x})\)</span>
+(antipodal antiphase).</p>
+<p>The <span class="math inline">\(\ell=0\)</span> constant ground state
+corresponds to the global phase center-of-mass degree of freedom of the
+joint Information Field, which is frozen and subtracted in the relative
+coordinate description of the entangled pair (the geometric mechanism of
+this subtraction is compatible with the Born Normalization Condition
+(Theorem 1.2.3.01): the center-of-mass motion corresponds to a global
+translation of <span class="math inline">\(\theta_M\)</span>,
+contributing no relative phase under the ℐ-freezing condition); the
+remaining <span class="math inline">\(\ell=1\)</span> first excited
+state retains 2 dimensions under the rank-2 restriction of the
+projection map. The low-energy cutoff threshold <span
+class="math inline">\(2\lambda_1^{\text{eff}}\)</span> lies between the
+<span class="math inline">\(\ell=1\)</span> eigenvalue <span
+class="math inline">\(3\lambda_1^{\text{eff}}/2\)</span> and the <span
+class="math inline">\(\ell=2\)</span> eigenvalue <span
+class="math inline">\(4\lambda_1^{\text{eff}}\)</span>, hence the
+non-trivial excitation space dimension is 2. ∎</p>
+<p><strong>Physical Mapping Note</strong>: This 2-dimensional space
+corresponds, at the physical mapping layer, to the state space of a
+qubit. The Geometric Theory does not independently predict the
+post-measurement state evolution of quantum mechanics; it only provides
+the geometric description of states.</p>
+<p><strong>Definition 3.2 (Information Basis States)</strong>. Denote
+the orthonormal basis of the two-level space as <span
+class="math inline">\(\varepsilon_1,\varepsilon_2\)</span>,
+satisfying</p>
+<p><span
+class="math display">\[\varepsilon_1(\vec{x})=\Phi_+(\vec{x}),\quad
+\varepsilon_2(\vec{x})=\Phi_-(\vec{x})=\Phi_+(-\vec{x}),\]</span></p>
+<p>where <span class="math inline">\(\vec{x}\)</span> are coordinates on
+the ℳ-Sector <span class="math inline">\(S^3\)</span>.</p>
+<hr />
+<h2 id="chapter-4.-correlation-function-theorem">Chapter 4. Correlation
+Function Theorem</h2>
+<h3 id="readout-direction-and-measurement-result">4.1 Readout Direction
+and Measurement Result</h3>
+<p><strong>Definition 4.1 (Readout Direction)</strong>. On the ℳ-Sector
+<span class="math inline">\(S^3\)</span>, choose a unit vector <span
+class="math inline">\(\vec{a}\)</span> (i.e., a point in <span
+class="math inline">\(S^3\subset\mathbb{R}^4\)</span>), called the
+readout direction.</p>
+<p><strong>Definition 4.2 (Geometric Measurement Correspondence —
+Physical Mapping Layer Convention)</strong>. As a <strong>physical
+mapping convention</strong>, the measurement result <span
+class="math inline">\(m(\vec{a})\)</span> of the Information Field <span
+class="math inline">\(\Psi\)</span> in the readout direction <span
+class="math inline">\(\vec{a}\)</span> is defined as the sign of the
+zonal projection of <span class="math inline">\(\Psi\)</span> at <span
+class="math inline">\(\vec{a}\)</span>:</p>
+<p><span
+class="math display">\[m(\vec{a})=\operatorname{sgn}\left(\int_{S^3}\Psi(\vec{x})Z_{\vec{a}}(\vec{x})\mathrm{d}\mu\right)\in\{1,-1\},\]</span></p>
+<p>where <span
+class="math inline">\(Z_{\vec{a}}(\vec{x})=\vec{a}\cdot\vec{x}\)</span>
+is the first zonal harmonic function. The correspondence of this
+definition with the spin measurement result in standard quantum
+mechanics is a hypothesis of the connection layer, not an intrinsic
+definition of the Geometric Theory.</p>
+<p><em>Note</em>. By Theorem 3.1, the low-energy excitation <span
+class="math inline">\(\Psi=c_1\varepsilon_1+c_2\varepsilon_2\)</span>,
+its projection onto <span class="math inline">\(Z_{\vec{a}}\)</span> is
+<span
+class="math inline">\(c_1\vec{a}\cdot\vec{x}+c_2\vec{a}\cdot\vec{x}_-\)</span>,
+and the sign is determined by the coefficient ratio.</p>
+<h3 id="correlation-function">4.2 Correlation Function</h3>
+<p><strong>Definition 4.3 (Correlation Function)</strong>. For a
+geometrically maximally entangled pair <span
+class="math inline">\((p_A,p_B)\)</span>, let <span
+class="math inline">\(\vec{a}\)</span> be the readout direction of <span
+class="math inline">\(p_A\)</span> and <span
+class="math inline">\(\vec{b}\)</span> the readout direction of <span
+class="math inline">\(p_B\)</span>. The correlation function <span
+class="math inline">\(C(\vec{a},\vec{b})\)</span> is defined as the
+geometric average of the product of measurement results over the
+Information Field ensemble:</p>
+<p><span class="math display">\[C(\vec{a},\vec{b})=\big\langle
+m_A(\vec{a})m_B(\vec{b})\big\rangle_{\Sigma},\]</span></p>
+<p>where <span
+class="math inline">\(\langle\cdot\rangle_{\Sigma}\)</span> is the
+Information Field ensemble average naturally defined by the induced
+connection <span class="math inline">\(\nabla^{\mathcal{I}}\)</span> of
+the geometric entanglement string and the symplectic structure <span
+class="math inline">\((\mathcal{P}_\eta,\omega)\)</span> of <span
+class="math inline">\(\Sigma_\eta\)</span> (Theorem 1.1.5.01).</p>
+<p><strong>Mapping-Layer Proposition 4.1 (Correlation
+Function)</strong>. For a geometrically maximally entangled pair, under
+the following physical mapping conventions:</p>
+<blockquote>
+<p><strong>Convention A (Antipodal Antiphase)</strong>: The ℳ-coordinate
+of <span class="math inline">\(p_B\)</span> is <span
+class="math inline">\(\vec{x}_B=-\vec{x}_A\)</span>, hence <span
+class="math inline">\(m_B(\vec{b})=-m_A(\vec{b})\)</span>;</p>
+<p><strong>Convention B (Born Rule Correspondence)</strong>: Under the
+natural symplectic measure on <span
+class="math inline">\(\Sigma_\eta\)</span>, the single-response of the
+same depression to two readout directions satisfies <span
+class="math inline">\(\langle
+m_A(\vec{a})m_A(\vec{b})\rangle_{\Sigma}=\vec{a}\cdot\vec{b}\)</span>.
+This equality is a geometric property of <span
+class="math inline">\(S^3\)</span> harmonic functions under ensemble
+averaging; in the physical mapping, it corresponds to the Born Rule of
+quantum mechanics. This correspondence is <strong>not</strong> a theorem
+derived from the Unique Axiom δ (Zero Motion), but a mapping-layer
+convention that translates the measurement rules of quantum mechanics
+into geometric language.</p>
+</blockquote>
+<p>we have</p>
+<p><span
+class="math display">\[C(\vec{a},\vec{b})=-\vec{a}\cdot\vec{b}=-\cos\theta_{ab},\]</span></p>
+<p>where <span class="math inline">\(\theta_{ab}\)</span> is the
+geodesic angle between <span class="math inline">\(\vec{a}\)</span> and
+<span class="math inline">\(\vec{b}\)</span> on the ℳ-Sector <span
+class="math inline">\(S^3\)</span>.</p>
+<p><em>Derivation.</em> By Convention A, <span
+class="math inline">\(m_B(\vec{b})=-m_A(\vec{b})\)</span>. By Convention
+B, <span class="math inline">\(\langle
+m_A(\vec{a})m_A(\vec{b})\rangle_{\Sigma}=\vec{a}\cdot\vec{b}\)</span>.
+Hence</p>
+<p><span class="math display">\[C(\vec{a},\vec{b})=\big\langle
+m_A(\vec{a})(-m_A(\vec{b}))\big\rangle_{\Sigma}=-\vec{a}\cdot\vec{b}.\]</span></p>
+<p>∎</p>
+<p><strong>Status</strong>: The conclusion <span
+class="math inline">\(C(\vec{a},\vec{b})=-\vec{a}\cdot\vec{b}\)</span>
+of Proposition 4.1 is mathematically equivalent to the correlation
+function of the spin singlet state in quantum mechanics, but this is
+<strong>a derived result after accepting Convention A and Convention
+B</strong>. The geometric basis of Convention A (antipodal locking →
+antiphase) is relatively solid (guaranteed by Definition 2.2);
+Convention B is the core bridge of the physical mapping, whose rigor is
+equivalent to “deriving the Born Rule from the Unique Axiom δ (Zero
+Motion)” — this is one of the open core problems of the Geometric
+Theory. Therefore, the status of Proposition 4.1 is
+<strong>mapping-layer proposition</strong>, not an intrinsic theorem of
+the Geometric Theory.</p>
+<hr />
+<h2 id="chapter-5.-chsh-combination-and-classical-limit">Chapter 5. CHSH
+Combination and Classical Limit</h2>
+<h3 id="geometrization-of-measurement-settings">5.1 Geometrization of
+Measurement Settings</h3>
+<p><strong>Definition 5.1 (CHSH Configuration)</strong>. On the ℳ-Sector
+<span class="math inline">\(S^3\)</span>, select four readout
+directions:</p>
+<ul>
+<li>Particle <span class="math inline">\(A\)</span>: <span
+class="math inline">\(\vec{a}_1,\vec{a}_2\)</span></li>
+<li>Particle <span class="math inline">\(B\)</span>: <span
+class="math inline">\(\vec{b}_1,\vec{b}_2\)</span></li>
+</ul>
+<p><strong>Definition 5.2 (CHSH Combination)</strong>.</p>
+<p><span
+class="math display">\[S_{\text{CHSH}}=C(\vec{a}_1,\vec{b}_1)+C(\vec{a}_1,\vec{b}_2)+C(\vec{a}_2,\vec{b}_1)-C(\vec{a}_2,\vec{b}_2).\]</span></p>
+<h3 id="classical-limit-theorem">5.2 Classical Limit Theorem</h3>
+<p><strong>Theorem 10.13.5.01 (Classical Limit)</strong>. Consider the
+hypothetical limit <span
+class="math inline">\(\lambda_2^{\text{eff}}\to\infty\)</span>, in which
+the ℐ-Sector is completely compactified. This limit does not represent
+actual physics (in the Geometric Theory, <span
+class="math inline">\(\lambda_2^{\text{eff}}=59324.3\)</span> is a fixed
+constant, Theorem 6.2), and serves only as a thought experiment for
+contrasting the differences between classical and quantum correlations.
+In this limit, the Information Field is localized, and the algebraic
+upper bound of the CHSH combination is <span
+class="math inline">\(2\)</span>.</p>
+<p><em>Proof.</em> When <span
+class="math inline">\(\lambda_2^{\text{eff}}\to\infty\)</span>, by
+Constructive Definition 1.3, the ℐ-Sector pixels are infinitely dense
+(<span class="math inline">\(\Delta\xi_{\min}\to0\)</span>), and the
+Information Field is completely localized. The ℐ-freezing of the
+geometric entanglement string <span
+class="math inline">\(\mathcal{E}_{AB}\)</span> is released, and <span
+class="math inline">\(p_A,p_B\)</span> are completely decoupled in the
+ℳ-Sector. Therefore, <span class="math inline">\(m_A(\vec{a})\)</span>
+depends only on the local geometry of <span
+class="math inline">\(p_A\)</span>, and <span
+class="math inline">\(m_B(\vec{b})\)</span> depends only on the local
+geometry of <span class="math inline">\(p_B\)</span>; the two are
+approximately independent in the limit. Substituting into Definition
+5.2:</p>
+<p><span class="math display">\[|S_{\text{CHSH}}|\le
+|m_B(\vec{b}_1)+m_B(\vec{b}_2)|+|m_B(\vec{b}_1)-m_B(\vec{b}_2)|=2.\]</span></p>
+<p>This theorem does not depend on Bell’s inequality; it is merely an
+algebraic corollary of the geometric limit. ∎</p>
+<p><em>Note</em>. This upper bound <span
+class="math inline">\(2\)</span> is a purely algebraic corollary of
+factorization when <span
+class="math inline">\(\lambda_2^{\text{eff}}\to\infty\)</span>,
+requiring no hidden-variable distribution assumptions from Bell’s
+original derivation.</p>
+<hr />
+<h2 id="chapter-6.-tsirelson-theorem">Chapter 6. Tsirelson Theorem</h2>
+<h3 id="preservation-of-nonlocal-correlations">6.1 Preservation of
+Nonlocal Correlations</h3>
+<p><strong>Theorem 10.13.6.01 (Tsirelson Bound)</strong>. Under the
+discrete encoding with finite <span
+class="math inline">\(\lambda_2^{\text{eff}}\)</span> (i.e., ℐ-Sector
+freezing is effective), and accepting the correlation mapping of
+Proposition 4.1, the CHSH combination satisfies</p>
+<p><span class="math display">\[|S_{\text{CHSH}}|\le
+2\sqrt{2}.\]</span></p>
+<p>The supremum <span class="math inline">\(2\sqrt{2}\)</span> is
+attained by the following configuration:</p>
+<p><span class="math display">\[\vec{b}_1\perp\vec{b}_2,\quad
+\vec{a}_1=\frac{\vec{b}_1+\vec{b}_2}{|\vec{b}_1+\vec{b}_2|},\quad
+\vec{a}_2=\frac{\vec{b}_1-\vec{b}_2}{|\vec{b}_1-\vec{b}_2|}.\]</span></p>
+<p><em>Proof.</em> By Proposition 4.1, <span
+class="math inline">\(C(\vec{a},\vec{b})=-\vec{a}\cdot\vec{b}\)</span>.
+Substituting into Definition 5.2:</p>
+<p><span
+class="math display">\[S_{\text{CHSH}}=-\vec{a}_1\cdot(\vec{b}_1+\vec{b}_2)-\vec{a}_2\cdot(\vec{b}_1-\vec{b}_2).\]</span></p>
+<p>By the Cauchy-Schwarz inequality:</p>
+<p><span
+class="math display">\[|S_{\text{CHSH}}|\le|\vec{a}_1||\vec{b}_1+\vec{b}_2|+|\vec{a}_2||\vec{b}_1-\vec{b}_2|=|\vec{b}_1+\vec{b}_2|+|\vec{b}_1-\vec{b}_2|,\]</span></p>
+<p>Let <span
+class="math inline">\(\vec{b}_1\cdot\vec{b}_2=\cos\theta\)</span>, then
+<span
+class="math inline">\(|\vec{b}_1+\vec{b}_2|=2\cos(\theta/2)\)</span>,
+<span
+class="math inline">\(|\vec{b}_1-\vec{b}_2|=2\sin(\theta/2)\)</span>.
+Hence</p>
+<p><span class="math display">\[|S_{\text{CHSH}}|\le
+2\cos(\theta/2)+2\sin(\theta/2)\le 2\sqrt{2},\]</span></p>
+<p>with equality when <span class="math inline">\(\theta=\pi/2\)</span>
+(i.e., <span class="math inline">\(\vec{b}_1\perp\vec{b}_2\)</span>) and
+<span
+class="math inline">\(\vec{a}_1\parallel(\vec{b}_1+\vec{b}_2)\)</span>,
+<span
+class="math inline">\(\vec{a}_2\parallel(\vec{b}_1-\vec{b}_2)\)</span>.
+In this case <span
+class="math inline">\(|S_{\text{CHSH}}|=2\sqrt{2}\)</span>. ∎</p>
+<h3 id="why-2sqrt2">6.2 Why <span
+class="math inline">\(2\sqrt{2}\)</span></h3>
+<p><strong>Structural Note 6.2</strong>. <span
+class="math inline">\(2\sqrt{2}=\sqrt{8}\)</span> is directly related to
+the 2-dimensionality of the ℳ-Sector readout plane. Numerically, the
+appearance of <span class="math inline">\(\sqrt{8}\)</span> has a
+potential correspondence with the eight-dimensional structure of the
+<span class="math inline">\(\text{Spin}(8)\)</span> triality contained
+in the even subalgebra <span class="math inline">\(Cl^0(9)\cong
+Cl(8)\)</span> of <span class="math inline">\(Cl(9)\)</span> in the
+interaction framework of Theorem 1.4.3.01 (Theorem 1.4.3.01). The
+Tsirelson supremum is rigorously locked by Cauchy-Schwarz optimization
+in the 2-dimensional Euclidean geometry of the ℳ-Sector; the deep
+algebraic root of its connection with the global structure of the ℳ𝒞ℐ
+Three-Sector <span
+class="math inline">\(T\Sigma=\mathcal{M}\oplus\mathcal{C}\oplus\mathcal{I}\)</span>
+and the 8-dimensional Clifford algebra of <span
+class="math inline">\(Cl(8)\)</span> is an open problem, to be explored
+in subsequent articles.</p>
+<hr />
+<h2 id="chapter-7.-conclusions">Chapter 7. Conclusions</h2>
+<ol type="1">
+<li><p><strong>Pixel Theorem</strong>: Encoded Orbital pixels are
+defined by the ℐ-Sector harmonic oscillator eigenfunctions (Proposition
+1.1); the minimum resolvable angle <span
+class="math inline">\(\Delta\xi_{\min}=2(\lambda_2^{\text{eff}})^{-1/4}=0.1281\)</span>
+rad is a constructive definition based on the characteristic width of
+the harmonic oscillator ground state (Constructive Definition 1.3);
+rigorous treatment requires derivation from the information-theoretic
+resolution limit of the Sturm-Liouville orthonormal basis. This article
+corrects the error in the form of the Information Field equation in the
+earlier version (constant potential → harmonic oscillator potential).
+Bott periodicity truncation guarantees that the effective pixel degrees
+of freedom are finite (<span
+class="math inline">\(n_{\text{eff}}\le7\)</span>). The Proposition
+(Interlocking) constraint (Theorem 1.1.5.01-20) is the deep geometric
+origin of ℐ-Sector freezing and Bott truncation.</p></li>
+<li><p><strong>Entanglement Definition</strong>: Geometric maximal
+entanglement is the geometric configuration of two S-minima on <span
+class="math inline">\(\Sigma_\eta\)</span> with ℐ-Sector freezing and
+ℳ-Sector antipodal locking. Variational stability is jointly guaranteed
+by the Proposition (Interlocking) constraint (Theorem 1.1.5.01-20), the
+cross-sector coupling structure (Theorem 4.2/4.3: waist edge <span
+class="math inline">\(w=885\)</span>, base edge <span
+class="math inline">\(w&#39;=-2.444\)</span>), and the weak coupling
+parameter <span class="math inline">\(\gamma=0.0928\)</span>. The
+geometric entanglement string length is <span
+class="math inline">\(L(\mathcal{E}_{AB})=\pi
+R_{\mathcal{M}}=0.2247\)</span> rad (using effective Spectral Gap
+Direction <span
+class="math inline">\(\lambda_1^{\text{eff}}=391.05\)</span>).</p></li>
+<li><p><strong>Two-Level Theorem</strong>: The low-energy non-trivial
+excitation space of a geometrically maximally entangled pair is exactly
+2-dimensional, spanned by the two antiphase branches of the first zonal
+harmonic function of <span class="math inline">\(S^3\)</span>; the
+“qubit” is a product of geometric spectral rigidity (physical mapping
+layer correspondence). The <span class="math inline">\(\ell=0\)</span>
+constant ground state is frozen and subtracted in the relative
+coordinate description.</p></li>
+<li><p><strong>Correlation Function</strong>: Under the acceptance of
+antipodal antiphase (Convention A, guaranteed by Definition 2.2) and
+Born Rule correspondence (Convention B, physical mapping convention),
+<span
+class="math inline">\(C(\vec{a},\vec{b})=-\vec{a}\cdot\vec{b}\)</span>.
+Proposition 4.1 is a mapping-layer proposition, not an intrinsic theorem
+of the Geometric Theory.</p></li>
+<li><p><strong>Classical Limit</strong>: In the hypothetical <span
+class="math inline">\(\lambda_2^{\text{eff}}\to\infty\)</span> limit,
+the Information Field is localized, and the CHSH combination upper bound
+<span class="math inline">\(2\)</span> is an algebraic identity of
+factorization.</p></li>
+<li><p><strong>Tsirelson Theorem</strong>: Under the acceptance of the
+correlation mapping of Proposition 4.1, <span
+class="math inline">\(|S_{\text{CHSH}}|\le2\sqrt{2}\)</span> is
+rigorously locked by Cauchy-Schwarz optimization in the 2-dimensional
+Euclidean geometry of the ℳ-Sector. The numerical value <span
+class="math inline">\(2\sqrt{2}=\sqrt{8}\)</span> has a potential
+correspondence with the algebraic structure of <span
+class="math inline">\(Cl(8)\)</span>.</p></li>
+<li><p><strong>Closure Status</strong>: Chapters 1–6 of this article are
+completed within the closure of 0.0.X Consummate Reproduction, without
+introducing independent assumptions beyond Proposition (Interlocking)
+and the Unique Axiom δ (Zero Motion). Convention A is guaranteed by the
+geometric configuration of Definition 2.2; Convention B is an external
+correspondence of the physical mapping layer, annotated as an open core
+problem.</p></li>
+</ol>
+<hr />
+<h2 id="appendix-a-table-of-endogenous-constants">Appendix A: Table of
+Endogenous Constants</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Constant</th>
+<th style="text-align: left;">Numerical Value</th>
+<th style="text-align: left;">Geometric Origin</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">S_e</td>
+<td style="text-align: left;">1.37035999084×10²</td>
+<td style="text-align: left;">Consummate Reproduction geometric
+eigenquantity (Derived Item 2.2.1)</td>
+</tr>
+<tr>
+<td style="text-align: left;">λ₁^eff</td>
+<td style="text-align: left;">3.9105×10² rad⁻²</td>
+<td style="text-align: left;">Effective Spectral Gap Direction (Theorem
+6.2)</td>
+</tr>
+<tr>
+<td style="text-align: left;">λ₂^eff</td>
+<td style="text-align: left;">5.93243×10⁴ rad⁻²</td>
+<td style="text-align: left;">Effective Dirac Spectral Direction
+(Theorem 6.2)</td>
+</tr>
+<tr>
+<td style="text-align: left;">λ₂<sup>eff/λ₁</sup>eff</td>
+<td style="text-align: left;">1.517×10²</td>
+<td style="text-align: left;">Effective Spectral Gap to Dirac Spectral
+Direction ratio (Proposition (Interlocking) stiffness ratio, Theorem
+1.1.5.01-20)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Δξ_min</td>
+<td style="text-align: left;">2(λ₂^eff)⁻¹/⁴=0.1281 rad</td>
+<td style="text-align: left;">Pixel minimum resolvable angle
+(Constructive Definition 1.3)</td>
+</tr>
+<tr>
+<td style="text-align: left;">R_ℳ</td>
+<td style="text-align: left;">√(2/λ₁^eff)=0.07151 rad</td>
+<td style="text-align: left;">ℳ-Sector effective curvature radius
+(working hypothesis)</td>
+</tr>
+<tr>
+<td style="text-align: left;">L(ℰ_AB)</td>
+<td style="text-align: left;">π R_ℳ=0.2247 rad</td>
+<td style="text-align: left;">Geometric entanglement string length
+(Proposition 2.1)</td>
+</tr>
+<tr>
+<td style="text-align: left;">χ_L</td>
+<td style="text-align: left;">1.5092231080×10⁻¹⁰ m</td>
+<td style="text-align: left;">Length mapping factor (Theorem
+1.1.5.01-20)</td>
+</tr>
+<tr>
+<td style="text-align: left;">ℏ</td>
+<td style="text-align: left;">6.5821195675×10⁻¹⁶ eV·s</td>
+<td style="text-align: left;">Spectral Expansion / Born Rule (Theorem
+1.1.5.01) derived (Theorem 1.1.5.01-20)</td>
+</tr>
+<tr>
+<td style="text-align: left;">K</td>
+<td style="text-align: left;">839.758793 keV</td>
+<td style="text-align: left;">Mass quantum (Theorem 1.1.5.01-20)</td>
+</tr>
+<tr>
+<td style="text-align: left;">m_e</td>
+<td style="text-align: left;">510.99895 keV/c²</td>
+<td style="text-align: left;">Electron mass (Derived Item 2.2.2)</td>
+</tr>
+<tr>
+<td style="text-align: left;">w</td>
+<td style="text-align: left;">885</td>
+<td style="text-align: left;">Waist edge coupling (Theorem 4.3)</td>
+</tr>
+<tr>
+<td style="text-align: left;">w’</td>
+<td style="text-align: left;">-2.444</td>
+<td style="text-align: left;">Base edge coupling (Theorem 4.3)</td>
+</tr>
+<tr>
+<td style="text-align: left;">γ</td>
+<td style="text-align: left;">0.0928</td>
+<td style="text-align: left;">Block correlation parameter</td>
+</tr>
+<tr>
+<td style="text-align: left;">S_CHSH (Classical Limit)</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">Classical Limit Theorem (§5.2,
+hypothetical limit)</td>
+</tr>
+<tr>
+<td style="text-align: left;">S_CHSH (Quantum)</td>
+<td style="text-align: left;">2√(2)≈2.828427</td>
+<td style="text-align: left;">Tsirelson Theorem (§6.1, accepting
+Conventions AB)</td>
+</tr>
+</tbody>
+</table>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 07:53:34</p>
+  </footer>
+</div>
+</body>
+</html>

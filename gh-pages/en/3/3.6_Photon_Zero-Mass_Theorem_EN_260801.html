@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.6 Photon Zero-Mass Theorem | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Version: 260801.1">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/3/3.6_Photon_Zero-Mass_Theorem_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">3.6 Photon Zero-Mass Theorem</span>
+  </nav>
+  <main class="article-content">
+<h1 id="photon-zero-mass-theorem">3.6 Photon Zero-Mass Theorem</h1>
+<p><strong>Version</strong>: 260801.1</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>This article proves that the photon mass is strictly zero——<span
+class="math inline">\(m_\gamma = 0\)</span> is an algebraic necessity of
+the Coding Orbit, without introducing gauge symmetry as a postulate. The
+photon corresponds to the dominant Eigenvalue of the ℳ sector
+self-coupling and does not participate in the breathing mode, hence
+acquires no mass correction. This article provides a proof of the photon
+as a Goldstone Mode, and the algebraic root of gauge invariance.</p>
+<hr />
+<h2 id="chapter-1-introduction">Chapter 1　Introduction</h2>
+<p>This article is No. 3.6 in the Conjugate Spectral Geometry Series.
+The foundational framework of the series (Sole Axiom δ, Clifford
+Algebra, Coding Orbit structure, Born Rule, interaction mapping) has
+been established in the foundational theorems of Conjugate Spectral
+Geometry.</p>
+<p><strong>Core Positioning</strong>: This article proves that the
+photon mass is strictly zero——m_γ = 0 is an algebraic necessity of the
+Coding Orbit, without introducing gauge symmetry as a postulate. The
+photon corresponds to the dominant Eigenvalue of the ℳ sector
+self-coupling and does not participate in the breathing mode, hence
+acquires no mass correction. This article provides a proof of the photon
+as a Goldstone Mode, and the algebraic root of gauge invariance.</p>
+<p><strong>Key Dependencies</strong>: This article directly depends on
+the sector self-coupling structure of 3.1 (ℳ Field Normal Geometry
+Structure) and the dominant Eigenvalue of the Birkhoff Mixing Matrix
+(Theorem 2.3.7.02). The Structure Constants Λ=3, k₀=2, ΔΘ=5 are locked
+by the {2,3,5} Interlock Property, Consummate Reproduction (Theorem
+2.3.7.01) establishes the bootstrap closure chain, and parameters are
+determined by local region properties.</p>
+<p><strong>Core Results</strong>: (1) Rigorous proof of the Photon
+Zero-Mass Theorem——m_γ = 0 is an algebraic necessity; (2) Proof of the
+photon as a Goldstone Mode and the algebraic root of gauge invariance;
+(3) Unified picture of massless particles (photon, gluon, graviton).</p>
+<hr />
+<h2 id="contents">Contents</h2>
+<p>§1　Position of the Photon in the Coding Framework 　1.1　Photon as ℳ
+Self-Coupling 　1.2　Dominant Eigenvalue 　1.3　Correspondence between
+the Photon and the Dominant Eigenvalue</p>
+<p>§2　Zero-Mass Theorem 　2.1　Relation to Gauge Symmetry
+　2.2　Algebraic Root of Gauge Invariance 　2.3　Universality
+　2.4　Algebraic Proof of Universality</p>
+<p>§3　Photon as a Goldstone Mode 　3.1　Concept of Goldstone Mode
+　3.2　Proof of the Photon as a Goldstone Mode 　3.3　Comparison with
+the Traditional Goldstone Theorem 　3.4　Correspondence with the Higgs
+Mechanism</p>
+<p>§4　Other Massless Particles 　4.1　Gluon 　4.2　Graviton
+　4.3　Neutrino 　4.4　Unified Picture of Massless Particles</p>
+<p>§5　Complete Picture of the Massless Spectrum 　5.1　Massless
+Spectrum Table 　5.2　Correspondence between Masslessness and Gauge
+Symmetry 　5.3　Rigid Prediction of Zero Mass</p>
+<p>§6　Physical Consequences of the Zero-Mass Theorem 　6.1　Geometric
+Root of Coulomb’s Law 　6.2　Universality of the Speed of Light
+　6.3　Long-Range Nature of the Electromagnetic Field 　6.4　Relation to
+the Mass Spectrum 　6.5　Landscape Significance of the Zero-Mass
+Theorem</p>
+<hr />
+<h2 id="position-of-the-photon-in-the-coding-framework">§1 Position of
+the Photon in the Coding Framework</h2>
+<h3 id="photon-as-ℳ-self-coupling">1.1 Photon as ℳ Self-Coupling</h3>
+<p>The photon corresponds to the self-coupling mode of the Matter
+Sector——the identity component <span class="math inline">\(\theta_I
+\cdot I\)</span> of the Birkhoff Mixing Matrix <span
+class="math inline">\(T\)</span>. This is the coupling of the ℳ sector
+with itself, not involving inter-sector transmission.</p>
+<p>Physical meaning of ℳ self-coupling: the coding vector <span
+class="math inline">\(\vec{\sigma}_M\)</span> of the Matter Sector
+remains unchanged under the identity mapping <span
+class="math inline">\(I\)</span>——<span
+class="math inline">\(\vec{\sigma}_M \to \vec{\sigma}_M\)</span>. This
+“invariance” is the geometric root of the photon as the carrier of the
+electromagnetic interaction: the electromagnetic interaction does not
+change the “coding identity” of matter, only transmits “coding
+phase.”</p>
+<h3 id="dominant-eigenvalue">1.2 Dominant Eigenvalue</h3>
+<p>The dominant Eigenvalue <span class="math inline">\(\lambda_1 =
+1\)</span> of <span class="math inline">\(T\)</span> corresponds to the
+fixed point of the identity mapping. In the coding framework, the
+dominant Eigenvalue describes the stable ground state of the system——it
+does not participate in oscillation and acquires no breathing
+correction.</p>
+<p>Algebraic property of the dominant Eigenvalue:</p>
+<p><span class="math display">\[T \vec{v}^* = \lambda_1 \vec{v}^* =
+\vec{v}^*,\]</span></p>
+<p>where <span class="math inline">\(\vec{v}^*\)</span> is the
+fixed-point vector. This equation shows that the fixed point
+corresponding to the dominant Eigenvalue is the “stable core” of the
+Birkhoff Mixing Matrix——no iteration changes it.</p>
+<h3
+id="correspondence-between-the-photon-and-the-dominant-eigenvalue">1.3
+Correspondence between the Photon and the Dominant Eigenvalue</h3>
+<p>Correspondence between the photon and the dominant Eigenvalue <span
+class="math inline">\(\lambda_1 = 1\)</span>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Dominant Eigenvalue</th>
+<th style="text-align: left;">Photon</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Eigenvalue</td>
+<td style="text-align: left;">λ₁ = 1</td>
+<td style="text-align: left;">Frequency ω = c</td>
+</tr>
+<tr>
+<td style="text-align: left;">Fixed Point</td>
+<td style="text-align: left;">Tv⃗* = v⃗*</td>
+<td style="text-align: left;">Vacuum state of electromagnetic field</td>
+</tr>
+<tr>
+<td style="text-align: left;">Stability</td>
+<td style="text-align: left;">Does not participate in breathing</td>
+<td style="text-align: left;">Does not decay</td>
+</tr>
+<tr>
+<td style="text-align: left;">Self-Coupling</td>
+<td style="text-align: left;">ℳ→ℳ</td>
+<td style="text-align: left;">Electromagnetic interaction
+(matter-matter)</td>
+</tr>
+</tbody>
+</table>
+<p>This correspondence is the algebraic foundation for the zero mass of
+the photon.</p>
+<hr />
+<h2 id="zero-mass-theorem">§2 Zero-Mass Theorem</h2>
+<p><strong>Theorem 3.6.2.01 (Photon Zero-Mass Theorem).</strong> The
+photon mass is strictly zero:</p>
+<p><span class="math display">\[m_\gamma = 0.\]</span></p>
+<p>This is an algebraic necessity of the coding framework——the photon
+corresponds to the fixed-point mode of the dominant Eigenvalue <span
+class="math inline">\(\lambda_1 = 1\)</span>, does not participate in
+breathing oscillation, and hence acquires no mass.</p>
+<p><strong>Proof.</strong></p>
+<p><strong>Step 1: Mass Arises from the Breathing Mode.</strong>
+Particle mass is generated by the breathing correction of the
+non-dominant Eigenvalues <span
+class="math inline">\(\lambda_{2,3}\)</span> of <span
+class="math inline">\(M_5\)</span> (Theorem 3.2.4.01). The dominant
+Eigenvalue <span class="math inline">\(\lambda_1 = 1\)</span> generates
+no breathing correction——it is the fixed point itself.</p>
+<p><strong>Step 2: Photon Corresponds to the Dominant
+Eigenvalue.</strong> The photon is the quantum of ℳ sector
+self-coupling——corresponding to the identity component <span
+class="math inline">\(\theta_I \cdot I\)</span> of <span
+class="math inline">\(T\)</span>. The Eigenvalue of the identity
+component is precisely the dominant Eigenvalue <span
+class="math inline">\(\lambda_1 = 1\)</span>.</p>
+<p><strong>Step 3: The Dominant Eigenvalue Acquires No Mass.</strong>
+The dominant Eigenvalue <span class="math inline">\(\lambda_1 =
+1\)</span> satisfies <span class="math inline">\(T v^* = v^*\)</span>
+(fixed-point equation). The fixed-point mode does not participate in the
+breathing oscillation of <span
+class="math inline">\(\lambda_{2,3}\)</span>, hence acquires no mass
+from breathing correction.</p>
+<p>Therefore <span class="math inline">\(m_\gamma = 0\)</span>. ∎</p>
+<h3 id="relation-to-gauge-symmetry">2.1 Relation to Gauge Symmetry</h3>
+<p>In the Standard Model, the photon’s zero mass is guaranteed by <span
+class="math inline">\(U(1)\)</span> gauge symmetry. In Conjugate
+Spectral Geometry, the photon’s zero mass is guaranteed by the algebraic
+structure of the coding framework——without introducing gauge symmetry as
+a postulate.</p>
+<p><span class="math inline">\(U(1)\)</span> gauge symmetry is a
+<strong>sufficient condition</strong> for photon zero mass, but not a
+<strong>necessary condition</strong>. Conjugate Spectral Geometry
+provides an alternative guarantee: the fixed-point property of the
+dominant Eigenvalue.</p>
+<h3 id="algebraic-root-of-gauge-invariance">2.2 Algebraic Root of Gauge
+Invariance</h3>
+<p>Gauge invariance has an algebraic root in Conjugate Spectral
+Geometry——it arises from the “phase freedom” of the identity component
+<span class="math inline">\(\theta_I \cdot I\)</span> of the Birkhoff
+Mixing Matrix <span class="math inline">\(T\)</span>.</p>
+<p>Concretely, the ℳ sector self-coupling <span
+class="math inline">\(\theta_I \cdot I\)</span> permits a global phase
+rotation:</p>
+<p><span class="math display">\[\vec{\sigma}_M \to e^{i\alpha}
+\vec{\sigma}_M,\]</span></p>
+<p>This rotation does not alter the action of the Birkhoff Mixing
+Matrix——<span class="math inline">\(T(e^{i\alpha}\vec{\sigma}_M) =
+e^{i\alpha} T\vec{\sigma}_M\)</span>. This is the algebraic root of
+<span class="math inline">\(U(1)\)</span> gauge symmetry.</p>
+<p><strong>Proposition 3.6.2.02 (Algebraic Emergence of Gauge
+Symmetry).</strong> <span class="math inline">\(U(1)\)</span> gauge
+symmetry emerges from the phase freedom of the identity component <span
+class="math inline">\(\theta_I \cdot I\)</span> of the Birkhoff Mixing
+Matrix——it is not a postulate but a consequence of the algebraic
+structure.</p>
+<p>The significance of this proposition: gauge symmetry is not a
+“fundamental principle” but an “emergent property” of the coding
+framework. If the algebraic structure of the coding framework were
+altered (e.g., <span class="math inline">\(\theta_I = 0\)</span>), gauge
+symmetry would disappear——but the rigidity of Conjugate Spectral
+Geometry guarantees <span class="math inline">\(\theta_I \neq
+0\)</span>.</p>
+<h3 id="universality">2.3 Universality</h3>
+<p>The Photon Zero-Mass Theorem is <strong>universal</strong>——it is
+independent of position in the Landscape. Regardless of the value of
+<span class="math inline">\(T_{\text{ours}}\)</span>, the dominant
+Eigenvalue <span class="math inline">\(\lambda_1 = 1\)</span> always
+exists, and the photon is always massless.</p>
+<p>This means: in <strong>all</strong> worlds in the Landscape (<span
+class="math inline">\(S \in [24, 968]\)</span>), the photon mass is
+zero. This is a rigid prediction of the coding framework.</p>
+<h3 id="algebraic-proof-of-universality">2.4 Algebraic Proof of
+Universality</h3>
+<p>Algebraic proof of universality:</p>
+<p><strong>Step 1: Existence of the Dominant Eigenvalue.</strong> Any
+doubly stochastic matrix <span class="math inline">\(T\)</span> has a
+dominant Eigenvalue <span class="math inline">\(\lambda_1 = 1\)</span>
+(Perron-Frobenius Theorem). This is a rigid consequence of double
+stochasticity——not adjustable.</p>
+<p><strong>Step 2: Binding of the Photon to the Dominant
+Eigenvalue.</strong> The photon, as the quantum of ℳ self-coupling,
+always corresponds to the dominant Eigenvalue——this binding is
+determined by the algebraic structure of the coding framework,
+independent of landscape position.</p>
+<p><strong>Step 3: Necessity of Zero Mass.</strong> By Theorem 3.6.2.01,
+the dominant Eigenvalue corresponds to zero mass. Hence the photon is
+massless at all landscape positions.</p>
+<p>This proof shows that photon zero mass is a “super-rigid” property of
+the coding framework——more fundamental than other physical constants
+(such as the Fine-Structure Constant).</p>
+<hr />
+<h2 id="photon-as-a-goldstone-mode">§3 Photon as a Goldstone Mode</h2>
+<h3 id="concept-of-goldstone-mode">3.1 Concept of Goldstone Mode</h3>
+<p>In traditional quantum field theory, a Goldstone Mode is a massless
+excitation produced when a continuous symmetry is spontaneously broken.
+Goldstone’s Theorem guarantees: each broken generator of a continuous
+symmetry corresponds to a massless particle.</p>
+<p>In Conjugate Spectral Geometry, the “role” of the photon as a
+Goldstone Mode arises from a different mechanism——not continuous
+symmetry breaking but the fixed-point property of the dominant
+Eigenvalue. But the mathematical structures of the two are similar.</p>
+<h3 id="proof-of-the-photon-as-a-goldstone-mode">3.2 Proof of the Photon
+as a Goldstone Mode</h3>
+<p><strong>Proposition 3.6.3.01 (Photon as a Goldstone Mode).</strong>
+The photon is the Goldstone Mode of the ℳ sector self-coupling symmetry
+<span class="math inline">\(\theta_I \cdot I\)</span>——it is the
+geometric manifestation of this symmetry being “unbreakable.”</p>
+<p><strong>Proof.</strong></p>
+<p><strong>Step 1: Identification of the Symmetry.</strong> The ℳ sector
+self-coupling <span class="math inline">\(\theta_I \cdot I\)</span>
+possesses <span class="math inline">\(U(1)\)</span> phase symmetry
+(Proposition 1.1.1.01). This symmetry is “global”——it holds
+simultaneously at all points in coding space.</p>
+<p><strong>Step 2: Unbreakability of the Symmetry.</strong> Since <span
+class="math inline">\(\theta_I \approx 0.782\)</span> is the largest
+weight of the Birkhoff Mixing Matrix, and <span
+class="math inline">\(\theta_I \neq 0\)</span> is rigidly guaranteed by
+double stochasticity, the <span class="math inline">\(U(1)\)</span>
+phase symmetry cannot be broken——there is no “breaking parameter” that
+can break it.</p>
+<p><strong>Step 3: Emergence of the Goldstone Mode.</strong> An
+unbreakable continuous symmetry corresponds to a massless
+excitation——this is the photon. The photon is the Goldstone Mode of
+<span class="math inline">\(U(1)\)</span> phase symmetry, but since the
+symmetry is not broken, the photon is not a “product of breaking” but a
+“guardian of the symmetry.”</p>
+<p>This proof provides the algebraic form of the photon as a Goldstone
+Mode——different from the traditional Goldstone Theorem but with similar
+mathematical structure. ∎</p>
+<h3 id="comparison-with-the-traditional-goldstone-theorem">3.3
+Comparison with the Traditional Goldstone Theorem</h3>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Traditional Goldstone Theorem</th>
+<th style="text-align: left;">Photon in Conjugate Spectral Geometry</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Symmetry Type</td>
+<td style="text-align: left;">Continuous global symmetry</td>
+<td style="text-align: left;"><span class="math inline">\(U(1)\)</span>
+phase (algebraically emergent)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Symmetry State</td>
+<td style="text-align: left;">Spontaneously broken</td>
+<td style="text-align: left;">Unbreakable</td>
+</tr>
+<tr>
+<td style="text-align: left;">Goldstone Particle</td>
+<td style="text-align: left;">Product of breaking</td>
+<td style="text-align: left;">Guardian of symmetry</td>
+</tr>
+<tr>
+<td style="text-align: left;">Masslessness Guarantee</td>
+<td style="text-align: left;">Goldstone’s Theorem</td>
+<td style="text-align: left;">Dominant Eigenvalue fixed point</td>
+</tr>
+<tr>
+<td style="text-align: left;">Universality</td>
+<td style="text-align: left;">Depends on breaking parameters</td>
+<td style="text-align: left;">Landscape-universal</td>
+</tr>
+</tbody>
+</table>
+<p>Photon zero mass in Conjugate Spectral Geometry is stronger than the
+traditional Goldstone Theorem——it does not depend on any breaking
+parameters and is algebraically rigid.</p>
+<h3 id="correspondence-with-the-higgs-mechanism">3.4 Correspondence with
+the Higgs Mechanism</h3>
+<p>In the Standard Model, the photon retains zero mass through the Higgs
+Mechanism——<span class="math inline">\(U(1)\)</span> gauge symmetry is
+preserved after electroweak breaking. In Conjugate Spectral Geometry,
+photon zero mass does not require the Higgs Mechanism——it is directly
+guaranteed by the fixed-point property of the dominant Eigenvalue.</p>
+<p>But the “role” of the Higgs Mechanism has a counterpart in Conjugate
+Spectral Geometry: mass generation of the Matter Sector (§3.2) is
+realized through the geometric factor <span
+class="math inline">\(\sin^3\theta_M\)</span>, whose “excitation”
+corresponds to the vacuum expectation value of the Higgs field. The
+difference between the two is: the Standard Model’s Higgs Mechanism is
+“dynamical” (field-theoretic), while mass generation in Conjugate
+Spectral Geometry is “algebraic” (coding framework).</p>
+<hr />
+<h2 id="other-massless-particles">§4 Other Massless Particles</h2>
+<h3 id="gluon">4.1 Gluon</h3>
+<p>The gluon corresponds to the self-coupling mode of the 𝒞 sector.
+Since the 𝒞 sector also has the dominant Eigenvalue <span
+class="math inline">\(\lambda_1 = 1\)</span> (guaranteed by the double
+stochasticity of <span class="math inline">\(T\)</span>), the gluon mass
+is also zero:</p>
+<p><span class="math display">\[m_g = 0.\]</span></p>
+<p>Gluon zero mass is likewise landscape-universal.</p>
+<h3 id="graviton">4.2 Graviton</h3>
+<p>The graviton corresponds to the self-coupling mode of the ℐ sector.
+By the same reasoning:</p>
+<p><span class="math display">\[m_{\text{graviton}} = 0.\]</span></p>
+<h3 id="neutrino">4.3 Neutrino</h3>
+<p>The neutrino does <strong>not</strong> correspond to the
+self-coupling dominant Eigenvalue of any sector——it corresponds to the
+inter-sector breathing mode. Hence the neutrino mass is <strong>not
+zero</strong>:</p>
+<p><span class="math display">\[m_\nu \neq 0.\]</span></p>
+<p>The precise value of the neutrino mass is discussed in Volume 7.</p>
+<h3 id="unified-picture-of-massless-particles">4.4 Unified Picture of
+Massless Particles</h3>
+<p>The three massless particles (photon, gluon, graviton) correspond to
+the self-coupling dominant Eigenvalues of the three sectors——this is a
+rigid structure of the coding framework. Their zero mass requires no
+symmetry postulate whatsoever, entirely guaranteed by the double
+stochasticity of the Birkhoff Mixing Matrix.</p>
+<hr />
+<h2 id="complete-picture-of-the-massless-spectrum">§5 Complete Picture
+of the Massless Spectrum</h2>
+<h3 id="massless-spectrum-table">5.1 Massless Spectrum Table</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Particle</th>
+<th style="text-align: left;">Sector</th>
+<th style="text-align: center;">Eigenvalue</th>
+<th style="text-align: center;">Mass</th>
+<th style="text-align: center;">Landscape-Universal?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Photon γ</td>
+<td style="text-align: left;">ℳ self-coupling</td>
+<td style="text-align: center;">λ₁ = 1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">✓</td>
+</tr>
+<tr>
+<td style="text-align: left;">Gluon g</td>
+<td style="text-align: left;">𝒞 self-coupling</td>
+<td style="text-align: center;">λ₁ = 1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">✓</td>
+</tr>
+<tr>
+<td style="text-align: left;">Graviton</td>
+<td style="text-align: left;">ℐ self-coupling</td>
+<td style="text-align: center;">λ₁ = 1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">✓</td>
+</tr>
+<tr>
+<td style="text-align: left;">Neutrino ν</td>
+<td style="text-align: left;">Inter-sector breathing</td>
+<td style="text-align: center;">λ_{2,3}</td>
+<td style="text-align: center;">≠ 0</td>
+<td style="text-align: center;">✗</td>
+</tr>
+</tbody>
+</table>
+<p>The three massless particles correspond to the self-coupling dominant
+Eigenvalues of the three sectors——this is a rigid structure of the
+coding framework.</p>
+<h3 id="correspondence-between-masslessness-and-gauge-symmetry">5.2
+Correspondence between Masslessness and Gauge Symmetry</h3>
+<p>Correspondence between the three massless particles and gauge
+symmetries:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Particle</th>
+<th style="text-align: left;">Gauge Symmetry</th>
+<th style="text-align: left;">Algebraic Root</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Photon γ</td>
+<td style="text-align: left;">U(1)_em</td>
+<td style="text-align: left;">Phase freedom of θ_I · I</td>
+</tr>
+<tr>
+<td style="text-align: left;">Gluon g</td>
+<td style="text-align: left;">SU(3)_c</td>
+<td style="text-align: left;">Triality of 𝒞 sector Cl(5) Complex
+Structure</td>
+</tr>
+<tr>
+<td style="text-align: left;">Graviton</td>
+<td style="text-align: left;">diffeomorphism</td>
+<td style="text-align: left;">Involutivity of θ_{σ₂} · P_{σ₂}</td>
+</tr>
+</tbody>
+</table>
+<p>All three gauge symmetries emerge from the algebraic structure of the
+coding framework——they are not postulates but consequences.</p>
+<h3 id="rigid-prediction-of-zero-mass">5.3 Rigid Prediction of Zero
+Mass</h3>
+<p>The Photon Zero-Mass Theorem yields two rigid predictions:</p>
+<ol type="1">
+<li><strong>Upper bound of photon mass is zero</strong>: unlike other
+particles whose masses can be “small but nonzero,” the photon mass is
+strictly zero——there is no landscape position with a “small-mass
+photon.”</li>
+<li><strong>Experimental test of photon mass</strong>: the current
+experimental upper bound <span class="math inline">\(m_\gamma &lt;
+10^{-18}\,\text{eV}\)</span> is consistent with the zero-mass
+prediction. Any nonzero measurement would falsify the coding
+framework.</li>
+</ol>
+<p>These two predictions make the Photon Zero-Mass Theorem one of the
+strongest testable predictions of Conjugate Spectral Geometry.</p>
+<hr />
+<h2 id="physical-consequences-of-the-zero-mass-theorem">§6 Physical
+Consequences of the Zero-Mass Theorem</h2>
+<h3 id="geometric-root-of-coulombs-law">6.1 Geometric Root of Coulomb’s
+Law</h3>
+<p>Photon zero mass guarantees that Coulomb’s law is strictly <span
+class="math inline">\(1/r^2\)</span>——if the photon had mass, Coulomb’s
+law would be corrected to the Yukawa potential <span
+class="math inline">\(e^{-mr}/r\)</span>. Conjugate Spectral Geometry
+predicts that Coulomb’s law holds strictly, with no exponential
+decay.</p>
+<h3 id="universality-of-the-speed-of-light">6.2 Universality of the
+Speed of Light</h3>
+<p>Photon zero mass guarantees that the speed of light <span
+class="math inline">\(c\)</span> is the upper limit of velocity——this is
+the geometric foundation of special relativity. In Conjugate Spectral
+Geometry, the universality of the speed of light <span
+class="math inline">\(c\)</span> arises from the fixed-point property of
+the dominant Eigenvalue <span class="math inline">\(\lambda_1 =
+1\)</span>——the fixed-point velocity cannot be exceeded.</p>
+<h3 id="long-range-nature-of-the-electromagnetic-field">6.3 Long-Range
+Nature of the Electromagnetic Field</h3>
+<p>Photon zero mass guarantees that the electromagnetic field is
+long-range——the force range of the electromagnetic interaction is
+infinite. This is consistent with the “unbreakable” property of ℳ sector
+self-coupling: self-coupling does not decay with distance.</p>
+<h3 id="relation-to-the-mass-spectrum">6.4 Relation to the Mass
+Spectrum</h3>
+<p>The relationship between photon zero mass and the lepton mass
+spectrum: the photon, as the “zero point” of ℳ self-coupling, defines
+the “zero baseline” of the mass spectrum. Lepton masses are
+“excitations” relative to this zero point——oscillations of the breathing
+mode above the zero point.</p>
+<h3 id="landscape-significance-of-the-zero-mass-theorem">6.5 Landscape
+Significance of the Zero-Mass Theorem</h3>
+<p>Landscape significance of the Photon Zero-Mass Theorem: in all worlds
+in the Landscape (<span class="math inline">\(S \in [24, 968]\)</span>),
+the photon is massless——this means that the electromagnetic interaction
+exists in all possible worlds and has infinite force range. This
+“landscape universality” makes the electromagnetic interaction the “most
+fundamental” interaction——it is a rigid structure of the coding
+framework, not adjustable.</p>
+<p>In contrast, the strength of the weak interaction (<span
+class="math inline">\(\theta_\tau\)</span>) and the strength of gravity
+(<span class="math inline">\(\theta_{\sigma_2}\)</span>) can vary in the
+Landscape——they depend on Observer Localization. But photon zero mass
+does not depend on any localization——it is “absolutely rigid.”</p>
+<hr />
+<h2 id="theorem-index">Theorem Index</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Number</th>
+<th style="text-align: left;">Content</th>
+<th style="text-align: center;">Proof Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Theorem 3.6.2.01</td>
+<td style="text-align: left;">Photon Zero-Mass Theorem</td>
+<td style="text-align: center;">Proved (§2)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="references">References</h2>
+<ul>
+<li>Lawson, Michelsohn, <em>Spin Geometry</em>, Princeton University
+Press</li>
+<li>Goldstone, Salam, Weinberg, <em>Broken Symmetries</em> (Goldstone
+Theorem)</li>
+<li>Birkhoff, <em>Three observations on algebraic sums</em> (Doubly
+stochastic matrices and dominant Eigenvalues)</li>
+<li>Perron, Frobenius, <em>Über Matrizen aus nicht negativen
+Elementen</em> (Perron-Frobenius Theorem)</li>
+</ul>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 07:53:34</p>
+  </footer>
+</div>
+</body>
+</html>

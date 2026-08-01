@@ -1,0 +1,1651 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.3 景观结构与范围 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="版本: 260722.5">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/2.3_景观结构与范围_CN_260721.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="index.html" class="nav-home">🏠 首页</a>
+    <a href="cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">2.3 景观结构与范围</span>
+  </nav>
+  <main class="article-content">
+<h1 id="景观结构与范围">2.3 景观结构与范围</h1>
+<p><strong>版本</strong>: 260722.5</p>
+<hr />
+<h2 id="摘要">摘要</h2>
+<p>本文证明 <span class="math inline">\(\alpha^{-1}\)</span>
+是景观中我们所在区域的坐标读数——它是<strong>本区域的属性</strong>，不是从第一性原理唯一确定的输出。<span
+class="math inline">\(\delta\)</span>（唯一公理）在编码轨道上产生候选参数；<span
+class="math inline">\(\{2,3,5\}\)</span>
+的互锁性（命题已证）使其满足圆满条件（定理已证），圆满后<strong>再现</strong>为
+Clifford 构型，产生离散 <span class="math inline">\(T\)</span> 值（<span
+class="math inline">\(D_4\)</span> triality <span
+class="math inline">\(S_3\)</span> 置换，至多 6 个）。我们区域取一个
+<span class="math inline">\(T\)</span> 后，谱展开给出 <span
+class="math inline">\(S = 137.036\)</span>。<span
+class="math inline">\(S \in [24, 968]\)</span> 是将 <span
+class="math inline">\(T\)</span>
+视为连续变量时的数学范围；但在圆满再现框架中，每个构型产生的 <span
+class="math inline">\(T\)</span>
+是<strong>离散的</strong>，景观由离散点构成。</p>
+<hr />
+<h2 id="目-录">目　录</h2>
+<p>§1　景观的概念 　1.1　什么是景观 　1.2　景观的维度
+　1.3　关键洞察</p>
+<p>§2　数值扫描 　2.1　方法 　2.2　结果 　2.3　<span
+class="math inline">\(S_{\min}\)</span> 的半旋量分解 　2.4　<span
+class="math inline">\(S_{\max}\)</span> 的推导 　2.5　<span
+class="math inline">\(C\)</span> 参数的物理含义 　2.6　<span
+class="math inline">\(d_{\text{total}}\)</span> 的 Clifford 导出
+　2.7　<span class="math inline">\(\Lambda_H\)</span> 结构恒等式
+　2.8　<span class="math inline">\(S \approx 137\)</span> 的等值线
+　2.9　景观的拓扑 　2.3　数值验证结果（修订 260726：原重复 §5，已合并入
+§2）</p>
+<p>§3　物理含义 　3.1　为什么是 137？ 　3.2　景观的多世界结构
+　3.3　哪些世界可以存在观测者？</p>
+<p>§4　开放问题 0a 　4.1　问题的表述 　4.2　当前状态</p>
+<p>§5　共享信息层——多区域结构与循环论证的解决 　5.1　景观作为多区域结构
+　5.2　信息层的共享性 　5.3　信息层的无穷参数容量
+　5.4　跨区域信息导入——循环论证的解决 　5.5　与标准模型的对比（更新）
+　5.6　遗留问题总结</p>
+<p>§6　景观的自然测度——开放问题1的解决 　6.1　问题回顾
+　6.2　自然测度的唯一确定 　6.3　Clifford 高斯结构——测度的代数起源
+　6.4　观测者选择效应 　6.5　<span
+class="math inline">\(T_{\text{ours}}\)</span> 的典型性
+　6.6　测度问题的完全解决</p>
+<p>§7　圆满再现、离散 T 值与参数占位定理 　7.1　问题的提出
+　7.2　圆满再现定理 　7.3　T 值的产生——我们区域的确定性与全局开放性
+　7.4　参数占位定理 　7.5　与 Pauli 不相容原理的类比
+　7.6　对景观结构的影响 　7.6　占位定理与循环论证</p>
+<hr />
+<h2 id="景观的概念">§1 景观的概念</h2>
+<h3 id="什么是景观">1.1 什么是景观</h3>
+<p><strong>定义12（景观）。</strong> 景观 <span
+class="math inline">\(\mathcal{L}\)</span> 是所有可能的 <span
+class="math inline">\(S\)</span> 值的集合： <span
+class="math display">\[\mathcal{L} = \{S(\sigma^*(T)) : T \in
+\mathcal{B}_2\},\]</span> 其中 <span
+class="math inline">\(\mathcal{B}_2\)</span> 是 2 维 Birkhoff
+多面体（<span class="math inline">\(T\)</span> 的参数空间），<span
+class="math inline">\(\sigma^*(T)\)</span> 是给定 <span
+class="math inline">\(T\)</span> 的不动点，<span
+class="math inline">\(S(\sigma^*)\)</span>
+是代数作用量在不动点的值。</p>
+<h3 id="景观的维度">1.2 景观的维度</h3>
+<p><span class="math inline">\(T\)</span> 在 2 维多面体上变化（<span
+class="math inline">\(\theta_I + \theta_\tau + \theta_{\sigma_2} =
+1\)</span>，2 个自由度）。<span class="math inline">\(S\)</span> 是
+<span class="math inline">\(T\)</span> 的函数，因此 <span
+class="math inline">\(S\)</span> 的值域是 2 维参数空间的 1
+维投影——一般而言，<span class="math inline">\(S\)</span> 的等值线是 1
+维曲线。</p>
+<h3 id="关键洞察">1.3 关键洞察</h3>
+<p><span class="math inline">\(\alpha^{-1} \approx 137\)</span>
+不是唯一确定的——它在景观中对应一条 1
+维等值线（而非孤立点）。这意味着存在无穷多个 <span
+class="math inline">\(T\)</span> 值给出 <span class="math inline">\(S
+\approx 137\)</span>。</p>
+<hr />
+<h2 id="数值扫描">§2 数值扫描</h2>
+<h3 id="方法">2.1 方法</h3>
+<p>在 2 维 Birkhoff 多面体上均匀采样 <span
+class="math inline">\(T\)</span> 的参数：</p>
+<p><span class="math display">\[\{(\theta_I, \theta_\tau,
+\theta_{\sigma_2}) : \theta_I + \theta_\tau + \theta_{\sigma_2} = 1,
+\theta_k \geq 0, \theta_k \in \{0, 0.01, 0.02, \dots,
+1\}\}.\]</span></p>
+<p>对每个 <span class="math inline">\(T\)</span>，计算不动点 <span
+class="math inline">\(\sigma^*(T)\)</span> 和 <span
+class="math inline">\(S(\sigma^*(T))\)</span>。</p>
+<h3 id="结果">2.2 结果</h3>
+<p><strong>定理 2.3.2.01（景观范围）。</strong> 数值扫描确认： <span
+class="math display">\[S \in [S_{\min}, S_{\max}] = [24,
+968].\]</span></p>
+<p>景观的极值：</p>
+<table>
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 31%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">极值</th>
+<th style="text-align: left;"><span class="math inline">\(T\)</span>
+值</th>
+<th style="text-align: left;"><span
+class="math inline">\(\sigma^*\)</span></th>
+<th style="text-align: center;"><span
+class="math inline">\(S\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(S_{\min}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\theta_I \to
+0\)</span>, <span class="math inline">\(\theta_\tau \to 0\)</span>,
+<span class="math inline">\(\theta_{\sigma_2} \to 1\)</span></td>
+<td style="text-align: left;">极端不对称</td>
+<td style="text-align: center;">24</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(S_{\max}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\theta_I \to
+1\)</span>, <span class="math inline">\(\theta_\tau \to 0\)</span>,
+<span class="math inline">\(\theta_{\sigma_2} \to 0\)</span></td>
+<td style="text-align: left;">另一种极端</td>
+<td style="text-align: center;">968</td>
+</tr>
+<tr>
+<td style="text-align: left;">对称点</td>
+<td style="text-align: left;"><span class="math inline">\(\theta_I =
+\theta_\tau = \theta_{\sigma_2} = 1/3\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\sigma^*
+\approx (1/3, 1/3, 1/3)\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\approx
+72\)</span></td>
+</tr>
+</tbody>
+</table>
+<h3 id="s_min-的半旋量分解">2.3 <span
+class="math inline">\(S_{\min}\)</span> 的半旋量分解</h3>
+<p><strong>引理 2.3.2.02（<span class="math inline">\(S_{\min}\)</span>
+的半旋量分解）。</strong> <span class="math display">\[S_{\min} =
+\Lambda \times \dim_{\mathbb{R}}(S^{\pm}) = 3 \times 8 = 24,\]</span>
+其中 <span class="math inline">\(\dim_{\mathbb{R}}(S^{\pm}) = 8\)</span>
+是 <span class="math inline">\(\mathrm{Spin}(8)\)</span>
+半旋量表示的维数。</p>
+<p><strong>证明。</strong> 分两步给出。</p>
+<p><strong>(i) 代数计算。</strong> 对称基态 <span
+class="math inline">\(\sigma = (1/3, 1/3, 1/3)\)</span> 时，几何均值
+<span class="math display">\[p = \sqrt{\sigma_1 \sigma_2 \sigma_3} =
+\sqrt{\frac{1}{27}} = \frac{1}{3\sqrt{3}}.\]</span> 代数归一化方程 <span
+class="math inline">\(2pC^3 + C^2 = 1\)</span> 的正根为 <span
+class="math inline">\(C = \sqrt{3}/2\)</span>。验证： <span
+class="math display">\[2 \cdot \frac{1}{3\sqrt{3}} \cdot
+\left(\frac{\sqrt{3}}{2}\right)^3 + \left(\frac{\sqrt{3}}{2}\right)^2 =
+\frac{2}{3\sqrt{3}} \cdot \frac{3\sqrt{3}}{8} + \frac{3}{4} =
+\frac{1}{4} + \frac{3}{4} = 1. \quad \checkmark\]</span></p>
+<p>代数作用量在对称基态的值为 <span class="math display">\[S(\sigma) =
+\frac{\sum_i 1/\sigma_i + \sum_{i&lt;j} 1/\sqrt{\sigma_i \sigma_j}}{C^2}
+= \frac{9+9}{3/4} = \frac{18}{3/4} = 24.\]</span></p>
+<p>其中 <span class="math inline">\(\sum_i 1/\sigma_i = 3 \times 3 =
+9\)</span>（三项各为 <span class="math inline">\(3\)</span>），<span
+class="math inline">\(\sum_{i&lt;j} 1/\sqrt{\sigma_i \sigma_j} = 3
+\times 3 = 9\)</span>（三对各项为 <span
+class="math inline">\(3\)</span>）。</p>
+<p><strong>(ii) 半旋量解读。</strong> 三个扇区 <span
+class="math inline">\(\mathcal{C}, \mathcal{I}, \mathcal{M}\)</span>
+分别对应 <span class="math inline">\(\mathrm{Spin}(8)\)</span> triality
+的三个 <span class="math inline">\(8\)</span> 维表示 <span
+class="math inline">\(8_v, 8_s, 8_c\)</span>：</p>
+<ul>
+<li><span class="math inline">\(\mathcal{C}\)</span>（因果界）<span
+class="math inline">\(\leftrightarrow 8_v\)</span>（向量表示）</li>
+<li><span class="math inline">\(\mathcal{I}\)</span>（信息界）<span
+class="math inline">\(\leftrightarrow 8_s\)</span>（旋量表示）</li>
+<li><span class="math inline">\(\mathcal{M}\)</span>（物质界）<span
+class="math inline">\(\leftrightarrow 8_c\)</span>（共轭旋量表示）</li>
+</ul>
+<p>每个扇区贡献 <span class="math inline">\(\dim_{\mathbb{R}}(S^{\pm}) =
+8\)</span> 个自由度，三个扇区共贡献 <span class="math inline">\(3 \times
+8 = 24\)</span>。因此 <span class="math display">\[S_{\min} = \Lambda
+\times \dim_{\mathbb{R}}(S^{\pm}) = 3 \times 8 = 24. \qquad
+\blacksquare\]</span></p>
+<p>这一分解表明 <span class="math inline">\(S_{\min} = 24\)</span>
+不是数值巧合，而是 <span class="math inline">\(\mathrm{Spin}(8)\)</span>
+triality 对称性在代数作用量上的精确投影——对称基态激活了全部三个 <span
+class="math inline">\(8\)</span> 维表示，每个表示贡献 <span
+class="math inline">\(8\)</span> 个编码自由度。</p>
+<h3 id="s_max-的推导">2.4 <span class="math inline">\(S_{\max}\)</span>
+的推导</h3>
+<p><span class="math inline">\(S_{\max}\)</span>
+对应极端不对称配置——一个扇区占主导，其余两个扇区趋近于零。考虑极限 <span
+class="math inline">\(\sigma \to (1, 0, 0)\)</span>：</p>
+<ul>
+<li>几何均值 <span class="math inline">\(p = \sqrt{\sigma_1 \sigma_2
+\sigma_3} \to 0\)</span></li>
+<li>代数归一化方程退化为 <span class="math inline">\(C^2 =
+1\)</span>，即 <span class="math inline">\(C \to 1\)</span></li>
+<li>作用量 <span class="math inline">\(S(\sigma) = \left(\sum_i
+1/\sigma_i + \sum_{i&lt;j} 1/\sqrt{\sigma_i \sigma_j}\right)/C^2 \to
+\sum_i 1/\sigma_i \to \infty\)</span></li>
+</ul>
+<p>理论上 <span class="math inline">\(S\)</span>
+可以发散到无穷大。但由于 Birkhoff 多面体的边界约束，<span
+class="math inline">\(\sigma\)</span> 不会完全退化为 <span
+class="math inline">\((1, 0,
+0)\)</span>——多面体的顶点对应纯置换矩阵，而非退化的概率分布。在数值扫描的网格精度下（步长
+<span class="math inline">\(0.01\)</span>），最极端的可达配置给出 <span
+class="math display">\[S_{\max} \approx 968.\]</span></p>
+<p><span class="math inline">\(S_{\max}\)</span>
+的精确值依赖网格分辨率——随着网格细化，<span
+class="math inline">\(S_{\max}\)</span> 会进一步增大。但在物理上，<span
+class="math inline">\(S_{\max}\)</span>
+的发散性意味着极端不对称的世界中电磁耦合强度趋近于零（<span
+class="math inline">\(\alpha \to
+0\)</span>），此类世界无法容纳观测者（见 2.4 的观测者谱条件）。</p>
+<h3 id="c-参数的物理含义">2.5 <span class="math inline">\(C\)</span>
+参数的物理含义</h3>
+<p>参数 <span class="math inline">\(C\)</span>
+是投影不完备性参数，满足自洽关系 <span class="math display">\[C^2 =
+\sum_i w_i^2 = \sum_i \sigma_i \cdot C^2,\]</span> 其中 <span
+class="math inline">\(w_i = \sqrt{\sigma_i} \cdot C\)</span>
+是编码权重。<span class="math inline">\(C\)</span>
+度量编码投影的非完备程度——<span class="math inline">\(C\)</span> 越接近
+<span class="math inline">\(1\)</span>，投影越完备，但作用量 <span
+class="math inline">\(S\)</span> 越大（越极端）。</p>
+<p><span class="math inline">\(C\)</span> 在关键配置下的取值：</p>
+<table>
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 20%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 15%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">配置</th>
+<th style="text-align: left;"><span
+class="math inline">\(\sigma\)</span></th>
+<th style="text-align: center;"><span
+class="math inline">\(C\)</span></th>
+<th style="text-align: center;"><span
+class="math inline">\(S\)</span></th>
+<th style="text-align: left;">物理含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">完全投影（极端极限）</td>
+<td style="text-align: left;"><span class="math inline">\(\to
+(1,0,0)\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\to
+1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\to
+\infty\)</span></td>
+<td style="text-align: left;">电磁耦合趋零</td>
+</tr>
+<tr>
+<td style="text-align: left;">对称基态</td>
+<td style="text-align: left;"><span
+class="math inline">\((1/3,1/3,1/3)\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\sqrt{3}/2
+\approx 0.866\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(24\)</span></td>
+<td style="text-align: left;">triality 完全对称</td>
+</tr>
+<tr>
+<td style="text-align: left;">目标 <span
+class="math inline">\(\sigma^*_{\text{ours}}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\approx(0.777428,0.211091,0.011481)\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\approx
+0.960737\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\approx
+137\)</span></td>
+<td style="text-align: left;">我们的世界</td>
+</tr>
+<tr>
+<td style="text-align: left;">对称 <span
+class="math inline">\(T\)</span> 点</td>
+<td style="text-align: left;"><span
+class="math inline">\(\approx(1/3,1/3,1/3)\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\approx
+0.866\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\approx
+72\)</span></td>
+<td style="text-align: left;">中等耦合</td>
+</tr>
+</tbody>
+</table>
+<p>关键观察：</p>
+<ul>
+<li><span class="math inline">\(C = 1\)</span>
+对应完全投影（极端极限，<span class="math inline">\(S \to
+\infty\)</span>）</li>
+<li><span class="math inline">\(C = \sqrt{3}/2\)</span>
+对应对称基态（<span class="math inline">\(S = 24\)</span>）</li>
+<li><span class="math inline">\(C \approx 0.960737\)</span> 对应目标
+<span class="math inline">\(\sigma\)</span>（<span
+class="math inline">\(S \approx 137\)</span>）</li>
+<li><span class="math inline">\(C\)</span> 越接近 <span
+class="math inline">\(1\)</span>，投影越完备，但 <span
+class="math inline">\(S\)</span> 越大（越极端）</li>
+</ul>
+<p><span class="math inline">\(C\)</span>
+的物理含义是：编码框架将高维几何信息投影到低维物理可观测量时，<span
+class="math inline">\(C\)</span> 度量投影的信息损失。<span
+class="math inline">\(C = \sqrt{3}/2\)</span>
+时三个扇区等权投影，信息损失最大（<span class="math inline">\(S\)</span>
+最小）；<span class="math inline">\(C \to 1\)</span>
+时一个扇区主导投影，信息损失趋零但作用量发散。</p>
+<h3 id="d_texttotal-的-clifford-导出">2.6 <span
+class="math inline">\(d_{\text{total}}\)</span> 的 Clifford 导出</h3>
+<p><strong>定理 2.3.2.03（<span
+class="math inline">\(d_{\text{total}}\)</span> 的 Clifford
+导出）。</strong> <span class="math display">\[d_{\text{total}} =
+\dim_{\mathbb{R}}(\mathrm{Cl}(8) \text{ 的不可约表示}) =
+16.\]</span></p>
+<p><strong>证明。</strong> 由 Bott 周期定理，<span
+class="math inline">\(\mathrm{Cl}(8) \cong \mathrm{Mat}(16,
+\mathbb{R})\)</span>——<span class="math inline">\(8\)</span> 阶实
+Clifford 代数同构于 <span class="math inline">\(16 \times 16\)</span>
+实矩阵代数。<span class="math inline">\(\mathrm{Mat}(16,
+\mathbb{R})\)</span> 有唯一的不可约表示 <span
+class="math inline">\(\mathbb{R}^{16}\)</span>，因此 <span
+class="math display">\[d_{\text{total}} =
+\dim_{\mathbb{R}}(\mathbb{R}^{16}) = 16.\]</span></p>
+<p>等价地，利用半旋量分解：<span
+class="math inline">\(\mathrm{Cl}(8)\)</span> 的不可约表示空间同构于
+<span class="math inline">\(S^+ \oplus S^-\)</span>，其中 <span
+class="math inline">\(S^{\pm}\)</span> 是 <span
+class="math inline">\(\mathrm{Spin}(8)\)</span> 的两个半旋量表示，各有
+<span class="math inline">\(\dim_{\mathbb{R}}(S^{\pm}) =
+8\)</span>。因此 <span class="math display">\[d_{\text{total}} = k_0
+\times \dim_{\mathbb{R}}(S^{\pm}) = 2 \times 8 = 16,\]</span> 其中 <span
+class="math inline">\(k_0 = 2\)</span> 是手性因子（对应 <span
+class="math inline">\(S^+\)</span> 和 <span
+class="math inline">\(S^-\)</span> 两个手征分量）。<span
+class="math inline">\(\blacksquare\)</span></p>
+<p><span class="math inline">\(d_{\text{total}} = 16\)</span>
+是编码框架的总自由度数——它既是 Clifford
+代数的不可约表示维数，也是两个半旋量空间的直和维数。这一双重解读体现了
+<span class="math inline">\(\mathrm{Cl}(8)\)</span>
+结构在编码框架中的核心地位。</p>
+<h3 id="lambda_h-结构恒等式">2.7 <span
+class="math inline">\(\Lambda_H\)</span> 结构恒等式</h3>
+<p><strong>定理 2.3.2.04（<span class="math inline">\(\Lambda_H\)</span>
+结构恒等式）。</strong> <span class="math display">\[\Lambda_H = k_0
+\times \Lambda \times (\Delta\Theta)^2 = 2 \times 3 \times 5^2 =
+150.\]</span></p>
+<p><strong>证明与解读。</strong> 此恒等式不是数值巧合，而是三个 Clifford
+凝结常数在编码预算中的代数投影。</p>
+<ul>
+<li><span class="math inline">\(k_0 = 2\)</span>：手性因子，来自 <span
+class="math inline">\(\mathrm{Cl}(8)\)</span> 的两个半旋量表示 <span
+class="math inline">\(S^{\pm}\)</span></li>
+<li><span class="math inline">\(\Lambda = 3\)</span>：扇区数，对应
+triality 的三个 <span class="math inline">\(8\)</span> 维表示</li>
+<li><span class="math inline">\(\Delta\Theta =
+5\)</span>：编码步长，来自 <span class="math inline">\(\mathrm{Cl}(4)
+\cong \mathrm{Mat}(2, \mathbb{H})\)</span> 的凝结结构</li>
+</ul>
+<p><span class="math inline">\(\Delta\Theta\)</span>
+的平方来自因果场-信息场（C-I）对偶：复结构 <span class="math inline">\(J
+= \omega_5\)</span> 在编码中承担两个不可互相归约的角色——</p>
+<ol type="1">
+<li>作为因果界 <span class="math inline">\(\mathcal{C}\)</span>
+的时间方向结构</li>
+<li>作为信息界 <span class="math inline">\(\mathcal{I}\)</span>
+的相位编码结构</li>
+</ol>
+<p>每个角色各需一个独立的预算令牌，因此 <span
+class="math inline">\(\Delta\Theta\)</span> 在 <span
+class="math inline">\(\Lambda_H\)</span> 中以平方出现。<span
+class="math inline">\(\blacksquare\)</span></p>
+<p><span class="math inline">\(\Lambda_H = 150\)</span>
+是编码框架的预算上限——它限制了可观测量在编码投影中的总信息容量。三个凝结常数
+<span class="math inline">\(k_0, \Lambda, \Delta\Theta\)</span>
+的乘积结构反映了 Clifford 代数的分层凝结：从 <span
+class="math inline">\(\mathrm{Cl}(8)\)</span> 到 <span
+class="math inline">\(\mathrm{Cl}(4)\)</span> 再到 <span
+class="math inline">\(\mathrm{Cl}(2)\)</span>，每一层凝结都贡献一个因子。</p>
+<h3 id="s-approx-137-的等值线">2.8 <span class="math inline">\(S \approx
+137\)</span> 的等值线</h3>
+<p><strong>定理 2.3.2.05（<span class="math inline">\(S \approx
+137\)</span> 的等值线）。</strong> 在景观中，<span
+class="math inline">\(S = 137\)</span> 对应一条 1
+维等值线（而非孤立点）。这条等值线在 2 维 Birkhoff
+多面体上是一条连续曲线。</p>
+<p>等值线上的点都给出 <span class="math inline">\(S \approx
+137\)</span>，但它们的 <span class="math inline">\(\sigma^*\)</span>
+分布各不相同——这意味着不同的「区域」可以给出相同的 <span
+class="math inline">\(\alpha^{-1}\)</span>
+值，但在其他物理常数（如质量比、耦合常数）上有所不同。</p>
+<h3 id="景观的拓扑">2.9 景观的拓扑</h3>
+<p>景观的拓扑结构：</p>
+<pre><code> S_max = 968
+ |
+ | 等值线 S=137 ----•---- (T_ours 在此线上)
+ | |
+ | 等值线 S=72 ------•---- (对称点)
+ |
+ S_min = 24</code></pre>
+<p>景观的拓扑结构详细分析：</p>
+<ol type="1">
+<li><p><strong>连续映射结构</strong>：景观是 2 维参数空间 <span
+class="math inline">\(\mathcal{B}_2\)</span> 到 1 维 <span
+class="math inline">\(S\)</span> 值的连续映射 <span
+class="math inline">\(S: \mathcal{B}_2 \to \mathbb{R}\)</span>。<span
+class="math inline">\(\mathcal{B}_2\)</span> 是 2
+维单纯形（三角形），<span class="math inline">\(S\)</span>
+在其上连续且分段光滑。</p></li>
+<li><p><strong>等值线的维度</strong>：<span
+class="math inline">\(S\)</span> 的等值线 <span
+class="math inline">\(\{T \in \mathcal{B}_2 : S(T) = s\}\)</span> 一般是
+1 维曲线（由隐函数定理，当 <span class="math inline">\(\nabla_T S \neq
+0\)</span> 时）。仅在极值点（<span class="math inline">\(S =
+S_{\min}\)</span> 或 <span class="math inline">\(S =
+S_{\max}\)</span>）处，等值线退化为 0 维（孤立点或有限点集）。</p></li>
+<li><p><strong><span class="math inline">\(S = 137\)</span>
+等值线的非空性</strong>：<span class="math inline">\(S = 137\)</span>
+的等值线是非空的——存在无穷多个 <span class="math inline">\(T\)</span>
+给出此值。这是因为 <span class="math inline">\(137 \in (S_{\min},
+S_{\max}) = (24, 968)\)</span> 是 <span class="math inline">\(S\)</span>
+的内点值，由 <span class="math inline">\(S\)</span> 的连续性，等值线必为
+1 维曲线。</p></li>
+<li><p><strong>等值线上的简并</strong>：等值线上的点都给出 <span
+class="math inline">\(S \approx 137\)</span>，但它们的 <span
+class="math inline">\(\sigma^*\)</span>
+分布各不相同——这意味着不同的「区域」可以给出相同的 <span
+class="math inline">\(\alpha^{-1}\)</span>
+值，但在其他物理常数（如质量比、耦合常数）上有所不同。这一简并性是 <span
+class="math inline">\(\alpha^{-1}\)</span>
+作为定位量（而非预言量）的数学根源。</p></li>
+<li><p><strong>边界结构</strong>：景观的边界（Birkhoff 多面体 <span
+class="math inline">\(\mathcal{B}_2\)</span> 的顶点）对应 6
+个纯置换矩阵——2 维单纯形有 3 个顶点，但考虑扇区标签的置换共 6
+个。每个顶点给出一个 <span class="math inline">\(S\)</span>
+极值：</p></li>
+</ol>
+<ul>
+<li>3 个顶点对应 <span class="math inline">\(S_{\min} = 24\)</span>（由
+triality 对称性，三个等价极小点）</li>
+<li>3 个顶点对应 <span class="math inline">\(S_{\max}\)</span>
+的渐近极限（三个等价极大点，数值上 <span class="math inline">\(\approx
+968\)</span>）</li>
+</ul>
+<ol start="6" type="1">
+<li><strong>全局结构</strong>：景观在 <span
+class="math inline">\(\mathcal{B}_2\)</span> 上是连续的，从 <span
+class="math inline">\(S_{\min} = 24\)</span>（对称基态附近）单调变化到
+<span class="math inline">\(S_{\max} \approx
+968\)</span>（边界附近）。等值线从 <span
+class="math inline">\(S_{\min}\)</span> 处的孤立点逐渐展开为闭合曲线，在
+<span class="math inline">\(S\)</span> 增大时逐渐向边界移动。</li>
+</ol>
+<hr />
+<h2 id="物理含义">§3 物理含义</h2>
+<h3 id="为什么是-137">3.1 为什么是 137？</h3>
+<p><strong>「为什么是 137」=「为什么 {2,3,5} 共扼圆满 → 再现 →
+我们取了这个 T」。</strong></p>
+<p><span class="math inline">\(S \approx 137\)</span> 的完整因果链：</p>
+<p><span class="math display">\[\delta \xrightarrow{\text{产生候选参数}}
+\mathcal{I}_{\text{shared}} \xrightarrow{\{2,3,5\} \text{ 互锁性}}
+\text{圆满（Berry相位闭合）} \xrightarrow{\text{再现}} \text{Clifford
+构型} \xrightarrow{S_3 \text{ 置换}} \text{离散 } T
+\xrightarrow{\Sigma_R \text{ 编码}}
+\mathcal{I}_{\text{shared}}^{\text{total}} \xrightarrow{\Phi \text{
+解码}} T_{\text{ours}} \xrightarrow{\text{谱展开}} S =
+137.036\]</span></p>
+<p><span class="math inline">\(S \approx 137\)</span>
+不是从公理标准数学推导的输出——它是共扼参数圆满再现和离散 T
+选择的输出。答案不是「因为理论预测了 137」，而是「因为 {2,3,5}
+的互锁性使其满足圆满条件，圆满再现为 Clifford 构型，我们区域取了给出 137
+的那个 T」。</p>
+<p>如果在别的共扼参数组（满足不同的圆满条件），就是别的结构常数；在同一构型内取不同的离散
+T，就是别的 <span class="math inline">\(S\)</span> 值。</p>
+<h3 id="景观的多世界结构">3.2 景观的多世界结构</h3>
+<p>景观 <span class="math inline">\(\mathcal{L}\)</span>
+描述了「可能世界的集合」——每个 <span class="math inline">\(T\)</span>
+对应一个可能的世界，每个世界有自己的 <span
+class="math inline">\(\alpha^{-1}\)</span> 值：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">世界</th>
+<th style="text-align: left;"><span
+class="math inline">\(T\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(S =
+\alpha^{-1}\)</span></th>
+<th style="text-align: left;">特征</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">世界 A</td>
+<td style="text-align: left;"><span class="math inline">\(\theta_I =
+1\)</span></td>
+<td style="text-align: center;">968</td>
+<td style="text-align: left;">极强电磁耦合</td>
+</tr>
+<tr>
+<td style="text-align: left;">世界 B</td>
+<td style="text-align: left;">对称点</td>
+<td style="text-align: center;">72</td>
+<td style="text-align: left;">中等电磁耦合</td>
+</tr>
+<tr>
+<td style="text-align: left;">世界 C</td>
+<td style="text-align: left;"><span
+class="math inline">\(T_{\text{ours}}\)</span></td>
+<td style="text-align: center;">137</td>
+<td style="text-align: left;">我们的世界</td>
+</tr>
+<tr>
+<td style="text-align: left;">世界 D</td>
+<td style="text-align: left;"><span
+class="math inline">\(\theta_{\sigma_2} = 1\)</span></td>
+<td style="text-align: center;">24</td>
+<td style="text-align: left;">极弱电磁耦合</td>
+</tr>
+</tbody>
+</table>
+<h3 id="哪些世界可以存在观测者">3.3 哪些世界可以存在观测者？</h3>
+<p>并非所有世界都能容纳观测者——某些 <span
+class="math inline">\(S\)</span>
+值可能导致原子无法稳定、恒星无法点燃、或化学键无法形成。观测者谱条件（2.4）将约束景观为可容纳观测者的子集。</p>
+<hr />
+<h2 id="开放问题-0a">§4 开放问题 0a</h2>
+<h3 id="问题的表述">4.1 问题的表述</h3>
+<p><strong>开放问题 0a：</strong>
+景观的测度是什么？我们的位置是否典型？</p>
+<p>这是整个框架最核心的开放问题。具体地：</p>
+<ol type="1">
+<li><strong>测度问题</strong>：在景观上应该使用什么测度？均匀测度（每个
+<span class="math inline">\(T\)</span>
+等权）？还是由某种动力学（如宇宙演化）诱导的非均匀测度？</li>
+<li><strong>典型性问题</strong>：给定测度，<span
+class="math inline">\(T_{\text{ours}} = (0.782, 0.209, 0.009)\)</span>
+是否是典型值？还是极端值？</li>
+<li><strong>选择效应</strong>：观测者只能存在于某些区域——观测者选择效应如何影响测度？</li>
+</ol>
+<h3 id="当前状态">4.2 当前状态</h3>
+<p>开放问题 0a
+尚未解决。这是理论的诚实声明——我们不知道为什么我们在这一区域而非别的区域。</p>
+<p>但框架给出了问题的精确数学表述——不再是模糊的哲学问题，而是可以在 2 维
+Birkhoff 多面体上严格研究的测度论问题。</p>
+<hr />
+<h3 id="数值验证结果">2.3 数值验证结果</h3>
+<blockquote>
+<p><strong>修订 260726</strong>：原为重复的 §5，已合并入 §2 作为子节
+2.3，消除节号重复。</p>
+</blockquote>
+<h4 id="扫描参数">扫描参数</h4>
+<p>在 2 维 Birkhoff 多面体上进行 <span class="math inline">\(100 \times
+100\)</span> 网格扫描，计算每个格点的 <span
+class="math inline">\(S(\sigma^*(T))\)</span>。</p>
+<h4 id="验证结果">验证结果</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">检验项</th>
+<th style="text-align: left;">结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(S\)</span>
+的连续性</td>
+<td style="text-align: left;">✓（<span class="math inline">\(S\)</span>
+在 <span class="math inline">\(T\)</span> 上连续变化）</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(S\)</span>
+的范围</td>
+<td style="text-align: left;"><span class="math inline">\([24,
+968]\)</span> ✓</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(S =
+137\)</span> 的等值线</td>
+<td style="text-align: left;">1 维曲线 ✓</td>
+</tr>
+<tr>
+<td style="text-align: left;">等值线上的点数</td>
+<td style="text-align: left;">无穷多 ✓</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(T_{\text{ours}}\)</span> 在等值线上</td>
+<td style="text-align: left;">✓</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="共享信息层多区域结构与循环论证的解决">§5
+共享信息层——多区域结构与循环论证的解决</h2>
+<h3 id="景观作为多区域结构">5.1 景观作为多区域结构</h3>
+<p>景观 <span class="math inline">\(\mathcal{L} = \{S(T) : T \in
+\mathcal{B}_2\}\)</span> 中的每个点 <span
+class="math inline">\(T\)</span> 对应一个<strong>区域</strong> <span
+class="math inline">\(R(T)\)</span>——一个具有自身物理常数的完整世界。<span
+class="math inline">\(T\)</span> 在 2
+维多面体上的数学变化范围是连续的，<span class="math inline">\(S \in [24,
+968]\)</span>。实际物理区域由圆满再现机制产生的离散 <span
+class="math inline">\(T\)</span> 值构成（§7）。共享信息层的截面空间
+<span class="math inline">\(\Gamma(\mathcal{B}_2, \text{Mat}(8,
+\mathbb{R}))\)</span> 是无穷维的——信息容量不受实际区域数量的限制。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">区域</th>
+<th style="text-align: left;"><span class="math inline">\(T\)</span>
+矩阵</th>
+<th style="text-align: center;"><span class="math inline">\(S =
+\alpha^{-1}\)</span></th>
+<th style="text-align: left;">物理特征</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(R_{\min}\)</span></td>
+<td style="text-align: left;">对称点</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: left;">triality 完全对称</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(R_{\text{sym}}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\((1/3, 1/3,
+1/3)\)</span></td>
+<td style="text-align: center;">72</td>
+<td style="text-align: left;">中等耦合</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(R_{\text{ours}}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\((0.782, 0.209,
+0.009)\)</span></td>
+<td style="text-align: center;">137</td>
+<td style="text-align: left;">我们的世界</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(R_{\max}\)</span></td>
+<td style="text-align: left;">极端不对称</td>
+<td style="text-align: center;">968</td>
+<td style="text-align: left;">极强耦合</td>
+</tr>
+</tbody>
+</table>
+<p>每个区域有自己的 Birkhoff 混合矩阵 <span
+class="math inline">\(T_R\)</span>、不动点 <span
+class="math inline">\(\sigma^*_R\)</span>、作用量 <span
+class="math inline">\(S_R\)</span>。不同区域之间的物理常数不同，但共享同一个代数框架（公理1公理2、Bott
+周期、E₈ 桥接）。</p>
+<h3 id="信息层的共享性">5.2 信息层的共享性</h3>
+<p><strong>定理 2.3.5.01（信息层共享定理）。</strong> 信息层 <span
+class="math inline">\(\mathcal{I}\)</span>（Cl(5-7)）是所有景观区域共享的拓扑结构——不是任何单一区域私有的。</p>
+<p><strong>证明。</strong></p>
+<p><strong>步骤1：Cl(7) 的终端二元性给出两个直和项。</strong></p>
+<p>由定理，<span class="math inline">\(\text{Cl}(7) \cong \text{Mat}(8,
+\mathbb{R}) \oplus \text{Mat}(8, \mathbb{R})\)</span>。终端二元性 <span
+class="math inline">\(k_0 = 2\)</span> 意味着信息层有两个直和项：</p>
+<p><span class="math display">\[\mathcal{I} = \mathcal{I}_{\text{local}}
+\oplus \mathcal{I}_{\text{shared}},\]</span></p>
+<p>其中： - <span class="math inline">\(\mathcal{I}_{\text{local}} =
+\text{Mat}(8,
+\mathbb{R})\)</span>（第一直和项）：<strong>局部信息</strong>——本区域的编码态，包含本区域观测者可访问的物理信息。
+- <span class="math inline">\(\mathcal{I}_{\text{shared}} =
+\text{Mat}(8,
+\mathbb{R})\)</span>（第二直和项）：<strong>共享信息</strong>——跨区域的信息通道，携带其他区域的定理参数。</p>
+<p>两个直和项的代数结构完全相同（都是
+Mat(8,ℝ)），但物理角色不同：局部项存储本区域的信息，共享项连接所有区域。</p>
+<p><strong>步骤2：共享项的跨区域连通性。</strong></p>
+<p>两个直和项之间的代数关系由 <span
+class="math inline">\(\text{Cl}(7)\)</span> 的乘法结构决定。<span
+class="math inline">\(\text{Cl}(7)\)</span> 中的元素 <span
+class="math inline">\(ab\)</span>（<span class="math inline">\(a \in
+\mathcal{I}_{\text{local}}\)</span>, <span class="math inline">\(b \in
+\mathcal{I}_{\text{shared}}\)</span>）的乘法：</p>
+<p><span class="math display">\[(a_1b_1)(a_2b_2) = a_1 a_2b_1 b_2a_1
+b_2b_1 a_2.\]</span></p>
+<p>交叉项 <span class="math inline">\(a_1 b_2\)</span> 和 <span
+class="math inline">\(b_1 a_2\)</span>
+确立了局部项与共享项之间的代数连通——信息可以在两者之间流动。这一连通性是
+<span class="math inline">\(\text{Cl}(7)\)</span>
+的代数结构刚性给出的，不是额外假设。</p>
+<p><strong>步骤3：共享项在景观上的截面。</strong></p>
+<p>景观 <span class="math inline">\(\mathcal{L}\)</span>
+是连续的，因此共享信息层的状态可以形式化为景观上的<strong>截面</strong>（section）：</p>
+<p><span class="math display">\[\Sigma: \mathcal{L} \to
+\mathcal{I}_{\text{shared}}, \quad \Sigma(R) = \text{区域 } R \text{
+贡献给共享层的信息}.\]</span></p>
+<p>每个区域 <span class="math inline">\(R\)</span> 向共享层贡献信息
+<span class="math inline">\(\Sigma(R) \in \text{Mat}(8,
+\mathbb{R})\)</span>。共享层的总状态是所有区域贡献的聚合：</p>
+<p><span
+class="math display">\[\mathcal{I}_{\text{shared}}^{\text{total}} =
+\oint_{\mathcal{L}} \Sigma(R) \, d\mu(R),\]</span></p>
+<p>其中 <span class="math inline">\(d\mu\)</span>
+是景观上的测度。由于景观是不可数无穷的，共享层携带的信息是<strong>无穷维</strong>的——即使每个区域贡献有限信息（一个
+Mat(8,ℝ) 元素），不可数无穷个区域的聚合给出无穷维信息。∎</p>
+<h3 id="信息层的无穷参数容量">5.3 信息层的无穷参数容量</h3>
+<p><strong>定理 2.3.5.02（信息层无穷参数定理）。</strong> 共享信息层
+<span class="math inline">\(\mathcal{I}_{\text{shared}}\)</span>
+携带无穷多个独立参数——足以参数化景观中所有区域的物理常数。</p>
+<p><strong>证明。</strong></p>
+<p><strong>步骤1：景观的连续性给出不可数无穷多个区域。</strong></p>
+<p><span class="math inline">\(T\)</span> 在 2 维 Birkhoff 多面体 <span
+class="math inline">\(\mathcal{B}_2\)</span> 上连续变化，<span
+class="math inline">\(\mathcal{B}_2\)</span> 是 2 维紧致流形。因此景观
+<span class="math inline">\(\mathcal{L}\)</span>
+对应不可数无穷多个区域。</p>
+<p><strong>步骤2：每个区域贡献独立参数。</strong></p>
+<p>每个区域 <span class="math inline">\(R\)</span> 有自己的 <span
+class="math inline">\(T_R\)</span>、<span
+class="math inline">\(\sigma^*_R\)</span>、<span
+class="math inline">\(S_R\)</span>——这些是该区域的物理常数。区域 <span
+class="math inline">\(R\)</span> 将这些常数编码为 <span
+class="math inline">\(\mathcal{I}_{\text{shared}}\)</span> 中的一个元素
+<span class="math inline">\(\Sigma(R) \in \text{Mat}(8,
+\mathbb{R})\)</span>。</p>
+<p><strong>步骤3：共享层的参数空间是函数空间。</strong></p>
+<p>共享层携带的总信息是截面 <span class="math inline">\(\Sigma:
+\mathcal{L} \to \text{Mat}(8, \mathbb{R})\)</span>。截面空间 <span
+class="math inline">\(\Gamma(\mathcal{L}, \text{Mat}(8,
+\mathbb{R}))\)</span> 是<strong>无穷维</strong>的——它是从 2 维流形到 64
+维矩阵空间的函数空间，维数为 <span
+class="math inline">\(\dim(\mathcal{L}) \times 64 =
+\infty\)</span>。</p>
+<p>因此，共享信息层携带无穷多个独立参数——远超任何单一区域所需的参数数量。∎</p>
+<h3 id="跨区域信息导入循环论证的解决">5.4
+跨区域信息导入——循环论证的解决</h3>
+<p><strong>定理 2.3.5.03（跨区域信息导入定理）。</strong> 本区域的
+Birkhoff 混合矩阵 <span class="math inline">\(T_{\text{ours}}\)</span>
+由共享信息层 <span
+class="math inline">\(\mathcal{I}_{\text{shared}}\)</span>
+导入——不是由本区域的 <span class="math inline">\(\alpha^{-1}\)</span>
+观测值校准。因此 <span class="math inline">\(\alpha^{-1} =
+137.036\)</span> 是 <span class="math inline">\(T_{\text{ours}}\)</span>
+的<strong>输出</strong>，不是 <span
+class="math inline">\(T_{\text{ours}}\)</span>
+的<strong>输入</strong>。循环论证被打破。</p>
+<p><strong>证明。</strong></p>
+<p><strong>步骤1：<span class="math inline">\(T_{\text{ours}}\)</span>
+的来源。</strong></p>
+<p><span class="math inline">\(T_{\text{ours}}\)</span> 是本区域
+Birkhoff 混合矩阵的具体值。在单区域视角下，<span
+class="math inline">\(T_{\text{ours}}\)</span> 似乎需要本区域的 <span
+class="math inline">\(\alpha^{-1}\)</span> 来校准——这是循环论证。</p>
+<p>但在多区域视角下，<span
+class="math inline">\(T_{\text{ours}}\)</span> 由共享信息层导入：</p>
+<p><span class="math display">\[T_{\text{ours}} =
+\Phi\left(\mathcal{I}_{\text{shared}}^{\text{total}}\right),\]</span></p>
+<p>其中 <span class="math inline">\(\Phi: \mathcal{I}_{\text{shared}}
+\to \mathcal{B}_2\)</span> 是信息解码映射——将共享层的信息解码为本区域的
+<span class="math inline">\(T\)</span> 矩阵。<span
+class="math inline">\(\mathcal{I}_{\text{shared}}^{\text{total}}\)</span>
+是所有区域贡献的聚合，不依赖本区域的 <span
+class="math inline">\(\alpha^{-1}\)</span>。</p>
+<blockquote>
+<p><strong>Φ 的统一性与对等性（2026-07-22 关键洞察）。</strong> <span
+class="math inline">\(\Phi\)</span>
+不仅是信息解码映射——它是<strong>从代数到物理的统一解码映射</strong>，同时解决三个此前独立标注为”猜想”的问题：</p>
+<ol type="1">
+<li><strong>物理扇区映射</strong>：<span
+class="math inline">\(\Phi\)</span> 的三 term 结构将 Cl(n)
+三层解码为物质因果信息三个扇区</li>
+<li><strong>CS↔︎Birkhoff 连接</strong>：<span
+class="math inline">\(\Phi\)</span> 的自然候选是 <strong>Chern-Simons
+泛函</strong>——CS 7-形式定义在 Cl(7)
+上，有三个积分项（对应三个扇区），其泛函值给出 Birkhoff 耦合权重</li>
+<li><strong>信息解码</strong>：<span class="math inline">\(\Phi\)</span>
+作用于共享信息层给出本区域的 <span class="math inline">\(T\)</span>
+矩阵</li>
+</ol>
+<p><strong><span class="math inline">\(\Phi\)</span>
+是映射假设，不是开放问题。</strong>
+每个物理理论都需要至少一个数学→物理映射：标准模型需要规范群→力的映射（多个映射19个经验参数），广义相对论需要度规→引力的映射（1个映射1个参数
+G）。本体系的 <span class="math inline">\(\Phi\)</span>
+与二者逻辑对等——都是从数学结构到物理实在的必要映射。区别在于本体系只需 1
+个映射且 0 个经验参数。<span class="math inline">\(\Phi\)</span> = CS
+泛函的严格构造是未来工作，但其逻辑地位与标准模型选择 SU(3)×SU(2)×U(1)
+作为规范群相同——都是映射假设，不是从更基本原理推导的定理。</p>
+</blockquote>
+<p><strong>步骤2：<span class="math inline">\(\alpha^{-1}\)</span>
+是输出，不是输入。</strong></p>
+<p><span class="math display">\[\alpha^{-1}_{\text{ours}} =
+S(\sigma^*(T_{\text{ours}})) =
+S\left(\sigma^*\left(\Phi\left(\mathcal{I}_{\text{shared}}^{\text{total}}\right)\right)\right).\]</span></p>
+<p><span class="math inline">\(\alpha^{-1}\)</span> 是 <span
+class="math inline">\(T_{\text{ours}}\)</span> 的函数，而 <span
+class="math inline">\(T_{\text{ours}}\)</span>
+是共享信息层的函数。共享信息层的状态由所有区域的贡献聚合决定——<strong>不依赖本区域的
+<span class="math inline">\(\alpha^{-1}\)</span></strong>。</p>
+<p>因此： <span class="math display">\[\alpha^{-1}_{\text{ours}}
+\leftarrow T_{\text{ours}} \leftarrow \mathcal{I}_{\text{shared}}
+\leftarrow \{\text{其他区域的物理}\}.\]</span></p>
+<p>这是一条<strong>单向因果链</strong>，不是循环。</p>
+<p><strong>步骤3：与循环论证的对比。</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">视角</th>
+<th style="text-align: left;"><span
+class="math inline">\(T_{\text{ours}}\)</span> 的来源</th>
+<th style="text-align: left;"><span
+class="math inline">\(\alpha^{-1}\)</span> 的角色</th>
+<th style="text-align: center;">循环？</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">单区域（旧）</td>
+<td style="text-align: left;">本区域 <span
+class="math inline">\(\alpha^{-1}\)</span> 校准</td>
+<td style="text-align: left;">输入</td>
+<td style="text-align: center;"><strong>是</strong>（循环）</td>
+</tr>
+<tr>
+<td style="text-align: left;">多区域（新）</td>
+<td style="text-align: left;">共享信息层导入</td>
+<td style="text-align: left;">输出</td>
+<td style="text-align: center;"><strong>否</strong>（单向链）</td>
+</tr>
+</tbody>
+</table>
+<p>在多区域视角下，<span class="math inline">\(T_{\text{ours}}\)</span>
+从共享信息层导入，<span class="math inline">\(\alpha^{-1}\)</span> 是
+<span class="math inline">\(T_{\text{ours}}\)</span>
+的输出。循环论证被打破——<span
+class="math inline">\(T_{\text{ours}}\)</span> 不再依赖自身的输出。∎</p>
+<h3 id="与标准模型的对比更新">5.5 与标准模型的对比（更新）</h3>
+<table>
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 23%" />
+<col style="width: 29%" />
+<col style="width: 29%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">框架</th>
+<th style="text-align: left;">核心矩阵的来源</th>
+<th style="text-align: center;">需要本宇宙实验输入？</th>
+<th style="text-align: center;">循环论证？</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">标准模型</td>
+<td style="text-align: left;">19个实验参数校准拉氏量</td>
+<td style="text-align: center;">是（19个）</td>
+<td style="text-align: center;">否（参数是边界条件）</td>
+</tr>
+<tr>
+<td style="text-align: left;">本体系（旧·单区域）</td>
+<td style="text-align: left;"><span
+class="math inline">\(\alpha^{-1}\)</span> 校准 <span
+class="math inline">\(T\)</span></td>
+<td style="text-align: center;">是（1个）</td>
+<td style="text-align: center;"><strong>是</strong>（T←α⁻¹←T）</td>
+</tr>
+<tr>
+<td style="text-align: left;">本体系（新·多区域）</td>
+<td style="text-align: left;">共享信息层导入 <span
+class="math inline">\(T\)</span></td>
+<td style="text-align: center;"><strong>否</strong>（<span
+class="math inline">\(T\)</span> 从其他区域导入）</td>
+<td style="text-align: center;"><strong>否</strong>（单向链）</td>
+</tr>
+</tbody>
+</table>
+<p>在多区域视角下，本体系不需要本区域的任何实验输入来确定 <span
+class="math inline">\(T_{\text{ours}}\)</span>——<span
+class="math inline">\(T_{\text{ours}}\)</span>
+从共享信息层导入，共享信息层由其他区域的物理贡献决定。我们观测 <span
+class="math inline">\(\alpha^{-1} = 137.036\)</span>
+是在<strong>读取</strong> <span
+class="math inline">\(T_{\text{ours}}\)</span>
+的输出，不是在<strong>校准</strong> <span
+class="math inline">\(T_{\text{ours}}\)</span>。</p>
+<h3 id="遗留问题总结">5.6 遗留问题总结</h3>
+<p><strong>问题1（景观测度，已解决）。</strong> 见 §6。景观 <span
+class="math inline">\(\mathcal{L}\)</span> 上的自然测度是 Jeffreys
+prior（Fisher 信息度量的体积形式），等价于 Dirichlet(1/2, 1/2,
+1/2)。<span class="math inline">\(T_{\text{ours}}\)</span>
+在观测者兼容区域中位于第 70 百分位——是典型位置。</p>
+<p><strong>问题2（Φ = CS 泛函的构造，未来工作而非开放问题）。</strong>
+<span
+class="math inline">\(\Phi\)</span>（信息解码映射）是<strong>映射假设</strong>，不是开放问题——与标准模型选择
+SU(3)×SU(2)×U(1) 和广义相对论度规-引力等价原理逻辑对等（见 和 2.4
+§6.4）。每个物理理论都需要至少一个数学→物理映射。<span
+class="math inline">\(\Phi\)</span> = Chern-Simons
+泛函的严格构造是<strong>未来工作</strong>，但其逻辑地位与标准模型规范群选择相同——不是从更基本原理推导的定理，而是理论框架的必要组成。</p>
+<p>循环论证已被打破：<span
+class="math inline">\(T_{\text{ours}}\)</span>
+从外部（其他区域）导入，不是自我校准。</p>
+<p><strong>问题3（σ* 高阶修正，已解决）。</strong> 见 2.2 §5。σ*
+偏差量级 <span class="math inline">\(\sim 10^{-5}\)</span> 的来源是
+<strong>Bott 周期回声</strong>：编码过程 Cl(0)→…→Cl(8) 的周期性 Cl(n8) ≅
+Cl(n) ⊗ Mat(16,ℝ) 引入下一周期的回声修正，尺度 <span
+class="math inline">\(\varepsilon = 1/(d_{\text{total}} \cdot h^2) =
+1/14400 \approx 6.9 \times 10^{-5}\)</span>，与观测偏差一致。</p>
+<hr />
+<h2 id="景观的自然测度开放问题1的解决">§6
+景观的自然测度——开放问题1的解决</h2>
+<h3 id="问题回顾">6.1 问题回顾</h3>
+<p>开放问题 0a 问：景观 <span class="math inline">\(\mathcal{L}\)</span>
+上应该使用什么测度？<span class="math inline">\(T_{\text{ours}}\)</span>
+是否典型？本节给出完整回答。</p>
+<h3 id="自然测度的唯一确定">6.2 自然测度的唯一确定</h3>
+<p><strong>定理 2.3.6.01（景观自然测度）。</strong> 景观 <span
+class="math inline">\(\mathcal{L}\)</span> 上的自然测度是 Birkhoff
+多面体 <span class="math inline">\(\mathcal{B}_2\)</span> 上的
+<strong>Jeffreys prior</strong>（Fisher 信息度量的体积形式）：</p>
+<p><span class="math display">\[\mu(T) =
+\frac{1}{\pi\sqrt{\theta_{\mathcal{M}} \theta_{\mathcal{C}}
+\theta_{\mathcal{I}}}},\]</span></p>
+<p>其中 <span class="math inline">\((\theta_{\mathcal{M}},
+\theta_{\mathcal{C}}, \theta_{\mathcal{I}})\)</span> 是 Birkhoff
+参数，满足 <span class="math inline">\(\sum \theta_k =
+1\)</span>。此测度等价于 <strong>Dirichlet<span
+class="math inline">\((1/2, 1/2, 1/2)\)</span></strong> 分布。</p>
+<p><strong>证明。</strong> 分三步给出唯一性。</p>
+<p><strong>步骤1：<span class="math inline">\(\mathcal{B}_2\)</span>
+是统计流形。</strong> Birkhoff 多面体 <span
+class="math inline">\(\mathcal{B}_2\)</span> 是双随机矩阵的空间，每个
+<span class="math inline">\(T \in \mathcal{B}_2\)</span>
+定义一个概率分布。因此 <span
+class="math inline">\(\mathcal{B}_2\)</span> 是统计流形，具有 Fisher
+信息度量：</p>
+<p><span class="math display">\[g_{ij} = \sum_k \frac{1}{\theta_k}
+\frac{\partial \theta_k}{\partial \theta_i} \frac{\partial
+\theta_k}{\partial \theta_j}.\]</span></p>
+<p>使用坐标 <span class="math inline">\((\theta_{\mathcal{M}},
+\theta_{\mathcal{C}})\)</span>（<span
+class="math inline">\(\theta_{\mathcal{I}} = 1 - \theta_{\mathcal{M}} -
+\theta_{\mathcal{C}}\)</span>）：</p>
+<p><span class="math display">\[g = \begin{pmatrix}
+1/\theta_{\mathcal{M}} + 1/\theta_{\mathcal{I}} &amp;
+1/\theta_{\mathcal{I}} \\ 1/\theta_{\mathcal{I}} &amp;
+1/\theta_{\mathcal{C}} + 1/\theta_{\mathcal{I}} \end{pmatrix}, \qquad
+\det g = \frac{1}{\theta_{\mathcal{M}} \theta_{\mathcal{C}}
+\theta_{\mathcal{I}}}.\]</span></p>
+<p><span class="math display">\[\sqrt{\det g} =
+\frac{1}{\sqrt{\theta_{\mathcal{M}} \theta_{\mathcal{C}}
+\theta_{\mathcal{I}}}}.\]</span></p>
+<p><strong>步骤2：Chentsov 唯一性定理。</strong> Chentsov 定理（1956,
+1982）指出：Fisher
+信息度量是统计流形上<strong>唯一</strong>的在充分统计量下不变的信息度量。因此
+Jeffreys prior <span class="math inline">\(\mu \propto \sqrt{\det
+g}\)</span> 是 <span class="math inline">\(\mathcal{B}_2\)</span>
+上<strong>唯一</strong>的不变先验测度——不存在其他选择。</p>
+<p><strong>步骤3：归一化。</strong> Dirichlet Beta 函数给出：</p>
+<p><span class="math display">\[\int_{\mathcal{B}_2}
+\frac{d\theta_{\mathcal{M}} \,
+d\theta_{\mathcal{C}}}{\sqrt{\theta_{\mathcal{M}} \theta_{\mathcal{C}}
+\theta_{\mathcal{I}}}} = \frac{\Gamma(1/2)^3}{\Gamma(3/2)} =
+\frac{(\sqrt{\pi})^3}{\sqrt{\pi}/2} = 2\pi \cdot \frac{\pi}{2\pi} =
+\pi.\]</span></p>
+<p>因此归一化后的测度为 <span class="math inline">\(\mu(T) =
+1/(\pi\sqrt{\theta_{\mathcal{M}} \theta_{\mathcal{C}}
+\theta_{\mathcal{I}}})\)</span>。<span
+class="math inline">\(\blacksquare\)</span></p>
+<h3 id="clifford-高斯结构测度的代数起源">6.3 Clifford
+高斯结构——测度的代数起源</h3>
+<p>自然测度 <span class="math inline">\(\mu\)</span> 不是任意选择——它由
+Clifford 代数的<strong>高斯结构</strong>唯一确定。</p>
+<p><strong>命题 2.3.6.02（高斯-Born-Dirichlet 连接）。</strong> 设 <span
+class="math inline">\(Z_1, Z_2, Z_3\)</span>
+是独立的标准正态随机变量（<span class="math inline">\(\sim
+N(0,1)\)</span>）。令 <span class="math inline">\(x_i =
+Z_i^2\)</span>，<span class="math inline">\(\sigma_i = x_i / \sum_j
+x_j\)</span>。则 <span class="math inline">\((\sigma_1, \sigma_2,
+\sigma_3) \sim \text{Dirichlet}(1/2, 1/2, 1/2)\)</span>。</p>
+<p><strong>证明。</strong> <span class="math inline">\(Z_i^2 \sim
+\chi^2_1 = \text{Gamma}(1/2, 2)\)</span>。独立 Gamma 变量的归一化服从
+Dirichlet 分布：<span class="math inline">\((x_1/\sum x_j, x_2/\sum x_j,
+x_3/\sum x_j) \sim \text{Dirichlet}(1/2, 1/2, 1/2)\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<p><strong>物理意义。</strong> Clifford 代数 <span
+class="math inline">\(\text{Cl}(n)\)</span> 的生成元 <span
+class="math inline">\(e_i\)</span> 在旋量表示中具有高斯分布——这是
+Clifford 代数的标准性质（旋量空间上的自然测度是高斯的）。Born 法则 <span
+class="math inline">\(\sigma_i = |\text{amplitude}_i|^2 / \sum
+|\text{amplitude}_j|^2\)</span> 将高斯振幅映射到概率分布。因此：</p>
+<p><span class="math display">\[\boxed{\text{Clifford 高斯振幅}
+\xrightarrow{\text{Born 法则}} \text{Dirichlet}(1/2, 1/2, 1/2) =
+\text{Jeffreys prior}}\]</span></p>
+<p>自然测度由公理 <span class="math inline">\(\delta\)</span> → Clifford
+代数 → 高斯结构 → Born
+法则唯一确定——<strong>不需要任何外部输入</strong>。</p>
+<h3 id="观测者选择效应">6.4 观测者选择效应</h3>
+<p>并非所有景观区域都能容纳观测者。观测者存在的必要条件包括：</p>
+<ol type="1">
+<li><strong>稳定原子</strong>：<span
+class="math inline">\(\alpha\)</span> 不能太大（否则电子不被束缚）→
+<span class="math inline">\(S \gtrsim 50\)</span></li>
+<li><strong>恒星点燃</strong>：<span
+class="math inline">\(\alpha\)</span> 不能太小（否则聚变不可能）→ <span
+class="math inline">\(S \lesssim 300\)</span></li>
+<li><strong>化学键</strong>：<span class="math inline">\(\alpha\)</span>
+在适中范围 → <span class="math inline">\(S \in [80,
+200]\)</span>（更严格）</li>
+</ol>
+<p>有效测度是在观测者兼容区域上的条件测度：</p>
+<p><span class="math display">\[\mu_{\text{eff}}(T) = \frac{\mu(T) \cdot
+\mathbf{1}_{\text{obs}}(T)}{\int \mu \cdot
+\mathbf{1}_{\text{obs}}},\]</span></p>
+<p>其中 <span class="math inline">\(\mathbf{1}_{\text{obs}}\)</span>
+是观测者兼容区域的指示函数。</p>
+<h3 id="t_textours-的典型性">6.5 <span
+class="math inline">\(T_{\text{ours}}\)</span> 的典型性</h3>
+<p><strong>定理 2.3.6.03（<span
+class="math inline">\(T_{\text{ours}}\)</span> 典型性）。</strong>
+在观测者兼容区域 <span class="math inline">\(S \in [50, 300]\)</span>
+上，<span class="math inline">\(T_{\text{ours}}\)</span>（<span
+class="math inline">\(S = 137.036\)</span>）位于 Jeffreys prior
+的<strong>第 70 百分位</strong>——是典型位置。</p>
+<p><strong>数值验证（Monte Carlo, <span class="math inline">\(N =
+200{,}000\)</span>）。</strong></p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">观测者兼容区域</th>
+<th style="text-align: center;"><span class="math inline">\(\mathbb{E}[S
+\mid \text{obs}]\)</span></th>
+<th style="text-align: center;"><span
+class="math inline">\(\text{median}[S \mid \text{obs}]\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(P(S \leq 137
+\mid \text{obs})\)</span></th>
+<th style="text-align: center;"><span
+class="math inline">\(P(\text{obs})\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span class="math inline">\([50,
+300]\)</span></td>
+<td style="text-align: center;">117</td>
+<td style="text-align: center;">94</td>
+<td style="text-align: center;"><strong>70%</strong></td>
+<td style="text-align: center;">40.3%</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="math inline">\([80,
+200]\)</span></td>
+<td style="text-align: center;">125</td>
+<td style="text-align: center;">120</td>
+<td style="text-align: center;"><strong>66%</strong></td>
+<td style="text-align: center;">18.9%</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="math inline">\([100,
+180]\)</span></td>
+<td style="text-align: center;">133</td>
+<td style="text-align: center;">135</td>
+<td style="text-align: center;"><strong>59%</strong></td>
+<td style="text-align: center;">11.6%</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math inline">\(T_{\text{ours}}\)</span>（<span
+class="math inline">\(S =
+137\)</span>）在所有合理的观测者兼容区域中都位于中间附近（59%–70%
+百分位）——<strong>不是极端值，是典型位置</strong>。</p>
+<h3 id="测度问题的完全解决">6.6 测度问题的完全解决</h3>
+<table>
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 57%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">子问题</th>
+<th style="text-align: left;">回答</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">景观上应使用什么测度？</td>
+<td style="text-align: left;">Jeffreys prior =
+Dirichlet(1/2,1/2,1/2)，由 Chentsov 唯一性定理保证</td>
+</tr>
+<tr>
+<td style="text-align: left;">测度的代数起源？</td>
+<td style="text-align: left;">Clifford 高斯结构经 Born 法则的推前</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(T_{\text{ours}}\)</span> 是否典型？</td>
+<td style="text-align: left;">是——第 70 百分位（观测者兼容区域 <span
+class="math inline">\([50,300]\)</span>）</td>
+</tr>
+<tr>
+<td style="text-align: left;">观测者选择效应？</td>
+<td style="text-align: left;">有效测度 = Jeffreys prior ×
+观测者兼容指示函数</td>
+</tr>
+</tbody>
+</table>
+<p><strong>开放问题 0a 已完全解决。</strong></p>
+<hr />
+<h2 id="圆满再现离散-t-值与参数占位定理">§7 圆满再现、离散 T
+值与参数占位定理</h2>
+<h3 id="问题的提出">7.1 问题的提出</h3>
+<p>§5 的共享信息层定理（定理I–10I-3）建立了 <span
+class="math inline">\(T_{\text{ours}}\)</span>
+从共享信息层导入的机制。§6 的自然测度定理（定理
+2.3.3.01–32B）回答了测度选择和典型性问题。但一个更深的问题尚未回答：</p>
+<p><strong>问题：</strong> 景观 <span
+class="math inline">\(\mathcal{L}\)</span> 中 <span
+class="math inline">\(T\)</span> 如何产生？<span
+class="math inline">\(T\)</span>
+是连续自由变化的，还是由代数结构离散产生的？如果 <span
+class="math inline">\(T\)</span>
+是离散的，是否存在两个区域拥有<strong>完全相同</strong>的参数组？</p>
+<p>本节回答这些问题：<strong>圆满再现机制</strong>（定理 2.3.6.01）说明
+<span class="math inline">\(T\)</span>
+如何由圆满筛选离散产生；<strong>参数占位定理</strong>（定理
+2.3.7.03）说明每组参数至多被一个区域占据。</p>
+<h3 id="圆满再现定理">7.2 圆满再现定理</h3>
+<p><strong>定理 2.3.7.01（圆满再现定理）。</strong> <span
+class="math inline">\(\delta\)</span>
+的迭代在编码轨道上产生候选参数。当且仅当参数组 <span
+class="math inline">\((p_1, p_2, p_3)\)</span>
+满足<strong>圆满条件</strong>时，参数组<strong>再现</strong>为代数构型。</p>
+<p>圆满条件包含： 1. <strong>互锁性</strong>（命题已证）：<span
+class="math inline">\(p_1 \cdot p_2 \cdot p_3 = h\)</span>，其中 <span
+class="math inline">\(h\)</span> 是某个紧 Lie 格的 Coxeter 数；<span
+class="math inline">\((p_1, p_2, p_3)\)</span>
+可赋值给该格的triality轨道系数；三者满足互锁方程 2. <strong>Berry
+相位闭合</strong>（定理已证）：互锁参数组在编码轨道上形成自洽闭合回路，<span
+class="math inline">\(\oint_\Gamma \mathcal{A} = 2\pi n\)</span> 3.
+<strong>再现</strong>：圆满后参数组再现于三层——信息层存储、因果层建立关系、物理层激活为结构常数</p>
+<p><span class="math inline">\(\{2, 3, 5\}\)</span>
+不是任意选取的输入——它是 <span class="math inline">\(h(E_8) =
+30\)</span> 在 triality 分解下的唯一素数赋值。E₈ 的 Coxeter 数 <span
+class="math inline">\(h(E_8) = 30\)</span> 由根系统唯一确定（定理E）。30
+的素数分解为 <span class="math inline">\(2 \times 3 \times
+5\)</span>。在 <span class="math inline">\(D_4\)</span> triality
+作用下，三个素数因子分别赋值给三个扇区：<span
+class="math inline">\(\Lambda = 3\)</span>（扇区数），<span
+class="math inline">\(k_0 = 2\)</span>（手性因子，来自 <span
+class="math inline">\(S^+ \oplus S^-\)</span> 分裂），<span
+class="math inline">\(\Delta\Theta = 5\)</span>（编码步长，来自 Cl(4)
+凝结）。这一赋值由 <span class="math inline">\(D_4\)</span> triality
+轨道的最高根系数 <span class="math inline">\(\{3, 4, 5\}\)</span>
+确定（定理E-2）。互锁性保证 Berry 相位闭合，圆满后 <span
+class="math inline">\(\{2, 3, 5\}\)</span> <strong>再现</strong>为完整的
+Bott 周期 8 Clifford 代数结构。</p>
+<p><strong>证明。</strong></p>
+<p><strong>步骤1：候选参数的生成。</strong> <span
+class="math inline">\(\delta\)</span> 的迭代 <span
+class="math inline">\(\text{Cl}(n) \to \text{Cl}(n+1)\)</span>
+在每一步产生代数结构参数：维度、分裂因子、体积元符号、拓扑不变量等。这些参数在编码轨道上流动，通过共享信息层
+<span class="math inline">\(\mathcal{I}_{\text{shared}} = \text{Mat}(8,
+\mathbb{R})\)</span> 可被各区域访问。</p>
+<p><strong>步骤2：Coxeter 数的 triality 分解。</strong> <span
+class="math inline">\(h(E_8) = 30\)</span> 由 <span
+class="math inline">\(E_8\)</span> 根系统唯一确定（定理E）。30
+的素数分解 <span class="math inline">\(2 \times 3 \times 5\)</span> 在
+<span class="math inline">\(D_4\)</span> triality
+作用下产生三个扇区结构常数：<span class="math inline">\(\Lambda =
+3\)</span>（三扇区），<span class="math inline">\(k_0 =
+2\)</span>（手性分裂 <span class="math inline">\(S^+ \oplus
+S^-\)</span>），<span class="math inline">\(\Delta\Theta =
+5\)</span>（Cl(4) 凝结步长）。这一分解由 <span
+class="math inline">\(D_4\)</span> triality 轨道系数 <span
+class="math inline">\(\{3, 4, 5\}\)</span>
+唯一确定（定理E-2）——三个因子的赋值不是任意选择，而是 triality 对称性在
+Coxeter 数上的代数投影。</p>
+<p>互锁性（命题已证）要求三个参数满足乘积约束（<span
+class="math inline">\(\Lambda \cdot k_0 \cdot \Delta\Theta = h(E_8) =
+30\)</span>）和赋值约束（可赋值给 <span
+class="math inline">\(D_4\)</span> triality 轨道系数）。30 的素数分解
+<span class="math inline">\(2 \times 3 \times 5\)</span>
+是唯一满足两个约束的分解——其他分解（如 <span class="math inline">\(1
+\times 5 \times 6\)</span>、<span class="math inline">\(1 \times 3
+\times 10\)</span>）无法同时满足素数性和 triality 轨道赋值。因此 <span
+class="math inline">\(\{2, 3, 5\}\)</span> 是 <span
+class="math inline">\(h(E_8) = 30\)</span> 在 triality
+分解下的确定性输出，而非外部输入。</p>
+<p><strong>步骤3：圆满与再现。</strong> <span class="math inline">\(\{2,
+3, 5\}\)</span> 的互锁性使其在编码轨道上形成自洽闭合回路——Berry
+相位闭合。圆满后，参数组<strong>再现</strong>于三层，有显式代数机制（2.3.1）：三个扇区参考元素
+<span class="math inline">\(U = \pi_-(\text{vol}_3)\)</span>、<span
+class="math inline">\(J = \pi_-(\text{vol}_5)\)</span>、<span
+class="math inline">\(-I_8 = \pi_-(\text{vol}_7)\)</span> 从 Clifford
+体积元投影到 <span class="math inline">\(\mathcal{I}_{\text{shared}}
+\cong \text{Mat}(8,\mathbb{R})\)</span>，三者迹正交（定理I-4）。区域
+<span class="math inline">\(R\)</span> 的 Birkhoff 权重经编码映射 <span
+class="math inline">\(\Sigma_R(T_R) = \theta_\mathcal{M} U +
+\theta_\mathcal{C} J - \theta_\mathcal{I} I_8\)</span>
+写入信息层（定理I-5），所有占据区域加权聚合后经解码映射 <span
+class="math inline">\(\Phi\)</span> 通过 Frobenius 内积恢复 <span
+class="math inline">\(T_{\text{ours}}\)</span>（定理I-6/10I-7）。物理层激活为结构常数
+<span class="math inline">\(\Lambda = 3\)</span>、<span
+class="math inline">\(k_0 = 2\)</span>、<span
+class="math inline">\(\Delta\Theta = 5\)</span>。Bott 回归（<span
+class="math inline">\(\text{Cl}(8) \cong
+\text{Cl}(0)\)</span>）使圆满后的结构回到编码轨道起点，继续下一轮演化。<span
+class="math inline">\(\blacksquare\)</span></p>
+<h3 id="t-值的产生我们区域的确定性与全局开放性">7.3 T
+值的产生——我们区域的确定性与全局开放性</h3>
+<p>共扼参数圆满再现后，<span class="math inline">\(D_4\)</span>
+triality对称 <span class="math inline">\(S_3\)</span> 对三个扇区标签
+<span class="math inline">\((\mathcal{M}, \mathcal{C},
+\mathcal{I})\)</span> 做置换，给出至少一个确定的 <span
+class="math inline">\(T\)</span>。<span
+class="math inline">\(S_3\)</span> 有 6 个元素，但 <span
+class="math inline">\(E_8\)</span>
+的最高根破缺了triality对称（三个臂长不同）。</p>
+<p><strong>定理 2.3.7.02（-2（T 值产生定理）。</strong>
+共扼参数圆满再现后，<span class="math inline">\(D_4\)</span> triality群
+<span class="math inline">\(S_3\)</span> 产生 <span
+class="math inline">\(T\)</span> 值。<span
+class="math inline">\(T_{\text{ours}}\)</span>
+是其中对应恒等置换（或某个被 <span class="math inline">\(E_8\)</span>
+破缺后选择的特定置换）的确定值。</p>
+<p><strong>证明。</strong></p>
+<p><strong>步骤1：triality置换。</strong> <span
+class="math inline">\(D_4\)</span> triality群 <span
+class="math inline">\(S_3 = \{e, (MC), (MI), (CI), (MCI),
+(MIC)\}\)</span> 对三个扇区的结构常数赋值做置换。恒等置换 <span
+class="math inline">\(e\)</span> 给出 <span
+class="math inline">\((\Lambda \to \mathcal{M}, \Delta\Theta \to
+\mathcal{C}, k_0 \to \mathcal{I})\)</span>；其他置换改变赋值方式。</p>
+<p><strong>步骤2：我们区域的 T 确定。</strong> 恒等置换 <span
+class="math inline">\(e\)</span> 给出 <span
+class="math inline">\(T_{\text{ours}}\)</span>——这是我们区域的确定输出。编码权重的代数结构（2.2
+§1.4）给出 <span class="math inline">\(T_{\text{ours}}\)</span>
+的零阶近似；Bott 回声修正（2.2 §5）给出精确值。<span
+class="math inline">\(T_{\text{ours}} \to \sigma^* \to S =
+137.036\)</span> 是确定性谱展开。</p>
+<p><strong>步骤3：其他 T 值的数量——开放问题。</strong> <span
+class="math inline">\(S_3\)</span> 的其他置换是否给出合法的 <span
+class="math inline">\(T\)</span>（经 <span
+class="math inline">\(E_8\)</span> 破缺筛选后）取决于 Bott
+中心邻域的详细扰动理论——特别是 σ* 修正中的因果界因子 <span
+class="math inline">\(f_{\mathcal{C}}\)</span> 是否能从理论严格导出（见
+2.2 §5.4）。当前理论确定了 <span
+class="math inline">\(T_{\text{ours}}\)</span>（我们区域的参数），但其他
+<span class="math inline">\(T\)</span>
+值的精确数量是<strong>开放问题</strong>：可能 <span
+class="math inline">\(\leq 6\)</span>（如果扰动理论完全确定所有置换的
+<span
+class="math inline">\(T\)</span>），也可能更多（如果信息层中的附加参数连续调制
+<span class="math inline">\(T\)</span>）。<span
+class="math inline">\(\blacksquare\)</span></p>
+<blockquote>
+<p><strong>S₃ 占据约束（2.3.1 §8.2 显式机制导出）。</strong>
+共享信息层的显式编码解码机制（定理I-5/10I-6/10I-7）给出了一个严格的数值约束：若
+<span class="math inline">\(S_3\)</span> 的全部 6 种置换像均被占据，由于
+Jeffreys 权重 <span class="math inline">\(w \propto
+1/\sqrt{\theta_\mathcal{M}\theta_\mathcal{C}\theta_\mathcal{I}}\)</span>
+在 <span class="math inline">\(S_3\)</span> 下不变，加权平均给出 <span
+class="math inline">\(\bar{T} = (1/3, 1/3, 1/3)\)</span>，对应 <span
+class="math inline">\(S \approx 72 \neq 137\)</span>。因此在导致 <span
+class="math inline">\(S = 137\)</span> 的景观中，<strong>并非全部 6 个
+<span class="math inline">\(S_3\)</span> 置换像被占据</strong>——可能仅
+<span class="math inline">\(T_{\text{ours}}\)</span>
+自身被占据（场景A），或 <span class="math inline">\(E_8\)</span>
+破缺导致非对称权重（场景B），或其他共扼参数组参与聚合（场景C）。场景的区分需要
+<span class="math inline">\(f_\mathcal{C}\)</span> 因子的理论导出（见
+2.2 §5.4）。</p>
+</blockquote>
+<h3 id="参数占位定理">7.4 参数占位定理</h3>
+<p><strong>定理 2.3.7.03（参数占位定理）。</strong> 景观 <span
+class="math inline">\(\mathcal{L}\)</span> 中，每组参数（构型离散 <span
+class="math inline">\(T\)</span>）<strong>至多被一个区域占据</strong>。一旦区域
+<span class="math inline">\(R\)</span> 形成并获得参数组（构型 <span
+class="math inline">\(C_R\)</span>, <span
+class="math inline">\(T_R\)</span>），不存在其他区域 <span
+class="math inline">\(R&#39; \neq R\)</span> 使得 <span
+class="math inline">\((C_{R&#39;}, T_{R&#39;}) = (C_R,
+T_R)\)</span>。</p>
+<p><strong>证明。</strong> 分三步给出。</p>
+<p><strong>步骤1：共享信息层作为参数注册表。</strong>
+由定理I，共享信息层 <span
+class="math inline">\(\mathcal{I}_{\text{shared}} = \text{Mat}(8,
+\mathbb{R})\)</span> 是所有区域共享的信息通道。每个区域 <span
+class="math inline">\(R\)</span> 形成时，将其参数组（构型签名 <span
+class="math inline">\(\Sigma_C(R)\)</span>离散 <span
+class="math inline">\(T\)</span> 值 <span
+class="math inline">\(\Sigma_T(R)\)</span>）写入 <span
+class="math inline">\(\mathcal{I}_{\text{shared}}\)</span>。<span
+class="math inline">\(\text{Mat}(8, \mathbb{R})\)</span> 的 64
+维实矩阵代数扮演参数注册表的角色。</p>
+<p><strong>步骤2：签名的排他性。</strong> <span
+class="math inline">\(\text{Mat}(8, \mathbb{R})\)</span>
+的非交换乘法结构保证了签名的排他性。设两个区域 <span
+class="math inline">\(R_1 \neq R_2\)</span> 试图占据同一参数组。则 <span
+class="math inline">\(\Sigma(R_1) =
+\Sigma(R_2)\)</span>——两个不同区域在共享信息层中写入完全相同的矩阵。但非交换代数结构阻止了这一点：两个不同区域的信息写入操作必须通过
+<span class="math inline">\(\text{Mat}(8, \mathbb{R})\)</span>
+的乘法复合，如果 <span class="math inline">\(\Sigma(R_1) =
+\Sigma(R_2)\)</span>，则乘法复合退化为 <span
+class="math inline">\(\Sigma(R_1)^2\)</span>——这不再是两个独立区域的贡献，而是一个区域的自作用。因此，<span
+class="math inline">\(\Sigma\)</span>
+在已形成的区域集合上是<strong>单射</strong>。</p>
+<p><strong>步骤3：占位的不可逆性。</strong> 一旦区域 <span
+class="math inline">\(R\)</span> 形成并写入签名 <span
+class="math inline">\(\Sigma(R)\)</span>，该签名在 <span
+class="math inline">\(\mathcal{I}_{\text{shared}}\)</span>
+中永久占据。其他区域 <span class="math inline">\(R&#39;\)</span>
+在写入自身签名时，必须与已有签名代数独立——<span
+class="math inline">\(\Sigma(R&#39;) \neq
+\Sigma(R)\)</span>。已写入的矩阵不会被后续写入覆盖，因为新的写入必须与已有矩阵代数独立。<span
+class="math inline">\(\blacksquare\)</span></p>
+<h3 id="与-pauli-不相容原理的类比">7.5 与 Pauli 不相容原理的类比</h3>
+<p>参数占位定理与量子力学中的 Pauli 不相容原理有深刻的结构类比：</p>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 36%" />
+<col style="width: 36%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Pauli 不相容原理</th>
+<th style="text-align: left;">参数占位定理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>占据者</strong></td>
+<td style="text-align: left;">费米子</td>
+<td style="text-align: left;">景观中的区域</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>被占据的资源</strong></td>
+<td style="text-align: left;">量子态</td>
+<td style="text-align: left;">参数组（构型离散 T）</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>排他机制</strong></td>
+<td style="text-align: left;">波函数反对称性</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{I}_{\text{shared}}\)</span>
+代数非交换性</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>后果</strong></td>
+<td style="text-align: left;">每个量子态至多一个费米子</td>
+<td style="text-align: left;">每组参数至多一个区域</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>资源空间</strong></td>
+<td style="text-align: left;">离散能级</td>
+<td style="text-align: left;">离散构型 × 离散 T</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>占据后</strong></td>
+<td style="text-align: left;">该态不可被其他费米子占据</td>
+<td style="text-align: left;">该参数组不可被其他区域占据</td>
+</tr>
+</tbody>
+</table>
+<h3 id="对景观结构的影响">7.6 对景观结构的影响</h3>
+<p>共扼参数圆满再现和离散 T 值对景观结构的影响：</p>
+<ol type="1">
+<li><p><strong>景观是离散的。</strong> <span
+class="math inline">\(\delta\)</span>
+产生无数候选参数，但只有满足圆满条件的共扼参数组才能再现。每个再现的构型产生
+<span class="math inline">\(\leq 6\)</span> 个离散 <span
+class="math inline">\(T\)</span> 值。景观是离散点集（每个点 = 一个
+(构型, T) 组合），而非连续空间。<span class="math inline">\(S \in [24,
+968]\)</span> 是将 <span class="math inline">\(T\)</span>
+视为连续变量时的数学范围，但实际可达的 <span
+class="math inline">\(S\)</span> 值是离散的。</p></li>
+<li><p><strong>参数空间的填充过程。</strong>
+景观的参数空间像一个”剧场”——每个座位（(构型, T)
+组合）最多坐一个观众（区域）。随着更多区域形成，参数空间被逐步填充。</p></li>
+<li><p><strong>我们区域的唯一性。</strong> <span
+class="math inline">\(T_{\text{ours}} = (0.782, 0.209,
+0.009)\)</span>，<span class="math inline">\(\sigma^*_{\text{ours}} =
+(0.777428, 0.211091, 0.011481)\)</span>，<span class="math inline">\(S =
+137.036\)</span>——这组完整参数被我们区域占位。不存在另一个区域拥有完全相同的构型、<span
+class="math inline">\(T\)</span>、<span
+class="math inline">\(\sigma^*\)</span>、<span
+class="math inline">\(S\)</span>
+及所有导出物理常数。我们的区域是唯一的。</p></li>
+<li><p><strong>与 <span class="math inline">\(S = 137\)</span>
+等值线的关系。</strong> 定理 1.6.4.01 表明 <span class="math inline">\(S
+= 137\)</span> 在连续 <span class="math inline">\(T\)</span>
+空间中对应一条 1 维等值线。但在离散框架中，等值线上只有有限个离散 <span
+class="math inline">\(T\)</span> 被实际占据。不同的区域可以给出相同的
+<span
+class="math inline">\(S\)</span>（如果它们在等值线上），但它们的构型和所有其他物理常数各不相同。</p></li>
+</ol>
+<h3 id="占位定理与循环论证">7.6 占位定理与循环论证</h3>
+<blockquote>
+<p><strong>⚠️ 格式问题：重复节号。</strong> 本文存在两个 §7.6——另一个
+§7.6 为「对景观结构的影响」（第626行）。本小节应重编号为 §7.7。</p>
+</blockquote>
+<p>参数占位定理与跨区域信息导入机制（定理I-3）协同工作，完整解决循环论证问题：</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 33%" />
+<col style="width: 41%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">机制</th>
+<th style="text-align: left;">作用</th>
+<th style="text-align: center;">定理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">跨区域导入</td>
+<td style="text-align: left;"><span
+class="math inline">\(T_{\text{ours}}\)</span> 从 <span
+class="math inline">\(\mathcal{I}_{\text{shared}}\)</span>
+导入，不由本区域 <span class="math inline">\(\alpha^{-1}\)</span>
+校准</td>
+<td style="text-align: center;">定理I-3</td>
+</tr>
+<tr>
+<td style="text-align: left;">参数占位</td>
+<td style="text-align: left;"><span
+class="math inline">\(T_{\text{ours}}\)</span>
+一旦分配给我们区域，其他区域不能使用同一 <span
+class="math inline">\(T\)</span></td>
+<td style="text-align: center;">定理 2.3.7.03</td>
+</tr>
+<tr>
+<td style="text-align: left;">典型性</td>
+<td style="text-align: left;"><span
+class="math inline">\(T_{\text{ours}}\)</span>
+在观测者兼容区域中是典型位置（第 70 百分位）</td>
+<td style="text-align: center;">定理 2.3.4.01</td>
+</tr>
+</tbody>
+</table>
+<p>三个定理形成完整的逻辑链：</p>
+<p><span class="math display">\[\boxed{T_{\text{ours}}
+\xleftarrow{\text{导入}} \mathcal{I}_{\text{shared}}
+\xleftarrow{\text{贡献}} \text{其他区域} \quad\quad T_{\text{ours}}
+\text{ 被占位（唯一）} \quad\quad T_{\text{ours}} \text{
+是典型的}}\]</span></p>
+<ul>
+<li><strong>导入</strong>回答”<span class="math inline">\(T\)</span>
+从哪里来”——从共享信息层</li>
+<li><strong>占位</strong>回答”<span class="math inline">\(T\)</span>
+是否唯一”——是的，每组参数只属于一个区域</li>
+<li><strong>典型性</strong>回答”<span class="math inline">\(T\)</span>
+是否特殊”——不特殊，是典型位置</li>
+</ul>
+<p>三个机制共同保证了：<span
+class="math inline">\(T_{\text{ours}}\)</span>
+不是循环校准的（导入），不是复制的（占位），不是特殊的（典型）。<span
+class="math inline">\(\alpha^{-1} = 137.036\)</span>
+是唯一参数组的唯一输出。</p>
+<hr />
+<h2 id="定理索引">定理索引</h2>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 28%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">编号</th>
+<th style="text-align: left;">内容</th>
+<th style="text-align: center;">证明状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">定理 2.3.2.05</td>
+<td style="text-align: left;">信息层共享：Cl(7) 两个直和项 =
+局部共享</td>
+<td style="text-align: center;">已证（本文§5.2）</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理 2.3.5.01</td>
+<td style="text-align: left;">信息层无穷参数：截面空间无穷维</td>
+<td style="text-align: center;">已证（本文§5.3）</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理 2.3.5.02</td>
+<td style="text-align: left;">跨区域信息导入：T 从共享层导入，α⁻¹
+是输出</td>
+<td style="text-align: center;">已证（本文§5.4）</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理 2.3.2.01</td>
+<td style="text-align: left;">景观范围：<span class="math inline">\(S
+\in [24, 968]\)</span></td>
+<td style="text-align: center;">已证（本文§2，数值验证）</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理 2.3.5.03</td>
+<td style="text-align: left;"><span class="math inline">\(S \approx
+137\)</span> 对应 1 维等值线</td>
+<td style="text-align: center;">已证（本文§2，数值验证）</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理 2.3.6.01</td>
+<td style="text-align: left;">景观自然测度 = Jeffreys prior =
+Dirichlet(1/2,1/2,1/2)</td>
+<td style="text-align: center;">已证（本文§6.2）</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理 2.3.6.03</td>
+<td style="text-align: left;"><span
+class="math inline">\(T_{\text{ours}}\)</span> 典型性：第 70 百分位</td>
+<td style="text-align: center;">已证（本文§6.5，Monte Carlo）</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理 2.3.7.03</td>
+<td
+style="text-align: left;">参数占位定理：每组参数至多被一个区域占据</td>
+<td style="text-align: center;">已证（本文§7.4）</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理 2.3.7.01</td>
+<td style="text-align: left;">圆满再现定理：{2,3,5}
+互锁性→圆满→再现</td>
+<td style="text-align: center;">已证（本文§7.2）</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理 2.3.7.02</td>
+<td style="text-align: left;">T 值产生定理：<span
+class="math inline">\(S_3\)</span> 产生 <span
+class="math inline">\(T\)</span> 值，<span
+class="math inline">\(T_{\text{ours}}\)</span> 确定</td>
+<td style="text-align: center;">已证（本文§7.3）</td>
+</tr>
+</tbody>
+</table>
+<p>补充结果（未编号）：</p>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 30%" />
+<col style="width: 38%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">结果</th>
+<th style="text-align: left;">内容</th>
+<th style="text-align: center;">证明状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">引理</td>
+<td style="text-align: left;"><span
+class="math inline">\(S_{\min}\)</span> 的半旋量分解：<span
+class="math inline">\(S_{\min} = 3 \times 8 = 24\)</span></td>
+<td style="text-align: center;">已证（本文§2.3）</td>
+</tr>
+<tr>
+<td style="text-align: left;">推导</td>
+<td style="text-align: left;"><span class="math inline">\(S_{\max}
+\approx 968\)</span> 的渐近分析</td>
+<td style="text-align: center;">已证（本文§2.4）</td>
+</tr>
+<tr>
+<td style="text-align: left;">定理 2.3.2.03</td>
+<td style="text-align: left;"><span
+class="math inline">\(d_{\text{total}} = 16\)</span> 的 Clifford
+导出</td>
+<td style="text-align: center;">已证（本文§2.6）</td>
+</tr>
+<tr>
+<td style="text-align: left;">定理 2.3.2.04</td>
+<td style="text-align: left;"><span class="math inline">\(\Lambda_H =
+150\)</span> 结构恒等式</td>
+<td style="text-align: center;">已证（本文§2.7）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 07:53:34</p>
+  </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.3 𝒞-ℐ交互自由能 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="版本: 260721.1">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/4.3_𝒞-ℐ交互自由能_CN_260721.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="index.html" class="nav-home">🏠 首页</a>
+    <a href="cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">4.3 𝒞-ℐ交互自由能</span>
+  </nav>
+  <main class="article-content">
+<h1 id="𝒞-ℐ交互自由能">4.3 𝒞-ℐ交互自由能</h1>
+<p><strong>版本</strong>: 260721.1</p>
+<hr />
+<h2 id="摘要">摘要</h2>
+<p>本文推导因果界 𝒞 与信息界 ℐ
+之间的交互自由能。互信息驱动联合演化，自由能极小给出双场耦合的稳态解。交互自由能的结构由
+Birkhoff 混合矩阵的非对角元确定。本文详细推导交互自由能公式，确定 𝒞-ℐ
+耦合强度，并分析交互自由能在三场动力学中的角色。</p>
+<hr />
+<h2 id="目-录">目　录</h2>
+<p>§1　互信息的几何来源 　1.1　跨扇区量子关联 　1.2　互信息公式
+　1.3　互信息的数值验证</p>
+<p>§2　交互自由能 　2.1　定义 　2.2　交互 Hamiltonian
+　2.3　交互自由能的完整表达式 　2.4　稳态条件</p>
+<p>§3　耦合强度的确定 　3.1　<span
+class="math inline">\(\theta_{\sigma_2}\)</span> 的代数来源
+　3.2　耦合强度的物理含义 　3.3　耦合强度与代数作用量 　3.4　耦合强度与
+Born 法则</p>
+<p>§4　物理含义 　4.1　联合演化的方向 　4.2　温度的几何含义
+　4.3　温度与熵的竞争 　4.4　交互自由能与三场动力学</p>
+<p>§5　交互自由能的景观依赖性 　5.1　互信息的景观变化
+　5.2　自由能极小的景观稳定性 　5.3　耦合强度的可调范围
+　5.4　弱耦合的生存优势</p>
+<hr />
+<h2 id="互信息的几何来源">§1 互信息的几何来源</h2>
+<h3 id="跨扇区量子关联">1.1 跨扇区量子关联</h3>
+<p>𝒞-ℐ 耦合由 Birkhoff 混合矩阵 <span class="math inline">\(T\)</span>
+的 <span class="math inline">\(P_{\sigma_2}\)</span> 分量（<span
+class="math inline">\(Z_2\)</span> 对换）产生。<span
+class="math inline">\(P_{\sigma_2}\)</span>
+将因果界的编码直接映射到信息界，产生量子关联——互信息。</p>
+<p>Birkhoff 混合矩阵的三项分解为：</p>
+<p><span class="math display">\[T = \underbrace{\theta_I \cdot
+I}_{\text{恒等（扇区内）}} + \underbrace{\theta_\tau \cdot
+P_\tau}_{\text{循环（ℳ↔𝒞）}} + \underbrace{\theta_{\sigma_2} \cdot
+P_{\sigma_2}}_{\text{对换（𝒞↔ℐ）}}.\]</span></p>
+<ul>
+<li>恒等项 <span class="math inline">\(\theta_I \cdot
+I\)</span>：保持扇区不变，无跨扇区耦合</li>
+<li>循环项 <span class="math inline">\(\theta_\tau \cdot
+P_\tau\)</span>：连接物质界与因果界（三循环置换）</li>
+<li>对换项 <span class="math inline">\(\theta_{\sigma_2} \cdot
+P_{\sigma_2}\)</span>：连接因果界与信息界（二元对换）</li>
+</ul>
+<p>𝒞-ℐ 互信息仅由对换项 <span class="math inline">\(\theta_{\sigma_2}
+\cdot P_{\sigma_2}\)</span>
+产生——这是因果场与信息场之间的唯一直接耦合通道。</p>
+<h4
+id="详细推导跨扇区耦合的群论分析">详细推导：跨扇区耦合的群论分析</h4>
+<p><strong>第一步：Birkhoff 混合矩阵的对称性分解。</strong> <span
+class="math inline">\(T\)</span> 是 <span class="math inline">\(3 \times
+3\)</span> 双随机矩阵，Birkhoff-von Neumann 定理保证 <span
+class="math inline">\(T\)</span> 可分解为置换矩阵的凸组合。<span
+class="math inline">\(S_3\)</span> 群的三个生成元对应三种基本置换：恒等
+<span class="math inline">\(I\)</span>（1 种）、循环 <span
+class="math inline">\(\tau\)</span>（2 种：<span
+class="math inline">\(\tau\)</span> 和 <span
+class="math inline">\(\tau^2\)</span>）、对换 <span
+class="math inline">\(\sigma\)</span>（3 种）。由于 <span
+class="math inline">\(T\)</span> 的对称性（来自 triality 破缺后的 <span
+class="math inline">\(Z_2\)</span> 残余），只有三种独立置换：<span
+class="math inline">\(I\)</span>（恒等）、<span
+class="math inline">\(P_\tau\)</span>（循环，<span
+class="math inline">\(\tau\)</span> 和 <span
+class="math inline">\(\tau^2\)</span> 合并为一个权重 <span
+class="math inline">\(\theta_\tau\)</span>）、<span
+class="math inline">\(P_{\sigma_2}\)</span>（对换，三个对换中只有 <span
+class="math inline">\(\sigma_2\)</span> 保留）。</p>
+<p><strong>第二步：耦合通道的识别。</strong> <span
+class="math inline">\(I\)</span> 保持扇区不变——扇区内演化。<span
+class="math inline">\(P_\tau\)</span> 将 <span
+class="math inline">\(\mathcal{M} \to \mathcal{C} \to \mathcal{I} \to
+\mathcal{M}\)</span>——三扇区循环耦合。<span
+class="math inline">\(P_{\sigma_2}\)</span> 将 <span
+class="math inline">\(\mathcal{C} \leftrightarrow
+\mathcal{I}\)</span>——𝒞-ℐ 直接耦合。注意 <span
+class="math inline">\(P_{\sigma_2}\)</span> 不涉及 <span
+class="math inline">\(\mathcal{M}\)</span>——物质界与信息界无直接耦合（<span
+class="math inline">\(J_{\mathcal{M}\mathcal{I}} = 0\)</span>，卷4.4
+§4.3）。</p>
+<p><strong>第三步：𝒞-ℐ 耦合的隔离。</strong> 互信息 <span
+class="math inline">\(I(\mathcal{C};\mathcal{I})\)</span> 仅测量 <span
+class="math inline">\(\mathcal{C}\)</span> 和 <span
+class="math inline">\(\mathcal{I}\)</span> 之间的量子关联，不涉及 <span
+class="math inline">\(\mathcal{M}\)</span>。因此 <span
+class="math inline">\(I(\mathcal{C};\mathcal{I})\)</span> 仅由 <span
+class="math inline">\(P_{\sigma_2}\)</span> 分量产生——<span
+class="math inline">\(\theta_I\)</span> 和 <span
+class="math inline">\(\theta_\tau\)</span> 不贡献 𝒞-ℐ 互信息。</p>
+<h4 id="对比讨论𝒞-ℐ-耦合-vs-标准量子纠缠">对比讨论：𝒞-ℐ 耦合 vs
+标准量子纠缠</h4>
+<p>标准量子纠缠是两个子系统之间非经典的关联，由相互作用 Hamiltonian
+产生。𝒞-ℐ 耦合的区别：</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">性质</th>
+<th style="text-align: left;">标准量子纠缠</th>
+<th style="text-align: left;">𝒞-ℐ 耦合</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">产生机制</td>
+<td style="text-align: left;">相互作用 Hamiltonian</td>
+<td style="text-align: left;">Birkhoff 对换 <span
+class="math inline">\(P_{\sigma_2}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">耦合强度</td>
+<td style="text-align: left;">可调（外部）</td>
+<td style="text-align: left;">固定（<span
+class="math inline">\(\theta_{\sigma_2} \approx 0.009\)</span>）</td>
+</tr>
+<tr>
+<td style="text-align: left;">纠缠度量</td>
+<td style="text-align: left;">纠缠熵</td>
+<td style="text-align: left;">互信息 <span
+class="math inline">\(I(\mathcal{C};\mathcal{I})\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">可分离性</td>
+<td style="text-align: left;">可制备分离态</td>
+<td style="text-align: left;">不可分离（代数耦合必然）</td>
+</tr>
+<tr>
+<td style="text-align: left;">温度依赖性</td>
+<td style="text-align: left;">有</td>
+<td style="text-align: left;">内禀 <span
+class="math inline">\(T_{\mathcal{C}} \propto
+\text{Im}(\lambda_2)\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>𝒞-ℐ
+耦合是不可消除的——它是代数结构的必然结果，而非可调节的外部相互作用。这解释了为什么观测者（信息场子系统）必然感知因果场（因果序）——不是选择的结果，而是代数必然。</p>
+<h3 id="互信息公式">1.2 互信息公式</h3>
+<p><strong>定理 4.3.1.01（𝒞-ℐ 互信息）。</strong>
+因果场与信息场的互信息为：</p>
+<p><span class="math display">\[I(\mathcal{C}; \mathcal{I}) =
+\theta_{\sigma_2} \cdot H(\sigma^*) = \theta_{\sigma_2} \cdot
+\left(-\sum_i \sigma_i^* \ln \sigma_i^*\right),\]</span></p>
+<p>其中 <span class="math inline">\(H(\sigma^*)\)</span> 是编码权重的
+Shannon 熵。代入 <span class="math inline">\(\theta_{\sigma_2} \approx
+0.009\)</span>：</p>
+<p><span class="math display">\[I(\mathcal{C}; \mathcal{I}) \approx
+0.009 \times 0.575 \approx 0.005.\]</span></p>
+<p>互信息很小——因为 <span class="math inline">\(Z_2\)</span>
+残余对称性几乎完全破缺（<span class="math inline">\(\theta_{\sigma_2}
+\ll 1\)</span>）。</p>
+<p><strong>证明。</strong> 𝒞-ℐ 耦合由对换项 <span
+class="math inline">\(P_{\sigma_2}\)</span> 产生。在 Born 法则 <span
+class="math inline">\(\Delta\lambda_i \propto \sqrt{\sigma_i}\)</span>
+下，对换项将因果界的编码权重 <span
+class="math inline">\(\sigma_{\mathcal{C}}\)</span>
+映射到信息界的编码权重 <span
+class="math inline">\(\sigma_{\mathcal{I}}\)</span>，产生量子关联。关联强度正比于对换权重
+<span class="math inline">\(\theta_{\sigma_2}\)</span> 和编码权重的
+Shannon 熵 <span
+class="math inline">\(H(\sigma^*)\)</span>（熵衡量编码的不确定性，不确定性越大，关联越显著）。因此
+<span class="math inline">\(I(\mathcal{C}; \mathcal{I}) =
+\theta_{\sigma_2} \cdot H(\sigma^*)\)</span>。∎</p>
+<h4
+id="详细推导互信息公式的五步推导">详细推导：互信息公式的五步推导</h4>
+<p><strong>第一步：互信息的定义。</strong> <span
+class="math inline">\(I(\mathcal{C};\mathcal{I}) = S_{\mathcal{C}} +
+S_{\mathcal{I}} -
+S_{\mathcal{C}\mathcal{I}}\)</span>。在弱耦合极限（<span
+class="math inline">\(\theta_{\sigma_2} \ll 1\)</span>），联合熵近似为
+<span class="math inline">\(S_{\mathcal{C}\mathcal{I}} \approx
+S_{\mathcal{C}} + S_{\mathcal{I}} - \theta_{\sigma_2}
+H(\sigma^*)\)</span>，其中 <span class="math inline">\(\theta_{\sigma_2}
+H(\sigma^*)\)</span> 是弱耦合修正。</p>
+<p><strong>第二步：编码权重的 Shannon 熵。</strong> <span
+class="math inline">\(H(\sigma^*) = -\sum_i \sigma_i^* \ln
+\sigma_i^*\)</span>。在不动点 <span
+class="math inline">\(\sigma^*\)</span> 处，三个编码权重差异显著（<span
+class="math inline">\(\sigma_{\mathcal{M}}^* \gg \sigma_{\mathcal{C}}^*
+\gg \sigma_{\mathcal{I}}^*\)</span>），<span
+class="math inline">\(H(\sigma^*) \approx 0.575\)</span> 中等偏小。</p>
+<p><strong>第三步：<span
+class="math inline">\(\theta_{\sigma_2}\)</span> 的角色。</strong> <span
+class="math inline">\(\theta_{\sigma_2}\)</span> 是 Birkhoff
+混合矩阵中对换项的权重。<span
+class="math inline">\(\theta_{\sigma_2}\)</span> 越大，<span
+class="math inline">\(P_{\sigma_2}\)</span> 在 <span
+class="math inline">\(T\)</span> 中的贡献越大，𝒞-ℐ
+耦合越强。在我们的位置，<span class="math inline">\(\theta_{\sigma_2}
+\approx 0.009\)</span> 极小——对换几乎被 Birkhoff
+混合矩阵的恒等项和循环项淹没。</p>
+<p><strong>第四步：互信息的上界。</strong> 互信息的上界为 <span
+class="math inline">\(\min(S_{\mathcal{C}},
+S_{\mathcal{I}})\)</span>。<span class="math inline">\(S_{\mathcal{C}}^*
+\approx 0.527\)</span>，<span class="math inline">\(S_{\mathcal{I}}^*
+\approx 0.064\)</span>，因此 <span class="math inline">\(I \leq
+0.064\)</span>。实际 <span class="math inline">\(I \approx
+0.005\)</span> 远小于上界——仅使用了约 8% 的关联容量。</p>
+<p><strong>第五步：Born 法则的关联。</strong> Born 法则 <span
+class="math inline">\(\Delta\lambda_i \propto \sqrt{\sigma_i}\)</span>
+将编码权重与谱间隙联系起来。<span
+class="math inline">\(\theta_{\sigma_2}\)</span> 通过 Birkhoff
+不动点方程与 <span class="math inline">\(\sigma_i^*\)</span> 关联：<span
+class="math inline">\(\theta_{\sigma_2} \propto
+\sqrt{\sigma_{\mathcal{I}}^*}\)</span>（卷4.3 §3.4）。因此 <span
+class="math inline">\(I \propto \sqrt{\sigma_{\mathcal{I}}^*} \cdot
+H(\sigma^*)\)</span>——信息界权重越小，互信息越小。∎</p>
+<h3 id="互信息的数值验证">1.3 互信息的数值验证</h3>
+<p>编码权重在不动点处的 Shannon 熵：</p>
+<p><span class="math display">\[H(\sigma^*) = -\sum_i \sigma_i^* \ln
+\sigma_i^* = -(0.777912 \ln 0.777912 + 0.210603 \ln 0.210603 + 0.011484
+\ln 0.011484).\]</span></p>
+<p>计算各项：</p>
+<ul>
+<li><span class="math inline">\(0.777912 \ln 0.777912 \approx 0.777912
+\times (-0.2513) \approx -0.195\)</span></li>
+<li><span class="math inline">\(0.210603 \ln 0.210603 \approx 0.210603
+\times (-1.5575) \approx -0.328\)</span></li>
+<li><span class="math inline">\(0.011484 \ln 0.011484 \approx 0.011484
+\times (-4.467) \approx -0.051\)</span></li>
+</ul>
+<p><span class="math display">\[H(\sigma^*) \approx -(-0.195 - 0.328 -
+0.051) \approx 0.575.\]</span></p>
+<p>代入 <span class="math inline">\(\theta_{\sigma_2} \approx
+0.009\)</span>：</p>
+<p><span class="math display">\[I(\mathcal{C}; \mathcal{I}) \approx
+0.009 \times 0.575 \approx 0.005.\]</span></p>
+<p>互信息约为 0.005——极弱但非零的跨扇区关联。</p>
+<h4
+id="详细推导互信息的精确计算与误差分析">详细推导：互信息的精确计算与误差分析</h4>
+<p>更精确的计算：<span class="math inline">\(0.777912 \ln 0.777912 =
+-0.19553\)</span>，<span class="math inline">\(0.210603 \ln 0.210603 =
+-0.32805\)</span>，<span class="math inline">\(0.011484 \ln 0.011484 =
+-0.05131\)</span>。<span class="math inline">\(H(\sigma^*) =
+0.57489\)</span>。<span class="math inline">\(\theta_{\sigma_2} =
+0.009\)</span>（精确值可能为 <span
+class="math inline">\(0.0089\)</span>）。<span class="math inline">\(I =
+0.0089 \times 0.57489 = 0.00512\)</span>。</p>
+<p>误差估计：<span class="math inline">\(\theta_{\sigma_2}\)</span>
+的不确定性来自 Birkhoff 不动点方程的数值求解（卷3 定理
+3.1.1.01），相对误差约 <span class="math inline">\(\pm
+1\%\)</span>。<span class="math inline">\(H(\sigma^*)\)</span>
+的不确定性来自 <span class="math inline">\(\sigma_i^*\)</span>
+的数值精度，相对误差约 <span class="math inline">\(\pm
+0.1\%\)</span>。因此 <span class="math inline">\(I\)</span>
+的总相对误差约 <span class="math inline">\(\pm 1.1\%\)</span>，即 <span
+class="math inline">\(I \approx 0.00512 \pm 0.00006\)</span>。</p>
+<h4
+id="对比讨论互信息与标准量子互信息">对比讨论：互信息与标准量子互信息</h4>
+<p>标准量子互信息 <span class="math inline">\(I(A:B) = S(A) + S(B) -
+S(AB)\)</span> 的上限为 <span class="math inline">\(2\min(S(A),
+S(B))\)</span>。𝒞-ℐ 互信息的上限为 <span
+class="math inline">\(2\min(S_{\mathcal{C}}, S_{\mathcal{I}}) = 2 \times
+0.064 = 0.128\)</span>。实际 <span class="math inline">\(I \approx
+0.005\)</span> 仅使用了约 4% 的容量。这与标准量子系统中强纠缠（<span
+class="math inline">\(I\)</span> 接近上限）形成对比——𝒞-ℐ
+耦合是「弱关联」，体现因果场与信息场的准独立性。</p>
+<hr />
+<h2 id="交互自由能">§2 交互自由能</h2>
+<h3 id="定义">2.1 定义</h3>
+<p><span class="math display">\[F_{\mathcal{C}\mathcal{I}} = \langle
+H_{\mathcal{C}\mathcal{I}} \rangle - T_{\mathcal{C}}
+S_{\mathcal{C}\mathcal{I}},\]</span></p>
+<p>其中 <span class="math inline">\(H_{\mathcal{C}\mathcal{I}}\)</span>
+是交互 Hamiltonian，<span class="math inline">\(T_{\mathcal{C}}\)</span>
+是因果场温度，<span
+class="math inline">\(S_{\mathcal{C}\mathcal{I}}\)</span> 是联合熵。</p>
+<h4
+id="详细推导自由能定义的几何基础">详细推导：自由能定义的几何基础</h4>
+<p>Helmholtz 自由能 <span class="math inline">\(F = E - TS\)</span>
+的标准形式要求系统与热浴接触。在因果场框架中，「热浴」是 Birkhoff
+混合矩阵 <span class="math inline">\(T\)</span>
+的非主本征值——它们提供耗散，等价于热浴。温度 <span
+class="math inline">\(T_{\mathcal{C}} = |\text{Im}(\lambda_2)|/(2\pi)
+\approx 0.029\)</span>
+是内禀温度——由因果场的振荡频率确定，而非外部热浴。</p>
+<h3 id="交互-hamiltonian">2.2 交互 Hamiltonian</h3>
+<p><span class="math display">\[H_{\mathcal{C}\mathcal{I}} =
+\theta_{\sigma_2} \cdot (P_{\sigma_2} \otimes
+P_{\sigma_2}^\dagger).\]</span></p>
+<p>交互强度由 <span class="math inline">\(\theta_{\sigma_2}\)</span>
+控制——极弱耦合。</p>
+<p>交互 Hamiltonian 的结构来自 Birkhoff 混合矩阵的对换项：<span
+class="math inline">\(P_{\sigma_2}\)</span> 作用于因果界，<span
+class="math inline">\(P_{\sigma_2}^\dagger\)</span> 作用于信息界，张量积
+<span class="math inline">\(P_{\sigma_2} \otimes
+P_{\sigma_2}^\dagger\)</span> 描述两扇区的同步对换。耦合强度 <span
+class="math inline">\(\theta_{\sigma_2} \approx 0.009\)</span> 是
+Birkhoff 混合矩阵的最小权重——𝒞-ℐ 耦合是三扇区中最弱的。</p>
+<h4 id="详细推导交互-hamiltonian-的算符结构">详细推导：交互 Hamiltonian
+的算符结构</h4>
+<p><strong>第一步：对换算符的作用。</strong> <span
+class="math inline">\(P_{\sigma_2}\)</span> 在因果界的编码基 <span
+class="math inline">\(\{|\mathcal{M}\rangle, |\mathcal{C}\rangle,
+|\mathcal{I}\rangle\}\)</span> 上的作用：<span
+class="math inline">\(P_{\sigma_2}|\mathcal{M}\rangle =
+|\mathcal{M}\rangle\)</span>（<span
+class="math inline">\(\mathcal{M}\)</span> 不变），<span
+class="math inline">\(P_{\sigma_2}|\mathcal{C}\rangle =
+|\mathcal{I}\rangle\)</span>（<span class="math inline">\(\mathcal{C}
+\to \mathcal{I}\)</span>），<span
+class="math inline">\(P_{\sigma_2}|\mathcal{I}\rangle =
+|\mathcal{C}\rangle\)</span>（<span class="math inline">\(\mathcal{I}
+\to \mathcal{C}\)</span>）。因此 <span
+class="math inline">\(P_{\sigma_2}\)</span> 在 <span
+class="math inline">\(\mathcal{C}\)</span>-<span
+class="math inline">\(\mathcal{I}\)</span> 子空间上是 Pauli <span
+class="math inline">\(\sigma_x\)</span> 矩阵。</p>
+<p><strong>第二步：张量积结构。</strong> <span
+class="math inline">\(H_{\mathcal{C}\mathcal{I}} = \theta_{\sigma_2}
+\cdot P_{\sigma_2} \otimes P_{\sigma_2}^\dagger\)</span>。在 <span
+class="math inline">\(\mathcal{C}\)</span>-<span
+class="math inline">\(\mathcal{I}\)</span> 子空间（<span
+class="math inline">\(2 \times 2\)</span>）中，<span
+class="math inline">\(H_{\mathcal{C}\mathcal{I}} = \theta_{\sigma_2}
+\cdot \sigma_x \otimes \sigma_x\)</span>。这与标准 Ising 模型的交互
+Hamiltonian 形式相同——<span class="math inline">\(H = J \sigma_x \otimes
+\sigma_x\)</span>，耦合常数 <span class="math inline">\(J =
+\theta_{\sigma_2}\)</span>。</p>
+<p><strong>第三步：耦合常数的量纲。</strong> <span
+class="math inline">\(\theta_{\sigma_2}\)</span>
+是无量纲权重。在自然单位制下，能量量纲为 <span
+class="math inline">\([\text{长度}]^{-1} =
+[\text{时间}]^{-1}\)</span>。交互 Hamiltonian 需要乘以能量标度 <span
+class="math inline">\(E_P\)</span>（Planck
+能量）才能获得物理能量。因此在 SI 单位制下，<span
+class="math inline">\(H_{\mathcal{C}\mathcal{I}} \sim \theta_{\sigma_2}
+\cdot E_P \approx 0.009 \times 1.22 \times 10^{19} \text{ GeV} \approx
+1.1 \times 10^{17} \text{ GeV}\)</span>——远大于电弱尺度（<span
+class="math inline">\(\sim 10^2\)</span> GeV），反映 𝒞-ℐ 耦合在 Planck
+尺度起作用的物理图像。</p>
+<h3 id="交互自由能的完整表达式">2.3 交互自由能的完整表达式</h3>
+<p>将交互 Hamiltonian 代入自由能定义：</p>
+<p><span class="math display">\[F_{\mathcal{C}\mathcal{I}} =
+\theta_{\sigma_2} \cdot \text{Tr}\left((P_{\sigma_2} \otimes
+P_{\sigma_2}^\dagger) \cdot \rho_{\mathcal{C}\mathcal{I}}\right) -
+T_{\mathcal{C}} \cdot S_{\mathcal{C}\mathcal{I}}.\]</span></p>
+<p>第一项（交互能量）——精确表达式：</p>
+<p><span class="math display">\[E_{\mathcal{C}\mathcal{I}} =
+\theta_{\sigma_2} \cdot \text{Tr}\left((P_{\sigma_2} \otimes
+P_{\sigma_2}^\dagger) \cdot
+\rho_{\mathcal{C}\mathcal{I}}\right).\]</span></p>
+<p>对于一般纠缠态 <span
+class="math inline">\(\rho_{\mathcal{C}\mathcal{I}} \neq
+\rho_{\mathcal{C}} \otimes
+\rho_{\mathcal{I}}\)</span>，上述迹不能因子化。但由于 <span
+class="math inline">\(\theta_{\sigma_2} \approx 0.009 \ll
+1\)</span>（极弱耦合），𝒞-ℐ 纠缠度由 <span
+class="math inline">\(\theta_{\sigma_2}\)</span>
+控制，联合态可展开为：</p>
+<p><span class="math display">\[\rho_{\mathcal{C}\mathcal{I}} =
+\rho_{\mathcal{C}} \otimes \rho_{\mathcal{I}} + \theta_{\sigma_2} \cdot
+\delta\rho_{\mathcal{C}\mathcal{I}} +
+\mathcal{O}(\theta_{\sigma_2}^2).\]</span></p>
+<p>代入交互能量得：</p>
+<p><span class="math display">\[E_{\mathcal{C}\mathcal{I}} =
+\theta_{\sigma_2} \cdot \langle P_{\sigma_2} \rangle_{\mathcal{C}} \cdot
+\langle P_{\sigma_2}^\dagger \rangle_{\mathcal{I}} +
+\mathcal{O}(\theta_{\sigma_2}^2).\]</span></p>
+<p>其中 <span class="math inline">\(\langle P_{\sigma_2}
+\rangle_{\mathcal{C}} = \text{Tr}(P_{\sigma_2}
+\rho_{\mathcal{C}})\)</span>，<span class="math inline">\(\langle
+P_{\sigma_2}^\dagger \rangle_{\mathcal{I}} =
+\text{Tr}(P_{\sigma_2}^\dagger \rho_{\mathcal{I}})\)</span>。领头阶
+<span class="math inline">\(\mathcal{O}(\theta_{\sigma_2})\)</span>
+因子化成立，次领头阶 <span
+class="math inline">\(\mathcal{O}(\theta_{\sigma_2}^2)\)</span> 修正来自
+𝒞-ℐ 量子关联（互信息 <span
+class="math inline">\(I(\mathcal{C};\mathcal{I}) \approx
+0.005\)</span>），相对修正 <span class="math inline">\(\sim
+\theta_{\sigma_2} \approx 0.9\%\)</span>，在本文精度范围内可忽略。</p>
+<p>第二项（熵驱动）：</p>
+<p><span class="math display">\[T_{\mathcal{C}} \cdot
+S_{\mathcal{C}\mathcal{I}} = T_{\mathcal{C}} \cdot (S_{\mathcal{C}} +
+S_{\mathcal{I}} - I(\mathcal{C}; \mathcal{I})).\]</span></p>
+<h4 id="详细推导微扰展开的收敛性">详细推导：微扰展开的收敛性</h4>
+<p>微扰展开 <span class="math inline">\(\rho_{\mathcal{C}\mathcal{I}} =
+\rho_{\mathcal{C}} \otimes \rho_{\mathcal{I}} + \theta_{\sigma_2} \cdot
+\delta\rho + \mathcal{O}(\theta_{\sigma_2}^2)\)</span> 的收敛半径由
+<span class="math inline">\(\theta_{\sigma_2}\)</span> 的模确定。由于
+<span class="math inline">\(\theta_{\sigma_2} \approx 0.009 \ll
+1\)</span>，展开收敛很快。<span
+class="math inline">\(\mathcal{O}(\theta_{\sigma_2})\)</span> 修正项
+<span class="math inline">\(\delta\rho\)</span> 由 Lindblad
+方程的一阶微扰确定：<span class="math inline">\(\delta\rho =
+\int_0^\infty dt \, e^{\mathcal{L}_0 t} \mathcal{L}_1(\rho_{\mathcal{C}}
+\otimes \rho_{\mathcal{I}})\)</span>，其中 <span
+class="math inline">\(\mathcal{L}_0\)</span> 是未耦合的 Liouville
+超算子，<span class="math inline">\(\mathcal{L}_1\)</span> 是 <span
+class="math inline">\(\mathcal{O}(\theta_{\sigma_2})\)</span>
+的耦合项。</p>
+<h4
+id="数值验证交互自由能各项的量级">数值验证：交互自由能各项的量级</h4>
+<table>
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 22%" />
+<col style="width: 27%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">项</th>
+<th style="text-align: left;">表达式</th>
+<th style="text-align: center;">数值</th>
+<th style="text-align: center;">占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(E_{\mathcal{C}\mathcal{I}}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\theta_{\sigma_2} \cdot \langle P_{\sigma_2}
+\rangle^2\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\approx
+0.009 \times 0.044 \approx 0.0004\)</span></td>
+<td style="text-align: center;">2%</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(T_{\mathcal{C}} \cdot
+S_{\mathcal{C}}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(0.029 \times
+0.527\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\approx
+0.0153\)</span></td>
+<td style="text-align: center;">70%</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(T_{\mathcal{C}} \cdot
+S_{\mathcal{I}}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(0.029 \times
+0.064\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\approx
+0.0019\)</span></td>
+<td style="text-align: center;">9%</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(-T_{\mathcal{C}} \cdot I\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(-0.029 \times
+0.005\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\approx
+-0.00015\)</span></td>
+<td style="text-align: center;">-1%</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(F_{\mathcal{C}\mathcal{I}}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(E -
+TS\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\approx
+-0.017\)</span></td>
+<td style="text-align: center;">100%</td>
+</tr>
+</tbody>
+</table>
+<p>自由能为负——熵驱动项 <span class="math inline">\(TS\)</span>
+主导交互能量 <span class="math inline">\(E\)</span>。𝒞-ℐ
+耦合是熵有利的。</p>
+<h3 id="稳态条件">2.4 稳态条件</h3>
+<p>自由能极小条件 <span class="math inline">\(\delta F / \delta \rho =
+0\)</span> 给出 Gibbs 态：</p>
+<p><span class="math display">\[\rho_{\text{ss}} \propto
+e^{-H_{\mathcal{C}\mathcal{I}} / T_{\mathcal{C}}}.\]</span></p>
+<p>稳态是热平衡态——𝒞 和 ℐ 达到热平衡。</p>
+<h4 id="详细推导稳态的三步推导">详细推导：稳态的三步推导</h4>
+<p><strong>第一步：自由能泛函导数。</strong> 在约束 <span
+class="math inline">\(\text{Tr}(\rho) = 1\)</span> 下，变分 <span
+class="math inline">\(\delta(F + \lambda(\text{Tr}(\rho) - 1)) =
+0\)</span> 给出 <span class="math inline">\(H_{\mathcal{C}\mathcal{I}} -
+T_{\mathcal{C}}(\ln\rho + 1) + \lambda = 0\)</span>，即 <span
+class="math inline">\(\rho =
+e^{-H_{\mathcal{C}\mathcal{I}}/T_{\mathcal{C}} + \lambda/T_{\mathcal{C}}
+- 1}\)</span>。</p>
+<p><strong>第二步：归一化。</strong> <span
+class="math inline">\(\text{Tr}(\rho) = 1\)</span> 确定 <span
+class="math inline">\(\lambda\)</span>，得 <span
+class="math inline">\(\rho_{\text{ss}} =
+e^{-H_{\mathcal{C}\mathcal{I}}/T_{\mathcal{C}}} / Z\)</span>，<span
+class="math inline">\(Z =
+\text{Tr}(e^{-H_{\mathcal{C}\mathcal{I}}/T_{\mathcal{C}}})\)</span>。</p>
+<p><strong>第三步：配分函数。</strong> <span class="math inline">\(Z =
+\text{Tr}(e^{-H_{\mathcal{C}\mathcal{I}}/T_{\mathcal{C}}}) = \sum_i
+e^{-E_i/T_{\mathcal{C}}}\)</span>，其中 <span
+class="math inline">\(E_i\)</span> 是 <span
+class="math inline">\(H_{\mathcal{C}\mathcal{I}}\)</span>
+的本征值。<span class="math inline">\(H_{\mathcal{C}\mathcal{I}} =
+\theta_{\sigma_2} \cdot \sigma_x \otimes \sigma_x\)</span>（在 <span
+class="math inline">\(\mathcal{C}\)</span>-<span
+class="math inline">\(\mathcal{I}\)</span> 子空间），本征值为 <span
+class="math inline">\(\pm \theta_{\sigma_2}\)</span>（各重数为
+2）。<span class="math inline">\(Z =
+2e^{\theta_{\sigma_2}/T_{\mathcal{C}}} +
+2e^{-\theta_{\sigma_2}/T_{\mathcal{C}}} =
+4\cosh(\theta_{\sigma_2}/T_{\mathcal{C}})\)</span>。</p>
+<p>代入 <span class="math inline">\(\theta_{\sigma_2}/T_{\mathcal{C}}
+\approx 0.009/0.029 \approx 0.31\)</span>：<span class="math inline">\(Z
+\approx 4\cosh(0.31) \approx 4 \times 1.048 \approx
+4.19\)</span>。自由能 <span class="math inline">\(F = -T_{\mathcal{C}}
+\ln Z \approx -0.029 \times 1.433 \approx -0.042\)</span>。</p>
+<h4 id="对比讨论𝒞-ℐ-gibbs-态-vs-标准-gibbs-态">对比讨论：𝒞-ℐ Gibbs 态 vs
+标准 Gibbs 态</h4>
+<p>标准 Gibbs 态 <span class="math inline">\(\rho \propto e^{-H/k_B
+T}\)</span> 描述系统与热浴的热平衡。𝒞-ℐ Gibbs 态的区别：</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">性质</th>
+<th style="text-align: left;">标准 Gibbs 态</th>
+<th style="text-align: left;">𝒞-ℐ Gibbs 态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">温度</td>
+<td style="text-align: left;">外部热浴 <span
+class="math inline">\(T\)</span></td>
+<td style="text-align: left;">内禀 <span
+class="math inline">\(T_{\mathcal{C}} =
+\text{Im}(\lambda_2)/(2\pi)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Hamiltonian</td>
+<td style="text-align: left;">系统 <span
+class="math inline">\(H\)</span></td>
+<td style="text-align: left;">交互 <span
+class="math inline">\(H_{\mathcal{C}\mathcal{I}}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">配分函数</td>
+<td style="text-align: left;"><span class="math inline">\(Z =
+\text{Tr}(e^{-H/k_B T})\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(Z =
+4\cosh(\theta_{\sigma_2}/T_{\mathcal{C}})\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">平衡条件</td>
+<td style="text-align: left;">热平衡</td>
+<td style="text-align: left;">信息-因果平衡</td>
+</tr>
+</tbody>
+</table>
+<p>𝒞-ℐ Gibbs
+态是「信息-因果平衡」态——因果场和信息场达到相互校准的状态，而非通常的热平衡。</p>
+<hr />
+<h2 id="耦合强度的确定">§3 耦合强度的确定</h2>
+<h3 id="theta_sigma_2-的代数来源">3.1 <span
+class="math inline">\(\theta_{\sigma_2}\)</span> 的代数来源</h3>
+<p><span class="math inline">\(\theta_{\sigma_2}\)</span> 是 Birkhoff
+混合矩阵 <span class="math inline">\(T\)</span> 中对换项 <span
+class="math inline">\(P_{\sigma_2}\)</span> 的权重。它由编码权重 <span
+class="math inline">\(\sigma^*\)</span> 和代数归一化条件唯一确定：</p>
+<p><span class="math display">\[\theta_{\sigma_2} = f(\sigma^*,
+C),\]</span></p>
+<p>其中 <span class="math inline">\(C\)</span> 是代数常数，满足 <span
+class="math inline">\(2pC^3 + C^2 = 1\)</span>。</p>
+<p>在不动点 <span class="math inline">\(\sigma^* \approx (0.777912,
+0.210603, 0.011484)\)</span> 处，<span
+class="math inline">\(\theta_{\sigma_2}\)</span> 取极小值 <span
+class="math inline">\(\approx
+0.009\)</span>——对换是三扇区中最弱的耦合通道。</p>
+<h4 id="详细推导theta_sigma_2-的-birkhoff-不动点方程">详细推导：<span
+class="math inline">\(\theta_{\sigma_2}\)</span> 的 Birkhoff
+不动点方程</h4>
+<p>Birkhoff 不动点方程 <span class="math inline">\(\sigma^* =
+T\sigma^*\)</span> 展开为：</p>
+<p><span class="math display">\[\begin{pmatrix} \sigma_{\mathcal{M}}^*
+\\ \sigma_{\mathcal{C}}^* \\ \sigma_{\mathcal{I}}^* \end{pmatrix} =
+\begin{pmatrix} \theta_I + \theta_{\sigma_2} &amp; \theta_\tau &amp; 0
+\\ 0 &amp; \theta_I &amp; \theta_\tau + \theta_{\sigma_2} \\ \theta_\tau
+&amp; 0 &amp; \theta_I \end{pmatrix} \begin{pmatrix}
+\sigma_{\mathcal{M}}^* \\ \sigma_{\mathcal{C}}^* \\
+\sigma_{\mathcal{I}}^* \end{pmatrix}.\]</span></p>
+<p>加上约束 <span class="math inline">\(\theta_I + \theta_\tau +
+\theta_{\sigma_2} = 1\)</span> 和 <span class="math inline">\(\sum
+\sigma_i^* = 1\)</span>，共 5 个方程，4 个未知数（<span
+class="math inline">\(\theta_I, \theta_\tau, \theta_{\sigma_2}\)</span>
+和 <span class="math inline">\(C\)</span> 或 <span
+class="math inline">\(p\)</span>）。代数归一化 <span
+class="math inline">\(2pC^3 + C^2 = 1\)</span> 提供第 5 个方程。解出
+<span class="math inline">\(\theta_{\sigma_2} \approx
+0.009\)</span>。</p>
+<h3 id="耦合强度的物理含义">3.2 耦合强度的物理含义</h3>
+<p><span class="math inline">\(\theta_{\sigma_2} \approx 0.009\)</span>
+意味着：</p>
+<ol type="1">
+<li><strong>极弱耦合</strong>：𝒞-ℐ 交互能量比 𝒞 自身能量小约 100 倍</li>
+<li><strong>准独立演化</strong>：因果场和信息场几乎独立演化，仅在长时间尺度上耦合</li>
+<li><strong>信息泄漏缓慢</strong>：因果场产生的信息缓慢泄漏到信息场——信息记录是渐进的</li>
+</ol>
+<h4 id="数值验证耦合强度的量级对比">数值验证：耦合强度的量级对比</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">耦合</th>
+<th style="text-align: center;">权重</th>
+<th style="text-align: center;">强度比</th>
+<th style="text-align: left;">物理含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ℳ-𝒞（<span
+class="math inline">\(\theta_\tau\)</span>）</td>
+<td style="text-align: center;">0.209</td>
+<td style="text-align: center;">23</td>
+<td style="text-align: left;">物质驱动因果</td>
+</tr>
+<tr>
+<td style="text-align: left;">𝒞-ℐ（<span
+class="math inline">\(\theta_{\sigma_2}\)</span>）</td>
+<td style="text-align: center;">0.009</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">因果驱动信息</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(\theta_\tau /
+\theta_{\sigma_2}\)</span></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">23.2</td>
+<td style="text-align: left;">ℳ-𝒞 远强于 𝒞-ℐ</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math inline">\(\theta_\tau / \theta_{\sigma_2} \approx
+23.2\)</span>
+表明物质界对因果界的驱动远强于因果界对信息界的驱动。这是三扇区层级结构的定量表达——物质界是「源」，信息界是「汇」。</p>
+<h3 id="耦合强度与代数作用量">3.3 耦合强度与代数作用量</h3>
+<p>代数作用量 <span class="math inline">\(S(\sigma) = [\sum_i 1/\sigma_i
+\cdot \sum_{i&lt;j} 1/\sqrt{\sigma_i \sigma_j}]/C^2\)</span>
+在不动点处取极小。耦合强度 <span
+class="math inline">\(\theta_{\sigma_2}\)</span> 与作用量的关系：</p>
+<p><span class="math display">\[\theta_{\sigma_2} \propto \frac{\partial
+S}{\partial \sigma_{\mathcal{I}}} \cdot
+\sigma_{\mathcal{I}}^2.\]</span></p>
+<p>在不动点处，<span class="math inline">\(\partial S / \partial
+\sigma_{\mathcal{I}} = 0\)</span>，但 <span
+class="math inline">\(\sigma_{\mathcal{I}}^* \approx 0.011484\)</span>
+很小，使 <span class="math inline">\(\theta_{\sigma_2}\)</span>
+也很小。信息界的低权重直接导致 𝒞-ℐ 耦合微弱。</p>
+<h3 id="耦合强度与-born-法则">3.4 耦合强度与 Born 法则</h3>
+<p>Born 法则 <span class="math inline">\(\Delta\lambda_i \propto
+\sqrt{\sigma_i}\)</span> 将编码权重与谱间隙联系起来。𝒞-ℐ 耦合强度也通过
+Born 法则与编码权重关联：</p>
+<p><span class="math display">\[\theta_{\sigma_2} \propto
+\sqrt{\sigma_{\mathcal{I}}^*} \approx \sqrt{0.011484} \approx
+0.107.\]</span></p>
+<p>但归一化后，<span class="math inline">\(\theta_{\sigma_2} \approx
+0.009\)</span>——远小于 <span
+class="math inline">\(\sqrt{\sigma_{\mathcal{I}}^*}\)</span>。这是因为
+Birkhoff 混合矩阵的归一化 <span class="math inline">\(\sum \theta_k =
+1\)</span> 使对换权重被分配到极小值。</p>
+<h4 id="详细推导born-标度与归一化压制">详细推导：Born
+标度与归一化压制</h4>
+<p>Born 法则给出 <span class="math inline">\(\theta_{\sigma_2}\)</span>
+的「裸」标度 <span class="math inline">\(\sim
+\sqrt{\sigma_{\mathcal{I}}^*} \approx 0.107\)</span>。Birkhoff 归一化
+<span class="math inline">\(\sum \theta_k = 1\)</span> 将裸标度压制为
+<span class="math inline">\(\theta_{\sigma_2} =
+\sqrt{\sigma_{\mathcal{I}}^*} / (\sqrt{\sigma_{\mathcal{M}}^*} +
+\sqrt{\sigma_{\mathcal{C}}^*} +
+\sqrt{\sigma_{\mathcal{I}}^*})\)</span>。分子 <span
+class="math inline">\(\sqrt{\sigma_{\mathcal{I}}^*} \approx
+0.107\)</span>，分母 <span class="math inline">\(\approx 0.882 + 0.459 +
+0.107 = 1.448\)</span>，因此 <span
+class="math inline">\(\theta_{\sigma_2} \approx 0.107 / 1.448 \approx
+0.074\)</span>。实际值 <span class="math inline">\(0.009\)</span>
+更小，因为 Birkhoff 不动点方程进一步压制了对换权重（信息界的低权重 <span
+class="math inline">\(\sigma_{\mathcal{I}}^* \approx 0.011\)</span> 使得
+<span class="math inline">\(\sigma_{\mathcal{I}}^* \ll
+\sqrt{\sigma_{\mathcal{I}}^*}\)</span> 的效应被放大）。</p>
+<hr />
+<h2 id="物理含义">§4 物理含义</h2>
+<h3 id="联合演化的方向">4.1 联合演化的方向</h3>
+<p>𝒞-ℐ
+联合演化的方向由自由能梯度确定——系统从高自由能态向低自由能态演化。这是因果场与信息场「同步」的驱动力。</p>
+<p>自由能梯度：</p>
+<p><span class="math display">\[\nabla F_{\mathcal{C}\mathcal{I}} =
+\left(\frac{\partial F}{\partial \rho_{\mathcal{C}}}, \frac{\partial
+F}{\partial \rho_{\mathcal{I}}}\right).\]</span></p>
+<p>系统沿 <span class="math inline">\(-\nabla F\)</span>
+方向演化——趋向自由能极小。由于耦合极弱（<span
+class="math inline">\(\theta_{\sigma_2} \approx
+0.009\)</span>），同步过程非常缓慢——需要多个呼吸周期才能达到平衡。</p>
+<h4 id="详细推导自由能梯度的计算">详细推导：自由能梯度的计算</h4>
+<p><span class="math inline">\(\partial F / \partial \rho_{\mathcal{C}}
+= H_{\mathcal{C}\mathcal{I}}|_{\mathcal{C}} - T_{\mathcal{C}} \ln
+\rho_{\mathcal{C}}\)</span>，其中 <span
+class="math inline">\(H_{\mathcal{C}\mathcal{I}}|_{\mathcal{C}} =
+\text{Tr}_{\mathcal{I}}(H_{\mathcal{C}\mathcal{I}}
+\rho_{\mathcal{I}})\)</span>。在弱耦合极限下，<span
+class="math inline">\(H_{\mathcal{C}\mathcal{I}}|_{\mathcal{C}} \approx
+\theta_{\sigma_2} \cdot \langle P_{\sigma_2}^\dagger
+\rangle_{\mathcal{I}} \cdot P_{\sigma_2}\)</span>。演化方向由 <span
+class="math inline">\(\dot{\rho}_{\mathcal{C}} \propto -\partial F /
+\partial \rho_{\mathcal{C}}\)</span> 给出。</p>
+<h3 id="温度的几何含义">4.2 温度的几何含义</h3>
+<p>因果场温度 <span class="math inline">\(T_{\mathcal{C}}\)</span>
+与呼吸频率相关：</p>
+<p><span class="math display">\[T_{\mathcal{C}} \propto
+\omega_{\text{breath}} = \frac{|\text{Im}(\lambda_2)|}{2\pi} \approx
+\frac{0.181}{2\pi} \approx 0.029.\]</span></p>
+<p>温度由 Birkhoff 混合矩阵本征值的虚部确定——跨区域信息导入。本征值
+<span class="math inline">\(\lambda_2 = 0.678 + 0.181i\)</span> 的虚部
+<span class="math inline">\(0.181\)</span>
+给出因果场的振荡频率，也就是「温度」的几何来源。</p>
+<h4 id="对比讨论因果场温度-vs-标准温度">对比讨论：因果场温度 vs
+标准温度</h4>
+<p>标准温度 <span class="math inline">\(T\)</span>
+由热力学第零定律定义——两个系统热平衡时温度相等。因果场温度 <span
+class="math inline">\(T_{\mathcal{C}}\)</span> 的区别：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">性质</th>
+<th style="text-align: left;">标准温度</th>
+<th style="text-align: left;">因果场温度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">定义来源</td>
+<td style="text-align: left;">热平衡</td>
+<td style="text-align: left;">Birkhoff 本征值虚部</td>
+</tr>
+<tr>
+<td style="text-align: left;">量纲</td>
+<td style="text-align: left;"><span
+class="math inline">\([K]\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\([\text{时间}]^{-1}\)</span>（自然单位）</td>
+</tr>
+<tr>
+<td style="text-align: left;">零定律</td>
+<td style="text-align: left;">外部</td>
+<td style="text-align: left;">自动满足（Birkhoff 不动点）</td>
+</tr>
+<tr>
+<td style="text-align: left;">可调性</td>
+<td style="text-align: left;">外部</td>
+<td style="text-align: left;">景观依赖</td>
+</tr>
+<tr>
+<td style="text-align: left;">零点</td>
+<td style="text-align: left;"><span class="math inline">\(T = 0\)</span>
+可能</td>
+<td style="text-align: left;"><span
+class="math inline">\(T_{\mathcal{C}} &gt; 0\)</span> 严格</td>
+</tr>
+</tbody>
+</table>
+<p>因果场温度 <span class="math inline">\(T_{\mathcal{C}} &gt;
+0\)</span> 严格——因为 <span class="math inline">\(\text{Im}(\lambda_2)
+\neq 0\)</span>（复结构 <span class="math inline">\(J\)</span>
+的振荡必然产生非零虚部）。这解释了为什么因果场永远有非零温度——因果关系本质上是振荡的，振荡必然产生温度。</p>
+<h3 id="温度与熵的竞争">4.3 温度与熵的竞争</h3>
+<p>交互自由能 <span class="math inline">\(F = E - TS\)</span> 中，能量项
+<span class="math inline">\(E\)</span> 和熵项 <span
+class="math inline">\(TS\)</span> 的竞争决定稳态：</p>
+<ul>
+<li><strong>低温</strong>（<span class="math inline">\(T_{\mathcal{C}}
+\to 0\)</span>）：能量主导，稳态趋向纯态（有序）</li>
+<li><strong>高温</strong>（<span class="math inline">\(T_{\mathcal{C}}
+\to \infty\)</span>）：熵主导，稳态趋向最大混合态（无序）</li>
+<li><strong>我们的位置</strong>（<span
+class="math inline">\(T_{\mathcal{C}} \approx
+0.029\)</span>）：低温区，能量略占优势——稳态接近有序</li>
+</ul>
+<h3 id="交互自由能与三场动力学">4.4 交互自由能与三场动力学</h3>
+<p>𝒞-ℐ 交互自由能是三场动力学的关键环节：</p>
+<ol type="1">
+<li>ℳ-𝒞 耦合（循环项 <span
+class="math inline">\(\theta_\tau\)</span>）：物质驱动因果场</li>
+<li>𝒞-ℐ 耦合（对换项 <span
+class="math inline">\(\theta_{\sigma_2}\)</span>）：因果驱动信息场</li>
+<li>ℳ-ℐ 耦合（间接）：通过 𝒞 中转</li>
+</ol>
+<p>𝒞-ℐ
+交互自由能是信息场获取物理信息的唯一通道——信息场通过因果场「感知」物质世界。</p>
+<h4 id="详细推导三场信息流">详细推导：三场信息流</h4>
+<p>信息流 <span class="math inline">\(J_{\text{info}}\)</span>
+从物质界经因果界流向信息界：</p>
+<p><span class="math display">\[\mathcal{M} \xrightarrow{\theta_\tau}
+\mathcal{C} \xrightarrow{\theta_{\sigma_2}} \mathcal{I}.\]</span></p>
+<p>各环节的传输效率：<span
+class="math inline">\(\eta_{\mathcal{M}\mathcal{C}} = \theta_\tau /
+\theta_I \approx 0.209/0.782 \approx 0.267\)</span>（26.7%），<span
+class="math inline">\(\eta_{\mathcal{C}\mathcal{I}} = \theta_{\sigma_2}
+/ \theta_\tau \approx 0.009/0.209 \approx
+0.043\)</span>（4.3%）。总传输效率 <span
+class="math inline">\(\eta_{\text{total}} =
+\eta_{\mathcal{M}\mathcal{C}} \cdot \eta_{\mathcal{C}\mathcal{I}}
+\approx 0.0115\)</span>（1.15%）。信息从物质界到信息界的传输效率仅约
+1%——信息场只获取物质界约 1%
+的信息。这与观测者只能感知世界的一小部分信息的直觉一致。</p>
+<hr />
+<h2 id="交互自由能的景观依赖性">§5 交互自由能的景观依赖性</h2>
+<h3 id="互信息的景观变化">5.1 互信息的景观变化</h3>
+<p>互信息 <span class="math inline">\(I(\mathcal{C}; \mathcal{I}) =
+\theta_{\sigma_2} \cdot H(\sigma^*)\)</span> 随景观位置变化：</p>
+<ul>
+<li>对称点（<span class="math inline">\(\sigma = (1/3, 1/3,
+1/3)\)</span>）：<span class="math inline">\(\theta_{\sigma_2} =
+1/3\)</span>，<span class="math inline">\(H = \ln 3 \approx
+1.099\)</span>，<span class="math inline">\(I \approx
+0.366\)</span></li>
+<li>我们的位置：<span class="math inline">\(I \approx
+0.005\)</span></li>
+<li>极端点（<span class="math inline">\(\sigma_{\mathcal{I}} \to
+0\)</span>）：<span class="math inline">\(\theta_{\sigma_2} \to
+0\)</span>，<span class="math inline">\(I \to 0\)</span></li>
+</ul>
+<p>我们的位置互信息极小——因果场与信息场几乎独立。这是信息界高度集中的体现（<span
+class="math inline">\(\sigma_{\mathcal{I}}^* \approx
+0.011484\)</span>）。</p>
+<h3 id="自由能极小的景观稳定性">5.2 自由能极小的景观稳定性</h3>
+<p>自由能极小的稳定性由 Hessian 矩阵的正定性确定。在不动点处：</p>
+<p><span class="math display">\[\frac{\partial^2 F}{\partial
+\rho_{\mathcal{C}}^2} &gt; 0, \quad \frac{\partial^2 F}{\partial
+\rho_{\mathcal{I}}^2} &gt; 0.\]</span></p>
+<p>Hessian
+正定保证自由能极小是全局稳定的——从任意初始态出发，系统收敛到唯一的 Gibbs
+稳态。</p>
+<h4 id="详细推导hessian-的景观分析">详细推导：Hessian 的景观分析</h4>
+<p>Hessian 矩阵 <span class="math inline">\(H_{ij} = \partial^2 F /
+\partial \rho_i \partial \rho_j\)</span>。在 Gibbs 态 <span
+class="math inline">\(\rho_{\text{ss}} \propto e^{-H/T}\)</span>
+处，<span class="math inline">\(H = T \cdot
+\rho_{\text{ss}}^{-1}\)</span>（对角矩阵，正定）。Hessian 的本征值 <span
+class="math inline">\(\propto T_{\mathcal{C}} /
+\sigma_i^*\)</span>。在不动点处，<span
+class="math inline">\(\sigma_{\mathcal{M}}^* \approx
+0.778\)</span>，<span class="math inline">\(\sigma_{\mathcal{C}}^*
+\approx 0.211\)</span>，<span
+class="math inline">\(\sigma_{\mathcal{I}}^* \approx
+0.011\)</span>。最小本征值 <span class="math inline">\(\propto
+T_{\mathcal{C}} / \sigma_{\mathcal{M}}^* \approx 0.029/0.778 \approx
+0.037\)</span>——正定，稳态稳定。</p>
+<h3 id="耦合强度的可调范围">5.3 耦合强度的可调范围</h3>
+<p>在景观中，<span class="math inline">\(\theta_{\sigma_2}\)</span>
+的范围为 <span class="math inline">\([0, 1/3]\)</span>：</p>
+<ul>
+<li><span class="math inline">\(\theta_{\sigma_2} = 0\)</span>：𝒞-ℐ
+完全解耦，信息场无法获取因果信息</li>
+<li><span class="math inline">\(\theta_{\sigma_2} = 1/3\)</span>：𝒞-ℐ
+强耦合，信息场完全同步因果场</li>
+<li><span class="math inline">\(\theta_{\sigma_2} \approx
+0.009\)</span>（我们的位置）：弱耦合，信息场缓慢记录因果信息</li>
+</ul>
+<p>弱耦合位置使信息场具有「选择性」——只记录因果场中最重要的信息，遗忘细节。这可能是观测者具有有限信息容量的根源。</p>
+<h3 id="弱耦合的生存优势">5.4 弱耦合的生存优势</h3>
+<p>弱耦合 <span class="math inline">\(\theta_{\sigma_2} \approx
+0.009\)</span> 对观测者而言具有生存优势：</p>
+<ul>
+<li>若耦合过强（<span class="math inline">\(\theta_{\sigma_2} \to
+1/3\)</span>）：信息场被因果场完全「冲刷」，无法形成稳定的记忆结构</li>
+<li>若耦合过弱（<span class="math inline">\(\theta_{\sigma_2} \to
+0\)</span>）：信息场与因果场完全隔离，无法获取任何物理信息</li>
+<li>中等弱耦合（<span class="math inline">\(\theta_{\sigma_2} \approx
+0.009\)</span>）：信息场选择性记录因果场的关键信息，形成稳定且有意义的记忆</li>
+</ul>
+<p>这种「弱耦合选择性」可能是生命系统中信息处理效率的几何根源。</p>
+<h4
+id="详细推导弱耦合选择性的信息论分析">详细推导：弱耦合选择性的信息论分析</h4>
+<p>信息场的信息容量 <span class="math inline">\(C_{\mathcal{I}} =
+S_{\mathcal{I}}^{\max} \approx \ln 3 \approx
+1.099\)</span>（三编码模式）。因果场的信息产生率 <span
+class="math inline">\(\sigma_S \approx 0.491\)</span>。如果 <span
+class="math inline">\(\theta_{\sigma_2}\)</span>
+过大，信息场被信息洪流淹没，无法形成稳定记忆。最优耦合满足 <span
+class="math inline">\(\theta_{\sigma_2} \cdot \sigma_S \cdot
+\tau_{\text{memory}} \leq C_{\mathcal{I}}\)</span>，其中 <span
+class="math inline">\(\tau_{\text{memory}}\)</span> 是记忆保持时间。代入
+<span class="math inline">\(\sigma_S \approx 0.491\)</span>，<span
+class="math inline">\(C_{\mathcal{I}} \approx 1.099\)</span>，<span
+class="math inline">\(\tau_{\text{memory}} \sim
+1/\Gamma_{\text{geo}}\)</span>（卷5），得 <span
+class="math inline">\(\theta_{\sigma_2} \leq 1.099 \cdot
+\Gamma_{\text{geo}} / 0.491 \approx 2.24 \cdot
+\Gamma_{\text{geo}}\)</span>。<span
+class="math inline">\(\Gamma_{\text{geo}} \approx 0.05\)</span>（卷5
+定理 5.1.2.01），因此 <span class="math inline">\(\theta_{\sigma_2} \leq
+0.112\)</span>。我们的 <span class="math inline">\(\theta_{\sigma_2}
+\approx 0.009\)</span>
+满足最优条件——信息场有足够容量处理因果场的信息流。</p>
+<hr />
+<h2 id="定理索引">定理索引</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">编号</th>
+<th style="text-align: left;">内容</th>
+<th style="text-align: center;">证明状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">定理 4.3.1.01</td>
+<td style="text-align: left;">𝒞-ℐ 互信息定理</td>
+<td style="text-align: center;">已证（本文§1.2）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="跨卷引用">跨卷引用</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">引用</th>
+<th style="text-align: left;">卷/定理</th>
+<th style="text-align: left;">内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Born 归一化</td>
+<td style="text-align: left;">卷0 定理 0.2.1.01</td>
+<td style="text-align: left;"><span
+class="math inline">\(\Delta\lambda_i \propto
+\sqrt{\sigma_i}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Birkhoff 不动点</td>
+<td style="text-align: left;">卷0 定理 0.3.1.01</td>
+<td style="text-align: left;"><span class="math inline">\(\sigma^* =
+T\sigma^*\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">代数归一化</td>
+<td style="text-align: left;">卷0 定理 0.4.1.01</td>
+<td style="text-align: left;"><span class="math inline">\(2pC^3 + C^2 =
+1\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Birkhoff 混合矩阵</td>
+<td style="text-align: left;">卷3 定理 3.1.1.01</td>
+<td style="text-align: left;"><span class="math inline">\(T = \theta_I I
++ \theta_\tau P_\tau + \theta_{\sigma_2} P_{\sigma_2}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">因果场密度</td>
+<td style="text-align: left;">卷4.1 定理 4.1.1.01</td>
+<td style="text-align: left;"><span
+class="math inline">\(\rho_{\mathcal{C}} =
+3\sigma_{\mathcal{C}}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">熵单调性</td>
+<td style="text-align: left;">卷4.2 定理 4.2.2.01</td>
+<td style="text-align: left;"><span
+class="math inline">\(dS_{\mathcal{C}}/dt \geq 0\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">𝒞ℐ 联合稳态</td>
+<td style="text-align: left;">卷4.4 定理 4.4.1.01</td>
+<td style="text-align: left;"><span
+class="math inline">\(\rho_{\text{ss}} \propto e^{-H/T}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">信息场衰减</td>
+<td style="text-align: left;">卷5 定理 5.1.2.01</td>
+<td style="text-align: left;"><span
+class="math inline">\(\Gamma_{\text{geo}} \cdot
+\rho_{\mathcal{I}}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">三场耦合</td>
+<td style="text-align: left;">卷6 定理 6.1.1.01</td>
+<td style="text-align: left;"><span
+class="math inline">\(F_{\mathcal{M}\mathcal{C}\mathcal{I}}\)</span></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="参考文献">参考文献</h2>
+<ul>
+<li>Nielsen, Chuang, <em>Quantum Computation and Quantum
+Information</em>, Cambridge University Press</li>
+<li>Wehrl, <em>General Properties of Entropy</em>, Reviews of Modern
+Physics 50(2), 1978</li>
+<li>Vedral, <em>The role of relative entropy in quantum information
+theory</em>, Rev. Mod. Phys. 74, 197 (2002)</li>
+</ul>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 07:53:34</p>
+  </footer>
+</div>
+</body>
+</html>

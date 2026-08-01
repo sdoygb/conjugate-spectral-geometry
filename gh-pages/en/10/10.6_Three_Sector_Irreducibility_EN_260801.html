@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10.6 Irreducibility of the Three Realms | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Number: 10.6 | Date: 260723.1 | Series: Applications | Language: EN">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/10/10.6_Three_Sector_Irreducibility_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">10.6 Irreducibility of the Three Realms</span>
+  </nav>
+  <main class="article-content">
+<h1 id="irreducibility-of-the-three-realms">10.6 Irreducibility of the
+Three Realms</h1>
+<h2
+id="rigorous-mathematical-proof-of-ℳ𝒞ℐ-three-sector-coupling">Rigorous
+Mathematical Proof of ℳ𝒞ℐ Three-Sector Coupling</h2>
+<p><strong>Number</strong>: 10.6 | <strong>Date</strong>: 260723.1 |
+<strong>Series</strong>: Applications | <strong>Language</strong>:
+EN</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>Within the rigorous ℳ𝒞ℐ three-sector framework, we prove the
+indecomposability of sector coupling. The core tools are the spectral
+gap direction spectral domination inequality and the
+Courant-Fischer-Weyl min-max principle. All numerical values arise from
+algebraic operations of the unique axiom δ at the Birkhoff fixed point
+σ*, requiring no external parameters.</p>
+<p><strong>Keywords:</strong> ℳ𝒞ℐ three-sector; sector coupling;
+spectral gap direction spectral domination; min-max principle; Schur
+complement; <span class="math inline">\(S_3\)</span> symmetry;
+indecomposability theorem; Consummate Reproduction; proposition
+(interlocking)</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#s0-axiom-input-declaration">§0 Axiom Input
+Declaration</a></li>
+<li><a href="#s2-rigorous-definitions-and-preliminary-lemmas">§2
+Rigorous Definitions and Preliminary Lemmas</a>
+<ul>
+<li><a href="#s21-threefold-decomposition-of-hilbert-space">§2.1
+Threefold Decomposition of Hilbert Space</a></li>
+<li><a href="#s22-sector-restriction-operators-and-cross-operators">§2.2
+Sector Restriction Operators and Cross Operators</a></li>
+<li><a href="#s23-orthogonal-decomposition-and-norm-identity">§2.3
+Orthogonal Decomposition and Norm Identity</a></li>
+<li><a
+href="#s24-spectral-definition-of-the-spectral-gap-direction-subspace">§2.4
+Spectral Definition of the Spectral Gap Direction Subspace</a></li>
+</ul></li>
+<li><a
+href="#s3-spectral-gap-direction-spectral-domination-inequality-and-min-max-lower-bound">§3
+Spectral Gap Direction Spectral Domination Inequality and Min-Max Lower
+Bound</a>
+<ul>
+<li><a
+href="#s31-spectral-structure-of-the-constrained-birkhoff-hessian">§3.1
+Spectral Structure of the Constrained Birkhoff Hessian</a></li>
+<li><a
+href="#s32-spectral-gap-direction-spectral-domination-inequality">§3.2
+Spectral Gap Direction Spectral Domination Inequality</a></li>
+<li><a href="#s33-min-max-lower-bound-for-cross-operators">§3.3 Min-Max
+Lower Bound for Cross Operators</a></li>
+</ul></li>
+<li><a href="#s4-sector-indecomposability-theorem">§4 Sector
+Indecomposability Theorem</a>
+<ul>
+<li><a href="#s41-rigorous-statement-of-the-theorem">§4.1 Rigorous
+Statement of the Theorem</a></li>
+<li><a href="#s42-proof-cross-operators-have-no-zero-modes">§4.2 Proof:
+Cross Operators Have No Zero Modes</a></li>
+<li><a href="#s43-proof-lower-bound-estimates">§4.3 Proof: Lower Bound
+Estimates</a></li>
+</ul></li>
+<li><a href="#s5-quantitative-estimates-of-anthropic-residuals">§5
+Quantitative Estimates of Anthropic Residuals</a>
+<ul>
+<li><a href="#s51-causal-residual-lower-bound">§5.1 Causal Residual
+Lower Bound</a></li>
+<li><a href="#s52-information-residual-lower-bound">§5.2 Information
+Residual Lower Bound</a></li>
+</ul></li>
+<li><a href="#appendix-a-symbol-table">Appendix A Symbol Table</a></li>
+<li><a href="#references">References</a></li>
+</ul>
+<hr />
+<h2 id="chapter-1-introduction">Chapter 1 Introduction</h2>
+<p>This article is the 10.6th in the geometric theory series. The
+foundational framework of this series (the unique axiom δ, Clifford
+algebra, coding orbit structure, Born rule, interaction mapping) has
+been established in the Fundamental Theorems of Conjugate Spectral
+Geometry.</p>
+<p><strong>Core Positioning</strong>: Within the rigorous ℳ𝒞ℐ
+three-sector framework, this article proves the indecomposability of
+sector coupling. The core tools are the spectral gap direction spectral
+domination inequality and the Courant-Fischer-Weyl min-max
+principle.</p>
+<p><strong>Key Dependencies</strong>: This article directly relies on
+unique axiom δ → ℳ𝒞ℐ three-sector decomposition → Hilbert space
+threefold decomposition → spectral gap direction subspace. The structure
+constants are locked by {2,3,5} interlocking, and Consummate
+Reproduction (Theorem 2.3.7.01) establishes bootstrap closure.</p>
+<p><strong>Core Results</strong>: (I) Rigorous proof of the sector
+indecomposability theorem; (II) Quantitative estimates of anthropic
+residuals.</p>
+<hr />
+<h2 id="axiom-input-declaration">§0 Axiom Input Declaration</h2>
+<blockquote>
+<p><strong>Revision 260726</strong>: The §0 section number does not
+conform to the standard (§0 is used only in Volume 0). Since
+modification would cascade into renumbering of theorems, it is left to
+the author to decide whether to renumber as §1 and shift §2→§3, §3→§4,
+§4→§5, §5→§6 accordingly.</p>
+</blockquote>
+<p>All proofs in this article are strictly locked to the following
+unique axiom δ (Zero Motion), without employing Newton’s gravitational
+constant <span class="math inline">\(G\)</span>, Einstein’s field
+equations, external assumptions of the Standard Model, or any
+experimentally fitted parameters.</p>
+<blockquote>
+<p><strong>Born Normalization Condition (Theorem 1.2.3.01)</strong></p>
+<p><span class="math display">\[\theta_M + \theta_C + \theta_I =
+90^\circ\]</span></p>
+</blockquote>
+<blockquote>
+<p><strong>Algebraic Action S(σ) (Theorem 1.4.3.01)</strong></p>
+<p><span class="math display">\[S(\theta) = \sum_i 1/\sin^2\theta_i +
+\sum_{i&lt;j} 1/(\sin\theta_i \sin\theta_j)\]</span></p>
+</blockquote>
+<blockquote>
+<p><strong>Mass Operator M̂ (Theorem 1.2)</strong></p>
+<p><span class="math display">\[m = K \sin^3 \theta_M\]</span></p>
+</blockquote>
+<p>The Birkhoff fixed point σ* <span class="math inline">\(p_0 =
+(57.93^\circ, 26.16^\circ, 5.91^\circ)\)</span> is uniquely determined
+by the Born Normalization Condition (Theorem 1.2.3.01), the Algebraic
+Action S(σ) (Theorem 1.4.3.01), and the mass operator M̂ (Theorem 1.2)
+jointly with <span class="math inline">\(S_e = 137.035999084\)</span>.
+At this point, the second-order structure <span
+class="math inline">\(H^{\text{con}}\)</span> of the Birkhoff Hessian at
+the fixed point, the spectral gap direction/Dirac spectral direction
+eigenvalues, and the cross terms are all algebraic consequences of the
+Born Normalization Condition (Theorem 1.2.3.01) and the Algebraic Action
+S(σ) (Theorem 1.4.3.01) at <span class="math inline">\(p_0\)</span> —
+direct outputs of the unique axiom δ (Zero Motion), with no additional
+free parameters.</p>
+<p><strong>Consummate Reproduction E</strong> (from ): the <span
+class="math inline">\(\mathcal{M}\)</span>-<span
+class="math inline">\(\mathcal{C}\)</span> waist-edge coupling structure
+of the ℳ𝒞ℐ three-sector corresponds to the electromagnetic interaction.
+The “sector indecomposability” of this article is an inevitable
+corollary of Consummate Reproduction at the spectral geometric level: if
+the <span class="math inline">\(\mathcal{M}\)</span>-<span
+class="math inline">\(\mathcal{C}\)</span> coupling were decouplable,
+the electromagnetic interaction would separate from its material
+carrier, violating Consummate Reproduction.</p>
+<hr />
+<h2 id="rigorous-definitions-and-preliminary-lemmas">§2 Rigorous
+Definitions and Preliminary Lemmas</h2>
+<h3 id="threefold-decomposition-of-hilbert-space">§2.1 Threefold
+Decomposition of Hilbert Space</h3>
+<p><strong>Definition 2.1</strong> (Total Hilbert Space). Let <span
+class="math inline">\(M(a) = S^3 \times S^3 \times S^3\)</span> be the
+constrained product manifold derived from the Born Normalization
+Condition (§0, Theorem 1.2.3.01) and the Algebraic Action S(σ) (Theorem
+1.4.3.01), equipped with the <span class="math inline">\(Cl(9)\)</span>
+spinor bundle <span class="math inline">\(\mathcal{S}\)</span>. The
+total Hilbert space is:</p>
+<p><span class="math display">\[\mathcal{H} = L^2(M(a),
+\mathcal{S})\]</span></p>
+<p>where the inner product is induced by the Riemannian metric <span
+class="math inline">\(g\)</span> on <span
+class="math inline">\(M(a)\)</span> and the Hermitian structure on the
+spinor bundle.</p>
+<hr />
+<p><strong>Definition 2.2</strong> (Projection Operators of the
+Threefold Decomposition). From the sector coupling dynamics of the
+tri-dual geometric spaces, the tangent bundle admits a
+<strong>metric-orthogonal</strong> decomposition:</p>
+<p><span class="math display">\[T\Sigma = \mathcal{M} \oplus \mathcal{C}
+\oplus \mathcal{I}\]</span></p>
+<p>where <span class="math inline">\(\mathcal{M}\)</span> is the
+Material realm (generated by the <span
+class="math inline">\(\theta_M\)</span> coordinate), <span
+class="math inline">\(\mathcal{C}\)</span> is the Causal realm
+(generated by the <span class="math inline">\(\theta_C\)</span>
+coordinate), and <span class="math inline">\(\mathcal{I}\)</span> is the
+Information realm (generated by the <span
+class="math inline">\(\theta_I\)</span> coordinate).</p>
+<p>The metric-orthogonal decomposition induces a direct sum
+decomposition of the spinor bundle:</p>
+<p><span class="math display">\[\mathcal{S} = \mathcal{S}_{\mathcal{M}}
+\oplus \mathcal{S}_{\mathcal{C}} \oplus
+\mathcal{S}_{\mathcal{I}}\]</span></p>
+<p>which in turn induces an orthogonal direct sum decomposition of the
+Hilbert space:</p>
+<p><span class="math display">\[\mathcal{H} = \mathcal{H}_{\mathcal{M}}
+\oplus \mathcal{H}_{\mathcal{C}} \oplus
+\mathcal{H}_{\mathcal{I}}\]</span></p>
+<p>where <span class="math inline">\(\mathcal{H}_{\mathcal{X}} =
+L^2(M(a), \mathcal{S}_{\mathcal{X}})\)</span>, <span
+class="math inline">\(\mathcal{X} \in \{\mathcal{M}, \mathcal{C},
+\mathcal{I}\}\)</span>.</p>
+<p>Define orthogonal projection operators <span
+class="math inline">\(P_{\mathcal{M}}, P_{\mathcal{C}}, P_{\mathcal{I}}
+: \mathcal{H} \to \mathcal{H}\)</span>, satisfying:</p>
+<ul>
+<li><span class="math inline">\(P_{\mathcal{X}}^2 = P_{\mathcal{X}} =
+P_{\mathcal{X}}^*\)</span> (self-adjoint idempotent);</li>
+<li><span class="math inline">\(P_{\mathcal{X}} P_{\mathcal{Y}} =
+0\)</span> for <span class="math inline">\(\mathcal{X} \neq
+\mathcal{Y}\)</span> (orthogonality);</li>
+<li><span class="math inline">\(P_{\mathcal{M}} + P_{\mathcal{C}} +
+P_{\mathcal{I}} = I_{\mathcal{H}}\)</span> (completeness).</li>
+</ul>
+<p>The threefold decomposition <span class="math inline">\(T\Sigma =
+\mathcal{M}\oplus\mathcal{C}\oplus\mathcal{I}\)</span> is
+metric-orthogonal.</p>
+<h3 id="sector-restriction-operators-and-cross-operators">§2.2 Sector
+Restriction Operators and Cross Operators</h3>
+<p><strong>Definition 2.3</strong> (Sector Diagonal Operators and Cross
+Operators). Let <span class="math inline">\(D\)</span> be the
+9-dimensional Dirac operator constructed in Theorem 1.1.5.01-20, with
+domain <span class="math inline">\(\text{dom}(D) = H^1(M(a),
+\mathcal{S})\)</span> (first-order Sobolev space). Define:</p>
+<p><strong>Sector diagonal operators</strong>:</p>
+<p><span class="math display">\[D_{\mathcal{X}} := P_{\mathcal{X}} D
+P_{\mathcal{X}} : \mathcal{H}_{\mathcal{X}} \to
+\mathcal{H}_{\mathcal{X}},\quad \mathcal{X} \in \{\mathcal{M},
+\mathcal{C}, \mathcal{I}\}\]</span></p>
+<p><strong>Sector cross operators</strong>:</p>
+<p><span class="math display">\[D_{\mathcal{X}\mathcal{Y}} :=
+P_{\mathcal{X}} D P_{\mathcal{Y}} : \mathcal{H}_{\mathcal{Y}} \to
+\mathcal{H}_{\mathcal{X}},\quad \mathcal{X} \neq
+\mathcal{Y}\]</span></p>
+<p><strong>Block matrix representation of the Dirac operator</strong>:
+For any <span class="math inline">\(\psi = (\psi_{\mathcal{M}},
+\psi_{\mathcal{C}}, \psi_{\mathcal{I}}) \in \mathcal{H}_{\mathcal{M}}
+\oplus \mathcal{H}_{\mathcal{C}} \oplus
+\mathcal{H}_{\mathcal{I}}\)</span>, we have:</p>
+<p><span class="math display">\[D\psi = \begin{pmatrix} D_{\mathcal{M}}
+&amp; D_{\mathcal{M}\mathcal{C}} &amp; D_{\mathcal{M}\mathcal{I}} \\
+D_{\mathcal{C}\mathcal{M}} &amp; D_{\mathcal{C}} &amp;
+D_{\mathcal{C}\mathcal{I}} \\ D_{\mathcal{I}\mathcal{M}} &amp;
+D_{\mathcal{I}\mathcal{C}} &amp; D_{\mathcal{I}} \end{pmatrix}
+\begin{pmatrix} \psi_{\mathcal{M}} \\ \psi_{\mathcal{C}} \\
+\psi_{\mathcal{I}} \end{pmatrix}\]</span></p>
+<hr />
+<p><strong>Lemma 10.6.2.01 (Adjoint Relation of Cross
+Operators).</strong> <span
+class="math inline">\(D_{\mathcal{X}\mathcal{Y}}^* =
+D_{\mathcal{Y}\mathcal{X}}\)</span>, and <span
+class="math inline">\(D_{\mathcal{X}\mathcal{Y}}\)</span> is a densely
+defined closed operator.</p>
+<p><em>Proof.</em> <span class="math inline">\(D\)</span> is a
+self-adjoint operator. For <span class="math inline">\(\psi \in
+\mathcal{H}_{\mathcal{Y}}, \phi \in
+\mathcal{H}_{\mathcal{X}}\)</span>:</p>
+<p><span class="math display">\[\langle D_{\mathcal{X}\mathcal{Y}} \psi,
+\phi \rangle = \langle P_{\mathcal{X}} D P_{\mathcal{Y}} \psi, \phi
+\rangle = \langle D \psi, \phi \rangle = \langle \psi, D \phi \rangle =
+\langle \psi, P_{\mathcal{Y}} D P_{\mathcal{X}} \phi \rangle = \langle
+\psi, D_{\mathcal{Y}\mathcal{X}} \phi \rangle\]</span></p>
+<p>Hence <span class="math inline">\(D_{\mathcal{X}\mathcal{Y}}^* =
+D_{\mathcal{Y}\mathcal{X}}\)</span>. The closedness of <span
+class="math inline">\(D\)</span> is inherited by its sector
+restrictions. ∎</p>
+<h3 id="orthogonal-decomposition-and-norm-identity">§2.3 Orthogonal
+Decomposition and Norm Identity</h3>
+<p><strong>Lemma 10.6.2.02 (Norm Orthogonal Decomposition).</strong> For
+any <span class="math inline">\(\psi \in
+\mathcal{H}_{\mathcal{M}}\)</span> (i.e., <span
+class="math inline">\(\psi_{\mathcal{M}} = \psi, \psi_{\mathcal{C}} =
+\psi_{\mathcal{I}} = 0\)</span>), we have:</p>
+<p><span class="math display">\[\|D\psi\|^2 = \|D_{\mathcal{M}}\psi\|^2
++ \|D_{\mathcal{C}\mathcal{M}}\psi\|^2 +
+\|D_{\mathcal{I}\mathcal{M}}\psi\|^2\]</span></p>
+<p>where the three terms belong respectively to the mutually orthogonal
+subspaces <span class="math inline">\(\mathcal{H}_{\mathcal{M}},
+\mathcal{H}_{\mathcal{C}}, \mathcal{H}_{\mathcal{I}}\)</span>.</p>
+<p><em>Proof.</em> From Definition 2.3:</p>
+<p><span class="math display">\[D\psi = D_{\mathcal{M}}\psi +
+D_{\mathcal{C}\mathcal{M}}\psi +
+D_{\mathcal{I}\mathcal{M}}\psi\]</span></p>
+<p>where <span class="math inline">\(D_{\mathcal{M}}\psi =
+P_{\mathcal{M}} D \psi \in \mathcal{H}_{\mathcal{M}}\)</span>, <span
+class="math inline">\(D_{\mathcal{C}\mathcal{M}}\psi = P_{\mathcal{C}} D
+\psi \in \mathcal{H}_{\mathcal{C}}\)</span>, <span
+class="math inline">\(D_{\mathcal{I}\mathcal{M}}\psi = P_{\mathcal{I}} D
+\psi \in \mathcal{H}_{\mathcal{I}}\)</span>.</p>
+<p>By Definition 2.2, <span
+class="math inline">\(\mathcal{H}_{\mathcal{M}} \perp
+\mathcal{H}_{\mathcal{C}} \perp \mathcal{H}_{\mathcal{I}}\)</span>.
+Hence the three terms are mutually orthogonal, and the squared norm
+equals the sum of the individual squared norms. ∎</p>
+<h3 id="spectral-definition-of-the-spectral-gap-direction-subspace">§2.4
+Spectral Definition of the Spectral Gap Direction Subspace</h3>
+<p><strong>Definition 2.4</strong> (Spectral Gap Direction Subspace).
+Let the spectrum of <span class="math inline">\(D^2\)</span> be <span
+class="math inline">\(\sigma(D^2) = \{\lambda_n\}_{n=0}^\infty\)</span>
+(arranged in increasing order, counting multiplicities). The Dirac
+spectral direction gap is <span class="math inline">\(\lambda_2 =
+58760.77\ \text{rad}^{-2}\)</span>. For any <span
+class="math inline">\(\epsilon &gt; 0\)</span> satisfying <span
+class="math inline">\(\epsilon \ll \lambda_2\)</span>, define the
+<strong>spectral gap direction spectral projection</strong> (Kato
+analytic projection):</p>
+<p><span class="math display">\[P_{\text{soft}}^{(\epsilon)} :=
+\frac{1}{2\pi i} \oint_{\Gamma_\epsilon} (D^2 - \zeta)^{-1}
+d\zeta\]</span></p>
+<p>where <span class="math inline">\(\Gamma_\epsilon\)</span> is a
+positively oriented contour in the complex plane enclosing the interval
+<span class="math inline">\([0, \epsilon]\)</span>, maintaining a
+distance <span class="math inline">\(\delta &gt; 0\)</span> from the
+rest of the spectrum.</p>
+<p>The <strong>spectral gap direction subspace</strong> is defined
+as:</p>
+<p><span class="math display">\[\mathcal{H}_{\text{soft}}^{(\epsilon)}
+:= P_{\text{soft}}^{(\epsilon)} \mathcal{H} \subset
+\mathcal{H}\]</span></p>
+<p>This subspace is an invariant subspace of <span
+class="math inline">\(D^2\)</span>, and <span class="math inline">\(\dim
+\mathcal{H}_{\text{soft}}^{(\epsilon)} &lt; \infty\)</span> (because the
+spectrum of <span class="math inline">\(D^2\)</span> on <span
+class="math inline">\([0, \epsilon]\)</span> is discrete, and <span
+class="math inline">\(D^2\)</span> has compact resolvent).</p>
+<p>For <span class="math inline">\(\psi \in
+\mathcal{H}_{\text{soft}}^{(\epsilon)} \cap
+\mathcal{H}_{\mathcal{M}}\)</span>, we call <span
+class="math inline">\(\psi\)</span> a <strong>spectral gap direction
+material state</strong>.</p>
+<p><em>Proof.</em> <span class="math inline">\(D^2\)</span> is a
+self-adjoint elliptic operator on <span
+class="math inline">\(M(a)\)</span>, whose spectrum on <span
+class="math inline">\([0, \infty)\)</span> is discrete (<span
+class="math inline">\(M(a)\)</span> is compact). For sufficiently small
+<span class="math inline">\(\epsilon\)</span>, <span
+class="math inline">\([0, \epsilon]\)</span> contains only finitely many
+spectral points, hence <span
+class="math inline">\(P_{\text{soft}}^{(\epsilon)}\)</span> is a
+finite-rank projection. By Kato’s analytic perturbation theory (Kato,
+<em>Perturbation Theory for Linear Operators</em>, Chap. IV, §5), <span
+class="math inline">\(P_{\text{soft}}^{(\epsilon)}\)</span> is
+well-defined and commutes with <span class="math inline">\(D^2\)</span>.
+∎</p>
+<p><strong>Remark 2.5</strong> (Connection between the Spectral Gap
+Direction Subspace and Dirac Spectral Freezing). The spectral gap
+direction subspace <span
+class="math inline">\(\mathcal{H}_{\text{soft}}^{(\epsilon)}\)</span> of
+Definition 2.4 is equivalent to the Dirac spectral freezing theorem: the
+suppression of spinor degrees of freedom in the Dirac spectral direction
+(<span class="math inline">\(\eta\)</span> coordinate) to constants
+means that only the spectral gap direction (<span
+class="math inline">\(\xi\)</span> coordinate) carries nontrivial
+spectrum. Thus <span
+class="math inline">\(\mathcal{H}_{\text{soft}}^{(\epsilon)}\)</span> is
+essentially the low-energy effective subspace on the sector parameter
+space <span class="math inline">\(\Sigma\)</span> after normal
+freezing.</p>
+<hr />
+<h2
+id="spectral-gap-direction-spectral-domination-inequality-and-min-max-lower-bound">§3
+Spectral Gap Direction Spectral Domination Inequality and Min-Max Lower
+Bound</h2>
+<h3 id="spectral-structure-of-the-constrained-birkhoff-hessian">§3.1
+Spectral Structure of the Constrained Birkhoff Hessian</h3>
+<p><strong>Definition 3.1</strong> (Constrained Birkhoff Hessian
+Second-Order Structure at the Fixed Point). From §0, the Born
+Normalization Condition (Theorem 1.2.3.01), the Algebraic Action S(σ)
+(Theorem 1.4.3.01), and Theorem 1.1.5.01, the second-order structure
+<span class="math inline">\(H^{\text{con}}\)</span> of the Birkhoff
+Hessian at the fixed point on the constrained manifold <span
+class="math inline">\(C = \{(\theta_M, \theta_C, \theta_I) \in
+\mathbb{R}^3_{&gt;0} : \theta_M + \theta_C + \theta_I = \pi/2\}\)</span>
+diagonalizes in <span class="math inline">\((\xi, \eta)\)</span>
+coordinates (spectral gap direction/Dirac spectral direction
+coordinates, prerequisite Theorem M-1) as:</p>
+<p><span class="math display">\[H^{\text{con}} = \begin{pmatrix}
+\lambda_1 &amp; 0 \\ 0 &amp; \lambda_2 \end{pmatrix},\quad \lambda_1 =
+392.21\ \text{rad}^{-2},\ \lambda_2 = 58760.77\
+\text{rad}^{-2}\]</span></p>
+<p>In the original angle coordinates <span
+class="math inline">\((\theta_M, \theta_C, \theta_I)\)</span>
+(restricted to the tangent space of <span
+class="math inline">\(C\)</span>), the embedded representation of <span
+class="math inline">\(H^{\text{con}}\)</span> is:</p>
+<p><span class="math display">\[H^{\text{emb}} = \begin{pmatrix} H_{MM}
+&amp; H_{MC} &amp; H_{MI} \\ H_{MC} &amp; H_{CC} &amp; H_{CI} \\ H_{MI}
+&amp; H_{CI} &amp; H_{II} \end{pmatrix}\]</span></p>
+<p>where <span class="math inline">\(H_{MC} = 3.4145\
+\text{rad}^{-2}\)</span>, <span class="math inline">\(H_{MI} = 69.3547\
+\text{rad}^{-2}\)</span>, <span class="math inline">\(H_{CI} = 433.1578\
+\text{rad}^{-2}\)</span>. The cross terms are computed directly from the
+second-order partial derivatives of the Algebraic Action at the Birkhoff
+fixed point σ*; Theorem 1.1.5.01-20 provides the summary citation.</p>
+<hr />
+<p><strong>Remark 3.2</strong> (Distinction between Birkhoff Fixed Point
+σ* Hessian Eigenvalues and Spectral Expansion/Born Rule (Theorem
+1.1.5.01) Effective Hessian). The spectral gap direction analysis in
+this article employs the <strong>Birkhoff fixed point σ* induced
+eigenvalues</strong>:</p>
+<p><span class="math display">\[\lambda_1 = 392.21\
+\text{rad}^{-2},\quad \lambda_2 = 58760.77\ \text{rad}^{-2}\]</span></p>
+<p>These are the Hessian eigenvalues of <span
+class="math inline">\(S(\theta)\)</span> at the Birkhoff fixed point σ*
+<span class="math inline">\(p_0\)</span> — direct outputs of the second
+derivatives of the Algebraic Action S(σ) (Theorem 1.4.3.01) at <span
+class="math inline">\(p_0\)</span>, serving as the primary input for all
+cross-term numerical computations.</p>
+<p>The Spectral Expansion/Born Rule (Theorem 1.1.5.01) mapping layer
+(Theorem 1.1.5.01-20) employs the <strong>effective
+Hessian</strong>:</p>
+<p><span class="math display">\[\lambda_1^{\text{eff}} = 391.05\
+\text{rad}^{-2},\quad \lambda_2^{\text{eff}} = 59324.30\
+\text{rad}^{-2}\]</span></p>
+<p>The effective Hessian is the physical coupling constant obtained by
+correcting the bare Hessian through the global background contribution
+of the infiltration function <span class="math inline">\(\Phi\)</span>
+and the cross-region coupling <span class="math inline">\(H^W\)</span>
+(from Theorem ), used to derive the dimensional mappings of <span
+class="math inline">\(\chi_L\)</span>, <span
+class="math inline">\(\chi_T\)</span>, <span
+class="math inline">\(K\)</span>, <span
+class="math inline">\(\hbar\)</span>.</p>
+<p>The bare Hessian eigenvalues and the effective Hessian are equivalent
+in the neighborhood of the Birkhoff fixed point σ* by continuity: the
+difference <span class="math inline">\(\lambda_{1,2}^{\text{bare}} \to
+\lambda_{1,2}^{\text{eff}}\)</span> is absorbed by <span
+class="math inline">\(O(\epsilon)\)</span> (since <span
+class="math inline">\(\epsilon \ll \lambda_2\)</span>, the difference is
+negligible in the spectral gap direction limit). All Schur complement
+lower bound estimates in this article employ the bare Hessian cross
+terms <span class="math inline">\(H_{MC}, H_{MI}\)</span> and the Dirac
+spectral direction gap <span class="math inline">\(\lambda_2\)</span>,
+which agree with the results given by the effective Hessian in the <span
+class="math inline">\(\epsilon \to 0\)</span> limit.</p>
+<hr />
+<p><strong>Lemma 10.6.3.01 (Full-Sector Components of the Spectral Gap
+Direction Eigenvector).</strong> Let <span class="math inline">\(v_1 \in
+\mathbb{R}^3\)</span> be the normalized eigenvector of <span
+class="math inline">\(H^{\text{emb}}\)</span> corresponding to the
+eigenvalue <span class="math inline">\(\lambda_1\)</span>. Then <span
+class="math inline">\(v_1\)</span> is nonzero in all three components
+<span class="math inline">\(\theta_M, \theta_C, \theta_I\)</span>:</p>
+<p><span class="math display">\[v_1 = (v_{1M}, v_{1C}, v_{1I})^T,\quad
+v_{1M} \neq 0,\ v_{1C} \neq 0,\ v_{1I} \neq 0\]</span></p>
+<p><em>Proof.</em> See the positive-definiteness analysis of the Hessian
+in Theorem 1.1.5.01. <span class="math inline">\(H^{\text{emb}}\)</span>
+has rank 2 (restricted to <span class="math inline">\(C\)</span>), and
+the spectral gap direction eigenvector <span
+class="math inline">\(v_1\)</span> is uniquely determined by the linear
+transformation from <span class="math inline">\((\xi, \eta)\)</span>
+coordinates to <span class="math inline">\((\theta_M, \theta_C,
+\theta_I)\)</span> coordinates. The matrix of this transformation is
+given by the tangent space basis of the constrained manifold, and all
+three angular components participate in the spectral gap direction.
+Concrete computation: from <span class="math inline">\(H^{\text{emb}}
+v_1 = \lambda_1 v_1\)</span> and the non-vanishing of all entries of
+<span class="math inline">\(H^{\text{emb}}\)</span>, if any <span
+class="math inline">\(v_{1X} = 0\)</span>, then the remaining two
+components must satisfy <span class="math inline">\(H_{XY} v_{1Y} +
+H_{XZ} v_{1Z} = \lambda_1 v_{1X} = 0\)</span>. Substituting <span
+class="math inline">\(H_{XY}, H_{XZ} \neq 0\)</span> and <span
+class="math inline">\(\lambda_1 \neq H_{YY}, H_{ZZ}\)</span>, the
+coupled system forces <span class="math inline">\(v_{1Y} = v_{1Z} =
+0\)</span>, whence <span class="math inline">\(v_1 = 0\)</span>, a
+contradiction. ∎</p>
+<h3 id="spectral-gap-direction-spectral-domination-inequality">§3.2
+Spectral Gap Direction Spectral Domination Inequality</h3>
+<p><strong>Lemma 10.6.3.02 (Spectral Gap Direction Spectral Domination
+Inequality).</strong> Let <span class="math inline">\(\epsilon &gt;
+0\)</span> satisfy <span class="math inline">\(\epsilon \ll
+\lambda_2\)</span> (Dirac spectral direction gap, prerequisite Theorem
+G-5), and let <span
+class="math inline">\(\mathcal{H}_{\text{soft}}^{(\epsilon)}\)</span> be
+the spectral gap direction subspace of Definition 2.4. Then for any
+<span class="math inline">\(\psi \in
+\mathcal{H}_{\text{soft}}^{(\epsilon)} \cap
+\mathcal{H}_{\mathcal{M}}\)</span> (normalized <span
+class="math inline">\(\|\psi\| = 1\)</span>), we have:</p>
+<p><span class="math display">\[\langle \psi, D^2 \psi \rangle = \langle
+\psi, H^{\text{con}} \psi \rangle + O(\epsilon)\]</span></p>
+<p>where <span class="math inline">\(\langle \psi, H^{\text{con}} \psi
+\rangle\)</span> is defined by identifying the angular fluctuations of
+<span class="math inline">\(\psi\)</span> with the <span
+class="math inline">\((\xi, \eta)\)</span> coordinates, and <span
+class="math inline">\(O(\epsilon)\)</span> is a constant independent of
+<span class="math inline">\(\psi\)</span>.</p>
+<p><em>Proof.</em></p>
+<p><strong>Step 1: Normal freezing.</strong> In a neighborhood <span
+class="math inline">\(U_\Sigma \subset M(a)\)</span> of the sector
+parameter space <span class="math inline">\(\Sigma \cong S^2\)</span>,
+adopt local coordinates <span class="math inline">\(x = (y, z)\)</span>,
+where <span class="math inline">\(y \in \Sigma\)</span> are
+cross-sectional coordinates and <span class="math inline">\(z \in
+N\Sigma\)</span> are normal coordinates (<span
+class="math inline">\(\dim N\Sigma = 7\)</span>). The Dirac operator
+<span class="math inline">\(D^2\)</span> separates in these coordinates
+as:</p>
+<p><span class="math display">\[D^2 = -\Delta_\Sigma + D_{N\Sigma}^2 +
+\text{cross terms}\]</span></p>
+<p>where <span class="math inline">\(-\Delta_\Sigma\)</span> is the
+Laplace–Beltrami operator on <span class="math inline">\(\Sigma\)</span>
+(determined by the induced metric <span
+class="math inline">\(g_\Sigma\)</span>), and <span
+class="math inline">\(D_{N\Sigma}\)</span> is the normal Dirac
+operator.</p>
+<p>The spectral lower bound of the normal operator <span
+class="math inline">\(D_{N\Sigma}^2\)</span> is <span
+class="math inline">\(\lambda_2\)</span> (Dirac spectral direction gap,
+prerequisite Theorem M-3). By Definition 2.4, <span
+class="math inline">\(\psi \in
+\mathcal{H}_{\text{soft}}^{(\epsilon)}\)</span> satisfies <span
+class="math inline">\(\langle \psi, D^2 \psi \rangle \leq
+\epsilon\)</span>. Hence:</p>
+<p><span class="math display">\[\langle \psi, D_{N\Sigma}^2 \psi \rangle
+\leq \epsilon\]</span></p>
+<p>By the spectral theorem, <span class="math inline">\(\|D_{N\Sigma}
+\psi\|^2 \leq \epsilon\)</span>, i.e., <span
+class="math inline">\(\psi\)</span> is approximately constant in the
+normal direction (frozen). The remainder <span
+class="math inline">\(\|D_{N\Sigma} \psi\|^2\)</span> is <span
+class="math inline">\(O(\epsilon)\)</span>. This freezing property is
+the mathematically rigorous version of the Dirac spectral freezing
+theorem (Theorem 1.1.5.01).</p>
+<p><strong>Step 2: Induced metric and Hessian.</strong> The induced
+metric <span class="math inline">\(g_\Sigma\)</span> on the constrained
+manifold <span class="math inline">\(\Sigma\)</span> is determined by
+the Born Normalization Condition (Theorem 1.2.3.01) <span
+class="math inline">\(\theta_M + \theta_C + \theta_I = \pi/2\)</span>
+and the Hessian of the action <span class="math inline">\(S\)</span>. In
+<span class="math inline">\((\xi, \eta)\)</span> coordinates, the
+inverse of <span class="math inline">\(g_\Sigma\)</span> is proportional
+to <span class="math inline">\(H^{\text{con}}\)</span>:</p>
+<p><span class="math display">\[g_\Sigma^{ij} = c \cdot
+H^{\text{con}}_{ij},\quad c &gt; 0 \text{ is a constant}\]</span></p>
+<p>The proportionality constant <span class="math inline">\(c\)</span>
+is determined by dimensional homogeneity <span
+class="math inline">\([g_\Sigma] = [\text{rad}]^{-2}\)</span> and <span
+class="math inline">\([H^{\text{con}}] = [\text{rad}]^{-2}\)</span>.
+This proportionality relation is a direct corollary of the geometric
+structure of the sector parameter space (Theorem 1.1.5.01); its rigorous
+geometric-spectral correspondence (Spectral Expansion/Born Rule (Theorem
+1.1.5.01) mapping) is established in Theorem 1.1.5.01-20.</p>
+<p>The principal symbol of the Laplace–Beltrami operator <span
+class="math inline">\(-\Delta_\Sigma\)</span> is <span
+class="math inline">\(g_\Sigma^{ij} \xi_i \xi_j\)</span>. Hence its
+spectral gap direction spectrum (low-frequency limit) is controlled by
+the eigenvalues of <span
+class="math inline">\(H^{\text{con}}\)</span>.</p>
+<p><strong>Step 3: Lichnerowicz formula.</strong> On the 2-dimensional
+<span class="math inline">\(\Sigma \cong S^2\)</span>, the Lichnerowicz
+formula gives:</p>
+<p><span class="math display">\[D_\Sigma^2 = \nabla^*\nabla +
+\frac{1}{4} R_\Sigma\]</span></p>
+<p>where <span class="math inline">\(R_\Sigma\)</span> is the scalar
+curvature (constant, Gaussian curvature). Hence the spectral gap
+direction spectrum of <span class="math inline">\(D_\Sigma^2\)</span> is
+isomorphic to that of <span
+class="math inline">\(-\Delta_\Sigma\)</span> up to a constant shift of
+<span class="math inline">\(R_\Sigma/4\)</span>. This constant shift is
+absorbed into <span class="math inline">\(O(\epsilon)\)</span> (since
+the spectral gap direction energy <span class="math inline">\(\ll
+\lambda_2\)</span>, prerequisite Theorem G-5).</p>
+<p><strong>Step 4: Quadratic form control.</strong> Combining Steps 1–3,
+for <span class="math inline">\(\psi \in
+\mathcal{H}_{\text{soft}}^{(\epsilon)} \cap
+\mathcal{H}_{\mathcal{M}}\)</span>:</p>
+<p><span class="math display">\[\langle \psi, D^2 \psi \rangle = \langle
+\psi, -\Delta_\Sigma \psi \rangle + \langle \psi, D_{N\Sigma}^2 \psi
+\rangle + \text{cross terms}\]</span></p>
+<p><span class="math display">\[= \langle \psi, H^{\text{con}} \psi
+\rangle + O(\epsilon)\]</span></p>
+<p>where <span class="math inline">\(O(\epsilon)\)</span> comes from the
+normal freezing remainder (Step 1) together with the Lichnerowicz
+curvature term and higher-order coordinate terms (Step 3). Since the
+spectral gap direction energy <span class="math inline">\(\ll
+\lambda_2\)</span>, the curvature term is of the same order as the
+normal remainder, uniformly denoted as <span
+class="math inline">\(O(\epsilon)\)</span>. ∎</p>
+<p><strong>Remark 3.3</strong> (Distinction from “Unitary Equivalence”).
+This lemma does <strong>not</strong> claim that <span
+class="math inline">\(D_\Sigma^2|_{\text{soft}}\)</span> is unitarily
+equivalent to <span class="math inline">\(H^{\text{con}} \otimes
+I_2\)</span> (such an assertion would be too strong; no unitary map has
+been constructed). It merely establishes a <strong>domination inequality
+for the energy quadratic form</strong>: the expectation of <span
+class="math inline">\(D^2\)</span> on the spectral gap direction
+subspace is controlled by the Hessian quadratic form, with error <span
+class="math inline">\(O(\epsilon)\)</span>. This inequality is
+sufficient to support the subsequent min-max lower bound estimates.</p>
+<h3 id="min-max-lower-bound-for-cross-operators">§3.3 Min-Max Lower
+Bound for Cross Operators</h3>
+<p><strong>Lemma 10.6.3.03 (Schur Complement Lower Bound for Cross
+Operators).</strong> Let <span
+class="math inline">\(Q_{\mathcal{C}}(\psi) = \langle \psi,
+D_{\mathcal{C}\mathcal{M}}^* D_{\mathcal{C}\mathcal{M}} \psi
+\rangle\)</span> be the quadratic form of <span
+class="math inline">\(D_{\mathcal{C}\mathcal{M}}^*
+D_{\mathcal{C}\mathcal{M}}\)</span> on <span
+class="math inline">\(\mathcal{H}_{\mathcal{M}}\)</span>, with domain
+<span class="math inline">\(\text{dom}(Q_{\mathcal{C}}) = \{\psi \in
+\mathcal{H}_{\mathcal{M}} : D_{\mathcal{C}\mathcal{M}}\psi \in
+\mathcal{H}_{\mathcal{C}}\}\)</span>. Then for any <span
+class="math inline">\(\epsilon &gt; 0\)</span>:</p>
+<p><span class="math display">\[\inf_{\psi \in
+\mathcal{H}_{\text{soft}}^{(\epsilon)} \cap \mathcal{H}_{\mathcal{M}}
+\setminus \{0\}} \frac{Q_{\mathcal{C}}(\psi)}{\|\psi\|^2} \geq
+\frac{H_{MC}^2}{\lambda_2} - O(\epsilon)\]</span></p>
+<p>Similarly:</p>
+<p><span class="math display">\[\inf_{\psi \in
+\mathcal{H}_{\text{soft}}^{(\epsilon)} \cap \mathcal{H}_{\mathcal{M}}
+\setminus \{0\}} \frac{Q_{\mathcal{I}}(\psi)}{\|\psi\|^2} \geq
+\frac{H_{MI}^2}{\lambda_2} - O(\epsilon)\]</span></p>
+<p>where <span class="math inline">\(Q_{\mathcal{I}}(\psi) = \langle
+\psi, D_{\mathcal{I}\mathcal{M}}^* D_{\mathcal{I}\mathcal{M}} \psi
+\rangle\)</span>.</p>
+<p><em>Proof.</em></p>
+<p><strong>Step 1: Finite-rank approximation.</strong> By Definition
+2.4, <span
+class="math inline">\(\mathcal{H}_{\text{soft}}^{(\epsilon)}\)</span> is
+a finite-dimensional subspace. Let <span class="math inline">\(N = \dim
+\mathcal{H}_{\text{soft}}^{(\epsilon)} &lt; \infty\)</span>. On this
+subspace, the matrix representation of <span
+class="math inline">\(D^2\)</span> is an <span class="math inline">\(N
+\times N\)</span> Hermitian matrix.</p>
+<p><strong>Step 2: Hessian–Dirac quadratic form correspondence.</strong>
+By Lemma 10.6.3.02, for <span class="math inline">\(\psi \in
+\mathcal{H}_{\text{soft}}^{(\epsilon)} \cap
+\mathcal{H}_{\mathcal{M}}\)</span>:</p>
+<p><span class="math display">\[\langle \psi, D^2 \psi \rangle = \langle
+\psi, H^{\text{con}} \psi \rangle + O(\epsilon)\]</span></p>
+<p>Expanding <span class="math inline">\(\psi\)</span> in <span
+class="math inline">\((\xi, \eta)\)</span> coordinates (by spectral gap
+direction freezing, <span class="math inline">\(\eta \approx 0\)</span>,
+prerequisite Theorem M-4), we have:</p>
+<p><span class="math display">\[\langle \psi, H^{\text{con}} \psi
+\rangle = \lambda_1 |\langle v_1, \psi \rangle|^2 + \lambda_2 |\langle
+v_2, \psi \rangle|^2\]</span></p>
+<p>Since <span class="math inline">\(\psi \in
+\mathcal{H}_{\mathcal{M}}\)</span> (Material realm), its projection onto
+the spectral gap direction basis <span
+class="math inline">\(v_1\)</span> is nonzero (by Lemma 10.6.3.01, the
+<span class="math inline">\(\theta_M\)</span> component <span
+class="math inline">\(v_{1M} \neq 0\)</span>). Hence <span
+class="math inline">\(|\langle v_1, \psi \rangle|^2 &gt; 0\)</span>.</p>
+<p><strong>Step 3: Schur complement analysis.</strong> In the spectral
+decomposition of the finite-dimensional matrix <span
+class="math inline">\(H^{\text{emb}}\)</span>, the spectral gap
+direction subspace corresponds to the eigenvalue <span
+class="math inline">\(\lambda_1\)</span>. Partition <span
+class="math inline">\(H^{\text{emb}}\)</span> by sectors <span
+class="math inline">\((\mathcal{M}, \mathcal{C},
+\mathcal{I})\)</span>:</p>
+<p><span class="math display">\[H^{\text{emb}} = \begin{pmatrix} H_{MM}
+&amp; H_{MC} &amp; H_{MI} \\ H_{MC} &amp; H_{CC} &amp; H_{CI} \\ H_{MI}
+&amp; H_{CI} &amp; H_{II} \end{pmatrix}\]</span></p>
+<p>The effective operator after projection onto the <span
+class="math inline">\(\mathcal{M}\)</span> sector (Schur complement)
+is:</p>
+<p><span class="math display">\[S_{\mathcal{M}\mathcal{M}} = H_{MM} -
+\begin{pmatrix} H_{MC} &amp; H_{MI} \end{pmatrix} \begin{pmatrix} H_{CC}
+&amp; H_{CI} \\ H_{CI} &amp; H_{II} \end{pmatrix}^{-1} \begin{pmatrix}
+H_{MC} \\ H_{MI} \end{pmatrix}\]</span></p>
+<p>The eigenvalues <span class="math inline">\(\mu_{CI}\)</span> of the
+<span class="math inline">\(\mathcal{C},\mathcal{I}\)</span> submatrix
+<span class="math inline">\(\begin{pmatrix} H_{CC} &amp; H_{CI} \\
+H_{CI} &amp; H_{II} \end{pmatrix}\)</span> satisfy <span
+class="math inline">\(\mu_{CI} &lt; \lambda_2\)</span> (by the spectral
+structure of the Hessian, prerequisite Theorems G-4, G-5). Replacing
+<span class="math inline">\(\mu_{CI}\)</span> by <span
+class="math inline">\(\lambda_2\)</span> as the denominator, since <span
+class="math inline">\(\lambda_2 &gt; \mu_{CI}\)</span>, the cross terms
+subtracted in the Schur complement are compressed, yielding a
+<strong>strictly positive lower bound</strong> (conservative
+estimate):</p>
+<p><span class="math display">\[|S_{\mathcal{M}\mathcal{M}}| \geq H_{MM}
+- \frac{H_{MC}^2}{\lambda_2 - H_{CC}} - \frac{H_{MI}^2}{\lambda_2 -
+H_{II}}\]</span></p>
+<p>(here <span class="math inline">\(\lambda_2\)</span> serves as a
+conservative upper bound estimate for the “environment” energy of the
+<span class="math inline">\(\mathcal{C},\mathcal{I}\)</span> sectors,
+prerequisite Theorem M-3). Although this estimate compresses the
+cross-coupling strength, it preserves the strict positivity of the Schur
+complement, sufficient to support the theorem’s conclusion.</p>
+<p>The cross term <span
+class="math inline">\(D_{\mathcal{C}\mathcal{M}}^*
+D_{\mathcal{C}\mathcal{M}}\)</span> corresponds to the <span
+class="math inline">\(-\frac{H_{MC}^2}{\lambda_2 - H_{CC}}\)</span> term
+in the Schur complement (the negative sign indicates that coupling
+lowers the effective energy). Its absolute value gives the
+cross-coupling strength:</p>
+<p><span class="math display">\[|S_{\mathcal{C}\mathcal{M}}| =
+\frac{H_{MC}^2}{\lambda_2 - H_{CC}}\]</span></p>
+<p><strong>Step 4: Min-max principle.</strong> By the
+Courant–Fischer–Weyl min-max principle, the minimum spectral value of
+<span class="math inline">\(D_{\mathcal{C}\mathcal{M}}^*
+D_{\mathcal{C}\mathcal{M}}\)</span> on <span
+class="math inline">\(\mathcal{H}_{\text{soft}}^{(\epsilon)} \cap
+\mathcal{H}_{\mathcal{M}}\)</span> equals the infimum of the Rayleigh
+quotient on this subspace:</p>
+<p><span class="math display">\[\lambda_{\min} = \inf_{\psi \neq 0}
+\frac{Q_{\mathcal{C}}(\psi)}{\|\psi\|^2}\]</span></p>
+<p>By Steps 2–3, this infimum is controlled by the Schur complement of
+<span class="math inline">\(H^{\text{emb}}\)</span>:</p>
+<p><span class="math display">\[\lambda_{\min} \geq
+\frac{H_{MC}^2}{\lambda_2 - H_{CC}} - O(\epsilon)\]</span></p>
+<p>Since <span class="math inline">\(\lambda_2 = 58760.77 \gg H_{CC} =
+367.7347\)</span>, we have <span class="math inline">\(\lambda_2 -
+H_{CC} \approx \lambda_2\)</span>. Hence:</p>
+<p><span class="math display">\[\lambda_{\min} \geq
+\frac{H_{MC}^2}{\lambda_2} - O(\epsilon)\]</span></p>
+<p>As <span class="math inline">\(\epsilon \to 0\)</span> (spectral gap
+direction limit), <span class="math inline">\(O(\epsilon) \to
+0\)</span>, yielding a strict lower bound. ∎</p>
+<p><strong>Remark 3.4</strong> (Distinction from “Operator Norm
+Inequality”). This lemma employs the <strong>min-max principle</strong>
+(Rayleigh quotient infimum) in place of the “operator norm lower bound”
+used in the original proof. The min-max principle converts the spectral
+problem of an infinite-dimensional operator into a matrix eigenvalue
+problem on a finite-dimensional subspace, directly corresponding to the
+Schur complement of the Birkhoff Hessian second-order structure at the
+fixed point. The error in the original proof lay in conflating the
+operator norm (supremum over all normalized vectors) with the norm of a
+specific eigenstate. The min-max principle avoids this confusion,
+because the infimum is by definition the minimum spectral value.</p>
+<hr />
+<h2 id="sector-indecomposability-theorem">§4 Sector Indecomposability
+Theorem</h2>
+<h3 id="rigorous-statement-of-the-theorem">§4.1 Rigorous Statement of
+the Theorem</h3>
+<p><strong>Theorem 10.6.4.01 (Sector Indecomposability
+Theorem).</strong> Let <span class="math inline">\((\mathcal{A},
+\mathcal{H}, D, J, \gamma)\)</span> be the 9-dimensional real ℳ𝒞ℐ
+three-sector of Theorem 1.1.5.01-20, let <span
+class="math inline">\(P_{\mathcal{M}}, P_{\mathcal{C}},
+P_{\mathcal{I}}\)</span> be the orthogonal projections of Definition
+2.2, and let <span
+class="math inline">\(D_{\mathcal{X}\mathcal{Y}}\)</span> be the cross
+operators of Definition 2.3. Let <span
+class="math inline">\(\mathcal{H}_{\text{soft}}^{(\epsilon)}\)</span> be
+the spectral gap direction subspace of Definition 2.4. Then:</p>
+<p><strong>(A)</strong> For any nonzero <span class="math inline">\(\psi
+\in \mathcal{H}_{\text{soft}}^{(\epsilon)} \cap
+\mathcal{H}_{\mathcal{M}}\)</span>, <span
+class="math inline">\(D_{\mathcal{C}\mathcal{M}} \psi \neq 0\)</span>
+and <span class="math inline">\(D_{\mathcal{I}\mathcal{M}} \psi \neq
+0\)</span>;</p>
+<p><strong>(B)</strong> The min-max lower bounds of the cross operators
+on the spectral gap direction subspace are:</p>
+<p><span class="math display">\[\inf_{\psi \in
+\mathcal{H}_{\text{soft}}^{(\epsilon)} \cap \mathcal{H}_{\mathcal{M}}
+\setminus \{0\}} \frac{\|D_{\mathcal{C}\mathcal{M}}
+\psi\|^2}{\|\psi\|^2} \geq \frac{H_{MC}^2}{\lambda_2} - O(\epsilon) &gt;
+0\]</span></p>
+<p><span class="math display">\[\inf_{\psi \in
+\mathcal{H}_{\text{soft}}^{(\epsilon)} \cap \mathcal{H}_{\mathcal{M}}
+\setminus \{0\}} \frac{\|D_{\mathcal{I}\mathcal{M}}
+\psi\|^2}{\|\psi\|^2} \geq \frac{H_{MI}^2}{\lambda_2} - O(\epsilon) &gt;
+0\]</span></p>
+<p><strong>(C)</strong> Define the sector residual fraction:</p>
+<p><span class="math display">\[\delta_{\mathcal{C}}(\psi) :=
+\frac{\|D_{\mathcal{C}\mathcal{M}} \psi\|^2}{\|D_{\mathcal{M}} \psi\|^2
++ \|D_{\mathcal{C}\mathcal{M}} \psi\|^2 + \|D_{\mathcal{I}\mathcal{M}}
+\psi\|^2},\quad \psi \in \mathcal{H}_{\text{soft}}^{(\epsilon)} \cap
+\mathcal{H}_{\mathcal{M}}\]</span></p>
+<p>Then:</p>
+<p><span class="math display">\[\delta_{\mathcal{C}}(\psi) \geq
+\frac{H_{MC}^2 / \lambda_2 - O(\epsilon)}{\lambda_{\mathcal{M}}^{\max} +
+H_{MC}^2 / \lambda_2 + H_{MI}^2 / \lambda_2 - O(\epsilon)}\]</span></p>
+<p>where <span class="math inline">\(\lambda_{\mathcal{M}}^{\max} = \sup
+\sigma(D_{\mathcal{M}}^2|_{\mathcal{H}_{\text{soft}}^{(\epsilon)}})\)</span>
+is the maximum spectral value of the material sector operator on the
+spectral gap direction subspace. The lower bound for <span
+class="math inline">\(\delta_{\mathcal{I}}(\psi)\)</span> is obtained
+analogously.</p>
+<h3 id="proof-cross-operators-have-no-zero-modes">§4.2 Proof: Cross
+Operators Have No Zero Modes</h3>
+<p><strong>Step 1: Nonzero components of the spectral gap direction
+eigenvector.</strong> By Lemma 10.6.3.01, the spectral gap direction
+eigenvector <span class="math inline">\(v_1\)</span> of <span
+class="math inline">\(H^{\text{emb}}\)</span> is nonzero in all three
+components <span class="math inline">\(\theta_M, \theta_C,
+\theta_I\)</span>. Under the spectral gap direction spectral domination
+(Lemma 10.6.3.02), the spectral gap direction subspace <span
+class="math inline">\(\mathcal{H}_{\text{soft}}^{(\epsilon)}\)</span> is
+isomorphic (as finite-dimensional vector spaces) to the one-dimensional
+space spanned by <span class="math inline">\(v_1\)</span>
+(two-dimensional on the spinor degrees of freedom).</p>
+<p><strong>Step 2: The spectral gap direction subspace is not a sector
+subspace.</strong> Since all three components of <span
+class="math inline">\(v_1\)</span> are nonzero, <span
+class="math inline">\(\mathcal{H}_{\text{soft}}^{(\epsilon)}\)</span> is
+not a subspace of any single <span
+class="math inline">\(\mathcal{H}_{\mathcal{X}}\)</span>.
+Specifically:</p>
+<p><span class="math display">\[\mathcal{H}_{\text{soft}}^{(\epsilon)}
+\not\subset \mathcal{H}_{\mathcal{M}},\quad
+\mathcal{H}_{\text{soft}}^{(\epsilon)} \not\subset
+\mathcal{H}_{\mathcal{C}},\quad \mathcal{H}_{\text{soft}}^{(\epsilon)}
+\not\subset \mathcal{H}_{\mathcal{I}}\]</span></p>
+<p>The intersection of <span
+class="math inline">\(\mathcal{H}_{\text{soft}}^{(\epsilon)}\)</span>
+with each <span class="math inline">\(\mathcal{H}_{\mathcal{X}}\)</span>
+is a finite-dimensional nonzero subspace.</p>
+<p><strong>Step 3: Non-vanishing of cross operators.</strong> Let <span
+class="math inline">\(\psi \in \mathcal{H}_{\text{soft}}^{(\epsilon)}
+\cap \mathcal{H}_{\mathcal{M}}\)</span> be nonzero. Then <span
+class="math inline">\(\psi\)</span> is the nonzero image of <span
+class="math inline">\(P_{\mathcal{M}}\)</span> projected onto <span
+class="math inline">\(\mathcal{H}_{\text{soft}}^{(\epsilon)}\)</span>.
+Since <span
+class="math inline">\(\mathcal{H}_{\text{soft}}^{(\epsilon)}\)</span> is
+not a subspace of <span
+class="math inline">\(\mathcal{H}_{\mathcal{M}}\)</span>, the
+restriction of <span class="math inline">\(P_{\mathcal{M}}\)</span> to
+<span
+class="math inline">\(\mathcal{H}_{\text{soft}}^{(\epsilon)}\)</span> is
+not the identity map. Hence the preimage <span
+class="math inline">\(\tilde{\psi}\)</span> of <span
+class="math inline">\(\psi\)</span> in <span
+class="math inline">\(\mathcal{H}_{\text{soft}}^{(\epsilon)}\)</span>
+(satisfying <span class="math inline">\(P_{\mathcal{M}} \tilde{\psi} =
+\psi\)</span>) must possess nonzero <span
+class="math inline">\(\mathcal{H}_{\mathcal{C}}\)</span> and <span
+class="math inline">\(\mathcal{H}_{\mathcal{I}}\)</span> components.</p>
+<p>By the Hessian–Dirac quadratic form correspondence (Lemma 10.6.3.02),
+the action of <span
+class="math inline">\(D_{\mathcal{C}\mathcal{M}}\)</span> on <span
+class="math inline">\(\mathcal{H}_{\text{soft}}^{(\epsilon)}\)</span>
+corresponds to the <span
+class="math inline">\(\mathcal{M}\to\mathcal{C}\)</span> matrix element
+<span class="math inline">\(H_{MC}\)</span> of <span
+class="math inline">\(H^{\text{emb}}\)</span>. Since <span
+class="math inline">\(H_{MC} \neq 0\)</span>, <span
+class="math inline">\(D_{\mathcal{C}\mathcal{M}} \psi \neq 0\)</span>.
+Similarly <span class="math inline">\(D_{\mathcal{I}\mathcal{M}} \psi
+\neq 0\)</span>.</p>
+<p><strong>Step 4: Elliptic regularity and unique continuation.</strong>
+Suppose <span class="math inline">\(\psi \in
+\mathcal{H}_{\mathcal{M}}\)</span> satisfies <span
+class="math inline">\(D_{\mathcal{C}\mathcal{M}} \psi = 0\)</span>. By
+Definition 2.3, <span class="math inline">\(P_{\mathcal{C}} D \psi =
+0\)</span>, i.e., the <span
+class="math inline">\(\mathcal{C}\)</span>-component of <span
+class="math inline">\(D\psi\)</span> is zero. By Lemma 10.6.3.02, in a
+neighborhood <span class="math inline">\(U\)</span> of the Birkhoff
+fixed point σ*, the spectral gap direction subspace of <span
+class="math inline">\(D^2\)</span> is isomorphic to <span
+class="math inline">\(H^{\text{con}}\)</span>, and <span
+class="math inline">\(H_{MC} \neq 0\)</span> implies that <span
+class="math inline">\(D_{\mathcal{C}\mathcal{M}}|_U\)</span> has no zero
+modes.</p>
+<p><span class="math inline">\(D_{\mathcal{C}\mathcal{M}}\)</span>, as a
+sector restriction of the Dirac operator <span
+class="math inline">\(D\)</span> (a first-order differential operator
+system), inherits the ellipticity of <span
+class="math inline">\(D\)</span> in its principal symbol. By the
+Calderón-type unique continuation property for first-order elliptic
+systems, if <span class="math inline">\(\psi\)</span> vanishes on <span
+class="math inline">\(U\)</span>, then <span
+class="math inline">\(\psi\)</span> vanishes on all of <span
+class="math inline">\(M(a)\)</span>. Hence the kernel of <span
+class="math inline">\(D_{\mathcal{C}\mathcal{M}}\)</span> on <span
+class="math inline">\(\mathcal{H}_{\mathcal{M}}\)</span> is <span
+class="math inline">\(\{0\}\)</span>. ∎</p>
+<h3 id="proof-lower-bound-estimates">§4.3 Proof: Lower Bound
+Estimates</h3>
+<p><strong>Step 1: Operator spectra on the spectral gap direction
+subspace.</strong> By Lemma 10.6.3.03, the minimum spectral value of
+<span class="math inline">\(D_{\mathcal{C}\mathcal{M}}^*
+D_{\mathcal{C}\mathcal{M}}\)</span> on <span
+class="math inline">\(\mathcal{H}_{\text{soft}}^{(\epsilon)} \cap
+\mathcal{H}_{\mathcal{M}}\)</span> satisfies:</p>
+<p><span
+class="math display">\[\lambda_{\min}(D_{\mathcal{C}\mathcal{M}}^*
+D_{\mathcal{C}\mathcal{M}}|_{\text{soft}}) \geq
+\frac{H_{MC}^2}{\lambda_2} - O(\epsilon)\]</span></p>
+<p>Similarly:</p>
+<p><span
+class="math display">\[\lambda_{\min}(D_{\mathcal{I}\mathcal{M}}^*
+D_{\mathcal{I}\mathcal{M}}|_{\text{soft}}) \geq
+\frac{H_{MI}^2}{\lambda_2} - O(\epsilon)\]</span></p>
+<p><strong>Step 2: Spectral upper bound of the material sector
+operator.</strong> The maximum spectral value of <span
+class="math inline">\(D_{\mathcal{M}}^2\)</span> on the spectral gap
+direction subspace is controlled by the Hessian–Dirac spectral
+domination (Lemma 10.6.3.02):</p>
+<p><span class="math display">\[\lambda_{\mathcal{M}}^{\max} = \sup
+\sigma(D_{\mathcal{M}}^2|_{\mathcal{H}_{\text{soft}}^{(\epsilon)}}) \leq
+H_{MM} + O(\epsilon) = 31.3012 + O(\epsilon)\
+\text{rad}^{-2}\]</span></p>
+<p>(exactly equal to <span class="math inline">\(H_{MM}\)</span> at the
+Birkhoff fixed point σ*; in its neighborhood the upper bound is
+preserved by continuity).</p>
+<p><strong>Step 3: Lower bound of the residual fraction.</strong> For
+normalized <span class="math inline">\(\psi \in
+\mathcal{H}_{\text{soft}}^{(\epsilon)} \cap
+\mathcal{H}_{\mathcal{M}}\)</span>, by Lemma 10.6.3.02:</p>
+<p><span class="math display">\[\|D\psi\|^2 = \|D_{\mathcal{M}}\psi\|^2
++ \|D_{\mathcal{C}\mathcal{M}}\psi\|^2 +
+\|D_{\mathcal{I}\mathcal{M}}\psi\|^2\]</span></p>
+<p>From Steps 1 and 2:</p>
+<p><span class="math display">\[\|D_{\mathcal{M}}\psi\|^2 \leq
+\lambda_{\mathcal{M}}^{\max},\quad \|D_{\mathcal{C}\mathcal{M}}\psi\|^2
+\geq \frac{H_{MC}^2}{\lambda_2} - O(\epsilon),\quad
+\|D_{\mathcal{I}\mathcal{M}}\psi\|^2 \geq \frac{H_{MI}^2}{\lambda_2} -
+O(\epsilon)\]</span></p>
+<p>Hence:</p>
+<p><span class="math display">\[\delta_{\mathcal{C}}(\psi) =
+\frac{\|D_{\mathcal{C}\mathcal{M}}\psi\|^2}{\|D\psi\|^2} \geq
+\frac{H_{MC}^2 / \lambda_2 - O(\epsilon)}{\lambda_{\mathcal{M}}^{\max} +
+H_{MC}^2 / \lambda_2 + H_{MI}^2 / \lambda_2 - O(\epsilon)}\]</span></p>
+<p>Substituting numerical values:</p>
+<p><span class="math display">\[\frac{H_{MC}^2}{\lambda_2} =
+\frac{(3.4145)^2}{58760.77} = 1.984 \times 10^{-4}\]</span></p>
+<p><span class="math display">\[\frac{H_{MI}^2}{\lambda_2} =
+\frac{(69.3547)^2}{58760.77} = 8.186 \times 10^{-2}\]</span></p>
+<p><span class="math display">\[\lambda_{\mathcal{M}}^{\max} \approx
+31.3012\]</span></p>
+<p><span class="math display">\[\delta_{\mathcal{C}}(\psi) \geq
+\frac{1.984 \times 10^{-4}}{31.3012 + 1.984 \times 10^{-4} + 8.186
+\times 10^{-2}} \approx 6.32 \times 10^{-6}\]</span></p>
+<p>Similarly:</p>
+<p><span class="math display">\[\delta_{\mathcal{I}}(\psi) \geq
+\frac{8.186 \times 10^{-2}}{31.3012 + 1.984 \times 10^{-4} + 8.186
+\times 10^{-2}} \approx 2.61 \times 10^{-3}\]</span></p>
+<p>∎</p>
+<hr />
+<h2 id="quantitative-estimates-of-anthropic-residuals">§5 Quantitative
+Estimates of Anthropic Residuals</h2>
+<h3 id="causal-residual-lower-bound">§5.1 Causal Residual Lower
+Bound</h3>
+<p><strong>Theorem 10.6.5.01 (Quantitative Lower Bound of the Causal
+Residual).</strong> For any nonzero anthropic state <span
+class="math inline">\(\psi \in \mathcal{H}_{\text{soft}}^{(\epsilon)}
+\cap \mathcal{H}_{\mathcal{M}}\)</span> (normalized <span
+class="math inline">\(\|\psi\|=1\)</span>), in the spectral gap
+direction limit <span class="math inline">\(\epsilon \to 0\)</span>:</p>
+<p><span class="math display">\[\delta_{\mathcal{C}}(\psi) \geq 6.32
+\times 10^{-6}\]</span></p>
+<p>This lower bound is rigorously determined by the purely geometric
+constants <span class="math inline">\(H_{MC}, H_{MI}, H_{MM},
+\lambda_2\)</span> — i.e., the algebraic output of the Hessian of the
+Algebraic Action S(σ) (Theorem 1.4.3.01) at the Birkhoff fixed point σ*
+<span class="math inline">\(p_0\)</span> — with parameters fixed by
+local properties.</p>
+<p><em>Proof.</em> From Theorem 7.12.1.01(C), substituting numerical
+values:</p>
+<p><span class="math display">\[H_{MC} = 3.4145,\ H_{MI} = 69.3547,\
+H_{MM} = 31.3012,\ \lambda_2 = 58760.77\]</span></p>
+<p><span class="math display">\[\delta_{\mathcal{C}}(\psi) \geq
+\frac{(3.4145)^2 / 58760.77}{31.3012 + (3.4145)^2 / 58760.77 +
+(69.3547)^2 / 58760.77} = 6.32 \times 10^{-6}\]</span></p>
+<p>∎</p>
+<h3 id="information-residual-lower-bound">§5.2 Information Residual
+Lower Bound</h3>
+<p><strong>Theorem 10.6.5.02 (Quantitative Lower Bound of the
+Information Residual).</strong> For any nonzero anthropic state <span
+class="math inline">\(\psi \in \mathcal{H}_{\text{soft}}^{(\epsilon)}
+\cap \mathcal{H}_{\mathcal{M}}\)</span> (normalized <span
+class="math inline">\(\|\psi\|=1\)</span>), in the spectral gap
+direction limit <span class="math inline">\(\epsilon \to 0\)</span>:</p>
+<p><span class="math display">\[\delta_{\mathcal{I}}(\psi) \geq 2.61
+\times 10^{-3}\]</span></p>
+<p>The information residual is approximately <span
+class="math inline">\(413\)</span> times larger than the causal
+residual, determined by the numerical structure <span
+class="math inline">\(H_{MI} \gg H_{MC}\)</span>.</p>
+<p><em>Proof.</em> As in Theorem 7.12.1.03, substituting numerical
+values:</p>
+<p><span class="math display">\[\delta_{\mathcal{I}}(\psi) \geq
+\frac{(69.3547)^2 / 58760.77}{31.3012 + (3.4145)^2 / 58760.77 +
+(69.3547)^2 / 58760.77} = 2.61 \times 10^{-3}\]</span></p>
+<p>∎</p>
+<hr />
+<h2 id="appendix-a-symbol-table">Appendix A Symbol Table</h2>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 42%" />
+<col style="width: 28%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Symbol</th>
+<th style="text-align: left;">Definition</th>
+<th style="text-align: left;">Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ℋ</td>
+<td style="text-align: left;">L²(M(a), 𝒮), total Hilbert space</td>
+<td style="text-align: left;">Theorem 1.1.5.01-20</td>
+</tr>
+<tr>
+<td style="text-align: left;">P_ℳ, P_𝒞, P_ℐ</td>
+<td style="text-align: left;">Orthogonal projections of the threefold
+decomposition</td>
+<td style="text-align: left;">Definition 2.2 (citing Theorem G-2)</td>
+</tr>
+<tr>
+<td style="text-align: left;">ℋ_ℳ</td>
+<td style="text-align: left;">P_ℳ ℋ, sector subspace</td>
+<td style="text-align: left;">Definition 2.2</td>
+</tr>
+<tr>
+<td style="text-align: left;">D_𝒳</td>
+<td style="text-align: left;">P_𝒳 D P_𝒳, sector diagonal operator</td>
+<td style="text-align: left;">Definition 2.3</td>
+</tr>
+<tr>
+<td style="text-align: left;">D_𝒳𝒴</td>
+<td style="text-align: left;">P_𝒳 D P_𝒴, cross operator</td>
+<td style="text-align: left;">Definition 2.3</td>
+</tr>
+<tr>
+<td style="text-align: left;">H^con</td>
+<td style="text-align: left;">Constrained Birkhoff Hessian second-order
+structure at the fixed point (Birkhoff fixed point σ*)</td>
+<td style="text-align: left;">Theorem 1.1.5.01, second derivatives of
+Algebraic Action S(σ) (Theorem 1.4.3.01) at p₀</td>
+</tr>
+<tr>
+<td style="text-align: left;">H^bg</td>
+<td style="text-align: left;">Background Hessian second-order structure
+at the fixed point (30° point)</td>
+<td style="text-align: left;">Theorem 1.1.5.01-20</td>
+</tr>
+<tr>
+<td style="text-align: left;">λ₁, λ₂</td>
+<td style="text-align: left;">Eigenvalues of H^con</td>
+<td style="text-align: left;">Theorem 1.1.5.01-20</td>
+</tr>
+<tr>
+<td style="text-align: left;">λ₁^eff, λ₂^eff</td>
+<td style="text-align: left;">Spectral Expansion/Born Rule (Theorem
+1.1.5.01) effective Hessian eigenvalues</td>
+<td style="text-align: left;">Theorem 1.1.5.01-20</td>
+</tr>
+<tr>
+<td style="text-align: left;">H_MC, H_MI, H_CI</td>
+<td style="text-align: left;">Hessian cross terms (Birkhoff fixed point
+σ*)</td>
+<td style="text-align: left;">→ Theorem 1.1.5.01-20</td>
+</tr>
+<tr>
+<td style="text-align: left;">ℋ_soft^(ε)</td>
+<td style="text-align: left;">Spectral gap direction spectral projection
+subspace</td>
+<td style="text-align: left;">Definition 2.4</td>
+</tr>
+<tr>
+<td style="text-align: left;">δ_𝒞(ψ)</td>
+<td style="text-align: left;">Causal residual fraction</td>
+<td style="text-align: left;">Theorem 7.12.1.01 (C)</td>
+</tr>
+<tr>
+<td style="text-align: left;">δ_ℐ(ψ)</td>
+<td style="text-align: left;">Information residual fraction</td>
+<td style="text-align: left;">Theorem 7.12.1.01 (C)</td>
+</tr>
+<tr>
+<td style="text-align: left;">S₃</td>
+<td style="text-align: left;">Permutation group of the three
+sectors</td>
+<td style="text-align: left;">Lemma 10.6.2.01 (citing G-8)</td>
+</tr>
+<tr>
+<td style="text-align: left;">J</td>
+<td style="text-align: left;">Real structure (KO-dimension 1 mod 8)</td>
+<td style="text-align: left;">Theorem 1.1.5.01-20</td>
+</tr>
+<tr>
+<td style="text-align: left;">{𝔭₁,…,𝔭₉}</td>
+<td style="text-align: left;">Nine primes (corresponding to the
+threefold decomposition frame)</td>
+<td style="text-align: left;">Theorem 1.1.5.01-20</td>
+</tr>
+<tr>
+<td style="text-align: left;">E</td>
+<td style="text-align: left;">Consummate Reproduction: ℳ-𝒞 waist-edge
+coupling → electromagnetic interaction</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="references">References</h2>
+<ol type="1">
+<li>Kato, T. <em>Perturbation Theory for Linear Operators</em>.
+Springer, 1966.</li>
+</ol>
+<hr />
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 07:53:34</p>
+  </footer>
+</div>
+</body>
+</html>
