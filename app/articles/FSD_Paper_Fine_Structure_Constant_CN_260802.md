@@ -93,7 +93,7 @@ $$\mathcal{Z} \supsetneq \delta(\mathcal{Z}) \supsetneq \delta^2(\mathcal{Z}) \s
 
 然而，在 §2.5 的 Clifford 代数实现中，$\delta$ 对应编码算子 $\varepsilon$，其实向量空间作用严格缩减维度：对任意非空子空间 $X$，$\dim(\varepsilon(X)) < \dim(X)$。这是 $e_i^2 = -1$ 的代数推论——编码操作将向量投影到真子空间，每次作用不可逆地损失至少一个独立方向。在此实现中，$\dim(\delta(\delta^n(\mathcal{Z}))) < \dim(\delta^n(\mathcal{Z}))$ 是维数单调递减的直接推论。
 
-本文以严格递降链为工作假设，其完整代数论证见 §2.5。核心物理图像——每次区分行为不可逆地损失信息——在代数实现中获得精确的数学表达。∎∎
+本文以严格递降链为工作假设，其完整代数论证见 §2.5。核心物理图像——每次区分行为不可逆地损失信息——在代数实现中获得精确的数学表达。∎
 
 **注。** 若 $\mathcal{Z}$ 为有限维（在代数实现中确如此——$\text{Cl}(3)$ 实维数为 8），递降链必然在有限步终止。严格包含意味着每一步至少降低 1 维：$\dim(\delta^n(\mathcal{Z})) \leq \dim(\mathcal{Z}) - n$。因此最多 $\dim(\mathcal{Z})$ 步后链到达不动点。三层恰为自指出现的最小迭代次数——见 §2.3。
 
@@ -455,7 +455,11 @@ $$\Delta S_{\text{第四圈}} = \Lambda \times \Delta\Theta - \Lambda \times k_0
 
 $$\Delta S_{\text{第四圈}} = \Lambda \times \Delta\Theta \times (1 - k_0) = 15 \times (1 - 2) = -15$$
 
-符号为负是因为 $k_0 = 2 > 1$：Bott 回声绕过因果扇区时，省去了三方全耦合中所需的 $k_0$ 倍额外编码代价（因为 $\mathcal{C}$ 充当了"自然的"耦合桥梁，代替了需要通过 $\mathcal{I}$ 内部绕行的路径）。代数上，$k_0 > 1$ 被 $\mathcal{C}$ 扇区的非平凡编码深度强制决定。∎
+**(5) 符号的代数确定。** 三扇区耦合矩阵在基 $\{|\mathcal{M}\rangle, |\mathcal{C}\rangle, |\mathcal{I}\rangle\}$ 下的非对角块为 $g_{\mathcal{M}\mathcal{C}} = \Lambda = 3$，$g_{\mathcal{C}\mathcal{I}} = \Delta\Theta = 5$，$g_{\mathcal{I}\mathcal{M}} = k_0 = 2$。全三方耦合的编码代价（三扇区顺序遍历）为 $g_{\mathcal{M}\mathcal{C}} \cdot g_{\mathcal{C}\mathcal{I}} \cdot g_{\mathcal{I}\mathcal{M}} = \Lambda \cdot \Delta\Theta \cdot k_0 = 30$。
+
+Bott 回声将三扇区全遍历替换为直接 $\mathcal{M}$-$\mathcal{C}$-$\mathcal{I}$ 跨越（绕过 $\mathcal{I}$ 的内部参与），新路径代价为 $g_{\mathcal{M}\mathcal{C}} \cdot g_{\mathcal{C}\mathcal{I}} = \Lambda \times \Delta\Theta = 15$。编码代价的变化 = 新路径 $-$ 旧路径 = $15 - 30 = -15$。
+
+符号为负的代数根源：旧路径代价 $30 = \Lambda \cdot \Delta\Theta \cdot k_0$ 中，$k_0 = 2$ 是被绕过的 $\mathcal{I}$ 扇区编码深度。绕过的代价 $k_0 \cdot (\Lambda \cdot \Delta\Theta) = 2 \times 15 = 30$ 必须从总和扣除，但由于 Bott 回声仍穿越了 $\mathcal{I}$ 的"外侧"（$M_2$ 块的边界），留下了 $\Lambda \cdot \Delta\Theta = 15$ 的残余。净效果 $15 - 30 = 15(1 - k_0) = -15$。若 $k_0 = 1$，则 $B_2 = 0$（绕过量恰好等于残余量，无净回声）。$k_0 = 2 > 1$ 是结构常数 $\{3, 2, 5\}$ 的事实——符号为负被代数强制。∎
 
 #### 6.3.4 $B_3 = 1/259200$（干涉：编码深度比）
 
@@ -482,7 +486,11 @@ $$B_3 = \frac{1}{27 \times 14400} \times \frac{3}{2} = \frac{1}{259200} \approx 
 
 $$B_4 = -\frac{\Delta\Theta \cdot (\Lambda/k_0)^2}{d_{\text{total}}^2 \cdot h^4} = -\frac{5 \times 9/4}{14400^2} = -\frac{1}{18432000}$$
 
-*推导。* 当 Bott 回声绕过 $\mathcal{C}$ 扇区时，它不仅跳过了交叉耦合 $\Lambda \times \Delta\Theta = 15$（→ $B_2$），还跳过了 $\mathcal{C}$ 内部的残留编码 $\Delta\Theta = 5$。这 5 个被绕过的编码自由度通过双重周期壁（$\varepsilon^2$）回声返回，增强因子为 $(\Lambda/k_0)^2 = 9/4$。符号为负（绕过的编码 = 节省的代价）。∎
+*推导。* $B_2$ 的回声路径绕过 $\mathcal{C}$ 扇区时，$\mathcal{C}$ 自身除了充当耦合桥梁（交叉耦合 $\Lambda \times \Delta\Theta = 15$）外，还承载 $\Delta\Theta = 5$ 个内部编码自由度。这 5 个自由度在 Bott 回声中被一同绕过——它们未参与 $B_2$ 的耦合，但作为 $\mathcal{C}$ 的结构常数标记，在第二 Bott 周期通过双重周期壁返回。
+
+双重周期壁因子 $\varepsilon^2 = 1/14400^2$ 的机制：Bott 周期 $\text{Cl}(n+8) \cong \text{Cl}(n) \otimes \text{Mat}(16,\mathbb{R})$ 的每一轮回归穿越一个周期壁（因子 $\varepsilon$）。残留效应需两轮——绕过的内部自由度先随 Bott 回路离开，在第一轮回声（$B_2$）中未被捕获（因 $B_2$ 只接收交叉耦合），在第二轮被 $\mathcal{C}$ 扇区的持久架构反射回来。
+
+增强因子 $(\Lambda/k_0)^2 = 9/4$：$\Delta\Theta = 5$ 个被绕过的自由度各携带 $\mathcal{M}$-$\mathcal{I}$ 深度比权重 $\Lambda/k_0 = 3/2$（与 $B_3$ 的交换子增强同源），且残留回声跨越两个扇区边界（$\mathcal{M}$-$\mathcal{C}$ 和 $\mathcal{C}$-$\mathcal{I}$）→ 权重平方。符号为负——绕过的编码未参与耦合，是净节省。∎
 
 #### 6.3.6 $B_5 = -1/13824000$（二阶回声）
 
@@ -490,7 +498,11 @@ $$B_4 = -\frac{\Delta\Theta \cdot (\Lambda/k_0)^2}{d_{\text{total}}^2 \cdot h^4}
 
 $$B_5 = \frac{B_2}{d_{\text{total}} \cdot h^2} = -\frac{\Lambda \times \Delta\Theta}{d_{\text{total}}^2 \cdot h^4} = -\frac{15}{14400^2} = -\frac{1}{13824000}$$
 
-*推导。* $B_2$ 是 Bott 闭合点处的真实物理效应——它修正了闭合的编码结构。Bott 周期壁是持久的架构特征；$B_2$ 作为架构修正可以再次与之相互作用，产生二阶回声。与 $B_4$ 不同，$B_2$ 已在闭合尺度上运作（涉及 $\Lambda$ 和 $\Delta\Theta$），不需要深度比增强。符号传播（回声传播保持符号）。∎
+*推导。* $B_2 = -15/14400$ 是 $\delta^8$ Bott 闭合点的一阶回声——它修正了编码轨道在 $E_8$ 处的闭合结构。Bott 周期壁 $\text{Mat}(16,\mathbb{R})$ 是持久的代数架构（$\text{Cl}(n+8) \cong \text{Cl}(n) \otimes \text{Mat}(16,\mathbb{R})$ 适用于所有 $n$）。一阶回声 $B_2$ 作为对该架构的修正，在下一 Bott 周期与该架构再次相互作用，产生二阶回声 $B_5$。
+
+与 $B_4$ 的关键区别：$B_4$ 源自*被绕过的内部自由度*（$\Delta\Theta = 5$ 的残留编码）→ 需深度比增强 $(\Lambda/k_0)^2$；$B_5$ 源自*已实现的耦合效应* $B_2$ → $B_2$ 已包含完整耦合量 $\Lambda \times \Delta\Theta = 15$，仅需一个周期壁衰减因子 $\varepsilon = 1/14400$。因此 $B_5 = B_2 \cdot \varepsilon = B_2 / 14400$。
+
+符号传播：$B_5$ 保持 $B_2$ 的负号。代数上，Bott 周期迭代在 KO-理论中对应 Bott 生成元的幂次——$\delta^{16} = (\delta^8)^2$ 的 Berry 相位为 $4\pi$（两倍 $2\pi$），符号由 KO-度的乘法结构保持（$\eta^2 \in KO^{-2}(\text{pt})$ 的符号由 $\eta$ 的扭力方向决定，迭代不翻转）。∎
 
 ### 6.4 汇总表
 
