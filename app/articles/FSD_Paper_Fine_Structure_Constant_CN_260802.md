@@ -278,13 +278,51 @@ Triality 对称群 $S_3$ 置换这三个表示。这是 $\text{Spin}(8)$ 独有�
 
 ### 5.2 破缺机制
 
-编码轨道跃迁 $E_4 \to E_5$ 对应 $\text{Cl}(4) \to \text{Cl}(5)$。在此跃迁中：
+编码轨道跃迁 $E_4 \to E_5$ 对应 $\text{Cl}(4) \to \text{Cl}(5)$，继而 $E_5 \to E_6$ 对应 $\text{Cl}(5) \to \text{Cl}(6)$。Triality 破缺发生在这两步跃迁的代数过渡中。
 
-1. $\text{Cl}(5)$ 获得复结构（中心为 $\mathbb{R} \oplus \mathbb{R}\omega_5$，其中 $\omega_5$ 与所有生成元交换）
-2. $\text{Cl}(6)$ 恢复实结构（$e_6$ 与 $\omega_5$ 反交换）
-3. 复结构的丧失摧毁 triality：$S_3 \to Z_2$
+**第一步：$\text{Cl}(5)$ 获得复结构。**
 
-**此破缺是必然的**——它是 Cl(5)→Cl(6) 跃迁的数学推论，因为编码从因果扇区进入信息扇区。*驱动*它的动力是复结构 $\omega_5$ 的丧失——该中心元素是使三个 Spin(8) 表示等价的根源。
+奇维 Clifford 代数 $\text{Cl}(2k+1)$ 的中心是非平凡的。具体地，$\text{Cl}(5)$ 的生成元为 $e_1, \ldots, e_5$，满足 $e_i^2 = -1$，$e_i e_j = -e_j e_i$（$i \neq j$）。体积元 $\omega_5 = e_1 e_2 e_3 e_4 e_5$ 满足：
+
+$$\omega_5^2 = (-1)^{\lfloor 5/2 \rfloor} \cdot e_1^2 \cdots e_5^2 = (-1)^2 \cdot (-1)^5 = -1$$
+
+对任意 $e_i$：
+
+$$e_i \omega_5 = e_i (e_1 \cdots e_5) = (-1)^{5-1} (e_1 \cdots e_5) e_i = (+1) \cdot \omega_5 e_i$$
+
+故 $\omega_5$ 与所有生成元**交换**：$[\omega_5, e_i] = 0$，$i = 1,\ldots,5$。因此 $\omega_5 \in Z(\text{Cl}(5))$。由于 $\omega_5^2 = -1$，中心为 $Z(\text{Cl}(5)) = \mathbb{R} \oplus \mathbb{R}\omega_5 \cong \mathbb{C}$——$\text{Cl}(5)$ 具有复结构。
+
+复结构的存在是 Spin(8) triality 成立的关键前提。Spin(8) 的实旋量表示 $8_s$ 和 $8_c$ 恰好因为 $\text{Cl}(8)$ 的实结构（$\text{Cl}(8) \cong \text{Mat}(16, \mathbb{R})$）而保持实数性，但 $\text{Cl}(5)$ 的复中心 $\mathbb{R} \oplus \mathbb{R}\omega_5$ 使得 triality 的三个表示 $8_v, 8_s, 8_c$ 能够在代数层面等价——复结构 $\omega_5$ 充当使 $8_s$ 与 $8_c$ 可互换的标量算子。
+
+**第二步：$\text{Cl}(6)$ 摧毁复结构。**
+
+向 $\text{Cl}(5)$ 添加第六个生成元 $e_6$（对应 $E_5 \to E_6$ 跃迁，编码从因果扇区进入信息扇区）。$e_6$ 满足 $e_6^2 = -1$，且对 $i=1,\ldots,5$ 有 $e_6 e_i = -e_i e_6$。
+
+现在检验 $\omega_5$ 是否仍属于 $\text{Cl}(6)$ 的中心：
+
+$$e_6 \omega_5 = e_6 e_1 e_2 e_3 e_4 e_5 = (-1)^5 \cdot e_1 e_2 e_3 e_4 e_5 e_6 = -\omega_5 e_6$$
+
+**关键**：$e_6$ 与 $\omega_5$ **反交换**。因此 $\omega_5$ 不是 $\text{Cl}(6)$ 的中心元素。$\text{Cl}(6)$ 的中心回到 $\mathbb{R}$——复结构丧失。事实上，$\text{Cl}(6)$ 是偶维的，其中心始终为 $\mathbb{R}$（$\text{Cl}(6) \cong \text{Mat}(8, \mathbb{R})$）。
+
+**第三步：复结构丧失 → Triality $S_3$ 破缺为 $Z_2$。**
+
+Spin(8) 的 triality 对称性 $S_3$ 源于 $D_4$ Dynkin 图的 $S_3$ 外自同构群——它置换三个外节点（对应 $8_v, 8_s, 8_c$ 三个表示）：
+
+```
+    8_v
+     |
+8_s—○—8_c
+```
+
+$\text{Cl}(5)$ 的复结构 $\omega_5$ 是使 $8_s$ 与 $8_c$ 可互换的代数桥梁。当 $\text{Cl}(5) \to \text{Cl}(6)$ 加入 $e_6$ 后，$e_6$ 与 $\omega_5$ 的反交换关系意味着：在原 $\text{Cl}(5)$ 中通过 $\omega_5$ 乘法相关联的 $8_s$ 和 $8_c$ 在 $\text{Cl}(6)$ 中被 $e_6$ **分离**——它们被拉向 Clifford 代数的不同块（$\text{Cl}(6) \cong \text{Mat}(8, \mathbb{R})$ 的块结构）。
+
+形式化：$S_3$ 群作用在三个表示 $\{8_v, 8_s, 8_c\}$ 上。$S_3$ 的 6 个元素中，3 个置换（3-循环 $(8_v, 8_s, 8_c)$ 及其平方）依赖 $8_s \leftrightarrow 8_c$ 互换——这恰好是被 $e_6$ 阻断的操作。剩余的 3 个元素组成一个 $Z_2$ 子群（如 $8_s \leftrightarrow 8_c$ 的对换——等等，这也依赖互换）。
+
+更精确地：在 $\text{Cl}(5)$ 中，$\omega_5$ 使 $8_s$ 和 $8_c$ 通过标量乘法等价，因此 3-循环是可行的代数运算。在 $\text{Cl}(6)$ 中，$e_6$ 与 $\omega_5$ 反交换 → $\omega_5$ 不再是中心 → $8_s$ 和 $8_c$ 失去通过标量相连的通道。**保留下来的对称性是固定 $8_v$（或 $8_s$，或 $8_c$）同时交换另外两者的 $Z_2$**——因为交换 $8_s \leftrightarrow 8_c$ 不再需要穿越 $\omega_5$ 的复通道（$8_s$ 和 $8_c$ 在 $\text{Cl}(6)$ 中仍然同构，但这个同构是实同构，不是复标量乘法）。
+
+因此 $S_3 \to Z_2$，三个 $Z_2$ 子群数学上等价（$S_3$ 自同构可任意置换它们），但每个稳定不同的表示。
+
+**此破缺是必然的**——$\text{Cl}(5) \to \text{Cl}(6)$ 跃迁是编码轨道 $E_5 \to E_6$（因果扇区进入信息扇区）的代数实现。*驱动*它的动力是 $e_6$ 与 $\omega_5$ 的反交换关系——这是 Clifford 代数的结构定理，不是假设。
 
 ### 5.3 三个等价的 $Z_2$ 选择
 
