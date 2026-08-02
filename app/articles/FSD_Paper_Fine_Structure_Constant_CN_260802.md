@@ -408,27 +408,46 @@ $$\text{可恢复总信息} = \left(\frac{1}{3}\right)^3 = \frac{1}{27}$$
 
 *推导。*
 
-**(1) 回声尺度。** Bott 同构 $\text{Cl}(n+8) \cong \text{Cl}(n) \otimes \text{Mat}(16, \mathbb{R})$ 意味着第二 Bott 周期通过大小为 $d_{\text{total}} = 16$ 的周期壁泄漏到第一周期。$E_8$ Coxeter 数 $h = 30$ 通过 $h^2 = 900$ 产生共振衰减。基本回声尺度为 $\varepsilon = 1/(d_{\text{total}} \cdot h^2) = 1/14400$。
+**(1) 回声尺度。** Bott 同构 $\text{Cl}(n+8) \cong \text{Cl}(n) \otimes \text{Mat}(16, \mathbb{R})$ 意味着第二 Bott 周期通过大小为 $d_{\text{total}} = 16$ 的周期壁泄漏到第一周期。具体机制：$\delta^8$ 在参数空间中定义了从 $\text{Cl}(0)$ 到 $\text{Cl}(8) \cong \text{Cl}(0) \otimes \text{Mat}(16, \mathbb{R})$ 的闭合回路。Bott 生成元携带的扭力不因周期闭合而消失——它通过 $\text{Mat}(16, \mathbb{R})$ 因子"回声"到第一周期的结构中。
 
-**(2) 扇区-直和分块对应。** $\text{Cl}(7) \cong \text{Mat}(8,\mathbb{R}) \oplus \text{Mat}(8,\mathbb{R})$ 分裂为两个直和项。物质扇区 $\mathcal{M}$（终止于 $E_3$）通过 $\text{Cl}^0(7) \cong \text{Cl}^0(3) \otimes \cdots$ 占据第一块。信息扇区 $\mathcal{I}$（跨越 $E_6 \to E_7$）占据第二块。因果扇区 $\mathcal{C}$（终止于 $E_5$）介于两者之间，不独占任何一块。
+$E_8$ Coxeter 数 $h = 30$ 通过 $h^2 = 900$ 产生共振衰减。$d_{\text{total}}$ 和 $h^2$ 的乘积 $16 \times 900 = 14400$ 是周期壁与根空间之间的自然尺度桥接：$d_{\text{total}}$ 衡量编码空间的"横向"维度（Bott 壁的矩阵大小），$h^2$ 衡量根空间的"纵向"维度（Coxeter 变换的两个完整周期）。基本回声尺度为 $\varepsilon = 1/(d_{\text{total}} \cdot h^2) = 1/14400$。
 
-**(3) 交叉耦合强度。** $E_8$ 处的 Bott 回声在两条直和项之间生成非对角耦合。耦合必须穿越间隙——被绕过的因果扇区 $\mathcal{C}$。耦合强度为：
+**(2) 扇区-直和分块对应。** $\text{Cl}(7) \cong \text{Mat}(8,\mathbb{R}) \oplus \text{Mat}(8,\mathbb{R})$ 分裂为两个直和项 $M_1 \oplus M_2$。我们需要确定各扇区在直和分解中的占用模式。
 
-$$\text{tr}_{\text{off-diag}}(D_\mathcal{M} \otimes \text{Gap}_{\mathcal{C}}) = \Lambda \times \Delta\Theta = 3 \times 5 = 15$$
+$\text{Cl}(7)$ 的偶部分为 $\text{Cl}^0(7) \cong \text{Cl}(6) \cong \text{Mat}(8, \mathbb{R})$。编码轨道按层分配：
+- $E_1 \to E_3$：物质扇区 $\mathcal{M}$，对应 $\text{Cl}(0) \to \text{Cl}(3)$。$\text{Cl}(3) \cong \mathbb{H} \oplus \mathbb{H}$ 的偶部分 $\text{Cl}^0(3) \cong \mathbb{H}$，其不可约实表示为 4 维。在 $\text{Cl}(7)$ 中，$\mathcal{M}$ 的编码算子通过嵌入 $\text{Cl}(3) \hookrightarrow \text{Cl}(7)$ 占据第一个直和块 $M_1$。
+- $E_6 \to E_7$：信息扇区 $\mathcal{I}$，对应 $\text{Cl}(5) \to \text{Cl}(7)$ 的跃迁。$\text{Cl}(7)$ 的全代数包含 $\mathcal{I}$ 的编码算子，它们通过 $\text{Cl}(7)/\text{Cl}(5)$ 的商结构占据第二个直和块 $M_2$。
+- $E_4 \to E_5$：因果扇区 $\mathcal{C}$，终止于 $\text{Cl}(5)$。关键点：$\text{Cl}(5) \cong \text{Mat}(4, \mathbb{C})$ 的实化是 $\text{Mat}(8, \mathbb{R})$——它既不完全在第一块也不完全在第二块，而是**跨越两块之间的间隙**。$\mathcal{C}$ 不独占任何一个直和项。
 
-注意：它**不是** $\Lambda \times k_0 = 6$，因为 $k_0$ 是 $\mathcal{I}$ 自身块内部的编码算子特征值，而非跨越间隙的耦合。间隙大小由被绕过的 $\mathcal{C}$ 扇区的结构常数 $\Delta\Theta = 5$ 决定。
+因此扇区在 $M_1 \oplus M_2$ 上的占用为：$\mathcal{M}$（$M_1$）、$\mathcal{I}$（$M_2$）、$\mathcal{C}$（间隙）。
+
+**(3) 交叉耦合强度。** $E_8$ 处的 Bott 回声在 $M_1$ 和 $M_2$ 之间生成非对角耦合。耦合的物理来源：$\delta^8$ 的 Bott 回路在参数空间中闭合时，$\text{Mat}(16, \mathbb{R})$ 因子通过 $\text{Cl}(n) \otimes \text{Mat}(16, \mathbb{R})$ 的张量积结构向 $\text{Cl}(n)$ 分量注入扭力。此扭力在 $M_1 \oplus M_2$ 的直和分解中表现为块间耦合。
+
+耦合必须穿越 $\mathcal{C}$ 扇区占据的间隙。间隙的代数测度由 $\mathcal{C}$ 的结构常数 $\Delta\Theta = 5$ 给出——它是因果扇区编码深度的特征值。$\mathcal{M}$ 侧的耦合源强度为 $\Lambda = 3$。因此耦合强度为乘积：
+
+$$\text{tr}_{\text{off-diag}}(M_1 \otimes \text{Gap}_{\mathcal{C}} \otimes M_2) = \Lambda \times \Delta\Theta = 3 \times 5 = 15$$
+
+**为什么是 $\Lambda \times \Delta\Theta$ 而非 $\Lambda \times k_0$？** $k_0 = 2$ 是 $\mathcal{I}$ 扇区内部的编码算子特征值——它描述 $M_2$ 块内部的结构，而非块间的耦合通道。间隙耦合由穿越的扇区（$\mathcal{C}$）的结构常数决定，而非由目标扇区（$\mathcal{I}$）的内部常数决定。类比：两个房间之间的门的大小由墙的厚度决定，而非由隔壁房间的内部尺寸决定。
 
 **(4) 通过恒等式破缺的泄漏。** 从第一圈零和 $\Lambda + k_0 = \Delta\Theta$，两边乘以 $\Lambda \times k_0$ 得到乘性投射：
 
 $$(\Lambda + k_0) \times \Lambda \times k_0 = \Delta\Theta \times \Lambda \times k_0$$
 
-$$\Lambda^2 k_0 + \Lambda k_0^2 = 30 = \Lambda \times k_0 \times \Delta\Theta$$
+$$\Lambda^2 k_0 + \Lambda k_0^2 = 18 + 12 = 30 = \Lambda \times k_0 \times \Delta\Theta$$
 
-中介耦合 $30$ 分解为扇区自能（$\Lambda^2 k_0 = 18$）和交叉项（$\Lambda k_0^2 = 12$）。当 Bott 回声以直接耦合 $\Lambda \times \Delta\Theta = 15$ 替换中介耦合时，恒等式平衡偏移：
+中介耦合 $30 = \Lambda \times k_0 \times \Delta\Theta$ 是三扇区全连接的耦合强度——$\mathcal{M}$（$\Lambda$）、$\mathcal{I}$（$k_0$）、$\mathcal{C}$（$\Delta\Theta$）三方全部参与。它分解为：
+- 扇区自能：$\Lambda^2 k_0 = 9 \times 2 = 18$（$\mathcal{M}$ 内部编码代价，涉及 $\mathcal{I}$ 的 $k_0$ 因子）
+- 交叉项：$\Lambda k_0^2 = 3 \times 4 = 12$（$\mathcal{I}$ 内部编码代价，涉及 $\mathcal{M}$ 的 $\Lambda$ 因子）
 
-$$\Delta S_{\text{第四圈}} = \Lambda \times \Delta\Theta - \Lambda \times k_0 \times \Delta\Theta = 15 \times (1-2) = -15$$
+Bott 回声以**直接耦合** $\Lambda \times \Delta\Theta = 15$ 替换了全三方中介耦合。替换后的恒等式偏移量：
 
-符号为负是因为 $k_0 = 2 > 1$，代数上由 $\mathcal{C}$ 扇区具有非平凡编码深度这一事实强制决定。∎
+$$\Delta S_{\text{第四圈}} = \Lambda \times \Delta\Theta - \Lambda \times k_0 \times \Delta\Theta = 15 - 30 = -15$$
+
+或等价地：
+
+$$\Delta S_{\text{第四圈}} = \Lambda \times \Delta\Theta \times (1 - k_0) = 15 \times (1 - 2) = -15$$
+
+符号为负是因为 $k_0 = 2 > 1$：Bott 回声绕过因果扇区时，省去了三方全耦合中所需的 $k_0$ 倍额外编码代价（因为 $\mathcal{C}$ 充当了"自然的"耦合桥梁，代替了需要通过 $\mathcal{I}$ 内部绕行的路径）。代数上，$k_0 > 1$ 被 $\mathcal{C}$ 扇区的非平凡编码深度强制决定。∎
 
 #### 6.3.4 $B_3 = 1/259200$（干涉：编码深度比）
 
