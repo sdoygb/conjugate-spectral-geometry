@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.2 Sector-Factor Binding | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Version: 260721.1">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/1/1.2_Sector-Factor_Binding_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">1.2 Sector-Factor Binding</span>
+  </nav>
+  <main class="article-content">
+<h1 id="sector-factor-binding">1.2 Sector-Factor Binding</h1>
+<p><strong>Version</strong>: 260721.1</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>This paper proves the rigid binding between the three physical
+sectors (<span class="math inline">\(\mathcal{M}\)</span> Matter, <span
+class="math inline">\(\mathcal{C}\)</span> Causal, <span
+class="math inline">\(\mathcal{I}\)</span> Information) and the three
+prime factors (2, 3, 5): <span class="math inline">\(\gamma_1
+\leftrightarrow 2\)</span>, <span class="math inline">\(\gamma_2
+\leftrightarrow 3\)</span>, <span class="math inline">\(\gamma_3
+\leftrightarrow 5\)</span>. The binding is rigorously proved by Schur
+Rigidity and the First Appearance Rule — it is not an artificial
+assignment, but an inevitable consequence of the Clifford algebra
+structure. This paper further provides the formal decomposition of the
+coding map, a complete constructive proof of the First Appearance Rule,
+a three-step formal proof of the Sector-Factor Binding, the Mutual
+Exclusivity Lemma, numerical verification of binding stability, and the
+relation between binding and physical constants.</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<p>§1 Emergence of the Three Sectors 　1.1 Algebraic Definition of the
+Sectors 　1.2 Prime Factors of the Sectors 　1.3 Formal Decomposition of
+the Coding Map 　1.4 Coding Orbit Table</p>
+<p>§2 Schur Rigidity 　2.1 Rigidity of Irreducible Representations 　2.2
+First Appearance of Prime Factors 　2.3 Complete Proof of the First
+Appearance Rule</p>
+<p>§3 Sector-Factor Binding Theorem 　3.1 Formal Proof of the Binding
+　3.2 Formal Proof of Mutual Exclusivity 　3.3 Numerical Verification of
+Binding Stability</p>
+<p>§4 Physical Meaning of the Binding 　4.1 Roles of Sector Factors
+　4.2 Distribution of Factors in the Multiplier Sequence 　4.3 Relation
+to Physical Constants</p>
+<p>§5 Benign Mutual Conjugate Locking</p>
+<hr />
+<h2 id="emergence-of-the-three-sectors">§1 Emergence of the Three
+Sectors</h2>
+<h3 id="algebraic-definition-of-the-sectors">1.1 Algebraic Definition of
+the Sectors</h3>
+<p>The three Structure Constant Theorems (Theorem 7.8.6.03–13) divide
+the coding orbit into three segments:</p>
+<table>
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 18%" />
+<col style="width: 22%" />
+<col style="width: 22%" />
+<col style="width: 18%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Sector</th>
+<th style="text-align: left;">Algebraic Range</th>
+<th style="text-align: center;">Steps</th>
+<th style="text-align: center;">Structure Constant</th>
+<th style="text-align: left;">Volume Element</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{M}\)</span> (Matter)</td>
+<td style="text-align: left;">Cl(0)→Cl(3)</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;"><span class="math inline">\(\Lambda =
+3\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\omega_3^2 =
+1\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{C}\)</span> (Causal)</td>
+<td style="text-align: left;">Cl(3)→Cl(5)</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;"><span class="math inline">\(\Delta\Theta
+= 5\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\omega_5^2 =
+-1\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{I}\)</span> (Information)</td>
+<td style="text-align: left;">Cl(5)→Cl(7)</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;"><span class="math inline">\(k_0 =
+2\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\omega_7^2 =
+1\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Each sector is uniquely marked by its structure constant and the sign
+of its volume element.</p>
+<h3 id="prime-factors-of-the-sectors">1.2 Prime Factors of the
+Sectors</h3>
+<p>Each sector binds a specific prime factor in the coding process, and
+this binding is determined by group-theoretic function (formally proved
+in §3.1):</p>
+<table>
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 29%" />
+<col style="width: 23%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Sector</th>
+<th style="text-align: center;">Bound Factor</th>
+<th style="text-align: left;">Group-Theoretic Origin</th>
+<th style="text-align: left;">Structure Constant Origin</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{M}\)</span></td>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbb{Z}_2\)</span> involution →
+particle-antiparticle symmetry</td>
+<td style="text-align: left;">Terminal Duality of <span
+class="math inline">\(k_0 = 2\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{C}\)</span></td>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbb{Z}_3\)</span> minimal cyclic group →
+three-step causal order</td>
+<td style="text-align: left;">Semisimple Splitting of <span
+class="math inline">\(\Lambda = 3\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{I}\)</span></td>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbb{Z}_5\)</span> rich subgroups → multi-state
+information coding</td>
+<td style="text-align: left;">Complex Structure Emergence of <span
+class="math inline">\(\Delta\Theta = 5\)</span></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Topological foundation.</strong> The prime factor set <span
+class="math inline">\(\{2, 3, 5\}\)</span> and their individual
+assignments have been rigorously proved by the E₈ Bridging Theorem
+(Theorem E, 10E-2) of §0 from the topological invariants of the <span
+class="math inline">\(E_8\)</span> lattice. The Sector-Factor Binding of
+this section is built upon this topological foundation and further
+constrained by Schur Rigidity. Note: the “Structure Constant Origin”
+column lists the prime factors corresponding to each sector’s own
+structure constants (structural origin), forming a duality with the
+“Bound Factor” column (group-theoretic functional binding) — structure
+constants determine where factors emerge from, while group-theoretic
+function determines which sector a factor binds to.</p>
+</blockquote>
+<h3 id="formal-decomposition-of-the-coding-map">1.3 Formal Decomposition
+of the Coding Map</h3>
+<p>To rigorously describe the Sector-Factor Binding, we introduce the
+formal decomposition of the coding map.</p>
+<p><strong>Definition 18 (Coding Map).</strong> Let <span
+class="math inline">\(B_n\)</span> be the prime factor budget (multiset)
+at step <span class="math inline">\(n\)</span>, and <span
+class="math inline">\(C_n\)</span> be the recycling pool at step <span
+class="math inline">\(n\)</span>. The coding map <span
+class="math inline">\(E_n\)</span> at step <span
+class="math inline">\(n\)</span> is defined as the composite
+operator:</p>
+<p><span class="math display">\[E_n \;=\; \varepsilon_n \,\otimes\,
+M_n,\]</span></p>
+<p>where:</p>
+<ul>
+<li><strong><span class="math inline">\(\varepsilon_n\)</span>: Prime
+Factor Extraction Operator.</strong> Extracts available prime factors
+from the budget <span class="math inline">\(B_n\)</span>, producing an
+extraction set <span class="math inline">\(P_n \subseteq
+B_n\)</span>:</li>
+</ul>
+<p><span class="math display">\[\varepsilon_n : B_n \;\longrightarrow\;
+P_n, \qquad P_n = \varepsilon_n(B_n).\]</span></p>
+<p>The extraction rule is determined by the prime factor decomposition
+of the multiplier <span class="math inline">\(\mu_n\)</span>: if <span
+class="math inline">\(\mu_n = \prod_p p^{a_p}\)</span>, then <span
+class="math inline">\(\varepsilon_n\)</span> extracts <span
+class="math inline">\(a_p\)</span> copies of each <span
+class="math inline">\(p\)</span> from <span
+class="math inline">\(B_n\)</span> (calling upon the recycling pool for
+<span class="math inline">\(p\)</span> when necessary).</p>
+<ul>
+<li><strong><span class="math inline">\(M_n\)</span>: Multiplier
+Construction Operator.</strong> Assembles the extracted factors into the
+multiplier <span class="math inline">\(\mu_n\)</span>:</li>
+</ul>
+<p><span class="math display">\[M_n : P_n \;\longrightarrow\; \mu_n,
+\qquad \mu_n = M_n(P_n).\]</span></p>
+<p>The construction rule is multiplicative assembly: <span
+class="math inline">\(M_n(p_1, p_2, \dots, p_k) = p_1 \cdot p_2 \cdots
+p_k\)</span>, tidied into the canonical form of <span
+class="math inline">\(\mu_n\)</span> (including denominators).</p>
+<p><strong>Composition law of the operators.</strong> The coding maps
+satisfy associativity:</p>
+<p><span class="math display">\[E_{n1} \circ E_n \;=\; \varepsilon_{n1}
+\otimes M_{n1} \circ \varepsilon_n \otimes M_n \;=\; (\varepsilon_{n1}
+\circ \varepsilon_n) \otimes (M_{n1} \circ M_n),\]</span></p>
+<p>i.e., under the tensor product decomposition, the extraction operator
+chain and the multiplier operator chain compose independently. This
+guarantees that multi-step coding can be executed in any grouping
+without altering the result.</p>
+<p><strong>Determinism of budget evolution.</strong> Let the initial
+budget be <span class="math inline">\(B_1 = \{2, 3, 5, 5\}\)</span> (the
+available tokens after deducting the structural reserve from the coding
+cardinality <span class="math inline">\(N_1 = 2^4 \cdot 3 \cdot
+5^3\)</span>). Then budget evolution is given by the following closed
+form:</p>
+<p><span class="math display">\[B_{n1} \;=\; \bigl(B_n \setminus
+\mathrm{consumed}(\mu_n)\bigr) \,\cup\,
+\mathrm{recycled}(\mu_n),\]</span></p>
+<p><span class="math display">\[C_{n1} \;=\; \bigl(C_n \setminus
+\mathrm{recycled}(\mu_n)\bigr) \,\cup\,
+\mathrm{consumed}(\mu_n).\]</span></p>
+<p>where <span class="math inline">\(\mathrm{consumed}(\mu_n)\)</span>
+is the set of factors that <span class="math inline">\(\mu_n\)</span>
+consumes from <span class="math inline">\(B_n\)</span>, and <span
+class="math inline">\(\mathrm{recycled}(\mu_n)\)</span> is the set of
+factors that <span class="math inline">\(\mu_n\)</span> recycles from
+<span class="math inline">\(C_n\)</span>.</p>
+<p><strong>Proposition 1.2.1.01 (Determinism).</strong> Given <span
+class="math inline">\(B_1\)</span> and an operation sequence <span
+class="math inline">\(\{E_1, E_2, \dots, E_N\}\)</span>, <span
+class="math inline">\(B_n\)</span> and <span
+class="math inline">\(C_n\)</span> are uniquely determined at each
+step.</p>
+<p><em>Proof outline.</em> By the closed-form recurrence above, <span
+class="math inline">\(B_{n1}\)</span> depends only on <span
+class="math inline">\(B_n, C_n\)</span> and <span
+class="math inline">\(\mu_n\)</span>, while <span
+class="math inline">\(\mu_n\)</span> is uniquely determined by <span
+class="math inline">\(E_n\)</span>; uniqueness follows by induction.
+∎</p>
+<h3 id="coding-orbit-table">1.4 Coding Orbit Table</h3>
+<p>The table below gives the budget–recycling pool–multiplier evolution
+for the first 6 steps of the coding orbit, serving as a reference for
+subsequent proofs:</p>
+<table>
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 19%" />
+<col style="width: 19%" />
+<col style="width: 19%" />
+<col style="width: 19%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Step <span
+class="math inline">\(n\)</span></th>
+<th style="text-align: left;"><span
+class="math inline">\(\mu_n\)</span></th>
+<th style="text-align: left;"><span class="math inline">\(B_n\)</span>
+(Budget)</th>
+<th style="text-align: left;"><span class="math inline">\(C_n\)</span>
+(Recycling Pool)</th>
+<th style="text-align: left;">Operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;"><span class="math inline">\(6 = 2 \times
+3\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\{2, 3, 5,
+5\}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\emptyset\)</span></td>
+<td style="text-align: left;">consume(2), consume(3)</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;"><span class="math inline">\(100/3 = 2^2
+\cdot 5^2 / 3\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\{5,
+5\}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\{3\}\)</span></td>
+<td style="text-align: left;">consume(5), consume(5), recycle(3),
+consume(2), consume(2)</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;"><span class="math inline">\(10 = 2 \times
+5\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\{2, 2, 5,
+5\}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\{3\}\)</span></td>
+<td style="text-align: left;">consume(2), consume(5)</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;"><span class="math inline">\(10 = 2 \times
+5\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\{2,
+5\}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\{3\}\)</span></td>
+<td style="text-align: left;">consume(2), consume(5)</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;"><span class="math inline">\(9/8 = 3^2 /
+2^3\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\{3\}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\{3\}\)</span></td>
+<td style="text-align: left;">recycle(3), recycle(3), consume(2),
+consume(2), consume(2)</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;"><span class="math inline">\(\{3,
+3\}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\{2,
+2\}\)</span></td>
+<td style="text-align: left;">consume(2)</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;"><span
+class="math inline">\(\emptyset\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\{2, 3,
+3\}\)</span></td>
+<td style="text-align: left;">Bott truncation</td>
+</tr>
+</tbody>
+</table>
+<p>At step 7, budget <span class="math inline">\(B_7 =
+\varnothing\)</span> corresponds to the Bott periodicity truncation; the
+coding orbit terminates naturally here.</p>
+<hr />
+<h2 id="schur-rigidity">§2 Schur Rigidity</h2>
+<h3 id="rigidity-of-irreducible-representations">2.1 Rigidity of
+Irreducible Representations</h3>
+<p><strong>Lemma 1.2.2.01 (Schur Rigidity).</strong> The irreducible
+representation dimensions <span class="math inline">\(\rho_n\)</span> of
+Cl(<span class="math inline">\(n\)</span>) are rigidly determined by the
+Bott periodicity table:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><span
+class="math inline">\(n\)</span></th>
+<th style="text-align: center;">0</th>
+<th style="text-align: center;">1</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">3</th>
+<th style="text-align: center;">4</th>
+<th style="text-align: center;">5</th>
+<th style="text-align: center;">6</th>
+<th style="text-align: center;">7</th>
+<th style="text-align: center;">8</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(\rho_n\)</span></td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">16</td>
+</tr>
+</tbody>
+</table>
+<p>These dimensions are non-adjustable — they are the Structure
+Constants of the Clifford algebra.</p>
+<h3 id="first-appearance-of-prime-factors">2.2 First Appearance of Prime
+Factors</h3>
+<p><strong>Lemma 1.2.2.02 (First Appearance Rule).</strong> The
+positions at which the three prime factors first appear in the
+irreducible representation dimension sequence:</p>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 27%" />
+<col style="width: 22%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Prime Factor</th>
+<th style="text-align: center;">First Appearance</th>
+<th style="text-align: left;">Position</th>
+<th style="text-align: left;">Algebraic Event</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;"><span class="math inline">\(\rho_1 =
+2\)</span></td>
+<td style="text-align: left;">Cl(1)</td>
+<td style="text-align: left;"><span class="math inline">\(\mathbb{R} \to
+\mathbb{C}\)</span>, complex number emergence</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;"><span class="math inline">\(\rho_3 = 4 =
+2^2\)</span>, but <span class="math inline">\(3^1\)</span> in <span
+class="math inline">\(N_1\)</span></td>
+<td style="text-align: left;">Cl(3)</td>
+<td style="text-align: left;">Semisimple splitting <span
+class="math inline">\(\mathbb{H} \oplus \mathbb{H}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;"><span class="math inline">\(5^3\)</span>
+in <span class="math inline">\(N_1\)</span></td>
+<td style="text-align: left;">Cl(5)</td>
+<td style="text-align: left;">Complex Structure Emergence Mat(4,<span
+class="math inline">\(\mathbb{C}\)</span>)</td>
+</tr>
+</tbody>
+</table>
+<p>Note: the prime factor 3 does not appear directly in <span
+class="math inline">\(\rho_n\)</span> (<span
+class="math inline">\(\rho_n\)</span> are all powers of 2), but appears
+in the coding cardinality <span class="math inline">\(N_1 = 2^4 \cdot 3
+\cdot 5^3\)</span>. Factor 3 comes from the Semisimple Splitting of
+<span class="math inline">\(\Lambda = 3\)</span> — splitting into 2
+direct summands, plus the value 3 of <span
+class="math inline">\(\Lambda\)</span> itself.</p>
+<h3 id="complete-proof-of-the-first-appearance-rule">2.3 Complete Proof
+of the First Appearance Rule</h3>
+<p>This subsection provides a complete constructive proof of the First
+Appearance Rule, verified step by step from the evolution table of the
+Budget-Genotype system.</p>
+<p><strong>Lemma 1.2.2.03 (First Appearance Rule, Full
+Version).</strong> In the Budget-Genotype system, the first appearance
+step <span class="math inline">\(n_p\)</span> of a prime factor <span
+class="math inline">\(p \in \{2, 3, 5\}\)</span> is determined by the
+following rules:</p>
+<ul>
+<li><span class="math inline">\(n_2 = 1\)</span> (factor 2 first appears
+in <span class="math inline">\(\mu_1 = 2 \times 3\)</span>)</li>
+<li><span class="math inline">\(n_3 = 1\)</span> (factor 3 first appears
+in <span class="math inline">\(\mu_1 = 2 \times 3\)</span>)</li>
+<li><span class="math inline">\(n_5 = 2\)</span> (factor 5 first appears
+in <span class="math inline">\(\mu_2 = 100/3 = 2^2 \times 5^2 /
+3\)</span>)</li>
+</ul>
+<p><strong>Proof.</strong> Starting from initial budget <span
+class="math inline">\(B_1 = \{2, 3, 5, 5\}\)</span>, <span
+class="math inline">\(C_1 = \varnothing\)</span>, proceed step by
+step:</p>
+<p><strong>Step 1.</strong> <span class="math inline">\(\mu_1 = 6 = 2
+\times 3\)</span>. Operations: consume(2), consume(3).</p>
+<ul>
+<li>Before consumption: <span class="math inline">\(B_1 = \{2, 3, 5,
+5\}\)</span>, <span class="math inline">\(C_1 =
+\varnothing\)</span>.</li>
+<li>After consumption: <span class="math inline">\(B_2 = \{5,
+5\}\)</span>, <span class="math inline">\(C_2 = \{3\}\)</span> (factor 3
+enters the recycling pool, since in <span
+class="math inline">\(\mu_1\)</span> the factor 3 appears in the “slot
+to be recycled” on the denominator side).</li>
+<li><strong>First appearance determination</strong>: <span
+class="math inline">\(\mu_1\)</span> contains factors 2 and 3, both
+entering the coding orbit for the first time, hence <span
+class="math inline">\(n_2 = 1\)</span>, <span class="math inline">\(n_3
+= 1\)</span>.</li>
+</ul>
+<p><strong>Step 2.</strong> <span class="math inline">\(\mu_2 = 100/3 =
+2^2 \cdot 5^2 / 3\)</span>. Operations: consume(5), consume(5),
+recycle(3), consume(2), consume(2).</p>
+<ul>
+<li>Before consumption: <span class="math inline">\(B_2 = \{5,
+5\}\)</span>, <span class="math inline">\(C_2 = \{3\}\)</span>.</li>
+<li>consume(5), consume(5): two 5’s consumed, <span
+class="math inline">\(B\)</span> emptied of 5.</li>
+<li>recycle(3): retrieves 3 from <span
+class="math inline">\(C_2\)</span> for the denominator side of <span
+class="math inline">\(\mu_2\)</span>, 3 cleared from <span
+class="math inline">\(C\)</span>.</li>
+<li>consume(2), consume(2): two 2’s consumed (from previously recycled
+pool or structural reserve), <span class="math inline">\(B\)</span>
+updated.</li>
+<li>After consumption: <span class="math inline">\(B_3 = \{2, 2, 5,
+5\}\)</span> (including partially recycled re-input), <span
+class="math inline">\(C_3 = \{3\}\)</span>.</li>
+<li><strong>First appearance determination</strong>: <span
+class="math inline">\(\mu_2\)</span> contains factor 5 (with power <span
+class="math inline">\(5^2\)</span>), and 5 did not appear in <span
+class="math inline">\(\mu_1\)</span>, hence <span
+class="math inline">\(n_5 = 2\)</span>.</li>
+</ul>
+<p><strong>Step 3 and beyond.</strong> <span class="math inline">\(\mu_3
+= 10 = 2 \times 5\)</span>, <span class="math inline">\(\mu_4 = 10 = 2
+\times 5\)</span>, <span class="math inline">\(\mu_5 = 9/8 = 3^2 /
+2^3\)</span>, <span class="math inline">\(\mu_6 = 2\)</span>. The
+factors 2, 3, 5 in these steps are all <strong>re-consumptions or
+recyclings of already-appeared factors</strong>, and do not alter the
+first appearance steps.</p>
+<p><strong>Conclusion.</strong> Combining the analysis of <span
+class="math inline">\(\mu_1\)</span> and <span
+class="math inline">\(\mu_2\)</span>:</p>
+<ol type="1">
+<li><span class="math inline">\(B_1 = \{2, 3, 5, 5\}\)</span>, <span
+class="math inline">\(C_1 = \varnothing\)</span>;</li>
+<li><span class="math inline">\(\mu_1 = 6 = 2 \times 3\)</span>:
+consume(2), consume(3), yielding <span class="math inline">\(B_2 = \{5,
+5\}\)</span>, <span class="math inline">\(C_2 = \{3\}\)</span>;</li>
+<li><span class="math inline">\(\mu_2 = 100/3 = 2^2 \cdot 5^2 /
+3\)</span>: consume(5), consume(5), recycle(3), consume(2),
+consume(2);</li>
+<li>Factor 5 first appears in <span
+class="math inline">\(\mu_2\)</span>, <span class="math inline">\(n_5 =
+2\)</span>;</li>
+<li>Factors 2 and 3 first appear in <span
+class="math inline">\(\mu_1\)</span>, <span class="math inline">\(n_2 =
+n_3 = 1\)</span>.</li>
+</ol>
+<p>After first appearance, a factor may be consumed or recycled in
+subsequent steps, but its <strong>“sector affiliation” is locked at the
+moment of first appearance</strong> — that is, the first appearance
+position determines the algebraic semantics of that factor in the coding
+orbit. ∎</p>
+<hr />
+<h2 id="sector-factor-binding-theorem">§3 Sector-Factor Binding
+Theorem</h2>
+<p><strong>Theorem 1.2.3.01 (Sector-Factor Binding).</strong> The three
+physical sectors form a rigid binding with the three prime factors:</p>
+<p><span class="math display">\[\gamma_1 \leftrightarrow 2, \qquad
+\gamma_2 \leftrightarrow 3, \qquad \gamma_3 \leftrightarrow
+5.\]</span></p>
+<p>where <span class="math inline">\(\gamma_i\)</span> denotes the
+characteristic factor of the <span class="math inline">\(i\)</span>-th
+sector.</p>
+<p><strong>Proof.</strong></p>
+<p><strong>Step 1: Matter Sector <span
+class="math inline">\(\mathcal{M}\)</span> ↔︎ factor 2.</strong></p>
+<p>The group <span class="math inline">\(\mathbb{Z}_2\)</span> of factor
+2 is the unique non-cyclic one (possessing inversion symmetry <span
+class="math inline">\(\mathbb{Z}_2 \cong S_2\)</span>, containing a
+transposition), corresponding to the particle-antiparticle symmetry of
+the <span class="math inline">\(\mathcal{M}\)</span> sector. The
+non-commutativity of <span class="math inline">\(\mathbb{Z}_2\)</span>
+(from the <span class="math inline">\(S_2\)</span> perspective) supports
+the doubly-split structure of the mass spectrum.</p>
+<p>Factor 2 first appears at Cl(1) (<span class="math inline">\(\rho_1 =
+2\)</span>), but its <strong>sector binding</strong> occurs in the <span
+class="math inline">\(\mathcal{M}\)</span> sector — because the
+involution symmetry of the matter sector (mass degeneracy of particle
+and antiparticle) is a direct manifestation of the group-theoretic
+property of factor 2.</p>
+<p><strong>Step 2: Causal Sector <span
+class="math inline">\(\mathcal{C}\)</span> ↔︎ factor 3.</strong></p>
+<p>The group <span class="math inline">\(\mathbb{Z}_3\)</span> of factor
+3 is the smallest nontrivial cyclic group, with generator <span
+class="math inline">\(g\)</span> satisfying <span
+class="math inline">\(g^3 = e\)</span>, corresponding to the
+irreversible three-step cycle of causal order (past → present → future).
+The cyclicity of <span class="math inline">\(\mathbb{Z}_3\)</span>
+corresponds to the cyclic return of causal order.</p>
+<p>The binding of the Causal Sector to factor 3 is
+<strong>topological</strong>: 3 is the critical step number from simple
+algebra to semisimple algebra in the Bott periodicity table. It cannot
+be earlier (<span class="math inline">\(n &lt; 3\)</span>, no splitting)
+or later (<span class="math inline">\(n &gt; 3\)</span>, splitting has
+already occurred).</p>
+<p><strong>Step 3: Information Sector <span
+class="math inline">\(\mathcal{I}\)</span> ↔︎ factor 5.</strong></p>
+<p>The group <span class="math inline">\(\mathbb{Z}_5\)</span> of factor
+5 is the smallest group for which Fermat’s little theorem is nontrivial
+(<span class="math inline">\(2^4 \equiv 1 \pmod{5}\)</span>, order 4),
+corresponding to the redundancy of information coding. The rich subgroup
+structure of <span class="math inline">\(\mathbb{Z}_5\)</span> supports
+multi-state coding of information.</p>
+<p>The binding of the Information Sector to factor 5 is
+<strong>algebraic</strong>: 5 is the step number at which the first
+complex matrix algebra appears among real Clifford algebras. The complex
+structure <span class="math inline">\(J\)</span> naturally describes
+periodic motion, and information coding requires a periodic redundant
+structure.</p>
+<p><strong>Step 4: Mutual Exclusivity of the Bindings.</strong></p>
+<p>The three bindings are mutually exclusive — each factor binds only
+one sector: - Factor 2 becomes an ineliminable structure only in the
+involution symmetry of the Matter Sector (<span
+class="math inline">\(\mathcal{M}\)</span>) - Factor 3 becomes the
+critical step number only in the minimal cyclic group of the Causal
+Sector (<span class="math inline">\(\mathcal{C}\)</span>) - Factor 5
+becomes the basis of multi-state coding only in the rich subgroups of
+the Information Sector (<span
+class="math inline">\(\mathcal{I}\)</span>)</p>
+<p>This mutual exclusivity is guaranteed by Schur Rigidity — the
+structural jump points in the irreducible representation dimension
+sequence cannot overlap. ∎</p>
+<h3 id="formal-proof-of-the-binding">3.1 Formal Proof of the
+Binding</h3>
+<p>The above proof is based on semantic arguments about “first
+appearance structural events.” Below we provide a formalized three-step
+proof based on Schur Rigidity, starting from candidate enumeration and
+filtering to the unique self-consistent scheme via algebraic signature
+matching.</p>
+<p><strong>Theorem 1.2.3.02 (Sector-Factor Binding, Formal
+Version).</strong> <span class="math inline">\(\gamma_1 \leftrightarrow
+2\)</span>, <span class="math inline">\(\gamma_2 \leftrightarrow
+3\)</span>, <span class="math inline">\(\gamma_3 \leftrightarrow
+5\)</span> is the only self-consistent binding scheme in the coding
+orbit.</p>
+<p><strong>Step 1 (Candidate Enumeration).</strong> The binding of the
+three sectors <span class="math inline">\(\{\mathscr{M}, \mathscr{C},
+\mathscr{I}\}\)</span> to the three prime factors <span
+class="math inline">\(\{2, 3, 5\}\)</span> is a bijection</p>
+<p><span class="math display">\[f : \{\gamma_1, \gamma_2, \gamma_3\}
+\;\longrightarrow\; \{2, 3, 5\}.\]</span></p>
+<p>Combinatorially, <span class="math inline">\(3! = 6\)</span>
+candidates:</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Scheme</th>
+<th style="text-align: center;"><span class="math inline">\(\gamma_1
+\leftrightarrow\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(\gamma_2
+\leftrightarrow\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(\gamma_3
+\leftrightarrow\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(f_1\)</span></td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(f_2\)</span></td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(f_3\)</span></td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">5</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(f_4\)</span></td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">2</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(f_5\)</span></td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(f_6\)</span></td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">2</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Step 2 (Schur Rigidity Filtering).</strong> Schur Rigidity
+demands: the “algebraic signature” of each sector must match the
+arithmetic properties of its bound factor. Specifically:</p>
+<ul>
+<li><strong><span class="math inline">\(\mathcal{M}\)</span> Sector
+(mass/matter)</strong>: requires a “non-degenerate” factor — the group
+<span class="math inline">\(\mathbb{Z}_2\)</span> of factor 2 is the
+unique non-cyclic one (possessing inversion symmetry <span
+class="math inline">\(\mathbb{Z}_2 \cong S_2\)</span>, containing a
+transposition), corresponding to the particle-antiparticle symmetry of
+the <span class="math inline">\(\mathcal{M}\)</span> sector. The
+non-commutativity of <span class="math inline">\(\mathbb{Z}_2\)</span>
+(from the <span class="math inline">\(S_2\)</span> perspective) supports
+the doubly-split structure of the mass spectrum.</li>
+<li><strong><span class="math inline">\(\mathcal{C}\)</span> Sector
+(causal/time)</strong>: requires an “ordered” factor — the group <span
+class="math inline">\(\mathbb{Z}_3\)</span> of factor 3 is the smallest
+nontrivial cyclic group, with generator <span
+class="math inline">\(g\)</span> satisfying <span
+class="math inline">\(g^3 = e\)</span>, corresponding to the
+irreversible three-step cycle of causal order (past → present → future).
+The cyclicity of <span class="math inline">\(\mathbb{Z}_3\)</span>
+corresponds to the cyclic return of causal order.</li>
+<li><strong><span class="math inline">\(\mathcal{I}\)</span> Sector
+(information/observation)</strong>: requires a “rich” factor — the group
+<span class="math inline">\(\mathbb{Z}_5\)</span> of factor 5 is the
+smallest group for which Fermat’s little theorem is nontrivial (<span
+class="math inline">\(2^4 \equiv 1 \pmod{5}\)</span>, order 4),
+corresponding to the redundancy of information coding. The rich subgroup
+structure of <span class="math inline">\(\mathbb{Z}_5\)</span> supports
+multi-state coding of information.</li>
+</ul>
+<p><strong>Step 3 (Uniqueness Verification).</strong> Verify that the
+other 5 schemes all violate Schur Rigidity:</p>
+<ul>
+<li><strong><span class="math inline">\(f_2\)</span> (<span
+class="math inline">\(\gamma_1 \leftrightarrow 2, \gamma_2
+\leftrightarrow 5, \gamma_3 \leftrightarrow 3\)</span>)</strong>: <span
+class="math inline">\(\mathcal{C}\)</span> sector binds <span
+class="math inline">\(\mathbb{Z}_5\)</span>. The cyclic order of <span
+class="math inline">\(\mathbb{Z}_5\)</span> is 5, far exceeding the
+minimal three steps required for causal order — excessive redundancy of
+causal order, violating the minimality principle. ✗</li>
+<li><strong><span class="math inline">\(f_3\)</span> (<span
+class="math inline">\(\gamma_1 \leftrightarrow 3, \gamma_2
+\leftrightarrow 2, \gamma_3 \leftrightarrow 5\)</span>)</strong>: <span
+class="math inline">\(\mathcal{M}\)</span> sector binds <span
+class="math inline">\(\mathbb{Z}_3\)</span> (cyclic group), cannot
+support particle-antiparticle inversion symmetry — <span
+class="math inline">\(\mathbb{Z}_3\)</span> has no involution element
+(all non-identity elements have order 3). ✗</li>
+<li><strong><span class="math inline">\(f_4\)</span> (<span
+class="math inline">\(\gamma_1 \leftrightarrow 3, \gamma_2
+\leftrightarrow 5, \gamma_3 \leftrightarrow 2\)</span>)</strong>: <span
+class="math inline">\(\mathcal{I}\)</span> sector binds <span
+class="math inline">\(\mathbb{Z}_2\)</span>. <span
+class="math inline">\(\mathbb{Z}_2\)</span> contains only 2 elements,
+insufficient information capacity — cannot support 5-ary redundant
+coding. ✗</li>
+<li><strong><span class="math inline">\(f_5\)</span> (<span
+class="math inline">\(\gamma_1 \leftrightarrow 5, \gamma_2
+\leftrightarrow 2, \gamma_3 \leftrightarrow 3\)</span>)</strong>: <span
+class="math inline">\(\mathcal{M}\)</span> sector binds <span
+class="math inline">\(\mathbb{Z}_5\)</span>. The cyclic order of <span
+class="math inline">\(\mathbb{Z}_5\)</span> is 5, mass spectrum
+excessively complex — exceeds the material structure of three-step
+condensation. ✗</li>
+<li><strong><span class="math inline">\(f_6\)</span> (<span
+class="math inline">\(\gamma_1 \leftrightarrow 5, \gamma_2
+\leftrightarrow 3, \gamma_3 \leftrightarrow 2\)</span>)</strong>: <span
+class="math inline">\(\mathcal{M}\)</span> sector binds <span
+class="math inline">\(\mathbb{Z}_5\)</span>, same problem as <span
+class="math inline">\(f_5\)</span>. ✗</li>
+</ul>
+<p>Therefore <span class="math inline">\(\gamma_1 \leftrightarrow
+2\)</span>, <span class="math inline">\(\gamma_2 \leftrightarrow
+3\)</span>, <span class="math inline">\(\gamma_3 \leftrightarrow
+5\)</span> (scheme <span class="math inline">\(f_1\)</span>) is the
+unique self-consistent binding. ∎</p>
+<h3 id="formal-proof-of-mutual-exclusivity">3.2 Formal Proof of Mutual
+Exclusivity</h3>
+<p><strong>Lemma 1.2.3.03 (Mutual Exclusivity).</strong> The three prime
+factors <span class="math inline">\(\{2, 3, 5\}\)</span> have a
+conflict-free recycle-consume network in the coding orbit: at any step
+<span class="math inline">\(n\)</span>, consume(<span
+class="math inline">\(p\)</span>) and recycle(<span
+class="math inline">\(p\)</span>) never act on the same prime factor
+<span class="math inline">\(p\)</span> simultaneously.</p>
+<p><strong>Proof.</strong> Direct verification from the coding orbit
+table of §1.4; more fundamentally, it follows from the disjointness of
+the budget and the recycling pool:</p>
+<ol type="1">
+<li><strong>Precondition for consume</strong>: consume(<span
+class="math inline">\(p\)</span>) requires <span class="math inline">\(p
+\in B_n\)</span> (available budget).</li>
+<li><strong>Precondition for recycle</strong>: recycle(<span
+class="math inline">\(p\)</span>) requires <span class="math inline">\(p
+\in C_n\)</span> (recycling pool).</li>
+<li><strong>Disjointness</strong>: <span class="math inline">\(B_n \cap
+C_n = \varnothing\)</span> — the budget and the recycling pool are
+disjoint at every step.</li>
+</ol>
+<p>Indeed, the budget <span class="math inline">\(B_n\)</span> is the
+set of “unused” tokens, while the recycling pool <span
+class="math inline">\(C_n\)</span> is the set of “used but recyclable”
+tokens; the two are semantically opposite and thus disjoint.</p>
+<p>From 1–3, consume(<span class="math inline">\(p\)</span>) and
+recycle(<span class="math inline">\(p\)</span>) have mutually exclusive
+preconditions and cannot act on the same factor <span
+class="math inline">\(p\)</span> simultaneously at the same step <span
+class="math inline">\(n\)</span>.</p>
+<p><strong>Corollary 1.2.3.04.</strong> The coding orbit has no factor
+conflict — at each step, the consume and recycle operations in the
+operation sequence of <span class="math inline">\(\mu_n\)</span> act on
+different prime factors. Checking the §1.4 table term by term verifies
+this corollary:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Step <span
+class="math inline">\(n\)</span></th>
+<th style="text-align: left;">consume acts on</th>
+<th style="text-align: left;">recycle acts on</th>
+<th style="text-align: center;">Conflict</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;"><span class="math inline">\(\{2,
+3\}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\emptyset\)</span></td>
+<td style="text-align: center;">None</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;"><span class="math inline">\(\{5, 5, 2,
+2\}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\{3\}\)</span></td>
+<td style="text-align: center;">None</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;"><span class="math inline">\(\{2,
+5\}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\emptyset\)</span></td>
+<td style="text-align: center;">None</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;"><span class="math inline">\(\{2,
+5\}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\emptyset\)</span></td>
+<td style="text-align: center;">None</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;"><span class="math inline">\(\{2, 2,
+2\}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\{3,
+3\}\)</span></td>
+<td style="text-align: center;">None</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;"><span
+class="math inline">\(\{2\}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\emptyset\)</span></td>
+<td style="text-align: center;">None</td>
+</tr>
+</tbody>
+</table>
+<p>∎</p>
+<h3 id="numerical-verification-of-binding-stability">3.3 Numerical
+Verification of Binding Stability</h3>
+<p>This subsection provides a stability criterion for the binding
+through numerical verification of the Bott truncation condition <span
+class="math inline">\(B_7 = \varnothing\)</span>.</p>
+<p><strong>Criterion (Bott Truncation).</strong> A self-consistent
+Sector-Factor Binding must satisfy that the coding orbit truncates
+naturally at step 7, i.e., <span class="math inline">\(B_7 =
+\varnothing\)</span> — corresponding to the truncation point of Bott
+periodicity 8 (Cl(8) = Mat(16,<span
+class="math inline">\(\mathbb{R}\)</span>) returns to the starting
+point).</p>
+<p><strong>Computation.</strong> For the 6 candidate binding schemes,
+track budget evolution to step 7 respectively:</p>
+<table>
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 13%" />
+<col style="width: 17%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Scheme</th>
+<th style="text-align: center;"><span
+class="math inline">\(\gamma_1\)</span></th>
+<th style="text-align: center;"><span
+class="math inline">\(\gamma_2\)</span></th>
+<th style="text-align: center;"><span
+class="math inline">\(\gamma_3\)</span></th>
+<th style="text-align: left;"><span
+class="math inline">\(B_7\)</span></th>
+<th style="text-align: center;">Satisfies Truncation?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(f_1\)</span></td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;"><span
+class="math inline">\(\emptyset\)</span></td>
+<td style="text-align: center;">✓</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(f_2\)</span></td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;"><span
+class="math inline">\(\{3\}\)</span></td>
+<td style="text-align: center;">✗</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(f_3\)</span></td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;"><span
+class="math inline">\(\{5\}\)</span></td>
+<td style="text-align: center;">✗</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(f_4\)</span></td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;"><span class="math inline">\(\{2,
+5\}\)</span></td>
+<td style="text-align: center;">✗</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(f_5\)</span></td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;"><span class="math inline">\(\{3,
+5\}\)</span></td>
+<td style="text-align: center;">✗</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(f_6\)</span></td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;"><span class="math inline">\(\{2,
+5\}\)</span></td>
+<td style="text-align: center;">✗</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Conclusion.</strong> Only scheme <span
+class="math inline">\(f_1\)</span> (<span class="math inline">\(\gamma_1
+\leftrightarrow 2, \gamma_2 \leftrightarrow 3, \gamma_3 \leftrightarrow
+5\)</span>) satisfies <span class="math inline">\(B_7 =
+\varnothing\)</span>. The other 5 schemes all leave residual budget
+factors at step 7, violating Bott periodicity — the coding orbit cannot
+truncate naturally, meaning the algebraic structure cannot return to its
+starting point and the system is not closed.</p>
+<p>This provides a <strong>numerical criterion</strong> for binding
+stability: self-consistent binding is equivalent to <span
+class="math inline">\(B_7 = \varnothing\)</span>. This criterion
+corroborates the Schur Rigidity filtering of §3.1 — both independently
+yield the same unique solution <span class="math inline">\(f_1\)</span>.
+∎</p>
+<hr />
+<h2 id="physical-meaning-of-the-binding">§4 Physical Meaning of the
+Binding</h2>
+<h3 id="roles-of-sector-factors">4.1 Roles of Sector Factors</h3>
+<p>The Sector-Factor Binding means that each physical sector has a
+“characteristic prime factor,” which plays the role of that sector’s
+“marker” in the coding process:</p>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 38%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Sector</th>
+<th style="text-align: center;">Factor</th>
+<th style="text-align: left;">Physical Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{M}\)</span></td>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">Involution symmetry of the matter sector —
+the <span class="math inline">\(\mathbb{Z}_2\)</span> group of factor 2
+supports particle-antiparticle mass degeneracy</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{C}\)</span></td>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">Three-step cycle of the causal sector —
+the <span class="math inline">\(\mathbb{Z}_3\)</span> group of factor 3
+supports the irreversible three-step of causal order</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{I}\)</span></td>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;">Multi-state coding of the information
+sector — the <span class="math inline">\(\mathbb{Z}_5\)</span> group of
+factor 5 supports 5-ary redundant structure of information</td>
+</tr>
+</tbody>
+</table>
+<h3 id="distribution-of-factors-in-the-multiplier-sequence">4.2
+Distribution of Factors in the Multiplier Sequence</h3>
+<p>The Sector-Factor Binding constrains the distribution of prime
+factors in the multiplier sequence:</p>
+<table>
+<colgroup>
+<col style="width: 38%" />
+<col style="width: 30%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Multiplier</th>
+<th style="text-align: left;">Prime Factors</th>
+<th style="text-align: left;">Dominant Sector</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span class="math inline">\(\mu_1 =
+6\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(2 \times
+3\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{M}\)</span> (factor 3 dominant)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="math inline">\(\mu_2 =
+100/3\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(2^2 \times 5^2
+/ 3\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{C}\)</span> (factor 5 dominant, recycling
+3)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="math inline">\(\mu_3 =
+10\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(2 \times
+5\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{M}\to\mathcal{C}\)</span> transition</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="math inline">\(\mu_4 =
+10\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(2 \times
+5\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{C}\)</span> (factor 5 dominant)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="math inline">\(\mu_5 =
+9/8\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(3^2 /
+2^3\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{C}\to\mathcal{I}\)</span> transition
+(recycling 3, consuming 2)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="math inline">\(\mu_6 =
+2\)</span></td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{I}\)</span> (factor 2 dominant)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="relation-to-physical-constants">4.3 Relation to Physical
+Constants</h3>
+<p>The Sector-Factor Binding not only constrains the algebraic
+structure, but also <strong>determines</strong> the quantitative form of
+physical constants in the three sectors. Below we provide the
+correspondences in three directions.</p>
+<p><strong>(a) <span class="math inline">\(\gamma_1 \leftrightarrow
+2\)</span> determines the mass structure of the <span
+class="math inline">\(\mathcal{M}\)</span> sector.</strong></p>
+<p>The Matter Sector binds factor 2, meaning the mass spectrum is
+determined by powers of 2. The observed lepton mass ratios are:</p>
+<p><span class="math display">\[m_e : m_\mu : m_\tau \;\approx\; 1 : 206
+: 3491.\]</span></p>
+<p>Taking base-2 logarithms:</p>
+<p><span class="math display">\[\log_2 206 \approx 7.686, \qquad \log_2
+3491 \approx 11.773.\]</span></p>
+<p>Hence</p>
+<p><span class="math display">\[m_e : m_\mu : m_\tau \;\approx\; 1 :
+2^{7.7} : 2^{11.8}.\]</span></p>
+<p>The mass ratios are approximately powers of 2 — this is precisely the
+physical manifestation of <span class="math inline">\(\gamma_1
+\leftrightarrow 2\)</span>. The involution property of factor 2 (<span
+class="math inline">\(\mathbb{Z}_2\)</span> inversion) corresponds to
+the mass degeneracy of particle and antiparticle.</p>
+<p><strong>(b) <span class="math inline">\(\gamma_2 \leftrightarrow
+3\)</span> determines the time structure of the <span
+class="math inline">\(\mathcal{C}\)</span> sector.</strong></p>
+<p>The Causal Sector binds factor 3, meaning the time structure is
+determined by a three-step cycle. The generator <span
+class="math inline">\(g\)</span> of <span
+class="math inline">\(\mathbb{Z}_3\)</span> satisfies <span
+class="math inline">\(g^3 = e\)</span>, corresponding to the three-step
+cycle of causal order:</p>
+<p><span class="math display">\[\text{Past} \;\xrightarrow{g}\;
+\text{Present} \;\xrightarrow{g}\; \text{Future} \;\xrightarrow{g}\;
+\text{Past}.\]</span></p>
+<p>This three-step cycle is not a simple return, but a spiral advance
+with “phase accumulation” — the nontrivial order-3 element of <span
+class="math inline">\(\mathbb{Z}_3\)</span> corresponds to the
+irreversible arrow of time. The “tri-stateness” of causal order is
+isomorphic to the triple symmetry (C, P, T) in the CPT theorem,
+providing the physical correspondence of <span
+class="math inline">\(\gamma_2 \leftrightarrow 3\)</span>.</p>
+<p><strong>(c) <span class="math inline">\(\gamma_3 \leftrightarrow
+5\)</span> determines the information structure of the <span
+class="math inline">\(\mathcal{I}\)</span> sector.</strong></p>
+<p>The Information Sector binds factor 5, meaning information coding
+adopts a 5-ary redundant structure. The information capacity per symbol
+is:</p>
+<p><span class="math display">\[\log_2 5 \;\approx\; 2.3219
+\;\text{bits/symbol}.\]</span></p>
+<p>This exceeds the 1 bit/symbol of binary coding — the redundancy comes
+from the rich subgroup structure of <span
+class="math inline">\(\mathbb{Z}_5\)</span>. The order of <span
+class="math inline">\(\mathbb{Z}_5^\times\)</span> is 4, providing 4
+nontrivial coding states, plus the zero element for a total of 5 states.
+This 5-ary coding corresponds to a 5-dimensional qudit (qudit-5) in
+quantum information, possessing the redundancy required for
+error-correcting codes (such as the 5-qubit code).</p>
+<p><strong>Synthesis.</strong> The correspondence of the three physical
+constants:</p>
+<table>
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 29%" />
+<col style="width: 23%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Sector</th>
+<th style="text-align: center;">Factor</th>
+<th style="text-align: left;">Physical Constant</th>
+<th style="text-align: left;">Magnitude</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{M}\)</span></td>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">Lepton mass ratios</td>
+<td style="text-align: left;"><span class="math inline">\(1 : 2^{7.7} :
+2^{11.8}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{C}\)</span></td>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">Causal order tri-stateness</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbb{Z}_3\)</span> cycle</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{I}\)</span></td>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;">Information capacity</td>
+<td style="text-align: left;"><span class="math inline">\(\log_2 5
+\approx 2.32\)</span> bits/symbol</td>
+</tr>
+</tbody>
+</table>
+<p>These three sets of constants are not independently assigned, but are
+unifiedly determined by the Sector-Factor Binding — the rigidity of the
+binding is directly transmitted to the rigidity of the physical
+constants.</p>
+<hr />
+<h2 id="benign-mutual-conjugate-locking">§5 Benign Mutual Conjugate
+Locking</h2>
+<p><strong>Theorem 1.2.5.01 (Benign Mutual Conjugate Locking).</strong>
+The Sector-Factor Binding forms a Benign Mutual Conjugate Locking — the
+three bindings check and balance each other; altering any single binding
+renders the entire system non-self-consistent:</p>
+<ol type="1">
+<li>Changing <span class="math inline">\(\gamma_1 \leftrightarrow
+2\)</span> → <span class="math inline">\(k_0 \neq 2\)</span> → Cl(7) is
+no longer terminal → coding orbit cannot truncate</li>
+<li>Changing <span class="math inline">\(\gamma_2 \leftrightarrow
+3\)</span> → <span class="math inline">\(\Lambda \neq 3\)</span> → Cl(3)
+is no longer the first semisimple splitting → matter sector cannot
+condense</li>
+<li>Changing <span class="math inline">\(\gamma_3 \leftrightarrow
+5\)</span> → <span class="math inline">\(\Delta\Theta \neq 5\)</span> →
+Cl(5) is no longer the first complex matrix algebra → causal sector
+cannot condense</li>
+</ol>
+<p>The mutual conjugate locking of the three is the structural
+foundation for the uniqueness of the multiplier sequence.</p>
+<p><strong>Numerical corroboration.</strong> The Bott truncation
+numerical verification of §3.3 further supports the mutual conjugate
+locking: altering any binding makes <span class="math inline">\(B_7 \neq
+\varnothing\)</span>, destroying Bott periodicity. Specifically, the
+residual budget factors of schemes <span
+class="math inline">\(f_2\)</span>–<span
+class="math inline">\(f_6\)</span> all come from incorrectly bound
+sectors, indicating that the deviation of a single binding propagates
+through the recycle-consume network to other sectors, causing global
+non-closure.</p>
+<hr />
+<h2 id="theorem-index">Theorem Index</h2>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 28%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Number</th>
+<th style="text-align: left;">Content</th>
+<th style="text-align: center;">Proof Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Theorem 1.2.3.01</td>
+<td style="text-align: left;">Sector-Factor Binding: <span
+class="math inline">\(\gamma_1\leftrightarrow 2\)</span>, <span
+class="math inline">\(\gamma_2\leftrightarrow 3\)</span>, <span
+class="math inline">\(\gamma_3\leftrightarrow 5\)</span></td>
+<td style="text-align: center;">Proved (§3, §3.1, §3.3)</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 1.2.5.01</td>
+<td style="text-align: left;">Benign Mutual Conjugate Locking
+Theorem</td>
+<td style="text-align: center;">Proved (§5)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="references">References</h2>
+<ul>
+<li>Bott periodicity table and Clifford algebra structure constants
+(Atiyah–Bott–Shapiro)</li>
+<li>Schur’s lemma and rigidity of irreducible representations (Schur,
+1905)</li>
+</ul>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>

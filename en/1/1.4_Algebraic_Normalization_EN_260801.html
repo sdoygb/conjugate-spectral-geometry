@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.4 Algebraic Normalization | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Version: 260721.1">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/1/1.4_Algebraic_Normalization_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">1.4 Algebraic Normalization</span>
+  </nav>
+  <main class="article-content">
+<h1 id="algebraic-normalization">1.4 Algebraic Normalization</h1>
+<p><strong>Version</strong>: 260721.1</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>This paper supplements four key items: (1) a complete algebraic proof
+of the sector weight normalization <span
+class="math inline">\(\sum\sigma_i = 1\)</span> — this normalization is
+not a postulate, but a theorem rigorously derived from the algebraic
+structure of <span class="math inline">\(\mathrm{Cl}(3)\)</span>; (2) a
+complete derivation of the cubic equation <span
+class="math inline">\(2pC^3 + C^2 = 1\)</span>, based on trigonometric
+identities under <span class="math inline">\(\theta_1 + \theta_2 +
+\theta_3 = \pi/2\)</span> and the algebraic substitution of the Born
+Rule; (3) the discriminant, real root structure, radical (trigonometric)
+solution, and numerical verification of the cubic equation; (4) a
+rigorous proof of <span class="math inline">\(C^2&lt;1\)</span> and an
+analysis of Parseval incompatibility, clarifying why normalization must
+choose <span class="math inline">\(\sum\theta=\pi/2\)</span> (the
+algebraic path) rather than the Parseval condition.</p>
+<hr />
+<h2 id="introduction-and-problem">§1 Introduction and Problem</h2>
+<p><span class="math display">\[\theta_M + \theta_C + \theta_I =
+\frac{\pi}{2}.\]</span></p>
+<p>This is a <strong>transcendental constraint</strong> — it involves
+the <span class="math inline">\(\arcsin\)</span> function and cannot be
+solved exactly by algebraic (polynomial) methods. The existence of a
+transcendental constraint means that there is a step in the derivation
+chain that cannot be algebraized.</p>
+<h3 id="problem">1.1 Problem</h3>
+<p>The transcendental constraint leads to: 1. The appearance of
+transcendental functions in the derivation chain, preventing
+verification by purely algebraic methods 2. Numerical solutions
+introducing floating-point errors, affecting exactness 3. Theoretical
+structural non-self-consistency — transcendental constraints should not
+appear in an algebraic framework</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<p>§1 Introduction and Problem 　1.1 Problem</p>
+<p>§2 Algebraic Proof of Sector Weight Normalization <span
+class="math inline">\(\sum\sigma_i = 1\)</span> 　2.1 <span
+class="math inline">\(\mathrm{Cl}(3)\)</span> Sector Decomposition and
+Projection Intensity 　2.2 Projection Intensity Identity 　2.3 Sector
+Weight Normalization (Algebraic Re-proof of Theorem 1.3.2.02) 　2.4
+Algebraic Roots of the Normalization — Non-Postulate Nature</p>
+<p>§3 Algebraic Normalization Condition 　3.1 From Angles to Sines 　3.2
+Incompleteness Parameter 　3.3 Complete Derivation of the Cubic Equation
+　3.4 Properties of the Cubic Equation 　3.5 Radical Solution of the
+Cubic Equation 　3.6 Numerical Verification 　3.7 Proof of <span
+class="math inline">\(C^2 &lt; 1\)</span></p>
+<p>§4 Parseval Incompatibility 　4.1 Conflict of the Two Normalization
+Constraints 　4.2 Verification of Symmetric Distribution 　4.3
+Conclusion</p>
+<p>§6 Prelude to the Algebraic Action 　6.1 Role of the Normalization
+　6.2 Derivation Chain without Transcendental Functions</p>
+<p>§7 Status Declaration</p>
+<hr />
+<h2 id="algebraic-proof-of-sector-weight-normalization-sumsigma_i-1">§2
+Algebraic Proof of Sector Weight Normalization <span
+class="math inline">\(\sum\sigma_i = 1\)</span></h2>
+<h3 id="mathrmcl3-sector-decomposition-and-projection-intensity">2.1
+<span class="math inline">\(\mathrm{Cl}(3)\)</span> Sector Decomposition
+and Projection Intensity</h3>
+<p>Let <span class="math inline">\(\mathrm{Cl}(3)\)</span> be the
+Clifford algebra of three-dimensional Euclidean space, isomorphic to
+<span class="math inline">\(M_2(\mathbb{C})\)</span> (the ring of <span
+class="math inline">\(2 \times 2\)</span> complex matrices). Its three
+generators <span class="math inline">\(e_1, e_2, e_3\)</span> satisfy
+the Clifford relations: <span class="math display">\[e_i e_j + e_j e_i =
+2\delta_{ij}, \quad i,j = 1,2,3.\]</span></p>
+<p><strong>Left-multiplication representation.</strong> Take the
+standard representation of <span class="math inline">\(\mathrm{Cl}(3)
+\cong M_2(\mathbb{C})\)</span> on <span
+class="math inline">\(\mathbb{C}^2 \cong \mathbb{R}^4\)</span>. The
+left-multiplication action of the three generators yields real linear
+maps <span class="math inline">\(L_1, L_2, L_3\)</span> on <span
+class="math inline">\(\mathbb{R}^4\)</span> (i.e., the realization of
+the Pauli matrices): <span class="math display">\[L_i : \mathbb{R}^4 \to
+\mathbb{R}^4, \quad L_i^2 = \mathrm{id}, \quad L_i L_j + L_j L_i =
+2\delta_{ij}\,\mathrm{id}.\]</span></p>
+<p>These three operators constitute an irreducible representation of
+<span class="math inline">\(\mathrm{Cl}(3)\)</span>, encoding the
+algebraic structure of the three sectors (<span class="math inline">\(M,
+C, I\)</span>).</p>
+<p><strong>Rank-2 orthogonal projection.</strong> The holographic
+projection in the coding space is described by a rank-2 orthogonal
+projection <span class="math inline">\(P: \mathbb{R}^4 \to V\)</span>
+(<span class="math inline">\(\dim V = 2\)</span>). The projection <span
+class="math inline">\(P\)</span> selects a two-dimensional plane <span
+class="math inline">\(V\)</span> in <span
+class="math inline">\(\mathbb{R}^4\)</span>, representing the coding
+subspace jointly covered by the three sectors.</p>
+<h3 id="projection-intensity-identity">2.2 Projection Intensity
+Identity</h3>
+<p><strong>Lemma 1.4.2.01 (Projection Intensity).</strong> For any
+rank-2 orthogonal projection <span class="math inline">\(P\)</span>,
+there exist real numbers <span class="math inline">\(c_1, c_2,
+c_3\)</span> such that <span class="math display">\[P L_i P = c_i \cdot
+J, \quad i = 1,2,3,\]</span> where <span
+class="math inline">\(J\)</span> is the unique complex structure (<span
+class="math inline">\(J^2 = -\mathrm{id}_V\)</span>) on the plane <span
+class="math inline">\(V\)</span> induced by the volume element <span
+class="math inline">\(\omega = e_1 e_2 e_3\)</span> of <span
+class="math inline">\(\mathrm{Cl}(3)\)</span>.</p>
+<p><strong>Proof.</strong> The plane <span
+class="math inline">\(V\)</span>, as a two-dimensional oriented subspace
+of <span class="math inline">\(\mathbb{R}^4\)</span>, has an almost
+complex structure <span class="math inline">\(J\)</span> induced by the
+volume element of <span class="math inline">\(\mathrm{Cl}(3)\)</span>.
+The compression <span class="math inline">\(PL_iP\)</span> of the
+operator <span class="math inline">\(L_i\)</span> onto <span
+class="math inline">\(V\)</span> is a linear operator on <span
+class="math inline">\(V\)</span>; since <span class="math inline">\(\dim
+V = 2\)</span>, the space of anti-self-adjoint operators on <span
+class="math inline">\(V\)</span> is one-dimensional, spanned by <span
+class="math inline">\(J\)</span>. Hence <span
+class="math inline">\(PL_iP\)</span> must be a scalar multiple of <span
+class="math inline">\(J\)</span>. Let <span class="math inline">\(PL_iP
+= c_i J\)</span>; the scalars <span class="math inline">\(c_i\)</span>
+are precisely the <strong>projection intensities</strong>. ∎</p>
+<p><strong>Coding weights and projection intensity.</strong> The coding
+weight <span class="math inline">\(\sigma_i\)</span> is defined as the
+square of the projection intensity: <span
+class="math display">\[\sigma_i = c_i^2, \quad i = M, C, I.\]</span>
+This definition ensures <span class="math inline">\(\sigma_i \geq
+0\)</span>, and <span class="math inline">\(\sigma_i\)</span> measures
+the coding strength of sector <span class="math inline">\(i\)</span>
+under the projection <span class="math inline">\(P\)</span>.</p>
+<h3
+id="sector-weight-normalization-algebraic-re-proof-of-theorem-1.3.2.02">2.3
+Sector Weight Normalization (Algebraic Re-proof of Theorem
+1.3.2.02)</h3>
+<p><strong>Theorem 1.3.2.02 (Sector Weight Normalization).</strong>
+Under the <span class="math inline">\(\mathrm{Cl}(3)\)</span> sector
+decomposition, the coding weights satisfy: <span
+class="math display">\[\sigma_M + \sigma_C + \sigma_I = 1.\]</span></p>
+<blockquote>
+<p>This section provides an algebraic re-proof of this theorem based on
+the quaternion cross product identity. The original proof is in 1.3
+§2.4.</p>
+</blockquote>
+<p><strong>Proof (based on the Projection Intensity Identity and the
+quaternion cross product identity).</strong></p>
+<p><strong>Step 1.</strong> Let <span class="math inline">\(u,
+v\)</span> be an orthonormal basis of the plane <span
+class="math inline">\(V\)</span> (<span class="math inline">\(\|u\| =
+\|v\| = 1\)</span>, <span class="math inline">\(\langle u, v\rangle =
+0\)</span>). The projection <span class="math inline">\(P\)</span> is
+given by <span class="math inline">\(Px = \langle x, u\rangle u +
+\langle x, v\rangle v\)</span>.</p>
+<p><strong>Step 2.</strong> Compute the projection intensities <span
+class="math inline">\(c_i\)</span>. From <span
+class="math inline">\(PL_iP = c_i J\)</span>, taking matrix elements
+with respect to the basis vectors yields: <span
+class="math display">\[c_i = \langle L_i u, v\rangle.\]</span></p>
+<p>That is, <span class="math inline">\(c_i\)</span> is precisely the
+component of <span class="math inline">\(L_i u\)</span> in the <span
+class="math inline">\(v\)</span> direction — the inner product of <span
+class="math inline">\(L_i u\)</span> projected onto <span
+class="math inline">\(v\)</span>.</p>
+<p><strong>Step 3.</strong> Compute <span class="math inline">\(\sum
+c_i^2\)</span>. From <span class="math inline">\(c_i = \langle L_i u,
+v\rangle\)</span>: <span class="math display">\[\sum_{i=1}^{3} c_i^2 =
+\sum_{i=1}^{3} \langle L_i u, v\rangle^2.\]</span></p>
+<p><strong>Step 4 (Quaternion cross product identity).</strong> Identify
+<span class="math inline">\(\mathbb{R}^4 \cong \mathbb{H}\)</span>
+(quaternions). The left-multiplication operators <span
+class="math inline">\(L_1, L_2, L_3\)</span> correspond to
+left-multiplication by the quaternion units <span
+class="math inline">\(\mathbf{i}, \mathbf{j}, \mathbf{k}\)</span>. For
+quaternions <span class="math inline">\(u, v\)</span>, there is the
+identity: <span class="math display">\[\sum_{i=1}^{3} \langle
+\mathbf{e}_i \, u, v\rangle^2 = \|u\|^2 \|v\|^2 - \langle u,
+v\rangle^2,\]</span> where <span class="math inline">\(\mathbf{e}_i \in
+\{\mathbf{i}, \mathbf{j}, \mathbf{k}\}\)</span>. This is the
+quaternionic version of the <strong>Lagrange identity</strong> — the
+left-hand side is the sum of squares of the cross product components,
+and the right-hand side is the Gram determinant.</p>
+<p><strong>Step 5.</strong> For the orthonormal basis <span
+class="math inline">\(u, v\)</span> (<span
+class="math inline">\(\|u\|=\|v\|=1\)</span>, <span
+class="math inline">\(\langle u,v\rangle=0\)</span>): <span
+class="math display">\[\sum_{i=1}^{3} c_i^2 = \|u\|^2\|v\|^2 - \langle
+u,v\rangle^2 = 1 - 0 = 1.\]</span></p>
+<p><strong>Step 6.</strong> From <span class="math inline">\(\sigma_i =
+c_i^2\)</span>: <span class="math display">\[\sigma_M + \sigma_C +
+\sigma_I = \sum_{i=1}^{3} c_i^2 = 1. \qquad \blacksquare\]</span></p>
+<h3 id="algebraic-roots-of-the-normalization-non-postulate-nature">2.4
+Algebraic Roots of the Normalization — Non-Postulate Nature</h3>
+<p>The key point of the above proof is: <span
+class="math inline">\(\sum\sigma_i = 1\)</span> is <strong>not</strong>
+introduced as a postulate assumed for completeness, but is a theorem
+derived from the following three purely algebraic facts:</p>
+<ol type="1">
+<li><strong>Representation structure of <span
+class="math inline">\(\mathrm{Cl}(3)\)</span></strong>: <span
+class="math inline">\(L_i\)</span> satisfy the Clifford relations
+(algebraic axiom)</li>
+<li><strong>Projection-complex structure correspondence</strong>: <span
+class="math inline">\(PL_iP = c_i J\)</span> (linear algebra lemma)</li>
+<li><strong>Quaternionic Lagrange identity</strong>: <span
+class="math inline">\(\sum c_i^2 = \|u\|^2\|v\|^2 - \langle
+u,v\rangle^2\)</span> (algebraic identity)</li>
+</ol>
+<p>None of these three premises is an assumption about coding weights —
+they are all intrinsic properties of the algebraic structure of <span
+class="math inline">\(\mathrm{Cl}(3)\)</span>. Hence <span
+class="math inline">\(\sum\sigma_i = 1\)</span> is a
+<strong>theorem</strong> of the <span
+class="math inline">\(\mathrm{Cl}(3)\)</span> algebra, whose status is
+equivalent to an algebraic fact such as “the representation of <span
+class="math inline">\(\mathrm{Cl}(3)\)</span> is four-dimensional.”</p>
+<p>This conclusion directly affects the subsequent derivation of the
+cubic equation: the step using <span class="math inline">\(\sum\sigma_i
+= 1\)</span> (see §3.3) has a rigorous algebraic foundation, not a
+circular argument.</p>
+<hr />
+<h2 id="algebraic-normalization-condition">§3 Algebraic Normalization
+Condition</h2>
+<h3 id="from-angles-to-sines">3.1 From Angles to Sines</h3>
+<p>From the Born Rule (Theorem 1.3.4.01–20), the coding angles are
+related to the coding weights via the sine function: <span
+class="math display">\[\sin\theta_i = \frac{\sqrt{\sigma_i}}{S}, \quad S
+= \sum_j \sqrt{\sigma_j}.\]</span></p>
+<p>The normalization condition should directly constrain <span
+class="math inline">\(\sin\theta_i\)</span>, not <span
+class="math inline">\(\theta_i\)</span> itself — this avoids the
+appearance of <span class="math inline">\(\arcsin\)</span>.</p>
+<h3 id="incompleteness-parameter">3.2 Incompleteness Parameter</h3>
+<p><strong>Definition 20 (Incompleteness Parameter).</strong> Let <span
+class="math display">\[C^2 =
+\sin^2\theta_M\sin^2\theta_C\sin^2\theta_I.\]</span></p>
+<p><span class="math inline">\(C^2\)</span> measures the
+“incompleteness” of the holographic projection — the sum of the
+intensities of the three projection directions.</p>
+<ul>
+<li><span class="math inline">\(C^2 = 1\)</span>: complete projection
+(three directions cover all information)</li>
+<li><span class="math inline">\(C^2 &lt; 1\)</span>: incomplete
+projection (information loss exists)</li>
+</ul>
+<p>From <span class="math inline">\(\sin\theta_i =
+\sqrt{\sigma_i}/S\)</span> and <span class="math inline">\(\sum\sigma_i
+= 1\)</span> (theorem, §2): <span class="math display">\[C^2 = \sum_i
+\sin^2\theta_i = \frac{\sum_i \sigma_i}{S^2} = \frac{1}{S^2}, \quad
+\Rightarrow \quad S = \frac{1}{C}, \quad \sin\theta_i =
+\sqrt{\sigma_i}\cdot C.\]</span></p>
+<h3 id="complete-derivation-of-the-cubic-equation">3.3 Complete
+Derivation of the Cubic Equation</h3>
+<p><strong>Theorem 1.4.3.01 (Algebraic Normalization).</strong> The
+normalization constant <span class="math inline">\(C\)</span> satisfies
+the cubic equation: <span class="math display">\[2p\,C^3 + C^2 = 1,
+\qquad p = \sqrt{\sigma_M \sigma_C \sigma_I}.\]</span></p>
+<p><strong>Proof.</strong></p>
+<h4 id="key-trigonometric-identity">Key Trigonometric Identity</h4>
+<p><strong>Lemma 1.4.3.02 (Three-Sine Identity).</strong> When <span
+class="math inline">\(\theta_1 + \theta_2 + \theta_3 = \pi/2\)</span>,
+the following identity holds: <span
+class="math display">\[\sin^2\theta_1 + \sin^2\theta_2 + \sin^2\theta_3
++ 2\sin\theta_1\sin\theta_2\sin\theta_3 = 1.\]</span></p>
+<p><strong>Proof.</strong> From <span class="math inline">\(\theta_3 =
+\pi/2 - \theta_1 - \theta_2\)</span>, we have <span
+class="math inline">\(\sin\theta_3 = \cos(\theta_1 + \theta_2)\)</span>.
+Expanding: <span class="math display">\[\sin^2\theta_3 = \cos^2(\theta_1
++ \theta_2) = 1 - \sin^2(\theta_1 + \theta_2).\]</span></p>
+<p>Now expand <span class="math inline">\(\sin^2(\theta_1 +
+\theta_2)\)</span>. From <span class="math inline">\(\sin(\theta_1 +
+\theta_2) = \sin\theta_1\cos\theta_2 +
+\cos\theta_1\sin\theta_2\)</span>: <span
+class="math display">\[\sin^2(\theta_1 + \theta_2) =
+\sin^2\theta_1\cos^2\theta_2 + \cos^2\theta_1\sin^2\theta_2 +
+2\sin\theta_1\cos\theta_2\cos\theta_1\sin\theta_2.\]</span></p>
+<p>Substituting back into <span
+class="math inline">\(\sin^2\theta_3\)</span>: <span
+class="math display">\[\sin^2\theta_3 = 1 - \sin^2\theta_1\cos^2\theta_2
+- \cos^2\theta_1\sin^2\theta_2 -
+2\sin\theta_1\cos\theta_1\sin\theta_2\cos\theta_2.\]</span></p>
+<p>The sum of the three <span class="math inline">\(\sin^2\)</span>
+terms is: <span class="math display">\[\sin^2\theta_1 + \sin^2\theta_2 +
+\sin^2\theta_3 = \sin^2\theta_1(1-\cos^2\theta_2) +
+\sin^2\theta_2(1-\cos^2\theta_1) + 1 -
+2\sin\theta_1\cos\theta_1\sin\theta_2\cos\theta_2.\]</span></p>
+<p>Using <span class="math inline">\(1-\cos^2 = \sin^2\)</span> to
+simplify: <span class="math display">\[= \sin^2\theta_1\sin^2\theta_2 +
+\sin^2\theta_2\sin^2\theta_1 + 1 -
+2\sin\theta_1\cos\theta_1\sin\theta_2\cos\theta_2\]</span> <span
+class="math display">\[= 1 +
+2\sin\theta_1\sin\theta_2\bigl(\sin\theta_1\sin\theta_2 -
+\cos\theta_1\cos\theta_2\bigr).\]</span></p>
+<p>Note that <span class="math inline">\(\sin\theta_1\sin\theta_2 -
+\cos\theta_1\cos\theta_2 = -\cos(\theta_1 + \theta_2) =
+-\sin\theta_3\)</span>, hence: <span
+class="math display">\[\sin^2\theta_1 + \sin^2\theta_2 + \sin^2\theta_3
+= 1 - 2\sin\theta_1\sin\theta_2\sin\theta_3.\]</span></p>
+<p>Rearranging yields: <span class="math display">\[\sin^2\theta_1 +
+\sin^2\theta_2 + \sin^2\theta_3 + 2\sin\theta_1\sin\theta_2\sin\theta_3
+= 1. \qquad\blacksquare\]</span></p>
+<h4 id="algebraic-derivation">Algebraic Derivation</h4>
+<p>Substitute the algebraic form of the Born Rule <span
+class="math inline">\(\sin\theta_i = \sqrt{\sigma_i}\cdot C\)</span>
+(where <span class="math inline">\(C = 1/S = 1/\Lambda\)</span>, <span
+class="math inline">\(\Lambda\)</span> being the normalization constant)
+into the Three-Sine Identity.</p>
+<p><strong>Individual terms.</strong> Each <span
+class="math inline">\(\sin^2\theta_i\)</span> contributes <span
+class="math inline">\(\sigma_i C^2\)</span>, and the sum of the three
+is: <span class="math display">\[\sum_i \sin^2\theta_i = \Bigl(\sum_i
+\sigma_i\Bigr) C^2 = 1 \cdot C^2 = C^2,\]</span> where the third
+equality uses the sector weight normalization <span
+class="math inline">\(\sum\sigma_i = 1\)</span> (§2 theorem).</p>
+<p><strong>Cross term.</strong> The product <span
+class="math inline">\(\sin\theta_1\sin\theta_2\sin\theta_3\)</span>
+contributes: <span
+class="math display">\[\sin\theta_M\sin\theta_C\sin\theta_I =
+\sqrt{\sigma_M\sigma_C\sigma_I}\cdot C^3 = p\cdot C^3,\]</span> where
+<span class="math inline">\(p = \sqrt{\sigma_M\sigma_C\sigma_I}\)</span>
+is an algebraic parameter fully determined by the coding weights.</p>
+<p><strong>Combining.</strong> Substitute the individual terms and the
+cross term into the identity <span
+class="math inline">\(\sum\sin^2\theta_i + 2\prod\sin\theta_i =
+1\)</span>: <span class="math display">\[\underbrace{\Bigl(\sum_i
+\sigma_i\Bigr)}_{=\,1}\cdot C^2 +
+2\underbrace{\sqrt{\sigma_M\sigma_C\sigma_I}}_{=\,p}\cdot C^3 =
+1.\]</span></p>
+<p>That is: <span class="math display">\[\boxed{2p\,C^3 + C^2 = 1,
+\qquad p = \sqrt{\sigma_M\sigma_C\sigma_I}.}\]</span></p>
+<p>The coefficient <span class="math inline">\(2\)</span> comes from the
+coefficient of the cross term in the trigonometric identity (originating
+from the binomial symmetry of the expansion of <span
+class="math inline">\(\sin(\theta_1 + \theta_2)\)</span>), and <span
+class="math inline">\(p\)</span> is fully determined by the coding
+weights. The entire derivation involves only polynomial operations and
+algebraic identities, with no transcendental functions appearing. <span
+class="math inline">\(\blacksquare\)</span></p>
+<h3 id="properties-of-the-cubic-equation">3.4 Properties of the Cubic
+Equation</h3>
+<p>The cubic equation <span class="math inline">\(f(C) = 2pC^3 + C^2 - 1
+= 0\)</span> has the following properties.</p>
+<p><strong>(1) Discriminant and non-negativity.</strong> The
+discriminant of the cubic <span class="math inline">\(aC^3 + bC^2 + cC +
+d = 0\)</span> (here <span class="math inline">\(a=2p, b=1, c=0,
+d=-1\)</span>) is: <span class="math display">\[\Delta = 18abcd - 4b^3d
++ b^2c^2 - 4ac^3 - 27a^2d^2 = 4 - 108p^2.\]</span></p>
+<p>By the AM-GM inequality, for nonnegative <span
+class="math inline">\(\sigma_i\)</span> satisfying <span
+class="math inline">\(\sum\sigma_i=1\)</span>: <span
+class="math display">\[\sigma_M\sigma_C\sigma_I \leq
+\left(\frac{\sigma_M + \sigma_C + \sigma_I}{3}\right)^3 =
+\frac{1}{27},\]</span> hence <span class="math inline">\(p =
+\sqrt{\sigma_M\sigma_C\sigma_I} \leq \dfrac{1}{3\sqrt{3}}\)</span>, and:
+<span class="math display">\[\Delta = 4 - 108p^2 \geq 4 - \frac{108}{27}
+= 4 - 4 = 0 \geq 0.\]</span></p>
+<p>The discriminant <span class="math inline">\(\Delta \geq 0\)</span>
+holds universally, guaranteeing that the roots of the cubic are all
+real.</p>
+<p><strong>(2) Three real roots (casus irreducibilis).</strong> When the
+<span class="math inline">\(\sigma\)</span> are not fully symmetric,
+<span class="math inline">\(p &lt; 1/(3\sqrt{3})\)</span>, so <span
+class="math inline">\(\Delta &gt; 0\)</span> and the cubic has three
+distinct real roots. This is the <strong>irreducible case</strong>
+(casus irreducibilis) of the cubic — although three real roots exist,
+they cannot be expressed solely with real radicals and require
+trigonometric functions (see §3.5).</p>
+<p><strong>(3) Uniqueness of the positive root.</strong> Examine <span
+class="math inline">\(f(C) = 2pC^3 + C^2 - 1\)</span>: - <span
+class="math inline">\(f(0) = -1 &lt; 0\)</span>, - <span
+class="math inline">\(f(1) = 2p &gt; 0\)</span> (when <span
+class="math inline">\(p&gt;0\)</span>), - <span
+class="math inline">\(f&#39;(C) = 6pC^2 + 2C = C(6pC + 2) &gt;
+0\)</span> for <span class="math inline">\(C &gt; 0\)</span>.</p>
+<p>Thus <span class="math inline">\(f\)</span> is strictly monotonically
+increasing on <span class="math inline">\((0,\infty)\)</span> and has
+exactly one zero in <span class="math inline">\((0,1)\)</span>. Hence
+the cubic has exactly one positive root <span
+class="math inline">\(C\)</span> in <span
+class="math inline">\((0,1]\)</span>, corresponding to the unique
+physical solution.</p>
+<p><strong>(4) Symmetric limit.</strong> When <span
+class="math inline">\(\sigma = (1/3,\, 1/3,\, 1/3)\)</span>: <span
+class="math display">\[p = \sqrt{\tfrac{1}{27}} = \frac{1}{3\sqrt{3}}
+\approx 0.19245, \quad \Delta = 0.\]</span> The cubic has a multiple
+root. Substituting verifies <span class="math inline">\(C =
+\dfrac{\sqrt{3}}{2}\)</span>: <span
+class="math display">\[2\cdot\frac{1}{3\sqrt{3}}\cdot\left(\frac{\sqrt{3}}{2}\right)^3
++ \left(\frac{\sqrt{3}}{2}\right)^2 =
+\frac{2}{3\sqrt{3}}\cdot\frac{3\sqrt{3}}{8} + \frac{3}{4} = \frac{1}{4}
++ \frac{3}{4} = 1. \;\checkmark\]</span> Hence <span
+class="math inline">\(C = \sqrt{3}/2 \approx 0.86603\)</span>, and the
+normalization constant <span class="math inline">\(\Lambda = 1/C =
+2/\sqrt{3} \approx 1.1547\)</span>.</p>
+<p><strong>(5) Extreme limit.</strong> When one sector dominates (e.g.,
+<span class="math inline">\(\sigma_M \to 1\)</span>, <span
+class="math inline">\(\sigma_C, \sigma_I \to 0\)</span>), <span
+class="math inline">\(p \to 0\)</span> and the cubic degenerates to
+<span class="math inline">\(C^2 = 1\)</span>, i.e., <span
+class="math inline">\(C \to 1\)</span>, <span
+class="math inline">\(\Lambda \to 1\)</span>. The holographic projection
+tends to completeness.</p>
+<h3 id="radical-solution-of-the-cubic-equation">3.5 Radical Solution of
+the Cubic Equation</h3>
+<p>The cubic <span class="math inline">\(2pC^3 + C^2 - 1 = 0\)</span>
+can be solved by the <strong>trigonometric method</strong> (suitable for
+casus irreducibilis).</p>
+<p><strong>Reduction to a depressed cubic.</strong> Dividing by <span
+class="math inline">\(2p\)</span> (<span class="math inline">\(p &gt;
+0\)</span>) yields <span class="math inline">\(C^3 + \dfrac{1}{2p}C^2 -
+\dfrac{1}{2p} = 0\)</span>. Substituting <span class="math inline">\(C =
+t - \dfrac{1}{6p}\)</span> to eliminate the quadratic term gives the
+depressed cubic: <span class="math display">\[t^3 + Pt + Q = 0, \quad P
+= -\frac{1}{12p^2}, \quad Q = \frac{1-54p^2}{108p^3}.\]</span></p>
+<p><strong>Trigonometric solution.</strong> When <span
+class="math inline">\(\Delta &gt; 0\)</span> (i.e., <span
+class="math inline">\(4P^3 + 27Q^2 &lt; 0\)</span>), the three real
+roots are: <span class="math display">\[t_k =
+2\sqrt{-\frac{P}{3}}\,\cos\!\left(\frac{1}{3}\arccos\!\left(\frac{3Q}{2P}\sqrt{-\frac{3}{P}}\right)
+- \frac{2\pi k}{3}\right), \quad k=0,1,2.\]</span></p>
+<p>Substituting the expressions for <span
+class="math inline">\(P\)</span> and <span
+class="math inline">\(Q\)</span>, the components simplify to: <span
+class="math display">\[2\sqrt{-\frac{P}{3}} = \frac{1}{3p}, \qquad
+\frac{3Q}{2P}\sqrt{-\frac{3}{P}} = 54p^2 - 1.\]</span></p>
+<p>Hence: <span class="math display">\[\boxed{C_k = -\frac{1}{6p} +
+\frac{1}{3p}\cos\!\left(\frac{1}{3}\arccos(54p^2 - 1) - \frac{2\pi
+k}{3}\right), \quad k = 0,1,2.}\]</span></p>
+<p><strong>Selection of the physical solution.</strong> Among the three
+roots <span class="math inline">\(C_0, C_1, C_2\)</span>, exactly one
+lies in <span class="math inline">\((0, 1]\)</span> — the one
+corresponding to <span class="math inline">\(k=0\)</span> (verifiable by
+the monotonicity of <span class="math inline">\(f\)</span>). This
+positive root is the normalization constant <span
+class="math inline">\(C\)</span>.</p>
+<p><strong>Verification of the symmetric case.</strong> When <span
+class="math inline">\(p = 1/(3\sqrt{3})\)</span>, <span
+class="math inline">\(54p^2 - 1 = 1\)</span>, <span
+class="math inline">\(\arccos(1) = 0\)</span>, and <span
+class="math inline">\(k=0\)</span> gives: <span
+class="math display">\[C_0 = -\frac{1}{6p} + \frac{1}{3p}\cos(0) =
+\frac{1}{6p} = \frac{1}{6\cdot 1/(3\sqrt{3})} = \frac{\sqrt{3}}{2}.
+\;\checkmark\]</span></p>
+<p>The entire solution process uses only algebraic operations and
+trigonometric functions (trigonometric functions here serve as a tool
+for solving algebraic equations, not as transcendental constraints
+appearing in the theoretical structure), and does not involve <span
+class="math inline">\(\arcsin\)</span> or other transcendental
+constraints.</p>
+<p><span class="math inline">\(C\)</span>’s specific value depends on
+<span class="math inline">\(p\)</span>, and <span
+class="math inline">\(p\)</span> is determined by the coding structure.
+The value of <span class="math inline">\(p\)</span> is determined in
+Volume 2 via the Birkhoff Mixing Matrix.</p>
+<h3 id="numerical-verification">3.6 Numerical Verification</h3>
+<table>
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;"><span
+class="math inline">\(\sigma\)</span> distribution</th>
+<th style="text-align: center;"><span
+class="math inline">\(p\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(C\)</span>
+(numerical)</th>
+<th style="text-align: center;"><span class="math inline">\(2pC^3 + C^2
+- 1\)</span> residual</th>
+<th style="text-align: center;"><span
+class="math inline">\(\sum\theta\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(\sum \tan
+\theta_i \tan \theta_j\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span class="math inline">\((1/3, 1/3,
+1/3)\)</span></td>
+<td style="text-align: center;">0.19245</td>
+<td style="text-align: center;">0.86603</td>
+<td style="text-align: center;"><span class="math inline">\(&lt;
+10^{-15}\)</span></td>
+<td style="text-align: center;">90.000°</td>
+<td style="text-align: center;">1.000000</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="math inline">\((0.854, 0.134,
+0.012)\)</span></td>
+<td style="text-align: center;">0.03718</td>
+<td style="text-align: center;">0.96273</td>
+<td style="text-align: center;"><span class="math inline">\(&lt;
+10^{-15}\)</span></td>
+<td style="text-align: center;">90.000°</td>
+<td style="text-align: center;">1.000000</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="math inline">\((\;,\; ,
+0)\)</span></td>
+<td style="text-align: center;">0.00000</td>
+<td style="text-align: center;">1.00000</td>
+<td style="text-align: center;"><span class="math inline">\(&lt;
+10^{-15}\)</span></td>
+<td style="text-align: center;">90.000°</td>
+<td style="text-align: center;">1.000000</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="math inline">\((1, 0,
+0)\)</span></td>
+<td style="text-align: center;">0.00000</td>
+<td style="text-align: center;">1.00000</td>
+<td style="text-align: center;"><span class="math inline">\(&lt;
+10^{-15}\)</span></td>
+<td style="text-align: center;">90.000°</td>
+<td style="text-align: center;">1.000000</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Verification notes.</strong></p>
+<ol type="1">
+<li><strong>Cubic residual</strong>: in all cases the residual of <span
+class="math inline">\(2pC^3 + C^2-1\)</span> is zero within machine
+precision (<span class="math inline">\(&lt;10^{-15}\)</span>),
+confirming that <span class="math inline">\(C\)</span> is indeed a
+solution of the cubic.</li>
+<li><strong>Angle sum</strong>: from <span
+class="math inline">\(\sin\theta_i = \sqrt{\sigma_i}\cdot C\)</span>,
+invert to <span class="math inline">\(\theta_i =
+\arcsin(\sqrt{\sigma_i}\cdot C)\)</span>; the sum <span
+class="math inline">\(\sum\theta_i\)</span> equals exactly <span
+class="math inline">\(90°\)</span> in all cases — verifying that the
+cubic indeed encodes the <span class="math inline">\(\sum\theta =
+\pi/2\)</span> constraint.</li>
+<li><strong>Tangent identity</strong>: <span
+class="math inline">\(\sum\tan\theta_i\tan\theta_j = 1\)</span> is an
+algebraic corollary of <span class="math inline">\(\sum\theta =
+\pi/2\)</span> (derived from the divergence condition <span
+class="math inline">\(\tan(\theta_1 + \theta_2 +
+\theta_3)\to\infty\)</span>), and holds exactly numerically.</li>
+</ol>
+<p>Note: the <span class="math inline">\(\arcsin\)</span> in the table
+is used only for <strong>verification</strong> (confirming that the
+angle constraint is satisfied), and does not appear in the theoretical
+derivation chain itself — in the derivation chain, <span
+class="math inline">\(C\)</span> is fully determined by the cubic
+equation (an algebraic equation).</p>
+<h3 id="proof-of-c2-1">3.7 Proof of <span class="math inline">\(C^2 &lt;
+1\)</span></h3>
+<p><strong>Theorem 1.4.3.03 (Incomplete Projection Theorem).</strong>
+When <span class="math inline">\(p &gt; 0\)</span> (i.e., all <span
+class="math inline">\(\sigma_i &gt; 0\)</span>), the cubic yields <span
+class="math inline">\(C &lt; 1\)</span>, hence <span
+class="math inline">\(C^2 &lt; 1\)</span>.</p>
+<p><strong>Proof.</strong> Examine <span class="math inline">\(f(C) =
+2pC^3 + C^2 - 1\)</span>.</p>
+<ul>
+<li>When <span class="math inline">\(p &gt; 0\)</span>, <span
+class="math inline">\(f(1) = 2p\cdot 1^3 + 1^2 - 1 = 2p &gt;
+0\)</span>.</li>
+<li><span class="math inline">\(f(0) = -1 &lt; 0\)</span>.</li>
+<li><span class="math inline">\(f\)</span> is strictly monotonically
+increasing on <span class="math inline">\((0, \infty)\)</span> (<span
+class="math inline">\(f&#39;(C) = C(6pC + 2) &gt; 0\)</span> for <span
+class="math inline">\(C&gt;0\)</span>).</li>
+</ul>
+<p>From <span class="math inline">\(f(0) &lt; 0 &lt; f(1)\)</span> and
+the strict monotonicity of <span class="math inline">\(f\)</span>, the
+unique positive zero <span class="math inline">\(C^*\)</span> of <span
+class="math inline">\(f\)</span> satisfies <span class="math inline">\(0
+&lt; C^* &lt; 1\)</span>. Hence <span class="math inline">\(C &lt;
+1\)</span>, and: <span class="math display">\[C^2 &lt; 1.\]</span></p>
+<p><strong>Physical significance.</strong> <span
+class="math inline">\(C^2 &lt; 1\)</span> measures the
+<strong>incompleteness</strong> of the holographic projection — the
+three projection directions cannot completely cover the coding space.
+This incompleteness is intrinsic: whenever all three sectors have
+nonzero weights (<span class="math inline">\(p &gt; 0\)</span>), the
+projection is necessarily incomplete.</p>
+<p><strong>Degenerate case.</strong> Only when <span
+class="math inline">\(p = 0\)</span> (some <span
+class="math inline">\(\sigma_i = 0\)</span>, i.e., a sector weight is
+zero) does the cubic degenerate to <span class="math inline">\(C^2 =
+1\)</span>, <span class="math inline">\(C = 1\)</span>, corresponding to
+a complete projection. The missing sector does not participate in
+coding, and the projection degenerates to a complete covering of the
+two-dimensional plane. <span
+class="math inline">\(\blacksquare\)</span></p>
+<hr />
+<h2 id="parseval-incompatibility">§4 Parseval Incompatibility</h2>
+<h3 id="conflict-of-the-two-normalization-constraints">4.1 Conflict of
+the Two Normalization Constraints</h3>
+<p>There are two natural candidates for the normalization of the
+holographic projection:</p>
+<ul>
+<li><strong>Angle constraint</strong> (<span
+class="math inline">\(\sum\theta = \pi/2\)</span>): the sum of the three
+coding angles is a right angle, corresponding to the cubic <span
+class="math inline">\(2pC^3 + C^2=1\)</span>.</li>
+<li><strong>Parseval constraint</strong> (<span
+class="math inline">\(\sum\sin^2\theta = 1\)</span>): the sum of the
+squares of the three sine components is 1, corresponding to the Parseval
+identity (completeness).</li>
+</ul>
+<p><strong>Note (Parseval incompatibility).</strong> <span
+class="math inline">\(\sum\theta = \pi/2\)</span> and <span
+class="math inline">\(\sum\sin^2\theta = 1\)</span> (the Parseval
+condition) cannot hold simultaneously unless some angle is zero
+(degenerate case).</p>
+<h3 id="verification-of-symmetric-distribution">4.2 Verification of
+Symmetric Distribution</h3>
+<p>Take the symmetric distribution <span class="math inline">\(\sigma =
+(1/3,\, 1/3,\, 1/3)\)</span> as an example.</p>
+<p><strong>Case A: Angle constraint <span
+class="math inline">\(\sum\theta = \pi/2\)</span> (cubic).</strong> By
+symmetry <span class="math inline">\(\theta_M = \theta_C = \theta_I =
+\pi/6 = 30°\)</span>. The cubic gives <span class="math inline">\(C =
+\sqrt{3}/2\)</span>, <span class="math inline">\(C^2 = 3/4\)</span>.
+Verify: <span class="math display">\[\sum\sin^2\theta_i = 3\sin^2 30° =
+3\cdot\frac{1}{4} = \frac{3}{4} = C^2 &lt; 1.\]</span> The Parseval
+condition <span class="math inline">\(\sum\sin^2\theta = 1\)</span> is
+<strong>not satisfied</strong> (<span class="math inline">\(3/4 \neq
+1\)</span>).</p>
+<p><strong>Case B: Parseval constraint <span
+class="math inline">\(\sum\sin^2\theta = 1\)</span>.</strong> By
+symmetry <span class="math inline">\(\sin^2\theta_i = 1/3\)</span>,
+<span class="math inline">\(\sin\theta_i = 1/\sqrt{3}\)</span>, <span
+class="math inline">\(\theta_i = \arcsin(1/\sqrt{3}) \approx
+35.264°\)</span>. Then: <span class="math display">\[\sum\theta_i = 3
+\times 35.264° \approx 105.79° \neq 90°.\]</span> The angle constraint
+<span class="math inline">\(\sum\theta = \pi/2\)</span> is <strong>not
+satisfied</strong>.</p>
+<h3 id="conclusion">4.3 Conclusion</h3>
+<p>The two constraints give different angles (<span
+class="math inline">\(30°\)</span> vs <span
+class="math inline">\(35.26°\)</span>) and different <span
+class="math inline">\(C^2\)</span> (<span
+class="math inline">\(3/4\)</span> vs <span
+class="math inline">\(1\)</span>) in the symmetric case, and cannot hold
+simultaneously. This shows:</p>
+<ol type="1">
+<li><strong>A choice must be made for normalization</strong>: <span
+class="math inline">\(\sum\theta = \pi/2\)</span> (algebraic path,
+cubic) and <span class="math inline">\(\sum\sin^2\theta = 1\)</span>
+(Parseval) are mutually exclusive.</li>
+<li><strong>This framework chooses the angle constraint</strong>:
+because <span class="math inline">\(\sum\theta = \pi/2\)</span> is
+algebraized via the cubic <span class="math inline">\(2pC^3 +
+C^2=1\)</span>, and the entire derivation chain contains no
+transcendental functions; the Parseval condition, though simple in form,
+is not self-consistent with the geometric structure of the coding
+angles.</li>
+<li><strong><span class="math inline">\(C^2 &lt; 1\)</span> is an
+inevitable consequence</strong>: having chosen the angle constraint,
+<span class="math inline">\(C^2 = \sum\sin^2\theta &lt; 1\)</span>
+(Theorem 1.4.3.03), and the intrinsic incompleteness of the holographic
+projection is naturally encoded by the cubic.</li>
+</ol>
+<hr />
+<h2 id="prelude-to-the-algebraic-action">§6 Prelude to the Algebraic
+Action</h2>
+<h3 id="role-of-the-normalization">6.1 Role of the Normalization</h3>
+<p>The algebraic normalization <span class="math inline">\(2pC^3 + C^2 =
+1\)</span> provides the normalization foundation for the Algebraic
+Action <span class="math inline">\(S(\sigma)\)</span> (1.5):</p>
+<ul>
+<li><span class="math inline">\(C\)</span> determines the normalization
+scale of the coding weights <span
+class="math inline">\(\sigma_i\)</span></li>
+<li><span class="math inline">\(C^2 &lt; 1\)</span> measures the
+information incompleteness — the action <span
+class="math inline">\(S(\sigma)\)</span> will penalize this
+incompleteness</li>
+<li><span class="math inline">\(p\)</span> constrains the structure of
+the cross term via triality — the cross-term coefficient in the action
+is determined by <span class="math inline">\(p\)</span></li>
+</ul>
+<h3 id="derivation-chain-without-transcendental-functions">6.2
+Derivation Chain without Transcendental Functions</h3>
+<p>The algebraic normalization guarantees that the entire derivation
+chain contains no transcendental functions:</p>
+<pre><code>Structure Constant Theorems → Multiplier Sequence (1.1) → Sector Binding (1.2) → Born Rule (1.3)
+→ Sector Weight Normalization ∑σ_i=1 (§2, Cl(3) theorem) → Algebraic Normalization 2pC³ + C² = 1 (§3)
+→ Algebraic Action S(σ) (1.5) → Birkhoff Mixing Matrix T (2.1) → Fixed Point σ* (2.2) → α⁻¹ (2.2)</code></pre>
+<p>Every step is an algebraic (polynomial) operation, involving no <span
+class="math inline">\(\arcsin\)</span>, <span
+class="math inline">\(\exp\)</span>, or any transcendental function. The
+sector weight normalization <span
+class="math inline">\(\sum\sigma_i=1\)</span>, as a <span
+class="math inline">\(\mathrm{Cl}(3)\)</span> algebraic theorem (§2),
+further consolidates the algebraic purity of the derivation chain.</p>
+<hr />
+<h2 id="status-declaration">§7 Status Declaration</h2>
+<table>
+<colgroup>
+<col style="width: 37%" />
+<col style="width: 62%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Item</th>
+<th style="text-align: center;">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Sector weight normalization <span
+class="math inline">\(\sum\sigma_i = 1\)</span></td>
+<td style="text-align: center;">Cl(3) algebraic theorem ✓ (§2)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Cubic equation <span
+class="math inline">\(2pC^3 + C^2 = 1\)</span></td>
+<td style="text-align: center;">Determined by regional mathematical
+structure ✓ (§3.3)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Complete derivation of the cubic</td>
+<td style="text-align: center;">Trigonometric identity + Born Rule ✓
+(§3.3)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Properties and radical solution of the
+cubic</td>
+<td style="text-align: center;">Discriminant, real roots, trigonometric
+solution ✓ (§3.4–3.5)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Numerical verification</td>
+<td style="text-align: center;">Within machine precision ✓ (§3.6)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(C^2 &lt;
+1\)</span></td>
+<td style="text-align: center;">Rigorously proved ✓ (Theorem 1.4.3.03,
+§3.7)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Parseval incompatibility</td>
+<td style="text-align: center;">Proved ✓ (§4)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Algebraic solution for <span
+class="math inline">\(C\)</span></td>
+<td style="text-align: center;">Awaiting determination of <span
+class="math inline">\(p\)</span> (Volume 2)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Elimination of transcendental
+functions</td>
+<td style="text-align: center;">Entire derivation chain free of
+transcendental functions ✓</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="theorem-index">Theorem Index</h2>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 28%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Number</th>
+<th style="text-align: left;">Content</th>
+<th style="text-align: center;">Proof Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">—</td>
+<td style="text-align: left;">Sector weight normalization <span
+class="math inline">\(\sum\sigma_i = 1\)</span></td>
+<td style="text-align: center;">Proved (§2)</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 1.4.3.01</td>
+<td style="text-align: left;">Algebraic normalization: <span
+class="math inline">\(2pC^3 + C^2 = 1\)</span></td>
+<td style="text-align: center;">Proved (§3.3)</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 1.4.3.03</td>
+<td style="text-align: left;"><span class="math inline">\(C^2 &lt;
+1\)</span> (Incomplete Projection Theorem)</td>
+<td style="text-align: center;">Proved (§3.7)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>

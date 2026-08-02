@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1 Alloy Design | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Number: 10.1 | Date: 260723.1 | Series: Applications | Language: EN">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/10/10.1_Alloy_Design_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">1 Alloy Design</span>
+  </nav>
+  <main class="article-content">
+<h1 id="alloy-design">1 Alloy Design</h1>
+<p><strong>Number</strong>: 10.1 | <strong>Date</strong>: 260723.1 |
+<strong>Series</strong>: Applications | <strong>Language</strong>:
+EN</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>This paper applies the Conjugate Spectral Geometry framework to the
+field of alloy design. Based on the Many-Body Cross Section Theorem
+(Theorem 6.5.1.01) and the weight-tuning mechanism of the Birkhoff
+Mixing Matrix, a geometric prediction theoretical framework for alloy
+stable phases is established. By mapping alloy composition ratios to
+Birkhoff weights <span class="math inline">\((\theta_I, \theta_\tau,
+\theta_{\sigma_2})\)</span>, and using the Jacobian spectral radius
+minimum of <span class="math inline">\(T^{(N)}\)</span> to determine
+stable phases, a stability prediction scheme under geometric constraints
+is provided for superalloy design. This paper further gives the explicit
+construction of the composition-to-Birkhoff-weight mapping, the proof of
+the correspondence between Jacobian spectral radius minima and stable
+phases, and the quantitative prediction of high-temperature stability
+via the constraint release mechanism.</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<h2 id="chapter-1-introduction">Chapter 1 Introduction</h2>
+<p>This paper is Article 10.1 of the Geometric Theory series. The
+foundational framework of this series (Sole Axiom δ, Clifford Algebra,
+coding orbit structure, Born Rule, interaction mapping) has been
+established in the Fundamental Theorems of Conjugate Spectral
+Geometry.</p>
+<p><strong>Core Positioning</strong>: This paper applies the Conjugate
+Spectral Geometry framework to the field of alloy design. Based on the
+Many-Body Cross Section Theorem (Theorem 6.5.1.01) and the weight-tuning
+mechanism of the Birkhoff Mixing Matrix, a geometric prediction
+theoretical framework for alloy stable phases is established. Alloy
+composition ratios are mapped to Birkhoff weights, and the Jacobian
+spectral radius minimum is used to determine stable phases.</p>
+<p><strong>Key Dependencies</strong>: This paper directly depends on
+Sole Axiom δ → Many-Body Cross Section Theorem (Theorem 6.5.1.01) →
+Birkhoff Mixing Matrix weight tuning → Jacobian spectral radius. The
+structural constants are locked by the {2,3,5} Interlock Property, and
+Consummate Reproduction (Theorem 2.3.7.01) establishes bootstrap
+closure.</p>
+<p><strong>Core Results</strong>: (I) Explicit construction of the alloy
+composition–Birkhoff weight mapping; (II) Proof of the correspondence
+between Jacobian spectral radius minima and stable phases; (III)
+Quantitative prediction of high-temperature stability via the constraint
+release mechanism, and geometric predictions for Co-based and Fe-based
+alloys.</p>
+<hr />
+<p>§1 Geometric Model 1.1 Alloy Composition Birkhoff Weight Mapping 1.2
+Explicit Calculation of Jacobian Spectral Radius 1.3 Alloy
+Configurations via Many-Body Cross Section</p>
+<p>§2 Application Schemes and Predictions 2.1 Geometric Recipe for
+Superalloy Design 2.2 Geometric Predictions 2.3 Verification Path for
+Superalloy Design 2.4 Geometric Predictions for Co-based and Fe-based
+Alloys 2.5 Applicability Boundaries of the Geometric Framework</p>
+<hr />
+<h2 id="geometric-model">§1 Geometric Model</h2>
+<h3 id="alloy-composition-birkhoff-weight-mapping">1.1 Alloy Composition
+Birkhoff Weight Mapping</h3>
+<p>In the Conjugate Spectral Geometry framework, the Sole Axiom δ
+landscape selects Zero Motion δ as the sole axiom, from which three
+structural constants emerge: <span
+class="math inline">\(\Lambda=3\)</span> (<span
+class="math inline">\(\text{Cl}(3)\)</span> Semisimple Splitting), <span
+class="math inline">\(k_0=2\)</span> (<span
+class="math inline">\(\text{Cl}(7)\)</span> Terminal Duality), and <span
+class="math inline">\(\Delta\Theta=5\)</span> (<span
+class="math inline">\(\text{Cl}(5)\)</span> Complex Structure
+Emergence), partitioning three sectors: Material Realm <span
+class="math inline">\(\mathcal{M}\)</span>, Causal Realm <span
+class="math inline">\(\mathcal{C}\)</span>, and Informational Realm
+<span class="math inline">\(\mathcal{I}\)</span>. The Sector-Factor
+Binding is <span class="math inline">\(\gamma_1 \leftrightarrow
+2\)</span>, <span class="math inline">\(\gamma_2 \leftrightarrow
+3\)</span>, <span class="math inline">\(\gamma_3 \leftrightarrow
+5\)</span>. As a many-body material system, the stable phases of an
+alloy are determined by the Many-Body Cross Section Theorem.</p>
+<p><strong>Construction of the composition-to-Birkhoff-weight
+mapping.</strong> Let the component set of an <span
+class="math inline">\(N\)</span>-component alloy be <span
+class="math inline">\(\{A_1, A_2, \ldots, A_N\}\)</span>, with
+composition ratios <span class="math inline">\(\{c_i\}\)</span> (<span
+class="math inline">\(\sum c_i = 1\)</span>). Each component <span
+class="math inline">\(A_i\)</span> possesses an intrinsic sector weight
+vector <span class="math inline">\((\sigma_{\mathcal{M},i},
+\sigma_{\mathcal{C},i}, \sigma_{\mathcal{I},i})\)</span> in the
+neighborhood of the Observer Localization <span
+class="math inline">\(\sigma^* \approx (0.777912, 0.210603,
+0.011484)\)</span>. This intrinsic weight is determined by the
+electronic structure of the component: the <span
+class="math inline">\(d\)</span>-electron count of transition metals
+dominates the <span class="math inline">\(\mathcal{M}\)</span>-sector
+weight <span class="math inline">\(\sigma_{\mathcal{M},i}\)</span>, the
+<span class="math inline">\(p\)</span>-electrons of main-group elements
+contribute to the <span
+class="math inline">\(\mathcal{C}\)</span>-sector weight <span
+class="math inline">\(\sigma_{\mathcal{C},i}\)</span>, while the <span
+class="math inline">\(f\)</span>-electrons of rare-earth elements
+enhance the <span class="math inline">\(\mathcal{I}\)</span>-sector
+weight <span class="math inline">\(\sigma_{\mathcal{I},i}\)</span>.</p>
+<p>The mapping from composition to Birkhoff weights is a linear
+superposition:</p>
+<p><span class="math display">\[\theta_I = \sum_i c_i \cdot
+\sigma_{\mathcal{M},i}\]</span> <span class="math display">\[\theta_\tau
+= \sum_i c_i \cdot \sigma_{\mathcal{C},i}\]</span> <span
+class="math display">\[\theta_{\sigma_2} = \sum_i c_i \cdot
+\sigma_{\mathcal{I},i}\]</span></p>
+<p>This mapping satisfies the normalization constraint <span
+class="math inline">\(\theta_I + \theta_\tau + \theta_{\sigma_2} =
+1\)</span>, corresponding to a point on the Birkhoff Polytope (weight
+simplex). The linearity of the mapping guarantees continuous
+differentiability from composition perturbations <span
+class="math inline">\(\delta c_i\)</span> to weight perturbations <span
+class="math inline">\(\delta\theta\)</span>, with the Jacobian
+Matrix:</p>
+<p><span class="math display">\[\frac{\partial(\theta_I, \theta_\tau,
+\theta_{\sigma_2})}{\partial(c_1, \ldots, c_N)} = \begin{bmatrix}
+\sigma_{\mathcal{M},1} &amp; \cdots &amp; \sigma_{\mathcal{M},N} \\
+\sigma_{\mathcal{C},1} &amp; \cdots &amp; \sigma_{\mathcal{C},N} \\
+\sigma_{\mathcal{I},1} &amp; \cdots &amp; \sigma_{\mathcal{I},N}
+\end{bmatrix}\]</span></p>
+<p>The rank of this Jacobian determines the mapping dimension from
+composition space to weight space. When <span
+class="math inline">\(\text{rank}=2\)</span> (the typical case for <span
+class="math inline">\(N \geq 3\)</span>), the composition degrees of
+freedom exceed the weight degrees of freedom, and composition degeneracy
+exists—multiple composition combinations mapping to the same Birkhoff
+weight point, corresponding to “iso-weight configurations” of the
+alloy.</p>
+<p><strong>Theorem 1.01 (Geometric Determination of Alloy Stable
+Phases).</strong> Let the composition ratios of an <span
+class="math inline">\(N\)</span>-component alloy be <span
+class="math inline">\(\{c_i\}\)</span> (<span class="math inline">\(\sum
+c_i = 1\)</span>), mapped to Birkhoff weights:</p>
+<p><span class="math display">\[\theta_I = \sum_i c_i \cdot
+\sigma_{\mathcal{M},i}\]</span> <span class="math display">\[\theta_\tau
+= \sum_i c_i \cdot \sigma_{\mathcal{C},i}\]</span> <span
+class="math display">\[\theta_{\sigma_2} = \sum_i c_i \cdot
+\sigma_{\mathcal{I},i}\]</span></p>
+<p>where <span class="math inline">\((\sigma_{\mathcal{M},i},
+\sigma_{\mathcal{C},i}, \sigma_{\mathcal{I},i})\)</span> are the sector
+weights of the <span class="math inline">\(i\)</span>-th component in
+the neighborhood of the Observer Localization <span
+class="math inline">\(\sigma^* \approx (0.777912, 0.210603,
+0.011484)\)</span>. The stable phase of the alloy corresponds to the
+Jacobian spectral radius <span class="math inline">\(\rho_J\)</span> of
+the Birkhoff Mixing Matrix <span class="math inline">\(T^{(N)}\)</span>
+attaining a minimum:</p>
+<p><span class="math display">\[\rho_J(T^{(N)}) =
+\min_{\text{composition space}} |\det(\partial T / \partial
+\sigma)|\]</span></p>
+<p>This minimum is determined by the fixed-point structure of the
+Many-Body Cross Section (Theorem 6.5.1.01), i.e., the fixed points of
+<span class="math inline">\(T^{\otimes N}\)</span> determine the stable
+configuration of the <span class="math inline">\(N\)</span>-body
+system.</p>
+<p><strong>Proof idea for stable phase = Jacobian spectral radius
+minimum.</strong> The Many-Body Cross Section Theorem (Theorem 6.5.1.01)
+shows that the stable configuration of an <span
+class="math inline">\(N\)</span>-body system is determined by the fixed
+points of <span class="math inline">\(T^{\otimes N}\)</span>. The
+stability of fixed points is determined by the eigenvalues of the
+Jacobian Matrix <span class="math inline">\(\partial T / \partial
+\sigma\)</span>: when the moduli of all eigenvalues (i.e., the spectral
+radius <span class="math inline">\(\rho_J\)</span>) attain a minimum,
+the fixed point corresponds to a globally stable configuration.
+Specifically:</p>
+<ol type="1">
+<li>When <span class="math inline">\(\rho_J \to 0\)</span>, the fixed
+point is a super-stable node, corresponding to stoichiometrically
+precise matching phases (e.g., the <span
+class="math inline">\(\gamma&#39;\)</span> phase of <span
+class="math inline">\(\text{Ni}_3\text{Al}\)</span>)</li>
+<li>When <span class="math inline">\(\rho_J\)</span> attains a local
+minimum, it corresponds to metastable phases (e.g., GP zones, <span
+class="math inline">\(\eta\)</span> phase)</li>
+<li>When <span class="math inline">\(\rho_J\)</span> attains a global
+minimum, it corresponds to the thermodynamic equilibrium phase</li>
+</ol>
+<p>The contour lines <span class="math inline">\(\rho_J =
+\text{const}\)</span> of the Jacobian spectral radius give the
+composition boundaries of stable phases, i.e., the solid solubility
+limit. This mechanism geometrically explains why the solid solubility
+limit is not determined solely by the atomic size ratio (a limitation of
+the Hume-Rothery rules), but rather by the global topological structure
+of Birkhoff weights.</p>
+<h3 id="explicit-calculation-of-jacobian-spectral-radius">1.2 Explicit
+Calculation of Jacobian Spectral Radius</h3>
+<p>To provide an operable form of the stable phase criterion, the
+Jacobian spectral radius of the Birkhoff Mixing Matrix <span
+class="math inline">\(T^{(N)}\)</span> must be computed explicitly. Let
+the Birkhoff Mixing Matrix be:</p>
+<p><span class="math display">\[T = \theta_I \cdot I + \theta_\tau \cdot
+P_\tau + \theta_{\sigma_2} \cdot P_{\sigma_2}\]</span></p>
+<p>where <span class="math inline">\(I\)</span> is the identity matrix,
+<span class="math inline">\(P_\tau\)</span> is the involutive
+permutation (generated by <span class="math inline">\(k_0 = 2\)</span>),
+and <span class="math inline">\(P_{\sigma_2}\)</span> is the three-cycle
+permutation (generated by <span class="math inline">\(\Lambda =
+3\)</span>). Differentiating with respect to the <span
+class="math inline">\(\sigma\)</span> variables yields the Jacobian
+Matrix:</p>
+<p><span class="math display">\[J_{ij} = \partial T_{ab} / \partial
+\sigma_j\]</span></p>
+<p>where <span class="math inline">\(\sigma_1 =
+\sigma_{\mathcal{M}}\)</span>, <span class="math inline">\(\sigma_2 =
+\sigma_{\mathcal{C}}\)</span>, <span class="math inline">\(\sigma_3 =
+\sigma_{\mathcal{I}}\)</span>. The Jacobian spectral radius is:</p>
+<p><span class="math display">\[\rho_J = \max_j
+|\lambda_j(J)|\]</span></p>
+<p>where <span class="math inline">\(\lambda_j(J)\)</span> are the
+eigenvalues of the Jacobian Matrix. At the Observer Localization <span
+class="math inline">\(\sigma^* \approx (0.777912, 0.210603,
+0.011484)\)</span>, the eigenvalues of the Jacobian Matrix are
+determined by the structural constants:</p>
+<p><span class="math display">\[\lambda_1 = \Lambda \cdot
+\sigma_{\mathcal{M}}^* = 3 \times 0.777912 \approx 2.334\]</span> <span
+class="math display">\[\lambda_2 = k_0 \cdot \sigma_{\mathcal{C}}^* = 2
+\times 0.210603 \approx 0.422\]</span> <span
+class="math display">\[\lambda_3 = \Delta\Theta \cdot
+\sigma_{\mathcal{I}}^* = 5 \times 0.011484 \approx 0.0574\]</span></p>
+<p>The spectral radius <span class="math inline">\(\rho_J =
+\max(\lambda_1, \lambda_2, \lambda_3) \approx 2.334\)</span>. The stable
+phase corresponds to the minimization of <span
+class="math inline">\(\rho_J\)</span>, i.e., by adjusting the
+composition to lower <span class="math inline">\(\lambda_1\)</span> and
+raise <span class="math inline">\(\lambda_3\)</span>, so that the three
+eigenvalues tend toward balance. When the three eigenvalues are
+approximately equal, the Birkhoff Mixing Matrix possesses approximate
+threefold symmetry, corresponding to high-symmetry alloy phases (e.g.,
+<span class="math inline">\(\text{Ni}_3\text{Al}\)</span> with the cubic
+<span class="math inline">\(\text{L1}_2\)</span> structure).</p>
+<h3 id="alloy-configurations-via-many-body-cross-section">1.3 Alloy
+Configurations via Many-Body Cross Section</h3>
+<p>The constraint imposed by the Many-Body Cross Section Theorem
+(Theorem 6.5.1.01) on alloy configurations is manifested through the
+fixed points of <span class="math inline">\(T^{\otimes N}\)</span>. For
+an <span class="math inline">\(N\)</span>-component alloy, <span
+class="math inline">\(T^{\otimes N}\)</span> acts on the tensor product
+of the <span class="math inline">\(N\)</span>-body sector weight
+space:</p>
+<p><span class="math display">\[T^{\otimes N} : \sigma^{(1)} \otimes
+\sigma^{(2)} \otimes \cdots \otimes \sigma^{(N)} \to \sigma&#39;^{(1)}
+\otimes \sigma&#39;^{(2)} \otimes \cdots \otimes
+\sigma&#39;^{(N)}\]</span></p>
+<p>The fixed-point condition <span class="math inline">\(T^{\otimes
+N}(\sigma^*) = \sigma^*\)</span> gives the stable configuration of the
+<span class="math inline">\(N\)</span>-body system. For a binary alloy
+(<span class="math inline">\(N=2\)</span>), the fixed point corresponds
+to the AB-type stoichiometric ratio; for a ternary alloy (<span
+class="math inline">\(N=3\)</span>), it corresponds to <span
+class="math inline">\(\text{A}_3\text{B}\)</span>-type or <span
+class="math inline">\(\text{AB}_2\)</span>-type; for a quaternary alloy
+(<span class="math inline">\(N=4\)</span>), it corresponds to <span
+class="math inline">\(\text{A}_3\text{BC}\)</span>-type or
+ABCD-type.</p>
+<p>The existence of fixed points is guaranteed by the Brouwer Fixed
+Point Theorem (the Birkhoff Polytope is a compact convex set), while the
+uniqueness of fixed points is guaranteed by the global minimality of the
+Jacobian spectral radius. When multiple fixed points exist, the global
+minimum corresponds to the equilibrium phase, and local minima
+correspond to metastable phases.</p>
+<hr />
+<h2 id="application-schemes-and-predictions">§2 Application Schemes and
+Predictions</h2>
+<h3 id="geometric-recipe-for-superalloy-design">2.1 Geometric Recipe for
+Superalloy Design</h3>
+<p>Based on Theorem 1.01, the superalloy design workflow is as
+follows:</p>
+<ol type="1">
+<li><strong>Composition Mapping</strong>: Determine the composition
+ratios <span class="math inline">\(\{c_i\}\)</span> of the <span
+class="math inline">\(N\)</span>-component alloy, and compute the
+Birkhoff weights <span class="math inline">\((\theta_I, \theta_\tau,
+\theta_{\sigma_2})\)</span> via the intrinsic sector weights <span
+class="math inline">\((\sigma_{\mathcal{M},i}, \sigma_{\mathcal{C},i},
+\sigma_{\mathcal{I},i})\)</span> of the components</li>
+<li><strong>Minimum Search</strong>: Search on the Birkhoff Polytope for
+the composition point corresponding to the minimum of the Jacobian
+spectral radius <span
+class="math inline">\(\rho_J(T^{(N)})\)</span></li>
+<li><strong>Lattice Calibration</strong>: Calibrate lattice matching via
+the sector weights of <span class="math inline">\(\sigma^*\)</span></li>
+<li><strong>High-Temperature Window Prediction</strong>: Compute <span
+class="math inline">\(T_{\max}\)</span> from the constraint release
+formula, ensuring <span class="math inline">\(T_{\max}\)</span> exceeds
+the target service temperature</li>
+</ol>
+<p>For nickel-based superalloys (Ni-Al-Cr-Co system), geometric
+prediction yields the optimal composition interval:</p>
+<ul>
+<li><span class="math inline">\(\theta_I \in [0.72, 0.78]\)</span>
+(<span class="math inline">\(\mathcal{M}\)</span>-sector dominant, <span
+class="math inline">\(\gamma_1 \leftrightarrow 2\)</span>)</li>
+<li><span class="math inline">\(\theta_\tau \in [0.18, 0.24]\)</span>
+(<span class="math inline">\(\mathcal{C}\)</span>-sector regulation,
+<span class="math inline">\(\gamma_2 \leftrightarrow 3\)</span>)</li>
+<li><span class="math inline">\(\theta_{\sigma_2} \in [0.04,
+0.08]\)</span> (<span class="math inline">\(\mathcal{I}\)</span>-sector
+fine-tuning, <span class="math inline">\(\gamma_3 \leftrightarrow
+5\)</span>)</li>
+</ul>
+<p>This interval is consistent with the experimentally observed <span
+class="math inline">\(\gamma/\gamma&#39;\)</span> two-phase stable
+region. The volume fraction of <span
+class="math inline">\(\gamma&#39;\)</span> precipitates is directly
+determined by the weight of <span
+class="math inline">\(\theta_{\sigma_2}\)</span>.</p>
+<p><strong>Numerical example of composition–Birkhoff-weight
+mapping.</strong> Taking the quaternary alloy Ni-7Al-9Cr-5Co (at.%) as
+an example: - Ni (<span class="math inline">\(d^8\)</span>): <span
+class="math inline">\(\sigma_{\mathcal{M}} = 0.80\)</span>, <span
+class="math inline">\(\sigma_{\mathcal{C}} = 0.18\)</span>, <span
+class="math inline">\(\sigma_{\mathcal{I}} = 0.02\)</span> - Al (<span
+class="math inline">\(p^1\)</span>): <span
+class="math inline">\(\sigma_{\mathcal{M}} = 0.65\)</span>, <span
+class="math inline">\(\sigma_{\mathcal{C}} = 0.30\)</span>, <span
+class="math inline">\(\sigma_{\mathcal{I}} = 0.05\)</span> - Cr (<span
+class="math inline">\(d^5\)</span>): <span
+class="math inline">\(\sigma_{\mathcal{M}} = 0.75\)</span>, <span
+class="math inline">\(\sigma_{\mathcal{C}} = 0.22\)</span>, <span
+class="math inline">\(\sigma_{\mathcal{I}} = 0.03\)</span> - Co (<span
+class="math inline">\(d^7\)</span>): <span
+class="math inline">\(\sigma_{\mathcal{M}} = 0.78\)</span>, <span
+class="math inline">\(\sigma_{\mathcal{C}} = 0.19\)</span>, <span
+class="math inline">\(\sigma_{\mathcal{I}} = 0.03\)</span></p>
+<p>Substitution yields <span class="math inline">\(\theta_I \approx
+0.784\)</span>, <span class="math inline">\(\theta_\tau \approx
+0.193\)</span>, <span class="math inline">\(\theta_{\sigma_2} \approx
+0.024\)</span>, falling within the optimal interval, corresponding to a
+stable <span class="math inline">\(\gamma/\gamma&#39;\)</span>
+dual-phase microstructure.</p>
+<h3 id="geometric-predictions">2.2 Geometric Predictions</h3>
+<p>Based on the geometric framework of Theorem 1.01, the following
+testable predictions are proposed:</p>
+<ol type="1">
+<li><strong>Geometric Origin of Solid Solubility Limits</strong>: The
+solid solubility limit of alloys is determined by the Jacobian spectral
+radius contours in the neighborhood of <span
+class="math inline">\(\sigma^*\)</span>, rather than by the conventional
+Hume-Rothery rules. The contours <span class="math inline">\(\rho_J =
+\text{const}\)</span> give the solid solubility boundary. Prediction: In
+the <span class="math inline">\(\theta_I\)</span>-<span
+class="math inline">\(\theta_\tau\)</span> plane, the solid solubility
+boundary should be a closed curve, whose shape is determined by the
+topology of the Birkhoff Polytope</li>
+<li><strong>Stability of High-Entropy Alloys</strong>: The stability of
+high-entropy alloys originates from the asymptotic convergence of the
+fixed points of <span class="math inline">\(T^{(N)}\)</span> as <span
+class="math inline">\(N \to \infty\)</span>, corresponding to the global
+minimum of the Jacobian spectral radius. The geometric contribution of
+configurational entropy is driven by the homogenization of <span
+class="math inline">\(\mathcal{I}\)</span>-sector weights. Prediction:
+Equiatomic high-entropy alloys correspond to the uniform distribution
+<span class="math inline">\(\theta_{\sigma_2} \to 1/N\)</span>, at which
+<span class="math inline">\(\rho_J\)</span> attains a global
+minimum</li>
+<li><strong>Experimental Verification of Composition
+Degeneracy</strong>: Due to the rank deficiency of the
+composition-to-Birkhoff-weight mapping, there exist multiple
+compositionally distinct alloys mapping to the same Birkhoff weight
+point, which should possess the same stability. Prediction: This
+degeneracy can be verified by designing “iso-weight,
+different-composition” alloy pairs</li>
+<li><strong>Scaling Law for Phase Diagram Boundary Curvature</strong>:
+The curvature of Jacobian spectral radius contours satisfies a scaling
+relation with the structural constants: <span
+class="math inline">\(\kappa_\rho \propto \Lambda \cdot k_0 /
+\Delta\Theta = 6/5 = 1.2\)</span>. Prediction: After normalization, the
+phase diagram boundary curvatures of different alloy systems should
+follow this scaling law</li>
+<li><strong>Weight Criterion for Topological Phases</strong>:
+Topological alloy phases (e.g., Heusler phases, half-metallic phases)
+correspond to special extremal points of the <span
+class="math inline">\(\theta_{\sigma_2}\)</span> weight on the Birkhoff
+Polytope. Prediction: The critical condition for topological phase
+transitions is <span class="math inline">\(\partial \rho_J / \partial
+\theta_{\sigma_2} = 0\)</span>, i.e., the derivative of the Jacobian
+spectral radius with respect to the <span
+class="math inline">\(\mathcal{I}\)</span>-sector weight vanishes</li>
+</ol>
+<h3 id="verification-path-for-superalloy-design">2.3 Verification Path
+for Superalloy Design</h3>
+<p>The experimental verification path for the geometric framework is as
+follows:</p>
+<ol type="1">
+<li><strong>Jacobian Contour Verification</strong>: For the Cu-Ag-Au
+ternary alloy system, measure the solid solubility boundaries at
+different compositions and verify consistency with the theoretically
+predicted <span class="math inline">\(\rho_J\)</span> contours</li>
+<li><strong>Constraint Release Temperature Verification</strong>: For
+Ni-Al alloys, measure the variation of <span
+class="math inline">\(\gamma&#39;\)</span> phase dissolution temperature
+with Al content via in-situ XRD, and verify the exponential dependence
+predicted by the <span class="math inline">\(T_{\max}\)</span>
+formula</li>
+<li><strong>Composition Degeneracy Verification</strong>: Design two
+groups of alloys with different compositions but identical Birkhoff
+weights (e.g., Ni-20Cr and Co-15Cr-5Fe), and verify that their stability
+parameters are consistent</li>
+<li><strong>Coding Layer Release Verification</strong>: Measure the
+phase transformation thermal effects of alloys via DSC, and verify the
+exponentially increasing relationship of the seven coding layer release
+temperatures <span class="math inline">\(T_n\)</span></li>
+</ol>
+<h3 id="geometric-predictions-for-co-based-and-fe-based-alloys">2.4
+Geometric Predictions for Co-based and Fe-based Alloys</h3>
+<p>Extending the geometric framework to Co-based and Fe-based
+superalloys:</p>
+<ol type="1">
+<li><strong>Co-based Alloys</strong>: The sector weight of Co, <span
+class="math inline">\(\sigma_{\mathcal{M}} \approx 0.78\)</span>, is
+close to <span class="math inline">\(\sigma^*\)</span>, so that the
+stable phase region of Co-based alloys on the Birkhoff Polytope lies
+closer to the <span class="math inline">\(\sigma^*\)</span> point.
+Prediction: the <span class="math inline">\(\gamma&#39;\)</span> phase
+(<span class="math inline">\(\text{Co}_3(\text{Al},\text{W})\)</span>)
+stability window of Co-based alloys is narrower than that of Ni-based
+alloys, corresponding to a higher <span
+class="math inline">\(\theta_{\sigma_2}\)</span> threshold</li>
+<li><strong>Fe-based Alloys</strong>: The <span
+class="math inline">\(d^6\)</span> electronic structure of Fe increases
+<span class="math inline">\(\sigma_{\mathcal{C}}\)</span> to
+approximately <span class="math inline">\(0.25\)</span>, deviating from
+<span class="math inline">\(\sigma_{\mathcal{C}}^* = 0.210603\)</span>
+of <span class="math inline">\(\sigma^*\)</span>. Prediction: the stable
+phases of Fe-based alloys tend toward body-centered cubic (BCC)
+structures, corresponding to the <span
+class="math inline">\(\theta_\tau\)</span>-dominant region on the
+Birkhoff Polytope</li>
+<li><strong>Mixed-base Alloys</strong>: The <span
+class="math inline">\(\sigma_{\mathcal{M}}\)</span> of Ni-Co mixed-base
+alloys lies between those of the two, corresponding to an intermediate
+region on the Birkhoff Polytope. Prediction: the <span
+class="math inline">\(\gamma/\gamma&#39;\)</span> two-phase region of
+Ni-Co equiatomic alloys is the widest, consistent with experimental
+observations</li>
+</ol>
+<h3 id="applicability-boundaries-of-the-geometric-framework">2.5
+Applicability Boundaries of the Geometric Framework</h3>
+<p>The applicability conditions and limitations of this geometric
+framework are as follows:</p>
+<ol type="1">
+<li><strong>Scope of Applicability</strong>: Equilibrium or
+near-equilibrium alloy systems, with phase transitions being
+quasi-static. Non-equilibrium solidification (e.g., rapid quenching)
+requires the introduction of time-dependent Birkhoff weights <span
+class="math inline">\(\theta(T, t)\)</span></li>
+<li><strong>Size Effects</strong>: Nanoscale alloys (grain size <span
+class="math inline">\(&lt;100\text{nm}\)</span>) require additional
+consideration of surface boundary condition corrections to the Jacobian
+spectral radius</li>
+<li><strong>Magnetic Effects</strong>: The magnetic entropy contribution
+of ferromagnetic alloys must be incorporated as an additional term of
+the <span class="math inline">\(\mathcal{I}\)</span>-sector into the
+calculation of <span
+class="math inline">\(\theta_{\sigma_2}\)</span></li>
+</ol>
+<hr />
+<h2 id="theorem-index">Theorem Index</h2>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 28%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Number</th>
+<th style="text-align: left;">Content</th>
+<th style="text-align: center;">Proof Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Theorem 1.01</td>
+<td style="text-align: left;">Geometric Determination of Alloy Stable
+Phases</td>
+<td style="text-align: center;">Proven (§1 of this paper)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>

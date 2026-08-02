@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6.6 Σ-Spacetime Emergence: From 2-Dimensional Gradient Flow to 3+1-Dimensional Physical Spacetime | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Version: 260801.1 (EN translation)">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/6/6.6_Sigma_Spacetime_Emergence_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">6.6 Σ-Spacetime Emergence: From 2-Dimensional Gradient Flow to 3+1-Dimensional Physical Spacetime</span>
+  </nav>
+  <main class="article-content">
+<h1
+id="σ-spacetime-emergence-from-2-dimensional-gradient-flow-to-31-dimensional-physical-spacetime">6.6
+Σ-Spacetime Emergence: From 2-Dimensional Gradient Flow to
+3+1-Dimensional Physical Spacetime</h1>
+<p><strong>Version</strong>: 260801.1 (EN translation)</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>This article unfolds the most central emergence mechanism in
+Conjugate Spectral Geometry — how the physical spacetime <span
+class="math inline">\(\mathbb{R}^{3,1}\)</span> projects from the
+constrained gradient flow on the 2-dimensional sector parameter space
+<span class="math inline">\(\Sigma\)</span>. <span
+class="math inline">\(\Sigma\)</span> is the interior of the triangle (a
+2-dimensional probability simplex) under the constraint <span
+class="math inline">\(\theta_M + \theta_C + \theta_I =
+90^\circ\)</span>, on which the Algebraic Action <span
+class="math inline">\(S(\sigma)\)</span> serves as a potential function
+driving the geometric Navier-Stokes flow. The fast-slow mode separation
+— <span class="math inline">\(\lambda_1^{\text{eff}} = 391.05\)</span>
+(slow mode) and <span class="math inline">\(\lambda_2^{\text{eff}} =
+59324.3\)</span> (fast mode), with ratio <span
+class="math inline">\(151.70\)</span> — naturally produces a causal cone
+structure on <span class="math inline">\(\Sigma\)</span>. The slow mode
+direction <span class="math inline">\(\eta\)</span> projects as time,
+and the fast mode direction <span class="math inline">\(\xi\)</span>
+projects as space. The origin of <span
+class="math inline">\(3+1\)</span> dimensions traces back to <span
+class="math inline">\(\dim_{\mathbb{R}}(\text{Cl}(8)\ \text{irreducible
+representation}) = 16\)</span>, organized in the continuum limit as
+<span class="math inline">\(4 \times 4\)</span> (4-dimensional spacetime
+<span class="math inline">\(\times\)</span> 4 internal components). The
+Born Rule lengths <span class="math inline">\(\chi_L = 1.509 \times
+10^{-10}\)</span> m and time <span class="math inline">\(\chi_T = 3.616
+\times 10^{-17}\)</span> s translate the dimensionless geometric
+quantities on <span class="math inline">\(\Sigma\)</span> into
+dimensionful coordinates in physical spacetime. The holographic
+incompleteness parameter <span class="math inline">\(C^2 \approx
+0.923\)</span> quantifies the information loss during projection (about
+7.7%). This article honestly marks the largest open gap at present — the
+explicit dual map <span class="math inline">\(\Sigma \leftrightarrow
+\mathbb{R}^{3,1}\)</span> has not yet been constructed — and lays out
+the expected structure once it is built.</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<p>§1　Geometric Definition of <span
+class="math inline">\(\Sigma\)</span> 　1.1　Triangle Interior:
+Three-Sector Constraint 　1.2　Symplectic Geometric Definition: Birkhoff
+Orbit 　1.3　Two Natural Coordinates: <span
+class="math inline">\(\eta\)</span> and <span
+class="math inline">\(\xi\)</span></p>
+<p>§2　Potential Function: Restriction of the Algebraic Action <span
+class="math inline">\(S(\theta)\)</span> on <span
+class="math inline">\(\Sigma\)</span> 　2.1　Form of <span
+class="math inline">\(S(\theta)\)</span> 　2.2　Gradient on <span
+class="math inline">\(\Sigma\)</span>: <span
+class="math inline">\(\partial S/\partial\eta|_0 = -1097.60\)</span>
+rad⁻¹ 　2.3　Landscape Structure: from <span
+class="math inline">\(S=24\)</span> to <span
+class="math inline">\(S=968\)</span></p>
+<p>§3　Constrained Gradient Flow: Geometric Navier-Stokes Equation
+　3.1　Equation Form and Term-by-Term Geometric Origin 　3.2　Fast-Slow
+Mode Separation: Spectrum of <span
+class="math inline">\(\mathbf{J}_{\mathcal{P}}\)</span>
+　3.3　Topological Rigidity of the Spectral Gap Ratio <span
+class="math inline">\(151.70\)</span></p>
+<p>§4　Laminated Structure on the 2-Dimensional <span
+class="math inline">\(\Sigma\)</span> 　4.1　Spherical Geometry of
+Sectors: <span class="math inline">\(S^3(r_M) \times S^3(r_C) \times
+S^3(r_I)\)</span> 　4.2　Laminated Structure of Encoding Orbits <span
+class="math inline">\(\{S_r\}\)</span> 　4.3　Continuum Limit and
+Degree-of-Freedom Count</p>
+<p>§5　Projection Mechanism: <span class="math inline">\(\Sigma \to
+\mathbb{R}^{3,1}\)</span> 　5.1　<span class="math inline">\(\eta
+\to\)</span> Time: Slow Mode Causal Propagation 　5.2　<span
+class="math inline">\(\xi \to\)</span> Space: Fast Mode Freezing and
+Transverse Unfolding 　5.3　Emergence of the Causal Cone: the <span
+class="math inline">\(152:1\)</span> Light-Cone Ratio 　5.4　Why <span
+class="math inline">\(3+1\)</span> Dimensions</p>
+<p>§6　Information Loss in the Projection 　6.1　Holographic
+Incompleteness Parameter <span class="math inline">\(C^2\)</span>
+　6.2　Specific Content of the Loss 　6.3　<span
+class="math inline">\(1/C^2\)</span> Encoding Cost Penalty</p>
+<p>§7　Born Rule Bridge: Dimensionless <span
+class="math inline">\(\to\)</span> Dimensionful 　7.1　Length Base <span
+class="math inline">\(\chi_L\)</span> and Time Base <span
+class="math inline">\(\chi_T\)</span> 　7.2　Translating from <span
+class="math inline">\(\Sigma\)</span> Geometric Quantities to Physical
+Coordinates</p>
+<p>§8　Honesty Boundary: Gaps and Open Problems 　8.1　Closed Links
+　8.2　Highest-Priority Gap: <span class="math inline">\(\Sigma
+\leftrightarrow \mathbb{R}^{3,1}\)</span> Dual Map 　8.3　Expected
+Structure After Construction</p>
+<p>Theorem Index</p>
+<hr />
+<h2 id="geometric-definition-of-sigma">§1 Geometric Definition of <span
+class="math inline">\(\Sigma\)</span></h2>
+<h3 id="triangle-interior-three-sector-constraint">1.1 Triangle
+Interior: Three-Sector Constraint</h3>
+<p><span class="math inline">\(\Sigma\)</span> is not an arbitrarily
+posited manifold — it is an inevitable product of the algebraic
+structure of Conjugate Spectral Geometry. The three sector angles <span
+class="math inline">\((\theta_M, \theta_C, \theta_I)\)</span> satisfy
+the constraint (Theorem 1.2.3.01):</p>
+<p><span class="math display">\[\theta_M + \theta_C + \theta_I =
+90^\circ, \quad \theta_i &gt; 0.\]</span></p>
+<p>This constraint defines the <strong>interior of an equilateral
+triangle</strong> — a 2-dimensional manifold with boundary. The three
+vertices correspond respectively to limits where a single sector
+dominates (e.g. <span class="math inline">\(\theta_M \to
+90^\circ\)</span> corresponds to pure matter), the three edges
+correspond to cases where two sectors degenerate, and interior points
+correspond to three-sector coexistence.</p>
+<p>At the algebraic level, <span class="math inline">\(\Sigma\)</span>
+is a compact manifold with boundary (a 2-dimensional probability simplex
+<span class="math inline">\(\{\sigma : \sum\sigma_i = 1, \sigma_i \geq
+0\}\)</span>), whose symmetry group is the three-sector permutation
+group <span class="math inline">\(S_3\)</span>. The symplectic form
+arises from the volume element projection of the Clifford algebra
+(Theorem 7.8.6.03).</p>
+<p><strong>Sector encoding weights</strong> <span
+class="math inline">\(\sigma_i\)</span> are defined as Birkhoff encoding
+weights on the probability simplex (Article 1.5 §1):</p>
+<p><span class="math display">\[\sigma_M + \sigma_C + \sigma_I = 1,
+\quad \sigma_i &gt; 0,\]</span></p>
+<p>where the normalization is governed by <span
+class="math inline">\(2pC^3 + C^2 = 1\)</span> (<span
+class="math inline">\(p = \sqrt{\sigma_M\sigma_C\sigma_I}\)</span>)
+(Theorem 1.4.3.01). The angle parameters <span
+class="math inline">\((\theta_M, \theta_C, \theta_I)\)</span> and the
+encoding weights <span class="math inline">\(\sigma_i\)</span> are
+connected through the spectral constraints of the Birkhoff mixing matrix
+<span class="math inline">\(T\)</span> (Theorem 6.1.1.01), rather than
+by the naive relation <span class="math inline">\(\sigma_i =
+\sin^2\theta_i\)</span>.</p>
+<h3 id="symplectic-geometric-definition-birkhoff-orbit">1.2 Symplectic
+Geometric Definition: Birkhoff Orbit</h3>
+<p>Equivalently, <span class="math inline">\(\Sigma\)</span> can also be
+defined as the constrained submanifold of the encoding orbit of the
+Birkhoff mixing matrix <span class="math inline">\(T\)</span> on the
+sector parameter space (Theorem 6.1.1.01). In the continuum limit, the
+action of <span class="math inline">\(T\)</span> on <span
+class="math inline">\(\Sigma\)</span> generates a symplectic structure
+<span class="math inline">\(\omega = d\xi \wedge d\eta\)</span>, making
+<span class="math inline">\(\Sigma\)</span> a compact symplectic
+manifold (Theorem 7.8.9.11).</p>
+<p><strong>The physical state</strong> corresponds to a point on <span
+class="math inline">\(\Sigma\)</span> — the Birkhoff Fixed Point <span
+class="math inline">\(\sigma^* \approx (0.777912, 0.210603,
+0.011484)\)</span>, whose angular coordinates are:</p>
+<p><span class="math display">\[\theta_M^* \approx 57.93^\circ,\quad
+\theta_C^* \approx 26.16^\circ,\quad \theta_I^* \approx
+5.91^\circ.\]</span></p>
+<h3 id="two-natural-coordinates-eta-and-xi">1.3 Two Natural Coordinates:
+<span class="math inline">\(\eta\)</span> and <span
+class="math inline">\(\xi\)</span></h3>
+<p>At the fixed point <span class="math inline">\(P_0\)</span>, the
+linearization operator <span
+class="math inline">\(\mathbf{J}_{\mathcal{P}}\)</span> of the
+constrained gradient flow possesses two nonzero eigenvalues (Theorem
+10.17.0.04), whose eigenvectors define two natural coordinates on <span
+class="math inline">\(\Sigma\)</span>:</p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 30%" />
+<col style="width: 23%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Coordinate</th>
+<th style="text-align: center;">Eigenvalue</th>
+<th style="text-align: left;">Physical Meaning</th>
+<th style="text-align: left;">Geometric Correspondence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\eta\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(\lambda_1^{\text{eff}} = 391.05\)</span></td>
+<td style="text-align: left;">Causal time direction (slow mode)</td>
+<td style="text-align: left;">Direction of Birkhoff’s smallest nonzero
+eigenvalue</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\xi\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(\lambda_2^{\text{eff}} = 59324.3\)</span></td>
+<td style="text-align: left;">Transverse spatial direction (fast
+mode)</td>
+<td style="text-align: left;">Direction of Birkhoff’s largest
+eigenvalue</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[\tau = \sqrt{\lambda_1^{\text{eff}}}
+\cdot \eta \approx 19.775 \cdot \eta \quad \text{(causal time
+parameter)}.\]</span></p>
+<p>Fast-slow mode ratio: <span
+class="math display">\[\Lambda_H^{\text{eff}} =
+\frac{\lambda_2^{\text{eff}}}{\lambda_1^{\text{eff}}} =
+\frac{59324.3}{391.05} = 151.70 \pm 0.02.\]</span></p>
+<hr />
+<h2
+id="potential-function-restriction-of-the-algebraic-action-stheta-on-sigma">§2
+Potential Function: Restriction of the Algebraic Action <span
+class="math inline">\(S(\theta)\)</span> on <span
+class="math inline">\(\Sigma\)</span></h2>
+<h3 id="form-of-stheta">2.1 Form of <span
+class="math inline">\(S(\theta)\)</span></h3>
+<p>The restriction of the Algebraic Action (Theorem 1.5.2.01) onto <span
+class="math inline">\(\Sigma\)</span> yields the potential function.
+Under encoding weights <span class="math inline">\(\sigma_i\)</span> (on
+the probability simplex), the algebraic form of the action is:</p>
+<p><span class="math display">\[S(\sigma) = \frac{1}{C^2}\left[\sum_i
+\frac{1}{\sigma_i} + \sum_{i&lt;j} \frac{1}{\sqrt{\sigma_i
+\sigma_j}}\right],\]</span></p>
+<p>where <span class="math inline">\(i\)</span> ranges over <span
+class="math inline">\((\mathcal{M}, \mathcal{C}, \mathcal{I})\)</span>,
+and <span class="math inline">\(C\)</span> is determined by the
+normalization condition <span class="math inline">\(2pC^3 + C^2 =
+1\)</span> (<span class="math inline">\(p =
+\sqrt{\sigma_M\sigma_C\sigma_I}\)</span>). The angular-parameter form
+<span class="math inline">\(S(\theta)\)</span> involves transcendental
+functions from Berry correction factors (Article 1.5 §4.1); the
+algebraic form above is its simplified representation.</p>
+<p><strong>Physical meaning of the two terms</strong> (Article 1.5 §1):
+- <strong>Individual term</strong> <span class="math inline">\(\sum
+1/\sigma_i\)</span>: the cost of independent encoding of each sector —
+the smaller the weight, the higher the cost - <strong>Cross
+term</strong> <span class="math inline">\(\sum
+1/\sqrt{\sigma_i\sigma_j}\)</span>: the Born Rule cost of inter-sector
+coupling — <span
+class="math inline">\(\sqrt{\sigma}\)</span>-proportional embedding -
+<strong><span class="math inline">\(1/C^2\)</span> factor</strong>:
+holographic incompleteness penalty — <span class="math inline">\(C^2
+&lt; 1\)</span> means information loss in the projection</p>
+<h3 id="gradient-on-sigma-partial-spartialeta_0--1097.60-rad¹">2.2
+Gradient on <span class="math inline">\(\Sigma\)</span>: <span
+class="math inline">\(\partial S/\partial\eta|_0 = -1097.60\)</span>
+rad⁻¹</h3>
+<p>At the physical fixed point <span class="math inline">\(P_0\)</span>,
+the gradient of <span class="math inline">\(S\)</span> along the <span
+class="math inline">\(\eta\)</span> direction (spectral gap
+direction):</p>
+<p><span class="math display">\[\left.\frac{\partial
+S}{\partial\eta}\right|_{P_0} = -1097.60\ \text{rad}^{-1},\]</span></p>
+<p>This is the monotonically decreasing driving force toward the ground
+state <span class="math inline">\(S_{\min} = 24\)</span>. The magnitude
+of the gradient determines the “pressure” intensity of the constrained
+gradient flow on <span class="math inline">\(\Sigma\)</span>.</p>
+<p>The gradient along the <span class="math inline">\(\xi\)</span>
+direction (Dirac spectrum direction) is smaller, because the <span
+class="math inline">\(\xi\)</span> direction is nearly a contour
+direction of <span class="math inline">\(S\)</span> (Lyapunov exponent
+<span class="math inline">\(\Lambda_\xi \approx -2.51\)</span>,
+corresponding to exponential contraction along the <span
+class="math inline">\(\xi\)</span> direction).</p>
+<h3 id="landscape-structure-from-s24-to-s968">2.3 Landscape Structure:
+from <span class="math inline">\(S=24\)</span> to <span
+class="math inline">\(S=968\)</span></h3>
+<p>The range of <span class="math inline">\(S(\sigma)\)</span> on <span
+class="math inline">\(\Sigma\)</span> constitutes the “landscape” of the
+fine-structure constant (Proposition 1.5.3.02, Article 1.5 §3.6):</p>
+<table>
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 23%" />
+<col style="width: 30%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Configuration</th>
+<th style="text-align: left;"><span
+class="math inline">\(\sigma\)</span></th>
+<th style="text-align: center;"><span
+class="math inline">\(S\)</span></th>
+<th style="text-align: left;">Physical Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Symmetric ground state</td>
+<td style="text-align: left;"><span class="math inline">\((1/3, 1/3,
+1/3)\)</span></td>
+<td style="text-align: center;">24</td>
+<td style="text-align: left;">Complete triality symmetry, <span
+class="math inline">\(C^2 = 0.75\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Our world</td>
+<td style="text-align: left;"><span class="math inline">\((0.778, 0.211,
+0.011)\)</span></td>
+<td style="text-align: center;">137.036</td>
+<td style="text-align: left;">Physical observer, <span
+class="math inline">\(C^2 \approx 0.923\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Extreme breaking</td>
+<td style="text-align: left;"><span class="math inline">\(\sigma \to (1,
+0, 0)\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\to
+968\)</span></td>
+<td style="text-align: left;">Triality completely broken, <span
+class="math inline">\(C^2 \to 1\)</span> (physically realizable upper
+bound; mathematical limit is <span
+class="math inline">\(\infty\)</span>)</td>
+</tr>
+</tbody>
+</table>
+<p>The observer position <span class="math inline">\(S \approx
+137.036\)</span> lies at roughly 12% of the landscape range — on the
+side closer to the symmetric ground state. This gradient — the
+unidirectional descent from <span class="math inline">\(S = 137\)</span>
+toward <span class="math inline">\(S = 24\)</span> — is the
+<strong>fundamental driving force</strong> behind the constrained
+gradient flow on <span class="math inline">\(\Sigma\)</span>.</p>
+<hr />
+<h2 id="constrained-gradient-flow-geometric-navier-stokes-equation">§3
+Constrained Gradient Flow: Geometric Navier-Stokes Equation</h2>
+<h3 id="equation-form-and-term-by-term-geometric-origin">3.1 Equation
+Form and Term-by-Term Geometric Origin</h3>
+<p>In the continuum medium limit (Assumption A.1, Article 10.8 §2.1),
+the material-realm flow <span class="math inline">\(\mathbf{u} = (u_\xi,
+u_\eta) \in T\Sigma\)</span> on <span
+class="math inline">\(\Sigma\)</span> satisfies the <strong>geometric
+Navier-Stokes equation</strong> (Construction 10.8.2.02):</p>
+<p><span class="math display">\[\boxed{\partial_\tau \mathbf{u} +
+(\mathbf{u} \cdot \nabla)\mathbf{u} = -\nabla S(\theta) +
+\nu_{\text{geo}} \nabla^2 \mathbf{u} +
+\mathbf{F}_{\text{ext}}}.\]</span></p>
+<p>Precise geometric origin of each term:</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Term</th>
+<th style="text-align: left;">Symbol</th>
+<th style="text-align: left;">Physical Counterpart</th>
+<th style="text-align: left;">Geometric Origin</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Causal time derivative</td>
+<td style="text-align: left;"><span
+class="math inline">\(\partial_\tau\)</span></td>
+<td style="text-align: left;">Time evolution</td>
+<td style="text-align: left;"><span class="math inline">\(\tau =
+\sqrt{\lambda_1^{\text{eff}}}\cdot\eta\)</span>, arc-length
+parameterization</td>
+</tr>
+<tr>
+<td style="text-align: left;">Inertial term</td>
+<td style="text-align: left;"><span
+class="math inline">\((\mathbf{u}\cdot\nabla)\mathbf{u}\)</span></td>
+<td style="text-align: left;">Convective self-interaction</td>
+<td style="text-align: left;"><span class="math inline">\(\mathcal{C}
+\leftrightarrow \mathcal{M}\)</span> waist-edge coupling (Theorem
+6.1.1.01)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Pressure term</td>
+<td style="text-align: left;"><span class="math inline">\(-\nabla
+S(\theta)\)</span></td>
+<td style="text-align: left;">Drives flow from high <span
+class="math inline">\(S \to\)</span> low <span
+class="math inline">\(S\)</span></td>
+<td style="text-align: left;">Gradient of the Algebraic Action (Theorem
+1.5.3.03)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Viscous term</td>
+<td style="text-align: left;"><span
+class="math inline">\(\nu_{\text{geo}}\nabla^2\mathbf{u}\)</span></td>
+<td style="text-align: left;">Transverse momentum diffusion</td>
+<td style="text-align: left;"><span
+class="math inline">\(\nu_{\text{geo}} = 1/\lambda_2^{\text{eff}}
+\approx 1.686 \times 10^{-5}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">External force term</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbf{F}_{\text{ext}}\)</span></td>
+<td style="text-align: left;">Boundary condition perturbation</td>
+<td style="text-align: left;">Deformation of the local geometry of <span
+class="math inline">\(\Sigma\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key differences</strong> (from the classical NS equation): 1.
+Pressure is not a thermodynamic equation of state but the gradient of
+the purely geometric quantity <span
+class="math inline">\(S(\theta)\)</span> 2. Viscosity is not an
+empirical parameter but the reciprocal of a Birkhoff eigenvalue <span
+class="math inline">\(1/\lambda_2^{\text{eff}}\)</span> 3. The domain is
+the 2-dimensional <span class="math inline">\(\Sigma\)</span> (a
+probability simplex), not 3-dimensional Euclidean space 4. Time is
+causal time <span class="math inline">\(\tau\)</span> (derived from
+<span class="math inline">\(\eta\)</span> arc-length parameterization),
+not Newtonian absolute time</p>
+<h3 id="fast-slow-mode-separation-spectrum-of-mathbfj_mathcalp">3.2
+Fast-Slow Mode Separation: Spectrum of <span
+class="math inline">\(\mathbf{J}_{\mathcal{P}}\)</span></h3>
+<p>The linearization operator <span
+class="math inline">\(\mathbf{J}_{\mathcal{P}}\)</span> of the
+constrained gradient flow is defined on the sector parameter space <span
+class="math inline">\(\Sigma\)</span> (Theorem 10.17.0.03):</p>
+<p><span class="math display">\[\mathbf{J}_{\mathcal{P}} = \Pi_{\Sigma}
+\circ \text{Hess}(S) \circ \Pi_{\Sigma},\]</span></p>
+<p>where <span class="math inline">\(\Pi_{\Sigma}\)</span> is the
+projection operator onto the constrained directions on <span
+class="math inline">\(\Sigma\)</span>. <span
+class="math inline">\(\mathbf{J}_{\mathcal{P}}\)</span> has a natural
+even-odd decomposition:</p>
+<p><span class="math display">\[H = H^{\text{even}} \oplus
+H^{\text{odd}},\]</span></p>
+<p><span class="math inline">\(H^{\text{even}}\)</span> corresponds to
+the slow mode (<span class="math inline">\(\eta\)</span> direction),
+<span class="math inline">\(H^{\text{odd}}\)</span> to the fast mode
+(<span class="math inline">\(\xi\)</span> direction). This decomposition
+originates from the topological properties of the Dirac operator
+spectrum on the product sphere class <span class="math inline">\(S^3
+\times S^3 \times S^3\)</span> (Theorem 3.3.2.02).</p>
+<p>At the physical vacuum point <span
+class="math inline">\(P_0\)</span>, the three eigenvalues of <span
+class="math inline">\(\mathbf{J}_{\mathcal{P}}\)</span> (Theorem
+10.17.0.04):</p>
+<p><span class="math display">\[\lambda_1^{\text{eff}} = 391.05,\quad
+\lambda_2^{\text{eff}} = 59324.3,\quad \lambda_{\text{zero}} = 0\
+(\text{gauge zero mode}).\]</span></p>
+<h3 id="topological-rigidity-of-the-spectral-gap-ratio-151.70">3.3
+Topological Rigidity of the Spectral Gap Ratio <span
+class="math inline">\(151.70\)</span></h3>
+<p><span class="math inline">\(\Lambda_H^{\text{eff}} = 151.70\)</span>
+is a topological invariant (Theorem 10.17.0.05) — when <span
+class="math inline">\(|\delta\theta| &lt; 1^\circ\)</span>, <span
+class="math inline">\(\Delta\Lambda/\Lambda &lt; 10^{-3}\)</span>. It is
+protected by the topological properties of the product sphere class and
+does not depend on parameter fine-tuning.</p>
+<p><strong>Physical consequences of fast and slow modes</strong>
+(Theorem 10.17.0.05):</p>
+<p><span class="math display">\[\tau_{\text{slow}} = 7.28\
+\text{days},\quad \tau_{\text{fast}} = 1.15\ \text{hours}.\]</span></p>
+<p>The slow mode and fast mode are strictly separated in the dynamics.
+This separation is the root of the <strong>causal structure</strong> of
+emergent spacetime — see §5.</p>
+<p><strong>Geometric Reynolds number</strong> (Proposition
+10.8.3.01):</p>
+<p><span class="math display">\[\text{Re}_{\text{geo}} =
+\frac{\lambda_2^{\text{eff}}}{\lambda_1^{\text{eff}}} \approx
+152.\]</span></p>
+<p><span class="math inline">\(\text{Re}_{\text{geo}} \approx
+152\)</span> lies at the center of the laminar-turbulent transition
+region — this means the gradient flow on <span
+class="math inline">\(\Sigma\)</span> is not pure laminar flow but a
+transitional flow with vortex-street structures. After projection to
+<span class="math inline">\(\mathbb{R}^{3,1}\)</span>, this
+vortex-street structure corresponds to <strong>quantum
+fluctuations</strong> in physical spacetime.</p>
+<hr />
+<h2 id="laminated-structure-on-the-2-dimensional-sigma">§4 Laminated
+Structure on the 2-Dimensional <span
+class="math inline">\(\Sigma\)</span></h2>
+<h3 id="spherical-geometry-of-sectors-s3r_m-times-s3r_c-times-s3r_i">4.1
+Spherical Geometry of Sectors: <span class="math inline">\(S^3(r_M)
+\times S^3(r_C) \times S^3(r_I)\)</span></h3>
+<p>The full geometric realization of the encoding orbits is a
+constrained product manifold (Article 1.5 §3.6):</p>
+<p><span class="math display">\[M(a) = S^3(r_M) \times S^3(r_C) \times
+S^3(r_I),\]</span></p>
+<p>where the radii of the three <span class="math inline">\(S^3\)</span>
+are determined by the sector weights: <span class="math inline">\(r_i
+\propto \sqrt{\sigma_i}\)</span>. <span
+class="math inline">\(\Sigma\)</span> is the reduced section of this
+product manifold under the sector parameter constraint.</p>
+<p>Concretely, the <span class="math inline">\(S^3(r_M)\)</span> of the
+Material Realm <span class="math inline">\(\mathcal{M}\)</span> can be
+parameterized as (Proposition 3.12.5.01):</p>
+<p><span class="math display">\[S^3 = \{(\chi, \vartheta, \varphi) \mid
+0 \leq \chi \leq \pi,\ 0 \leq \vartheta \leq \pi,\ 0 \leq \varphi &lt;
+2\pi\},\]</span></p>
+<p>with metric <span class="math inline">\(ds^2 = d\chi^2 +
+\sin^2\chi(d\vartheta^2 + \sin^2\vartheta d\varphi^2)\)</span>.</p>
+<h3 id="laminated-structure-of-encoding-orbits-s_r">4.2 Laminated
+Structure of Encoding Orbits <span
+class="math inline">\(\{S_r\}\)</span></h3>
+<p>At <span class="math inline">\(\chi = \pi/2\)</span> (the equatorial
+section), <span class="math inline">\(S^3(r_M)\)</span> collapses to
+<span class="math inline">\(S^2\)</span> — this is precisely the
+projection of the encoding orbit in the <span
+class="math inline">\(\mathcal{M}\)</span> sector (Proposition
+3.12.5.01). The sections at different <span
+class="math inline">\(r\)</span> form a <strong>laminated
+structure</strong> <span class="math inline">\(\{S_r\}\)</span>:</p>
+<p><span class="math display">\[\{S_r\} = \{S^3(r) \cap \{\chi = \pi/2\}
+\mid r \in [0, r_M]\}.\]</span></p>
+<p>Each <span class="math inline">\(S_r \cong S^2\)</span>, and as <span
+class="math inline">\(r\)</span> varies continuously, the direct sum of
+these <span class="math inline">\(S^2\)</span> sections covers the
+dimension of the <span class="math inline">\(\mathcal{M}\)</span>
+sector. Similarly, the <span class="math inline">\(\mathcal{C}\)</span>
+sector and <span class="math inline">\(\mathcal{I}\)</span> sector each
+possess their own laminated structure.</p>
+<h3 id="continuum-limit-and-degree-of-freedom-count">4.3 Continuum Limit
+and Degree-of-Freedom Count</h3>
+<p>In the continuum limit <span class="math inline">\(N_{\text{info}}
+\to \infty\)</span>, the discrete laminated structure <span
+class="math inline">\(\{S_r\}\)</span> becomes a continuous fibration.
+The total number of degrees of freedom is (Theorem 10.17.0.01):</p>
+<p><span class="math display">\[d_{\text{total}} =
+\dim_{\mathbb{R}}(\text{Cl}(8)\text{ irreducible representation}) =
+16.\]</span></p>
+<p>These 16 real degrees of freedom are organized in the continuum limit
+as:</p>
+<p><span class="math display">\[16 = 4 \times 4,\]</span></p>
+<p>i.e., 4 spacetime directions <span
+class="math inline">\(\times\)</span> 4 internal components
+(corresponding to the three sectors plus one shared information layer).
+<strong>The continuum limit “decouples” the constrained excitations on
+the 2-dimensional <span class="math inline">\(\Sigma\)</span> into
+independent degrees of freedom in 4-dimensional spacetime</strong> —
+this is the algebraic root of dimensional emergence.</p>
+<hr />
+<h2 id="projection-mechanism-sigma-to-mathbbr31">§5 Projection
+Mechanism: <span class="math inline">\(\Sigma \to
+\mathbb{R}^{3,1}\)</span></h2>
+<blockquote>
+<p><strong>Honesty Preamble</strong>: The projection mechanism presented
+in this chapter is directional, argued at the level of structural
+inference. The explicit dual map <span class="math inline">\(\Sigma
+\leftrightarrow \mathbb{R}^{3,1}\)</span> has not yet been constructed
+(see §8). The content below is pieced together from already-closed
+theorems and constructions to form the most self-consistent picture.</p>
+</blockquote>
+<h3 id="eta-to-time-slow-mode-causal-propagation">5.1 <span
+class="math inline">\(\eta \to\)</span> Time: Slow Mode Causal
+Propagation</h3>
+<p>The slow mode direction <span class="math inline">\(\eta\)</span> of
+<span class="math inline">\(\mathbf{J}_{\mathcal{P}}\)</span>
+(eigenvalue <span class="math inline">\(\lambda_1^{\text{eff}} =
+391.05\)</span>) projects, in the continuum limit, as the <strong>causal
+propagation direction</strong> of physical time.</p>
+<p><strong>Chain of reasoning</strong>: 1. The <span
+class="math inline">\(\eta\)</span> direction is the direction of
+maximal gradient of <span class="math inline">\(S(\theta)\)</span>
+(<span class="math inline">\(\partial S/\partial\eta = -1097.60\)</span>
+rad⁻¹) 2. Flow along <span class="math inline">\(\eta\)</span> is
+irreversible — <span class="math inline">\(S\)</span> decreases
+monotonically, corresponding to the thermodynamic arrow of time 3. The
+causal time parameter <span class="math inline">\(\tau =
+\sqrt{\lambda_1^{\text{eff}}}\cdot\eta\)</span> is the arc-length
+parameterization of <span class="math inline">\(\eta\)</span>, naturally
+yielding the metric structure of time 4. The slow-mode characteristic
+time <span class="math inline">\(\tau_{\text{slow}} = 7.28\)</span> days
+corresponds to the “flow rate” of physical time</p>
+<p><strong>Projection formula</strong> (inference, not theorem):</p>
+<p><span class="math display">\[t_{\text{phys}} = \chi_T \cdot \tau =
+\chi_T \sqrt{\lambda_1^{\text{eff}}} \cdot \eta,\]</span></p>
+<p>where <span class="math inline">\(\chi_T = 3.616 \times
+10^{-17}\)</span> s is the Born Rule time base (§7).</p>
+<h3 id="xi-to-space-fast-mode-freezing-and-transverse-unfolding">5.2
+<span class="math inline">\(\xi \to\)</span> Space: Fast Mode Freezing
+and Transverse Unfolding</h3>
+<p>The fast mode direction <span class="math inline">\(\xi\)</span>
+(eigenvalue <span class="math inline">\(\lambda_2^{\text{eff}} =
+59324.3\)</span>) projects as the <strong>transverse direction</strong>
+of physical space.</p>
+<p><strong>Fast mode freezing mechanism</strong>: The Lyapunov exponent
+along the <span class="math inline">\(\xi\)</span> direction is <span
+class="math inline">\(\Lambda_\xi =
+-\frac{1}{2}\log(\lambda_2/\lambda_1) \approx -2.51\)</span> (Theorem
+7.13.4.01), meaning that perturbations in the <span
+class="math inline">\(\xi\)</span> direction decay at an exponential
+rate <span class="math inline">\(\propto e^{-2.51\tau}\)</span>. On the
+causal time scale <span
+class="math inline">\(\tau_{\text{slow}}\)</span>, the dynamics in the
+<span class="math inline">\(\xi\)</span> direction is almost completely
+frozen — <span class="math inline">\(u_\xi \approx 0\)</span>, except in
+the boundary layer <span class="math inline">\(\mathcal{B} = \{|\xi|
+&lt; \delta_{\text{geo}}\}\)</span> (Definition 10.8.4.01).</p>
+<p>After freezing, the <span class="math inline">\(\xi\)</span>
+direction no longer carries flow dynamics but instead serves as the
+<strong>geometric substrate for spatial coordinates</strong>. The
+unfolding of the laminated structure <span
+class="math inline">\(\{S_r\}\)</span> along the <span
+class="math inline">\(\xi\)</span> direction yields the radial dimension
+of space.</p>
+<p><strong>This explains a key puzzle</strong>: why space is
+3-dimensional while <span class="math inline">\(\Sigma\)</span> is only
+2-dimensional. Because each point of <span
+class="math inline">\(\Sigma\)</span> (via the laminated structure of
+encoding orbits) carries an <span class="math inline">\(S^2\)</span>
+fiber — fast mode freezing “unfolds” this <span
+class="math inline">\(S^2\)</span> fiber into two transverse spatial
+dimensions, which together with the <span
+class="math inline">\(\eta\)</span> direction as time yields <span
+class="math inline">\(3+1\)</span> dimensions.</p>
+<h3 id="emergence-of-the-causal-cone-the-1521-light-cone-ratio">5.3
+Emergence of the Causal Cone: the <span
+class="math inline">\(152:1\)</span> Light-Cone Ratio</h3>
+<p>The fast-slow mode ratio <span class="math inline">\(151.70\)</span>
+naturally produces a causal cone on <span
+class="math inline">\(\Sigma\)</span>:</p>
+<p><span class="math display">\[\frac{\text{propagation speed along
+}\eta}{\text{propagation speed along }\xi} =
+\sqrt{\frac{\lambda_1^{\text{eff}}}{\lambda_2^{\text{eff}}}} =
+\sqrt{\frac{1}{151.70}} \approx \frac{1}{12.32}.\]</span></p>
+<p>This means the “signal” propagation speed along the <span
+class="math inline">\(\xi\)</span> direction is only about <span
+class="math inline">\(1/12.32\)</span> of the propagation speed along
+the <span class="math inline">\(\eta\)</span> direction. In the
+continuum limit, fast mode freezing further suppresses causal
+propagation along the <span class="math inline">\(\xi\)</span>
+direction, forming an effective <strong>light-cone structure</strong>:
+the timelike direction (<span class="math inline">\(\eta\)</span>) and
+the spacelike direction (<span class="math inline">\(\xi\)</span>) are
+cleanly separated by the spectral gap ratio.</p>
+<p><strong>Geometric Mach number</strong> (Construction 10.8.3.01):</p>
+<p><span class="math display">\[\text{Ma}_{\text{geo}} =
+\frac{v_{\text{geo}}^{\text{eff}}}{c_s^{\text{geo}}} \approx
+4.3.\]</span></p>
+<p><span class="math inline">\(\text{Ma}_{\text{geo}} \approx
+4.3\)</span> corresponds to hypersonic flow — the gradient flow on <span
+class="math inline">\(\Sigma\)</span> propagates along the <span
+class="math inline">\(\eta\)</span> direction at a speed far exceeding
+the “speed of sound.” After projection to <span
+class="math inline">\(\mathbb{R}^{3,1}\)</span>, this hypersonic
+character corresponds to the <strong>rigidity of causal
+structure</strong> in physical spacetime — the separation between
+timelike and spacelike is sharp and cannot be blurred.</p>
+<h3 id="why-31-dimensions">5.4 Why <span
+class="math inline">\(3+1\)</span> Dimensions</h3>
+<p>From the above projection mechanism, the origin of <span
+class="math inline">\(3+1\)</span> dimensions can be traced as:</p>
+<ol type="1">
+<li><p><strong>1 time dimension</strong>: the slow mode direction <span
+class="math inline">\(\eta\)</span> on <span
+class="math inline">\(\Sigma\)</span> — the causal propagation direction
+along the <span class="math inline">\(S\)</span> gradient. There is only
+one slow mode (<span
+class="math inline">\(\lambda_1^{\text{eff}}\)</span> is the unique slow
+eigenvalue), hence only one time direction.</p></li>
+<li><p><strong>3 spatial dimensions</strong>: the fast mode direction
+<span class="math inline">\(\xi\)</span> on <span
+class="math inline">\(\Sigma\)</span> (1 dimension) + the <span
+class="math inline">\(S^2\)</span> fiber of the laminated structure of
+encoding orbits on <span class="math inline">\(\Sigma\)</span> (2
+dimensions) = 3 dimensions. Freezing of the former releases one spatial
+dimension; the continuum limit of the latter contributes two transverse
+spatial dimensions.</p></li>
+<li><p><strong>Algebraic constraint</strong>: <span
+class="math inline">\(\dim_{\mathbb{R}}(\text{Cl}(8)\text{ irreducible
+representation}) = 16 = 4 \times 4\)</span> — the 4 spacetime dimensions
+and the 4 internal degrees of freedom are bound together by the
+representation theory of Cl(8). No more, no fewer.</p></li>
+</ol>
+<p><strong>Why not other dimensions?</strong> If the number of sectors
+on <span class="math inline">\(\Sigma\)</span> were not 3 (<span
+class="math inline">\(2^3 - 1 = 7\)</span> sector combinations), if Bott
+periodicity were not 8 (<span class="math inline">\(\delta^8\)</span>
+closure), if the fast-slow mode ratio were not <span
+class="math inline">\(151.70\)</span> — any deviation would destroy the
+emergent causal structure. <span class="math inline">\(\{2, 3,
+5\}\)</span> is the unique triple satisfying the Consummate condition
+(Theorem 2.3.7.01), and <span
+class="math inline">\(3+1\)</span>-dimensional spacetime is the
+macroscopic emergence of this triple.</p>
+<hr />
+<h2 id="information-loss-in-the-projection">§6 Information Loss in the
+Projection</h2>
+<h3 id="holographic-incompleteness-parameter-c2">6.1 Holographic
+Incompleteness Parameter <span class="math inline">\(C^2\)</span></h3>
+<p>The projection from <span class="math inline">\(\Sigma\)</span>
+(2-dimensional quantum substrate) to <span
+class="math inline">\(\mathbb{R}^{3,1}\)</span> (4-dimensional classical
+emergent structure) is not lossless. The holographic incompleteness
+parameter <span class="math inline">\(C\)</span> precisely quantifies
+the information retention rate in the projection (Theorem 1.4.3.01):</p>
+<p><span class="math display">\[2pC^3 + C^2 = 1,\quad p = \sqrt{\sigma_M
+\sigma_C \sigma_I}.\]</span></p>
+<p>At the physical fixed point <span
+class="math inline">\(\sigma^*\)</span>:</p>
+<p><span class="math display">\[C \approx 0.960762,\quad C^2 \approx
+0.923.\]</span></p>
+<p><strong>Interpretation</strong>: about <strong>92.3%</strong> of the
+<span class="math inline">\(\Sigma\)</span>-level information is
+preserved in physical spacetime, and about <strong>7.7%</strong> is lost
+in the projection.</p>
+<h3 id="specific-content-of-the-loss">6.2 Specific Content of the
+Loss</h3>
+<p>Inferred from the three-sector structure, the lost information mainly
+includes:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Lost Content</th>
+<th style="text-align: left;">Sector Origin</th>
+<th style="text-align: left;">Mechanism</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">High-frequency components of the <span
+class="math inline">\(\mathcal{I}\)</span> sector</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{I}\)</span></td>
+<td style="text-align: left;">High-frequency modes of the discrete graph
+structure (<span class="math inline">\(N_{\text{info}} \approx 9.024
+\times 10^{22}\)</span> nodes) are truncated in the continuum limit</td>
+</tr>
+<tr>
+<td style="text-align: left;">Global phase of the <span
+class="math inline">\(\mathcal{C}\)</span> sector</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{C}\)</span></td>
+<td style="text-align: left;">The global U(1) phase of the causal field
+is lost in the projection — only local causal order is preserved</td>
+</tr>
+<tr>
+<td style="text-align: left;">Cross-region shared information</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{M}\cap\mathcal{C}\cap\mathcal{I}\)</span></td>
+<td style="text-align: left;">In the direct sum term of Cl(7) =
+Mat(8,<span class="math inline">\(\mathbb{R}\)</span>) ⊕ Mat(8,<span
+class="math inline">\(\mathbb{R}\)</span>), the shared information layer
+is only partially accessible through cross-region import</td>
+</tr>
+</tbody>
+</table>
+<p>The lost 7.7% is not random noise — it is
+<strong>structural</strong>: the high-frequency truncation corresponds
+to the physical indistinguishability below the Planck scale, the global
+phase loss corresponds to the origin of gauge symmetry, and the shared
+information loss corresponds to the irreducible uncertainty of quantum
+entanglement.</p>
+<h3 id="c2-encoding-cost-penalty">6.3 <span
+class="math inline">\(1/C^2\)</span> Encoding Cost Penalty</h3>
+<p>The <span class="math inline">\(1/C^2\)</span> factor in the
+Algebraic Action directly reflects the cost of the loss:</p>
+<p><span class="math display">\[S(\sigma) = \frac{1}{C^2}\left[\sum_i
+\frac{1}{\sigma_i} + \sum_{i&lt;j} \frac{1}{\sqrt{\sigma_i
+\sigma_j}}\right].\]</span></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Configuration</th>
+<th style="text-align: center;"><span
+class="math inline">\(C^2\)</span></th>
+<th style="text-align: center;"><span
+class="math inline">\(1/C^2\)</span></th>
+<th style="text-align: center;"><span
+class="math inline">\(S\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Symmetric ground state</td>
+<td style="text-align: center;">0.75</td>
+<td style="text-align: center;">1.333</td>
+<td style="text-align: center;">24</td>
+</tr>
+<tr>
+<td style="text-align: left;">Our world</td>
+<td style="text-align: center;">0.923</td>
+<td style="text-align: center;">1.083</td>
+<td style="text-align: center;">137.036</td>
+</tr>
+<tr>
+<td style="text-align: left;">Extreme breaking</td>
+<td style="text-align: center;"><span class="math inline">\(\to
+1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\to
+1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\to
+968\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>In the symmetric ground state (complete triality), the loss is
+greatest (25%), the encoding penalty is maximal (<span
+class="math inline">\(1/C^2 = 1.333\)</span>), but <span
+class="math inline">\(S\)</span> is minimal (24) because the individual
+and cross terms are equally weighted. In our world, the loss is moderate
+(7.7%), penalty <span class="math inline">\(1/C^2 \approx
+1.083\)</span>. In the extreme breaking limit, there is almost no loss
+(<span class="math inline">\(C^2 \to 1\)</span>), but <span
+class="math inline">\(S\)</span> diverges because the individual term
+<span class="math inline">\(1/\sigma_{\text{min}} \to
+\infty\)</span>.</p>
+<p><strong>The optimum</strong> lies at roughly 12% of the landscape
+range — the optimal trade-off between information retention and encoding
+cost.</p>
+<hr />
+<h2 id="born-rule-bridge-dimensionless-to-dimensionful">§7 Born Rule
+Bridge: Dimensionless <span class="math inline">\(\to\)</span>
+Dimensionful</h2>
+<h3 id="length-base-chi_l-and-time-base-chi_t">7.1 Length Base <span
+class="math inline">\(\chi_L\)</span> and Time Base <span
+class="math inline">\(\chi_T\)</span></h3>
+<p>All geometric quantities on <span
+class="math inline">\(\Sigma\)</span> are dimensionless (angles,
+weights, eigenvalue ratios). Translating them into dimensionful
+quantities in physical spacetime requires the two fundamental scales
+provided by the Born Rule (Theorem 1.3.4.01, Article 10.8 §1.2):</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Base</th>
+<th style="text-align: left;">Symbol</th>
+<th style="text-align: left;">Value</th>
+<th style="text-align: left;">Physical Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Born length</td>
+<td style="text-align: left;"><span
+class="math inline">\(\chi_L\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(1.509 \times
+10^{-10}\)</span> m</td>
+<td style="text-align: left;">Photon Compton wavelength (<span
+class="math inline">\(\approx\)</span> Bohr radius <span
+class="math inline">\(/2\pi\alpha\)</span>)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Born time</td>
+<td style="text-align: left;"><span
+class="math inline">\(\chi_T\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(3.616 \times
+10^{-17}\)</span> s</td>
+<td style="text-align: left;">Born Rule time scale (determined
+independently from <span class="math inline">\(\chi_L\)</span>)</td>
+</tr>
+</tbody>
+</table>
+<p>These two scales are not free parameters — they are jointly
+determined by the algebraic normalization of the Born Rule <span
+class="math inline">\(2pC^3 + C^2 = 1\)</span> together with the mass
+scale <span class="math inline">\(K = 839.76\)</span> keV (Theorem
+1.3.4.01, Theorem 7.8.9.11).</p>
+<h3
+id="translating-from-sigma-geometric-quantities-to-physical-coordinates">7.2
+Translating from <span class="math inline">\(\Sigma\)</span> Geometric
+Quantities to Physical Coordinates</h3>
+<p>Translation rules (inference, not all theorem-grade):</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Geometric quantity on <span
+class="math inline">\(\Sigma\)</span></th>
+<th style="text-align: left;">Translation factor</th>
+<th style="text-align: left;">Physical quantity</th>
+<th style="text-align: left;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(\eta\)</span>
+(causal arc length)</td>
+<td style="text-align: left;"><span class="math inline">\(\chi_T
+\sqrt{\lambda_1^{\text{eff}}}\)</span></td>
+<td style="text-align: left;">Physical time <span
+class="math inline">\(t\)</span></td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(\xi\)</span>
+(transverse arc length)</td>
+<td style="text-align: left;"><span
+class="math inline">\(\chi_L\)</span></td>
+<td style="text-align: left;">Physical length <span
+class="math inline">\(x\)</span></td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\sqrt{\lambda_1^{\text{eff}}}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\chi_L /
+\chi_T\)</span></td>
+<td style="text-align: left;">Speed of light <span
+class="math inline">\(c\)</span></td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(S(\sigma)\)</span></td>
+<td style="text-align: left;">dimensionless</td>
+<td style="text-align: left;"><span
+class="math inline">\(\alpha^{-1}\)</span></td>
+<td style="text-align: left;">137.036</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(\partial
+S/\partial\eta\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\chi_T^{-1}\)</span></td>
+<td style="text-align: left;">Energy gradient</td>
+<td style="text-align: left;">—</td>
+</tr>
+</tbody>
+</table>
+<p>The core of the bridging is the <strong>emergence of <span
+class="math inline">\(c\)</span></strong>:</p>
+<p><span class="math display">\[c = \frac{\chi_L}{\chi_T} = \frac{1.509
+\times 10^{-10}\ \text{m}}{3.616 \times 10^{-17}\ \text{s}} = 4.172
+\times 10^6\ \text{m/s}.\]</span></p>
+<p>The discrepancy with the experimental value <span
+class="math inline">\(c = 2.998 \times 10^8\)</span> m/s is about 98.6%
+— this significant discrepancy indicates that <span
+class="math inline">\(\chi_L / \chi_T\)</span> does not directly yield
+the speed of light; the physical processes corresponding to <span
+class="math inline">\(\chi_L\)</span> and <span
+class="math inline">\(\chi_T\)</span> are not photon propagation but the
+propagation of more fundamental geometric excitations. The geometric
+sound speed <span class="math inline">\(c_s^{\text{geo}} =
+\sqrt{\lambda_1^{\text{eff}}} \cdot \sin\theta_M \approx 16.76\)</span>
+(in geometric units) corresponds to a physical velocity after Born
+translation, and the precise form of this translation is part of the
+open problem in §8.3.</p>
+<hr />
+<h2 id="honesty-boundary-gaps-and-open-problems">§8 Honesty Boundary:
+Gaps and Open Problems</h2>
+<h3 id="closed-links">8.1 Closed Links</h3>
+<p>The following links have reached theorem-grade closure within
+Conjugate Spectral Geometry:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Conclusion</th>
+<th style="text-align: left;">Status</th>
+<th style="text-align: left;">Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Three-sector constraint and 2-dimensional
+structure of <span class="math inline">\(\Sigma\)</span></td>
+<td style="text-align: left;"><strong>Theorem</strong></td>
+<td style="text-align: left;">Theorem 7.8.6.03</td>
+</tr>
+<tr>
+<td style="text-align: left;">Minimum of <span
+class="math inline">\(S(\sigma)\)</span> and landscape range <span
+class="math inline">\([24, 968]\)</span></td>
+<td style="text-align: left;"><strong>Theorem</strong></td>
+<td style="text-align: left;">Proposition 1.5.3.02, Article 1.5
+§3.7</td>
+</tr>
+<tr>
+<td style="text-align: left;">Spectral gap ratio <span
+class="math inline">\(\Lambda_H^{\text{eff}} = 151.70\)</span> of <span
+class="math inline">\(\mathbf{J}_{\mathcal{P}}\)</span></td>
+<td style="text-align: left;"><strong>Theorem</strong></td>
+<td style="text-align: left;">Theorem 10.17.0.04</td>
+</tr>
+<tr>
+<td style="text-align: left;">Topological protection of spectral
+rigidity</td>
+<td style="text-align: left;"><strong>Theorem</strong></td>
+<td style="text-align: left;">Theorem 3.3.2.02, 10.17.0.05</td>
+</tr>
+<tr>
+<td style="text-align: left;">Fast-slow mode separation and Lyapunov
+exponent <span class="math inline">\(\Lambda_\xi \approx
+-2.51\)</span></td>
+<td style="text-align: left;"><strong>Theorem</strong></td>
+<td style="text-align: left;">Theorem 7.13.4.01</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\text{Re}_{\text{geo}} \approx 152\)</span>, <span
+class="math inline">\(\text{Ma}_{\text{geo}} \approx 4.3\)</span>, <span
+class="math inline">\(\text{Pr}_{\text{geo}} \approx 0.521\)</span></td>
+<td style="text-align: left;"><strong>Construction</strong></td>
+<td style="text-align: left;">Construction 10.8.3.01, 10.8.3.02</td>
+</tr>
+<tr>
+<td style="text-align: left;">Term-by-term correspondence of the
+geometric Navier-Stokes equation</td>
+<td style="text-align: left;"><strong>Construction</strong></td>
+<td style="text-align: left;">Construction 10.8.2.02</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(C^2 \approx
+0.923\)</span> and holographic incompleteness</td>
+<td style="text-align: left;"><strong>Theorem</strong></td>
+<td style="text-align: left;">Theorem 1.4.3.01</td>
+</tr>
+<tr>
+<td style="text-align: left;">Born Rule scales <span
+class="math inline">\(\chi_L\)</span>, <span
+class="math inline">\(\chi_T\)</span></td>
+<td style="text-align: left;"><strong>Theorem</strong></td>
+<td style="text-align: left;">Theorem 1.3.4.01</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\dim(\text{Cl}(8)\ \text{irrep}) = 16 = 4 \times
+4\)</span></td>
+<td style="text-align: left;"><strong>Algebraic fact</strong></td>
+<td style="text-align: left;">Standard conclusion of Clifford
+algebra</td>
+</tr>
+</tbody>
+</table>
+<h3
+id="highest-priority-gap-sigma-leftrightarrow-mathbbr31-dual-map">8.2
+Highest-Priority Gap: <span class="math inline">\(\Sigma \leftrightarrow
+\mathbb{R}^{3,1}\)</span> Dual Map</h3>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 30%" />
+<col style="width: 40%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Gap</th>
+<th style="text-align: left;">Current Status</th>
+<th style="text-align: center;">Priority</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Explicit dual map <span
+class="math inline">\(\Sigma \leftrightarrow
+\mathbb{R}^{3,1}\)</span></strong></td>
+<td style="text-align: left;"><strong>Not constructed</strong>
+(directional inference)</td>
+<td style="text-align: center;"><strong>Highest</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">Functional-grade translation from <span
+class="math inline">\(\mathbf{J}_{\mathcal{P}}\)</span> spectral gap
+ratio <span class="math inline">\(\to\)</span> 4D Hamiltonian spectral
+lower bound</td>
+<td style="text-align: left;">Numerical value exists (151.70),
+functional map missing</td>
+<td style="text-align: center;">High</td>
+</tr>
+<tr>
+<td style="text-align: left;">Equivalence of deformation quantization
+and path-integral quantization (in the emergence limit)</td>
+<td style="text-align: left;">Not proven</td>
+<td style="text-align: center;">Medium</td>
+</tr>
+<tr>
+<td style="text-align: left;">Closure of Born translation <span
+class="math inline">\(c_s^{\text{geo}} \to c\)</span></td>
+<td style="text-align: left;">Numerical discrepancy <span
+class="math inline">\(\approx\)</span> 98.6%</td>
+<td style="text-align: center;">Medium</td>
+</tr>
+</tbody>
+</table>
+<p>Article 10.17 §7.2-7.3 lists these gaps with rare candor:</p>
+<blockquote>
+<p>“Without this bridge, the argument is directional and intuitive. With
+the bridge, it becomes a theorem.”</p>
+</blockquote>
+<h3 id="expected-structure-after-construction">8.3 Expected Structure
+After Construction</h3>
+<p>Once the <span class="math inline">\(\Sigma \leftrightarrow
+\mathbb{R}^{3,1}\)</span> dual map is constructed, the following
+structure is expected (inferred):</p>
+<p><span class="math display">\[\begin{array}{ccc}
+\text{2-dim quantum substrate }\Sigma &amp; \xrightarrow{\text{Dual map
+} \Phi} &amp; \text{4-dim emergent spacetime }\mathbb{R}^{3,1} \\
+\text{Constrained gradient flow } \partial_\tau\mathbf{u} +
+(\mathbf{u}\cdot\nabla)\mathbf{u} = -\nabla S +
+\nu_{\text{geo}}\nabla^2\mathbf{u} &amp; \longleftrightarrow &amp;
+\text{Einstein field equations } G_{\mu\nu} = \frac{8\pi
+G}{c^4}T_{\mu\nu} \\
+\text{Star-product quantization } f \star g = fg +
+\frac{i\hbar}{2}\{f,g\} + \mathcal{O}(\hbar^2) &amp; \longleftrightarrow
+&amp; \text{Canonical quantization } [\hat{x}, \hat{p}] = i\hbar \\
+\mathbf{J}_{\mathcal{P}}\text{ spectral gap } \Lambda_H^{\text{eff}} =
+151.70 &amp; \longleftrightarrow &amp; \text{Mass gap } \Delta &gt; 0 \\
+\text{Fast-slow mode separation } \tau_{\text{slow}}/\tau_{\text{fast}}
+= 151.70 &amp; \longleftrightarrow &amp; \text{Light-cone causal
+structure} \\
+\end{array}\]</span></p>
+<p>The core task of the dual map <span
+class="math inline">\(\Phi\)</span> is to “holographically lift” the
+constrained gradient flow on <span class="math inline">\(\Sigma\)</span>
+to an Einstein-Yang-Mills system on <span
+class="math inline">\(\mathbb{R}^{3,1}\)</span>. By analogy with the
+GKPW relation in AdS/CFT duality:</p>
+<p><span class="math display">\[\langle e^{\int \phi_0 \mathcal{O}}
+\rangle_{\text{CFT}} = e^{-S_{\text{bulk}}[\phi]},\]</span></p>
+<p>it is anticipated that <span class="math inline">\(\Phi\)</span> will
+have a similar structure:</p>
+<p><span class="math display">\[\text{Tr}_{\Sigma}\left[e^{-\tau
+\mathbf{J}_{\mathcal{P}}}\right] \longleftrightarrow \int
+\mathcal{D}g_{\mu\nu} \mathcal{D}A_\mu\
+e^{-S_{\text{Einstein-YM}}}.\]</span></p>
+<p>However, this direction is currently only inference — it is the most
+central open problem in Conjugate Spectral Geometry at present.</p>
+<hr />
+<h2 id="theorem-index">Theorem Index</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Number</th>
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Section</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Triangular constraint of <span
+class="math inline">\(\Sigma\)</span>: <span
+class="math inline">\(\theta_M + \theta_C + \theta_I =
+90^\circ\)</span></td>
+<td style="text-align: left;">§1.1</td>
+</tr>
+<tr>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Spectral gap ratio of <span
+class="math inline">\(\mathbf{J}_{\mathcal{P}}\)</span>: <span
+class="math inline">\(\Lambda_H^{\text{eff}} = 151.70\)</span></td>
+<td style="text-align: left;">§3.2</td>
+</tr>
+<tr>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Topological protection of spectral
+rigidity</td>
+<td style="text-align: left;">§3.3</td>
+</tr>
+<tr>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;"><span
+class="math inline">\(S(\sigma)\)</span> landscape range <span
+class="math inline">\([24, 968]\)</span></td>
+<td style="text-align: left;">§2.3</td>
+</tr>
+<tr>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Geometric Navier-Stokes equation</td>
+<td style="text-align: left;">§3.1</td>
+</tr>
+<tr>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Fast-slow mode Lyapunov exponent <span
+class="math inline">\(\Lambda_\xi \approx -2.51\)</span></td>
+<td style="text-align: left;">§5.2</td>
+</tr>
+<tr>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Holographic incompleteness <span
+class="math inline">\(C^2 \approx 0.923\)</span></td>
+<td style="text-align: left;">§6.1</td>
+</tr>
+<tr>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Born scales <span
+class="math inline">\(\chi_L\)</span>, <span
+class="math inline">\(\chi_T\)</span></td>
+<td style="text-align: left;">§7.1</td>
+</tr>
+</tbody>
+</table>
+<p><strong>（End of document）</strong></p>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>

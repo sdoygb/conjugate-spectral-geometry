@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.1 Multiplier Sequence and Coding Orbit | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Version: 260721.1">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/1/1.1_Multiplier_Sequence_and_Coding_Orbit_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">1.1 Multiplier Sequence and Coding Orbit</span>
+  </nav>
+  <main class="article-content">
+<h1 id="multiplier-sequence-and-coding-orbit">1.1 Multiplier Sequence
+and Coding Orbit</h1>
+<p><strong>Version</strong>: 260721.1</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>Starting from the three Structure Constant Theorems (<span
+class="math inline">\(\Lambda=3\)</span>, <span
+class="math inline">\(k_0=2\)</span>, <span
+class="math inline">\(\Delta\Theta=5\)</span>) and the prime factor
+budget, this paper derives the multiplier sequence <span
+class="math inline">\(\mu_1, \dots, \mu_7\)</span> on the Coding Orbit.
+The multiplier sequence is uniquely determined by the Budget-Genotype
+double-layer structure and Benign Mutual Conjugate Locking. The Coding
+Base State <span class="math inline">\(N_1 = 6000 = 2^4 \cdot 3 \cdot
+5^3\)</span>, and after six-layer recurrence arrives at the terminal
+<span class="math inline">\(N_7 = 2.7 \times 10^8\)</span>. This paper
+provides the formal definition of the Budget-Genotype double-layer
+structure, a purely recursive proof of the Recycling Baseline Invariance
+Theorem, a complete proof of the seven-candidate exclusion for <span
+class="math inline">\(\mu_1 = 6\)</span>, a full derivation of <span
+class="math inline">\(\mu_2 = 100/3\)</span>, the exponent sequence and
+phase decomposition of the four stages of triality, the parameterized
+mechanism of mutual conjugate locking, and the step-by-step prime factor
+decomposition of the complete Coding Orbit.</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<p>§1 Coding Base State 　1.1 Prime Factor Structure of the Base State
+　1.2 Base State Value</p>
+<p>§2 Budget-Genotype Double-Layer Structure 　2.1 Budget Layer 　2.2
+Genotype Layer 　2.3 Operation Composition Formula 　2.4 Recycling
+Baseline Invariance Theorem 　2.5 Information Capacity Symmetry Argument
+　2.6 Double-Layer Constraints</p>
+<p>§3 Multiplier Sequence 　3.1 Six-Layer Multipliers 　3.2 Coding Orbit
+　3.3 Seven-Layer Truncation</p>
+<p>§4 Four Stages of Triality 　4.1 Triality Exponent Sequence 　4.2
+Detailed Description of the Four Stages</p>
+<p>§5 Uniqueness and Mutual Conjugate Locking 　5.1 Specific Mechanism
+of Mutual Conjugate Locking</p>
+<hr />
+<h2 id="coding-base-state">§1 Coding Base State</h2>
+<h3 id="prime-factor-structure-of-the-base-state">1.1 Prime Factor
+Structure of the Base State</h3>
+<p>The three Structure Constant Theorems (Theorem 7.8.6.03–13) lock down
+three prime factors:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Structure Constant</th>
+<th style="text-align: center;">Prime Factor</th>
+<th style="text-align: left;">Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span class="math inline">\(\Lambda =
+3\)</span></td>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">Semisimple splitting of Cl(3)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="math inline">\(k_0 =
+2\)</span></td>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">Terminal Duality of Cl(7)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="math inline">\(\Delta\Theta
+= 5\)</span></td>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;">Complex Structure Emergence of Cl(5)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Topological foundation of the prime factor set.</strong> The
+origin of the prime factor set <span class="math inline">\(\{2, 3,
+5\}\)</span> has been rigorously proved by the E₈ Bridging Theorem
+(Theorem E) of §0: <span class="math inline">\(h(E_8) = 30 = 2 \times 3
+\times 5\)</span>, where <span class="math inline">\(E_8\)</span> is the
+unique even unimodular lattice in Bott periodicity dimension 8.
+Individual assignments are determined by the highest root coefficients
+<span class="math inline">\(\{3, 4, 5\}\)</span> of the <span
+class="math inline">\(D_4\)</span> triality orbits. The coding framework
+of this volume is built upon this topological foundation.</p>
+</blockquote>
+<p>The prime factor decomposition of the Coding Base State <span
+class="math inline">\(N_1\)</span> must contain only <span
+class="math inline">\(\{2, 3, 5\}\)</span> — other prime factors are not
+in the budget.</p>
+<h3 id="base-state-value">1.2 Base State Value</h3>
+<p><strong>Proposition 1.1.1.01 (Coding Base State).</strong> The Coding
+Base State is <span class="math display">\[N_1 = 6000 = 2^4 \cdot 3
+\cdot 5^3.\]</span></p>
+<p>Its structure is jointly determined by the prime factor budgets of
+the three Structure Constant Theorems: - <span
+class="math inline">\(2^4\)</span>: the Terminal Duality of <span
+class="math inline">\(k_0 = 2\)</span> contributes one factor of 2 in
+each of the 4 coding layers (<span
+class="math inline">\(E_4\)</span>–<span
+class="math inline">\(E_7\)</span>) - <span
+class="math inline">\(3^1\)</span>: the Semisimple Splitting of <span
+class="math inline">\(\Lambda = 3\)</span> contributes one factor of 3 -
+<span class="math inline">\(5^3\)</span>: the Complex Structure
+Emergence of <span class="math inline">\(\Delta\Theta = 5\)</span> and
+the subsequent two layers each contribute one factor of 5</p>
+<hr />
+<h2 id="budget-genotype-double-layer-structure">§2 Budget-Genotype
+Double-Layer Structure</h2>
+<h3 id="budget-layer">2.1 Budget Layer</h3>
+<p><strong>Definition 14 (Prime Factor Budget).</strong> Each step of
+the coding process consumes or recycles prime factor tokens. The budget
+space <span class="math inline">\(\mathbb{B}\)</span> is a multiset of
+the prime factors <span class="math inline">\(\{2, 3, 5\}\)</span>. Each
+coding map <span class="math inline">\(E_n\)</span> consumes several
+tokens (producing growth) or recycles tokens (constraining growth).</p>
+<p>The complete budget is <span class="math inline">\(\{2, 3, 5,
+5\}\)</span> — a total of 4 tokens, corresponding to 4 consumer
+operations in the 7-layer coding.</p>
+<p><strong>Formal definition.</strong> Let the prime factor set be <span
+class="math inline">\(\mathcal{P} = \{2, 3, 5\}\)</span>. The budget
+space <span class="math inline">\(\mathbb{B}\)</span> is defined as the
+free commutative monoid (i.e., multiset) over <span
+class="math inline">\(\mathcal{P}\)</span>: <span
+class="math display">\[\mathbb{B} = \bigoplus_{p \in \mathcal{P}}
+\mathbb{N}_0 \cdot [p],\]</span> where <span
+class="math inline">\([p]\)</span> denotes the generator of prime factor
+<span class="math inline">\(p\)</span>, and addition corresponds to
+multiset union. The initial budget is <span
+class="math display">\[\mathbb{B}_1 = [2] \oplus [3] \oplus [5] \oplus
+[5].\]</span></p>
+<p>Budget evolution is driven by two types of atomic operations: -
+<strong>Consume operation</strong> <span
+class="math inline">\(\mathrm{consume}(p)\)</span>: removes one token
+<span class="math inline">\([p]\)</span> from the current budget <span
+class="math inline">\(\mathbb{B}_n\)</span>, injects the factor <span
+class="math inline">\(p\)</span> into the genotype, causing the coding
+cardinality to grow. Formally <span
+class="math inline">\(\mathbb{B}_{n1} = \mathbb{B}_n \ominus
+[p]\)</span>. - <strong>Recycle operation</strong> <span
+class="math inline">\(\mathrm{recycle}(p)\)</span>: retrieves a
+previously consumed factor <span class="math inline">\(p\)</span> from
+the cumulative recycling pool <span
+class="math inline">\(\mathbb{C}_n\)</span>, injects it into the
+genotype without deducting from the budget <span
+class="math inline">\(\mathbb{B}_n\)</span>. Formally <span
+class="math inline">\(\mathbb{C}_{n1} = \mathbb{C}_n \ominus
+[p]\)</span>, and <span class="math inline">\(\mathbb{B}_{n1} =
+\mathbb{B}_n\)</span>.</p>
+<p>The cumulative recycling pool <span
+class="math inline">\(\mathbb{C}_n\)</span> records all tokens that have
+been consumed but not yet recycled up to step <span
+class="math inline">\(n\)</span>, and serves as the bridge coupling the
+budget layer and the genotype layer. Initially <span
+class="math inline">\(\mathbb{C}_1 = \emptyset\)</span>.</p>
+<h3 id="genotype-layer">2.2 Genotype Layer</h3>
+<p><strong>Definition 15 (Genotype).</strong> The genotype <span
+class="math inline">\(\gamma_n\)</span> of each coding map <span
+class="math inline">\(E_n\)</span> is an algebraic structure describing
+the coding method of that step. The genotype is jointly constrained by
+the following factors:</p>
+<ol type="1">
+<li><strong>Bott periodicity rigidity</strong>: the algebraic structure
+of Cl(<span class="math inline">\(n\)</span>) → Cl(<span
+class="math inline">\(n1\)</span>) is rigid — non-adjustable.</li>
+<li><strong>Completeness Criterion</strong>: the Berry phase must close
+at each step.</li>
+<li><strong>Prime factor budget</strong>: tokens consumed must be within
+the budget.</li>
+<li><strong>Recycling baseline invariance</strong>: recycling operations
+cannot alter the coding cardinality of already completed steps.</li>
+</ol>
+<p><strong>Formal definition.</strong> The genotype <span
+class="math inline">\(\gamma_n\)</span> of the <span
+class="math inline">\(n\)</span>-th coding map <span
+class="math inline">\(E_n : \mathrm{Cl}(n-1) \to \mathrm{Cl}(n)\)</span>
+is a triple: <span class="math display">\[\gamma_n = \big(\phi_n, \,
+\sigma_n, \, \rho_n\big),\]</span> where: - <span
+class="math inline">\(\phi_n : \mathrm{Cl}(n-1) \hookrightarrow
+\mathrm{Cl}(n)\)</span> is the rigid embedding provided by Bott
+periodicity (non-adjustable); - <span class="math inline">\(\sigma_n \in
+\{\mathrm{consume}, \mathrm{recycle},
+\mathrm{id}\}^{\mathcal{P}}\)</span> is the operation signature on each
+prime factor <span class="math inline">\(p\)</span> for this step; -
+<span class="math inline">\(\rho_n \in \mathbb{Z}[\frac{1}{2},
+\frac{1}{3}, \frac{1}{5}]\)</span> is the rational representation of the
+multiplier <span class="math inline">\(\mu_n\)</span> for this step.</p>
+<p>The equivalence relation on the genotype space <span
+class="math inline">\(\Gamma = \{\gamma_n\}\)</span> is quotiented by
+the Completeness Criterion: <span
+class="math inline">\(\gamma_n\)</span> is admitted as a valid genotype
+only when the Berry phase closes.</p>
+<h3 id="operation-composition-formula">2.3 Operation Composition
+Formula</h3>
+<p>The multiplier <span class="math inline">\(\mu_n\)</span> is uniquely
+determined by the operation signature <span
+class="math inline">\(\sigma_n\)</span> of the genotype <span
+class="math inline">\(\gamma_n\)</span>. Let the operation on prime
+factor <span class="math inline">\(p\)</span> in <span
+class="math inline">\(\sigma_n\)</span> be <span
+class="math inline">\(\sigma_n(p) \in \{\mathrm{consume},
+\mathrm{recycle}, \mathrm{id}\}\)</span>, and let <span
+class="math inline">\(\nu_n(p)\)</span> be the multiplicity (nonnegative
+integer) of that operation on <span class="math inline">\(p\)</span>.
+Then the prime factor expansion of the multiplier is: <span
+class="math display">\[\mu_n = \prod_{p \in \mathcal{P}}
+p^{\,\varepsilon_n(p)}, \qquad \varepsilon_n(p) =
+\nu_n^{\mathrm{consume}}(p) - \nu_n^{\mathrm{recycle}}(p).\]</span></p>
+<p>Expanding this recurrence, the coding cardinality <span
+class="math inline">\(N_{k1}\)</span> is given by the product of the
+base state <span class="math inline">\(N_1\)</span> with the successive
+multipliers: <span class="math display">\[\boxed{\,N_{k1} = N_1 \times
+\frac{\displaystyle\prod_{n=1}^{k}\prod_{p}
+p^{\,\nu_n^{\mathrm{consume}}(p)}}{\displaystyle\prod_{n=1}^{k}\prod_{p}
+p^{\,\nu_n^{\mathrm{recycle}}(p)}}\,}\]</span></p>
+<p>That is, the numerator is the product of all consumed tokens, and the
+denominator is the product of all recycled tokens. This formula is the
+core tool for subsequent derivations: it shows that all information in
+<span class="math inline">\(N_{k1}\)</span> is encoded in the net
+“consume − recycle” balance, and recycling operations act only in the
+denominator.</p>
+<p>A conservation law follows immediately from the formula: recycled
+tokens must come from previous consumption, hence in <span
+class="math inline">\(\prod_n \mu_n\)</span> every recycled factor must
+cancel with a corresponding consumption, and ultimately <span
+class="math display">\[\prod_{n=1}^{6} \mu_n = \frac{N_7}{N_1} =
+\frac{\text{net consumer product}}{1} = \frac{2^4 \cdot 3 \cdot 5^3
+\cdot (\text{net gain})}{1}.\]</span></p>
+<h3 id="recycling-baseline-invariance-theorem">2.4 Recycling Baseline
+Invariance Theorem</h3>
+<p><strong>Lemma 1.1.2.01 (Recycling Baseline Invariance).</strong>
+Suppose the <span class="math inline">\(k\)</span>-th step executes a
+recycle operation <span
+class="math inline">\(\mathrm{recycle}(p)\)</span>, where the recycled
+token <span class="math inline">\(p\)</span> originates from the consume
+operation <span class="math inline">\(\mathrm{consume}(p)\)</span> at
+step <span class="math inline">\(j &lt; k\)</span>. Then the recycling
+baseline must be taken as the intrinsic factor of the base state <span
+class="math inline">\(N_1\)</span>, and cannot be taken as the current
+factor of the intermediate state <span
+class="math inline">\(N_{k-1}\)</span>. That is, the recycle operation
+alters the projection of the intrinsic structure of <span
+class="math inline">\(N_1\)</span> into <span
+class="math inline">\(N_k\)</span>, not the accumulated structure of
+<span class="math inline">\(N_{k-1}\)</span>.</p>
+<p><strong>Proof (purely recursive structural proof).</strong></p>
+<p>Proof by contradiction. Assume the recycling baseline can be taken as
+<span class="math inline">\(N_{k-1}\)</span>, i.e., <span
+class="math inline">\(\mathrm{recycle}(p)\)</span> is equivalent to
+dividing <span class="math inline">\(N_{k-1}\)</span> by <span
+class="math inline">\(p\)</span>. Consider the recursive structure of
+the coding orbit: <span class="math display">\[N_k = N_{k-1} \cdot
+\mu_k, \qquad \mu_k = \frac{A_k}{p} \quad (\text{assuming step } k
+\text{ recycles } p).\]</span></p>
+<p>If the recycling baseline were <span
+class="math inline">\(N_{k-1}\)</span>, then <span
+class="math inline">\(N_k = N_{k-1} \cdot A_k / p\)</span>, and the
+factor <span class="math inline">\(p\)</span> would be deducted from
+<span class="math inline">\(N_{k-1}\)</span>. But <span
+class="math inline">\(N_{k-1}\)</span> itself is obtained by recurrence
+from <span class="math inline">\(N_1\)</span> through the first <span
+class="math inline">\(k-1\)</span> steps, in which <span
+class="math inline">\(\mathrm{consume}(p)\)</span> at step <span
+class="math inline">\(j\)</span> has already injected <span
+class="math inline">\(p\)</span>. Thus the factor <span
+class="math inline">\(p\)</span> in <span
+class="math inline">\(N_{k-1}\)</span> is a “historical remnant” of the
+consumption at step <span class="math inline">\(j\)</span>; erasing it
+via recycling would be equivalent to retroactively modifying the
+genotype <span class="math inline">\(\gamma_j\)</span> of step <span
+class="math inline">\(j\)</span> — which contradicts Bott periodicity
+rigidity (genotypes are non-adjustable).</p>
+<p>More rigorously, expand <span class="math inline">\(N_{k-1}\)</span>
+recursively: <span class="math display">\[N_{k-1} = N_1 \cdot
+\prod_{n=1}^{k-1} \mu_n = N_1 \cdot \prod_{n=1}^{k-1} \prod_p
+p^{\,\varepsilon_n(p)}.\]</span> The cumulative exponent of factor <span
+class="math inline">\(p\)</span> is <span
+class="math inline">\(\sum_{n=1}^{k-1} \varepsilon_n(p)\)</span>. If the
+recycling baseline were <span class="math inline">\(N_{k-1}\)</span>,
+recycling would decrement this cumulative exponent by 1, which is
+equivalent to modifying some <span
+class="math inline">\(\varepsilon_j(p)\)</span> (<span
+class="math inline">\(j &lt; k\)</span>), i.e., modifying <span
+class="math inline">\(\gamma_j\)</span>. Rigidity forbids this
+modification.</p>
+<p>Conversely, if the recycling baseline is taken as <span
+class="math inline">\(N_1\)</span>, the recycle operation merely
+introduces a denominator <span class="math inline">\(p\)</span> in the
+expression for <span class="math inline">\(N_k\)</span>, without
+touching the intrinsic decomposition <span class="math inline">\(2^4
+\cdot 3 \cdot 5^3\)</span> of <span class="math inline">\(N_1\)</span>.
+Formally, by the Operation Composition Formula: <span
+class="math display">\[N_k = N_1 \cdot \frac{\prod
+\mathrm{consume}}{\prod \mathrm{recycle}},\]</span> <span
+class="math inline">\(N_1\)</span> appears as an independent factor, and
+recycling acts only in the denominator; the intrinsic structure <span
+class="math inline">\(2^4 \cdot 3 \cdot 5^3\)</span> of <span
+class="math inline">\(N_1\)</span> is unaffected by any recycling.</p>
+<p>Therefore the recycling baseline must be <span
+class="math inline">\(N_1\)</span>, not <span
+class="math inline">\(N_{k-1}\)</span>. <span
+class="math inline">\(\square\)</span></p>
+<p><strong>Corollary 1.1.2.02.</strong> The intrinsic factor <span
+class="math inline">\(3^1\)</span> in the base state <span
+class="math inline">\(N_1 = 2^4 \cdot 3 \cdot 5^3\)</span> (coming from
+<span class="math inline">\(\Lambda = 3\)</span>) remains in the prime
+factor decomposition of <span class="math inline">\(N_k\)</span> after
+any recycle operation — recycling only introduces a <span
+class="math inline">\(3^{-1}\)</span> at the “cumulative gain” level;
+the intrinsic <span class="math inline">\(3^1\)</span> is unchanged.
+This is precisely the origin of the denominator 3 in <span
+class="math inline">\(\mu_2 = 100/3\)</span>: after recycling 3, <span
+class="math inline">\(N_3 = N_1 \cdot (\text{consumer product}) /
+3\)</span>, but <span class="math inline">\(N_1\)</span> still
+contributes the intrinsic <span class="math inline">\(3^1\)</span>, so
+the net exponent of factor 3 in <span class="math inline">\(N_3\)</span>
+is <span class="math inline">\(1 - 1(\text{other
+consumption})\)</span>.</p>
+<h3 id="information-capacity-symmetry-argument">2.5 Information Capacity
+Symmetry Argument</h3>
+<p><strong>Lemma 1.1.2.03 (Information Capacity Symmetry).</strong> From
+an information-theoretic perspective, one can independently verify that
+the recycling baseline must be <span
+class="math inline">\(N_1\)</span>.</p>
+<p><strong>Argument.</strong> Regard the coding cardinality <span
+class="math inline">\(N_n\)</span> as the information capacity of the
+<span class="math inline">\(n\)</span>-th coding layer (measured in
+<span class="math inline">\(\log_2 N_n\)</span> bits). The base state
+<span class="math inline">\(N_1\)</span> carries intrinsic information
+<span class="math inline">\(I_1 = \log_2 N_1 = 4\log_2 2 + \log_2 3 +
+3\log_2 5\)</span>.</p>
+<p>The semantics of a recycle operation is “retrieve previously injected
+information,” hence the total information capacity of the system should
+be symmetric before and after recycling: the information decrease <span
+class="math inline">\(\log_2 p\)</span> from recycling <span
+class="math inline">\(p\)</span> should exactly equal the information
+increase <span class="math inline">\(\log_2 p\)</span> from its original
+consumption. If the recycling baseline were <span
+class="math inline">\(N_{k-1}\)</span>, recycling would reduce <span
+class="math inline">\(N_k\)</span> relative to <span
+class="math inline">\(N_{k-1}\)</span> by <span
+class="math inline">\(\log_2 p\)</span>, but <span
+class="math inline">\(N_{k-1}\)</span> already contains the cumulative
+effect of the consumption at step <span
+class="math inline">\(j\)</span>; recycling would actually erase <span
+class="math inline">\(p\)</span> from “the accumulation from <span
+class="math inline">\(N_1\)</span> to <span
+class="math inline">\(N_{k-1}\)</span>” — information asymmetry.</p>
+<p>Only when the recycling baseline is <span
+class="math inline">\(N_1\)</span> does recycling <span
+class="math inline">\(p\)</span> reduce the gain of <span
+class="math inline">\(N_k\)</span> relative to <span
+class="math inline">\(N_1\)</span> by <span class="math inline">\(\log_2
+p\)</span>, which exactly symmetrically matches the gain increase of
+<span class="math inline">\(\log_2 p\)</span> from consuming <span
+class="math inline">\(p\)</span> at step <span
+class="math inline">\(j\)</span>, balancing the information budget. This
+argument is independent of Bott rigidity and yields the same conclusion
+from information capacity symmetry. <span
+class="math inline">\(\square\)</span></p>
+<h3 id="double-layer-constraints">2.6 Double-Layer Constraints</h3>
+<p>The multiplier <span class="math inline">\(\mu_n =
+N_{n1}/N_n\)</span> is jointly determined by the budget layer and the
+genotype layer:</p>
+<ul>
+<li>The <strong>budget layer</strong> constrains the prime factor
+composition of <span class="math inline">\(\mu_n\)</span> (only <span
+class="math inline">\(\{2, 3, 5\}\)</span> may be used)</li>
+<li>The <strong>genotype layer</strong> constrains the specific
+numerical value of <span class="math inline">\(\mu_n\)</span>
+(determined by the algebraic structure of Cl(<span
+class="math inline">\(n\)</span>)→Cl(<span
+class="math inline">\(n1\)</span>))</li>
+</ul>
+<p>Jointly, the two layers yield a unique value for <span
+class="math inline">\(\mu_n\)</span>.</p>
+<hr />
+<h2 id="multiplier-sequence">§3 Multiplier Sequence</h2>
+<h3 id="six-layer-multipliers">3.1 Six-Layer Multipliers</h3>
+<p><strong>Theorem 1.1.3.01 (Multiplier Sequence).</strong> Under the
+joint constraints of the Budget-Genotype double-layer structure, the
+four stages of triality, the Recycling Baseline Invariance Theorem, and
+Bott truncation, the multiplier sequence is uniquely determined as:</p>
+<p><span class="math display">\[\mu_1 = 6, \quad \mu_2 = \frac{100}{3},
+\quad \mu_3 = 10, \quad \mu_4 = 10, \quad \mu_5 = \frac{9}{8}, \quad
+\mu_6 = 2.\]</span></p>
+<p><strong>Proof outline.</strong></p>
+<p>The determination of each multiplier <span
+class="math inline">\(\mu_n\)</span> follows the procedure:</p>
+<ol type="1">
+<li>The algebraic structure of <strong>Cl(<span
+class="math inline">\(n\)</span>-1)→Cl(<span
+class="math inline">\(n\)</span>)</strong> determines the available
+coding method for that step (genotype).</li>
+<li>The <strong>prime factor budget</strong> constrains which tokens are
+consumed at that step.</li>
+<li>The <strong>Completeness Criterion</strong> filters self-consistent
+coding methods.</li>
+<li><strong>Recycling baseline invariance</strong> ensures that
+completed steps are not affected by subsequent steps.</li>
+</ol>
+<p>Specific derivation of the six multipliers:</p>
+<table>
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 22%" />
+<col style="width: 18%" />
+<col style="width: 18%" />
+<col style="width: 18%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Step</th>
+<th style="text-align: center;"><span
+class="math inline">\(\mu_n\)</span></th>
+<th style="text-align: left;">Prime Factor Consumption</th>
+<th style="text-align: left;">Genotype</th>
+<th style="text-align: left;">Budget Tokens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(\mu_1\)</span></td>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;"><span class="math inline">\(2 \times
+3\)</span></td>
+<td style="text-align: left;">Cl(0)→Cl(1): <span
+class="math inline">\(\mathbb{R}\to\mathbb{C}\)</span></td>
+<td style="text-align: left;">consume 2, 3</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(\mu_2\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(100/3\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(2^2 \times 5^2
+/ 3\)</span></td>
+<td style="text-align: left;">Cl(1)→Cl(2): <span
+class="math inline">\(\mathbb{C}\to\mathbb{H}\)</span></td>
+<td style="text-align: left;">consume 5,5; recycle 3</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(\mu_3\)</span></td>
+<td style="text-align: center;">10</td>
+<td style="text-align: left;"><span class="math inline">\(2 \times
+5\)</span></td>
+<td style="text-align: left;">Cl(2)→Cl(3): <span
+class="math inline">\(\mathbb{H}\to\mathbb{H}\oplus\mathbb{H}\)</span></td>
+<td style="text-align: left;">consume 2</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(\mu_4\)</span></td>
+<td style="text-align: center;">10</td>
+<td style="text-align: left;"><span class="math inline">\(2 \times
+5\)</span></td>
+<td style="text-align: left;">Cl(3)→Cl(4): semisimple→Mat(2,<span
+class="math inline">\(\mathbb{H}\)</span>)</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(\mu_5\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(9/8\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(3^2 /
+2^3\)</span></td>
+<td style="text-align: left;">Cl(4)→Cl(5): Mat(2,<span
+class="math inline">\(\mathbb{H}\)</span>)→Mat(4,<span
+class="math inline">\(\mathbb{C}\)</span>)</td>
+<td style="text-align: left;">recycle 3</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(\mu_6\)</span></td>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">Cl(5)→Cl(6): Mat(4,<span
+class="math inline">\(\mathbb{C}\)</span>)→Mat(8,<span
+class="math inline">\(\mathbb{R}\)</span>)</td>
+<td style="text-align: left;">—</td>
+</tr>
+</tbody>
+</table>
+<p>Note that <span class="math inline">\(\mu_5 = 9/8 &lt; 1\)</span> is
+a “recycling step” — coding cardinality decreases, but structural
+complexity increases (Complex Structure Emergence). This corresponds to
+the condensation of <span class="math inline">\(\Delta\Theta =
+5\)</span> at step 5.</p>
+<h4 id="proof-of-seven-candidate-exclusion-for-mu_1-6">3.1.1 Proof of
+Seven-Candidate Exclusion for <span class="math inline">\(\mu_1 =
+6\)</span></h4>
+<p><strong>Lemma 1.1.3.02 (Seven-Candidate Exclusion for <span
+class="math inline">\(\mu_1 = 6\)</span>).</strong> Let initial budget
+<span class="math inline">\(\mathbb{B}_1 = \{2, 3, 5, 5\}\)</span>,
+cumulative recycling pool <span class="math inline">\(\mathbb{C}_1 =
+\emptyset\)</span>. The numerator of <span
+class="math inline">\(\mu_1\)</span> must be a partial product of
+elements in <span class="math inline">\(\mathbb{B}_1\)</span>. The valid
+candidates are: <span class="math display">\[\mu_1 \in \{2,\; 3,\; 5,\;
+6=2\times 3,\; 10=2\times 5,\; 15=3\times 5,\; 25=5\times
+5\}.\]</span></p>
+<p><strong>Condition 1 (Recycling constraint from <span
+class="math inline">\(\mu_2\)</span>).</strong> From the genotype layer,
+<span class="math inline">\(\mu_2\)</span> corresponds to the <span
+class="math inline">\(\mathbb{C} \to \mathbb{H}\)</span> transition of
+Cl(1)→Cl(2), whose structure requires <span class="math inline">\(\mu_2
+= 100/3\)</span> (see derivation in §3.1.2). The denominator 3 of <span
+class="math inline">\(\mu_2\)</span> must be recycled from the
+cumulative recycling pool <span
+class="math inline">\(\mathbb{C}_2\)</span>, i.e., <span
+class="math inline">\(\mathbb{C}_2\)</span> must contain factor 3. And
+factors in <span class="math inline">\(\mathbb{C}_2\)</span> can only
+come from the consumption of <span class="math inline">\(\mu_1\)</span>.
+Therefore <span class="math inline">\(\mu_1\)</span> must consume factor
+3 from <span class="math inline">\(\mathbb{B}_1\)</span>.</p>
+<p>Testing the seven candidates one by one: - <span
+class="math inline">\(\mu_1 = 2\)</span>: does not consume 3, <span
+class="math inline">\(\mathbb{C}_2\)</span> lacks 3. ✗ - <span
+class="math inline">\(\mu_1 = 5\)</span>: does not consume 3, <span
+class="math inline">\(\mathbb{C}_2\)</span> lacks 3. ✗ - <span
+class="math inline">\(\mu_1 = 10 = 2 \times 5\)</span>: does not consume
+3, <span class="math inline">\(\mathbb{C}_2\)</span> lacks 3. ✗ - <span
+class="math inline">\(\mu_1 = 25 = 5 \times 5\)</span>: does not consume
+3, <span class="math inline">\(\mathbb{C}_2\)</span> lacks 3. ✗</p>
+<p>After exclusion, <span class="math inline">\(\{3,\; 6,\;
+15\}\)</span> remain, all of which consume factor 3.</p>
+<p><strong>Condition 2 (Bott truncation requires <span
+class="math inline">\(\mathbb{B}_7 = \emptyset\)</span>).</strong> Bott
+periodicity truncation requires that when the coding orbit terminates at
+layer 7, the budget is exactly exhausted, i.e., <span
+class="math inline">\(\mathbb{B}_7 = \emptyset\)</span>. Track the
+budget evolution for the three surviving candidates one by one:</p>
+<ul>
+<li><strong><span class="math inline">\(\mu_1 = 3\)</span></strong>:
+consumes <span class="math inline">\(\{3\}\)</span>, budget residual
+<span class="math inline">\(\mathbb{B}_2 = \{2, 5, 5\}\)</span>.
+Thereafter <span class="math inline">\(\mu_2\)</span> consumes <span
+class="math inline">\(\{5, 5\}\)</span>, <span
+class="math inline">\(\mu_3\)</span> consumes <span
+class="math inline">\(\{2\}\)</span>, leaving a budget residual of three
+factors of 5 (the genotype layer’s demand for <span
+class="math inline">\(5^3\)</span> does not match the budget <span
+class="math inline">\(\{5,5\}\)</span>). Specifically, <span
+class="math inline">\(N_1\)</span> intrinsically contains <span
+class="math inline">\(5^3\)</span>, but the budget provides only two
+5-tokens; the third 5 must be supplied by consumption from <span
+class="math inline">\(\mu_1\)</span>; <span class="math inline">\(\mu_1
+= 3\)</span> does not consume 5, so the <span
+class="math inline">\(5^3\)</span> structure cannot close, and the
+budget residual cannot be cleared. ✗</li>
+<li><strong><span class="math inline">\(\mu_1 = 15 = 3 \times
+5\)</span></strong>: consumes <span class="math inline">\(\{3,
+5\}\)</span>, budget residual <span class="math inline">\(\mathbb{B}_2 =
+\{2, 5\}\)</span>. Thereafter <span class="math inline">\(\mu_2\)</span>
+consumes <span class="math inline">\(\{5\}\)</span>, <span
+class="math inline">\(\mu_3\)</span> consumes <span
+class="math inline">\(\{2\}\)</span>, leaving a budget residual of two
+factors of 5 (<span class="math inline">\(\mu_1\)</span> already
+consumed one 5, but <span class="math inline">\(N_1\)</span>’s <span
+class="math inline">\(5^3\)</span> still needs three 5’s, and the budget
+has only one 5-token left; two 5’s cannot be supplied). Budget residual
+cannot be cleared. ✗</li>
+<li><strong><span class="math inline">\(\mu_1 = 6 = 2 \times
+3\)</span></strong>: consumes <span class="math inline">\(\{2,
+3\}\)</span>, budget residual <span class="math inline">\(\mathbb{B}_2 =
+\{5, 5\}\)</span>. Thereafter <span class="math inline">\(\mu_2\)</span>
+consumes <span class="math inline">\(\{5, 5\}\)</span> (exactly clearing
+the 5’s in the budget), and <span
+class="math inline">\(\mu_3\)</span>–<span
+class="math inline">\(\mu_6\)</span> consumptions and recyclings are
+self-consistently completed by intrinsic structure and the recycling
+pool. Tracking to <span class="math inline">\(\mathbb{B}_7\)</span>: the
+budget <span class="math inline">\(\{5, 5\}\)</span> is fully consumed
+at <span class="math inline">\(\mu_2\)</span>, <span
+class="math inline">\(\mathbb{B}_7 = \emptyset\)</span>, and Bott
+truncation terminates naturally at <span class="math inline">\(n =
+7\)</span>. ✓</li>
+</ul>
+<p>Therefore <span class="math inline">\(\mu_1 = 6\)</span> is the only
+choice satisfying all constraints. <span
+class="math inline">\(\square\)</span></p>
+<h4 id="full-derivation-of-mu_2-1003">3.1.2 Full Derivation of <span
+class="math inline">\(\mu_2 = 100/3\)</span></h4>
+<p><strong>Derivation of <span
+class="math inline">\(\mu_2\)</span>.</strong> <span
+class="math inline">\(\mu_2\)</span> corresponds to the <span
+class="math inline">\(\mathbb{C} \to \mathbb{H}\)</span> transition of
+Cl(1)→Cl(2).</p>
+<p><strong>Origin of the denominator.</strong> The denominator 3 of
+<span class="math inline">\(\mu_2\)</span> must be recycled from the
+cumulative recycling pool <span
+class="math inline">\(\mathbb{C}_2\)</span>. Since <span
+class="math inline">\(\mu_1 = 6 = 2 \times 3\)</span> has already
+consumed factor 3, <span class="math inline">\(\mathbb{C}_2 =
+\{3\}\)</span>, and <span
+class="math inline">\(\mathrm{recycle}(3)\)</span> is legal. By Lemma
+1.1.2.01, the recycling baseline is <span
+class="math inline">\(N_1\)</span>, not <span
+class="math inline">\(N_2\)</span>.</p>
+<p><strong>Why <span class="math inline">\(100/3\)</span> rather than
+<span class="math inline">\(50/9\)</span>.</strong> The genotype layer
+(the <span class="math inline">\(\mathbb{C} \to \mathbb{H}\)</span>
+structure of Cl(1)→Cl(2)) requires the numerator of <span
+class="math inline">\(\mu_2\)</span> to be <span
+class="math inline">\(2^2 \times 5^2 = 100\)</span> (the double
+emergence of quaternion dimension 4 and the complex structure <span
+class="math inline">\(\Delta\Theta = 5\)</span>). If one mistakenly
+takes the recycling baseline as <span
+class="math inline">\(N_2\)</span>, one would obtain <span
+class="math inline">\(\mu_2 = 50/9\)</span> (attempting to deduct <span
+class="math inline">\(3^2\)</span> from <span class="math inline">\(N_2
+= 36000 = 2^5 \cdot 3^2 \cdot 5^3\)</span>), but by Lemma 1.1.2.01 this
+baseline is illegal. The correct recycling baseline <span
+class="math inline">\(N_1\)</span> forces only one factor of 3 to be
+recycled (from the single consumption of <span
+class="math inline">\(\mu_1\)</span>), hence <span
+class="math inline">\(\mu_2 = 100/3\)</span>.</p>
+<p><strong>Operation sequence.</strong> The operation signature of step
+2 is: <span class="math display">\[\mathrm{consume}(5),\;
+\mathrm{consume}(5),\; \mathrm{recycle}(3),\; \mathrm{consume}(2),\;
+\mathrm{consume}(2).\]</span> Corresponding multiplier: <span
+class="math display">\[\mu_2 = \frac{5 \times 5 \times 2 \times 2}{3} =
+\frac{100}{3}.\]</span></p>
+<p><strong>Coding cardinality computation.</strong> By the Operation
+Composition Formula (§2.3), taking <span
+class="math inline">\(N_1\)</span> as baseline: <span
+class="math display">\[N_3 = N_1 \times \frac{2 \times 3 \times 5 \times
+5 \times 2 \times 2}{3} = N_1 \times \frac{600}{3} = N_1 \times
+200.\]</span> The numerator <span class="math inline">\(2 \times 3
+\times 5 \times 5 \times 2 \times 2 = 600\)</span> comes from <span
+class="math inline">\(\mathrm{consume}(2), \mathrm{consume}(3)\)</span>
+of <span class="math inline">\(\mu_1\)</span> and <span
+class="math inline">\(\mathrm{consume}(5), \mathrm{consume}(5),
+\mathrm{consume}(2), \mathrm{consume}(2)\)</span> of <span
+class="math inline">\(\mu_2\)</span>; the denominator 3 comes from <span
+class="math inline">\(\mathrm{recycle}(3)\)</span> of <span
+class="math inline">\(\mu_2\)</span>. Substituting <span
+class="math inline">\(N_1 = 6000\)</span>: <span
+class="math display">\[N_3 = 6000 \times 200 = 1.2 \times
+10^6.\]</span></p>
+<p><strong>Factor cancellation verification.</strong> The <span
+class="math inline">\(\mathrm{consume}(3)\)</span> of <span
+class="math inline">\(\mu_1\)</span> and the <span
+class="math inline">\(\mathrm{recycle}(3)\)</span> of <span
+class="math inline">\(\mu_2\)</span> cancel exactly: in the expression
+for <span class="math inline">\(N_3\)</span>, the numerator contains
+<span class="math inline">\(3^1\)</span> (from <span
+class="math inline">\(\mu_1\)</span>) and the denominator contains <span
+class="math inline">\(3^1\)</span> (from <span
+class="math inline">\(\mu_2\)</span>), giving net exponent zero. But by
+Lemma 1.1.2.01, the intrinsic <span class="math inline">\(3^1\)</span>
+of <span class="math inline">\(N_1\)</span> is unaffected — it is
+independent of the net consume-recycle balance. Thus the source of
+factor 3 in <span class="math inline">\(N_3\)</span> is entirely the
+intrinsic <span class="math inline">\(3^1\)</span> of <span
+class="math inline">\(N_1\)</span>, unrelated to the 3-operations of
+<span class="math inline">\(\mu_1\)</span> and <span
+class="math inline">\(\mu_2\)</span>. This is precisely the
+manifestation of the Recycling Baseline Invariance Theorem. <span
+class="math inline">\(\square\)</span></p>
+<h3 id="coding-orbit">3.2 Coding Orbit</h3>
+<p>Starting from <span class="math inline">\(N_1 = 6000\)</span>,
+through six-layer recurrence:</p>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 22%" />
+<col style="width: 27%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Step</th>
+<th style="text-align: left;">Computation</th>
+<th style="text-align: center;"><span
+class="math inline">\(N_n\)</span></th>
+<th style="text-align: left;">Prime Factor Decomposition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(N_1\)</span></td>
+<td style="text-align: left;">Base State</td>
+<td style="text-align: center;">6000</td>
+<td style="text-align: left;"><span class="math inline">\(2^4 \cdot 3
+\cdot 5^3\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(N_2\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(6000 \times
+6\)</span></td>
+<td style="text-align: center;">36000</td>
+<td style="text-align: left;"><span class="math inline">\(2^5 \cdot 3^2
+\cdot 5^3\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(N_3\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(36000 \times
+100/3\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(1.2 \times
+10^6\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(2^7 \cdot 3
+\cdot 5^5\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(N_4\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(1.2 \times
+10^6 \times 10\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(1.2 \times
+10^7\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(2^8 \cdot 3
+\cdot 5^6\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(N_5\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(1.2 \times
+10^7 \times 10\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(1.2 \times
+10^8\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(2^9 \cdot 3
+\cdot 5^7\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(N_6\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(1.2 \times
+10^8 \times 9/8\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(1.35 \times
+10^8\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(2^6 \cdot 3^3
+\cdot 5^7\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(N_7\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(1.35 \times
+10^8 \times 2\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2.7 \times
+10^8\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(2^7 \cdot 3^3
+\cdot 5^7\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Step-by-step prime factor decomposition
+verification.</strong></p>
+<ul>
+<li><span class="math inline">\(N_1 = 6000 = 16 \times 3 \times 125 =
+2^4 \cdot 3^1 \cdot 5^3\)</span>. The intrinsic structure is locked by
+the three Structure Constant Theorems.</li>
+<li><span class="math inline">\(N_2 = N_1 \cdot \mu_1 = 2^4 \cdot 3
+\cdot 5^3 \times (2 \cdot 3) = 2^5 \cdot 3^2 \cdot 5^3 = 36000\)</span>.
+Factors 2 and 3 each increase by one order, corresponding to the double
+consumption of <span class="math inline">\(\mu_1 = 6\)</span>.</li>
+<li><span class="math inline">\(N_3 = N_2 \cdot \mu_2 = 2^5 \cdot 3^2
+\cdot 5^3 \times (2^2 \cdot 5^2 / 3) = 2^7 \cdot 3^1 \cdot 5^5 = 1.2
+\times 10^6\)</span>. Factor 2 increases by two orders, 5 increases by
+two orders, 3 decreases by one order (recycling). Note: the intrinsic
+<span class="math inline">\(3^1\)</span> of <span
+class="math inline">\(N_1\)</span> is retained; the <span
+class="math inline">\(3^1\)</span> injected by <span
+class="math inline">\(\mu_1\)</span> cancels with the <span
+class="math inline">\(3^{-1}\)</span> recycled by <span
+class="math inline">\(\mu_2\)</span>, net <span
+class="math inline">\(3^1\)</span>.</li>
+<li><span class="math inline">\(N_4 = N_3 \cdot \mu_3 = 2^7 \cdot 3
+\cdot 5^5 \times (2 \cdot 5) = 2^8 \cdot 3 \cdot 5^6 = 1.2 \times
+10^7\)</span>.</li>
+<li><span class="math inline">\(N_5 = N_4 \cdot \mu_4 = 2^8 \cdot 3
+\cdot 5^6 \times (2 \cdot 5) = 2^9 \cdot 3 \cdot 5^7 = 1.2 \times
+10^8\)</span>.</li>
+<li><span class="math inline">\(N_6 = N_5 \cdot \mu_5 = 2^9 \cdot 3
+\cdot 5^7 \times (3^2 / 2^3) = 2^6 \cdot 3^3 \cdot 5^7 = 1.35 \times
+10^8\)</span>. Factor 2 decreases by three orders (recycling step of
+<span class="math inline">\(\mu_5 &lt; 1\)</span>), 3 increases by two
+orders (triality reactivation).</li>
+<li><span class="math inline">\(N_7 = N_6 \cdot \mu_6 = 2^6 \cdot 3^3
+\cdot 5^7 \times 2 = 2^7 \cdot 3^3 \cdot 5^7 = 2.7 \times
+10^8\)</span>.</li>
+</ul>
+<p><strong>Total product.</strong> By the Operation Composition Formula,
+the product of the six multipliers equals the net consumer product:
+<span class="math display">\[\prod_{n=1}^{6} \mu_n = 6 \times
+\frac{100}{3} \times 10 \times 10 \times \frac{9}{8} \times 2 = \frac{6
+\times 100 \times 10 \times 10 \times 9 \times 2}{3 \times 8} =
+\frac{1080000}{24} = 45000.\]</span> Equivalently: <span
+class="math display">\[\frac{N_7}{N_1} = \frac{2.7 \times 10^8}{6000} =
+45000 = 2^3 \cdot 3^2 \cdot 5^4.\]</span> Verification: <span
+class="math inline">\(2^7 \cdot 3^3 \cdot 5^7 / (2^4 \cdot 3 \cdot 5^3)
+= 2^3 \cdot 3^2 \cdot 5^4 = 8 \times 9 \times 625 = 45000\)</span>.
+✓</p>
+<p><strong>Proposition 1.1.3.03 (Terminal Value).</strong> <span
+class="math inline">\(N_7 = 2.7 \times 10^8 = 2^7 \cdot 3^3 \cdot
+5^7\)</span>.</p>
+<h3 id="seven-layer-truncation">3.3 Seven-Layer Truncation</h3>
+<p>The seventh layer <span class="math inline">\(E_7\)</span> is the
+last independent coding layer. <span class="math inline">\(E_8\)</span>
+is not an independent layer — it is the Bott return step, carrying a
+<span class="math inline">\(2\pi\)</span> Berry phase. Hence the coding
+orbit has 6 multipliers (<span class="math inline">\(\mu_1, \dots,
+\mu_6\)</span>), corresponding to 7 coding cardinalities (<span
+class="math inline">\(N_1, \dots, N_7\)</span>).</p>
+<hr />
+<h2 id="four-stages-of-triality">§4 Four Stages of Triality</h2>
+<p>The determination of the multiplier sequence is further constrained
+by the four stages of <strong>Spin(8) triality</strong>.</p>
+<h3 id="triality-exponent-sequence">4.1 Triality Exponent Sequence</h3>
+<p><strong>Definition 16 (Triality Exponent Sequence).</strong> The
+triality of Spin(8) manifests in the seven layers of the coding orbit as
+the exponent sequence of factor 3: <span
+class="math display">\[\{e_3(n)\}_{n=1}^{7} = \{1,\; 2,\; 1,\; 1,\; 1,\;
+3,\; 3\},\]</span> where <span class="math inline">\(e_3(n)\)</span> is
+the exponent of factor 3 in the prime factor decomposition of <span
+class="math inline">\(N_n\)</span>. This sequence characterizes the
+activation strength of triality (associated with <span
+class="math inline">\(\Lambda = 3\)</span>) in each coding layer.</p>
+<h3 id="detailed-description-of-the-four-stages">4.2 Detailed
+Description of the Four Stages</h3>
+<p><strong>Definition 17 (Four Stages of Triality).</strong> The
+triality of Spin(8) undergoes four stages in the coding orbit:</p>
+<table>
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 23%" />
+<col style="width: 23%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Stage</th>
+<th style="text-align: left;">Coding Layers</th>
+<th style="text-align: left;">Triality State</th>
+<th style="text-align: left;">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;"><span
+class="math inline">\(E_1\)</span>–<span
+class="math inline">\(E_3\)</span></td>
+<td style="text-align: left;">Full <span
+class="math inline">\(S_3\)</span></td>
+<td style="text-align: left;">Three indistinguishable
+representations</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;"><span
+class="math inline">\(E_4\)</span>–<span
+class="math inline">\(E_5\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(S_3 \to
+Z_2\)</span></td>
+<td style="text-align: left;">Triality broken to cyclic symmetry</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;"><span
+class="math inline">\(E_6\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(Z_2\)</span>
+preserved</td>
+<td style="text-align: left;">Cyclic symmetry preserved</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;"><span
+class="math inline">\(E_7\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(Z_3 \to
+1\)</span></td>
+<td style="text-align: left;">Symmetry fully broken</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Stage 1: Activation Phase (<span
+class="math inline">\(E_1\)</span>–<span
+class="math inline">\(E_3\)</span>).</strong> The exponent sequence of
+factor 3 is <span class="math inline">\(\{1, 2, 1\}\)</span>,
+corresponding to the “intrinsic–activation–return” triple-beat of
+triality: - <span class="math inline">\(E_1\)</span> (<span
+class="math inline">\(N_1\)</span>, <span class="math inline">\(e_3 =
+1\)</span>): the intrinsic structure of <span
+class="math inline">\(\Lambda = 3\)</span>. Factor 3 lies dormant in the
+base state <span class="math inline">\(N_1 = 2^4 \cdot 3 \cdot
+5^3\)</span> as <span class="math inline">\(3^1\)</span>, the algebraic
+trace of the Semisimple Splitting of Cl(3). Triality is not yet
+explicitly activated at this stage. - <span
+class="math inline">\(E_2\)</span> (<span
+class="math inline">\(N_2\)</span>, <span class="math inline">\(e_3 =
+2\)</span>): <span class="math inline">\(\mu_1 = 6 = 2 \times 3\)</span>
+consumes factor 3, making <span class="math inline">\(N_2 = 2^5 \cdot
+3^2 \cdot 5^3\)</span>. Factor 3 rises to <span
+class="math inline">\(3^2\)</span>, triality is fully activated at the
+physical layer — corresponding to the full <span
+class="math inline">\(S_3\)</span> symmetry of the three
+indistinguishable representations of Spin(8). This is the “peak” of
+triality. - <span class="math inline">\(E_3\)</span> (<span
+class="math inline">\(N_3\)</span>, <span class="math inline">\(e_3 =
+1\)</span>): <span class="math inline">\(\mu_2 = 100/3\)</span> recycles
+factor 3, making <span class="math inline">\(N_3 = 2^7 \cdot 3 \cdot
+5^5\)</span>. Factor 3 returns to <span
+class="math inline">\(3^1\)</span>, triality retreats from
+physical-layer activation to the intrinsic baseline. The triple-beat
+cycle <span class="math inline">\(\{1, 2, 1\}\)</span> completes the
+first “breath” of triality.</p>
+<p><strong>Stage 2: Consummate Phase (<span
+class="math inline">\(E_4\)</span>–<span
+class="math inline">\(E_5\)</span>).</strong> The exponent of factor 3
+maintains <span class="math inline">\(\{1, 1\}\)</span>: - <span
+class="math inline">\(E_4\)</span> (<span
+class="math inline">\(N_4\)</span>, <span class="math inline">\(e_3 =
+1\)</span>): <span class="math inline">\(\mu_3 = 10 = 2 \times
+5\)</span> does not involve factor 3, <span class="math inline">\(N_4 =
+2^8 \cdot 3 \cdot 5^6\)</span>. Triality maintains the intrinsic <span
+class="math inline">\(3^1\)</span> in Cl(4) (Mat(2,<span
+class="math inline">\(\mathbb{H}\)</span>)). - <span
+class="math inline">\(E_5\)</span> (<span
+class="math inline">\(N_5\)</span>, <span class="math inline">\(e_3 =
+1\)</span>): <span class="math inline">\(\mu_4 = 10 = 2 \times
+5\)</span> likewise does not involve factor 3, <span
+class="math inline">\(N_5 = 2^9 \cdot 3 \cdot 5^7\)</span>. Triality
+achieves consummation in Cl(5) (Mat(4,<span
+class="math inline">\(\mathbb{C}\)</span>)) — <span
+class="math inline">\(S_3\)</span> symmetry is broken to <span
+class="math inline">\(Z_3\)</span> at this stage, and the complex
+structure <span class="math inline">\(\Delta\Theta = 5\)</span>
+completes its emergence. The exponent maintaining <span
+class="math inline">\(3^1\)</span> indicates that triality exists in a
+“silent consummate” form during this phase, without explicitly altering
+activation strength.</p>
+<p><strong>Stage 3: Return-to-Base Phase (<span
+class="math inline">\(E_6\)</span>).</strong> The exponent of factor 3
+jumps to <span class="math inline">\(3\)</span>: - <span
+class="math inline">\(E_6\)</span> (<span
+class="math inline">\(N_6\)</span>, <span class="math inline">\(e_3 =
+3\)</span>): <span class="math inline">\(\mu_5 = 9/8 = 3^2 /
+2^3\)</span> recycles <span class="math inline">\(3^2\)</span>, making
+<span class="math inline">\(N_6 = 2^6 \cdot 3^3 \cdot 5^7\)</span>.
+Factor 3 jumps from <span class="math inline">\(3^1\)</span> to <span
+class="math inline">\(3^3\)</span>, triality returns to base in Cl(6)
+(Mat(8,<span class="math inline">\(\mathbb{R}\)</span>)) — this is the
+“deep return-to-base” of triality, corresponding to the preservation of
+<span class="math inline">\(Z_2\)</span> symmetry and the full
+manifestation of the real structure. <span
+class="math inline">\(3^3\)</span> is the complete triple expression of
+triality in the real domain.</p>
+<p><strong>Stage 4: Physical-Layer Reactivation (<span
+class="math inline">\(E_7\)</span>).</strong> The exponent of factor 3
+maintains <span class="math inline">\(3\)</span>: - <span
+class="math inline">\(E_7\)</span> (<span
+class="math inline">\(N_7\)</span>, <span class="math inline">\(e_3 =
+3\)</span>): <span class="math inline">\(\mu_6 = 2\)</span> does not
+involve factor 3, <span class="math inline">\(N_7 = 2^7 \cdot 3^3 \cdot
+5^7\)</span>. After the numerator <span
+class="math inline">\(3^2\)</span> of <span class="math inline">\(\mu_5
+= 9/8\)</span> reactivates triality at <span
+class="math inline">\(E_6\)</span>, <span
+class="math inline">\(E_7\)</span> maintains the activated state <span
+class="math inline">\(3^3\)</span>. <span
+class="math inline">\(Z_2\)</span> symmetry is fully broken to the
+trivial group <span class="math inline">\(1\)</span> at this stage, and
+the coding orbit terminates. The triality exponent sequence <span
+class="math inline">\(\{1, 2, 1, 1, 1, 3, 3\}\)</span> converges to
+<span class="math inline">\(3^3\)</span> at <span
+class="math inline">\(E_7\)</span>, together with Bott truncation
+marking the closure of the coding orbit.</p>
+<p><strong>Theorem 1.1.4.01 (Triality Constraint).</strong> The four
+stages of triality constrain the symmetry of the multiplier sequence: -
+Stage 1: <span class="math inline">\(\mu_1, \mu_2, \mu_3\)</span> are
+constrained by <span class="math inline">\(S_3\)</span> symmetry - Stage
+2: <span class="math inline">\(\mu_4, \mu_5\)</span> are constrained by
+<span class="math inline">\(Z_2\)</span> symmetry - Stage 3: <span
+class="math inline">\(\mu_6\)</span> is unconstrained by symmetry -
+Stage 4: <span class="math inline">\(\mu_7\)</span> (does not exist,
+truncated by Bott)</p>
+<p>The triality breaking <span class="math inline">\(S_3 \to
+Z_2\)</span> occurs in the Cl(5)→Cl(6) transition and is the algebraic
+root of the Birkhoff Mixing Matrix <span
+class="math inline">\(T\)</span> (Volume 2).</p>
+<hr />
+<h2 id="uniqueness-and-mutual-conjugate-locking">§5 Uniqueness and
+Mutual Conjugate Locking</h2>
+<p><strong>Theorem 1.1.5.01 (Multiplier Sequence Uniqueness).</strong>
+The multiplier sequence <span class="math inline">\((\mu_1, \dots,
+\mu_6) = (6, 100/3, 10, 10, 9/8, 2)\)</span> is uniquely determined
+under the following joint constraints:</p>
+<ol type="1">
+<li>Budget-Genotype double-layer structure</li>
+<li>Four stages of triality</li>
+<li>Recycling Baseline Invariance Theorem</li>
+<li>Bott periodicity truncation (Seven-Layer Truncation, Theorem)</li>
+<li>Completeness Criterion</li>
+</ol>
+<p>Altering any single constraint renders the multiplier sequence
+non-self-consistent.</p>
+<h3 id="specific-mechanism-of-mutual-conjugate-locking">5.1 Specific
+Mechanism of Mutual Conjugate Locking</h3>
+<p>The uniqueness of the multiplier sequence comes not only from the
+independent filtering of each step, but more deeply from the
+<strong>Benign Mutual Conjugate Locking</strong> between <span
+class="math inline">\(\mu_1\)</span> and <span
+class="math inline">\(\mu_2\)</span>. This mechanism completely
+eliminates the degrees of freedom of the system.</p>
+<p>The locking manifests as a parameterized mutual conjugate: given the
+initial budget <span class="math inline">\(\mathbb{B}_1 = \{2, 3, 5,
+5\}\)</span>, the permissible region for <span
+class="math inline">\((\mu_1, \mu_2)\)</span> in the plane is reduced
+from a continuous two-dimensional domain to a single discrete point
+<span class="math inline">\((6, 100/3)\)</span>. This is because the
+budget consumption of <span class="math inline">\(\mu_1\)</span>
+determines the recycling pool <span
+class="math inline">\(\mathbb{C}_2\)</span>, which in turn constrains
+the denominator of <span class="math inline">\(\mu_2\)</span>; and the
+numerator of <span class="math inline">\(\mu_2\)</span> is fixed by the
+genotype of Cl(1)→Cl(2). The two together make <span
+class="math inline">\((\mu_1, \mu_2)\)</span> locked.</p>
+<p>Furthermore, after <span class="math inline">\(\mu_1\)</span> and
+<span class="math inline">\(\mu_2\)</span> are locked, the budget <span
+class="math inline">\(\mathbb{B}_3\)</span> is uniquely determined, and
+<span class="math inline">\(\mu_3\)</span> through <span
+class="math inline">\(\mu_6\)</span> are determined step by step by
+budget depletion and Bott truncation — no degrees of freedom remain.</p>
+<hr />
+<h2 id="theorem-index">Theorem Index</h2>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 28%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Number</th>
+<th style="text-align: left;">Content</th>
+<th style="text-align: center;">Proof Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Theorem 1.1.3.01</td>
+<td style="text-align: left;">Multiplier sequence: <span
+class="math inline">\(\mu_1=6,\dots,\mu_6=2\)</span></td>
+<td style="text-align: center;">Proved (§3)</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 1.1.4.01</td>
+<td style="text-align: left;">Triality four-stage constraint</td>
+<td style="text-align: center;">Proved (§4)</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 1.1.5.01</td>
+<td style="text-align: left;">Multiplier sequence uniqueness</td>
+<td style="text-align: center;">Proved (§5)</td>
+</tr>
+</tbody>
+</table>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>

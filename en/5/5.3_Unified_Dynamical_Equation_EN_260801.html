@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5.3 Unified Dynamical Equation for the Information Field | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Version: 260721.2">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/5/5.3_Unified_Dynamical_Equation_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">5.3 Unified Dynamical Equation for the Information Field</span>
+  </nav>
+  <main class="article-content">
+<h1 id="unified-dynamical-equation-for-the-information-field">5.3
+Unified Dynamical Equation for the Information Field</h1>
+<p><strong>Version</strong>: 260721.2</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>This article establishes the unified dynamical equation for the
+information field — a diffusion-response-steady-state three-layer
+framework. The evolution of the information field is described by three
+levels: fast diffusion (network propagation), intermediate-speed
+response (causal field driving), and slow steady-state (global
+equilibrium). This article derives in detail the coupling term structure
+of the three-field joint equations, analyzes the analytic solutions of
+the equations, and discusses the physical meaning of information
+conservation.</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<p>§1 Three-Layer Framework 1.1 Diffusion Layer 1.2 Response Layer 1.3
+Steady-State Layer 1.4 Coupling Structure of the Three-Layer
+Framework</p>
+<p>§2 Unified Equation 2.1 Numerical Parameters 2.2 Structure of the
+Coupling Terms 2.3 Solutions of the Equation 2.4 Spectral Decomposition
+of the Attenuation Rate</p>
+<p>§3 Physical Meaning 3.1 Dual Driving of the Information Field 3.2
+Information Conservation 3.3 Proof of Information Conservation 3.4
+Relationship between Information Conservation and Attenuation</p>
+<p>§4 Three-Field Joint Dynamics 4.1 Three-Field Joint Equations 4.2
+Origin of the Coupling Terms 4.3 Simplification under the Adiabatic
+Approximation 4.4 Self-Consistency of the Unified Equation</p>
+<p>§5 Landscape Dependence of the Unified Equation 5.1 Variation of
+Parameters with Landscape Position 5.2 Landscape Range of Convergence
+Time 5.3 Unified Equation and Algebraic Action</p>
+<hr />
+<h2 id="three-layer-framework">§1 Three-Layer Framework</h2>
+<h3 id="diffusion-layer">1.1 Diffusion Layer</h3>
+<p>Rapid diffusion of the information field on the network <span
+class="math inline">\(G_{\mathcal{I}}\)</span>:</p>
+<p><span class="math display">\[\frac{\partial
+\rho_{\mathcal{I}}}{\partial t}\bigg|_{\text{diff}} = -D_{\mathcal{I}}
+L_{\mathcal{I}} \rho_{\mathcal{I}},\]</span></p>
+<p>where <span class="math inline">\(D_{\mathcal{I}} = 1/\tau_I\)</span>
+is the diffusion coefficient and <span
+class="math inline">\(L_{\mathcal{I}} = I - T\)</span> is the Graph
+Laplacian.</p>
+<p>Physical meaning of the diffusion layer:</p>
+<ul>
+<li><strong>Network propagation</strong>: Information propagates among
+the 16 nodes of the information network</li>
+<li><strong>Rate</strong>: Determined by the diffusion coefficient <span
+class="math inline">\(D_{\mathcal{I}} \approx 0.107\)</span> — a fast
+process</li>
+<li><strong>Mechanism</strong>: The spectrum of the Graph Laplacian
+<span class="math inline">\(L_{\mathcal{I}}\)</span> determines the
+propagation modes</li>
+</ul>
+<p>The diffusion layer is the fastest level of information field
+evolution — information rapidly homogenizes within the network.</p>
+<p><strong>Detailed derivation.</strong> The derivation of the diffusion
+equation is based on continuous-time random walks on a graph. Let <span
+class="math inline">\(\rho_{\mathcal{I}}(i, t)\)</span> be the
+information density at node <span class="math inline">\(i\)</span> at
+time <span class="math inline">\(t\)</span>. The rate at which
+information flows from node <span class="math inline">\(i\)</span> to
+node <span class="math inline">\(j\)</span> is proportional to the
+density difference <span class="math inline">\(\rho_{\mathcal{I}}(j) -
+\rho_{\mathcal{I}}(i)\)</span> and the transition probability <span
+class="math inline">\(T_{ij}\)</span> (elements of the Birkhoff Mixing
+Matrix). Hence:</p>
+<p><span class="math display">\[\frac{d\rho_{\mathcal{I}}(i)}{dt} =
+D_{\mathcal{I}} \sum_{j} T_{ij} (\rho_{\mathcal{I}}(j) -
+\rho_{\mathcal{I}}(i)) = D_{\mathcal{I}} \sum_{j} (T_{ij} - \delta_{ij})
+\rho_{\mathcal{I}}(j) = -D_{\mathcal{I}} \sum_{j} (I - T)_{ij}
+\rho_{\mathcal{I}}(j).\]</span></p>
+<p>Written in vector form: <span class="math inline">\(\partial_t
+\rho_{\mathcal{I}} = -D_{\mathcal{I}} L_{\mathcal{I}}
+\rho_{\mathcal{I}}\)</span>.</p>
+<p>The diffusion coefficient <span class="math inline">\(D_{\mathcal{I}}
+= 1/\tau_I = \Delta\lambda_{\mathcal{I}} =
+C\sqrt{\sigma_{\mathcal{I}}^*}\)</span> is determined by the Born Rule.
+The physical meaning of <span class="math inline">\(D_{\mathcal{I}}
+\approx 0.107\)</span>: within one coding step, the diffusion distance
+of information in the network is approximately <span
+class="math inline">\(\sqrt{D_{\mathcal{I}}} \approx 0.327\)</span>
+nodes. After <span class="math inline">\(N\)</span> steps, the diffusion
+distance is <span class="math inline">\(\sqrt{D_{\mathcal{I}} N} \approx
+0.327 \sqrt{N}\)</span> nodes. Reaching network-wide homogenization
+(covering 16 nodes) requires approximately <span
+class="math inline">\((16/0.327)^2 \approx 2400\)</span> steps — this
+seems to contradict the rapid equilibration <span
+class="math inline">\(\tau_I \approx 9.34\)</span>, but <span
+class="math inline">\(\tau_I\)</span> is the characteristic time scale,
+while network-wide homogenization is dominated by the slowest mode <span
+class="math inline">\(\mu_1\)</span>, with the actual homogenization
+time being approximately <span class="math inline">\(1/(D_{\mathcal{I}}
+\mu_1) \approx 1/(0.107 \times 0.369) \approx 25.3\)</span> steps.</p>
+<p><strong>Numerical verification.</strong> Verify the computation of
+the diffusion coefficient <span
+class="math inline">\(D_{\mathcal{I}}\)</span>: <span
+class="math display">\[D_{\mathcal{I}} = C\sqrt{\sigma_{\mathcal{I}}^*}
+= 0.882 \times \sqrt{0.011484} = 0.882 \times 0.1072 =
+0.0945.\]</span></p>
+<p>The simplified value <span class="math inline">\(D_{\mathcal{I}}
+\approx 0.107\)</span> in the table uses a reduced <span
+class="math inline">\(C\)</span> (taking <span class="math inline">\(C =
+1\)</span> as reference). The two choices do not affect the structure of
+the diffusion layer — the diffusion coefficient only changes the time
+scale, not the mode structure.</p>
+<p><strong>Comparative discussion.</strong> The form of the diffusion
+layer has a formal correspondence with the classical diffusion equation
+(Fick’s law) <span class="math inline">\(\partial_t u = D \nabla^2
+u\)</span>. The Graph Laplacian <span
+class="math inline">\(L_{\mathcal{I}}\)</span> is the discrete analog of
+the continuous Laplace operator <span
+class="math inline">\(\nabla^2\)</span>. Key difference: in classical
+diffusion, <span class="math inline">\(D\)</span> is a phenomenological
+parameter (determined by the microscopic properties of the medium); in
+Conjugate Spectral Geometry, <span
+class="math inline">\(D_{\mathcal{I}}\)</span> is a geometric parameter
+(determined by the Born Rule and <span
+class="math inline">\(\sigma_{\mathcal{I}}^*\)</span>).</p>
+<p><strong>Cross-volume references.</strong> The definition of the Graph
+Laplacian <span class="math inline">\(L_{\mathcal{I}} = I - T\)</span>
+is found in Theorem 5.1.1.01. The Born Rule origin of the diffusion
+coefficient <span class="math inline">\(D_{\mathcal{I}} =
+C\sqrt{\sigma_{\mathcal{I}}^*}\)</span> is found in Theorem
+3.2.2.01.</p>
+<h3 id="response-layer">1.2 Response Layer</h3>
+<p>Response of the information field to causal field driving:</p>
+<p><span class="math display">\[\frac{\partial
+\rho_{\mathcal{I}}}{\partial t}\bigg|_{\text{resp}} =
+-\gamma_{\mathcal{I}} (\rho_{\mathcal{I}} -
+\rho_{\mathcal{I}}^{\text{eq}}[\rho_{\mathcal{C}}]),\]</span></p>
+<p>where <span class="math inline">\(\gamma_{\mathcal{I}} =
+1/\sqrt{\xi_{\mathcal{I}/\mathcal{C}}}\)</span> is the response rate and
+<span class="math inline">\(\rho_{\mathcal{I}}^{\text{eq}}\)</span> is
+the equilibrium distribution given the state of the causal field.</p>
+<p>Physical meaning of the response layer:</p>
+<ul>
+<li><strong>Causal driving</strong>: The causal field drives the
+information field through 𝒞-ℐ coupling</li>
+<li><strong>Rate</strong>: Determined by the response rate <span
+class="math inline">\(\gamma_{\mathcal{I}} \approx 0.234\)</span> — an
+intermediate-speed process</li>
+<li><strong>Mechanism</strong>: The information field tends toward the
+equilibrium distribution determined by the causal field</li>
+</ul>
+<p>The response layer is the intermediate-speed level of information
+field evolution — the information field adjusts following changes in the
+causal field.</p>
+<p><strong>Detailed derivation.</strong> The derivation of the response
+term is based on linear response theory. The causal field <span
+class="math inline">\(\rho_{\mathcal{C}}\)</span> drives the information
+field through 𝒞-ℐ coupling (<span class="math inline">\(Z_2\)</span>
+transposition <span class="math inline">\(P_{\sigma_2}\)</span>, weight
+<span class="math inline">\(\theta_{\sigma_2} \approx 0.009\)</span>).
+Given the causal field <span
+class="math inline">\(\rho_{\mathcal{C}}\)</span>, the equilibrium
+distribution of the information field is <span
+class="math inline">\(\rho_{\mathcal{I}}^{\text{eq}}[\rho_{\mathcal{C}}]\)</span>.
+When deviating from equilibrium, the information field relaxes toward
+equilibrium at rate <span
+class="math inline">\(\gamma_{\mathcal{I}}\)</span>.</p>
+<p>The response rate <span class="math inline">\(\gamma_{\mathcal{I}} =
+1/\sqrt{\xi_{\mathcal{I}/\mathcal{C}}} =
+\sqrt{\sigma_{\mathcal{I}}^*/\sigma_{\mathcal{C}}^*}\)</span> is
+determined by the coding weight ratio. The physical meaning of <span
+class="math inline">\(\gamma_{\mathcal{I}} \approx 0.234\)</span>: when
+the information field deviates from equilibrium, it relaxes toward
+equilibrium at a rate of approximately 0.234, with characteristic
+relaxation time <span class="math inline">\(1/\gamma_{\mathcal{I}}
+\approx 4.28\)</span> steps. This time scale lies between the diffusion
+layer’s <span class="math inline">\(\tau_I \approx 9.34\)</span> and the
+causal field’s <span class="math inline">\(\tau_C \approx 2.18\)</span>
+— the response layer is the “intermediate-speed” layer.</p>
+<p><strong>Numerical verification.</strong> Verify the computation of
+the response rate <span
+class="math inline">\(\gamma_{\mathcal{I}}\)</span>: <span
+class="math display">\[\gamma_{\mathcal{I}} =
+\sqrt{\sigma_{\mathcal{I}}^*/\sigma_{\mathcal{C}}^*} =
+\sqrt{0.011484/0.210603} = \sqrt{0.05453} = 0.2335.\]</span></p>
+<p>Comparison of the response rate <span
+class="math inline">\(\gamma_{\mathcal{I}} \approx 0.234\)</span> with
+the diffusion coefficient <span class="math inline">\(D_{\mathcal{I}}
+\approx 0.107\)</span>: <span class="math inline">\(\gamma_{\mathcal{I}}
+/ D_{\mathcal{I}} \approx 0.234 / 0.107 \approx 2.19\)</span>. Response
+(external driving) is approximately 2.2 times faster than diffusion
+(internal propagation) — the information field responds faster to
+external causal changes than to internal network propagation.</p>
+<p><strong>Comparative discussion.</strong> The form of the response
+layer has a formal correspondence with linear response theory (Kubo
+formula). In standard statistical mechanics, the response of a system to
+external perturbations is described by the response function <span
+class="math inline">\(\chi(t)\)</span>, <span
+class="math inline">\(\chi(t) \propto e^{-t/\tau}\)</span> (exponential
+relaxation). In Conjugate Spectral Geometry, the response of the
+information field to causal field driving is also exponential
+relaxation, but the relaxation time <span class="math inline">\(\tau =
+1/\gamma_{\mathcal{I}}\)</span> is determined by the coding weight
+ratio, not by dynamical correlation functions.</p>
+<p><strong>Cross-volume references.</strong> The derivation of the
+slowdown factor <span
+class="math inline">\(\xi_{\mathcal{I}/\mathcal{C}} \approx
+18.3\)</span> is found in Theorem 5.2.1.01. The <span
+class="math inline">\(Z_2\)</span> transposition structure of 𝒞-ℐ
+coupling is found in Theorem 6.5.1.01.</p>
+<h3 id="steady-state-layer">1.3 Steady-State Layer</h3>
+<p>Global steady-state condition:</p>
+<p><span class="math display">\[\frac{\partial
+\rho_{\mathcal{I}}}{\partial t}\bigg|_{\text{ss}} = 0 \implies
+\rho_{\mathcal{I}}^* =
+\rho_{\mathcal{I}}^{\text{eq}}[\rho_{\mathcal{C}}^*].\]</span></p>
+<p>Physical meaning of the steady-state layer:</p>
+<ul>
+<li><strong>Global equilibrium</strong>: The information field reaches
+the equilibrium distribution determined by the causal field</li>
+<li><strong>Time scale</strong>: Determined by the slowdown factor <span
+class="math inline">\(\xi \approx 67.6\)</span> — a slow process</li>
+<li><strong>Mechanism</strong>: Free energy minimization drives the
+system toward the Gibbs steady state</li>
+</ul>
+<p><strong>Detailed derivation.</strong> The steady-state layer is the
+ultimate destination of the three-layer framework. When both diffusion
+and response are complete, <span class="math inline">\(\partial
+\rho_{\mathcal{I}} / \partial t = 0\)</span>, and the information field
+reaches the steady state <span
+class="math inline">\(\rho_{\mathcal{I}}^*\)</span>. The steady state is
+determined by two conditions: 1. Diffusion equilibrium: <span
+class="math inline">\(L_{\mathcal{I}} \rho_{\mathcal{I}}^* = 0\)</span>
+(network uniform distribution) 2. Response equilibrium: <span
+class="math inline">\(\rho_{\mathcal{I}}^* =
+\rho_{\mathcal{I}}^{\text{eq}}[\rho_{\mathcal{C}}^*]\)</span>
+(equilibrium distribution determined by the causal field)</p>
+<p>Both conditions are simultaneously satisfied, requiring <span
+class="math inline">\(\rho_{\mathcal{I}}^*\)</span> to be both uniform
+and equal to the causal equilibrium distribution. At the Birkhoff Fixed
+Point <span class="math inline">\(\sigma^*\)</span>, these two
+conditions coincide — <span class="math inline">\(\rho_{\mathcal{I}}^* =
+\Lambda \sigma_{\mathcal{I}}^* = 3 \times 0.011484 \approx
+0.0345\)</span>, and <span class="math inline">\(L_{\mathcal{I}}
+\rho_{\mathcal{I}}^* = 0\)</span> (because <span
+class="math inline">\(\rho_{\mathcal{I}}^*\)</span> is proportional to
+the eigenvector <span class="math inline">\(v_1 =
+(1,1,\ldots,1)^T\)</span> of <span
+class="math inline">\(T\)</span>).</p>
+<p><strong>Numerical verification.</strong> Verify the steady-state
+condition: <span class="math display">\[\begin{aligned}
+L_{\mathcal{I}} \rho_{\mathcal{I}}^* &amp;= (I - T) \rho_{\mathcal{I}}^*
+= \rho_{\mathcal{I}}^* - T\rho_{\mathcal{I}}^* = \rho_{\mathcal{I}}^* -
+\rho_{\mathcal{I}}^* = 0 \quad (\text{since } T \text{ is doubly
+stochastic}), \\
+\rho_{\mathcal{I}}^* &amp;= \Lambda \sigma_{\mathcal{I}}^* = 3 \times
+0.011484 = 0.03445.
+\end{aligned}\]</span></p>
+<p><strong>Cross-volume references.</strong> The relationship between
+the steady state <span
+class="math inline">\(\rho_{\mathcal{I}}^*\)</span> and the Birkhoff
+Fixed Point <span class="math inline">\(\sigma^*\)</span> is found in
+Theorem 3.3.1.01 and Theorem 3.3.2.02.</p>
+<h3 id="coupling-structure-of-the-three-layer-framework">1.4 Coupling
+Structure of the Three-Layer Framework</h3>
+<p>Coupling structure of the three-layer framework:</p>
+<table>
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 23%" />
+<col style="width: 29%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Level</th>
+<th style="text-align: left;">Driving source</th>
+<th style="text-align: center;">Rate</th>
+<th style="text-align: left;">Time scale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Diffusion layer</td>
+<td style="text-align: left;">Internal (network)</td>
+<td style="text-align: center;">D_ℐ ≈ 0.107</td>
+<td style="text-align: left;">τ_I ≈ 9.34</td>
+</tr>
+<tr>
+<td style="text-align: left;">Response layer</td>
+<td style="text-align: left;">External (causal field)</td>
+<td style="text-align: center;">γ_ℐ ≈ 0.234</td>
+<td style="text-align: left;">1/γ ≈ 4.28</td>
+</tr>
+<tr>
+<td style="text-align: left;">Steady-state layer</td>
+<td style="text-align: left;">Global (free energy)</td>
+<td style="text-align: center;">Γ_geo ≈ 0.023</td>
+<td style="text-align: left;">1/Γ ≈ 43.5</td>
+</tr>
+</tbody>
+</table>
+<p>Time-scale separation of the three layers: diffusion is fastest,
+response is intermediate, steady-state is slowest. This separation
+guarantees the applicability of the adiabatic approximation.</p>
+<p><strong>Detailed derivation.</strong> The ordering of the three-layer
+time scales requires careful analysis. Superficially <span
+class="math inline">\(\tau_I \approx 9.34\)</span> (diffusion) &gt;
+<span class="math inline">\(1/\gamma \approx 4.28\)</span> (response),
+but “diffusion is fastest” here refers to the local propagation speed
+within the diffusion process (<span
+class="math inline">\(D_{\mathcal{I}} \approx 0.107\)</span> is the
+diffusion coefficient, not the global equilibration time). The global
+diffusion equilibration time is determined by <span
+class="math inline">\(1/(D_{\mathcal{I}} \mu_1) \approx 25.3\)</span>,
+the response relaxation time by <span
+class="math inline">\(1/\gamma_{\mathcal{I}} \approx 4.28\)</span>, and
+the steady-state convergence time by <span
+class="math inline">\(1/\Gamma_{\text{geo}} \approx 43.5\)</span>. Thus
+the time ordering is:</p>
+<p><span class="math display">\[\tau_{\text{resp}} \approx 4.28 &lt;
+\tau_{\text{diff}} \approx 25.3 &lt; \tau_{\text{ss}} \approx
+43.5.\]</span></p>
+<p>Response is fastest (rapid relaxation under external driving),
+diffusion is intermediate (gradual homogenization within the network),
+and steady-state is slowest (slow convergence to global equilibrium).
+This ordering guarantees the hierarchical structure: response completes
+first, with the information field rapidly following the causal field;
+then diffusion completes, homogenizing information within the network;
+finally the steady state is reached, achieving global equilibrium.</p>
+<p><strong>Numerical verification.</strong> Numerical values of the
+three characteristic times: <span class="math display">\[\begin{aligned}
+\tau_{\text{resp}} &amp;= 1/\gamma_{\mathcal{I}} = 1/0.2335 = 4.28, \\
+\tau_{\text{diff}} &amp;= 1/(D_{\mathcal{I}} \mu_1) = 1/(0.0945 \times
+0.369) = 1/0.0349 = 28.7, \\
+\tau_{\text{ss}} &amp;= 1/\Gamma_{\text{geo}} = 1/0.0231 = 43.3.
+\end{aligned}\]</span></p>
+<p>Time ordering: <span class="math inline">\(4.28 &lt; 28.7 &lt;
+43.3\)</span> — indeed the hierarchical structure response &gt;
+diffusion &gt; steady-state.</p>
+<p><strong>Cross-volume references.</strong> The relationship between
+the three-layer framework and the adiabatic approximation is found in
+Theorem 5.2.3.01. The complete analysis of three-field time-scale
+separation is found in 5.2 §1.</p>
+<hr />
+<h2 id="unified-equation">§2 Unified Equation</h2>
+<p><strong>Theorem 5.3.2.01 (Unified Dynamical Equation for the
+Information Field).</strong> The three levels combine into:</p>
+<p><span class="math display">\[\frac{\partial
+\rho_{\mathcal{I}}}{\partial t} = -D_{\mathcal{I}} L_{\mathcal{I}}
+\rho_{\mathcal{I}} - \gamma_{\mathcal{I}} (\rho_{\mathcal{I}} -
+\rho_{\mathcal{I}}^{\text{eq}}[\rho_{\mathcal{C}}]).\]</span></p>
+<p>Steady-state solution: <span
+class="math inline">\(\rho_{\mathcal{I}}^* = (D_{\mathcal{I}}
+L_{\mathcal{I}} + \gamma_{\mathcal{I}} I)^{-1} \gamma_{\mathcal{I}}
+\rho_{\mathcal{I}}^{\text{eq}}\)</span>.</p>
+<p><strong>Proof.</strong> The unified equation is obtained by linear
+superposition of the three-layer framework. The diffusion term <span
+class="math inline">\(-D_{\mathcal{I}} L_{\mathcal{I}}
+\rho_{\mathcal{I}}\)</span> describes internal network propagation, and
+the response term <span
+class="math inline">\(-\gamma_{\mathcal{I}}(\rho_{\mathcal{I}} -
+\rho_{\mathcal{I}}^{\text{eq}})\)</span> describes causal field driving.
+The two are added to give the total evolution equation. The steady-state
+condition <span class="math inline">\(\partial \rho / \partial t =
+0\)</span> yields <span class="math inline">\((D_{\mathcal{I}}
+L_{\mathcal{I}} + \gamma_{\mathcal{I}} I)\rho^* = \gamma_{\mathcal{I}}
+\rho^{\text{eq}}\)</span>, whose solution is <span
+class="math inline">\(\rho^* = (D_{\mathcal{I}} L_{\mathcal{I}} +
+\gamma_{\mathcal{I}} I)^{-1} \gamma_{\mathcal{I}}
+\rho^{\text{eq}}\)</span>. ∎</p>
+<p><strong>Detailed derivation.</strong> Derivation steps for the
+unified equation:</p>
+<ol type="1">
+<li><p><strong>Linear superposition.</strong> The total evolution rate
+of the information field is the superposition of the diffusion and
+response terms. This is the standard assumption of linear response
+theory — the effects of two independent processes can be linearly
+superposed. The physical basis for linear superposition is: diffusion
+and response act on different degrees of freedom (diffusion acts between
+nodes within the network, response acts on the coupling between the
+information field as a whole and the causal field), and the two do not
+interfere.</p></li>
+<li><p><strong>Steady-state solution.</strong> The steady-state
+condition <span class="math inline">\(\partial \rho_{\mathcal{I}} /
+\partial t = 0\)</span> gives: <span
+class="math display">\[D_{\mathcal{I}} L_{\mathcal{I}}
+\rho_{\mathcal{I}}^* + \gamma_{\mathcal{I}} \rho_{\mathcal{I}}^* =
+\gamma_{\mathcal{I}} \rho_{\mathcal{I}}^{\text{eq}}.\]</span> Rearranged
+as <span class="math inline">\((D_{\mathcal{I}} L_{\mathcal{I}} +
+\gamma_{\mathcal{I}} I) \rho_{\mathcal{I}}^* = \gamma_{\mathcal{I}}
+\rho_{\mathcal{I}}^{\text{eq}}\)</span>. Since <span
+class="math inline">\(D_{\mathcal{I}} L_{\mathcal{I}} +
+\gamma_{\mathcal{I}} I\)</span> is a positive definite matrix (<span
+class="math inline">\(L_{\mathcal{I}}\)</span> is positive semidefinite,
+<span class="math inline">\(\gamma_{\mathcal{I}} &gt; 0\)</span>), the
+inverse exists and is unique, so the steady-state solution exists and is
+unique.</p></li>
+<li><p><strong>Explicit form of the steady-state solution.</strong> In
+the eigenbasis of <span class="math inline">\(L_{\mathcal{I}}\)</span>,
+<span class="math inline">\((D_{\mathcal{I}} L_{\mathcal{I}} +
+\gamma_{\mathcal{I}} I)^{-1} = \sum_k (D_{\mathcal{I}} \mu_k +
+\gamma_{\mathcal{I}})^{-1} v_k v_k^T\)</span>. Therefore: <span
+class="math display">\[\rho_{\mathcal{I}}^* = \sum_k
+\frac{\gamma_{\mathcal{I}}}{D_{\mathcal{I}} \mu_k +
+\gamma_{\mathcal{I}}} (v_k^T \rho_{\mathcal{I}}^{\text{eq}})
+v_k.\]</span></p></li>
+<li><p><strong>Dominant mode.</strong> When <span
+class="math inline">\(\gamma_{\mathcal{I}} \gg D_{\mathcal{I}}
+\mu_1\)</span> (response-dominated), <span
+class="math inline">\(\rho_{\mathcal{I}}^* \approx
+\rho_{\mathcal{I}}^{\text{eq}}\)</span> — the information field closely
+follows the causal field. When <span
+class="math inline">\(\gamma_{\mathcal{I}} \ll D_{\mathcal{I}}
+\mu_1\)</span> (diffusion-dominated), <span
+class="math inline">\(\rho_{\mathcal{I}}^* \approx \sum_k \mu_k^{-1}
+(v_k^T \rho_{\mathcal{I}}^{\text{eq}}) v_k\)</span> — the information
+field is primarily controlled by network diffusion. At our position,
+<span class="math inline">\(\gamma_{\mathcal{I}} \approx 0.234\)</span>,
+<span class="math inline">\(D_{\mathcal{I}} \mu_1 \approx
+0.035\)</span>, <span class="math inline">\(\gamma_{\mathcal{I}} /
+(D_{\mathcal{I}} \mu_1) \approx 6.7\)</span> — response-dominated, the
+information field closely follows the causal field.</p></li>
+</ol>
+<p><strong>Numerical verification.</strong> Verify the existence and
+uniqueness of the steady-state solution. The eigenvalues of the matrix
+<span class="math inline">\(M = D_{\mathcal{I}} L_{\mathcal{I}} +
+\gamma_{\mathcal{I}} I\)</span> are <span
+class="math inline">\(D_{\mathcal{I}} \mu_k +
+\gamma_{\mathcal{I}}\)</span>. The smallest eigenvalue is <span
+class="math inline">\(D_{\mathcal{I}} \cdot 0 + \gamma_{\mathcal{I}} =
+\gamma_{\mathcal{I}} \approx 0.234 &gt; 0\)</span> — <span
+class="math inline">\(M\)</span> is positive definite and
+invertible.</p>
+<p><strong>Comparative discussion.</strong> The form of the unified
+equation has a formal correspondence with the Fokker-Planck equation
+(describing the evolution of probability densities in stochastic
+processes). The Fokker-Planck equation <span
+class="math inline">\(\partial_t P = \mathcal{L} P\)</span> contains
+drift and diffusion terms. In Conjugate Spectral Geometry, the response
+term <span
+class="math inline">\(-\gamma_{\mathcal{I}}(\rho_{\mathcal{I}} -
+\rho_{\mathcal{I}}^{\text{eq}})\)</span> corresponds to the drift term
+(tending toward equilibrium), and the diffusion term <span
+class="math inline">\(-D_{\mathcal{I}} L_{\mathcal{I}}
+\rho_{\mathcal{I}}\)</span> corresponds to the diffusion term (network
+propagation). Key difference: the coefficients of the Fokker-Planck
+equation are determined by the microscopic dynamics of the stochastic
+process, whereas the coefficients of the unified equation are determined
+by coding weights and algebraic connectivity.</p>
+<p><strong>Cross-volume references.</strong> The derivation of <span
+class="math inline">\(D_{\mathcal{I}}\)</span> and <span
+class="math inline">\(L_{\mathcal{I}}\)</span> in the diffusion term is
+found in 5.1 §1.1–§1.2. The derivation of <span
+class="math inline">\(\gamma_{\mathcal{I}}\)</span> in the response term
+is found in 5.2 §1.2.</p>
+<h3 id="numerical-parameters">2.1 Numerical Parameters</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Formula</th>
+<th style="text-align: center;">Numerical value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">D_ℐ</td>
+<td style="text-align: left;">1/τ_I = C√σ_I</td>
+<td style="text-align: center;">≈ 0.107</td>
+</tr>
+<tr>
+<td style="text-align: left;">γ_ℐ</td>
+<td style="text-align: left;">1/√ξ_ℐ/𝒞</td>
+<td style="text-align: center;">≈ 0.234</td>
+</tr>
+<tr>
+<td style="text-align: left;">μ₁</td>
+<td style="text-align: left;"></td>
+<td style="text-align: center;">1−λ₂</td>
+</tr>
+</tbody>
+</table>
+<p>Algebraic origins of the parameters: - <span
+class="math inline">\(D_{\mathcal{I}} =
+C\sqrt{\sigma_{\mathcal{I}}^*}\)</span>: determined by the algebraic
+constant <span class="math inline">\(C\)</span> and the Information
+Sector coding weight <span
+class="math inline">\(\sigma_{\mathcal{I}}^*\)</span> - <span
+class="math inline">\(\gamma_{\mathcal{I}} =
+\sqrt{\sigma_{\mathcal{I}}^*/\sigma_{\mathcal{C}}^*}\)</span>:
+determined by the coding weight ratio. Specific computation: <span
+class="math inline">\(\sqrt{0.011484/0.210603} = \sqrt{0.0545} \approx
+0.234\)</span>. This is the reciprocal of the time slowdown factor <span
+class="math inline">\(\sqrt{\xi_{\mathcal{I}/\mathcal{C}}}\)</span> —
+the response rate is the reciprocal of the time scale, so the square
+root is taken rather than the density ratio itself. - <span
+class="math inline">\(\mu_1 = |1 - \lambda_2|\)</span>: determined by
+the eigenvalues of the Birkhoff Mixing Matrix</p>
+<p>All three parameters are cross-region information import — completely
+determined by algebraic structure.</p>
+<p><strong>Detailed derivation.</strong> The algebraic origin chains of
+the three parameters:</p>
+<ol type="1">
+<li><p><strong>Origin chain of <span
+class="math inline">\(D_{\mathcal{I}}\)</span>:</strong> <span
+class="math inline">\(\sigma_{\mathcal{I}}^*\)</span> (Birkhoff Fixed
+Point) → Born Rule <span
+class="math inline">\(\Delta\lambda_{\mathcal{I}} =
+C\sqrt{\sigma_{\mathcal{I}}^*}\)</span> → <span
+class="math inline">\(D_{\mathcal{I}} =
+\Delta\lambda_{\mathcal{I}}\)</span>. <span
+class="math inline">\(D_{\mathcal{I}}\)</span> is a direct manifestation
+of the Information Sector spectral gap — the larger the “quantum” of the
+Information Sector, the faster the diffusion.</p></li>
+<li><p><strong>Origin chain of <span
+class="math inline">\(\gamma_{\mathcal{I}}\)</span>:</strong> <span
+class="math inline">\(\sigma_{\mathcal{I}}^*\)</span> and <span
+class="math inline">\(\sigma_{\mathcal{C}}^*\)</span> (Birkhoff Fixed
+Point) → <span class="math inline">\(\xi_{\mathcal{I}/\mathcal{C}} =
+\sigma_{\mathcal{C}}^*/\sigma_{\mathcal{I}}^*\)</span> → <span
+class="math inline">\(\gamma_{\mathcal{I}} =
+1/\sqrt{\xi_{\mathcal{I}/\mathcal{C}}}\)</span>. <span
+class="math inline">\(\gamma_{\mathcal{I}}\)</span> is the sensitivity
+of the information field to changes in the causal field — the smaller
+<span class="math inline">\(\sigma_{\mathcal{I}}^*\)</span> (the sparser
+the information field), the smaller <span
+class="math inline">\(\gamma_{\mathcal{I}}\)</span> (the slower the
+response).</p></li>
+<li><p><strong>Origin chain of <span
+class="math inline">\(\mu_1\)</span>:</strong> <span
+class="math inline">\(\sigma^*\)</span> → Birkhoff Mixing Matrix <span
+class="math inline">\(T(\sigma^*)\)</span> → eigenvalue <span
+class="math inline">\(\lambda_2\)</span> → <span
+class="math inline">\(\mu_1 = |1 - \lambda_2|\)</span>. <span
+class="math inline">\(\mu_1\)</span> is the connectivity of the
+information network — the more <span
+class="math inline">\(\sigma^*\)</span> deviates from the symmetric
+point, the smaller <span class="math inline">\(\mu_1\)</span>.</p></li>
+</ol>
+<p><strong>Numerical verification.</strong> Numerical relationships
+among the three parameters: <span
+class="math display">\[\frac{\gamma_{\mathcal{I}}}{D_{\mathcal{I}}} =
+\frac{0.234}{0.107} \approx 2.19, \quad
+\frac{\gamma_{\mathcal{I}}}{D_{\mathcal{I}} \mu_1} = \frac{0.234}{0.107
+\times 0.370} \approx 5.91.\]</span></p>
+<p>The response rate <span
+class="math inline">\(\gamma_{\mathcal{I}}\)</span> is far larger than
+the attenuation rate <span class="math inline">\(D_{\mathcal{I}}
+\mu_1\)</span> — response dominates information update, diffusion
+dominates information attenuation.</p>
+<h3 id="structure-of-the-coupling-terms">2.2 Structure of the Coupling
+Terms</h3>
+<p>Coupling term structure of the unified equation:</p>
+<p><span class="math display">\[\frac{\partial
+\rho_{\mathcal{I}}}{\partial t} = \underbrace{-D_{\mathcal{I}}
+L_{\mathcal{I}} \rho_{\mathcal{I}}}_{\text{internal diffusion}} +
+\underbrace{-\gamma_{\mathcal{I}}
+\rho_{\mathcal{I}}}_{\text{self-attenuation}} +
+\underbrace{\gamma_{\mathcal{I}}
+\rho_{\mathcal{I}}^{\text{eq}}[\rho_{\mathcal{C}}]}_{\text{causal
+driving}}.\]</span></p>
+<p>Physical meaning of the three terms:</p>
+<ol type="1">
+<li><strong>Internal diffusion</strong> <span
+class="math inline">\(-D_{\mathcal{I}} L_{\mathcal{I}}
+\rho_{\mathcal{I}}\)</span>: information propagates in the network —
+driven by the Graph Laplacian</li>
+<li><strong>Self-attenuation</strong> <span
+class="math inline">\(-\gamma_{\mathcal{I}} \rho_{\mathcal{I}}\)</span>:
+the information field tends toward zero — dissipative effect</li>
+<li><strong>Causal driving</strong> <span
+class="math inline">\(\gamma_{\mathcal{I}}
+\rho_{\mathcal{I}}^{\text{eq}}[\rho_{\mathcal{C}}]\)</span>: the causal
+field injects information — source effect</li>
+</ol>
+<p>Self-attenuation and causal driving constitute a “leak-source”
+balance — the steady state of the information field is determined by the
+balance of the two.</p>
+<p><strong>Detailed derivation.</strong> The structure of the coupling
+terms can be understood from the perspective of a “leak-source” model.
+Rewriting <span class="math inline">\(-\gamma_{\mathcal{I}}
+\rho_{\mathcal{I}} + \gamma_{\mathcal{I}}
+\rho_{\mathcal{I}}^{\text{eq}}\)</span> as <span
+class="math inline">\(-\gamma_{\mathcal{I}}(\rho_{\mathcal{I}} -
+\rho_{\mathcal{I}}^{\text{eq}})\)</span> more clearly reveals the
+“leak-source” structure: <span class="math inline">\(\rho_{\mathcal{I}}
+- \rho_{\mathcal{I}}^{\text{eq}}\)</span> is the deviation of the
+information field from equilibrium, and <span
+class="math inline">\(-\gamma_{\mathcal{I}}\)</span> is the relaxation
+rate. When <span class="math inline">\(\rho_{\mathcal{I}} &gt;
+\rho_{\mathcal{I}}^{\text{eq}}\)</span> (information surplus), the
+system leaks information at rate <span
+class="math inline">\(\gamma_{\mathcal{I}}\)</span>; when <span
+class="math inline">\(\rho_{\mathcal{I}} &lt;
+\rho_{\mathcal{I}}^{\text{eq}}\)</span> (information deficit), the
+system absorbs information at rate <span
+class="math inline">\(\gamma_{\mathcal{I}}\)</span>.</p>
+<p>The internal diffusion term <span
+class="math inline">\(-D_{\mathcal{I}} L_{\mathcal{I}}
+\rho_{\mathcal{I}}\)</span> does not change the total information (<span
+class="math inline">\(\text{Tr}(L_{\mathcal{I}} \rho) = 0\)</span>); it
+only changes the distribution of information among nodes. Therefore, the
+change in total information of the information field is determined
+solely by the “leak-source” term:</p>
+<p><span class="math display">\[\frac{d}{dt}
+\text{Tr}(\rho_{\mathcal{I}}) = -\gamma_{\mathcal{I}}
+\text{Tr}(\rho_{\mathcal{I}} -
+\rho_{\mathcal{I}}^{\text{eq}}).\]</span></p>
+<p><strong>Numerical verification.</strong> At the steady state <span
+class="math inline">\(\rho_{\mathcal{I}} =
+\rho_{\mathcal{I}}^*\)</span>, the numerical values of the three terms:
+<span class="math display">\[\begin{aligned}
+\text{Internal diffusion} &amp;= -D_{\mathcal{I}} L_{\mathcal{I}}
+\rho_{\mathcal{I}}^* = -0.107 \times 0 = 0, \\
+\text{Self-attenuation} &amp;= -\gamma_{\mathcal{I}}
+\rho_{\mathcal{I}}^* = -0.234 \times 0.0345 = -0.00807, \\
+\text{Causal driving} &amp;= \gamma_{\mathcal{I}}
+\rho_{\mathcal{I}}^{\text{eq}} = 0.234 \times 0.0345 = 0.00807.
+\end{aligned}\]</span></p>
+<p>Self-attenuation and causal driving exactly cancel — steady-state
+balance.</p>
+<h3 id="solutions-of-the-equation">2.3 Solutions of the Equation</h3>
+<p>The evolution solution of the information field is:</p>
+<p><span class="math display">\[\rho_{\mathcal{I}}(t) =
+\rho_{\mathcal{I}}^* + \sum_{k} c_k e^{-\Lambda_k t} v_k,\]</span></p>
+<p>where <span class="math inline">\(\Lambda_k = D_{\mathcal{I}} \mu_k +
+\gamma_{\mathcal{I}}\)</span> is the attenuation rate and <span
+class="math inline">\(v_k\)</span> are the Laplacian eigenvectors. The
+slowest attenuation rate is <span class="math inline">\(\Lambda_1 =
+D_{\mathcal{I}} \mu_1 + \gamma_{\mathcal{I}} \approx 0.107 \times 0.370
++ 0.234 \approx 0.274\)</span>.</p>
+<p>Structure of the solution:</p>
+<ul>
+<li><strong>Steady-state term</strong> <span
+class="math inline">\(\rho_{\mathcal{I}}^*\)</span>: long-time limit —
+the information field reaches equilibrium</li>
+<li><strong>Transient terms</strong> <span class="math inline">\(\sum
+c_k e^{-\Lambda_k t} v_k\)</span>: decay with time — the process of the
+information field tending toward equilibrium</li>
+</ul>
+<p>The slowest attenuation rate <span class="math inline">\(\Lambda_1
+\approx 0.274\)</span> corresponds to a convergence time of <span
+class="math inline">\(\tau_{\text{conv}} = 1/\Lambda_1 \approx
+3.6\)</span> — the information field converges to the steady state
+within approximately 3.6 time units.</p>
+<p><strong>Detailed derivation.</strong> Formal solution derivation of
+the equation. The unified equation <span
+class="math inline">\(\partial_t \rho = -D L \rho - \gamma (\rho -
+\rho^{\text{eq}})\)</span> can be written as <span
+class="math inline">\(\partial_t (\rho - \rho^*) = -(D L + \gamma
+I)(\rho - \rho^*)\)</span>, where <span
+class="math inline">\(\rho^*\)</span> is the steady-state solution. Let
+<span class="math inline">\(\delta\rho = \rho - \rho^*\)</span>, then
+<span class="math inline">\(\partial_t \delta\rho = -(D L + \gamma I)
+\delta\rho\)</span>. In the eigenbasis of <span
+class="math inline">\(L\)</span>:</p>
+<p><span class="math display">\[\delta\rho(t) = \sum_k c_k e^{-(D \mu_k
++ \gamma) t} v_k.\]</span></p>
+<p>The coefficients <span class="math inline">\(c_k = \langle v_k,
+\delta\rho(0) \rangle\)</span> are determined by the initial conditions.
+Adding the steady-state term yields the complete solution.</p>
+<p>The convergence time <span class="math inline">\(\tau_{\text{conv}} =
+1/\Lambda_1\)</span> is determined by the slowest attenuation mode.
+<span class="math inline">\(\Lambda_1 = D \mu_1 + \gamma \approx 0.107
+\times 0.369 + 0.234 \approx 0.274\)</span>, <span
+class="math inline">\(\tau_{\text{conv}} \approx 3.65\)</span>. This
+time scale is shorter than the characteristic time <span
+class="math inline">\(\tau_I \approx 9.34\)</span> of the information
+field — because the convergence time is jointly determined by the
+fastest modes of response and diffusion, not by the slowest diffusion
+mode.</p>
+<p><strong>Numerical verification.</strong> At <span
+class="math inline">\(t = \tau_{\text{conv}} \approx 3.65\)</span>, the
+deviation from steady state attenuates to <span
+class="math inline">\(1/e \approx 0.368\)</span>. At <span
+class="math inline">\(t = 3\tau_{\text{conv}} \approx 11.0\)</span>, it
+attenuates to <span class="math inline">\(e^{-3} \approx 0.050\)</span>
+— 95% convergence.</p>
+<p><strong>Cross-volume references.</strong> The attenuation rate <span
+class="math inline">\(\Gamma_{\text{geo}} = \mu_1 / N_{\text{info}}
+\approx 0.023\)</span> (Theorem 5.1.2.01) and <span
+class="math inline">\(\Lambda_1 \approx 0.274\)</span> are related as
+follows: <span class="math inline">\(\Lambda_1\)</span> is the
+attenuation rate of the unified equation (including the response term),
+while <span class="math inline">\(\Gamma_{\text{geo}}\)</span> is the
+pure diffusion attenuation rate (only the diffusion term). <span
+class="math inline">\(\Lambda_1 \gg \Gamma_{\text{geo}}\)</span>
+indicates that response accelerates convergence.</p>
+<h3 id="spectral-decomposition-of-the-attenuation-rate">2.4 Spectral
+Decomposition of the Attenuation Rate</h3>
+<p>Spectrum of the attenuation rate <span
+class="math inline">\(\Lambda_k = D_{\mathcal{I}} \mu_k +
+\gamma_{\mathcal{I}}\)</span>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Mode k</th>
+<th style="text-align: center;">μ_k</th>
+<th style="text-align: center;">Λ_k = D_ℐ·μ_k + γ_ℐ</th>
+<th style="text-align: center;">Convergence time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0.370</td>
+<td style="text-align: center;">0.274</td>
+<td style="text-align: center;">3.65</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">0.370</td>
+<td style="text-align: center;">0.274</td>
+<td style="text-align: center;">3.65</td>
+</tr>
+<tr>
+<td style="text-align: center;">≥3</td>
+<td style="text-align: center;">≥0.370</td>
+<td style="text-align: center;">≥0.274</td>
+<td style="text-align: center;">≤3.65</td>
+</tr>
+</tbody>
+</table>
+<p>All modes have positive attenuation rates — the system converges
+globally. The slowest mode <span class="math inline">\(k=1\)</span>
+dominates the long-time behavior.</p>
+<p><strong>Detailed derivation.</strong> Complete structure of the
+attenuation rate spectrum. The eigenvalue spectrum of <span
+class="math inline">\(L_{\mathcal{I}}\)</span> is <span
+class="math inline">\(\{0, \mu_1, \mu_1, \mu_3, \ldots,
+\mu_{15}\}\)</span>, where <span class="math inline">\(\mu_1 =
+0.369\)</span> (doubly degenerate, corresponding to the complex
+conjugate pair), and <span class="math inline">\(\mu_k \geq
+\mu_1\)</span> (<span class="math inline">\(\forall k \geq 3\)</span>).
+Hence the spectrum of <span class="math inline">\(\Lambda_k =
+D_{\mathcal{I}} \mu_k + \gamma_{\mathcal{I}}\)</span> is <span
+class="math inline">\(\{\gamma_{\mathcal{I}}, \Lambda_1, \Lambda_1,
+\Lambda_3, \ldots\}\)</span>, where <span
+class="math inline">\(\Lambda_1 = D_{\mathcal{I}} \mu_1 +
+\gamma_{\mathcal{I}}\)</span> is the smallest non-zero attenuation
+rate.</p>
+<p>The attenuation rate of mode <span class="math inline">\(k=0\)</span>
+(<span class="math inline">\(\mu_0 = 0\)</span>) is <span
+class="math inline">\(\Lambda_0 = \gamma_{\mathcal{I}} \approx
+0.234\)</span> — this mode corresponds to the network-wide uniform
+state, and its attenuation rate <span
+class="math inline">\(\gamma_{\mathcal{I}}\)</span> is larger than <span
+class="math inline">\(\Lambda_1\)</span>. This means the attenuation of
+the uniform state is faster than that of non-uniform modes — because the
+response term <span class="math inline">\(\gamma_{\mathcal{I}}\)</span>
+acts equally on all modes, while the diffusion term <span
+class="math inline">\(D_{\mathcal{I}} \mu_k\)</span> contributes
+additional attenuation to non-uniform modes.</p>
+<p><strong>Numerical verification.</strong> Verify <span
+class="math inline">\(\Lambda_0 &gt; \Lambda_1\)</span>: <span
+class="math display">\[\Lambda_0 = D_{\mathcal{I}} \times 0 +
+\gamma_{\mathcal{I}} = 0.234, \quad \Lambda_1 = 0.107 \times 0.370 +
+0.234 = 0.274.\]</span></p>
+<p><span class="math inline">\(\Lambda_1 = 0.274 &gt; \Lambda_0 =
+0.234\)</span> — non-uniform modes attenuate faster (due to the
+additional contribution from the diffusion term). This is consistent
+with intuition: non-uniformity is more rapidly eliminated by
+diffusion.</p>
+<hr />
+<h2 id="physical-meaning">§3 Physical Meaning</h2>
+<h3 id="dual-driving-of-the-information-field">3.1 Dual Driving of the
+Information Field</h3>
+<p>The information field is influenced by two driving sources:</p>
+<ol type="1">
+<li><strong>Internal diffusion</strong> (<span
+class="math inline">\(D_{\mathcal{I}} L_{\mathcal{I}}\)</span>):
+information propagates in the network</li>
+<li><strong>External response</strong> (<span
+class="math inline">\(\gamma_{\mathcal{I}}\)</span>): the information
+field follows changes in the causal field</li>
+</ol>
+<p>A steady state is reached when the two are balanced.</p>
+<p>Competition of dual driving:</p>
+<ul>
+<li>Internal diffusion homogenizes information (tending toward the
+network uniform state)</li>
+<li>External response makes information follow the causal field (tending
+toward causal equilibrium)</li>
+<li>The balance of the two yields the steady state of the information
+field — neither completely uniform nor completely following the causal
+field</li>
+</ul>
+<p><strong>Detailed derivation.</strong> The competition of dual driving
+can be understood using a “potential landscape.” Define the effective
+potential <span class="math inline">\(V(\rho) = \frac{1}{2}
+D_{\mathcal{I}} \rho^T L_{\mathcal{I}} \rho + \frac{1}{2}
+\gamma_{\mathcal{I}} |\rho - \rho^{\text{eq}}|^2\)</span>, then the
+unified equation can be written in gradient flow form: <span
+class="math inline">\(\partial_t \rho = -\nabla V(\rho)\)</span>. The
+first term <span class="math inline">\(\frac{1}{2} D \rho^T L
+\rho\)</span> attains its minimum at <span class="math inline">\(\rho
+\propto (1,1,\ldots,1)^T\)</span> (uniform distribution); the second
+term <span class="math inline">\(\frac{1}{2} \gamma |\rho -
+\rho^{\text{eq}}|^2\)</span> attains its minimum at <span
+class="math inline">\(\rho = \rho^{\text{eq}}\)</span>. The minima of
+the two terms are generally different, so the global minimum of <span
+class="math inline">\(V(\rho)\)</span> (i.e., the steady state <span
+class="math inline">\(\rho^*\)</span>) is a compromise between the
+two.</p>
+<p>At <span class="math inline">\(\rho^*\)</span>, <span
+class="math inline">\(\nabla V(\rho^*) = D L \rho^* + \gamma (\rho^* -
+\rho^{\text{eq}}) = 0\)</span>, i.e., <span class="math inline">\(D L
+\rho^* = -\gamma (\rho^* - \rho^{\text{eq}})\)</span> — the diffusion
+“push” balances the response “pull.”</p>
+<p><strong>Numerical verification.</strong> At the steady state <span
+class="math inline">\(\rho^*\)</span>, the balance between diffusion
+push and response pull: <span class="math display">\[D_{\mathcal{I}}
+L_{\mathcal{I}} \rho^* = 0, \quad \gamma_{\mathcal{I}} (\rho^* -
+\rho^{\text{eq}}) = 0.\]</span></p>
+<p>Both terms are simultaneously zero — this is a special property of
+the Birkhoff Fixed Point <span class="math inline">\(\sigma^*\)</span>:
+<span class="math inline">\(\rho^*\)</span> is both a uniform
+distribution (<span class="math inline">\(L_{\mathcal{I}} \rho^* =
+0\)</span>) and equal to the causal equilibrium distribution (<span
+class="math inline">\(\rho^* = \rho^{\text{eq}}\)</span>).</p>
+<h3 id="information-conservation">3.2 Information Conservation</h3>
+<p>At steady state, the total information of the information field is
+conserved:</p>
+<p><span
+class="math display">\[\frac{d}{dt}\text{Tr}(\rho_{\mathcal{I}}) = 0
+\implies \text{Tr}(\rho_{\mathcal{I}}^*) = \text{const}.\]</span></p>
+<p>Information is neither created nor destroyed — it is only
+redistributed within the network.</p>
+<h3 id="proof-of-information-conservation">3.3 Proof of Information
+Conservation</h3>
+<p>From the unified equation:</p>
+<p><span
+class="math display">\[\frac{d}{dt}\text{Tr}(\rho_{\mathcal{I}}) =
+-D_{\mathcal{I}} \text{Tr}(L_{\mathcal{I}} \rho_{\mathcal{I}}) -
+\gamma_{\mathcal{I}} \text{Tr}(\rho_{\mathcal{I}} -
+\rho_{\mathcal{I}}^{\text{eq}}).\]</span></p>
+<p>First term: <span class="math inline">\(\text{Tr}(L_{\mathcal{I}}
+\rho_{\mathcal{I}}) = \text{Tr}((I-T)\rho) = \text{Tr}(\rho) -
+\text{Tr}(T\rho) = 0\)</span> (since <span
+class="math inline">\(T\)</span> is doubly stochastic, <span
+class="math inline">\(\text{Tr}(T\rho) = \text{Tr}(\rho)\)</span>).</p>
+<p>Second term: at steady state <span class="math inline">\(\rho =
+\rho^*\)</span>, <span class="math inline">\(\rho^* =
+\rho^{\text{eq}}\)</span>, so <span
+class="math inline">\(\text{Tr}(\rho^* - \rho^{\text{eq}}) =
+0\)</span>.</p>
+<p>Therefore <span class="math inline">\(d\text{Tr}(\rho)/dt =
+0\)</span> — information is conserved. ∎</p>
+<p><strong>Detailed derivation.</strong> The proof of information
+conservation can be generalized to non-steady-state situations. At any
+time <span class="math inline">\(t\)</span>:</p>
+<p><span
+class="math display">\[\frac{d}{dt}\text{Tr}(\rho_{\mathcal{I}}) =
+-\gamma_{\mathcal{I}} \text{Tr}(\rho_{\mathcal{I}} -
+\rho_{\mathcal{I}}^{\text{eq}}).\]</span></p>
+<p>If <span class="math inline">\(\rho_{\mathcal{I}} \neq
+\rho_{\mathcal{I}}^{\text{eq}}\)</span>, then <span
+class="math inline">\(\text{Tr}(\rho_{\mathcal{I}})\)</span> can change
+— the total information of the information field can increase or
+decrease. But information conservation means: at steady state (<span
+class="math inline">\(\rho_{\mathcal{I}} = \rho_{\mathcal{I}}^* =
+\rho_{\mathcal{I}}^{\text{eq}}\)</span>), the total information is
+constant. In non-steady-state, the total information relaxes toward the
+steady-state value:</p>
+<p><span class="math display">\[\text{Tr}(\rho_{\mathcal{I}}(t)) =
+\text{Tr}(\rho_{\mathcal{I}}^*) + (\text{Tr}(\rho_{\mathcal{I}}(0)) -
+\text{Tr}(\rho_{\mathcal{I}}^*)) e^{-\gamma_{\mathcal{I}}
+t}.\]</span></p>
+<p>The total information tends toward the steady-state value at rate
+<span class="math inline">\(\gamma_{\mathcal{I}}\)</span> — this is the
+dynamical process of “leak-source” balance.</p>
+<p><strong>Numerical verification.</strong> Verify that <span
+class="math inline">\(\text{Tr}(T\rho) = \text{Tr}(\rho)\)</span> holds
+for any <span class="math inline">\(\rho\)</span>. <span
+class="math inline">\(T\)</span> is a doubly stochastic matrix, with
+<span class="math inline">\(\sum_i T_{ij} = 1\)</span> (column sums
+equal 1). Therefore: <span class="math display">\[\text{Tr}(T\rho) =
+\sum_i (T\rho)_i = \sum_i \sum_j T_{ij} \rho_j = \sum_j \rho_j \sum_i
+T_{ij} = \sum_j \rho_j \times 1 = \text{Tr}(\rho).\]</span></p>
+<p><strong>Cross-volume references.</strong> The double stochasticity of
+<span class="math inline">\(T\)</span> comes from the construction of
+the Birkhoff Mixing Matrix (Theorem 3.3.1.01).</p>
+<h3
+id="relationship-between-information-conservation-and-attenuation">3.4
+Relationship between Information Conservation and Attenuation</h3>
+<p>Information conservation (<span class="math inline">\(\text{Tr}(\rho)
+= \text{const}\)</span>) and information attenuation (<span
+class="math inline">\(\Gamma_{\text{geo}} \approx 0.023\)</span>) are
+not contradictory:</p>
+<ul>
+<li><strong>Information conservation</strong>: total information is
+unchanged — information is redistributed within the network</li>
+<li><strong>Information attenuation</strong>: specific modes attenuate —
+information flows from higher-order modes to lower-order modes</li>
+</ul>
+<p>Information attenuation is “inter-mode transfer” rather than “total
+quantity reduction” — total information is conserved, but the
+distribution tends toward uniformity.</p>
+<p><strong>Detailed derivation.</strong> Mathematical relationship
+between information conservation and attenuation. Expand <span
+class="math inline">\(\rho_{\mathcal{I}}\)</span> in the eigenmodes of
+<span class="math inline">\(L_{\mathcal{I}}\)</span>: <span
+class="math inline">\(\rho_{\mathcal{I}} = \sum_k c_k v_k\)</span>. The
+total information <span
+class="math inline">\(\text{Tr}(\rho_{\mathcal{I}}) = c_0\)</span> (only
+<span class="math inline">\(v_0\)</span> (uniform mode) contributes to
+the trace). Information conservation means <span
+class="math inline">\(c_0 = \text{const}\)</span>. Information
+attenuation means <span class="math inline">\(c_k(t) = c_k(0)
+e^{-\Lambda_k t}\)</span> (<span class="math inline">\(k \geq
+1\)</span>). The two are not contradictory — <span
+class="math inline">\(c_0\)</span> is unchanged, while <span
+class="math inline">\(c_k\)</span> (<span class="math inline">\(k \geq
+1\)</span>) attenuate.</p>
+<p>Physical picture of information attenuation: initially information is
+concentrated in certain specific modes (e.g., some node has high
+information density); as time evolves, these modes attenuate and
+information flows toward the uniform mode. Total information is
+unchanged, but the “structure” of information is smoothed out — this is
+the mathematical expression of “forgetting.”</p>
+<p><strong>Numerical verification.</strong> Mode distribution at <span
+class="math inline">\(t = 0\)</span> and <span class="math inline">\(t =
+\infty\)</span>: <span class="math display">\[\begin{aligned}
+t = 0&amp;: \quad \rho_{\mathcal{I}} = c_0 v_0 + \sum_{k \geq 1} c_k
+v_k, \\
+t = \infty&amp;: \quad \rho_{\mathcal{I}} = c_0 v_0 =
+\rho_{\mathcal{I}}^*.
+\end{aligned}\]</span></p>
+<p>Total information is always <span class="math inline">\(c_0\)</span>,
+but information in non-uniform modes completely vanishes as <span
+class="math inline">\(t \to \infty\)</span>.</p>
+<p><strong>Comparative discussion.</strong> The relationship between
+information conservation and attenuation is analogous to “unitary
+evolution vs decoherence” in quantum mechanics. Unitary evolution of a
+quantum system preserves total probability (<span
+class="math inline">\(\text{Tr}(\rho) = 1\)</span>), but decoherence
+causes off-diagonal elements to attenuate — information flows from
+“quantum correlations” to “classical probabilities.” In Conjugate
+Spectral Geometry, information conservation preserves total information,
+but attenuation causes information to flow from “non-uniform modes” to
+the “uniform mode” — information changes from “structured” to
+“structureless.” Both are “information redistribution” rather than
+“information destruction.”</p>
+<hr />
+<h2 id="three-field-joint-dynamics">§4 Three-Field Joint Dynamics</h2>
+<h3 id="three-field-joint-equations">4.1 Three-Field Joint
+Equations</h3>
+<p>Extending the information field unified equation to three fields:</p>
+<p><span class="math display">\[\frac{\partial
+\rho_{\mathcal{M}}}{\partial t} = -i[H_{\mathcal{M}},
+\rho_{\mathcal{M}}] + \mathcal{D}_T^{(\mathcal{M})}[\rho_{\mathcal{M}}]
++
+\gamma_{\mathcal{M}\mathcal{C}}(\rho_{\mathcal{M}}^{\text{eq}}[\rho_{\mathcal{C}}]
+- \rho_{\mathcal{M}}),\]</span></p>
+<p><span class="math display">\[\frac{\partial
+\rho_{\mathcal{C}}}{\partial t} = -i[H_{\mathcal{C}},
+\rho_{\mathcal{C}}] + \mathcal{D}_T^{(\mathcal{C})}[\rho_{\mathcal{C}}]
++
+\gamma_{\mathcal{C}\mathcal{M}}(\rho_{\mathcal{C}}^{\text{eq}}[\rho_{\mathcal{M}}]
+- \rho_{\mathcal{C}}) +
+\gamma_{\mathcal{C}\mathcal{I}}(\rho_{\mathcal{C}}^{\text{eq}}[\rho_{\mathcal{I}}]
+- \rho_{\mathcal{C}}),\]</span></p>
+<p><span class="math display">\[\frac{\partial
+\rho_{\mathcal{I}}}{\partial t} = -D_{\mathcal{I}} L_{\mathcal{I}}
+\rho_{\mathcal{I}} - \gamma_{\mathcal{I}} (\rho_{\mathcal{I}} -
+\rho_{\mathcal{I}}^{\text{eq}}[\rho_{\mathcal{C}}]).\]</span></p>
+<p>Coupling structure of the three-field equations:</p>
+<ul>
+<li>ℳ equation: self-evolution + ℳ→𝒞 coupling</li>
+<li>𝒞 equation: self-evolution + 𝒞→ℳ coupling + 𝒞→ℐ coupling</li>
+<li>ℐ equation: self-evolution + ℐ→𝒞 coupling</li>
+</ul>
+<p>Note that ℳ and ℐ have no direct coupling — they are relayed through
+𝒞.</p>
+<p><strong>Detailed derivation.</strong> Physical meaning of the terms
+in the three-field joint equations:</p>
+<ol type="1">
+<li><p><strong>Self-evolution terms</strong>: <span
+class="math inline">\(-i[H, \rho]\)</span> is the unitary evolution of
+an isolated sector (for the matter field and causal field). <span
+class="math inline">\(-D_{\mathcal{I}} L_{\mathcal{I}}
+\rho_{\mathcal{I}}\)</span> is the diffusive evolution of the
+information field (non-unitary, because the information field is
+classical-probabilistic).</p></li>
+<li><p><strong>Dissipative terms</strong>: <span
+class="math inline">\(\mathcal{D}_T[\rho]\)</span> is the intra-sector
+dissipation (driven by the intra-sector components of the Birkhoff
+Mixing Matrix <span class="math inline">\(T\)</span>). For ℳ, <span
+class="math inline">\(\mathcal{D}_T^{(\mathcal{M})}\)</span> comes from
+the identity component <span class="math inline">\(P_I\)</span> of <span
+class="math inline">\(T\)</span> (weight <span
+class="math inline">\(\theta_I \approx 0.782\)</span>). For 𝒞, <span
+class="math inline">\(\mathcal{D}_T^{(\mathcal{C})}\)</span> comes from
+the cyclic permutation component <span
+class="math inline">\(P_\tau\)</span> of <span
+class="math inline">\(T\)</span> (weight <span
+class="math inline">\(\theta_\tau \approx 0.209\)</span>).</p></li>
+<li><p><strong>Coupling terms</strong>: <span
+class="math inline">\(\gamma_{ij}(\rho_i^{\text{eq}}[\rho_j] -
+\rho_i)\)</span> is the inter-sector coupling. <span
+class="math inline">\(\gamma_{\mathcal{M}\mathcal{C}}\)</span> comes
+from ℳ-𝒞 coupling (cyclic permutation <span
+class="math inline">\(P_\tau\)</span>), and <span
+class="math inline">\(\gamma_{\mathcal{C}\mathcal{I}}\)</span> comes
+from 𝒞-ℐ coupling (<span class="math inline">\(Z_2\)</span>
+transposition <span
+class="math inline">\(P_{\sigma_2}\)</span>).</p></li>
+</ol>
+<p><strong>Numerical verification.</strong> Hierarchy of three-field
+coupling strengths: <span
+class="math display">\[\gamma_{\mathcal{M}\mathcal{C}} :
+\gamma_{\mathcal{C}\mathcal{M}} : \gamma_{\mathcal{C}\mathcal{I}} =
+\sqrt{\sigma_{\mathcal{M}}/\sigma_{\mathcal{C}}} :
+\sqrt{\sigma_{\mathcal{C}}/\sigma_{\mathcal{M}}} :
+\sqrt{\sigma_{\mathcal{I}}/\sigma_{\mathcal{C}}} = 1.92 : 0.52 :
+0.23.\]</span></p>
+<p>ℳ→𝒞 coupling is strongest (<span
+class="math inline">\(\gamma_{\mathcal{M}\mathcal{C}} \approx
+1.92\)</span>), and 𝒞→ℐ coupling is weakest (<span
+class="math inline">\(\gamma_{\mathcal{C}\mathcal{I}} \approx
+0.23\)</span>). This explains why the information field evolves slowest
+— its coupling to the causal field is weakest, and the causal field’s
+driving of it is minimal.</p>
+<h3 id="origin-of-the-coupling-terms">4.2 Origin of the Coupling
+Terms</h3>
+<p>The three-field coupling terms come from the three components of the
+Birkhoff Mixing Matrix <span class="math inline">\(T\)</span>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Coupling</th>
+<th style="text-align: left;">Origin</th>
+<th style="text-align: center;">Weight</th>
+<th style="text-align: center;">Strength</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ℳ↔︎𝒞</td>
+<td style="text-align: left;">P_τ (cyclic permutation)</td>
+<td style="text-align: center;">θ_τ ≈ 0.209</td>
+<td style="text-align: center;">Moderate</td>
+</tr>
+<tr>
+<td style="text-align: left;">𝒞↔︎ℐ</td>
+<td style="text-align: left;">P_σ₂ (transposition)</td>
+<td style="text-align: center;">θ_σ₂ ≈ 0.009</td>
+<td style="text-align: center;">Extremely weak</td>
+</tr>
+<tr>
+<td style="text-align: left;">ℳ↔︎ℐ</td>
+<td style="text-align: left;">No direct coupling</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">None</td>
+</tr>
+</tbody>
+</table>
+<p>ℳ-𝒞 coupling (cyclic permutation) is the strongest inter-sector
+coupling among the three fields, and 𝒞-ℐ coupling (transposition) is the
+weakest. This explains why the information field evolves slowest — its
+direct coupling to the matter field is zero.</p>
+<p><strong>Detailed derivation.</strong> Algebraic structure of the
+origin of coupling terms. The three components of the Birkhoff Mixing
+Matrix <span class="math inline">\(T = \theta_I P_I + \theta_\tau P_\tau
++ \theta_{\sigma_2} P_{\sigma_2}\)</span> correspond to three types of
+permutation operations:</p>
+<ol type="1">
+<li><p><strong><span class="math inline">\(P_I\)</span> (identity
+permutation)</strong>: weight <span class="math inline">\(\theta_I
+\approx 0.782\)</span>. This is intra-sector mixing — does not produce
+inter-sector coupling. The weight of <span
+class="math inline">\(P_I\)</span> is largest, indicating that
+intra-sector dynamics dominate.</p></li>
+<li><p><strong><span class="math inline">\(P_\tau\)</span> (cyclic
+permutation <span class="math inline">\(\mathcal{M} \to \mathcal{C} \to
+\mathcal{I} \to \mathcal{M}\)</span>)</strong>: weight <span
+class="math inline">\(\theta_\tau \approx 0.209\)</span>. This is
+three-field cyclic coupling — produces ℳ↔︎𝒞, 𝒞↔︎ℐ, and ℐ↔︎ℳ couplings. But
+because the weight of ℐ is extremely small, the ℐ↔︎ℳ coupling is
+effectively negligible.</p></li>
+<li><p><strong><span class="math inline">\(P_{\sigma_2}\)</span> (<span
+class="math inline">\(Z_2\)</span> transposition)</strong>: weight <span
+class="math inline">\(\theta_{\sigma_2} \approx 0.009\)</span>. This is
+the manifestation of Terminal Duality — transposition between the two
+direct summands of Cl(7). The weight of <span
+class="math inline">\(P_{\sigma_2}\)</span> is extremely small (0.009),
+indicating that the direct physical impact of Terminal Duality is very
+weak — it is mainly manifested in the internal structure of the
+information field (<span class="math inline">\(N_{\text{info}} =
+16\)</span>) rather than in coupling strength.</p></li>
+</ol>
+<p><strong>Numerical verification.</strong> Quantitative comparison of
+coupling strengths: <span class="math display">\[\theta_I : \theta_\tau
+: \theta_{\sigma_2} = 0.782 : 0.209 : 0.009 \approx 87 : 23 :
+1.\]</span></p>
+<p>Intra-sector mixing (<span class="math inline">\(\theta_I\)</span>)
+is approximately 3.6 times the inter-sector coupling (<span
+class="math inline">\(\theta_\tau + \theta_{\sigma_2}\)</span>) —
+intra-sector dynamics are far stronger than inter-sector coupling. This
+is the foundation for the approximate independence of the three
+fields.</p>
+<p><strong>Cross-volume references.</strong> The construction of the
+Birkhoff Mixing Matrix <span class="math inline">\(T\)</span> is found
+in Theorem 3.3.1.01. The determination of the three component weights
+<span class="math inline">\((\theta_I, \theta_\tau,
+\theta_{\sigma_2})\)</span> of <span class="math inline">\(T\)</span> is
+found in Theorem 6.5.1.01.</p>
+<h3 id="simplification-under-the-adiabatic-approximation">4.3
+Simplification under the Adiabatic Approximation</h3>
+<p>Under the adiabatic approximation (<span class="math inline">\(\xi
+\gg 1\)</span>), the three-field equations simplify to:</p>
+<p><span class="math display">\[\rho_{\mathcal{M}}(t) \approx
+\rho_{\mathcal{M}}^{\text{eq}}[\rho_{\mathcal{C}}(t)],\]</span></p>
+<p><span class="math display">\[\rho_{\mathcal{C}}(t) \approx
+\rho_{\mathcal{C}}^{\text{eq}}[\rho_{\mathcal{I}}(t)],\]</span></p>
+<p><span class="math display">\[\frac{d\rho_{\mathcal{I}}}{dt} =
+-D_{\mathcal{I}} L_{\mathcal{I}} \rho_{\mathcal{I}} -
+\gamma_{\mathcal{I}}(\rho_{\mathcal{I}} -
+\rho_{\mathcal{I}}^{\text{eq}}[\rho_{\mathcal{C}}^{\text{eq}}[\rho_{\mathcal{I}}]]).\]</span></p>
+<p>The matter field and causal field are “integrated out,” leaving only
+the slow dynamics of the information field — this is the information
+field unified equation of Theorem 5.3.2.01.</p>
+<p><strong>Detailed derivation.</strong> The simplification process of
+the adiabatic approximation (Tikhonov’s theorem of singular perturbation
+theory):</p>
+<ol type="1">
+<li><p>In the three-field equations, <span
+class="math inline">\(\epsilon_1 = \tau_M/\tau_I \approx 0.12\)</span>
+and <span class="math inline">\(\epsilon_2 = \tau_C/\tau_I \approx
+0.23\)</span> are small parameters.</p></li>
+<li><p>Letting <span class="math inline">\(\epsilon_1, \epsilon_2 \to
+0\)</span>, the equations for ℳ and 𝒞 degenerate to algebraic equations:
+<span class="math inline">\(\rho_{\mathcal{M}} =
+\rho_{\mathcal{M}}^{\text{eq}}[\rho_{\mathcal{C}}]\)</span>, <span
+class="math inline">\(\rho_{\mathcal{C}} =
+\rho_{\mathcal{C}}^{\text{eq}}[\rho_{\mathcal{I}}]\)</span>.</p></li>
+<li><p>Substituting <span class="math inline">\(\rho_{\mathcal{C}} =
+\rho_{\mathcal{C}}^{\text{eq}}[\rho_{\mathcal{I}}]\)</span> into the
+equation for <span class="math inline">\(\rho_{\mathcal{I}}\)</span>
+yields the effective dynamics of <span
+class="math inline">\(\rho_{\mathcal{I}}\)</span>: <span
+class="math display">\[\frac{d\rho_{\mathcal{I}}}{dt} = -D_{\mathcal{I}}
+L_{\mathcal{I}} \rho_{\mathcal{I}} -
+\gamma_{\mathcal{I}}(\rho_{\mathcal{I}} -
+\rho_{\mathcal{I}}^{\text{eq}}[\rho_{\mathcal{C}}^{\text{eq}}[\rho_{\mathcal{I}}]]).\]</span></p></li>
+<li><p>Near the Birkhoff Fixed Point <span
+class="math inline">\(\sigma^*\)</span>, <span
+class="math inline">\(\rho_{\mathcal{C}}^{\text{eq}}[\rho_{\mathcal{I}}]
+\approx \rho_{\mathcal{C}}^*\)</span> (constant), so <span
+class="math inline">\(\rho_{\mathcal{I}}^{\text{eq}}[\rho_{\mathcal{C}}^{\text{eq}}[\rho_{\mathcal{I}}]]
+\approx \rho_{\mathcal{I}}^*\)</span> (constant). This is the unified
+equation of Theorem 5.3.2.01.</p></li>
+</ol>
+<p><strong>Numerical verification.</strong> Precision of the adiabatic
+approximation: <span class="math inline">\(\epsilon_1 = 0.12, \epsilon_2
+= 0.23\)</span>. On the time scale of ℐ, the dynamical error of ℳ and 𝒞
+is <span class="math inline">\(O(\epsilon_1 + \epsilon_2) \approx
+35\%\)</span>. For qualitative structure (such as the existence of the
+steady state), 35% error is acceptable. For precise quantitative
+predictions, first-order corrections in <span
+class="math inline">\(\epsilon_1, \epsilon_2\)</span> are needed.</p>
+<p><strong>Cross-volume references.</strong> Detailed discussion of the
+adiabatic approximation is found in 5.2 §3. Standard references on
+singular perturbation theory (Tikhonov’s theorem) are found in the
+references of 5.2.</p>
+<h3 id="self-consistency-of-the-unified-equation">4.4 Self-Consistency
+of the Unified Equation</h3>
+<p>Self-consistency of the unified equation requires:</p>
+<ol type="1">
+<li><strong>Steady-state existence</strong>: <span
+class="math inline">\(\rho^*\)</span> satisfies <span
+class="math inline">\((D L + \gamma I)\rho^* = \gamma
+\rho^{\text{eq}}\)</span> — has a unique solution</li>
+<li><strong>Steady-state stability</strong>: all attenuation rates <span
+class="math inline">\(\Lambda_k &gt; 0\)</span> — global
+convergence</li>
+<li><strong>Information conservation</strong>: <span
+class="math inline">\(\text{Tr}(\rho^*) = \text{const}\)</span> — trace
+conservation</li>
+</ol>
+<p>All three are guaranteed by algebraic structure — the unified
+equation is self-consistent.</p>
+<p><strong>Detailed derivation.</strong> Three verifications of
+self-consistency:</p>
+<ol type="1">
+<li><p><strong>Steady-state existence</strong>: The eigenvalues of <span
+class="math inline">\(M = D L + \gamma I\)</span> are <span
+class="math inline">\(\lambda_M^{(k)} = D \mu_k + \gamma\)</span>. The
+smallest eigenvalue is <span class="math inline">\(\lambda_M^{(0)} =
+\gamma &gt; 0\)</span>, so <span class="math inline">\(M\)</span> is
+invertible, and <span class="math inline">\(\rho^* = M^{-1} \gamma
+\rho^{\text{eq}}\)</span> exists and is unique.</p></li>
+<li><p><strong>Steady-state stability</strong>: All <span
+class="math inline">\(\Lambda_k = D \mu_k + \gamma &gt; 0\)</span>
+(<span class="math inline">\(\mu_k \geq 0\)</span>, <span
+class="math inline">\(\gamma &gt; 0\)</span>), so <span
+class="math inline">\(\delta\rho(t) \to 0\)</span> (<span
+class="math inline">\(t \to \infty\)</span>), global
+convergence.</p></li>
+<li><p><strong>Information conservation</strong>: <span
+class="math inline">\(\text{Tr}(\rho^*) = \gamma \text{Tr}(M^{-1}
+\rho^{\text{eq}})\)</span>. At the Birkhoff Fixed Point, <span
+class="math inline">\(\rho^* = \rho^{\text{eq}}\)</span>, <span
+class="math inline">\(\text{Tr}(\rho^*) =
+\text{Tr}(\rho^{\text{eq}})\)</span> — conserved.</p></li>
+</ol>
+<p><strong>Numerical verification.</strong> Numerical verification of
+self-consistency: <span class="math display">\[\begin{aligned}
+M &amp;= D L + \gamma I, \quad \det(M) = \prod_k (D \mu_k + \gamma) &gt;
+0, \\
+\Lambda_{\min} &amp;= \gamma = 0.234 &gt; 0, \\
+\text{Tr}(\rho^*) &amp;= 0.552 \quad (\text{at } \rho^* =
+\rho^{\text{eq}}).
+\end{aligned}\]</span></p>
+<hr />
+<h2 id="landscape-dependence-of-the-unified-equation">§5 Landscape
+Dependence of the Unified Equation</h2>
+<h3 id="variation-of-parameters-with-landscape-position">5.1 Variation
+of Parameters with Landscape Position</h3>
+<p>The three parameters <span class="math inline">\(D_{\mathcal{I}},
+\gamma_{\mathcal{I}}, \mu_1\)</span> of the unified equation all vary
+with landscape position:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: center;">Symmetric point</th>
+<th style="text-align: center;">Our position</th>
+<th style="text-align: center;">Extreme point</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">D_ℐ</td>
+<td style="text-align: center;">≈ 0.185</td>
+<td style="text-align: center;">≈ 0.107</td>
+<td style="text-align: center;">→ 0</td>
+</tr>
+<tr>
+<td style="text-align: left;">γ_ℐ</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">≈ 0.234</td>
+<td style="text-align: center;">→ 0</td>
+</tr>
+<tr>
+<td style="text-align: left;">μ₁</td>
+<td style="text-align: center;">≈ 1.732</td>
+<td style="text-align: center;">≈ 0.370</td>
+<td style="text-align: center;">→ 0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Detailed derivation.</strong> Algebraic origins of the
+landscape dependence of the three parameters:</p>
+<ol type="1">
+<li><p><strong><span class="math inline">\(D_{\mathcal{I}} =
+C\sqrt{\sigma_{\mathcal{I}}^*}\)</span></strong>: <span
+class="math inline">\(D_{\mathcal{I}}\)</span> decreases as <span
+class="math inline">\(\sigma_{\mathcal{I}}^*\)</span> decreases. At the
+symmetric point, <span class="math inline">\(\sigma_{\mathcal{I}}^* =
+1/3\)</span>, <span class="math inline">\(D_{\mathcal{I}} \approx 0.577
+C\)</span>; at the extreme point, <span
+class="math inline">\(\sigma_{\mathcal{I}}^* \to 0\)</span>, <span
+class="math inline">\(D_{\mathcal{I}} \to 0\)</span>. <span
+class="math inline">\(D_{\mathcal{I}} \to 0\)</span> means information
+field diffusion stops — information cannot propagate in the
+network.</p></li>
+<li><p><strong><span class="math inline">\(\gamma_{\mathcal{I}} =
+\sqrt{\sigma_{\mathcal{I}}^*/\sigma_{\mathcal{C}}^*}\)</span></strong>:
+<span class="math inline">\(\gamma_{\mathcal{I}}\)</span> decreases as
+<span class="math inline">\(\sigma_{\mathcal{I}}^*\)</span> decreases
+and <span class="math inline">\(\sigma_{\mathcal{C}}^*\)</span>
+increases. At the symmetric point, <span
+class="math inline">\(\sigma_{\mathcal{I}}^* = \sigma_{\mathcal{C}}^* =
+1/3\)</span>, <span class="math inline">\(\gamma_{\mathcal{I}} =
+1\)</span>; at the extreme point, <span
+class="math inline">\(\sigma_{\mathcal{I}}^* \to 0\)</span>, <span
+class="math inline">\(\gamma_{\mathcal{I}} \to 0\)</span>. <span
+class="math inline">\(\gamma_{\mathcal{I}} \to 0\)</span> means the
+information field no longer responds to the causal field — the
+information field and causal field decouple.</p></li>
+<li><p><strong><span class="math inline">\(\mu_1 = |1 -
+\lambda_2|\)</span></strong>: <span class="math inline">\(\mu_1\)</span>
+decreases with the degree to which the fixed point deviates from the
+symmetric point. At the symmetric point, <span
+class="math inline">\(\lambda_2 = e^{2\pi i/3}\)</span>, <span
+class="math inline">\(\mu_1 = \sqrt{3} \approx 1.732\)</span>; at the
+extreme point, <span class="math inline">\(\lambda_2 \to 1\)</span>,
+<span class="math inline">\(\mu_1 \to 0\)</span>. <span
+class="math inline">\(\mu_1 \to 0\)</span> means the information network
+is disconnected.</p></li>
+</ol>
+<p><strong>Numerical verification.</strong> Behavior of the three
+parameters at the extreme point <span class="math inline">\((S \to
+968)\)</span>: <span class="math display">\[D_{\mathcal{I}} \to 0, \quad
+\gamma_{\mathcal{I}} \to 0, \quad \mu_1 \to 0.\]</span></p>
+<p>All three parameters tend to zero — all dynamics of the unified
+equation freeze. This is the Conjugate Spectral Geometry counterpart of
+“heat death.”</p>
+<h3 id="landscape-range-of-convergence-time">5.2 Landscape Range of
+Convergence Time</h3>
+<p>Landscape range of the convergence time <span
+class="math inline">\(\tau_{\text{conv}} = 1/\Lambda_1\)</span>:</p>
+<ul>
+<li>Symmetric point: <span class="math inline">\(\tau_{\text{conv}}
+\approx 1/(0.185 \times 1.732 + 1) \approx 0.76\)</span> (rapid
+convergence)</li>
+<li>Our position: <span class="math inline">\(\tau_{\text{conv}} \approx
+3.65\)</span> (moderate convergence)</li>
+<li>Extreme point: <span class="math inline">\(\tau_{\text{conv}} \to
+\infty\)</span> (no convergence)</li>
+</ul>
+<p>At our position, the convergence time is moderate — the information
+field reaches the steady state within a reasonable time.</p>
+<p><strong>Detailed derivation.</strong> Landscape dependence of the
+convergence time. <span class="math inline">\(\Lambda_1 =
+D_{\mathcal{I}} \mu_1 + \gamma_{\mathcal{I}}\)</span> attains its
+maximum at the symmetric point (<span class="math inline">\(\Lambda_1
+\approx 1.32\)</span>) and tends to zero at the extreme point (<span
+class="math inline">\(\Lambda_1 \to 0\)</span>). Hence <span
+class="math inline">\(\tau_{\text{conv}} = 1/\Lambda_1\)</span> is
+smallest at the symmetric point (approximately 0.76) and tends to
+infinity at the extreme point.</p>
+<p>Physical meaning of the convergence time tending to infinity: at the
+extreme point, all dynamical processes of the information field freeze —
+diffusion stops (<span class="math inline">\(D_{\mathcal{I}} \to
+0\)</span>), response stops (<span
+class="math inline">\(\gamma_{\mathcal{I}} \to 0\)</span>), and the
+network is disconnected (<span class="math inline">\(\mu_1 \to
+0\)</span>). The information field cannot reach a steady state — this is
+a “nonequilibrium frozen state.”</p>
+<p><strong>Numerical verification.</strong> Convergence times at three
+characteristic positions:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Position</th>
+<th style="text-align: center;">S</th>
+<th style="text-align: center;">Λ₁</th>
+<th style="text-align: center;">τ_conv</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Symmetric point</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">1.32</td>
+<td style="text-align: center;">0.76</td>
+</tr>
+<tr>
+<td style="text-align: left;">Our position</td>
+<td style="text-align: center;">137</td>
+<td style="text-align: center;">0.274</td>
+<td style="text-align: center;">3.65</td>
+</tr>
+<tr>
+<td style="text-align: left;">Near-extreme point</td>
+<td style="text-align: center;">500</td>
+<td style="text-align: center;">0.05</td>
+<td style="text-align: center;">20</td>
+</tr>
+<tr>
+<td style="text-align: left;">Extreme point</td>
+<td style="text-align: center;">968</td>
+<td style="text-align: center;">→ 0</td>
+<td style="text-align: center;">→ ∞</td>
+</tr>
+</tbody>
+</table>
+<h3 id="unified-equation-and-algebraic-action">5.3 Unified Equation and
+Algebraic Action</h3>
+<p>The steady state <span class="math inline">\(\rho^*\)</span> of the
+unified equation coincides with the minimum of the Algebraic Action —
+both are determined by <span class="math inline">\(\sigma^*\)</span>.
+This guarantees the unity of the dynamical steady state and the
+geometric extremum.</p>
+<p><strong>Detailed derivation.</strong> Unity of the unified equation
+and the Algebraic Action. The steady state <span
+class="math inline">\(\rho^*\)</span> of the unified equation is
+determined by <span class="math inline">\((D L + \gamma I)\rho^* =
+\gamma \rho^{\text{eq}}\)</span>. At the Birkhoff Fixed Point <span
+class="math inline">\(\sigma^*\)</span>, <span
+class="math inline">\(\rho^* = \rho^{\text{eq}} = \Lambda
+\sigma^*\)</span>. Hence the position of <span
+class="math inline">\(\rho^*\)</span> is completely determined by <span
+class="math inline">\(\sigma^*\)</span>.</p>
+<p>On the other hand, the Algebraic Action <span
+class="math inline">\(S(\sigma)\)</span> attains its minimum at <span
+class="math inline">\(\sigma^*\)</span>. Thus the dynamical steady state
+(<span class="math inline">\(\rho^*\)</span>) and the geometric extremum
+(<span class="math inline">\(\sigma^*\)</span>) are attained at the same
+point — this is the manifestation of “dynamics-geometry unity.”</p>
+<p>This unity is not accidental but an inevitable consequence of the
+Birkhoff Fixed Point Theorem: <span class="math inline">\(T\sigma^* =
+\sigma^*\)</span> simultaneously guarantees that <span
+class="math inline">\(S(\sigma)\)</span> attains its minimum at <span
+class="math inline">\(\sigma^*\)</span> (geometric extremum) and that
+<span class="math inline">\(\partial \rho / \partial t = 0\)</span>
+holds at <span class="math inline">\(\rho^* = \Lambda \sigma^*\)</span>
+(dynamical steady state).</p>
+<p><strong>Numerical verification.</strong> Verify the relationship
+between <span class="math inline">\(\rho^*\)</span> and <span
+class="math inline">\(\sigma^*\)</span>: <span
+class="math display">\[\rho_{\mathcal{I}}^* = \Lambda
+\sigma_{\mathcal{I}}^* = 3 \times 0.011484 = 0.03445.\]</span></p>
+<p>At the steady state <span class="math inline">\(\rho^* =
+\rho^{\text{eq}}\)</span>, <span class="math inline">\(\partial \rho /
+\partial t = 0\)</span> — dynamical steady state. Simultaneously <span
+class="math inline">\(S(\sigma^*) = 137\)</span> is the minimum —
+geometric extremum. The two are unified at <span
+class="math inline">\(\sigma^*\)</span>.</p>
+<p><strong>Cross-volume references.</strong> The minimization of the
+Algebraic Action <span class="math inline">\(S(\sigma)\)</span> is found
+in Theorem 3.4.1.01. The determination of the Birkhoff Fixed Point <span
+class="math inline">\(\sigma^*\)</span> is found in Theorem 3.3.1.01.
+The complete discussion of dynamics-geometry unity is found in the
+Birkhoff Fixed Point Theorem of Volume 3.</p>
+<hr />
+<h2 id="theorem-index">Theorem Index</h2>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 28%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Number</th>
+<th style="text-align: left;">Content</th>
+<th style="text-align: center;">Proof Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Theorem 5.3.2.01</td>
+<td style="text-align: left;">Unified Dynamical Equation for the
+Information Field</td>
+<td style="text-align: center;">Proved (this article §2)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="references">References</h2>
+<ul>
+<li>Chung, <em>Spectral Graph Theory</em>, AMS CBMS 92</li>
+<li>Gardiner, <em>Stochastic Methods</em>, Springer</li>
+<li>Tikhonov, A. N., “Systems of differential equations containing small
+parameters”, Mat. Sbornik, 31(73): 575-586, 1952</li>
+<li>Risken, H., <em>The Fokker-Planck Equation</em>, Springer, 1989</li>
+<li>Kubo, R., “The fluctuation-dissipation theorem”, Reports on Progress
+in Physics, 29: 255, 1966</li>
+</ul>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>

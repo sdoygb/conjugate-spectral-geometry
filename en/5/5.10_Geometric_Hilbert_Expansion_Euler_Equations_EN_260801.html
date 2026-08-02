@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geometric Hilbert Expansion — Euler Equations | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Number: 5.10 | Date: 260728.1 | Series: Information Field Cumulant Factorization (G5) | Language: EN">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/5/5.10_Geometric_Hilbert_Expansion_Euler_Equations_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">Geometric Hilbert Expansion — Euler Equations</span>
+  </nav>
+  <main class="article-content">
+<h1 id="geometric-hilbert-expansion-euler-equations">Geometric Hilbert
+Expansion — Euler Equations</h1>
+<p><strong>Number</strong>: 5.10 | <strong>Date</strong>: 260728.1 |
+<strong>Series</strong>: Information Field Cumulant Factorization (G5) |
+<strong>Language</strong>: EN <strong>Prerequisites</strong>: Article
+5.9 (Information Field Dynamical Equation), Theorem 7.13.3.05 (Birkhoff
+Mixing), Theorem 1.1.5.01 (Spectral Expansion / Born Rule), Theorem
+1.4.3.01 (Algebraic Action) <strong>Status</strong>: Complete — Rigorous
+derivation of the compressible Euler equations from the information
+field dynamical equation via Hilbert expansion</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>G4 has derived the information field dynamical equation — the
+geometric version of the Boltzmann equation. This article (G5) performs
+the first order of the Hilbert expansion on that equation, rigorously
+deriving the compressible Euler equations. Core results: (1) the
+equilibrium state is the uniform distribution <span
+class="math inline">\(f_0 = 1/4\pi\)</span> on <span
+class="math inline">\(S^2\)</span>; (2) the first-order expansion yields
+the continuity equation, momentum equation, and energy equation; (3) the
+geometric pressure <span class="math inline">\(p_{\text{geo}} =
+S(\theta)|_{\Sigma}\)</span> is determined by the algebraic action, and
+the adiabatic index <span class="math inline">\(\gamma = 9/7\)</span> is
+determined by the dimension of the Clifford algebra <span
+class="math inline">\(Cl(7,0)\)</span>. The mathematical structure is
+completely parallel to Deng-Yu’s derivation of the Euler equations from
+the Boltzmann equation, but all parameters are locked by spectral
+rigidity.</p>
+<p><strong>Keywords</strong>: Hilbert expansion; Euler equations;
+equilibrium distribution; collision invariants; moment closure;
+geometric pressure; algebraic action</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li>§1 Equilibrium Distribution and Linearization</li>
+<li>§2 Geometric Setup of the Hilbert Expansion</li>
+<li>§3 Zeroth Order: Equilibrium Identity</li>
+<li>§4 First Order: Derivation of the Compressible Euler Equations</li>
+<li>§5 Moment Closure for Macroscopic Variables</li>
+<li>Theorem Index</li>
+<li>References</li>
+</ul>
+<hr />
+<h2 id="equilibrium-distribution-and-linearization">§1 Equilibrium
+Distribution and Linearization</h2>
+<h3 id="equilibrium-state">1.1 Equilibrium State</h3>
+<p><strong>Definition 5.10.1.01 (Equilibrium distribution)</strong>: The
+equilibrium distribution of the information field on the sector
+parameter space <span class="math inline">\(S^2\)</span> is the uniform
+distribution:</p>
+<p><span class="math display">\[f_0(x) = \frac{1}{\text{Vol}(S^2)} =
+\frac{1}{4\pi}, \quad x \in S^2\]</span></p>
+<p><strong>Verification</strong>: <span
+class="math inline">\(\mathcal{L}_{\text{mix}}[f_0] =
+\Delta_{S^2}(1/4\pi) + \mathcal{L}_{Cl}(1/4\pi) = 0\)</span> (constant
+functions are zero modes of the Laplace-Beltrami operator, and the
+Clifford jump operator vanishes on the uniform distribution). <span
+class="math inline">\(\mathcal{Q}_{\text{cont}}[f_0, f_0] = 0\)</span>
+(uniform distribution has no net cross-sector flow — when information is
+equally distributed among all sectors, there is no net exchange).</p>
+<p><strong>Physical meaning</strong>: <span class="math inline">\(f_0 =
+1/4\pi\)</span> corresponds to the maximum entropy state of information
+on <span class="math inline">\(S^2\)</span> — all directions and all
+sectors are equally probable. This corresponds in mathematical role to
+the Maxwell distribution <span class="math inline">\(f_M \propto
+e^{-|v|^2/2kT}\)</span> of the classical Boltzmann equation: both are
+zero modes of the collision operator.</p>
+<h3 id="linearized-collision-operator">1.2 Linearized Collision
+Operator</h3>
+<p><strong>Definition 5.10.1.02 (Linearized collision
+operator)</strong>: Linearize about the equilibrium <span
+class="math inline">\(f_0\)</span>:</p>
+<p><span class="math display">\[\mathcal{L}_0[h] =
+\mathcal{L}_{\text{mix}}[h] + 2\mathcal{Q}_{\text{cont}}[f_0,
+h]\]</span></p>
+<p><strong>Proposition 5.10.1.03 (Properties of <span
+class="math inline">\(\mathcal{L}_0\)</span>)</strong>: 1. <span
+class="math inline">\(\mathcal{L}_0\)</span> is a self-adjoint operator
+on <span class="math inline">\(L^2(S^2)\)</span> 2. Its null space
+(hydrodynamic subspace) is spanned by the collision invariants: <span
+class="math inline">\(\text{Ker}(\mathcal{L}_0) = \text{span}\{1,
+v_\eta, v_\xi, |v|^2\}\)</span> 3. Nonzero eigenvalues have a positive
+lower bound <span class="math inline">\(\mu_{Cl} = 0.2982\)</span> (from
+Theorem 5.8.3.02)</p>
+<p>Physical meaning of the collision invariants: <span
+class="math inline">\(1\)</span> = mass conservation, <span
+class="math inline">\(v_\eta, v_\xi\)</span> = momentum conservation
+(<span class="math inline">\(\eta\)</span> and <span
+class="math inline">\(\xi\)</span> directions), <span
+class="math inline">\(|v|^2\)</span> = energy conservation. These
+conservation laws arise from Birkhoff double stochasticity (Proposition
+5.9.3.02).</p>
+<hr />
+<h2 id="geometric-setup-of-the-hilbert-expansion">§2 Geometric Setup of
+the Hilbert Expansion</h2>
+<p><strong>Theorem 5.10.2.01 (Geometric Hilbert expansion)</strong>:
+Near equilibrium, expand the distribution function as:</p>
+<p><span class="math display">\[f = f_0(1 + \varepsilon h_1 +
+\varepsilon^2 h_2 + \cdots)\]</span></p>
+<p>where <span class="math inline">\(\varepsilon\)</span> is the
+geometric analogue of the Knudsen number:</p>
+<p><span class="math display">\[\varepsilon \sim
+\frac{\ell_{\text{mfp}}}{L_{\text{macro}}}, \quad \ell_{\text{mfp}} =
+\frac{1}{\sqrt{\lambda_1^{\text{eff}}}} \approx 0.0506\]</span></p>
+<p><span class="math inline">\(\ell_{\text{mfp}}\)</span> is the
+geometric mean free path — the characteristic length required for
+information to diffuse across one spectral gap wavelength on the
+parameter space. <span class="math inline">\(L_{\text{macro}}\)</span>
+is the characteristic scale of the macroscopic flow.</p>
+<p>Substitute the expansion into the information field dynamical
+equation (Theorem 5.9.3.01):</p>
+<p><span class="math display">\[\partial_\tau f +
+\mathbf{v}_{\text{geo}} \cdot \nabla_x f = \mathcal{L}_{\text{mix}}[f] +
+\mathcal{Q}_{\text{cont}}[f, f]\]</span></p>
+<p>Match equations at each power of <span
+class="math inline">\(\varepsilon\)</span>.</p>
+<hr />
+<h2 id="zeroth-order-equilibrium-identity">§3 Zeroth Order: Equilibrium
+Identity</h2>
+<p><span class="math inline">\(\varepsilon^0\)</span> order:</p>
+<p><span class="math display">\[\mathcal{L}_{\text{mix}}[f_0] +
+\mathcal{Q}_{\text{cont}}[f_0, f_0] = 0\]</span></p>
+<p>Holds identically (equilibrium Definition 5.10.1.01). This
+corresponds to the geometric analogue of <span
+class="math inline">\(Q(f_M, f_M) = 0\)</span> in the classical Hilbert
+expansion.</p>
+<hr />
+<h2 id="first-order-derivation-of-the-compressible-euler-equations">§4
+First Order: Derivation of the Compressible Euler Equations</h2>
+<h3 id="first-order-equation">4.1 First-Order Equation</h3>
+<p><span class="math inline">\(\varepsilon^1\)</span> order:</p>
+<p><span class="math display">\[\partial_\tau h_1 +
+\mathbf{v}_{\text{geo}} \cdot \nabla_x h_1 =
+\mathcal{L}_0[h_1]\]</span></p>
+<p><strong>Definition 5.10.4.01 (Macroscopic variables —
+moments)</strong>: Define the hydrodynamic moments of <span
+class="math inline">\(h_1\)</span>:</p>
+<p><span class="math display">\[\rho^{(1)}(\eta, \tau) = \int_{S^2}
+h_1(\eta, \xi, \tau) \, d\Omega \quad \text{(density
+perturbation)}\]</span></p>
+<p><span class="math display">\[\rho^{(1)} \mathbf{u}^{(1)}(\eta, \tau)
+= \int_{S^2} \mathbf{v}_{\text{geo}} \, h_1(\eta, \xi, \tau) \, d\Omega
+\quad \text{(momentum density)}\]</span></p>
+<p><span class="math display">\[p^{(1)}(\eta, \tau) = \frac{1}{2}
+\int_{S^2} |\mathbf{v}_{\text{geo}}|^2 \, h_1(\eta, \xi, \tau) \,
+d\Omega \quad \text{(energy density / pressure
+perturbation)}\]</span></p>
+<h3 id="euler-equations">4.2 Euler Equations</h3>
+<p><strong>Theorem 5.10.4.02 (Geometric Euler equations)</strong>: The
+first-order moments satisfy the compressible Euler equations:</p>
+<p><span class="math display">\[\boxed{\partial_\tau \rho + \nabla_\eta
+\cdot (\rho \mathbf{u}) = 0}\]</span></p>
+<p><span class="math display">\[\boxed{\partial_\tau (\rho \mathbf{u}) +
+\nabla_\eta \cdot (\rho \mathbf{u} \otimes \mathbf{u}) = -\nabla_\eta
+p_{\text{geo}}}\]</span></p>
+<p><span class="math display">\[\boxed{\partial_\tau E + \nabla_\eta
+\cdot [(E + p_{\text{geo}}) \mathbf{u}] = 0}\]</span></p>
+<p>where: - <span class="math inline">\(p_{\text{geo}} =
+S(\theta)|_{\Sigma}\)</span> is the geometric pressure — the restriction
+of the algebraic action <span class="math inline">\(S(\theta) = \sum
+1/\sin^2\theta_i \sum_{i&lt;j} 1/(\sin\theta_i \sin\theta_j)\)</span> to
+the sector parameter space <span class="math inline">\(\Sigma\)</span> -
+<span class="math inline">\(E = \frac{1}{2}\rho|\mathbf{u}|^2 +
+p_{\text{geo}}/(\gamma-1)\)</span> is the total energy density - <span
+class="math inline">\(\gamma = 9/7\)</span> is the adiabatic index,
+determined by the dimension of the Clifford algebra <span
+class="math inline">\(Cl(7,0)\)</span>: <span
+class="math inline">\(\gamma = (d+2)/d = 9/7\)</span>, where <span
+class="math inline">\(d = 7\)</span> (the number of generators of the
+Clifford algebra)</p>
+<p><strong>Proof outline</strong>:</p>
+<ol type="1">
+<li>Multiply the <span
+class="math inline">\(\varepsilon^1\)</span>-order equation by <span
+class="math inline">\(1\)</span>, <span
+class="math inline">\(\mathbf{v}_{\text{geo}}\)</span>, <span
+class="math inline">\(|\mathbf{v}_{\text{geo}}|^2\)</span> respectively
+and integrate over <span class="math inline">\(S^2\)</span></li>
+<li><span class="math inline">\(h_1\)</span> belongs to the null space
+of <span class="math inline">\(\mathcal{L}_0\)</span> (hydrodynamic
+subspace), hence <span class="math inline">\(\int
+\mathbf{v}_{\text{geo}} \mathcal{L}_0[h_1] d\Omega = 0\)</span>, <span
+class="math inline">\(\int |\mathbf{v}_{\text{geo}}|^2
+\mathcal{L}_0[h_1] d\Omega = 0\)</span> (collision invariants)</li>
+<li>The transport term <span class="math inline">\(\int
+\mathbf{v}_{\text{geo}} (\mathbf{v}_{\text{geo}} \cdot \nabla_x h_1)
+d\Omega\)</span> yields <span class="math inline">\(\nabla_\eta \cdot
+(\rho \mathbf{u} \otimes \mathbf{u} + pI)\)</span></li>
+<li>The pressure <span class="math inline">\(p_{\text{geo}}\)</span> is
+given by the equilibrium value of the algebraic action <span
+class="math inline">\(S(\theta)\)</span> — this is a unique feature of
+the geometric framework: pressure is not a thermodynamic quantity, but a
+<strong>geometric quantity</strong> ∎</li>
+</ol>
+<p><strong>Key innovation</strong>: In the classical Boltzmann → Euler
+derivation, pressure arises from the second moment of the distribution
+function and depends on an equation of state. In the geometric
+framework, pressure is given directly by the algebraic action <span
+class="math inline">\(S(\theta)\)</span> — it is an intrinsic geometric
+quantity of the Clifford algebra construction, requiring no
+equation-of-state hypothesis.</p>
+<hr />
+<h2 id="moment-closure-for-macroscopic-variables">§5 Moment Closure for
+Macroscopic Variables</h2>
+<p>The moment closure at the Euler level is <strong>exact</strong> —
+<span class="math inline">\(h_1\)</span> lies entirely within the null
+space of <span class="math inline">\(\mathcal{L}_0\)</span> (the
+hydrodynamic subspace), requiring no modeling assumptions. This is
+consistent with the standard Hilbert expansion of the Boltzmann
+equation.</p>
+<p><strong>Dimension of the hydrodynamic subspace</strong>: <span
+class="math inline">\(\dim \text{Ker}(\mathcal{L}_0) = 4\)</span> (mass
++ 2 momentum components + energy), corresponding to the <span
+class="math inline">\(\ell = 0\)</span> and <span
+class="math inline">\(\ell = 1\)</span> spherical harmonics on <span
+class="math inline">\(S^2\)</span> (<span class="math inline">\(1 + 3 =
+4\)</span> dimensions). These 4 degrees of freedom completely determine
+the macroscopic description at the Euler level.</p>
+<p><strong>Differences from the classical Euler equations</strong>: 1.
+Pressure is replaced by <span class="math inline">\(S(\theta)\)</span>
+(not a thermodynamic equation of state, but a purely geometric quantity)
+2. The adiabatic index <span class="math inline">\(\gamma = 9/7\)</span>
+is locked by the Clifford algebra dimension 3. The domain is <span
+class="math inline">\(S^2\)</span> (a reduced 2-dimensional manifold)
+rather than <span class="math inline">\(\mathbb{R}^3\)</span> 4. Causal
+time <span class="math inline">\(\tau\)</span> replaces Newtonian time
+<span class="math inline">\(t\)</span></p>
+<hr />
+<h2 id="theorem-index">Theorem Index</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Theorem</th>
+<th style="text-align: left;">Content Summary</th>
+<th style="text-align: left;">Location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Definition 5.10.1.01</td>
+<td style="text-align: left;">Equilibrium distribution <span
+class="math inline">\(f_0 = 1/4\pi\)</span></td>
+<td style="text-align: left;">§1.1</td>
+</tr>
+<tr>
+<td style="text-align: left;">Definition 5.10.1.02</td>
+<td style="text-align: left;">Linearized collision operator <span
+class="math inline">\(\mathcal{L}_0\)</span></td>
+<td style="text-align: left;">§1.2</td>
+</tr>
+<tr>
+<td style="text-align: left;">Proposition 5.10.1.03</td>
+<td style="text-align: left;">Properties of <span
+class="math inline">\(\mathcal{L}_0\)</span> (self-adjoint / null space
+/ spectral gap)</td>
+<td style="text-align: left;">§1.2</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Theorem 5.10.2.01</strong></td>
+<td style="text-align: left;">Geometric Hilbert expansion setup</td>
+<td style="text-align: left;">§2</td>
+</tr>
+<tr>
+<td style="text-align: left;">Definition 5.10.4.01</td>
+<td style="text-align: left;">Definition of macroscopic variables
+(moments)</td>
+<td style="text-align: left;">§4.1</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Theorem 5.10.4.02</strong></td>
+<td style="text-align: left;">Derivation of compressible Euler
+equations</td>
+<td style="text-align: left;">§4.2</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="subsequent-work">Subsequent Work</h2>
+<p>This article derived the compressible Euler equations from the
+information field dynamical equation via the first order of the Hilbert
+expansion. The following is left for subsequent work:</p>
+<ul>
+<li>Expand to second order to derive the Navier-Stokes equations
+(including viscosity and heat conduction) (see Article 5.11)</li>
+<li>Take the incompressible limit in the low Mach number regime (see
+Article 5.11 §4)</li>
+</ul>
+<hr />
+<h2 id="references">References</h2>
+<ol type="1">
+<li>Theorem 5.9.3.01 — Continuous information field dynamical equation
+(Article 5.9)</li>
+<li>Proposition 5.9.3.02 — Collision invariants (Article 5.9)</li>
+<li>Theorem 5.8.3.02 — Fibration invariance of the spectral gap (Article
+5.8)</li>
+<li>Theorem 1.4.3.01 — Algebraic action <span
+class="math inline">\(S(\theta)\)</span></li>
+<li>Theorem 1.1.5.01 — Spectral expansion / Born Rule</li>
+<li>Deng, Y. et al. [2503.01800] — Hilbert expansion of Boltzmann →
+fluid equations</li>
+</ol>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.3 Born法则的代数导出 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="版本: 260721.1">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/cn/1.3_Born法则的代数导出_CN_260721.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../index.html" class="nav-home">🏠 首页</a>
+    <a href="../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">1.3 Born法则的代数导出</span>
+  </nav>
+  <main class="article-content">
+<h1 id="born法则的代数导出">1.3 Born法则的代数导出</h1>
+<p><strong>版本</strong>: 260721.1</p>
+<hr />
+<h2 id="摘要">摘要</h2>
+<p>本文从 Cl(3) 代数结构导出 Born 法则 <span
+class="math inline">\(\Delta\lambda_i \propto
+\sqrt{\sigma_i}\)</span>——不借用量子力学，而是投影强度恒等式和对易子双线性性的直接推论。这表明
+Born 法则不是从物理世界借来的公设，而是 Clifford
+代数的代数必然。本文给出投影强度恒等式的完整证明、扇区权重归一化的紧框架解释、Born
+法则的三步严格证明，并通过数值实验验证恒等式在 <span
+class="math inline">\(\mathbb{R}^4\)</span> 上精确成立（误差 <span
+class="math inline">\(&lt;10^{-15}\)</span>）。</p>
+<hr />
+<h2 id="目-录">目　录</h2>
+<p>§1　问题陈述 　1.2　代数导出的目标</p>
+<p>§2　Cl(3) 的投影结构 　2.1　半单分裂的投影 　2.2　投影强度
+　2.3　投影强度恒等式 　2.4　扇区权重归一化</p>
+<p>§3　对易子双线性性 　3.1　Clifford 生成元的对易子 　3.2　双线性性
+　3.3　谱间隙的代数来源</p>
+<p>§4　Born 法则的导出 　4.1　三步严格证明 　4.2　Born 法则的代数根源
+　4.3　关键代数要素的分解</p>
+<p>§5　与量子力学 Born 法则的关系 　5.1　物理解释而非来源
+　5.2　对应关系 　5.3　代数优先性</p>
+<p>§6　数值验证 　6.1　实验设计 　6.2　实验结果 　6.3　结论</p>
+<p>§7　编码权重到物理角度 　7.1　谱间隙公式 　7.2　编码角度</p>
+<hr />
+<h2 id="问题陈述">§1 问题陈述</h2>
+<h3 id="代数导出的目标">1.2 代数导出的目标</h3>
+<p>从 Clifford 代数导出 Born
+法则，使其成为代数结构而非物理公设。具体地：谱间隙 <span
+class="math inline">\(\Delta\lambda_i\)</span>（编码映射的本征值差）与编码权重
+<span class="math inline">\(\sigma_i\)</span> 之间的关系 <span
+class="math inline">\(\Delta\lambda_i \propto \sqrt{\sigma_i}\)</span>
+应从 Cl(3) 的代数结构中自然涌现。</p>
+<p>本文的核心论证策略如下：</p>
+<ol type="1">
+<li><strong>投影强度恒等式</strong>（§2.3）：证明 <span
+class="math inline">\(\sum_{i=1}^{3} \|PL_iP\|_{HS}^2 = 2\)</span>，这是
+Cl(3) 左乘表示的代数必然。</li>
+<li><strong>扇区权重归一化</strong>（§2.4）：由恒等式导出 <span
+class="math inline">\(\sigma_M+\sigma_C+\sigma_I =
+1\)</span>，并给出紧框架解释。</li>
+<li><strong>Born
+法则的三步证明</strong>（§4）：由对易子双线性性与投影强度恒等式联立，严格导出
+<span class="math inline">\(\Delta\lambda_i \propto
+\sqrt{\sigma_i}\)</span>。</li>
+<li><strong>代数根源分析</strong>（§4.2）：指出 Born
+法则的两个代数要素。</li>
+<li><strong>与量子力学的关系</strong>（§5）：澄清本框架与量子力学 Born
+法则的对应关系。</li>
+<li><strong>数值验证</strong>（§6）：在 <span
+class="math inline">\(\mathbb{R}^4\)</span> 中验证恒等式的精确性。</li>
+</ol>
+<hr />
+<h2 id="cl3-的投影结构">§2 Cl(3) 的投影结构</h2>
+<h3 id="半单分裂的投影">2.1 半单分裂的投影</h3>
+<p>Cl(3) <span class="math inline">\(\cong \mathbb{H} \oplus
+\mathbb{H}\)</span> 的半单分裂（定理 7.8.6.03）由投影 <span
+class="math inline">\(P_{\pm} = (1 \pm \omega_3)/2\)</span>
+给出。这两个投影将 Cl(3) 分为两个独立的子代数。</p>
+<p>在编码框架中，投影 <span class="math inline">\(P_{\pm}\)</span>
+对应物质界的两个「分支」——后续将对应粒子的左手和右手螺旋性。</p>
+<h3 id="投影强度">2.2 投影强度</h3>
+<p><strong>定义19（投影强度）。</strong> 设 <span
+class="math inline">\(P_i\)</span> 是 Cl(3) 的一个投影（<span
+class="math inline">\(P_i^2 = P_i\)</span>），<span
+class="math inline">\(\sigma_i\)</span> 是 <span
+class="math inline">\(P_i\)</span> 的投影强度： <span
+class="math display">\[\sigma_i = \text{Tr}(P_i \cdot \rho)\]</span>
+其中 <span class="math inline">\(\rho\)</span> 是编码态的密度矩阵。</p>
+<p>投影强度 <span class="math inline">\(\sigma_i\)</span> 衡量编码态
+<span class="math inline">\(\rho\)</span> 在投影 <span
+class="math inline">\(P_i\)</span> 方向上的「分量大小」。</p>
+<h3 id="投影强度恒等式">2.3 投影强度恒等式</h3>
+<p>本小节给出投影强度恒等式的完整形式陈述与证明。这一恒等式是 Born
+法则代数导出的基石——它保证三个扇区的投影强度之和为常数，从而为后续的归一化与比例关系奠定基础。</p>
+<h4 id="左乘表示矩阵">2.3.1 左乘表示矩阵</h4>
+<p>设 <span class="math inline">\(L_1, L_2, L_3\)</span> 为 Cl(3) <span
+class="math inline">\(\cong \mathbb{H} \oplus \mathbb{H}\)</span> 在
+<span class="math inline">\(\mathbb{R}^4 \cong \mathbb{H}\)</span>
+上的左乘表示矩阵（即四元数 <span class="math inline">\(i, j, k\)</span>
+的左乘作用）。这些矩阵满足以下基本关系：</p>
+<p><span class="math display">\[L_i^2 = -I_4, \quad L_i L_j + L_j L_i =
+-2\delta_{ij} I_4 \quad (i, j = 1, 2, 3)\]</span></p>
+<p>且体积元为： <span class="math display">\[\omega_3 = L_1 L_2 L_3 =
+-I_4\]</span></p>
+<p>由 <span class="math inline">\(L_i^2 = -I_4\)</span> 及 <span
+class="math inline">\(L_i\)</span> 为实矩阵可知 <span
+class="math inline">\(L_i^T = -L_i\)</span>，即每个 <span
+class="math inline">\(L_i\)</span>
+都是反对称矩阵。这一反对称性是后续证明的关键。</p>
+<h4 id="形式陈述">2.3.2 形式陈述</h4>
+<p><strong>引理 1.3.2.01（投影强度恒等式）。</strong> 设 <span
+class="math inline">\(L_1, L_2, L_3\)</span> 为 Cl(3) <span
+class="math inline">\(\cong \mathbb{H} \oplus \mathbb{H}\)</span> 在
+<span class="math inline">\(\mathbb{R}^4 \cong \mathbb{H}\)</span>
+上的左乘表示矩阵（满足 <span class="math inline">\(L_i^2 =
+-I_4\)</span>, <span class="math inline">\(L_i L_j + L_j L_i =
+-2\delta_{ij} I_4\)</span>, 体积元 <span class="math inline">\(\omega_3
+= L_1 L_2 L_3 = -I_4\)</span>）。对任意秩-2 正交投影 <span
+class="math inline">\(P: \mathbb{R}^4 \to \Pi\)</span>（<span
+class="math inline">\(\Pi\)</span> 为二维子空间），有：</p>
+<p><span class="math display">\[\sum_{i=1}^{3} \|PL_iP\|_{HS}^2 =
+2\]</span></p>
+<p>其中 <span class="math inline">\(\|\cdot\|_{HS}\)</span> 为
+Hilbert-Schmidt 范数。</p>
+<h4 id="证明">2.3.3 证明</h4>
+<p><strong>证明。</strong> 分四步进行。</p>
+<p><strong>步骤1：建立投影的矩阵表示。</strong> 设 <span
+class="math inline">\(\{u, v\}\)</span> 为 <span
+class="math inline">\(\Pi = \text{im}(P)\)</span> 的标准正交基，<span
+class="math inline">\(Q = [u \mid v]\)</span> 为 <span
+class="math inline">\(4 \times 2\)</span> 矩阵（<span
+class="math inline">\(Q^T Q = I_2\)</span>）。则投影 <span
+class="math inline">\(P\)</span> 可表示为 <span class="math inline">\(P
+= Q Q^T\)</span>，且 <span class="math inline">\(PL_iP\)</span> 在 <span
+class="math inline">\(\Pi\)</span> 上的限制由 <span
+class="math inline">\(Q^T L_i Q\)</span> 给出。Hilbert-Schmidt
+范数满足： <span class="math display">\[\|PL_iP\|_{HS}^2 = \|Q^T L_i
+Q\|_F^2\]</span> 其中 <span class="math inline">\(\|\cdot\|_F\)</span>
+为 Frobenius 范数。</p>
+<p><strong>步骤2：反对称性与复结构。</strong> 由于 <span
+class="math inline">\(L_i^T = -L_i\)</span>（反对称），有： <span
+class="math display">\[(Q^T L_i Q)^T = Q^T L_i^T Q = -Q^T L_i
+Q\]</span></p>
+<p>故 <span class="math inline">\(Q^T L_i Q\)</span> 是 <span
+class="math inline">\(2 \times 2\)</span>
+反对称矩阵。二维反对称矩阵空间是一维的，由唯一的复结构 <span
+class="math inline">\(J\)</span> 张成： <span class="math display">\[J =
+\begin{pmatrix} 0 &amp; -1 \\ 1 &amp; 0 \end{pmatrix}\]</span></p>
+<p>因此存在实数 <span class="math inline">\(c_i \in \mathbb{R}\)</span>
+使得： <span class="math display">\[Q^T L_i Q = c_i \cdot J\]</span></p>
+<p><strong>步骤3：计算 Hilbert-Schmidt 范数。</strong> 由 <span
+class="math inline">\(Q^T L_i Q = c_i \cdot J\)</span>，计算 <span
+class="math inline">\(c_i\)</span> 的表达式： <span
+class="math display">\[c_i = \frac{1}{2}\text{Tr}(J^T \cdot Q^T L_i Q) =
+u^T L_i v = \langle u, L_i v \rangle\]</span></p>
+<p>（这里利用了 <span class="math inline">\(J\)</span>
+的标准正交基表示。）Hilbert-Schmidt 范数为： <span
+class="math display">\[\|PL_iP\|_{HS}^2 = \|Q^T L_i Q\|_F^2 = c_i^2
+\|J\|_F^2 = 2 c_i^2\]</span></p>
+<p>因为 <span class="math inline">\(\|J\|_F^2 = \text{Tr}(J^T J) =
+\text{Tr}(I_2) = 2\)</span>。</p>
+<p><strong>步骤4：四元数叉积恒等式。</strong> 在 <span
+class="math inline">\(\mathbb{R}^4 \cong \mathbb{H}\)</span>
+中定义「叉积」： <span class="math display">\[(u \times v)_i := \langle
+u, L_i v \rangle \quad (i = 1, 2, 3)\]</span></p>
+<p><strong>四元数叉积恒等式。</strong> 此叉积满足 4 维 Lagrange 恒等式：
+<span class="math display">\[|u \times v|^2 = \sum_{i=1}^{3} |\langle u,
+L_i v \rangle|^2 = \|u\|^2 \|v\|^2 - \langle u, v \rangle^2\]</span></p>
+<p><strong>证明。</strong> 在四元数表示中，<span class="math inline">\(u
+\cdot \bar{v} = \langle u, v \rangle + (u \times v) \cdot
+\mathbf{e}\)</span>，其中 <span class="math inline">\(\mathbf{e} = (i,
+j, k)\)</span> 为四元数虚部基。取模得： <span class="math display">\[|u
+\cdot \bar{v}|^2 = |u|^2 |v|^2 = \langle u, v \rangle^2 + |u \times
+v|^2\]</span></p>
+<p>移项即得： <span class="math display">\[|u \times v|^2 = |u|^2 |v|^2
+- \langle u, v \rangle^2 \quad \square\]</span></p>
+<p>对标准正交基 <span class="math inline">\(\{u, v\}\)</span>（<span
+class="math inline">\(\|u\| = \|v\| = 1\)</span>, <span
+class="math inline">\(\langle u, v \rangle =
+0\)</span>），叉积恒等式给出： <span
+class="math display">\[\sum_{i=1}^{3} c_i^2 = \sum_{i=1}^{3} |\langle u,
+L_i v \rangle|^2 = \|u\|^2 \|v\|^2 - \langle u, v \rangle^2 = 1 - 0 =
+1\]</span></p>
+<p>因此： <span class="math display">\[\sum_{i=1}^{3} \|PL_iP\|_{HS}^2 =
+2 \sum_{i=1}^{3} c_i^2 = 2 \times 1 = 2 \quad \square\]</span></p>
+<p><strong>注1。</strong> 此恒等式仅依赖于：(1) <span
+class="math inline">\(L_i\)</span> 的反对称性 <span
+class="math inline">\(L_i^T = -L_i\)</span>；(2) 四元数叉积恒等式（即 4
+维 Lagrange 恒等式）。两者均为 Cl(3)
+的代数性质，不涉及任何物理假设。</p>
+<p><strong>注2（几何解释）。</strong> 恒等式 <span
+class="math inline">\(\sum \|PL_iP\|_{HS}^2 = 2\)</span>
+可理解为：二维子空间 <span class="math inline">\(\Pi\)</span> 对 Cl(3)
+三个生成元的「总捕捉量」是常数 2，与 <span
+class="math inline">\(\Pi\)</span> 的方向无关。这是 4 维 Lagrange
+恒等式在投影层面的体现——叉积的「总长度」由向量的长度与夹角决定，而与坐标系的选取无关。</p>
+<p><strong>注3（与 3 维叉积的对比）。</strong> 在 <span
+class="math inline">\(\mathbb{R}^3\)</span> 中，叉积 <span
+class="math inline">\(u \times v\)</span> 满足 <span
+class="math inline">\(|u \times v|^2 = |u|^2|v|^2 - \langle u, v
+\rangle^2\)</span>（3 维 Lagrange 恒等式）。本文的 4 维叉积 <span
+class="math inline">\((u \times v)_i = \langle u, L_i v \rangle\)</span>
+是其在 <span class="math inline">\(\mathbb{R}^4 \cong
+\mathbb{H}\)</span> 上的推广——由 Cl(3) 的三个生成元 <span
+class="math inline">\(L_1, L_2, L_3\)</span> 自然定义，而非借用 3
+维向量叉积。这一推广是 Cl(3) 代数结构的直接产物。</p>
+<h3 id="扇区权重归一化">2.4 扇区权重归一化</h3>
+<p>由投影强度恒等式，可直接导出三个扇区权重的归一化条件。</p>
+<p><strong>定理 1.3.2.02（扇区权重归一化）。</strong> 在 Cl(3)
+扇区分解下，编码权重满足： <span class="math display">\[\sigma_M +
+\sigma_C + \sigma_I = 1\]</span></p>
+<p><strong>证明。</strong> 由引理 1.3.2.01的证明步骤3，投影强度 <span
+class="math inline">\(\sigma_i\)</span> 与系数 <span
+class="math inline">\(c_i\)</span> 的关系为： <span
+class="math display">\[\sigma_i = c_i^2\]</span></p>
+<p>（因 <span class="math inline">\(c_i^2 = \|PL_iP\|_{HS}^2 /
+2\)</span> 且由步骤4知 <span class="math inline">\(\sum c_i^2 =
+1\)</span>。）由投影强度恒等式的证明： <span
+class="math display">\[\sum_i \sigma_i = \sum_i c_i^2 = 1 \quad
+\square\]</span></p>
+<p><strong>紧框架解释。</strong> 三个投影算子 <span
+class="math inline">\(\{c_i J\}_{i=1}^{3}\)</span> 在一维空间（<span
+class="math inline">\(2 \times 2\)</span> 反对称矩阵空间，由 <span
+class="math inline">\(J\)</span> 张成）中构成紧框架（tight
+frame），框架界为： <span class="math display">\[A = \sum_{i=1}^{3}
+c_i^2 = 1\]</span></p>
+<p>紧框架条件保证三个扇区的「振幅」完全填满二维屏的自由度——无冗余、无缺失。具体而言，紧框架的完备性条件为：
+<span class="math display">\[\sum_{i=1}^{3} |\langle X, c_i J \rangle|^2
+= A \|X\|^2 = \|X\|^2, \quad \forall X \in \text{span}(J)\]</span></p>
+<p>这保证了三个扇区提供了对二维子空间 <span
+class="math inline">\(\Pi\)</span> 的「完全覆盖」——任何 <span
+class="math inline">\(\Pi\)</span>
+上的算子都可由三个扇区投影线性表出。</p>
+<hr />
+<h2 id="对易子双线性性">§3 对易子双线性性</h2>
+<h3 id="clifford-生成元的对易子">3.1 Clifford 生成元的对易子</h3>
+<p>Cl(3) 的生成元 <span class="math inline">\(e_1, e_2, e_3\)</span>
+满足反交换关系： <span class="math display">\[e_i e_j + e_j e_i =
+-2\delta_{ij}\]</span></p>
+<p>对易子（反交换子的线性化）为： <span class="math display">\[[e_i,
+e_j] = e_i e_j - e_j e_i = -2 e_i e_j \quad (i \neq j)\]</span></p>
+<h3 id="双线性性">3.2 双线性性</h3>
+<p><strong>引理 1.3.3.01（对易子双线性性）。</strong> Cl(3) 的对易子
+<span class="math inline">\([\cdot, \cdot]\)</span>
+在标量乘法下是双线性的：对任意标量系数 <span class="math inline">\(a,
+b\)</span> 和生成元 <span class="math inline">\(e_i, e_j,
+e_k\)</span>，有 <span class="math display">\[[a e_i + b e_j, e_k] = a
+[e_i, e_k] + b [e_j, e_k].\]</span></p>
+<p>这是结合代数的普遍性质——对易子总是双线性的。这一性质在 Born
+法则的导出中起关键作用：它保证幅度系数 <span
+class="math inline">\(c_i\)</span> 可以作为整体因子从对易子中提出（即
+<span class="math inline">\([c_i J, D] = c_i[J, D]\)</span>）。</p>
+<h3 id="谱间隙的代数来源">3.3 谱间隙的代数来源</h3>
+<p><strong>命题 1.3.3.02（谱间隙的代数来源）。</strong> 编码映射 <span
+class="math inline">\(E_n\)</span> 的谱间隙 <span
+class="math inline">\(\Delta\lambda_i\)</span> 由 Cl(3)
+对易子的范数给出： <span class="math display">\[\Delta\lambda_i =
+\|[e_i, \mathcal{D}]\|\]</span> 其中 <span
+class="math inline">\(\mathcal{D}\)</span> 是编码 Dirac 算子，<span
+class="math inline">\(\|\cdot\|\)</span> 是算子范数。</p>
+<p>由于对易子是双线性的（引理 1.3.3.01），<span
+class="math inline">\(\Delta\lambda_i\)</span> 是 <span
+class="math inline">\(e_i\)</span> 的线性函数。而投影强度 <span
+class="math inline">\(\sigma_i\)</span> 是 <span
+class="math inline">\(P_i\)</span> 的线性函数（引理 1.3.2.01）。<span
+class="math inline">\(P_i\)</span> 和 <span
+class="math inline">\(e_i\)</span> 的关系是：</p>
+<p><span class="math display">\[P_i = \frac{1}{2}(1 + \hat{n}_i \cdot
+\vec{e}),\]</span></p>
+<p>其中 <span class="math inline">\(\hat{n}_i\)</span> 是投影方向，<span
+class="math inline">\(\vec{e} = (e_1, e_2, e_3)\)</span>。因此 <span
+class="math inline">\(P_i\)</span> 是 <span
+class="math inline">\(e_i\)</span> 的线性组合，<span
+class="math inline">\(\sigma_i\)</span> 是 <span
+class="math inline">\(e_i\)</span> 的双线性函数（因为 <span
+class="math inline">\(\text{Tr}(P_i \cdot \rho)\)</span> 中 <span
+class="math inline">\(P_i\)</span> 和 <span
+class="math inline">\(\rho\)</span> 都含 <span
+class="math inline">\(e_i\)</span>）。</p>
+<hr />
+<h2 id="born-法则的导出">§4 Born 法则的导出</h2>
+<h3 id="三步严格证明">4.1 三步严格证明</h3>
+<p><strong>定理 1.3.4.01（Born 法则的代数导出）。</strong> 谱间隙 <span
+class="math inline">\(\Delta\lambda_i \propto \sqrt{\sigma_i}\)</span>
+是 Cl(3) 半单代数的代数定理，非物理假设。</p>
+<p><strong>证明。</strong> 分三步进行。</p>
+<p><strong>步骤1（对易子的代数结构）。</strong> 设 <span
+class="math inline">\(D_n = \sum_{j=1}^{n} \gamma_j\)</span> 为编码
+Dirac 算子，<span class="math inline">\(S_i = \gamma_i\)</span> 为第
+<span class="math inline">\(i\)</span> 个扇区生成元。计算对易子： <span
+class="math display">\[[D_n, S_i] = \left[\sum_{j=1}^{n} \gamma_j,
+\gamma_i\right] = \sum_{j \neq i} [\gamma_j, \gamma_i] = 2\left(\sum_{j
+\neq i} \gamma_j\right) \gamma_i\]</span></p>
+<p>这里利用了反交换关系 <span class="math inline">\(\gamma_j \gamma_i +
+\gamma_i \gamma_j = -2\delta_{ij}\)</span>（<span
+class="math inline">\(j \neq i\)</span> 时 <span
+class="math inline">\([\gamma_j, \gamma_i] = 2\gamma_j
+\gamma_i\)</span>）。</p>
+<p>在标准（平坦）内积下，<span class="math inline">\(\|[D_n, S_i]\| =
+2\sqrt{n-1}\)</span> 对所有 <span class="math inline">\(i\)</span>
+相等——因为各 <span class="math inline">\(\gamma_j\)</span>
+在平坦度量下权重相同。但在编码诱导度量 <span
+class="math inline">\(g_n\)</span> 下，各 <span
+class="math inline">\(\gamma_j\)</span>
+的权重不同，扇区之间出现区分。</p>
+<p><strong>步骤2（<span
+class="math inline">\(g_n\)</span>-范数下的扇区区分）。</strong>
+在二维投影屏 <span class="math inline">\(\Pi\)</span> 上，谱间隙化为
+Hilbert-Schmidt 范数： <span class="math display">\[\Delta\lambda_i =
+\|[PD_n P, PL_i P]\|_{HS}\]</span></p>
+<p>由投影强度恒等式（引理 1.3.2.01）的证明，<span
+class="math inline">\(PL_iP = c_i \cdot
+J\)</span>——所有扇区共享同一个复结构 <span
+class="math inline">\(J\)</span>，差异仅在于幅度 <span
+class="math inline">\(c_i\)</span>。代入得： <span
+class="math display">\[\Delta\lambda_i = \|[PD_n P, c_i \cdot
+J]\|_{HS}\]</span></p>
+<p>由对易子的双线性性（引理 1.3.3.01）： <span
+class="math display">\[[PD_n P, c_i \cdot J] = c_i \cdot [PD_n P,
+J]\]</span></p>
+<p>因此： <span class="math display">\[\Delta\lambda_i = |c_i| \cdot
+\|[PD_n P, J]\|_{HS}\]</span></p>
+<p><strong>步骤3（比例关系的确立）。</strong> 注意到 <span
+class="math inline">\(\|[PD_n P, J]\|_{HS}\)</span> 仅依赖于投影 <span
+class="math inline">\(P\)</span> 和 Dirac 算子 <span
+class="math inline">\(D_n\)</span>，<strong>与扇区指标 <span
+class="math inline">\(i\)</span> 无关</strong>。记此常数为： <span
+class="math display">\[K := \|[PD_n P, J]\|_{HS}\]</span></p>
+<p>而 <span class="math inline">\(|c_i| = \sqrt{c_i^2} =
+\sqrt{\sigma_i}\)</span>（由 §2.4 扇区权重 <span
+class="math inline">\(\sigma_i = c_i^2\)</span>）。因此： <span
+class="math display">\[\Delta\lambda_i = \sqrt{\sigma_i} \cdot
+K\]</span></p>
+<p>即： <span
+class="math display">\[\frac{\Delta\lambda_i}{\sqrt{\sigma_i}} = K \quad
+(\text{常数，与 } i \text{ 无关})\]</span></p>
+<p>故 <span class="math inline">\(\Delta\lambda_i \propto
+\sqrt{\sigma_i}\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<h3 id="born-法则的代数根源">4.2 Born 法则的代数根源</h3>
+<p>Born 法则 <span class="math inline">\(\Delta\lambda_i \propto
+\sqrt{\sigma_i}\)</span> 的代数根源有两个要素：</p>
+<ol type="1">
+<li><p><strong>投影强度恒等式</strong>保证 <span
+class="math inline">\(PL_iP = c_i \cdot
+J\)</span>——所有扇区投影到同一个复结构 <span
+class="math inline">\(J\)</span>，差异仅在于幅度 <span
+class="math inline">\(c_i\)</span>。这一「共享复结构」性质是 Cl(3)
+反对称表示的代数必然，源于 <span class="math inline">\(L_i^T =
+-L_i\)</span> 与二维反对称矩阵空间的一维性。</p></li>
+<li><p><strong>对易子的双线性性</strong>保证 <span
+class="math inline">\([D, c_i J] = c_i [D, J]\)</span>——幅度 <span
+class="math inline">\(c_i\)</span>
+作为整体因子提出。这是结合代数的普遍性质，不需要任何额外假设。</p></li>
+</ol>
+<p>两者联立，<span class="math inline">\(\sqrt{\sigma_i} =
+|c_i|\)</span> 自然作为谱间隙的比例因子出现： <span
+class="math display">\[\Delta\lambda_i = |c_i| \cdot K = \sqrt{\sigma_i}
+\cdot K\]</span></p>
+<p>这是纯代数恒等式，不依赖任何物理假设。Born
+法则的「平方根」关系直接源于：(1) 投影强度 <span
+class="math inline">\(\sigma_i = c_i^2\)</span> 是二次的；(2) 谱间隙
+<span class="math inline">\(\Delta\lambda_i \propto |c_i|\)</span>
+是一次的；(3) 二次与一次的比值给出平方根。</p>
+<h3 id="关键代数要素的分解">4.3 关键代数要素的分解</h3>
+<p>为强调 Born 法则的代数必然性，以下将两个关键要素分别列出：</p>
+<p><strong>要素A（共享复结构）</strong>。由 §2.3 步骤2，所有 <span
+class="math inline">\(PL_iP\)</span> 都正比于同一个复结构 <span
+class="math inline">\(J\)</span>： <span class="math display">\[PL_1P =
+c_1 J, \quad PL_2P = c_2 J, \quad PL_3P = c_3 J\]</span></p>
+<p>这一性质源于 <span class="math inline">\(L_i\)</span>
+的反对称性（<span class="math inline">\(L_i^T =
+-L_i\)</span>）与二维反对称矩阵空间的一维性。它保证三个扇区投影「形态相同」，仅幅度不同——这是
+Born 法则成立的前提。</p>
+<p><strong>要素B（幅度因子提出）</strong>。由对易子双线性性，幅度 <span
+class="math inline">\(c_i\)</span> 可作为整体因子提出： <span
+class="math display">\[[PD_nP, c_i J] = c_i [PD_nP, J]\]</span></p>
+<p>这一性质源于结合代数的普遍性质（对易子总是双线性的）。它保证谱间隙与幅度的关系是<strong>线性</strong>的，而非其他幂次。</p>
+<p><strong>要素联立</strong>。要素A保证 <span
+class="math inline">\(PL_iP = c_i J\)</span>（共享形态），要素B保证
+<span class="math inline">\([D, c_i J] = c_i [D,
+J]\)</span>（线性依赖）。两者联立即得 <span
+class="math inline">\(\Delta\lambda_i = |c_i| \cdot K = \sqrt{\sigma_i}
+\cdot K\)</span>，其中 <span class="math inline">\(K\)</span> 与 <span
+class="math inline">\(i\)</span> 无关。</p>
+<p>这一分解清楚地表明：Born
+法则的平方根关系是「共享复结构对易子双线性性」的直接代数推论，不依赖任何物理公设。</p>
+<hr />
+<h2 id="与量子力学-born-法则的关系">§5 与量子力学 Born 法则的关系</h2>
+<h3 id="物理解释而非来源">5.1 物理解释而非来源</h3>
+<p>需要明确区分本框架的代数结果与量子力学的 Born 法则：</p>
+<ul>
+<li><strong>量子力学的 Born 法则</strong> <span
+class="math inline">\(P(i) = |\langle i | \psi \rangle|^2\)</span>
+是此代数结果的<strong>物理解释</strong>而非来源。</li>
+<li>本框架从 Cl(3) 代数严格导出了 <span
+class="math inline">\(\Delta\lambda_i \propto
+\sqrt{\sigma_i}\)</span>，为量子力学 Born
+法则提供了<strong>代数基础</strong>——而非反过来借用。</li>
+</ul>
+<h3 id="对应关系">5.2 对应关系</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">本框架（代数）</th>
+<th style="text-align: center;">量子力学（物理）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(\sigma_i\)</span>（编码权重）</td>
+<td style="text-align: center;"><span
+class="math inline">\(P(i)\)</span>（测量概率）</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(\sin\theta_i\)</span>（投影振幅）</td>
+<td style="text-align: center;"><span class="math inline">\(\langle i \|
+\psi \rangle\)</span>（概率幅）</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(\Delta\lambda_i \propto
+\sqrt{\sigma_i}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(P(i) =
+|\langle i \| \psi \rangle|^2\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>对应关系的核心： - 编码权重 <span class="math inline">\(\sigma_i =
+c_i^2\)</span> 对应测量概率 <span
+class="math inline">\(P(i)\)</span>——两者均为「强度」的平方。 - 投影振幅
+<span class="math inline">\(c_i\)</span>（即 <span
+class="math inline">\(\sin\theta_i\)</span> 的代数对应）对应概率幅 <span
+class="math inline">\(\langle i | \psi
+\rangle\)</span>——两者均为「振幅」。 - Born 法则 <span
+class="math inline">\(\Delta\lambda_i \propto \sqrt{\sigma_i}\)</span>
+在物理层面体现为「谱间隙是振幅的一次函数，而权重是振幅的二次函数」。</p>
+<h3 id="代数优先性">5.3 代数优先性</h3>
+<p>本框架的论证顺序为：</p>
+<ol type="1">
+<li><strong>代数导出</strong>：从 Cl(3) 结构得 <span
+class="math inline">\(\Delta\lambda_i \propto
+\sqrt{\sigma_i}\)</span>（纯代数）。</li>
+<li><strong>物理解释</strong>：将 <span
+class="math inline">\(\sigma_i\)</span> 解释为测量概率，<span
+class="math inline">\(\sqrt{\sigma_i}\)</span> 解释为概率幅。</li>
+</ol>
+<p>这与传统量子力学的顺序相反——传统框架将 Born
+法则作为公设引入，而本框架将其作为代数定理导出。因此，本框架为量子力学
+Born
+法则的「平方性」提供了<strong>解释</strong>：平方性源于投影算子的二次性（<span
+class="math inline">\(\sigma_i = c_i^2\)</span>）与对易子的线性性（<span
+class="math inline">\(\Delta\lambda_i \propto
+c_i\)</span>）的代数对比。</p>
+<hr />
+<h2 id="数值验证">§6 数值验证</h2>
+<h3 id="实验设计">6.1 实验设计</h3>
+<ol type="1">
+<li><strong>构造表示矩阵</strong>：在 <span
+class="math inline">\(\mathbb{R}^4\)</span> 中构造 Cl(3) 的左乘表示矩阵
+<span class="math inline">\(L_1, L_2, L_3\)</span>（四元数 <span
+class="math inline">\(i, j, k\)</span> 的左乘）。具体地，设 <span
+class="math inline">\(q = a + bi + cj + dk \in \mathbb{H}\)</span> 对应
+<span class="math inline">\(\mathbb{R}^4\)</span> 中的向量 <span
+class="math inline">\((a, b, c, d)\)</span>，则 <span
+class="math inline">\(L_1\)</span>（左乘 <span
+class="math inline">\(i\)</span>）将 <span
+class="math inline">\(q\)</span> 映射为 <span class="math inline">\(iq =
+-b + ai - dj + ck\)</span>，对应的 <span class="math inline">\(4 \times
+4\)</span> 实矩阵满足 <span class="math inline">\(L_1^2 =
+-I_4\)</span>。类似地构造 <span class="math inline">\(L_2,
+L_3\)</span>。</li>
+<li><strong>生成随机投影</strong>：生成 1000 个随机秩-2 正交投影 <span
+class="math inline">\(P\)</span>（通过随机正交矩阵的列截断得到）。具体方法：对
+<span class="math inline">\(4 \times 4\)</span>
+矩阵的元素进行独立高斯采样，做 QR 分解得到随机正交矩阵 <span
+class="math inline">\(O \in O(4)\)</span>，取其前两列 <span
+class="math inline">\(Q = [u \mid v]\)</span>，则 <span
+class="math inline">\(P = QQ^T\)</span> 为随机秩-2 正交投影。</li>
+<li><strong>计算恒等式</strong>：对每个 <span
+class="math inline">\(P\)</span> 计算 <span class="math inline">\(\Sigma
+= \sum_{i=1}^{3} \|PL_iP\|_{HS}^2\)</span>，其中 Hilbert-Schmidt 范数由
+Frobenius 范数实现：<span class="math inline">\(\|A\|_{HS}^2 =
+\text{Tr}(A^T A)\)</span>。</li>
+<li><strong>统计验证</strong>：记录 <span
+class="math inline">\(\Sigma\)</span> 的均值、标准差与最大偏差 <span
+class="math inline">\(|\Sigma - 2|\)</span>。</li>
+</ol>
+<h3 id="实验结果">6.2 实验结果</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">统计量</th>
+<th style="text-align: center;">数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">均值</td>
+<td style="text-align: center;"><span
+class="math inline">\(2.000000\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;">标准差</td>
+<td style="text-align: center;"><span
+class="math inline">\(0.000000\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;">最大偏差</td>
+<td style="text-align: center;"><span class="math inline">\(&lt;
+10^{-15}\)</span></td>
+</tr>
+</tbody>
+</table>
+<h3 id="结论">6.3 结论</h3>
+<p>数值实验表明：</p>
+<ul>
+<li><strong>恒等式精确成立</strong>：对所有 1000 个随机二维投影 <span
+class="math inline">\(P\)</span>，<span class="math inline">\(\sum
+\|PL_iP\|_{HS}^2 = 2\)</span> 在机器精度（<span
+class="math inline">\(10^{-15}\)</span>）内成立。</li>
+<li><strong>与投影选择无关</strong>：恒等式不依赖于 <span
+class="math inline">\(\Pi\)</span>
+的具体方向——无论二维子空间如何选取，恒等式均成立。</li>
+<li><strong>代数必然性</strong>：数值结果与理论证明完全一致，证实恒等式是
+Cl(3) 左乘表示的代数必然，而非近似关系。</li>
+</ul>
+<p>这一数值验证为 Born
+法则的代数导出提供了坚实的计算支持——投影强度恒等式作为基石，其精确性保证了后续
+Born 法则导出的严格性。</p>
+<hr />
+<h2 id="编码权重到物理角度">§7 编码权重到物理角度</h2>
+<h3 id="谱间隙公式">7.1 谱间隙公式</h3>
+<p>Born 法则 <span class="math inline">\(\Delta\lambda_i \propto
+\sqrt{\sigma_i}\)</span> 给出谱间隙公式： <span
+class="math display">\[\Delta\lambda_i = C \cdot
+\sqrt{\sigma_i}\]</span> 其中 <span class="math inline">\(C\)</span>
+是归一化常数，由代数归一化条件确定（1.4）。</p>
+<h3 id="编码角度">7.2 编码角度</h3>
+<p>谱间隙通过编码诱导度量 <span class="math inline">\(g_n\)</span>
+映射为物理角度： <span class="math display">\[\sin\theta_i =
+\frac{\Delta\lambda_i}{\sum_j \Delta\lambda_j} =
+\frac{\sqrt{\sigma_i}}{\sum_j \sqrt{\sigma_j}}\]</span></p>
+<p>三个角度 <span class="math inline">\(\theta_M, \theta_C,
+\theta_I\)</span> 对应三个扇区的编码角度，由各自的编码权重 <span
+class="math inline">\(\sigma_M, \sigma_C, \sigma_I\)</span> 确定。</p>
+<p><strong>定理 1.3.7.01（编码角度公式）。</strong> <span
+class="math display">\[\sin\theta_M =
+\frac{\sqrt{\sigma_M}}{\sqrt{\sigma_M} + \sqrt{\sigma_C} +
+\sqrt{\sigma_I}},\]</span> <span class="math display">\[\sin\theta_C =
+\frac{\sqrt{\sigma_C}}{\sqrt{\sigma_M} + \sqrt{\sigma_C} +
+\sqrt{\sigma_I}},\]</span> <span class="math display">\[\sin\theta_I =
+\frac{\sqrt{\sigma_I}}{\sqrt{\sigma_M} + \sqrt{\sigma_C} +
+\sqrt{\sigma_I}}.\]</span></p>
+<p>这些角度满足 <span class="math inline">\(\sin^2\theta_M +
+\sin^2\theta_C + \sin^2\theta_I = 1\)</span> 当且仅当 <span
+class="math inline">\(\sigma_M+\sigma_C+\sigma_I =
+1\)</span>（归一化条件）。</p>
+<p>由 §2.4 的扇区权重归一化定理，<span
+class="math inline">\(\sigma_M+\sigma_C+\sigma_I = 1\)</span>
+已被严格证明，因此编码角度的归一化条件 <span
+class="math inline">\(\sin^2\theta_M + \sin^2\theta_C + \sin^2\theta_I =
+1\)</span> 自动满足——这是 Born 法则代数导出的直接推论。</p>
+<hr />
+<h2 id="定理索引">定理索引</h2>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 28%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">编号</th>
+<th style="text-align: left;">内容</th>
+<th style="text-align: center;">证明状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">定理 1.3.4.01</td>
+<td style="text-align: left;">Born 法则代数导出：<span
+class="math inline">\(\Delta\lambda_i \propto
+\sqrt{\sigma_i}\)</span></td>
+<td style="text-align: center;">已证（本文§4）</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理 1.3.7.01</td>
+<td style="text-align: left;">编码角度公式</td>
+<td style="text-align: center;">已证（本文§7）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>

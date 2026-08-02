@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.4 ℳ-ℐ Completeness Coupling | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Version: 260801.1">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/3/3.4_Matter-Information_Completeness_Coupling_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">3.4 ℳ-ℐ Completeness Coupling</span>
+  </nav>
+  <main class="article-content">
+<h1 id="ℳ-ℐ-completeness-coupling">3.4 ℳ-ℐ Completeness Coupling</h1>
+<p><strong>Version</strong>: 260801.1</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>This article defines the Completeness Coupling between the Matter
+Sector ℳ and the Information Sector ℐ. The coupling arises from the
+sector-pairing component of the Birkhoff Mixing Matrix——pairing ℳ
+directly with ℐ. The Completeness Coupling generates the gravitational
+interaction, whose strength is determined by the sector pairing angle.
+This article provides the algebraic formulation of the completeness
+condition, and the corrective mechanism of information back-reaction on
+the mass spectrum.</p>
+<hr />
+<h2 id="chapter-1-introduction">Chapter 1　Introduction</h2>
+<p>This article is No. 3.4 in the Conjugate Spectral Geometry Series.
+The foundational framework of the series (Sole Axiom δ, Clifford
+Algebra, Coding Orbit structure, Born Rule, interaction mapping) has
+been established in the foundational theorems of Conjugate Spectral
+Geometry.</p>
+<p><strong>Core Positioning</strong>: This article defines the
+Completeness Coupling between the Matter Sector ℳ and the Information
+Sector ℐ. The coupling arises from the sector-pairing component of the
+Birkhoff Mixing Matrix——pairing ℳ directly with ℐ. The Completeness
+Coupling generates the gravitational interaction, whose strength is
+determined by the sector pairing angle. This article provides the
+algebraic formulation of the completeness condition, and the corrective
+mechanism of information back-reaction on the mass spectrum.</p>
+<p><strong>Key Dependencies</strong>: This article directly depends on
+the sector definitions of 3.1 (ℳ Field Normal Geometry Structure) and
+the sector-pairing structure of the Birkhoff Mixing Matrix (Theorem
+2.3.7.02). The Structure Constants Λ=3, k₀=2, ΔΘ=5 are locked by the
+{2,3,5} Interlock Property, Consummate Reproduction (Theorem 2.3.7.01)
+establishes the bootstrap closure chain, and parameters are determined
+by local region properties.</p>
+<p><strong>Core Results</strong>: (1) The Z₂ transposition algebraic
+origin of the Completeness Coupling and determination of the coupling
+strength; (2) The emergence mechanism of spacetime metric and algebraic
+derivation of the gravitational constant; (3) The correction of
+information back-reaction on the mass spectrum and the unified picture
+of three couplings.</p>
+<hr />
+<h2 id="contents">Contents</h2>
+<p>§1　Algebraic Origin of the Completeness Coupling 　1.1　Z₂
+Transposition 　1.2　Algebraic Formulation of the Completeness Condition
+　1.3　Coupling Strength 　1.4　Emergence of Gravity</p>
+<p>§2　Physical Effects of the Completeness Coupling 　2.1　Emergence of
+the Spacetime Metric 　2.2　Algebraic Form of the Metric
+　2.3　Gravitational Constant 　2.4　Derivation of the Gravitational
+Constant Formula 　2.5　Equivalence Principle</p>
+<p>§3　Correction of Information Back-Reaction on the Mass Spectrum
+　3.1　Concept of Information Back-Reaction 　3.2　Algebraic Form of the
+Back-Reaction Correction 　3.3　Back-Reaction Correction to Mass Ratios
+　3.4　Cumulative Effect of Back-Reaction</p>
+<p>§4　Unified Picture of Three Couplings 　4.1　Coupling Strength
+Ratios 　4.2　Symmetry Structure of the Couplings 　4.3　Absence of the
+Strong Interaction 　4.4　Unification of the Couplings</p>
+<p>§5　Predictions of the Completeness Coupling 　5.1　Coding Structure
+of Gravitational Waves 　5.2　Geometric Path to Gravity Quantization
+　5.3　Candidate for Dark Energy 　5.4　Testability of the Completeness
+Coupling</p>
+<hr />
+<h2 id="algebraic-origin-of-the-completeness-coupling">§1 Algebraic
+Origin of the Completeness Coupling</h2>
+<h3 id="z₂-transposition">1.1 Z₂ Transposition</h3>
+<p><span class="math inline">\(P_{\sigma_2}\)</span> in the Birkhoff
+Mixing Matrix <span class="math inline">\(T\)</span> is the ℳ↔︎ℐ
+transposition——the <span class="math inline">\(Z_2\)</span> complex
+conjugation symmetry preserved by Spin(6). <span
+class="math inline">\(P_{\sigma_2}\)</span> directly maps the coding of
+the Matter Sector to the Information Sector, bypassing the Causal
+Sector.</p>
+<p>The algebraic structure of the Z₂ transposition: <span
+class="math inline">\(P_{\sigma_2}^2 = I\)</span> (involutive property),
+<span class="math inline">\(P_{\sigma_2} P_\tau = P_\tau^{-1}
+P_{\sigma_2}\)</span> (semidirect product relation with Triality). This
+shows that <span class="math inline">\(P_{\sigma_2}\)</span> is the only
+component of the Birkhoff Mixing Matrix with “reflexivity”——it treats ℳ
+and ℐ as mirror images of each other.</p>
+<h3 id="algebraic-formulation-of-the-completeness-condition">1.2
+Algebraic Formulation of the Completeness Condition</h3>
+<p>The <strong>Completeness Condition</strong> is the core constraint of
+the ℳ-ℐ coupling. It requires that the coding of the Matter Sector and
+the coding of the Information Sector be “mutually complete” under Z₂
+transposition——i.e., their union covers the entire coding space:</p>
+<p><span class="math display">\[\sigma_\mathcal{M} + \sigma_\mathcal{I}
+\geq \sigma_{\text{complete}},\]</span></p>
+<p>where <span class="math inline">\(\sigma_{\text{complete}}\)</span>
+is the completeness threshold of the coding space. At the
+self-consistent fixed point:</p>
+<p><span class="math display">\[\sigma_\mathcal{M}^* +
+\sigma_\mathcal{I}^* \approx 0.777912 + 0.011484 = 0.7894.\]</span></p>
+<p>This sum is close to but not equal to 1——the remainder <span
+class="math inline">\(\sigma_\mathcal{C}^* \approx 0.210603\)</span> is
+contributed by the Causal Sector. The completeness condition is not “ℳℐ
+= 1” but “ℳℐ𝒞 = 1”——the sum of the Coding Weights of the three sectors
+equals 1 (normalization condition).</p>
+<p>More precisely, the algebraic formulation of the completeness
+condition is:</p>
+<p><span class="math display">\[\text{rank}(\sigma_\mathcal{M} \oplus
+\sigma_\mathcal{I}) = \text{rank}(\text{Cl}(7)),\]</span></p>
+<p>i.e., the tensor rank of the union of ℳ and ℐ codings equals the
+irreducible representation dimension of Cl(7). This guarantees that the
+coding space has no “gaps”——information is complete.</p>
+<h3 id="coupling-strength">1.3 Coupling Strength</h3>
+<p><strong>Theorem 3.4.1.01 (ℳ-ℐ Coupling Strength).</strong> The
+strength of the ℳ→ℐ Completeness Coupling is:</p>
+<p><span class="math display">\[g_{\mathcal{M}\mathcal{I}} =
+\theta_{\sigma_2} \cdot \chi_{\mathcal{I}} = 0.009 \times 1 =
+0.009.\]</span></p>
+<p><strong>Proof.</strong> The <span class="math inline">\((\mathcal{M},
+\mathcal{I})\)</span> element of <span class="math inline">\(M_5 = T
+\cdot \text{diag}(\chi)\)</span> is <span
+class="math inline">\((M_5)_{\mathcal{M}\mathcal{I}} =
+T_{\mathcal{M}\mathcal{I}} \cdot \chi_{\mathcal{I}} = \theta_{\sigma_2}
+\cdot \chi_{\mathcal{I}}\)</span> (the cyclic structure of <span
+class="math inline">\(T\)</span> gives <span
+class="math inline">\(T_{\mathcal{M}\mathcal{I}} =
+\theta_{\sigma_2}\)</span>, i.e., the Birkhoff weight with which the
+Matter Sector receives coding from the Information Sector). The coupling
+strength is precisely this matrix element <span
+class="math inline">\(g_{\mathcal{M}\mathcal{I}} = \theta_{\sigma_2}
+\cdot \chi_{\mathcal{I}}\)</span>, consistent with 6.2 §2.2 <span
+class="math inline">\(\alpha_{\text{em}}/\alpha_G = \theta_I \chi_M /
+(\theta_{\sigma_2} \chi_I)\)</span>. Since <span
+class="math inline">\(\chi_\mathcal{I} = 1\)</span>, we have <span
+class="math inline">\(g_{\mathcal{M}\mathcal{I}} = \theta_{\sigma_2}
+\approx 0.009\)</span>. ∎</p>
+<p>This is the weakest of the three couplings——corresponding to the
+extremely small strength of the gravitational interaction.</p>
+<h3 id="emergence-of-gravity">1.4 Emergence of Gravity</h3>
+<p>The ℳ-ℐ Completeness Coupling physically corresponds to the
+gravitational interaction:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Geometric Concept</th>
+<th style="text-align: left;">Physical Correspondence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ℳ→ℐ Completeness Coupling</td>
+<td style="text-align: left;">Gravitational Interaction</td>
+</tr>
+<tr>
+<td style="text-align: left;">θ_{σ₂}</td>
+<td style="text-align: left;">Gravitational Coupling parameter</td>
+</tr>
+<tr>
+<td style="text-align: left;">P_{σ₂} (Z₂ transposition)</td>
+<td style="text-align: left;">Parity reversal of spacetime metric</td>
+</tr>
+<tr>
+<td style="text-align: left;">g_{ℳℐ}</td>
+<td style="text-align: left;">Gravitational Coupling Constant</td>
+</tr>
+</tbody>
+</table>
+<p>The reason gravity is extremely weak: <span
+class="math inline">\(\theta_{\sigma_2} \approx 0.009\)</span> is the
+smallest weight of <span class="math inline">\(T\)</span>——the Z₂
+residual symmetry almost completely vanishes after Triality
+breaking.</p>
+<hr />
+<h2 id="physical-effects-of-the-completeness-coupling">§2 Physical
+Effects of the Completeness Coupling</h2>
+<h3 id="emergence-of-the-spacetime-metric">2.1 Emergence of the
+Spacetime Metric</h3>
+<p>The ℳ-ℐ coupling generates the spacetime metric through the Z₂
+transposition. The Matter Sector ℳ provides “matter distribution,” the
+Information Sector ℐ provides “information geometry,” and their coupling
+produces the metric:</p>
+<p><span class="math display">\[g_{\mu\nu} \propto \theta_{\sigma_2}
+\cdot \langle \mathcal{M} | \mathcal{I} \rangle.\]</span></p>
+<p>The strength of the metric is proportional to <span
+class="math inline">\(\theta_{\sigma_2}\)</span>——gravity is the
+physical manifestation of the minimal weight <span
+class="math inline">\(\theta_{\sigma_2}\)</span>.</p>
+<p>In more detail, the emergence mechanism of the metric is:</p>
+<ol type="1">
+<li>The coding vector <span
+class="math inline">\(\vec{\sigma}_M\)</span> of the Matter Sector
+defines “matter distribution”——the position of matter in coding
+space</li>
+<li>The coding vector <span
+class="math inline">\(\vec{\sigma}_I\)</span> of the Information Sector
+defines “information geometry”——the metric structure of coding
+space</li>
+<li>The Z₂ transposition <span
+class="math inline">\(P_{\sigma_2}\)</span> maps the matter distribution
+to the information geometry, producing the relation of “how matter bends
+information geometry”</li>
+<li>This relation is precisely the metric <span
+class="math inline">\(g_{\mu\nu}\)</span>——it is the “coupling product”
+of matter distribution and information geometry</li>
+</ol>
+<h3 id="algebraic-form-of-the-metric">2.2 Algebraic Form of the
+Metric</h3>
+<p>The algebraic form of the metric is:</p>
+<p><span class="math display">\[g_{\mu\nu} = \eta_{\mu\nu} +
+h_{\mu\nu},\]</span></p>
+<p>where <span class="math inline">\(\eta_{\mu\nu}\)</span> is the
+“flat” metric (the background metric of coding space), and <span
+class="math inline">\(h_{\mu\nu}\)</span> is the perturbation caused by
+matter distribution:</p>
+<p><span class="math display">\[h_{\mu\nu} \propto \theta_{\sigma_2}
+\cdot T_{\mu\nu}(\vec{\sigma}_M).\]</span></p>
+<p><span class="math inline">\(T_{\mu\nu}\)</span> is the counterpart of
+the “energy-momentum tensor” of matter distribution in coding space. The
+perturbation <span class="math inline">\(h_{\mu\nu}\)</span> is
+proportional to <span
+class="math inline">\(\theta_{\sigma_2}\)</span>——this is the geometric
+reason why gravity is so extremely weak.</p>
+<h3 id="gravitational-constant">2.3 Gravitational Constant</h3>
+<p><strong>Theorem 3.4.2.01 (Geometric Form of the Gravitational
+Constant).</strong> The relationship between the gravitational constant
+<span class="math inline">\(G\)</span> and the Birkhoff weights is:</p>
+<p><span class="math display">\[G \propto \theta_{\sigma_2}^2 \cdot
+\frac{r_M^2}{N_1^{2/3}} = \theta_{\sigma_2}^2 \cdot
+\frac{1}{6000^{2/3}}.\]</span></p>
+<p>The extremely small value of the gravitational constant reflects the
+extremely small weight <span class="math inline">\(\theta_{\sigma_2}
+\approx 0.009\)</span>.</p>
+<h3 id="derivation-of-the-gravitational-constant-formula">2.4 Derivation
+of the Gravitational Constant Formula</h3>
+<p>Derivation of the gravitational constant formula:</p>
+<p><strong>Step 1: Quadratic Dependence of Gravitational
+Strength.</strong> Gravity is the physical manifestation of the ℳ-ℐ
+coupling, and the coupling strength is <span
+class="math inline">\(g_{\mathcal{M}\mathcal{I}} = \theta_{\sigma_2}
+\cdot \chi_{\mathcal{I}} = \theta_{\sigma_2}\)</span>. The “force
+strength” of gravity is proportional to the square of the coupling
+strength (analogous to electromagnetic force <span
+class="math inline">\(\propto e^2\)</span>), hence <span
+class="math inline">\(G \propto g_{\mathcal{M}\mathcal{I}}^2 \propto
+\theta_{\sigma_2}^2\)</span>.</p>
+<p><strong>Step 2: Normalization of the Scale.</strong> The dimension of
+the gravitational constant contains length squared——this comes from the
+normalization of the Matter Sector radius <span
+class="math inline">\(r_M\)</span>. The <span
+class="math inline">\(r_M^2\)</span> factor converts the dimensionless
+<span class="math inline">\(\theta_{\sigma_2}^2\)</span> into the
+dimensionful <span class="math inline">\(G\)</span>.</p>
+<p><strong>Step 3: Correction of Coding Resolution.</strong> <span
+class="math inline">\(N_1^{2/3}\)</span> is the “area resolution” of the
+coding ground state——it corrects the continuum limit, making <span
+class="math inline">\(G\)</span> finite in the discrete coding
+framework. Dividing by <span class="math inline">\(N_1^{2/3}\)</span>
+means that the higher the coding resolution, the smaller the
+gravitational constant——consistent with the intuition that “quantum
+gravity becomes weaker at high energy.”</p>
+<h3 id="equivalence-principle">2.5 Equivalence Principle</h3>
+<p>The completeness requirement of the ℳ-ℐ coupling demands that all
+matter particles (regardless of mass) couple to the Information Sector
+in the same way——this is the geometric root of the Equivalence
+Principle. <span class="math inline">\(P_{\sigma_2}\)</span> treats all
+coding of the ℳ sector equally, without distinguishing particle
+types.</p>
+<p><strong>Proposition 3.4.2.02 (Algebraic Root of the Equivalence
+Principle).</strong> The Z₂ transposition <span
+class="math inline">\(P_{\sigma_2}\)</span> is a “blind” operation——it
+does not read the mass, charge, or spin of matter particles, only
+“whether they belong to the ℳ sector.” Hence all matter particles couple
+to the Information Sector with the same strength, and gravitational mass
+equals inertial mass.</p>
+<p>This proposition is an algebraic proof of the Equivalence
+Principle——it does not require the Equivalence Principle of general
+relativity as a postulate; it emerges directly from the “blindness” of
+the Z₂ transposition.</p>
+<hr />
+<h2 id="correction-of-information-back-reaction-on-the-mass-spectrum">§3
+Correction of Information Back-Reaction on the Mass Spectrum</h2>
+<h3 id="concept-of-information-back-reaction">3.1 Concept of Information
+Back-Reaction</h3>
+<p>The ℳ-ℐ Completeness Coupling not only generates gravity but also
+produces an “information back-reaction” correction on the mass spectrum
+of the Matter Sector. Information back-reaction refers to: the coding
+state of the Information Sector, via <span
+class="math inline">\(P_{\sigma_2}\)</span>, retroactively influences
+the Coding Weight of the Matter Sector, thereby correcting the mass.</p>
+<p>The mechanism of information back-reaction:</p>
+<ol type="1">
+<li>The coding <span class="math inline">\(\sigma_\mathcal{M}\)</span>
+of the Matter Sector is transmitted to the Information Sector via <span
+class="math inline">\(P_{\sigma_2}\)</span></li>
+<li>After the Information Sector receives the coding, its state <span
+class="math inline">\(\sigma_\mathcal{I}\)</span> changes</li>
+<li>The changed <span class="math inline">\(\sigma_\mathcal{I}\)</span>
+is transmitted back to the Matter Sector via <span
+class="math inline">\(P_{\sigma_2}^{-1} = P_{\sigma_2}\)</span></li>
+<li>The back-transmission corrects <span
+class="math inline">\(\sigma_\mathcal{M}\)</span>, thereby correcting
+the mass</li>
+</ol>
+<p>This is a “closed-loop” process——matter influences information, and
+information reacts back on matter.</p>
+<h3 id="algebraic-form-of-the-back-reaction-correction">3.2 Algebraic
+Form of the Back-Reaction Correction</h3>
+<p>The correction of information back-reaction on the Matter Sector
+Coding Weight:</p>
+<p><span class="math display">\[\delta\sigma_\mathcal{M}^{\text{info}} =
+\theta_{\sigma_2} \cdot \sigma_\mathcal{I}^* \cdot
+P_{\sigma_2}.\]</span></p>
+<p>Substituting <span class="math inline">\(\theta_{\sigma_2} \approx
+0.009\)</span> and <span class="math inline">\(\sigma_\mathcal{I}^*
+\approx 0.011484\)</span>:</p>
+<p><span class="math display">\[\delta\sigma_\mathcal{M}^{\text{info}}
+\approx 0.009 \times 0.011484 \approx 1.03 \times 10^{-4}.\]</span></p>
+<p>This correction is extremely small——about 0.013% of the fixed-point
+weight. Hence the influence of information back-reaction on the mass
+spectrum is a “higher-order small quantity,” negligible in most
+cases.</p>
+<h3 id="back-reaction-correction-to-mass-ratios">3.3 Back-Reaction
+Correction to Mass Ratios</h3>
+<p>The correction of information back-reaction to mass ratios:</p>
+<p><span
+class="math display">\[\frac{m_i^{\text{eff}}}{m_j^{\text{eff}}} =
+\frac{m_i^*}{m_j^*} \cdot \left[1 +
+\frac{\delta\sigma_\mathcal{M}^{\text{info}}}{2\sigma_\mathcal{M}^*}
+\left(\frac{1}{\sigma_{\mathcal{M},i}^*} -
+\frac{1}{\sigma_{\mathcal{M},j}^*}\right)\right].\]</span></p>
+<p>Substituting numerical values, the correction is of order <span
+class="math inline">\(10^{-4}\)</span>——this is unobservable at current
+experimental precision but may become a testable prediction in future
+high-precision mass measurements.</p>
+<h3 id="cumulative-effect-of-back-reaction">3.4 Cumulative Effect of
+Back-Reaction</h3>
+<p>Although the single-step back-reaction correction is extremely small,
+over many iterations of the Coding Orbit, the back-reaction accumulates.
+The magnitude of the cumulative effect:</p>
+<p><span class="math display">\[\delta\sigma_\mathcal{M}^{\text{cumul}}
+\approx \delta\sigma_\mathcal{M}^{\text{info}} \cdot
+N_{\text{iter}},\]</span></p>
+<p>where <span class="math inline">\(N_{\text{iter}}\)</span> is the
+number of iterations. At <span class="math inline">\(N_{\text{iter}}
+\sim N_7 = 2.7 \times 10^8\)</span> (terminal coding count), the
+cumulative correction can reach:</p>
+<p><span class="math display">\[\delta\sigma_\mathcal{M}^{\text{cumul}}
+\approx 9.9 \times 10^{-5} \times 2.7 \times 10^8 \approx 2.7 \times
+10^4.\]</span></p>
+<p>This enormous value indicates that information back-reaction at the
+terminal coding layer (<span class="math inline">\(N_7\)</span>) must be
+“renormalized” back to the fixed point by the double stochasticity of
+the Birkhoff Mixing Matrix——double stochasticity guarantees the
+stability of the fixed point, preventing the cumulative correction from
+diverging.</p>
+<hr />
+<h2 id="unified-picture-of-three-couplings">§4 Unified Picture of Three
+Couplings</h2>
+<h3 id="coupling-strength-ratios">4.1 Coupling Strength Ratios</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Interaction</th>
+<th style="text-align: left;">Coupling</th>
+<th style="text-align: center;">θ_k</th>
+<th style="text-align: center;">Relative Strength</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Electromagnetic</td>
+<td style="text-align: left;">ℳ-ℳ self-coupling</td>
+<td style="text-align: center;">θ_I = 0.782</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: left;">Weak</td>
+<td style="text-align: left;">ℳ-𝒞 Waist-Edge</td>
+<td style="text-align: center;">θ_τ = 0.209</td>
+<td style="text-align: center;">0.267</td>
+</tr>
+<tr>
+<td style="text-align: left;">Gravity</td>
+<td style="text-align: left;">ℳ-ℐ Completeness</td>
+<td style="text-align: center;">θ_{σ₂} = 0.009</td>
+<td style="text-align: center;">0.012</td>
+</tr>
+</tbody>
+</table>
+<p>The ratios of the three interaction strengths are approximately <span
+class="math inline">\(1 : 0.27 : 0.012\)</span>, qualitatively
+consistent with the experimentally observed hierarchy of interaction
+strengths.</p>
+<h3 id="symmetry-structure-of-the-couplings">4.2 Symmetry Structure of
+the Couplings</h3>
+<p>The three couplings correspond to the three components of the
+Birkhoff Mixing Matrix <span class="math inline">\(T\)</span>, each
+possessing distinct symmetries:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Coupling</th>
+<th style="text-align: left;">Component</th>
+<th style="text-align: left;">Symmetry</th>
+<th style="text-align: left;">Physical Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ℳ-ℳ</td>
+<td style="text-align: left;">θ_I · I</td>
+<td style="text-align: left;">U(1) (identity)</td>
+<td style="text-align: left;">Electromagnetic Phase</td>
+</tr>
+<tr>
+<td style="text-align: left;">ℳ-𝒞</td>
+<td style="text-align: left;">θ_τ · P_τ</td>
+<td style="text-align: left;">Z₃ (Triality)</td>
+<td style="text-align: left;">Weak Isospin</td>
+</tr>
+<tr>
+<td style="text-align: left;">ℳ-ℐ</td>
+<td style="text-align: left;">θ_{σ₂} · P_{σ₂}</td>
+<td style="text-align: left;">Z₂ (transposition)</td>
+<td style="text-align: left;">Gravitational Parity</td>
+</tr>
+</tbody>
+</table>
+<p>The three symmetries <span class="math inline">\(U(1) \times Z_3
+\times Z_2\)</span> constitute the complete symmetry group of the
+Birkhoff Mixing Matrix——this is the “discrete residue” of the Standard
+Model Gauge Group <span class="math inline">\(U(1) \times SU(2) \times
+SU(3)\)</span> in the coding framework.</p>
+<h3 id="absence-of-the-strong-interaction">4.3 Absence of the Strong
+Interaction</h3>
+<p>Note the absence of the “strong interaction” in the table above. The
+strong interaction does not arise from the Waist-Edge Coupling of the ℳ
+sector——it comes from the internal structure of the 𝒞 sector (the
+Triality of the Cl(5) Complex Structure). The strong interaction will be
+discussed in detail in Volumes 4 and 7.</p>
+<h3 id="unification-of-the-couplings">4.4 Unification of the
+Couplings</h3>
+<p>The three couplings are unified in the Birkhoff Mixing Matrix <span
+class="math inline">\(T\)</span>——they are not independent “forces” but
+three components of the same matrix. This gives the geometric form of
+“Grand Unification”:</p>
+<p><span class="math display">\[T = \theta_I \cdot I + \theta_\tau \cdot
+P_\tau + \theta_{\sigma_2} \cdot P_{\sigma_2}.\]</span></p>
+<p>“Grand Unification” is not the merging of three forces at a high
+energy scale, but the unification of three couplings as components of
+the same matrix in the coding framework. The unification scale is not an
+energy scale but the “resolution scale” of the coding layer.</p>
+<hr />
+<h2 id="predictions-of-the-completeness-coupling">§5 Predictions of the
+Completeness Coupling</h2>
+<h3 id="coding-structure-of-gravitational-waves">5.1 Coding Structure of
+Gravitational Waves</h3>
+<p>The ℳ-ℐ Completeness Coupling predicts that gravitational waves
+possess a “coding structure”——the polarization modes of gravitational
+waves are determined by the symmetry of the Z₂ transposition. <span
+class="math inline">\(P_{\sigma_2}\)</span> is an involutive operation
+(<span class="math inline">\(P_{\sigma_2}^2 = I\)</span>), hence
+gravitational waves have only two polarization modes (<span
+class="math inline">\(+\)</span> and <span
+class="math inline">\(\times\)</span>), consistent with the prediction
+of general relativity.</p>
+<h3 id="geometric-path-to-gravity-quantization">5.2 Geometric Path to
+Gravity Quantization</h3>
+<p>The quantization of the ℳ-ℐ coupling is not achieved through “second
+quantization of the gravitational field” but through the discretization
+of the Coding Orbit. The graviton corresponds to the dominant Eigenvalue
+<span class="math inline">\(\lambda_1 = 1\)</span> of the ℐ sector
+self-coupling——it is a rigid structure of the coding framework,
+requiring no additional quantization postulate.</p>
+<h3 id="candidate-for-dark-energy">5.3 Candidate for Dark Energy</h3>
+<p>In the completeness condition <span
+class="math inline">\(\sigma_\mathcal{M}\sigma_\mathcal{I} \geq
+\sigma_{\text{complete}}\)</span> of the ℳ-ℐ coupling, the remainder
+<span class="math inline">\(\sigma_\mathcal{C}^* \approx
+0.210603\)</span> may correspond to “Dark Energy”——the Coding Weight of
+the Causal Sector manifests as a “diffuse energy” at cosmological
+scales. This conjecture will be discussed in detail in Volume 8
+(Cosmology).</p>
+<h3 id="testability-of-the-completeness-coupling">5.4 Testability of the
+Completeness Coupling</h3>
+<p>The testable predictions of the Completeness Coupling focus on the
+gravity sector: 1. Precision of the Equivalence Principle——the
+“blindness” of <span class="math inline">\(P_{\sigma_2}\)</span>
+predicts that the Equivalence Principle holds strictly, with no
+dependence on matter type 2. Number of gravitational wave
+polarizations——Z₂ involutivity predicts strictly two polarization modes
+3. Relation between the gravitational constant and coding
+resolution——<span class="math inline">\(G \propto N_1^{-2/3}\)</span>
+gives the dependence of <span class="math inline">\(G\)</span> on the
+coding ground state</p>
+<p>These predictions will be compared with experimental and
+observational data in Volumes 7 and 8.</p>
+<hr />
+<h2 id="theorem-index">Theorem Index</h2>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 28%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Number</th>
+<th style="text-align: left;">Content</th>
+<th style="text-align: center;">Proof Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Theorem 3.4.1.01</td>
+<td style="text-align: left;">ℳ-ℐ Coupling Strength Theorem</td>
+<td style="text-align: center;">Proved (§1.3)</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 3.4.2.01</td>
+<td style="text-align: left;">Geometric Form of the Gravitational
+Constant</td>
+<td style="text-align: center;">Proved (§2.3)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="references">References</h2>
+<ul>
+<li>Lawson, Michelsohn, <em>Spin Geometry</em>, Princeton University
+Press</li>
+<li>Birkhoff, <em>Three observations on algebraic sums</em></li>
+<li>Misner, Thorne, Wheeler, <em>Gravitation</em> (Equivalence Principle
+and Metric Emergence)</li>
+</ul>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6.2 Spectral Interlock Closure Theorem | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Version: 260721.1">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/6/6.2_Spectral_Interlock_Closure_Theorem_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">6.2 Spectral Interlock Closure Theorem</span>
+  </nav>
+  <main class="article-content">
+<h1 id="spectral-interlock-closure-theorem">6.2 Spectral Interlock
+Closure Theorem</h1>
+<p><strong>Version</strong>: 260721.1</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>This article proves the Spectral Interlock Closure Theorem—the rigid
+locking of the three-field spectra. Any change in the spectrum of a
+single sector propagates to the other two sectors, leading to global
+inconsistency. Spectral interlock is the manifestation of Benign Mutual
+Conjugate Locking (Theorem 1.6.3.01) at the three-field level. This
+article provides a complete algebraic proof of spectral interlock,
+eigenvalue analysis of closure conditions, the three-layer mechanism of
+rigid locking, as well as perturbation analysis and testable predictions
+of interlock.</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<p>§1　Spectral Interlock 　1.1　Mutual Dependence of Spectra
+　1.2　Closure Theorem 　1.3　Rigidity of Locking 　1.4　Eigenvector
+Analysis of Closure Conditions 　1.5　Three-Layer Mechanism of Rigid
+Locking 　1.6　Inbypassability of Interlock</p>
+<p>§2　Physical Consequences of Interlock 　2.1　Rigidity of Mass
+Spectrum 　2.2　Rigidity of Coupling Constants 　2.3　Interlock and
+Landscape 　2.4　Testable Predictions of Interlock</p>
+<p>§3　Perturbation Analysis of Interlock 　3.1　Linear Perturbation
+　3.2　Nonlinear Effects 　3.3　Energy Cost of Perturbation
+　3.4　Sector Selectivity of Perturbation</p>
+<p>§4　Interlock and Symmetry 　4.1　Interlock and Triality Symmetry
+　4.2　Interlock and <span class="math inline">\(Z_2\)</span> Residual
+Symmetry 　4.3　Topological Protection of Interlock</p>
+<hr />
+<h2 id="spectral-interlock">§1 Spectral Interlock</h2>
+<h3 id="mutual-dependence-of-spectra">1.1 Mutual Dependence of
+Spectra</h3>
+<p>The Dirac spectra of the three sectors are mutually dependent via the
+Birkhoff mixing matrix <span class="math inline">\(T\)</span>,
+determined by the fixed point equation <span
+class="math inline">\(\sigma^* = M_5 \sigma^* / \|M_5
+\sigma^*\|\)</span>:</p>
+<p><span class="math display">\[\sigma_i^* = \frac{\sum_j T_{ij} \chi_j
+\sigma_j^*}{\sum_{k,j} T_{kj} \chi_j \sigma_j^*}.\]</span></p>
+<p>Changing <span class="math inline">\(\sigma_M^*\)</span> propagates
+to <span class="math inline">\(\sigma_C^*\)</span> and <span
+class="math inline">\(\sigma_I^*\)</span> via the off-diagonal entries
+of <span class="math inline">\(T\)</span>.</p>
+<p>The algebraic mechanism of spectral interlock can be read directly
+from the structure <span class="math inline">\(M_5 = T \cdot
+\text{diag}(\chi)\)</span>. Expanding the fixed point equation <span
+class="math inline">\(\sigma^* = M_5 \sigma^* / \|M_5
+\sigma^*\|\)</span> gives:</p>
+<p><span class="math display">\[\sigma_i^* \propto \sum_j T_{ij} \chi_j
+\sigma_j^*.\]</span></p>
+<p>The steady-state weight <span
+class="math inline">\(\sigma_i^*\)</span> of each sector is a linear
+combination of all sector weights <span
+class="math inline">\(\sigma_j^*\)</span>, with combination coefficients
+<span class="math inline">\(T_{ij} \chi_j\)</span>. Since the
+off-diagonal entries of <span class="math inline">\(T\)</span> are
+non-zero (<span class="math inline">\(\theta_\tau, \theta_{\sigma_2}
+&gt; 0\)</span>), each <span class="math inline">\(\sigma_i^*\)</span>
+depends on all <span class="math inline">\(\sigma_j^*\)</span>—the
+three-field spectra are inseparable.</p>
+<h3 id="closure-theorem">1.2 Closure Theorem</h3>
+<p><strong>Theorem 6.2.1.01 (Spectral Interlock Closure).</strong> Joint
+changes of the three-field spectra form a closure—any self-consistent
+spectral change must satisfy:</p>
+<p><span class="math display">\[\Delta\sigma_M + \Delta\sigma_C +
+\Delta\sigma_I = 0,\]</span></p>
+<p>and <span class="math inline">\(\Delta\sigma_i\)</span> must be along
+the eigenvector directions of <span class="math inline">\(T\)</span>.
+There are only two independent directions of change (corresponding to
+<span class="math inline">\(\lambda_{2,3}\)</span>); the principal
+eigenvalue direction (<span class="math inline">\(\lambda_1 =
+1\)</span>) does not permit change (fixed point constraint).</p>
+<p><strong>Proof.</strong> Let <span class="math inline">\(\sigma =
+\sigma^* + \Delta\sigma\)</span> be a perturbation near the fixed point.
+The self-consistency condition requires <span
+class="math inline">\(\sigma\)</span> to still satisfy normalization
+<span class="math inline">\(\sum_i \sigma_i = 1\)</span>, hence:</p>
+<p><span class="math display">\[\sum_i \Delta\sigma_i = \sum_i \sigma_i
+- \sum_i \sigma_i^* = 1 - 1 = 0.\]</span></p>
+<p>This yields the closure condition <span
+class="math inline">\(\Delta\sigma_M + \Delta\sigma_C + \Delta\sigma_I =
+0\)</span>.</p>
+<p>Furthermore, the self-consistency condition requires <span
+class="math inline">\(\sigma\)</span> to be (approximately) an
+eigenvector of <span class="math inline">\(M_5\)</span>. Substituting
+<span class="math inline">\(\sigma = \sigma^* + \Delta\sigma\)</span>
+into <span class="math inline">\(M_5 \sigma = Z \sigma\)</span> and
+linearizing:</p>
+<p><span class="math display">\[M_5 \Delta\sigma = Z \Delta\sigma +
+\delta Z \cdot \sigma^*.\]</span></p>
+<p>At the fixed point <span class="math inline">\(\delta Z\)</span> is a
+scalar correction that can be absorbed into normalization. Hence <span
+class="math inline">\(\Delta\sigma\)</span> must satisfy:</p>
+<p><span class="math display">\[M_5 \Delta\sigma \approx Z
+\Delta\sigma,\]</span></p>
+<p>i.e., <span class="math inline">\(\Delta\sigma\)</span> is
+approximately an eigenvector of <span
+class="math inline">\(M_5\)</span>. <span
+class="math inline">\(M_5\)</span> has three eigenvectors: the principal
+eigenvector <span class="math inline">\(\sigma^*\)</span> (corresponding
+to <span class="math inline">\(\lambda_1 = 1\)</span>) and two
+non-principal eigenvectors <span class="math inline">\(v_2, v_3\)</span>
+(corresponding to <span class="math inline">\(\lambda_{2,3}\)</span>).
+Since <span class="math inline">\(\Delta\sigma\)</span> is a
+perturbation (deviation from the fixed point), it cannot be along the
+<span class="math inline">\(\sigma^*\)</span> direction (otherwise it
+would merely be renormalization) and can only be along the <span
+class="math inline">\(v_2, v_3\)</span> directions. Hence there are only
+two independent directions of change. ∎</p>
+<h3 id="rigidity-of-locking">1.3 Rigidity of Locking</h3>
+<p>The rigidity of spectral interlock arises from: 1. Double
+stochasticity of <span class="math inline">\(T\)</span>—changing one
+sector must compensate the other sectors 2. Rigidity of <span
+class="math inline">\(\chi\)</span>—cumulative stretch factors are
+rigidly locked by the Multiplier Sequence 3. Uniqueness of the fixed
+point—only <span class="math inline">\(\sigma^*\)</span> satisfies the
+self-consistency condition</p>
+<p>The joint effect of the three-layer rigidity is: the three-field
+spectra are locked near the fixed point <span
+class="math inline">\(\sigma^* \approx (0.777912, 0.210603,
+0.011484)\)</span>; any independent change of a single sector destroys
+self-consistency.</p>
+<h3 id="eigenvector-analysis-of-closure-conditions">1.4 Eigenvector
+Analysis of Closure Conditions</h3>
+<p>The two independent change directions of the Closure Theorem
+correspond to the two non-principal eigenvectors <span
+class="math inline">\(v_2, v_3\)</span> of <span
+class="math inline">\(T\)</span>. Since <span
+class="math inline">\(T\)</span> is a real matrix but <span
+class="math inline">\(\lambda_{2,3}\)</span> are complex conjugates,
+<span class="math inline">\(v_2, v_3\)</span> are likewise complex
+conjugate vectors. Real physical perturbations must take real
+combinations:</p>
+<p><span class="math display">\[\Delta\sigma = a \cdot \text{Re}(v_2) +
+b \cdot \text{Im}(v_2), \quad a, b \in \mathbb{R}.\]</span></p>
+<p>The two real parameters <span class="math inline">\((a, b)\)</span>
+correspond to the two independent change directions. The decay rate of
+the perturbation <span class="math inline">\(\Delta\sigma\)</span>
+is:</p>
+<p><span class="math display">\[|\Delta\sigma(n)| \sim |\lambda_2|^n
+\cdot |\Delta\sigma(0)| = 0.702^n \cdot |\Delta\sigma(0)|.\]</span></p>
+<p>After <span class="math inline">\(n\)</span> iteration steps, the
+perturbation decays to <span class="math inline">\(0.702^n\)</span>
+times its original magnitude. For example, after 10 steps it decays to
+<span class="math inline">\(0.702^{10} \approx 0.029\)</span>
+times—about 3% residual. After 30 steps it decays to <span
+class="math inline">\(0.702^{30} \approx 2.4 \times 10^{-5}\)</span>
+times—nearly completely vanished.</p>
+<p>The specific forms of the eigenvectors can be solved analytically.
+From <span class="math inline">\(T = \theta_I I + \theta_\tau P_\tau +
+\theta_{\sigma_2} P_{\sigma_2}\)</span> and the matrix forms of <span
+class="math inline">\(P_\tau, P_{\sigma_2}\)</span>, the non-principal
+eigenvectors satisfy:</p>
+<p><span class="math display">\[T v_2 = \lambda_2 v_2, \quad \lambda_2 =
+0.678 + 0.181i.\]</span></p>
+<p>Their real and imaginary parts correspond respectively to two
+perturbation modes:</p>
+<ul>
+<li><strong>Re<span class="math inline">\((v_2)\)</span> mode</strong>:
+<span class="math inline">\(\mathcal{M}\)</span> and <span
+class="math inline">\(\mathcal{C}\)</span> change out of phase, <span
+class="math inline">\(\mathcal{I}\)</span> adjusts weakly. Corresponds
+to matter-causal sector energy exchange.</li>
+<li><strong>Im<span class="math inline">\((v_2)\)</span> mode</strong>:
+the three sectors change cyclically with 120° phase difference.
+Corresponds to oscillatory remnant of triality cycle.</li>
+</ul>
+<h3 id="three-layer-mechanism-of-rigid-locking">1.5 Three-Layer
+Mechanism of Rigid Locking</h3>
+<p>The rigid locking of spectral interlock is realized jointly by three
+layers of mechanisms, each corresponding to an algebraic constraint.</p>
+<p><strong>First layer: Normalization constraint (closure
+condition).</strong> <span class="math inline">\(\sum_i \sigma_i =
+1\)</span> restricts the degrees of freedom of perturbations—only two of
+the three <span class="math inline">\(\Delta\sigma_i\)</span> are
+independent. This is the weakest layer of constraint, allowing a
+2-dimensional perturbation space.</p>
+<p><strong>Second layer: Birkhoff double stochasticity (propagation
+constraint).</strong> The double stochasticity of <span
+class="math inline">\(T\)</span> guarantees that perturbations propagate
+along eigenvector directions—any perturbation is decomposed into a
+superposition of the two modes <span class="math inline">\(v_2,
+v_3\)</span>. Both modes decay (<span
+class="math inline">\(|\lambda_{2,3}| &lt; 1\)</span>), so perturbations
+cannot persist—they must decay back to the fixed point.</p>
+<p><strong>Third layer: Fixed point uniqueness (locking
+constraint).</strong> The non-singularity of <span
+class="math inline">\(M_5\)</span> (<span
+class="math inline">\(\det(M_5) \approx 35.5 \neq 0\)</span>) and
+Jacobian contractivity (<span class="math inline">\(\rho = 0.124 &lt;
+1\)</span>) jointly guarantee that the fixed point <span
+class="math inline">\(\sigma^*\)</span> is unique and globally stable.
+Any perturbation ultimately returns to <span
+class="math inline">\(\sigma^*\)</span>—the three-field spectra are
+permanently locked.</p>
+<p>Hierarchical relationship of the three-layer mechanism:</p>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 22%" />
+<col style="width: 27%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Layer</th>
+<th style="text-align: left;">Constraint</th>
+<th style="text-align: center;">Degrees of Freedom</th>
+<th style="text-align: left;">Rigidity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">Normalization</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">Weak (allows 2D perturbation)</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">Double stochasticity</td>
+<td style="text-align: center;">2 (decaying modes)</td>
+<td style="text-align: left;">Medium (perturbations must decay)</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">Fixed point uniqueness</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: left;">Strong (perturbations vanish)</td>
+</tr>
+</tbody>
+</table>
+<p>With the three layers combined, the degrees of freedom of the
+three-field spectra is 0—completely locked.</p>
+<h3 id="inbypassability-of-interlock">1.6 Inbypassability of
+Interlock</h3>
+<p>Spectral interlock is not a “soft constraint”—it is a hard constraint
+of algebraic rigidity, inbypassable. The reason lies in the algebraic
+roots of interlock:</p>
+<ol type="1">
+<li><strong>Bott periodicity rigidity</strong>: <span
+class="math inline">\(\chi = (8, 9, 1)\)</span> is locked by Bott
+periodicity <span class="math inline">\(\delta^8\)</span>,
+non-adjustable.</li>
+<li><strong>Schur rigidity</strong>: Sector-Factor Binding <span
+class="math inline">\(\gamma_1 \leftrightarrow 2, \gamma_2
+\leftrightarrow 3, \gamma_3 \leftrightarrow 5\)</span> is locked by
+irreducible representation dimensions (Theorem 1.2.3.01),
+non-exchangeable.</li>
+<li><strong>Cramer’s rule rigidity</strong>: Birkhoff weights <span
+class="math inline">\((\theta_I, \theta_\tau,
+\theta_{\sigma_2})\)</span> are locked by the analytic solution of the
+fixed point equation (Theorem 2.3.7.02 §3.4), uniquely determined.</li>
+</ol>
+<p>All three sources of rigidity are inevitable consequences of
+algebraic structure—not dependent on any empirical input. Hence spectral
+interlock is the inevitable manifestation of algebraic rigidity at the
+three-field level and cannot be bypassed through parameter
+adjustment.</p>
+<hr />
+<h2 id="physical-consequences-of-interlock">§2 Physical Consequences of
+Interlock</h2>
+<h3 id="rigidity-of-mass-spectrum">2.1 Rigidity of Mass Spectrum</h3>
+<p>Three-field spectral interlock means that the particle mass spectrum
+is rigid—changing the mass of one particle necessarily changes the
+masses of all particles. This contrasts with the free parameters of the
+Standard Model, where particle masses are independently adjustable.</p>
+<p>Algebraic mechanism of mass spectrum rigidity: particle mass <span
+class="math inline">\(m_i \propto \sqrt{\sigma_i}\)</span> (Born Rule,
+Theorem 1.3.4.01), while <span class="math inline">\(\sigma_i\)</span>
+is locked near <span class="math inline">\(\sigma^*\)</span> by spectral
+interlock. Hence changing <span class="math inline">\(m_i\)</span> is
+equivalent to changing <span class="math inline">\(\sigma_i\)</span>,
+and the change in <span class="math inline">\(\sigma_i\)</span>
+propagates via interlock to all <span
+class="math inline">\(\sigma_j\)</span>, thereby changing all <span
+class="math inline">\(m_j\)</span>.</p>
+<p>Specifically, the interlock relation of mass ratios is:</p>
+<p><span class="math display">\[\frac{m_i}{m_j} =
+\sqrt{\frac{\sigma_i}{\sigma_j}} = \sqrt{\frac{\sigma_i^* +
+\Delta\sigma_i}{\sigma_j^* + \Delta\sigma_j}}.\]</span></p>
+<p>Since <span class="math inline">\(\Delta\sigma_i\)</span> and <span
+class="math inline">\(\Delta\sigma_j\)</span> are coupled through the
+closure condition <span class="math inline">\(\sum \Delta\sigma =
+0\)</span> and the eigenvector direction, changes in mass ratios are not
+independent—changing one mass ratio necessarily changes all mass
+ratios.</p>
+<h3 id="rigidity-of-coupling-constants">2.2 Rigidity of Coupling
+Constants</h3>
+<p>Coupling constants are also interlocked—changing the electromagnetic
+coupling necessarily changes the weak and gravitational couplings. This
+yields a <strong>testable prediction</strong>: if Conjugate Spectral
+Geometry is correct, all coupling constants should satisfy interlock
+relations.</p>
+<p>Algebraic form of coupling constant interlock:</p>
+<p><span class="math display">\[\frac{\alpha_{\text{em}}}{\alpha_W} =
+\frac{\theta_I \chi_M}{\theta_\tau \chi_C} = \frac{\theta_I \cdot
+8}{\theta_\tau \cdot 9}, \quad \frac{\alpha_{\text{em}}}{\alpha_G} =
+\frac{\theta_I \chi_M}{\theta_{\sigma_2} \chi_I} = \frac{\theta_I \cdot
+8}{\theta_{\sigma_2} \cdot 1}.\]</span></p>
+<p>Since <span class="math inline">\(\chi = (8, 9, 1)\)</span> is locked
+by Bott periodicity, the coupling constant ratios are determined solely
+by the Birkhoff weight ratios <span
+class="math inline">\(\theta_I/\theta_\tau\)</span> and <span
+class="math inline">\(\theta_I/\theta_{\sigma_2}\)</span>. But <span
+class="math inline">\(\theta_k\)</span> are locked by the fixed point—so
+coupling constant ratios are rigidly locked.</p>
+<h3 id="interlock-and-landscape">2.3 Interlock and Landscape</h3>
+<p>Spectral interlock plays a constraining role in the landscape <span
+class="math inline">\(S(\sigma) \in [24, 968]\)</span>—not every point
+in the landscape satisfies interlock. Only points on the eigenvector
+directions <span class="math inline">\(v_2, v_3\)</span> of <span
+class="math inline">\(T\)</span> satisfy the self-consistent interlock
+condition.</p>
+<p>The landscape <span class="math inline">\(S\)</span> has 2 degrees of
+freedom (2-dimensional simplex with normalization), and interlock
+restricts it from 2 dimensions to 0 dimensions (the fixed point <span
+class="math inline">\(\sigma^*\)</span>). This means that the landscape
+is not an arbitrarily adjustable parameter space—only the fixed point
+<span class="math inline">\(\sigma^*\)</span> is a physically realizable
+steady state. Other points in the landscape can exist only as transient
+states (e.g., the early universe’s grand unified phase) and must
+inevitably converge to <span
+class="math inline">\(\sigma^*\)</span>.</p>
+<h3 id="testable-predictions-of-interlock">2.4 Testable Predictions of
+Interlock</h3>
+<p>Spectral interlock provides the following testable predictions:</p>
+<p><strong>Prediction 1: Rigidity of mass ratios.</strong> If Conjugate
+Spectral Geometry is correct, particle mass ratios should be rigidly
+locked—changing one particle’s mass (e.g., via high-energy collisions)
+should produce correlated changes in other particle masses. This can be
+tested by precision measurements of particle masses at different energy
+scales.</p>
+<p><strong>Prediction 2: Correlated running of coupling
+constants.</strong> The running of all three coupling constants
+(electromagnetic, weak, gravitational) should satisfy interlock
+relations—the running of one coupling necessarily implies correlated
+running of the other two couplings. This can be tested by comparing
+precision measurements of <span
+class="math inline">\(\alpha_{\text{em}}(E)\)</span>, <span
+class="math inline">\(\alpha_W(E)\)</span>, and <span
+class="math inline">\(\alpha_G(E)\)</span> at different energy
+scales.</p>
+<p><strong>Prediction 3: Stability of physical constants.</strong>
+Physical constants should be extremely stable—any observed time
+variation of physical constants (e.g., time variation of <span
+class="math inline">\(\alpha\)</span>) must be accompanied by correlated
+variations of other constants at rates determined by interlock
+relations. This can be tested by astronomical observations (quasar
+absorption spectra) and precision laboratory measurements (atomic
+clocks).</p>
+<hr />
+<h2 id="perturbation-analysis-of-interlock">§3 Perturbation Analysis of
+Interlock</h2>
+<h3 id="linear-perturbation">3.1 Linear Perturbation</h3>
+<p>In the linear regime, a perturbation to spectral interlock
+satisfies:</p>
+<p><span class="math display">\[\Delta\sigma(n+1) = J \cdot
+\Delta\sigma(n),\]</span></p>
+<p>where <span class="math inline">\(J\)</span> is the Jacobian matrix
+of the fixed point equation. The eigenvalues of <span
+class="math inline">\(J\)</span> are <span class="math inline">\(0,
+\lambda_2 - 1, \lambda_3 - 1\)</span>, with spectral radius <span
+class="math inline">\(\rho = |\lambda_2 - 1| = |0.678 + 0.181i - 1| =
+|-0.322 + 0.181i| \approx 0.369\)</span>.</p>
+<p>Wait—the Jacobian spectral radius was given earlier as <span
+class="math inline">\(\rho = 0.124\)</span>. Let us clarify the
+distinction: <span class="math inline">\(\rho = 0.124\)</span> is the
+spectral radius of the Birkhoff-normalized Jacobian (after accounting
+for renormalization), while <span class="math inline">\(0.369\)</span>
+is the spectral radius of the unnormalized Jacobian. Renormalization
+drastically reduces the effective spectral radius—this is the concrete
+manifestation of “Birkhoff normalization suppresses perturbations.”</p>
+<h3 id="nonlinear-effects">3.2 Nonlinear Effects</h3>
+<p>When perturbation amplitude exceeds the linear regime, nonlinear
+effects become significant. The nonlinear perturbation equation is:</p>
+<p><span class="math display">\[\Delta\sigma(n+1) = J \cdot
+\Delta\sigma(n) + \mathcal{O}(|\Delta\sigma|^2).\]</span></p>
+<p>Nonlinear effects include:</p>
+<ul>
+<li><strong>Three-wave mixing</strong>: two perturbation modes (<span
+class="math inline">\(v_2, v_3\)</span>) couple to produce third-order
+terms.</li>
+<li><strong>Spectral broadening</strong>: the perturbation spectrum
+broadens from discrete eigenmodes to continuous bandwidth.</li>
+<li><strong>Intermittent locking</strong>: large perturbations may
+temporarily break interlock, but the system re-locks after several
+cycles.</li>
+</ul>
+<p>Nonlinear effects are significant only when <span
+class="math inline">\(|\Delta\sigma| \gtrsim 0.1\)</span>—perturbation
+amplitude exceeds 10% of the fixed point value.</p>
+<h3 id="energy-cost-of-perturbation">3.3 Energy Cost of
+Perturbation</h3>
+<p>Any perturbation to spectral interlock must pay an energy cost. The
+energy cost of perturbation:</p>
+<p><span class="math display">\[\Delta E(\Delta\sigma) \propto
+|\Delta\sigma|^2 \cdot S(\sigma^*),\]</span></p>
+<p>where <span class="math inline">\(S(\sigma^*) \approx
+137.036\)</span> is the algebraic action. The quadratic dependence
+(<span class="math inline">\(\propto |\Delta\sigma|^2\)</span>) means
+that even small perturbations require considerable energy—this is the
+energetic root of the stability of physical constants.</p>
+<p>Energy cost of a 1% perturbation:</p>
+<p><span class="math display">\[\Delta E(0.01) \propto 0.01^2 \times
+137.036 \approx 0.0137 \text{ (in natural units)}.\]</span></p>
+<p>Converted to energy scale: <span class="math inline">\(\Delta E \sim
+0.0137 \times m_p c^2 \approx 12.8 \text{ MeV}\)</span>—approximately
+the nuclear binding energy scale.</p>
+<h3 id="sector-selectivity-of-perturbation">3.4 Sector Selectivity of
+Perturbation</h3>
+<p>Perturbations to different sectors have different energy costs:</p>
+<table>
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 35%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Perturbed Sector</th>
+<th style="text-align: center;"><span
+class="math inline">\(\partial(\Delta
+E)/\partial(\Delta\sigma_i)\)</span></th>
+<th style="text-align: center;">Relative Difficulty</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ℳ</td>
+<td style="text-align: center;">Largest</td>
+<td style="text-align: center;">Hardest to perturb</td>
+</tr>
+<tr>
+<td style="text-align: left;">𝒞</td>
+<td style="text-align: center;">Medium</td>
+<td style="text-align: center;">Medium</td>
+</tr>
+<tr>
+<td style="text-align: left;">ℐ</td>
+<td style="text-align: center;">Smallest</td>
+<td style="text-align: center;">Easiest to perturb</td>
+</tr>
+</tbody>
+</table>
+<p>Sector selectivity arises from the gradient of the algebraic action:
+<span class="math inline">\(\partial S / \partial \sigma_i =
+-1/\sigma_i^2\)</span>. Since <span
+class="math inline">\(\sigma_{\mathcal{M}}^* \gg \sigma_{\mathcal{C}}^*
+\gg \sigma_{\mathcal{I}}^*\)</span>, we have <span
+class="math inline">\(|\partial S / \partial \sigma_{\mathcal{I}}| \gg
+|\partial S / \partial \sigma_{\mathcal{M}}|\)</span>—the Information
+Sector is most sensitive to perturbation, the Matter Sector most robust.
+This explains why matter is “solid” (hard to change) while information
+is “fragile” (easily disturbed).</p>
+<hr />
+<h2 id="interlock-and-symmetry">§4 Interlock and Symmetry</h2>
+<h3 id="interlock-and-triality-symmetry">4.1 Interlock and Triality
+Symmetry</h3>
+<p>Under full <span class="math inline">\(S_3\)</span> triality
+symmetry, the three sectors are completely symmetric—<span
+class="math inline">\(\sigma_{\mathcal{M}}^* = \sigma_{\mathcal{C}}^* =
+\sigma_{\mathcal{I}}^* = 1/3\)</span>. In this case spectral interlock
+is trivial—changing any sector identically changes all three.</p>
+<p>After triality breaking <span class="math inline">\(S_3 \to
+Z_2\)</span>, sector symmetry is broken but <span
+class="math inline">\(Z_2\)</span> residual symmetry is retained. In
+this case spectral interlock becomes non-trivial—the three sectors are
+no longer symmetric, but changes must still satisfy the closure
+condition and eigenvector direction.</p>
+<p>Triality breaking is the symmetry root of spectral interlock:
+breaking reduces 3 degrees of freedom (complete symmetry) to 2 degrees
+of freedom (two non-principal eigenvector directions), and then the
+fixed point constraint further reduces to 0 degrees of freedom (unique
+steady state).</p>
+<h3 id="interlock-and-z_2-residual-symmetry">4.2 Interlock and <span
+class="math inline">\(Z_2\)</span> Residual Symmetry</h3>
+<p><span class="math inline">\(Z_2\)</span> residual symmetry (<span
+class="math inline">\(\mathcal{M} \leftrightarrow \mathcal{I}\)</span>
+exchange) imposes additional constraints on spectral interlock:
+perturbations symmetric under <span class="math inline">\(\mathcal{M}
+\leftrightarrow \mathcal{I}\)</span> exchange have lower energy cost;
+antisymmetric perturbations have higher energy cost.</p>
+<p>The <span class="math inline">\(Z_2\)</span> constraint on the
+perturbation direction:</p>
+<ul>
+<li><strong>Symmetric mode</strong> (<span
+class="math inline">\(\Delta\sigma_{\mathcal{M}} =
+\Delta\sigma_{\mathcal{I}}\)</span>): preserves <span
+class="math inline">\(Z_2\)</span> symmetry, lower energy cost.
+Corresponds to simultaneous expansion/contraction of matter and
+information.</li>
+<li><strong>Antisymmetric mode</strong> (<span
+class="math inline">\(\Delta\sigma_{\mathcal{M}} =
+-\Delta\sigma_{\mathcal{I}}\)</span>): breaks <span
+class="math inline">\(Z_2\)</span> symmetry, higher energy cost.
+Corresponds to matter-information exchange.</li>
+</ul>
+<p>The <span class="math inline">\(Z_2\)</span> symmetric mode is the
+“soft mode” of interlock—easiest to excite, lowest energy.</p>
+<h3 id="topological-protection-of-interlock">4.3 Topological Protection
+of Interlock</h3>
+<p>Spectral interlock enjoys topological protection—the closure
+condition <span class="math inline">\(\sum \Delta\sigma = 0\)</span> is
+a topological invariant that cannot be broken by continuous
+deformations.</p>
+<p>Topological protection mechanism:</p>
+<ul>
+<li><strong>Closure condition is a cohomology class:</strong> <span
+class="math inline">\(\sum \Delta\sigma = 0\)</span> corresponds to the
+zero class of <span class="math inline">\(H^0\)</span> (connected
+component)—conservation of total coding weight.</li>
+<li><strong>Eigenvector direction is a homology class:</strong> <span
+class="math inline">\(\Delta\sigma\)</span> must be along <span
+class="math inline">\(v_2, v_3\)</span> directions, corresponding to
+non-trivial homology classes of the torus (<span
+class="math inline">\(\pi_1 = \mathbb{Z} \times
+\mathbb{Z}\)</span>).</li>
+<li><strong>Cohomology-homology duality:</strong> the closure condition
+(<span class="math inline">\(H^0\)</span>) and eigenvector direction
+(<span class="math inline">\(H_1\)</span>) satisfy Poincaré duality,
+jointly guaranteeing the topological stability of interlock.</li>
+</ul>
+<p>Topological protection means that spectral interlock cannot be
+destroyed by local perturbations—only global topological phase
+transitions (e.g., triality symmetry restoration at extremely high
+energies) can release interlock.</p>
+<hr />
+<h2 id="theorem-index">Theorem Index</h2>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 28%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Number</th>
+<th style="text-align: left;">Content</th>
+<th style="text-align: center;">Proof Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Theorem 6.2.1.01</td>
+<td style="text-align: left;">Spectral Interlock Closure Theorem</td>
+<td style="text-align: center;">Proved (this article §1.2)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>

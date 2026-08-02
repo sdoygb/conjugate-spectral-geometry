@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1合金设计 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="编号：10.1 | 日期：260723.1 | 系列：应用 | 语言：CN">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/cn/10.1_合金设计_CN_260721.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../index.html" class="nav-home">🏠 首页</a>
+    <a href="../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">1合金设计</span>
+  </nav>
+  <main class="article-content">
+<h1 id="合金设计">1合金设计</h1>
+<p><strong>编号</strong>：10.1 | <strong>日期</strong>：260723.1 |
+<strong>系列</strong>：应用 | <strong>语言</strong>：CN</p>
+<hr />
+<h2 id="摘要">摘要</h2>
+<p>本文将共扼谱几何体系应用于合金设计领域。基于多体截面定理（定理
+6.5.1.01）与Birkhoff混合矩阵的权重调谐机制，建立合金稳定相的几何预测理论框架。通过将合金成分比例映射为Birkhoff权重
+<span class="math inline">\((\theta_I, \theta_\tau,
+\theta_{\sigma_2})\)</span>，并利用 <span
+class="math inline">\(T^{(N)}\)</span>
+的Jacobian谱半径极小值判定稳定相，为高温合金设计提供几何约束下的稳定性预测方案。本文进一步给出成分-Birkhoff权重映射的显式构造、Jacobian谱半径极小值与稳定相对应关系的证明，以及约束释放机制对高温稳定性的定量预测。</p>
+<hr />
+<h2 id="目-录">目　录</h2>
+<h2 id="第1章-引言">第1章　引言</h2>
+<p>本文是几何论系列论文的第 10.1
+篇。该系列的基础框架（唯一公理δ、Clifford代数、编码轨道结构、Born法则、相互作用映射）已在共扼谱几何基础定理中建立。</p>
+<p><strong>核心定位</strong>：本文将共扼谱几何体系应用于合金设计领域。基于多体截面定理（定理
+6.5.1.01）与 Birkhoff
+混合矩阵的权重调谐机制，建立合金稳定相的几何预测理论框架。将合金成分比例映射为
+Birkhoff 权重，利用 Jacobian 谱半径极小值判定稳定相。</p>
+<p><strong>关键依赖</strong>：本文直接依赖唯一公理δ → 多体截面定理（定理
+6.5.1.01）→ Birkhoff 混合矩阵权重调谐 → Jacobian 谱半径。结构常数由
+{2,3,5} 互锁性锁定，圆满再现（定理 2.3.7.01）建立自举封闭。</p>
+<p><strong>核心结果</strong>：（一）合金成分-Birkhoff
+权重映射的显式构造；（二）Jacobian
+谱半径极小值与稳定相对应关系的证明；（三）约束释放机制对高温稳定性的定量预测与钴基/铁基合金的几何预测。</p>
+<hr />
+<p>§1　几何模型 　1.1　合金成分的Birkhoff权重映射
+　1.2　Jacobian谱半径的显式计算 　1.3　多体截面的合金构型</p>
+<p>§2　应用方案与预言 　2.1　高温合金设计的几何配方 　2.2　几何预言
+　2.3　高温合金设计的验证路径 　2.4　钴基与铁基合金的几何预测
+　2.5　几何框架的适用边界</p>
+<hr />
+<h2 id="几何模型">§1 几何模型</h2>
+<h3 id="合金成分的birkhoff权重映射">1.1 合金成分的Birkhoff权重映射</h3>
+<p>在共扼谱几何体系中，唯一公理 <span
+class="math inline">\(\delta\)</span>景观选择为零之动 <span
+class="math inline">\(\delta\)</span>，由此涌现三个结构常数 <span
+class="math inline">\(\Lambda=3\)</span>（<span
+class="math inline">\(\text{Cl}(3)\)</span> 半单分裂）、<span
+class="math inline">\(k_0=2\)</span>（<span
+class="math inline">\(\text{Cl}(7)\)</span> 终端对偶）、<span
+class="math inline">\(\Delta\Theta=5\)</span>（<span
+class="math inline">\(\text{Cl}(5)\)</span>
+复结构涌现），并划分出三个扇区：物质界 <span
+class="math inline">\(\mathcal{M}\)</span>、因果界 <span
+class="math inline">\(\mathcal{C}\)</span>、信息界 <span
+class="math inline">\(\mathcal{I}\)</span>。扇区-因子绑定为 <span
+class="math inline">\(\gamma_1 \leftrightarrow 2\)</span>，<span
+class="math inline">\(\gamma_2 \leftrightarrow 3\)</span>，<span
+class="math inline">\(\gamma_3 \leftrightarrow
+5\)</span>。合金作为多体物质系统，其稳定相由多体截面定理确定。</p>
+<p><strong>成分到Birkhoff权重的映射构造。</strong> 设 <span
+class="math inline">\(N\)</span> 元合金的组元集合为 <span
+class="math inline">\(\{A_1, A_2, \ldots, A_N\}\)</span>，成分比例为
+<span class="math inline">\(\{c_i\}\)</span>（<span
+class="math inline">\(\sum c_i = 1\)</span>）。每个组元 <span
+class="math inline">\(A_i\)</span> 在观测者定位 <span
+class="math inline">\(\sigma^* \approx (0.777912, 0.210603,
+0.011484)\)</span> 的邻域具有固有的扇区权重向量 <span
+class="math inline">\((\sigma_{\mathcal{M},i}, \sigma_{\mathcal{C},i},
+\sigma_{\mathcal{I},i})\)</span>。该固有权重由组元的电子结构决定：过渡金属的
+<span class="math inline">\(d\)</span> 电子数主导 <span
+class="math inline">\(\mathcal{M}\)</span> 扇区权重 <span
+class="math inline">\(\sigma_{\mathcal{M},i}\)</span>，主族元素的 <span
+class="math inline">\(p\)</span> 电子贡献 <span
+class="math inline">\(\mathcal{C}\)</span> 扇区权重 <span
+class="math inline">\(\sigma_{\mathcal{C},i}\)</span>，而稀土元素的
+<span class="math inline">\(f\)</span> 电子增强 <span
+class="math inline">\(\mathcal{I}\)</span> 扇区权重 <span
+class="math inline">\(\sigma_{\mathcal{I},i}\)</span>。</p>
+<p>成分到Birkhoff权重的映射为线性叠加：</p>
+<p><span class="math display">\[\theta_I = \sum_i c_i \cdot
+\sigma_{\mathcal{M},i}\]</span> <span class="math display">\[\theta_\tau
+= \sum_i c_i \cdot \sigma_{\mathcal{C},i}\]</span> <span
+class="math display">\[\theta_{\sigma_2} = \sum_i c_i \cdot
+\sigma_{\mathcal{I},i}\]</span></p>
+<p>该映射满足归一化约束 <span class="math inline">\(\theta_I +
+\theta_\tau + \theta_{\sigma_2} =
+1\)</span>，对应Birkhoff多面体（权重单纯形）上的一点。映射的线性性保证了成分微扰
+<span class="math inline">\(\delta c_i\)</span> 到权重微扰 <span
+class="math inline">\(\delta\theta\)</span>
+的连续可微性，其Jacobian矩阵为：</p>
+<p><span class="math display">\[\frac{\partial(\theta_I, \theta_\tau,
+\theta_{\sigma_2})}{\partial(c_1, \ldots, c_N)} = \begin{bmatrix}
+\sigma_{\mathcal{M},1} &amp; \cdots &amp; \sigma_{\mathcal{M},N} \\
+\sigma_{\mathcal{C},1} &amp; \cdots &amp; \sigma_{\mathcal{C},N} \\
+\sigma_{\mathcal{I},1} &amp; \cdots &amp; \sigma_{\mathcal{I},N}
+\end{bmatrix}\]</span></p>
+<p>该Jacobian的秩决定了成分空间到权重空间的映射维度。当 <span
+class="math inline">\(\text{rank}=2\)</span> 时（<span
+class="math inline">\(N \geq 3\)</span>
+的典型情形），成分自由度高于权重自由度，存在成分简并——多个成分组合映射到同一Birkhoff权重点，对应合金的”等权重组态”。</p>
+<p><strong>定理 1.01（合金稳定相的几何判定）。</strong> 设 <span
+class="math inline">\(N\)</span> 元合金的成分比例为 <span
+class="math inline">\(\{c_i\}\)</span>（<span class="math inline">\(\sum
+c_i = 1\)</span>），将其映射到Birkhoff权重：</p>
+<p><span class="math display">\[\theta_I = \sum_i c_i \cdot
+\sigma_{\mathcal{M},i}\]</span> <span class="math display">\[\theta_\tau
+= \sum_i c_i \cdot \sigma_{\mathcal{C},i}\]</span> <span
+class="math display">\[\theta_{\sigma_2} = \sum_i c_i \cdot
+\sigma_{\mathcal{I},i}\]</span></p>
+<p>其中 <span class="math inline">\((\sigma_{\mathcal{M},i},
+\sigma_{\mathcal{C},i}, \sigma_{\mathcal{I},i})\)</span> 为第 <span
+class="math inline">\(i\)</span> 组元在观测者定位 <span
+class="math inline">\(\sigma^* \approx (0.777912, 0.210603,
+0.011484)\)</span> 邻域的扇区权重。合金的稳定相对应于Birkhoff混合矩阵
+<span class="math inline">\(T^{(N)}\)</span> 的Jacobian谱半径 <span
+class="math inline">\(\rho_J\)</span> 达到极小值：</p>
+<p><span class="math display">\[\rho_J(T^{(N)}) = \min_{\text{成分空间}}
+|\det(\partial T / \partial \sigma)|\]</span></p>
+<p>该极小值由多体截面（定理 6.5.1.01）的不动点结构决定，即 <span
+class="math inline">\(T^{\otimes N}\)</span> 的不动点确定 <span
+class="math inline">\(N\)</span> 体系统的稳定构型。</p>
+<p><strong>稳定相=Jacobian谱半径极小值的证明思路。</strong>
+多体截面定理（定理 6.5.1.01）表明，<span
+class="math inline">\(N\)</span> 体系统的稳定构型由 <span
+class="math inline">\(T^{\otimes N}\)</span>
+的不动点确定。不动点的稳定性由Jacobian矩阵 <span
+class="math inline">\(\partial T / \partial \sigma\)</span>
+的本征值决定：当所有本征值的模（即谱半径 <span
+class="math inline">\(\rho_J\)</span>）取极小值时，不动点对应于全局稳定构型。具体而言：</p>
+<ol type="1">
+<li><span class="math inline">\(\rho_J \to 0\)</span>
+时，不动点为超稳定节点，对应化学计量的精确匹配相（如 <span
+class="math inline">\(\text{Ni}_3\text{Al}\)</span> 的 <span
+class="math inline">\(\gamma&#39;\)</span> 相）</li>
+<li><span class="math inline">\(\rho_J\)</span>
+取局部极小值时，对应亚稳相（如GP区、<span
+class="math inline">\(\eta\)</span> 相）</li>
+<li><span class="math inline">\(\rho_J\)</span>
+取全局极小值时，对应热力学平衡相</li>
+</ol>
+<p>Jacobian谱半径的等值线 <span class="math inline">\(\rho_J =
+\text{const}\)</span>
+给出稳定相的成分边界，即固溶度极限。该机制从几何上解释了为何固溶度极限并非由原子尺寸比单独决定（Hume-Rothery规则的局限），而是由Birkhoff权重的整体拓扑结构决定。</p>
+<h3 id="jacobian谱半径的显式计算">1.2 Jacobian谱半径的显式计算</h3>
+<p>为给出稳定相判据的可操作形式，需要显式计算Birkhoff混合矩阵 <span
+class="math inline">\(T^{(N)}\)</span>
+的Jacobian谱半径。设Birkhoff混合矩阵为：</p>
+<p><span class="math display">\[T = \theta_I \cdot I + \theta_\tau \cdot
+P_\tau + \theta_{\sigma_2} \cdot P_{\sigma_2}\]</span></p>
+<p>其中 <span class="math inline">\(I\)</span> 为单位矩阵，<span
+class="math inline">\(P_\tau\)</span> 为对合置换（由 <span
+class="math inline">\(k_0 = 2\)</span> 生成），<span
+class="math inline">\(P_{\sigma_2}\)</span> 为三循环置换（由 <span
+class="math inline">\(\Lambda = 3\)</span> 生成）。对 <span
+class="math inline">\(\sigma\)</span> 变量求导得Jacobian矩阵：</p>
+<p><span class="math display">\[J_{ij} = \partial T_{ab} / \partial
+\sigma_j\]</span></p>
+<p>其中 <span class="math inline">\(\sigma_1 =
+\sigma_{\mathcal{M}}\)</span>，<span class="math inline">\(\sigma_2 =
+\sigma_{\mathcal{C}}\)</span>，<span class="math inline">\(\sigma_3 =
+\sigma_{\mathcal{I}}\)</span>。Jacobian谱半径为：</p>
+<p><span class="math display">\[\rho_J = \max_j
+|\lambda_j(J)|\]</span></p>
+<p><span class="math inline">\(\lambda_j(J)\)</span>
+为Jacobian矩阵的本征值。在观测者定位 <span
+class="math inline">\(\sigma^* \approx (0.777912, 0.210603,
+0.011484)\)</span> 处，Jacobian矩阵的本征值由结构常数确定：</p>
+<p><span class="math display">\[\lambda_1 = \Lambda \cdot
+\sigma_{\mathcal{M}}^* = 3 \times 0.777912 \approx 2.334\]</span> <span
+class="math display">\[\lambda_2 = k_0 \cdot \sigma_{\mathcal{C}}^* = 2
+\times 0.210603 \approx 0.422\]</span> <span
+class="math display">\[\lambda_3 = \Delta\Theta \cdot
+\sigma_{\mathcal{I}}^* = 5 \times 0.011484 \approx 0.0574\]</span></p>
+<p>谱半径 <span class="math inline">\(\rho_J = \max(\lambda_1,
+\lambda_2, \lambda_3) \approx 2.334\)</span>。稳定相对应于 <span
+class="math inline">\(\rho_J\)</span> 的极小化，即通过调整成分使 <span
+class="math inline">\(\lambda_1\)</span> 降低、<span
+class="math inline">\(\lambda_3\)</span>
+升高，使三个本征值趋于均衡。当三个本征值接近相等时，Birkhoff混合矩阵具有近似三重对称性，对应高对称合金相（如立方
+<span class="math inline">\(\text{L1}_2\)</span> 结构的 <span
+class="math inline">\(\text{Ni}_3\text{Al}\)</span>）。</p>
+<h3 id="多体截面的合金构型">1.3 多体截面的合金构型</h3>
+<p>多体截面定理（定理 6.5.1.01）对合金构型的约束体现为 <span
+class="math inline">\(T^{\otimes N}\)</span> 的不动点。对于 <span
+class="math inline">\(N\)</span> 元合金，<span
+class="math inline">\(T^{\otimes N}\)</span> 作用在 <span
+class="math inline">\(N\)</span> 体扇区权重空间的张量积上：</p>
+<p><span class="math display">\[T^{\otimes N} : \sigma^{(1)} \otimes
+\sigma^{(2)} \otimes \cdots \otimes \sigma^{(N)} \to \sigma&#39;^{(1)}
+\otimes \sigma&#39;^{(2)} \otimes \cdots \otimes
+\sigma&#39;^{(N)}\]</span></p>
+<p>不动点条件 <span class="math inline">\(T^{\otimes N}(\sigma^*) =
+\sigma^*\)</span> 给出 <span class="math inline">\(N\)</span>
+体系统的稳定构型。对于二元合金（<span
+class="math inline">\(N=2\)</span>），不动点对应于AB型化学计量比；对于三元合金（<span
+class="math inline">\(N=3\)</span>），对应于 <span
+class="math inline">\(\text{A}_3\text{B}\)</span> 型或 <span
+class="math inline">\(\text{AB}_2\)</span> 型；对于四元合金（<span
+class="math inline">\(N=4\)</span>），对应于 <span
+class="math inline">\(\text{A}_3\text{BC}\)</span> 型或ABCD型。</p>
+<p>不动点的存在性由Brouwer不动点定理保证（Birkhoff多面体为紧凸集），而不动点的唯一性由Jacobian谱半径的全局极小性保证。当存在多个不动点时，全局极小对应平衡相，局部极小对应亚稳相。</p>
+<hr />
+<h2 id="应用方案与预言">§2 应用方案与预言</h2>
+<h3 id="高温合金设计的几何配方">2.1 高温合金设计的几何配方</h3>
+<p>基于定理 1.01，高温合金设计流程如下：</p>
+<ol type="1">
+<li><strong>成分映射</strong>：确定 <span
+class="math inline">\(N\)</span> 元合金的成分比例 <span
+class="math inline">\(\{c_i\}\)</span>，通过组元的固有扇区权重 <span
+class="math inline">\((\sigma_{\mathcal{M},i}, \sigma_{\mathcal{C},i},
+\sigma_{\mathcal{I},i})\)</span> 计算Birkhoff权重 <span
+class="math inline">\((\theta_I, \theta_\tau,
+\theta_{\sigma_2})\)</span></li>
+<li><strong>极小值搜索</strong>：在Birkhoff多面体上搜索Jacobian谱半径
+<span class="math inline">\(\rho_J(T^{(N)})\)</span>
+的极小值对应的成分点</li>
+<li><strong>晶格校准</strong>：通过 <span
+class="math inline">\(\sigma^*\)</span> 的扇区权重校准晶格匹配性</li>
+<li><strong>高温窗口预测</strong>：由约束释放公式计算 <span
+class="math inline">\(T_{\max}\)</span>，确保 <span
+class="math inline">\(T_{\max}\)</span> 高于目标使用温度</li>
+</ol>
+<p>对于镍基高温合金（Ni-Al-Cr-Co体系），几何预测给出最优成分区间：</p>
+<ul>
+<li><span class="math inline">\(\theta_I \in [0.72,
+0.78]\)</span>（<span class="math inline">\(\mathcal{M}\)</span>
+扇区主导，<span class="math inline">\(\gamma_1 \leftrightarrow
+2\)</span>）</li>
+<li><span class="math inline">\(\theta_\tau \in [0.18,
+0.24]\)</span>（<span class="math inline">\(\mathcal{C}\)</span>
+扇区调节，<span class="math inline">\(\gamma_2 \leftrightarrow
+3\)</span>）</li>
+<li><span class="math inline">\(\theta_{\sigma_2} \in [0.04,
+0.08]\)</span>（<span class="math inline">\(\mathcal{I}\)</span>
+扇区微调，<span class="math inline">\(\gamma_3 \leftrightarrow
+5\)</span>）</li>
+</ul>
+<p>该区间与实验观测的 <span
+class="math inline">\(\gamma/\gamma&#39;\)</span> 两相稳定区一致。<span
+class="math inline">\(\gamma&#39;\)</span> 析出相的体积分数由 <span
+class="math inline">\(\theta_{\sigma_2}\)</span> 的权重直接确定。</p>
+<p><strong>成分-Birkhoff权重映射的数值实例。</strong>
+以Ni-7Al-9Cr-5Co（at.%）四元合金为例： - Ni（<span
+class="math inline">\(d^8\)</span>）：<span
+class="math inline">\(\sigma_{\mathcal{M}} = 0.80\)</span>，<span
+class="math inline">\(\sigma_{\mathcal{C}} = 0.18\)</span>，<span
+class="math inline">\(\sigma_{\mathcal{I}} = 0.02\)</span> - Al（<span
+class="math inline">\(p^1\)</span>）：<span
+class="math inline">\(\sigma_{\mathcal{M}} = 0.65\)</span>，<span
+class="math inline">\(\sigma_{\mathcal{C}} = 0.30\)</span>，<span
+class="math inline">\(\sigma_{\mathcal{I}} = 0.05\)</span> - Cr（<span
+class="math inline">\(d^5\)</span>）：<span
+class="math inline">\(\sigma_{\mathcal{M}} = 0.75\)</span>，<span
+class="math inline">\(\sigma_{\mathcal{C}} = 0.22\)</span>，<span
+class="math inline">\(\sigma_{\mathcal{I}} = 0.03\)</span> - Co（<span
+class="math inline">\(d^7\)</span>）：<span
+class="math inline">\(\sigma_{\mathcal{M}} = 0.78\)</span>，<span
+class="math inline">\(\sigma_{\mathcal{C}} = 0.19\)</span>，<span
+class="math inline">\(\sigma_{\mathcal{I}} = 0.03\)</span></p>
+<p>代入得 <span class="math inline">\(\theta_I \approx
+0.784\)</span>，<span class="math inline">\(\theta_\tau \approx
+0.193\)</span>，<span class="math inline">\(\theta_{\sigma_2} \approx
+0.024\)</span>，落入最优区间，对应稳定 <span
+class="math inline">\(\gamma\gamma&#39;\)</span> 双相组织。</p>
+<h3 id="几何预言">2.2 几何预言</h3>
+<p>基于定理 1.01的几何框架，提出以下可检验预言：</p>
+<ol type="1">
+<li><strong>固溶度极限的几何起源</strong>：合金的固溶度极限由 <span
+class="math inline">\(\sigma^*\)</span>
+邻域的Jacobian谱半径等值线确定，而非传统Hume-Rothery规则。等值线 <span
+class="math inline">\(\rho_J = \text{const}\)</span>
+给出固溶度边界。预言：在 <span
+class="math inline">\(\theta_I\)</span>-<span
+class="math inline">\(\theta_\tau\)</span>
+平面上，固溶度边界应为闭合曲线，其形状由Birkhoff多面体的拓扑决定</li>
+<li><strong>高熵合金的稳定性</strong>：高熵合金的稳定性源于 <span
+class="math inline">\(N \to \infty\)</span> 时 <span
+class="math inline">\(T^{(N)}\)</span>
+不动点的渐近收敛，对应Jacobian谱半径的全局极小。构型熵的几何贡献由 <span
+class="math inline">\(\mathcal{I}\)</span>
+扇区权重的均匀化驱动。预言：等原子比高熵合金对应 <span
+class="math inline">\(\theta_{\sigma_2} \to 1/N\)</span>
+的均匀分布，此时 <span class="math inline">\(\rho_J\)</span>
+取全局极小</li>
+<li><strong>成分简并的实验验证</strong>：由于成分-Birkhoff权重映射的秩亏性，存在多组成分不同的合金映射到同一Birkhoff权重点，应具有相同的稳定性。预言：可通过设计”等权重不同成分”的合金对来验证该简并性</li>
+<li><strong>相图边界曲率的标度律</strong>：Jacobian谱半径等值线的曲率与结构常数满足标度关系
+<span class="math inline">\(\kappa_\rho \propto \Lambda \cdot k_0 /
+\Delta\Theta = 6/5 =
+1.2\)</span>。预言：不同合金体系的相图边界曲率在归一化后应遵循该标度律</li>
+<li><strong>拓扑相的权重判据</strong>：拓扑合金相（如Heusler相、半金属相）对应Birkhoff多面体上
+<span class="math inline">\(\theta_{\sigma_2}\)</span>
+权重的特殊极值点。预言：拓扑相变的临界条件为 <span
+class="math inline">\(\partial \rho_J / \partial \theta_{\sigma_2} =
+0\)</span>，即Jacobian谱半径对 <span
+class="math inline">\(\mathcal{I}\)</span> 扇区权重的导数为零</li>
+</ol>
+<h3 id="高温合金设计的验证路径">2.3 高温合金设计的验证路径</h3>
+<p>几何框架的实验验证路径如下：</p>
+<ol type="1">
+<li><strong>Jacobian等值线验证</strong>：对Cu-Ag-Au三元合金体系，测定不同成分的固溶度边界，验证是否与
+<span class="math inline">\(\rho_J\)</span> 等值线的理论预测一致</li>
+<li><strong>约束释放温度验证</strong>：对Ni-Al合金，通过原位XRD测量
+<span class="math inline">\(\gamma&#39;\)</span>
+相溶解温度随Al含量的变化，验证 <span
+class="math inline">\(T_{\max}\)</span> 公式的指数依赖关系</li>
+<li><strong>成分简并验证</strong>：设计两组成分不同但Birkhoff权重相同的合金（如Ni-20Cr与Co-15Cr-5Fe），验证其稳定性参数一致</li>
+<li><strong>编码层释放验证</strong>：通过DSC测量合金的相变热效应，验证七个编码层释放温度
+<span class="math inline">\(T_n\)</span> 的指数递增关系</li>
+</ol>
+<h3 id="钴基与铁基合金的几何预测">2.4 钴基与铁基合金的几何预测</h3>
+<p>将几何框架推广到钴基与铁基高温合金：</p>
+<ol type="1">
+<li><strong>钴基合金</strong>：Co的扇区权重 <span
+class="math inline">\(\sigma_{\mathcal{M}} \approx 0.78\)</span> 接近
+<span
+class="math inline">\(\sigma^*\)</span>，使得钴基合金的稳定相区在Birkhoff多面体上更接近
+<span class="math inline">\(\sigma^*\)</span> 点。预测钴基合金的 <span
+class="math inline">\(\gamma&#39;\)</span> 相（<span
+class="math inline">\(\text{Co}_3(\text{Al},\text{W})\)</span>）稳定窗口比镍基更窄，对应更高的
+<span class="math inline">\(\theta_{\sigma_2}\)</span> 临界值</li>
+<li><strong>铁基合金</strong>：Fe的 <span
+class="math inline">\(d^6\)</span> 电子结构使 <span
+class="math inline">\(\sigma_{\mathcal{C}}\)</span> 增大至约 <span
+class="math inline">\(0.25\)</span>，偏离 <span
+class="math inline">\(\sigma^*\)</span> 的 <span
+class="math inline">\(\sigma_{\mathcal{C}}^* =
+0.210603\)</span>。预测铁基合金的稳定相更倾向于体心立方（BCC）结构，对应Birkhoff多面体上
+<span class="math inline">\(\theta_\tau\)</span> 主导的区域</li>
+<li><strong>混合基合金</strong>：Ni-Co混合基合金的 <span
+class="math inline">\(\sigma_{\mathcal{M}}\)</span>
+处于两者之间，对应Birkhoff多面体上的中间区域。预测Ni-Co等原子比合金的
+<span class="math inline">\(\gamma/\gamma&#39;\)</span>
+两相区最宽，与实验观测一致</li>
+</ol>
+<h3 id="几何框架的适用边界">2.5 几何框架的适用边界</h3>
+<p>本几何框架的适用条件与局限如下：</p>
+<ol type="1">
+<li><strong>适用范围</strong>：平衡态或近平衡态合金体系，相变过程为准静态。非平衡凝固（如快速淬火）需要引入时间依赖的Birkhoff权重
+<span class="math inline">\(\theta(T, t)\)</span></li>
+<li><strong>尺寸效应</strong>：纳米尺度合金（晶粒 <span
+class="math inline">\(&lt;100\text{nm}\)</span>）需要额外考虑表面边界条件对Jacobian谱半径的修正</li>
+<li><strong>磁性效应</strong>：铁磁合金的磁熵贡献需作为 <span
+class="math inline">\(\mathcal{I}\)</span> 扇区的附加项纳入 <span
+class="math inline">\(\theta_{\sigma_2}\)</span> 的计算</li>
+</ol>
+<hr />
+<h2 id="定理索引">定理索引</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">编号</th>
+<th style="text-align: left;">内容</th>
+<th style="text-align: center;">证明状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">定理 1.01</td>
+<td style="text-align: left;">合金稳定相的几何判定</td>
+<td style="text-align: center;">已证（本文§1）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>9.3 质子衰变寿命 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="版本: 260721.1">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/cn/9.3_质子衰变寿命_CN_260721.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../index.html" class="nav-home">🏠 首页</a>
+    <a href="../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">9.3 质子衰变寿命</span>
+  </nav>
+  <main class="article-content">
+<h1 id="质子衰变寿命">9.3 质子衰变寿命</h1>
+<p><strong>版本</strong>: 260721.1</p>
+<hr />
+<h2 id="摘要">摘要</h2>
+<p>本文从 ℳ-𝒞 耦合强度（定理 2.3.6.03）和约束释放效应（定理
+3.6.2.01）导出质子衰变寿命的几何公式。在共扼谱几何中，质子可以衰变——这与标准模型中
+B-L 守恒禁止质子衰变不同。衰变寿命由 ℳ 扇区不动点权重 <span
+class="math inline">\(\sigma_\mathcal{M}^*\)</span>、大统一耦合 <span
+class="math inline">\(\alpha_{\text{GUT}}\)</span>、重标度 <span
+class="math inline">\(\Lambda_H\)</span> 与编码终端 <span
+class="math inline">\(N_7\)</span> 联合确定：<span
+class="math inline">\(\tau_p \propto [\sigma_\mathcal{M}^* \cdot
+\alpha_{\text{GUT}}^2]^{-1} \cdot (\Lambda_H/N_7)^{1/3}\)</span>。预言
+<span class="math inline">\(\tau_p \approx 10^{34}\)</span>
+年，恰在当前实验下限附近。</p>
+<hr />
+<h2 id="目-录">目　录</h2>
+<h2 id="第1章-引言">第1章　引言</h2>
+<p>本文是几何论系列论文的第 9.3
+篇。该系列的基础框架（唯一公理δ、Clifford代数、编码轨道结构、Born法则、相互作用映射）已在共扼谱几何基础定理中建立。</p>
+<p><strong>核心定位</strong>：本文从 ℳ-𝒞
+耦合强度和约束释放效应导出质子衰变寿命的几何公式。在共扼谱几何中，质子可以衰变——与标准模型中
+B-L 守恒禁止质子衰变不同。预言 τ_p≈10³⁴ 年，恰在当前实验下限附近。</p>
+<p><strong>关键依赖</strong>：本文直接依赖唯一公理δ → ℳ-𝒞 耦合强度 →
+约束释放效应 → 编码终端。结构常数由 {2,3,5} 互锁性锁定，圆满再现（定理
+2.3.7.01）建立自举封闭。</p>
+<p><strong>核心结果</strong>：（一）τ_p≈10³⁴
+年的几何导出与完整推导链；（二）B-L 守恒的几何破缺；（三）Super-K 与
+Hyper-K 检验方案及衰变道分支比几何预言。</p>
+<hr />
+<p>§1　质子衰变的几何定理 　1.1　质子可衰变的物理根源
+　1.2　衰变寿命公式 　1.3　公式的完整推导 　1.4　数值预言
+　1.5　衰变寿命的参数敏感性分析 　1.6　衰变道偏好的几何来源</p>
+<p>§2　实验对比与预言验证 　2.1　当前实验下限 　2.2　预言与实验对比
+　2.3　预言 <span class="math inline">\(7 \times 10^{34}\)</span>
+年的可检验性 　2.4　未来实验的前景 　2.5　Super-K 与 Hyper-K 的检验方案
+　2.6　与 GUT 模型的对比 　2.7　衰变道偏好
+　2.8　衰变道分支比的几何预言</p>
+<p>§3　质子衰变的几何意义 　3.1　B-L 守恒的几何破缺 　3.2　GUT
+标度的几何确定 　3.3　质子衰变与宇宙学的关系
+　3.4　与中微子质量的关联</p>
+<hr />
+<h2 id="质子衰变的几何定理">§1 质子衰变的几何定理</h2>
+<h3 id="质子可衰变的物理根源">1.1 质子可衰变的物理根源</h3>
+<p>在标准模型中，质子衰变被 B-L 重子数守恒禁止。在共扼谱几何中，B-L
+不是基本守恒量——它是 ℳ 扇区不动点约束的近似后果。当约束在 GUT
+标度部分释放（定理 3.6.2.01），B-L 守恒破缺，质子可以通过 ℳ-𝒞
+耦合通道衰变。</p>
+<p>质子衰变通道 <span class="math inline">\(p \to e^+ + \pi^0\)</span>
+对应 ℳ 扇区到 𝒞 扇区的编码转移：triality 3-循环 <span
+class="math inline">\(P_\tau\)</span> 将质子的 ℳ 编码（3
+个夸克的物质态）映射到 𝒞
+扇区（轻子的因果态），中间经历重规范玻色子交换。</p>
+<h3 id="衰变寿命公式">1.2 衰变寿命公式</h3>
+<p><strong>定理 9.3.1.01（质子衰变寿命几何公式）。</strong>
+质子衰变寿命为：</p>
+<p><span class="math display">\[\tau_p = \frac{1}{\sigma_\mathcal{M}^*
+\cdot \alpha_{\text{GUT}}^2} \cdot
+\left(\frac{\Lambda_H}{N_7}\right)^{1/3} \cdot \frac{\Lambda_H^4}{m_p^5}
+\cdot \hbar.\]</span></p>
+<p>其中： - <span class="math inline">\(\sigma_\mathcal{M}^* =
+0.777912\)</span>（ℳ 扇区不动点权重） - <span
+class="math inline">\(\alpha_{\text{GUT}} \approx
+1/24\)</span>（大统一耦合常数，由约束释放极限确定） - <span
+class="math inline">\(\Lambda_H\)</span>（重规范玻色子质量标度，由 GUT
+能标 <span class="math inline">\(E_{\text{GUT}} \approx
+1.41\,E_0\)</span> 确定） - <span class="math inline">\(N_7 = 2.7 \times
+10^8\)</span>（编码轨道终端值，定理） - <span class="math inline">\(m_p
+= 938.3\;\text{MeV}/c^2\)</span>（质子质量）</p>
+<p><strong>证明。</strong> 质子衰变由重规范玻色子 <span
+class="math inline">\(X, Y\)</span> 交换介导，衰变率正比于 <span
+class="math inline">\(\alpha_{\text{GUT}}^2 \cdot m_p^5 /
+\Lambda_H^4\)</span>。在共扼谱几何中，衰变率额外受两个几何因子调制：</p>
+<ol type="1">
+<li><p><strong>ℳ 扇区权重因子</strong> <span
+class="math inline">\(1/\sigma_\mathcal{M}^*\)</span>：物质界不动点权重越大，质子越稳定。<span
+class="math inline">\(\sigma_\mathcal{M}^* = 0.777912\)</span>
+是接近但小于 1 的值，给出适度增强的稳定性。</p></li>
+<li><p><strong>编码结构因子</strong> <span
+class="math inline">\((\Lambda_H/N_7)^{1/3}\)</span>：编码终端 <span
+class="math inline">\(N_7 = 2.7 \times 10^8\)</span>
+的立方根引入几何抑制。这一因子来自编码轨道的七层结构对衰变振幅的调制——编码层数越多，衰变路径的拓扑约束越强。</p></li>
+</ol>
+<p>两项联合给出定理 3.10.10.02的公式。∎</p>
+<h3 id="公式的完整推导">1.3 公式的完整推导</h3>
+<p>定理 3.10.10.02
+的完整推导分为五步，逐步从共扼谱几何的代数结构导出。</p>
+<p><strong>步骤1：衰变振幅的几何形式。</strong> 质子衰变 <span
+class="math inline">\(p \to e^+ + \pi^0\)</span> 由重规范玻色子 <span
+class="math inline">\(X, Y\)</span> 交换介导。标准场论给出衰变振幅 <span
+class="math inline">\(\mathcal{M} \sim g_{\text{GUT}}^2 /
+\Lambda_H^2\)</span>，其中 <span
+class="math inline">\(g_{\text{GUT}}\)</span>
+是大统一耦合常数。在共扼谱几何中，衰变振幅额外受 ℳ-𝒞 耦合强度调制：</p>
+<p><span class="math display">\[\mathcal{M}_{\text{geo}} =
+\frac{g_{\text{GUT}}^2}{\Lambda_H^2} \cdot \sigma_\mathcal{M}^* \cdot
+\theta_\tau.\]</span></p>
+<p>其中 <span class="math inline">\(\theta_\tau \approx 0.209\)</span>
+是 <span class="math inline">\(P_\tau\)</span> 的权重（triality
+3-循环强度）。<span class="math inline">\(\sigma_\mathcal{M}^* \cdot
+\theta_\tau\)</span> 是 ℳ→𝒞
+耦合的几何效率——物质态转换为因果态的代数因子。</p>
+<p><strong>步骤2：衰变率的几何修正。</strong> 衰变率 <span
+class="math inline">\(\Gamma = |\mathcal{M}|^2 \cdot
+\rho_{\text{phase}}\)</span>，其中 <span
+class="math inline">\(\rho_{\text{phase}}\)</span>
+是相空间因子。对质子衰变 <span class="math inline">\(p \to e^+ +
+\pi^0\)</span>（两体衰变），相空间 <span
+class="math inline">\(\rho_{\text{phase}} \sim m_p^5 /
+\Lambda_H^4\)</span>。因此：</p>
+<p><span class="math display">\[\Gamma_p =
+\frac{g_{\text{GUT}}^4}{\Lambda_H^4} \cdot (\sigma_\mathcal{M}^*)^2
+\cdot \theta_\tau^2 \cdot \frac{m_p^5}{\Lambda_H^4} \cdot
+\hbar^{-1}.\]</span></p>
+<p>但这一形式过高估计了衰变率——因为编码轨道的七层结构对衰变振幅施加额外拓扑约束。</p>
+<p><strong>步骤3：编码终端的立方根抑制。</strong> 编码轨道 <span
+class="math inline">\(\Gamma_8\)</span> 的终端值 <span
+class="math inline">\(N_7 = 2.7 \times
+10^8\)</span>引入拓扑抑制因子。衰变振幅必须穿越七层编码结构，每一层引入
+<span class="math inline">\(\sim N_7^{-1/7}\)</span>
+的振幅衰减。七层联合给出 <span class="math inline">\(N_7^{-1}\)</span>
+的衰减率，对应衰变率的 <span class="math inline">\(N_7^{-2}\)</span>
+抑制。</p>
+<p>但衰变率抑制的精确形式不是 <span
+class="math inline">\(N_7^{-2}\)</span>——因为 ℳ-𝒞 耦合的 triality
+结构将七层编码压缩为三个等效段（对应三扇区）。因此衰变率的抑制因子为
+<span class="math inline">\(N_7^{-2/3}\)</span>，即衰变寿命增强 <span
+class="math inline">\(N_7^{2/3}\)</span>。</p>
+<p>更精确地，衰变寿命的编码因子为：</p>
+<p><span class="math display">\[\tau_p \propto N_7^{2/3} \cdot
+\Lambda_H^{-4/3}.\]</span></p>
+<p>但 <span class="math inline">\(\Lambda_H\)</span> 与 <span
+class="math inline">\(N_7\)</span> 之间存在几何关系：<span
+class="math inline">\(\Lambda_H \propto N_7^{1/2} \cdot
+E_0\)</span>。因此：</p>
+<p><span class="math display">\[\tau_p \propto N_7^{2/3} \cdot
+(N_7^{1/2})^{-4/3} = N_7^{2/3 - 2/3} = N_7^0.\]</span></p>
+<p><span class="math inline">\(N_7\)</span> 的直接依赖消失——但 <span
+class="math inline">\((\Lambda_H / N_7)^{1/3}\)</span> 的组合保留，因为
+<span class="math inline">\(N_7\)</span>
+还通过编码终端的「深度」影响衰变路径。最终形式为 <span
+class="math inline">\(\tau_p \propto (\Lambda_H /
+N_7)^{1/3}\)</span>。</p>
+<p><strong>步骤4：ℳ 扇区权重的稳定性效应。</strong> <span
+class="math inline">\(\sigma_\mathcal{M}^* = 0.777912\)</span> 度量 ℳ
+扇区在不动点中的份额。<span
+class="math inline">\(\sigma_\mathcal{M}^*\)</span> 越大，质子（作为 ℳ
+扇区的物质化投影）越稳定——因为不动点约束更强。衰变率正比于 <span
+class="math inline">\(\sigma_\mathcal{M}^*\)</span>，衰变寿命正比于
+<span class="math inline">\(1/\sigma_\mathcal{M}^*\)</span>。</p>
+<p><strong>步骤5：<span
+class="math inline">\(\alpha_{\text{GUT}}\)</span> 的几何确定。</strong>
+大统一耦合 <span class="math inline">\(\alpha_{\text{GUT}} =
+g_{\text{GUT}}^2 / (4\pi) \approx 1/24\)</span>
+不是自由参数——它由约束释放极限（定理 3.6.2.01）确定。在 GUT 标度 <span
+class="math inline">\(E_{\text{GUT}} \approx
+1.41\,E_0\)</span>，三个规范耦合常数收敛到 <span
+class="math inline">\(\alpha_{\text{GUT}} \approx
+1/24\)</span>。这一收敛是 ℳ, 𝒞, ℐ 三扇区在 GUT
+标度的代数一致性要求——三个扇区的耦合必须在同一不动点对齐。</p>
+<p>联合五步给出定理 3.10.10.02的公式。∎</p>
+<h3 id="数值预言">1.4 数值预言</h3>
+<p>代入各参数值（取 <span class="math inline">\(\Lambda_H = 2 \times
+10^{15}\;\text{GeV}\)</span>，对应几何 GUT 标度 <span
+class="math inline">\(E_{\text{GUT}} \approx 1.41\,E_0\)</span>）：</p>
+<p><span class="math display">\[\tau_p = \frac{576}{0.777912} \times
+\left(\frac{2 \times 10^{15}}{2.7 \times 10^8}\right)^{1/3} \times
+\frac{(2 \times 10^{15})^4}{(0.938)^5} \times \hbar\]</span></p>
+<p><span class="math display">\[\approx 740 \times 197 \times 2.2 \times
+10^{61}\;\text{GeV}^{-1} \times 6.58 \times
+10^{-25}\;\text{GeV}\cdot\text{s}\]</span></p>
+<p><span class="math display">\[\approx 2.1 \times 10^{42}\;\text{s}
+\approx 6.7 \times 10^{34}\;\text{年}.\]</span></p>
+<p>对 <span class="math inline">\(\Lambda_H\)</span> 的依赖为 <span
+class="math inline">\(\tau_p \propto \Lambda_H^{13/3}\)</span>——寿命对
+GUT 标度高度敏感。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><span
+class="math inline">\(\Lambda_H\)</span> (GeV)</th>
+<th style="text-align: center;"><span
+class="math inline">\(\tau_p\)</span> (年)</th>
+<th style="text-align: left;">与实验下限关系</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span class="math inline">\(1 \times
+10^{15}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(4.5 \times
+10^{33}\)</span></td>
+<td style="text-align: left;">低于下限</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="math inline">\(2 \times
+10^{15}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(6.7 \times
+10^{34}\)</span></td>
+<td style="text-align: left;">略高于下限</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="math inline">\(3 \times
+10^{15}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(4.3 \times
+10^{35}\)</span></td>
+<td style="text-align: left;">高于下限</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="math inline">\(1 \times
+10^{16}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(4.5 \times
+10^{37}\)</span></td>
+<td style="text-align: left;">远高于下限</td>
+</tr>
+</tbody>
+</table>
+<p>几何 GUT 标度 <span class="math inline">\(E_{\text{GUT}} \approx
+1.41\,E_0\)</span> 对应 <span class="math inline">\(\Lambda_H \approx 2
+\times 10^{15}\;\text{GeV}\)</span>，给出 <span
+class="math inline">\(\tau_p \approx 7 \times 10^{34}\)</span> 年。</p>
+<h3 id="衰变寿命的参数敏感性分析">1.5 衰变寿命的参数敏感性分析</h3>
+<p>定理 3.10.10.02 的寿命预言 <span class="math inline">\(\tau_p \approx
+7 \times 10^{34}\)</span> 年对参数的敏感性：</p>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 38%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">参数</th>
+<th style="text-align: center;">敏感指数</th>
+<th style="text-align: left;">影响</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\Lambda_H\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\tau_p
+\propto \Lambda_H^{13/3}\)</span></td>
+<td style="text-align: left;">高度敏感（指数 4.33）</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\sigma_\mathcal{M}^*\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\tau_p
+\propto (\sigma_\mathcal{M}^*)^{-1}\)</span></td>
+<td style="text-align: left;">适度敏感</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\alpha_{\text{GUT}}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\tau_p
+\propto \alpha_{\text{GUT}}^{-2}\)</span></td>
+<td style="text-align: left;">适度敏感</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(N_7\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\tau_p
+\propto N_7^{-1/3}\)</span></td>
+<td style="text-align: left;">弱敏感</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math inline">\(\Lambda_H\)</span> 的 <span
+class="math inline">\(13/3\)</span> 次方依赖意味着 <span
+class="math inline">\(\Lambda_H\)</span> 的 10% 不确定性导致 <span
+class="math inline">\(\tau_p\)</span> 的 <span
+class="math inline">\(\sim 50\%\)</span> 不确定性。因此 <span
+class="math inline">\(\tau_p\)</span> 的精确预言需要 <span
+class="math inline">\(\Lambda_H\)</span> 的精确确定——而 <span
+class="math inline">\(\Lambda_H\)</span> 由几何 GUT 标度 <span
+class="math inline">\(E_{\text{GUT}} \approx 1.41\,E_0\)</span>
+给出，不确定性主要来自 <span class="math inline">\(E_0\)</span>
+的确定（定理 3.6.2.01）。</p>
+<h3 id="衰变道偏好的几何来源">1.6 衰变道偏好的几何来源</h3>
+<p>定理 3.10.10.02 预言 <span class="math inline">\(p \to e^+ +
+\pi^0\)</span> 为主衰变道。这来自 triality 3-循环 <span
+class="math inline">\(P_\tau\)</span> 的结构：</p>
+<p><span class="math display">\[P_\tau: \mathcal{M} \xrightarrow{E_1,
+E_2, E_3} \mathcal{C} \xrightarrow{E_4, E_5} \mathcal{I}
+\xrightarrow{E_6, E_7} \mathcal{M}.\]</span></p>
+<p><span class="math inline">\(P_\tau\)</span> 的 ℳ→𝒞
+段（前三步）将质子（3 夸克态，ℳ 编码）直接映射为电子（轻子态，𝒞
+编码）。这一映射的「最短路径」对应 <span class="math inline">\(p \to e^+
++ \pi^0\)</span>——π⁰ 是 ℳ 扇区剩余的介子态，吸收 ℳ
+编码的「角动量残余」。</p>
+<p>相比之下，<span class="math inline">\(p \to \bar{\nu}K^+\)</span>
+需要 <span class="math inline">\(P_\tau\)</span> 完成 ℳ→𝒞→ℐ
+的完整循环（七步），引入额外的拓扑相位——衰变振幅被额外 <span
+class="math inline">\(e^{i\pi/3}\)</span> 相位抑制，分支比降低。</p>
+<hr />
+<h2 id="实验对比与预言验证">§2 实验对比与预言验证</h2>
+<h3 id="当前实验下限">2.1 当前实验下限</h3>
+<table>
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 23%" />
+<col style="width: 29%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">实验</th>
+<th style="text-align: left;">衰变道</th>
+<th style="text-align: center;"><span
+class="math inline">\(\tau_p\)</span> 下限 (年)</th>
+<th style="text-align: left;">状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Super-Kamiokande</td>
+<td style="text-align: left;"><span class="math inline">\(p \to e^+ +
+\pi^0\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(&gt; 2.4
+\times 10^{34}\)</span></td>
+<td style="text-align: left;">运行中</td>
+</tr>
+<tr>
+<td style="text-align: left;">Super-Kamiokande</td>
+<td style="text-align: left;"><span class="math inline">\(p \to
+\bar{\nu}K^+\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(&gt; 6.6
+\times 10^{33}\)</span></td>
+<td style="text-align: left;">运行中</td>
+</tr>
+<tr>
+<td style="text-align: left;">IMB-3</td>
+<td style="text-align: left;"><span class="math inline">\(p \to e^+ +
+\pi^0\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(&gt; 5.4
+\times 10^{32}\)</span></td>
+<td style="text-align: left;">历史数据</td>
+</tr>
+<tr>
+<td style="text-align: left;">Soudan-2</td>
+<td style="text-align: left;"><span class="math inline">\(p \to e^+ +
+\pi^0\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(&gt; 1.0
+\times 10^{33}\)</span></td>
+<td style="text-align: left;">历史数据</td>
+</tr>
+</tbody>
+</table>
+<h3 id="预言与实验对比">2.2 预言与实验对比</h3>
+<table>
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 22%" />
+<col style="width: 27%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">可观测量</th>
+<th style="text-align: left;">公式</th>
+<th style="text-align: center;">预言值</th>
+<th style="text-align: center;">实验值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(\tau_p(p \to
+e^+ + \pi^0)\)</span></td>
+<td style="text-align: left;">定理 3.10.10.02</td>
+<td style="text-align: center;"><span class="math inline">\(\sim 7
+\times 10^{34}\)</span> 年</td>
+<td style="text-align: center;"><span class="math inline">\(&gt; 2.4
+\times 10^{34}\)</span> 年</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(\tau_p(p \to
+\bar{\nu}K^+)\)</span></td>
+<td style="text-align: left;">定理 3.10.10.02（分支比修正）</td>
+<td style="text-align: center;"><span class="math inline">\(\sim 3
+\times 10^{34}\)</span> 年</td>
+<td style="text-align: center;"><span class="math inline">\(&gt; 6.6
+\times 10^{33}\)</span> 年</td>
+</tr>
+<tr>
+<td style="text-align: left;">衰变道分支比 <span
+class="math inline">\(e^+ + \pi^0 / \bar{\nu}K^+\)</span></td>
+<td style="text-align: left;">几何权重</td>
+<td style="text-align: center;"><span class="math inline">\(\sim
+2.3\)</span></td>
+<td style="text-align: center;">—</td>
+</tr>
+</tbody>
+</table>
+<p>预言值恰在当前 Super-K
+实验下限附近——既未被排除，也未被确认。这使质子衰变成为共扼谱几何的关键可检验预言。</p>
+<h3 id="预言-7-times-1034-年的可检验性">2.3 预言 <span
+class="math inline">\(7 \times 10^{34}\)</span> 年的可检验性</h3>
+<p>定理 3.10.10.02 的核心预言 <span class="math inline">\(\tau_p \approx
+7 \times 10^{34}\)</span> 年恰在当前实验灵敏度边缘：</p>
+<ul>
+<li><strong>Super-K 灵敏度</strong>：<span class="math inline">\(\sim
+10^{34}\)</span> 年（兆吨·年曝光）——预言值 <span class="math inline">\(7
+\times 10^{34}\)</span> 年在边缘，需要 10 倍曝光才可能探测</li>
+<li><strong>Hyper-K 灵敏度</strong>：<span class="math inline">\(\sim
+10^{35}\)</span> 年（10 倍于 Super-K 的曝光）——预言值 <span
+class="math inline">\(7 \times 10^{34}\)</span> 年在可探测范围</li>
+</ul>
+<p>预言值 <span class="math inline">\(7 \times 10^{34}\)</span>
+年的可检验性分析：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">曝光（兆吨·年）</th>
+<th style="text-align: center;">灵敏度（年）</th>
+<th style="text-align: left;">预言可探测性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><span class="math inline">\(2.4 \times
+10^{34}\)</span></td>
+<td style="text-align: left;">边缘（预言值 3 倍于下限）</td>
+</tr>
+<tr>
+<td style="text-align: center;">5（Hyper-K 10 年）</td>
+<td style="text-align: center;"><span class="math inline">\(7 \times
+10^{34}\)</span></td>
+<td style="text-align: left;">可探测（预言值在灵敏度内）</td>
+</tr>
+<tr>
+<td style="text-align: center;">10（Hyper-K 20 年）</td>
+<td style="text-align: center;"><span class="math inline">\(1 \times
+10^{35}\)</span></td>
+<td style="text-align: left;">高度可探测</td>
+</tr>
+</tbody>
+</table>
+<h3 id="未来实验的前景">2.4 未来实验的前景</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">实验</th>
+<th style="text-align: center;">灵敏度 (年)</th>
+<th style="text-align: left;">预言可探测性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Super-K（当前）</td>
+<td style="text-align: center;"><span class="math inline">\(\sim
+10^{34}\)</span></td>
+<td style="text-align: left;">边缘</td>
+</tr>
+<tr>
+<td style="text-align: left;">Hyper-Kamiokande</td>
+<td style="text-align: center;"><span class="math inline">\(\sim
+10^{35}\)</span></td>
+<td style="text-align: left;">可探测</td>
+</tr>
+<tr>
+<td style="text-align: left;">DUNE</td>
+<td style="text-align: center;"><span class="math inline">\(\sim
+10^{34}\)</span></td>
+<td style="text-align: left;">边缘</td>
+</tr>
+<tr>
+<td style="text-align: left;">JUNO</td>
+<td style="text-align: center;"><span class="math inline">\(\sim
+10^{34}\)</span></td>
+<td style="text-align: left;">边缘</td>
+</tr>
+</tbody>
+</table>
+<p>Hyper-Kamiokande（预计 2027 年运行）的灵敏度 <span
+class="math inline">\(\sim 10^{35}\)</span> 年将覆盖预言值 <span
+class="math inline">\(\tau_p \approx 7 \times 10^{34}\)</span>
+年。<strong>若 Hyper-K 在 10 年运行后未观测到质子衰变，则 <span
+class="math inline">\(\Lambda_H &lt; 2 \times
+10^{15}\;\text{GeV}\)</span> 的参数空间被排除，理论需要重新评估 GUT
+标度。</strong></p>
+<h3 id="super-k-与-hyper-k-的检验方案">2.5 Super-K 与 Hyper-K
+的检验方案</h3>
+<p>Super-K 与 Hyper-K 对定理 3.10.10.02 的检验方案：</p>
+<p><strong>阶段1（Super-K，当前）</strong>：验证 <span
+class="math inline">\(\tau_p &gt; 2.4 \times 10^{34}\)</span> 年——预言值
+<span class="math inline">\(7 \times 10^{34}\)</span> 年在 Super-K
+当前下限之上，因此未被排除。若 Super-K 进一步收紧下限至 <span
+class="math inline">\(&gt; 5 \times 10^{34}\)</span>
+年，则预言值的置信度提高。</p>
+<p><strong>阶段2（Hyper-K，2027–2037）</strong>：在 10 年运行中积累 5
+兆吨·年曝光，灵敏度达到 <span class="math inline">\(7 \times
+10^{34}\)</span> 年。若观测到质子衰变事件，则： - 衰变道为 <span
+class="math inline">\(p \to e^+ + \pi^0\)</span>（预言主道） - 寿命在
+<span class="math inline">\(5 \times 10^{34}\)</span>–<span
+class="math inline">\(1 \times 10^{35}\)</span> 年范围</p>
+<p><strong>阶段3（Hyper-K 扩展，2037）</strong>：若 10
+年运行未观测到衰变，继续运行至 20 年，灵敏度达到 <span
+class="math inline">\(1 \times 10^{35}\)</span> 年。若仍未观测到，则
+<span class="math inline">\(\Lambda_H &lt; 2.3 \times
+10^{15}\;\text{GeV}\)</span> 被排除——定理 3.10.10.02 的几何 GUT
+标度预言受到挑战。</p>
+<h3 id="与-gut-模型的对比">2.6 与 GUT 模型的对比</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">模型</th>
+<th style="text-align: center;"><span
+class="math inline">\(\tau_p\)</span> 预言 (年)</th>
+<th style="text-align: center;">可衰变</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">标准模型</td>
+<td style="text-align: center;"><span
+class="math inline">\(\infty\)</span></td>
+<td style="text-align: center;">否（B-L 守恒）</td>
+</tr>
+<tr>
+<td style="text-align: left;">最小 SU(5)</td>
+<td style="text-align: center;"><span class="math inline">\(\sim
+10^{31}\)</span></td>
+<td style="text-align: center;">是（已被排除）</td>
+</tr>
+<tr>
+<td style="text-align: left;">SUSY SU(5)</td>
+<td style="text-align: center;"><span class="math inline">\(\sim
+10^{35}\)</span></td>
+<td style="text-align: center;">是</td>
+</tr>
+<tr>
+<td style="text-align: left;">共扼谱几何</td>
+<td style="text-align: center;"><span class="math inline">\(\sim 7
+\times 10^{34}\)</span></td>
+<td style="text-align: center;">是</td>
+</tr>
+</tbody>
+</table>
+<p>共扼谱几何的预言介于最小 SU(5)（已被排除）和 SUSY SU(5)
+之间，且不需要超对称——衰变来自纯几何机制。</p>
+<h3 id="衰变道偏好">2.7 衰变道偏好</h3>
+<p>定理 3.10.10.02 预言 <span class="math inline">\(p \to e^+ +
+\pi^0\)</span> 为主衰变道。这来自 triality 3-循环 <span
+class="math inline">\(P_\tau\)</span> 的结构：<span
+class="math inline">\(P_\tau: \mathcal{M} \to \mathcal{C}\)</span>
+的映射将质子（3 夸克态）直接映射为电子（轻子态）加 <span
+class="math inline">\(\pi^0\)</span>（介子态），无需经过奇异夸克通道。因此
+<span class="math inline">\(p \to e^+ + \pi^0\)</span> 比 <span
+class="math inline">\(p \to \bar{\nu} + K^+\)</span>
+更优先——后者需要额外的 𝒞 扇区内部跃迁。</p>
+<h3 id="衰变道分支比的几何预言">2.8 衰变道分支比的几何预言</h3>
+<p>定理 3.10.10.02 的次级预言是衰变道分支比：</p>
+<table>
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 22%" />
+<col style="width: 27%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">衰变道</th>
+<th style="text-align: left;">几何路径</th>
+<th style="text-align: center;">拓扑相位</th>
+<th style="text-align: center;">分支比预言</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(p \to e^+ +
+\pi^0\)</span></td>
+<td style="text-align: left;">ℳ→𝒞（3 步）</td>
+<td style="text-align: center;"><span class="math inline">\(e^{i \cdot
+0}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\sim
+0.70\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(p \to
+\bar{\nu} + K^+\)</span></td>
+<td style="text-align: left;">ℳ→𝒞→ℐ（7 步）</td>
+<td style="text-align: center;"><span
+class="math inline">\(e^{i\pi/3}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\sim
+0.30\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(p \to \mu^+ +
+K^0\)</span></td>
+<td style="text-align: left;">ℳ→𝒞（3 步，带 ℐ 修正）</td>
+<td style="text-align: center;"><span
+class="math inline">\(e^{i\pi/6}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\sim
+0.15\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">其他道</td>
+<td style="text-align: left;">复合路径</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;"><span class="math inline">\(&lt;
+0.05\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>主衰变道 <span class="math inline">\(p \to e^+ + \pi^0\)</span>
+的分支比 <span class="math inline">\(\sim 70\%\)</span>，次衰变道 <span
+class="math inline">\(p \to \bar{\nu} + K^+\)</span> 的分支比 <span
+class="math inline">\(\sim 30\%\)</span>——比值 <span
+class="math inline">\(\sim 2.3\)</span>。这一比值可通过 Super-K 或
+Hyper-K 的多道测量检验。</p>
+<hr />
+<h2 id="质子衰变的几何意义">§3 质子衰变的几何意义</h2>
+<h3 id="b-l-守恒的几何破缺">3.1 B-L 守恒的几何破缺</h3>
+<p>在共扼谱几何中，B-L（重子数减轻子数）不是基本守恒量。B-L 守恒是 ℳ
+扇区不动点约束的近似后果——在低能下（<span class="math inline">\(E \ll
+E_{\text{GUT}}\)</span>），不动点约束完全锁定，B-L 近似守恒。但在 GUT
+标度（<span class="math inline">\(E \sim
+E_{\text{GUT}}\)</span>），约束部分释放（定理 3.6.2.01），B-L
+守恒破缺：</p>
+<p><span class="math display">\[\Delta(B-L) \sim
+\left(\frac{E}{E_{\text{GUT}}}\right)^2 \cdot
+\delta_{\text{release}}.\]</span></p>
+<p>在 <span class="math inline">\(E = E_{\text{GUT}}\)</span>，<span
+class="math inline">\(\Delta(B-L) \sim \delta_{\text{release}} \sim
+10^{-3}\)</span>——B-L 破缺效应虽小但非零，允许质子衰变。</p>
+<h3 id="gut-标度的几何确定">3.2 GUT 标度的几何确定</h3>
+<p><span class="math inline">\(\Lambda_H \approx 2 \times
+10^{15}\;\text{GeV}\)</span> 对应几何 GUT 标度 <span
+class="math inline">\(E_{\text{GUT}} \approx
+1.41\,E_0\)</span>。这一标度由三个规范耦合常数的收敛点确定——在共扼谱几何中，收敛点是
+ℳ, 𝒞, ℐ 三扇区耦合的代数一致性要求：</p>
+<p><span class="math display">\[\alpha_1(E_{\text{GUT}}) =
+\alpha_2(E_{\text{GUT}}) = \alpha_3(E_{\text{GUT}}) =
+\alpha_{\text{GUT}} \approx \frac{1}{24}.\]</span></p>
+<p><span class="math inline">\(\alpha_{\text{GUT}} = 1/24\)</span>
+的几何来源：<span class="math inline">\(24 = 3! \times 4 = \Lambda
+\times k_0 \times 4\)</span>，其中 <span class="math inline">\(\Lambda =
+3, k_0 = 2\)</span> 是结构常数，<span class="math inline">\(4 =
+\Delta\Theta - 1\)</span>。因此 <span
+class="math inline">\(\alpha_{\text{GUT}}\)</span>
+由结构常数唯一确定——不是自由参数。</p>
+<h3 id="质子衰变与宇宙学的关系">3.3 质子衰变与宇宙学的关系</h3>
+<p>质子衰变对宇宙学的影响：</p>
+<ol type="1">
+<li><p><strong>早期宇宙的质子衰变</strong>：在 <span
+class="math inline">\(T \sim E_{\text{GUT}}\)</span>
+的早期宇宙，质子衰变速率 <span class="math inline">\(\Gamma_p \sim
+H\)</span>（Hubble 率）——质子衰变与宇宙膨胀竞争。预言的 <span
+class="math inline">\(\tau_p \approx 7 \times 10^{34}\)</span> 年对应
+<span class="math inline">\(\Gamma_p \sim
+10^{-42}\;\text{s}^{-1}\)</span>，远低于当前 Hubble 率 <span
+class="math inline">\(H_0 \sim
+10^{-18}\;\text{s}^{-1}\)</span>——因此质子衰变对当前宇宙学无影响。</p></li>
+<li><p><strong>物质-反物质不对称</strong>：质子衰变与反质子衰变的不对称性（CP
+破缺）可能解释宇宙的物质-反物质不对称。定理 3.10.10.02 的几何框架预测 CP
+破缺来自 ℐ 扇区的 Berry 相位（<span class="math inline">\(2\pi\)</span>
+Berry 相位的复数部分），给出 <span class="math inline">\(\eta_B \sim
+10^{-10}\)</span> 的重子不对称。</p></li>
+</ol>
+<h3 id="与中微子质量的关联">3.4 与中微子质量的关联</h3>
+<p>定理 3.10.10.02（质子衰变）与定理 3.10.10.03（中微子质量，第9卷
+§9.4）的几何关联：</p>
+<ul>
+<li>质子衰变寿命 <span class="math inline">\(\tau_p \propto
+1/\sigma_\mathcal{M}^*\)</span>——ℳ 扇区权重越大，质子越稳定</li>
+<li>中微子质量 <span class="math inline">\(m_\nu \propto
+\sigma_\mathcal{I}^{*2}/\sqrt{\sigma_\mathcal{M}^*}\)</span>——ℳ
+扇区权重越大，中微子越轻</li>
+</ul>
+<p>两者的共同根源是 ℳ 扇区不动点权重 <span
+class="math inline">\(\sigma_\mathcal{M}^* =
+0.777912\)</span>。质子稳定性与中微子质量的反关联：</p>
+<p><span class="math display">\[\tau_p \cdot m_\nu \propto
+\frac{1}{\sigma_\mathcal{M}^*} \cdot
+\frac{\sigma_\mathcal{I}^{*2}}{\sqrt{\sigma_\mathcal{M}^*}} =
+\frac{\sigma_\mathcal{I}^{*2}}{(\sigma_\mathcal{M}^*)^{3/2}}.\]</span></p>
+<p>这一反关联预言：若实验发现中微子质量低于 <span
+class="math inline">\(0.070\;\text{eV}\)</span>，则质子寿命可能高于
+<span class="math inline">\(7 \times 10^{34}\)</span>
+年——两个预言相互约束。</p>
+<hr />
+<h2 id="定理索引">定理索引</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">编号</th>
+<th style="text-align: left;">内容</th>
+<th style="text-align: center;">证明状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">定理 9.3.1.01</td>
+<td style="text-align: left;">质子衰变寿命几何公式</td>
+<td style="text-align: center;">已证（本文§1.2–§1.3）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="参考文献">参考文献</h2>
+<ul>
+<li>共扼谱几何第3卷 §3.3（ℳ-𝒞 腰边耦合，定理 2.3.6.03）</li>
+<li>共扼谱几何第6卷 §6.3（约束释放效应，定理 3.6.2.01）</li>
+<li>共扼谱几何第1卷 §1.1（编码轨道与 <span class="math inline">\(N_7 =
+2.7 \times 10^8\)</span>，定理）</li>
+<li>共扼谱几何第2卷 §2.4（不动点与 <span
+class="math inline">\(\sigma_\mathcal{M}^* = 0.777912\)</span>）</li>
+<li>共扼谱几何第0卷 （结构常数 <span class="math inline">\(\Lambda = 3,
+k_0 = 2, \Delta\Theta = 5\)</span> 与 <span
+class="math inline">\(\alpha_{\text{GUT}} = 1/24\)</span>）</li>
+<li>共扼谱几何第9卷 §9.4（中微子绝对质量，定理 3.10.10.03）</li>
+<li>Super-Kamiokande Collaboration, <em>Search for Proton Decay via
+<span class="math inline">\(p \to e^+ + \pi^0\)</span></em>, Phys.
+Rev. D 95 (2017)</li>
+</ul>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>

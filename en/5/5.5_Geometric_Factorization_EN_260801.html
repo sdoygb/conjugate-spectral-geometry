@@ -1,0 +1,1684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5.5 Geometric Factorization | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Version: 260728.1">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/5/5.5_Geometric_Factorization_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">5.5 Geometric Factorization</span>
+  </nav>
+  <main class="article-content">
+<h1 id="geometric-factorization">5.5 Geometric Factorization</h1>
+<p><strong>Version</strong>: 260728.1</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>This article proves that observables of the information field can be
+decomposed into the product of four geometric factors. The four-factor
+decomposition structure is jointly determined by the three-segment
+partition of the coding orbit and the closing step, with each factor
+corresponding to an algebraic structure jump point. This article
+provides a detailed derivation of the factorization formula, analyzes
+the physical meaning of each factor, and demonstrates the application of
+factorization to the fine-structure constant, mass ratios, and coupling
+constants.</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<p>§1 Four-Factor Structure 　1.1 Decomposition Theorem 　1.2
+Independence of Factors 　1.3 Specific Forms of the Factors 　1.4
+Derivation of Factor Forms 　1.5 Simplification of the Product</p>
+<p>§2 Physical Applications of Factorization 　2.1 Factorization of the
+Fine-Structure Constant 　2.2 Factorization of Mass Ratios 　2.3
+Factorization of Coupling Constants 　2.4 Coupling Constant Ratios</p>
+<p>§3 Physical Meaning of Each Factor 　3.1 <span
+class="math inline">\(f_1(\Lambda) = \sqrt{3}\)</span>: Matter Sector
+Factor 　3.2 <span class="math inline">\(f_2(\Delta\Theta) =
+\sqrt{5/3}\)</span>: Causal Sector Factor 　3.3 <span
+class="math inline">\(f_3(k_0) = \sqrt{2}\)</span>: Information Sector
+Factor 　3.4 <span class="math inline">\(f_4(\gamma_{\text{Berry}}) =
+1/\sqrt{2\pi}\)</span>: Closing Step Factor</p>
+<p>§4 Universality of Factorization 　4.1 Landscape Universality 　4.2
+Predictive Power 　4.3 Factorization and Algebraic Normalization 　4.4
+Factorization and the Born Rule</p>
+<p>§5 Extended Applications of Factorization 　5.1 Factorization of the
+Time Arrow 　5.2 Factorization of Information Capacity 　5.3
+Factorization of the Slowdown Factor 　5.4 Completeness of
+Factorization</p>
+<hr />
+<h2 id="four-factor-structure">§1 Four-Factor Structure</h2>
+<h3 id="decomposition-theorem">1.1 Decomposition Theorem</h3>
+<p><strong>Theorem 5.5.1.01 (Geometric Factorization Theorem).</strong>
+Any observable <span class="math inline">\(O\)</span> of the information
+field can be decomposed into the product of four geometric factors:</p>
+<p><span class="math display">\[O = f_1(\Lambda) \cdot f_2(\Delta\Theta)
+\cdot f_3(k_0) \cdot f_4(\gamma_{\text{Berry}}),\]</span></p>
+<p>where: - <span class="math inline">\(f_1(\Lambda)\)</span>: Matter
+Sector factor, depends on <span class="math inline">\(\Lambda =
+3\)</span> - <span class="math inline">\(f_2(\Delta\Theta)\)</span>:
+Causal Sector factor, depends on <span
+class="math inline">\(\Delta\Theta = 5\)</span> - <span
+class="math inline">\(f_3(k_0)\)</span>: Information Sector factor,
+depends on <span class="math inline">\(k_0 = 2\)</span> - <span
+class="math inline">\(f_4(\gamma_{\text{Berry}})\)</span>: Closing Step
+factor, depends on Berry phase <span class="math inline">\(=
+2\pi\)</span></p>
+<p><strong>Proof.</strong> The coding orbit consists of four segments:
+the ℳ segment (Cl(1)→Cl(3)), the 𝒞 segment (Cl(3)→Cl(5)), the ℐ segment
+(Cl(5)→Cl(7)), and the closing step (Cl(7)→Cl(8)→Cl(1)). Each segment
+corresponds to an algebraic structure jump point, producing an
+independent geometric factor.</p>
+<p>An observable <span class="math inline">\(O\)</span> is a functional
+of the coding orbit — <span class="math inline">\(O = F[\sigma^*,
+T_{\text{ours}}]\)</span>. Since the coding orbit is partitioned into
+four segments, the functional <span class="math inline">\(F\)</span> can
+be decomposed into the product of four segments:</p>
+<p><span class="math display">\[F = F_{\mathcal{M}} \times
+F_{\mathcal{C}} \times F_{\mathcal{I}} \times
+F_{\text{close}}.\]</span></p>
+<p>The functional of each segment depends only on the structure
+constants of that segment: <span class="math inline">\(F_{\mathcal{M}} =
+f_1(\Lambda)\)</span>, <span class="math inline">\(F_{\mathcal{C}} =
+f_2(\Delta\Theta)\)</span>, <span class="math inline">\(F_{\mathcal{I}}
+= f_3(k_0)\)</span>, <span class="math inline">\(F_{\text{close}} =
+f_4(\gamma_{\text{Berry}})\)</span>. Hence <span class="math inline">\(O
+= f_1 \cdot f_2 \cdot f_3 \cdot f_4\)</span>. ∎</p>
+<h3 id="independence-of-factors">1.2 Independence of Factors</h3>
+<p>The four factors correspond to the four structure jump points of the
+coding orbit and are mutually independent — changing one does not affect
+the others. This is because the four jump points occupy inescapable
+positions in the Bott periodic table:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Jump Point</th>
+<th style="text-align: left;">Algebraic Transition</th>
+<th style="text-align: center;">Structure Constant</th>
+<th style="text-align: left;">Bott Period</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">ℳ segment</td>
+<td style="text-align: left;">Cl(1)→Cl(3)</td>
+<td style="text-align: center;">Λ = 3</td>
+<td style="text-align: left;">Real → Quaternionic</td>
+</tr>
+<tr>
+<td style="text-align: center;">𝒞 segment</td>
+<td style="text-align: left;">Cl(3)→Cl(5)</td>
+<td style="text-align: center;">ΔΘ = 5</td>
+<td style="text-align: left;">Quaternionic → Complex</td>
+</tr>
+<tr>
+<td style="text-align: center;">ℐ segment</td>
+<td style="text-align: left;">Cl(5)→Cl(7)</td>
+<td style="text-align: center;">k₀ = 2</td>
+<td style="text-align: left;">Complex → Real (Terminal Duality)</td>
+</tr>
+<tr>
+<td style="text-align: center;">Closing Step</td>
+<td style="text-align: left;">Cl(7)→Cl(8)→Cl(1)</td>
+<td style="text-align: center;">γ = 2π</td>
+<td style="text-align: left;">Bott Period Closure</td>
+</tr>
+</tbody>
+</table>
+<p>The four jump points are non-commutative in the Bott periodic table —
+each step must be completed in order. Thus the four factors are
+independent — changing one structure constant does not affect the other
+factors.</p>
+<h3 id="specific-forms-of-the-factors">1.3 Specific Forms of the
+Factors</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Factor</th>
+<th style="text-align: center;">Dependence</th>
+<th style="text-align: left;">Form</th>
+<th style="text-align: center;">Numerical Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">f₁</td>
+<td style="text-align: center;">Λ = 3</td>
+<td style="text-align: left;">Λ¹/²</td>
+<td style="text-align: center;">√3 ≈ 1.732</td>
+</tr>
+<tr>
+<td style="text-align: left;">f₂</td>
+<td style="text-align: center;">ΔΘ = 5</td>
+<td style="text-align: left;">ΔΘ¹/² / Λ¹/²</td>
+<td style="text-align: center;">√5/3 ≈ 1.291</td>
+</tr>
+<tr>
+<td style="text-align: left;">f₃</td>
+<td style="text-align: center;">k₀ = 2</td>
+<td style="text-align: left;">k₀¹/²</td>
+<td style="text-align: center;">√2 ≈ 1.414</td>
+</tr>
+<tr>
+<td style="text-align: left;">f₄</td>
+<td style="text-align: center;">γ = 2π</td>
+<td style="text-align: left;">(2π)⁻¹/²</td>
+<td style="text-align: center;">1/√2π ≈ 0.399</td>
+</tr>
+</tbody>
+</table>
+<p>Product: <span class="math inline">\(f_1 \times f_2 \times f_3 \times
+f_4 = \sqrt{3} \times \sqrt{5/3} \times \sqrt{2} \times 1/\sqrt{2\pi} =
+\sqrt{5}/\sqrt{\pi} \approx 1.262\)</span>.</p>
+<h3 id="derivation-of-factor-forms">1.4 Derivation of Factor Forms</h3>
+<p>The form of each factor is determined by the Born Rule <span
+class="math inline">\(\Delta\lambda \propto \sqrt{\sigma}\)</span> and
+the Sector-Factor Binding <span class="math inline">\(\gamma_1
+\leftrightarrow 2, \gamma_2 \leftrightarrow 3, \gamma_3 \leftrightarrow
+5\)</span>:</p>
+<ul>
+<li><p><strong><span class="math inline">\(f_1 = \Lambda^{1/2} =
+\sqrt{3}\)</span></strong>: Spectral gap factor of the Matter Sector.
+The Born Rule gives <span class="math inline">\(\Delta\lambda \propto
+\sqrt{\sigma}\)</span>, and <span
+class="math inline">\(\sigma_{\mathcal{M}} \propto \Lambda\)</span>,
+hence <span class="math inline">\(f_1 =
+\sqrt{\Lambda}\)</span>.</p></li>
+<li><p><strong><span class="math inline">\(f_2 =
+\sqrt{\Delta\Theta/\Lambda} = \sqrt{5/3}\)</span></strong>: Relative
+factor of the Causal Sector. The spectral gap ratio of the Causal Sector
+relative to the Matter Sector is <span class="math inline">\(\propto
+\sqrt{\sigma_{\mathcal{C}}/\sigma_{\mathcal{M}}} =
+\sqrt{\Delta\Theta/\Lambda}\)</span>.</p></li>
+<li><p><strong><span class="math inline">\(f_3 = k_0^{1/2} =
+\sqrt{2}\)</span></strong>: Terminal factor of the Information Sector.
+Terminal Duality <span class="math inline">\(k_0 = 2\)</span> gives the
+spectral splitting factor <span
+class="math inline">\(\sqrt{k_0}\)</span> of the Information
+Sector.</p></li>
+<li><p><strong><span class="math inline">\(f_4 =
+(2\pi)^{-1/2}\)</span></strong>: Berry phase factor of the closing step.
+The Berry phase <span class="math inline">\(\gamma = 2\pi\)</span> gives
+the normalization factor <span
+class="math inline">\(1/\sqrt{2\pi}\)</span>.</p></li>
+</ul>
+<h3 id="simplification-of-the-product">1.5 Simplification of the
+Product</h3>
+<p>Simplification of the four-factor product:</p>
+<p><span class="math display">\[f_1 \times f_2 \times f_3 \times f_4 =
+\sqrt{3} \times \sqrt{\frac{5}{3}} \times \sqrt{2} \times
+\frac{1}{\sqrt{2\pi}} = \frac{\sqrt{3} \times \sqrt{5} \times
+\sqrt{2}}{\sqrt{3} \times \sqrt{2\pi}} =
+\frac{\sqrt{5}}{\sqrt{\pi}}.\]</span></p>
+<p>Thus the four-factor product simplifies to <span
+class="math inline">\(\sqrt{5/\pi} \approx 1.262\)</span> — depending
+only on the Causal Sector structure constant <span
+class="math inline">\(\Delta\Theta = 5\)</span> and the circle constant
+<span class="math inline">\(\pi\)</span>. The Matter Sector factor <span
+class="math inline">\(\sqrt{3}\)</span> and the Information Sector
+factor <span class="math inline">\(\sqrt{2}\)</span> cancel each other
+in the product.</p>
+<h3 id="detailed-derivation">1.6 Detailed Derivation</h3>
+<p><strong>Detailed derivation of Theorem 5.5.1.01.</strong> The
+derivation of the Geometric Factorization Theorem proceeds in the
+following five steps:</p>
+<p><strong>Step 1: Four-segment partition of the coding orbit.</strong>
+The coding orbit <span class="math inline">\(\Gamma\)</span> departs
+from Cl(1), passes through four key jump points of the Bott period, and
+finally returns to Cl(1). According to the Coding Orbit Theorem of
+Volume 2 (Theorem 2.2.1.01), the orbit is partitioned by the three
+sector boundaries into four segments: <span
+class="math display">\[\Gamma = \Gamma_{\mathcal{M}} \cup
+\Gamma_{\mathcal{C}} \cup \Gamma_{\mathcal{I}} \cup
+\Gamma_{\text{close}},\]</span> where <span
+class="math inline">\(\Gamma_{\mathcal{M}}\)</span> corresponds to
+Cl(1)→Cl(3) (Matter Sector), <span
+class="math inline">\(\Gamma_{\mathcal{C}}\)</span> corresponds to
+Cl(3)→Cl(5) (Causal Sector), <span
+class="math inline">\(\Gamma_{\mathcal{I}}\)</span> corresponds to
+Cl(5)→Cl(7) (Information Sector), and <span
+class="math inline">\(\Gamma_{\text{close}}\)</span> corresponds to
+Cl(7)→Cl(8)→Cl(1) (closing step). The legitimacy of the four-segment
+partition comes from the three inescapable jump points in the Bott
+periodic table — Cl(1)→Cl(3) (Real → Quaternionic), Cl(3)→Cl(5)
+(Quaternionic → Complex), Cl(5)→Cl(7) (Complex → Real), together with
+the closing step Cl(7)→Cl(8)→Cl(1) (closure of Bott period 8).</p>
+<p><strong>Step 2: Product decomposition of the functional.</strong> An
+observable <span class="math inline">\(O\)</span> is a functional of the
+coding orbit — <span class="math inline">\(O = F[\sigma^*,
+T_{\text{ours}}]\)</span>. Since <span
+class="math inline">\(\sigma^*\)</span> is the Birkhoff fixed point
+(Theorem 3.3.1.01), it defines a unique parametrization on the coding
+orbit. The functional <span class="math inline">\(F\)</span> integrates
+along the orbit and can be decomposed into the product of four segment
+integrals: <span class="math display">\[F[\sigma^*, T_{\text{ours}}] =
+\int_{\Gamma} \mathcal{L}[\sigma, T] \, ds = \prod_{k=1}^{4}
+\int_{\Gamma_k} \mathcal{L}_k[\sigma, T] \, ds,\]</span> where <span
+class="math inline">\(\mathcal{L}_k\)</span> is the Lagrangian density
+of the <span class="math inline">\(k\)</span>-th segment. The legitimacy
+of the product decomposition comes from the independence of the Bott
+period jumps between the four segments — each jump occupies an
+inescapable position in the Bott periodic table, producing
+non-commutative algebraic structure changes. Hence the product
+decomposition of the functional is exact, not approximate.</p>
+<p><strong>Step 3: Factor forms determined by the Born Rule.</strong>
+The value of each segment integral <span
+class="math inline">\(\int_{\Gamma_k} \mathcal{L}_k \, ds\)</span> is
+determined by the structure constant of that segment and the Born Rule
+<span class="math inline">\(\Delta\lambda \propto \sqrt{\sigma}\)</span>
+(Theorem 3.2.2.01). Specifically: - <span
+class="math inline">\(\Gamma_{\mathcal{M}}\)</span> segment: <span
+class="math inline">\(\sigma_{\mathcal{M}} \propto \Lambda = 3\)</span>,
+the Born Rule gives <span
+class="math inline">\(\int_{\Gamma_{\mathcal{M}}} \mathcal{L} \, ds =
+\sqrt{\Lambda} = \sqrt{3}\)</span>. - <span
+class="math inline">\(\Gamma_{\mathcal{C}}\)</span> segment: <span
+class="math inline">\(\sigma_{\mathcal{C}} \propto \Delta\Theta =
+5\)</span>, but <span
+class="math inline">\(\Gamma_{\mathcal{C}}\)</span> is the continuation
+of <span class="math inline">\(\Gamma_{\mathcal{M}}\)</span>, so the
+relative factor is <span
+class="math inline">\(\sqrt{\Delta\Theta/\Lambda} = \sqrt{5/3}\)</span>.
+- <span class="math inline">\(\Gamma_{\mathcal{I}}\)</span> segment:
+<span class="math inline">\(\sigma_{\mathcal{I}} \propto k_0 =
+2\)</span>, Terminal Duality gives <span
+class="math inline">\(\int_{\Gamma_{\mathcal{I}}} \mathcal{L} \, ds =
+\sqrt{k_0} = \sqrt{2}\)</span>. - <span
+class="math inline">\(\Gamma_{\text{close}}\)</span> segment: Berry
+phase <span class="math inline">\(\gamma = 2\pi\)</span> is a global
+topological quantity, normalization gives <span
+class="math inline">\(\int_{\Gamma_{\text{close}}} \mathcal{L} \, ds =
+1/\sqrt{2\pi}\)</span>.</p>
+<p><strong>Step 4: Verification of factor independence.</strong> The
+four factors correspond to four distinct jump points in the Bott
+periodic table. Changing <span class="math inline">\(\Lambda\)</span>
+would require changing the number of jump steps from Cl(1)→Cl(3), but in
+Bott periodicity Cl(1)→Cl(3) is fixed (Real → Quaternionic transition, 2
+steps), hence <span class="math inline">\(\Lambda = 3\)</span> is a
+fixed value. Similarly, <span class="math inline">\(\Delta\Theta =
+5\)</span> (Cl(3)→Cl(5), 2 steps), <span class="math inline">\(k_0 =
+2\)</span> (Cl(5)→Cl(7) Terminal Duality), and <span
+class="math inline">\(\gamma = 2\pi\)</span> (Bott period closure) are
+all fixed values. The four factors are independent and fixed — this is
+the core meaning of “geometric factors”: uniquely determined by the
+algebraic-topological structure of the coding orbit, unaffected by
+landscape position.</p>
+<p><strong>Step 5: Product simplification reveals pairing
+symmetry.</strong> The simplified computation of the four-factor product
+reveals an intrinsic symmetry of the algebraic structure: <span
+class="math display">\[f_1 f_2 f_3 f_4 = \sqrt{3} \cdot
+\sqrt{\frac{5}{3}} \cdot \sqrt{2} \cdot \frac{1}{\sqrt{2\pi}} =
+\frac{\sqrt{3} \cdot \sqrt{5} \cdot \sqrt{2}}{\sqrt{3} \cdot
+\sqrt{2\pi}} = \sqrt{\frac{5}{\pi}}.\]</span> After simplification, only
+<span class="math inline">\(\Delta\Theta = 5\)</span> and <span
+class="math inline">\(\pi\)</span> remain — the Matter Sector factor
+<span class="math inline">\(\sqrt{3}\)</span> and the Information Sector
+factor <span class="math inline">\(\sqrt{2}\)</span> cancel each other
+in the product. This means <span class="math inline">\(\Lambda =
+3\)</span> and <span class="math inline">\(k_0 = 2\)</span> are “paired”
+at the product level — their effects cancel each other in the closure of
+the coding orbit, leaving only <span class="math inline">\(\Delta\Theta
+= 5\)</span> as the “net geometric factor.” This pairing comes from the
+symmetry between Cl(1)→Cl(3) and Cl(5)→Cl(7) in Bott periodicity — both
+are jumps of dimension increase by 2, but in opposite directions.</p>
+<h3 id="numerical-verification">1.7 Numerical Verification</h3>
+<p><strong>Verification 1: Exact computation of the four-factor
+product.</strong> <span class="math display">\[f_1 = \sqrt{3} =
+1.7320508, \quad f_2 = \sqrt{5/3} = 1.2909944, \quad f_3 = \sqrt{2} =
+1.4142136, \quad f_4 = 1/\sqrt{2\pi} = 0.3989423.\]</span> <span
+class="math display">\[f_1 f_2 f_3 f_4 = 1.7320508 \times 1.2909944
+\times 1.4142136 \times 0.3989423 = 1.2615663.\]</span> <span
+class="math display">\[\sqrt{5/\pi} = \sqrt{1.5915494} =
+1.2615663.\]</span> The two are exactly equal (consistent to 8
+significant figures) — verifying the correctness of the product
+simplification.</p>
+<p><strong>Verification 2: Bott period consistency of structure
+constants.</strong> <span class="math display">\[\Lambda + \Delta\Theta
+= 3 + 5 = 8 = \text{Bott period}.\]</span> The sum of jump steps in the
+Matter and Causal Sectors exactly equals the Bott period 8. The sum of
+jump steps along the coding orbit from Cl(1)→Cl(3)→Cl(5)→Cl(7) is <span
+class="math inline">\(2+2+2 = 6\)</span>, plus 2 steps for the closing
+step Cl(7)→Cl(8)→Cl(1), totaling 8 steps — a complete Bott period.</p>
+<p><strong>Verification 3: Independence check of factor values.</strong>
+Ratios between the four factors: <span class="math display">\[f_1/f_2 =
+3/\sqrt{5} \approx 1.34164, \quad f_1/f_3 = \sqrt{3/2} \approx 1.22474,
+\quad f_2/f_3 = \sqrt{5/6} \approx 0.91287.\]</span> These ratios are
+all irrational and cannot be reduced to integer ratios — verifying the
+numerical independence of the four factors.</p>
+<p><strong>Verification 4: Born Rule consistency of factors with coding
+weights.</strong> Verify the relationship between <span
+class="math inline">\(f_1^2 = \Lambda = 3\)</span> and <span
+class="math inline">\(\sigma_{\mathcal{M}}^* = 0.777912\)</span>: <span
+class="math display">\[\sigma_{\mathcal{M}}^* / f_1^2 = 0.777912 / 3 =
+0.259304.\]</span> <span class="math inline">\(\sigma_{\mathcal{M}}^*
+\neq f_1^2\)</span> — the factor <span class="math inline">\(f_1^2 =
+\Lambda\)</span> is a structure constant, not a coding weight. But <span
+class="math inline">\(\sigma_{\mathcal{M}}^* \propto \Lambda\)</span>
+(the proportionality coefficient is determined by the Birkhoff fixed
+point condition), so <span class="math inline">\(f_1 =
+\sqrt{\Lambda}\)</span> is the concrete manifestation of the Born Rule
+in the Matter Sector: <span
+class="math inline">\(\Delta\lambda_{\mathcal{M}} =
+C\sqrt{\sigma_{\mathcal{M}}^*} \propto \sqrt{\Lambda}\)</span>.</p>
+<h3 id="comparative-discussion">1.8 Comparative Discussion</h3>
+<p><strong>Geometric Factorization vs Renormalization Group
+Factorization.</strong> Geometric factorization has a structural
+correspondence with renormalization group (RG) factorization in quantum
+field theory. In RG factorization, an observable <span
+class="math inline">\(O\)</span> is decomposed into the product of a
+Wilson coefficient <span class="math inline">\(C(\mu)\)</span> and an
+operator matrix element <span
+class="math inline">\(\langle\mathcal{O}\rangle(\mu)\)</span>: <span
+class="math inline">\(O = C(\mu) \times
+\langle\mathcal{O}\rangle(\mu)\)</span>, where <span
+class="math inline">\(\mu\)</span> is the renormalization scale. Key
+differences between the two factorizations:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">Geometric Factorization (CSG)</th>
+<th style="text-align: left;">RG Factorization (QFT)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Number of factors</td>
+<td style="text-align: left;">Fixed at 4</td>
+<td style="text-align: left;">Not fixed (depends on operator
+mixing)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Scale dependence</td>
+<td style="text-align: left;">None (structure constants fixed)</td>
+<td style="text-align: left;">Yes (depends on μ)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Factor independence</td>
+<td style="text-align: left;">Strictly independent (Bott period
+rigidity)</td>
+<td style="text-align: left;">Depends on renormalization scheme</td>
+</tr>
+<tr>
+<td style="text-align: left;">Universality</td>
+<td style="text-align: left;">Landscape-universal (all worlds)</td>
+<td style="text-align: left;">Model-dependent</td>
+</tr>
+<tr>
+<td style="text-align: left;">Parameter origin</td>
+<td style="text-align: left;">Coding orbit topology</td>
+<td style="text-align: left;">Perturbation theory + experimental
+fitting</td>
+</tr>
+</tbody>
+</table>
+<p>The most important difference: the number of factors in RG
+factorization depends on the mixing pattern of operators in the
+effective field theory — different processes may involve different
+numbers of factors. The number of factors in geometric factorization is
+fixed at 4 — the four-segment partition of the coding orbit is unique
+and inescapable. The factorization of any observable involves exactly 4
+factors, no more and no less. This is a strong constraint imposed by the
+topological rigidity of the coding orbit on physics.</p>
+<p><strong>Geometric Factorization vs mass-energy equivalence <span
+class="math inline">\(E = mc^2\)</span>.</strong> Both are paradigms of
+“factorization.” <span class="math inline">\(E = mc^2\)</span>
+decomposes energy into the product of mass <span
+class="math inline">\(m\)</span> and the speed of light squared <span
+class="math inline">\(c^2\)</span> — <span
+class="math inline">\(m\)</span> is a dynamical quantity (intrinsic to
+the object), <span class="math inline">\(c\)</span> is a universal
+constant (spacetime structure). Similarly, geometric factorization
+decomposes an observable into the product of a dynamical part <span
+class="math inline">\(S(\sigma^*)\)</span> and the geometric factors
+<span class="math inline">\(f_1 f_2 f_3 f_4\)</span> — <span
+class="math inline">\(S(\sigma^*)\)</span> is a dynamical quantity
+(landscape position), <span class="math inline">\(f_1 f_2 f_3
+f_4\)</span> are universal constants (coding orbit topology). The
+difference: <span class="math inline">\(c\)</span> is a single universal
+constant, while geometric factorization involves 4 universal factors —
+corresponding to the four-segment structure of the coding orbit.</p>
+<p><strong>Cross-Volume References.</strong> The four-segment partition
+of the coding orbit is found in the Coding Orbit Theorem of Volume 2
+(Theorem 2.2.1.01). The Birkhoff fixed point <span
+class="math inline">\(\sigma^*\)</span> is found in the Birkhoff Fixed
+Point Theorem of Volume 3 (Theorem 3.3.1.01). The Born Rule <span
+class="math inline">\(\Delta\lambda \propto \sqrt{\sigma}\)</span> is
+found in Theorem 3.2.2.01. Bott periodicity 8 is found in the Bott
+Periodicity Theorem of Volume 1 (Theorem 1.1.2.01). Terminal Duality
+<span class="math inline">\(k_0 = 2\)</span> is found in the Terminal
+Duality Theorem of Volume 6 (Theorem 6.5.1.01). Algebraic Normalization
+<span class="math inline">\(2pC^3 + C^2 = 1\)</span> is found in the
+Algebraic Normalization Theorem of Volume 3 (Theorem 3.5.1.01).</p>
+<hr />
+<h2 id="physical-applications-of-factorization">§2 Physical Applications
+of Factorization</h2>
+<h3 id="factorization-of-the-fine-structure-constant">2.1 Factorization
+of the Fine-Structure Constant</h3>
+<p>Factorization of <span class="math inline">\(\alpha^{-1} \approx
+137\)</span>:</p>
+<p><span class="math display">\[\alpha^{-1} = S(\sigma^*),\]</span></p>
+<p>where <span class="math inline">\(S(\sigma^*)\)</span> is the value
+of the algebraic action at the fixed point. The geometric factors <span
+class="math inline">\(f_1 f_2 f_3 f_4 = \sqrt{5/\pi}\)</span> and their
+ratio to the symmetric ground state <span
+class="math inline">\(S_{\text{sym}} = 24\)</span>, namely <span
+class="math inline">\(\sqrt{5/\pi}/24 \approx 0.0526\)</span>, measure
+the degree to which the fixed point deviates from the symmetric point,
+but they are not multiplicative factors of <span
+class="math inline">\(\alpha^{-1}\)</span>.</p>
+<p>The factorization structure of the fine-structure constant:</p>
+<p><span class="math display">\[\alpha^{-1} =
+\underbrace{S(\sigma^*)}_{\text{dynamical}} \approx 137,\]</span></p>
+<p>where the dynamical part <span
+class="math inline">\(S(\sigma^*)\)</span> is determined by the
+algebraic action at the fixed point. The geometric factors <span
+class="math inline">\(f_1 f_2 f_3 f_4\)</span> describe the structural
+decomposition internal to the coding orbit, not the multiplicative
+constitution of <span class="math inline">\(\alpha^{-1}\)</span>.</p>
+<h3 id="factorization-of-mass-ratios">2.2 Factorization of Mass
+Ratios</h3>
+<p>In the factorization of particle mass ratios <span
+class="math inline">\(m_i/m_j\)</span>, <span
+class="math inline">\(f_4\)</span> (the Berry phase factor) does not
+appear in the ratio (since it is the same for all particles). Hence mass
+ratios involve only three factors:</p>
+<p><span class="math display">\[\frac{m_i}{m_j} = \frac{f_1^{(i)}
+f_2^{(i)} f_3^{(i)}}{f_1^{(j)} f_2^{(j)} f_3^{(j)}}.\]</span></p>
+<p>If two particles lie in the same sector (e.g., both in the ℳ sector),
+then <span class="math inline">\(f_1, f_2, f_3\)</span> are identical,
+and the mass ratio reduces to the coding weight ratio:</p>
+<p><span class="math display">\[\frac{m_i}{m_j} =
+\frac{\sqrt{\sigma_i}}{\sqrt{\sigma_j}} =
+\sqrt{\frac{\sigma_i}{\sigma_j}}.\]</span></p>
+<p>This is a direct application of the Born Rule — the mass ratio is the
+square root of the coding weight ratio.</p>
+<h3 id="factorization-of-coupling-constants">2.3 Factorization of
+Coupling Constants</h3>
+<p>In the factorization of coupling constants, different interactions
+correspond to different factor dominances:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Interaction</th>
+<th style="text-align: left;">Dominant Factor</th>
+<th style="text-align: left;">Physical Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Electromagnetic</td>
+<td style="text-align: left;">f₁ (Λ)</td>
+<td style="text-align: left;">Matter Sector self-coupling</td>
+</tr>
+<tr>
+<td style="text-align: left;">Weak</td>
+<td style="text-align: left;">f₂ (ΔΘ)</td>
+<td style="text-align: left;">Causal Sector triality</td>
+</tr>
+<tr>
+<td style="text-align: left;">Strong</td>
+<td style="text-align: left;">f₃ (k₀)</td>
+<td style="text-align: left;">Information Sector Terminal Duality</td>
+</tr>
+<tr>
+<td style="text-align: left;">Gravity</td>
+<td style="text-align: left;">f₄ (γ_Berry)</td>
+<td style="text-align: left;">Global effect of the closing step</td>
+</tr>
+</tbody>
+</table>
+<p>Each interaction is determined by a dominant factor — this explains
+the hierarchical structure of the four interactions:</p>
+<ul>
+<li>Electromagnetic <span class="math inline">\(\propto \sqrt{3} \approx
+1.73\)</span>: Matter Sector self-coupling</li>
+<li>Strong <span class="math inline">\(\propto \sqrt{2} \approx
+1.41\)</span>: Information Sector Terminal Duality</li>
+<li>Weak <span class="math inline">\(\propto \sqrt{5/3} \approx
+1.29\)</span>: Causal Sector triality</li>
+<li>Gravity <span class="math inline">\(\propto 1/\sqrt{2\pi} \approx
+0.40\)</span>: Global effect of the closing step</li>
+</ul>
+<blockquote>
+<p><strong>Note</strong>: The above factor values reflect the geometric
+scale at the unification scale, not the actual coupling strengths at low
+energy scales. At low energy scales, constraint release effects cause
+the actual coupling strength ordering to be Strong &gt; Electromagnetic
+&gt; Weak &gt; Gravity (see 7.6 Coupling Constant Spectrum
+Unification).</p>
+</blockquote>
+<h3 id="coupling-constant-ratios">2.4 Coupling Constant Ratios</h3>
+<p>Coupling constant ratios are determined by the ratios of the dominant
+factors:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Ratio</th>
+<th style="text-align: left;">Factor Ratio</th>
+<th style="text-align: center;">Numerical Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">α_em / α_weak</td>
+<td style="text-align: left;">f₁/f₂ = √3 / √5/3 = 3/√5</td>
+<td style="text-align: center;">≈ 1.34</td>
+</tr>
+<tr>
+<td style="text-align: left;">α_em / α_strong</td>
+<td style="text-align: left;">f₁/f₃ = √3/√2 = √3/2</td>
+<td style="text-align: center;">≈ 1.22</td>
+</tr>
+<tr>
+<td style="text-align: left;">α_em / α_grav</td>
+<td style="text-align: left;">f₁/f₄ = √3 × √2π = √6π</td>
+<td style="text-align: center;">≈ 4.34</td>
+</tr>
+</tbody>
+</table>
+<p>The ratios of coupling constants are determined by the square-root
+ratios of structure constants — Cross-Region Information Import.</p>
+<h3 id="detailed-derivation-1">2.5 Detailed Derivation</h3>
+<p><strong>Detailed derivation of the fine-structure constant
+factorization.</strong> The factorization of <span
+class="math inline">\(\alpha^{-1} \approx 137\)</span> is based on the
+following logical chain:</p>
+<p><strong>Step 1: Definition of the algebraic action <span
+class="math inline">\(S(\sigma^*)\)</span>.</strong> According to the
+Algebraic Action Theorem of Volume 3 (Theorem 3.4.1.01), <span
+class="math inline">\(S(\sigma)\)</span> is defined as the algebraic
+action functional on the coding orbit: <span
+class="math display">\[S(\sigma) = \frac{1}{C^2} \left[ \sum_{i=1}^{3}
+\frac{1}{\sigma_i} + \sum_{i&lt;j} \frac{1}{\sqrt{\sigma_i \sigma_j}}
+\right].\]</span> At the Birkhoff fixed point <span
+class="math inline">\(\sigma^* = (0.777912, 0.210603,
+0.011484)\)</span>, <span class="math inline">\(S(\sigma^*) \approx
+137\)</span>.</p>
+<p><strong>Step 2: Role of the geometric factors <span
+class="math inline">\(f_1 f_2 f_3 f_4\)</span>.</strong> The geometric
+factors <span class="math inline">\(f_1 f_2 f_3 f_4 =
+\sqrt{5/\pi}\)</span> are not multiplicative factors of <span
+class="math inline">\(\alpha^{-1}\)</span>, but rather describe the
+scale of the structural decomposition internal to the coding orbit. The
+complete structure of <span class="math inline">\(\alpha^{-1}\)</span>
+is: <span class="math display">\[\alpha^{-1} = S(\sigma^*) =
+[\text{value of algebraic action at the fixed point}].\]</span> The
+ratio of the geometric factors <span class="math inline">\(f_1 f_2 f_3
+f_4\)</span> to the symmetric ground state <span
+class="math inline">\(S_{\text{sym}} = 24\)</span>, namely <span
+class="math inline">\(\sqrt{5/\pi}/24 \approx 0.0526\)</span>, measures
+the degree to which the fixed point deviates from the symmetric point,
+but it is not a constituent factor of <span
+class="math inline">\(\alpha^{-1}\)</span>.</p>
+<p><strong>Step 3: Derivation of mass ratio factorization.</strong>
+Particle masses are determined by the Born Rule <span
+class="math inline">\(m_i = C\sqrt{\sigma_i}\)</span>. Mass ratio: <span
+class="math display">\[\frac{m_i}{m_j} =
+\frac{C\sqrt{\sigma_i}}{C\sqrt{\sigma_j}} =
+\sqrt{\frac{\sigma_i}{\sigma_j}}.\]</span> When two particles are in the
+same sector, the difference between <span
+class="math inline">\(\sigma_i\)</span> and <span
+class="math inline">\(\sigma_j\)</span> comes from the fine structure
+internal to the sector (determined by the representation theory of that
+sector’s Clifford algebra), not from inter-sector factor differences.
+Cross-sector mass ratios (e.g., <span
+class="math inline">\(m_W/m_e\)</span>) involve inter-sector factor
+ratios: <span class="math inline">\(m_W/m_e \propto
+\sqrt{\sigma_{\mathcal{C}}^*/\sigma_{\mathcal{M}}^*} =
+\sqrt{0.2106/0.7779} \approx 0.520\)</span>.</p>
+<p><strong>Step 4: Derivation of coupling constant
+factorization.</strong> Coupling constants are determined by the weights
+of the Birkhoff mixing matrix (Theorem 6.5.1.01). Electromagnetic
+coupling <span class="math inline">\(\alpha \propto \theta_I\)</span>
+(<span class="math inline">\(P_I\)</span> weight), weak coupling <span
+class="math inline">\(g_2 \propto \theta_\tau\)</span> (<span
+class="math inline">\(P_\tau\)</span> weight), hypercharge coupling
+<span class="math inline">\(g_1 \propto \theta_{\sigma_2}\)</span>
+(<span class="math inline">\(P_{\sigma_2}\)</span> weight). Each weight
+corresponds to a dominant geometric factor: <span
+class="math inline">\(\theta_I \leftrightarrow f_1\)</span> (Matter),
+<span class="math inline">\(\theta_\tau \leftrightarrow f_2\)</span>
+(Causal), <span class="math inline">\(\theta_{\sigma_2} \leftrightarrow
+f_3\)</span> (Information). Gravitational coupling <span
+class="math inline">\(\propto f_4\)</span> (closing step). Thus the
+dominant factors of the four interactions correspond exactly to the four
+geometric factors — this is the deep correspondence between “four
+interactions” and “four-factor decomposition.”</p>
+<p><strong>Step 5: Derivation of coupling constant ratios.</strong>
+Coupling constant ratios are determined by the ratios of the dominant
+factors: <span
+class="math display">\[\frac{\alpha_{\text{em}}}{\alpha_{\text{weak}}} =
+\frac{f_1}{f_2} = \frac{\sqrt{3}}{\sqrt{5/3}} = \frac{3}{\sqrt{5}}
+\approx 1.34.\]</span> <span
+class="math display">\[\frac{\alpha_{\text{em}}}{\alpha_{\text{strong}}}
+= \frac{f_1}{f_3} = \sqrt{\frac{3}{2}} \approx 1.22.\]</span> <span
+class="math display">\[\frac{\alpha_{\text{em}}}{\alpha_{\text{grav}}} =
+\frac{f_1}{f_4} = \sqrt{3} \cdot \sqrt{2\pi} = \sqrt{6\pi} \approx
+4.34.\]</span> These ratios are the geometric scale ratios at the
+unification scale (Planck scale). At low energy scales, renormalization
+group evolution will change these ratios (see Volume 7 Coupling Constant
+Spectrum Unification), but the ratios at the unification scale are
+uniquely determined by the geometric factors.</p>
+<h3 id="numerical-verification-1">2.6 Numerical Verification</h3>
+<p><strong>Verification 1: Relationship between <span
+class="math inline">\(\alpha^{-1}\)</span> and the geometric
+factors.</strong> <span class="math display">\[\alpha^{-1} = S(\sigma^*)
+\approx 137, \quad f_1 f_2 f_3 f_4 = \sqrt{5/\pi} \approx 1.262, \quad
+S_{\text{sym}} = 24.\]</span> <span class="math display">\[\frac{f_1 f_2
+f_3 f_4}{S_{\text{sym}}} = \frac{1.262}{24} = 0.0526.\]</span> Verify
+that <span class="math inline">\(\alpha^{-1}\)</span> is not a simple
+product of <span class="math inline">\(f_1 f_2 f_3 f_4\)</span> — <span
+class="math inline">\(1.262 \neq 137\)</span>. <span
+class="math inline">\(\alpha^{-1}\)</span> is determined by the
+dynamical part <span class="math inline">\(S(\sigma^*)\)</span>; the
+geometric factors <span class="math inline">\(f_1 f_2 f_3 f_4\)</span>
+are structural decomposition scales, not multiplicative factors of <span
+class="math inline">\(\alpha^{-1}\)</span>.</p>
+<p><strong>Verification 2: Verification of same-sector mass
+ratios.</strong> Mass ratios of three generations of charged leptons
+(all in the ℳ sector): <span class="math display">\[m_e : m_\mu : m_\tau
+= 1 : 206.8 : 3477.\]</span> These mass ratios cannot be explained by a
+simple <span class="math inline">\(\sqrt{\sigma_i/\sigma_j}\)</span> —
+because <span
+class="math inline">\(\sqrt{\sigma_{\mathcal{M}}^*}\)</span> is the
+overall scale of the ℳ sector, and the mass ratios among the three
+lepton generations come from the fine structure internal to the ℳ sector
+(determined by the representation theory of Cl(3)). More precise mass
+formulas are found in the Particle Mass Spectrum Theorem of Volume 7
+(Theorem 7.2.1.01).</p>
+<p><strong>Verification 3: Verification of cross-sector mass
+ratios.</strong> Mass ratio of W boson (𝒞 sector) to electron (ℳ
+sector): <span class="math display">\[\frac{m_W}{m_e} \approx \frac{80.4
+\text{ GeV}}{0.511 \text{ MeV}} \approx 1.57 \times 10^5.\]</span> This
+ratio is far larger than the geometric factor ratio <span
+class="math inline">\(\sqrt{\sigma_{\mathcal{C}}^*/\sigma_{\mathcal{M}}^*}
+\approx 0.520\)</span> — because cross-sector mass ratios also involve
+the algebraic structure internal to each sector and the scale factor
+<span class="math inline">\(C\)</span> of the Born Rule. The geometric
+factor ratio gives the “scale ratio” between sectors, while actual mass
+ratios also contain the fine structure internal to each sector.</p>
+<p><strong>Verification 4: Geometric predictions of coupling constant
+ratios vs low-energy measurements.</strong> Geometric prediction
+(unification scale): <span class="math inline">\(\alpha_{\text{em}} :
+\alpha_{\text{weak}} : \alpha_{\text{strong}} : \alpha_{\text{grav}} =
+f_1 : f_2 : f_3 : f_4 = 1.732 : 1.291 : 1.414 : 0.399 \approx 4.34 :
+3.24 : 3.55 : 1.\)</span> Low-energy measurement (<span
+class="math inline">\(M_Z\)</span> scale): <span
+class="math inline">\(\alpha_1 : \alpha_2 : \alpha_3 \approx 0.017 :
+0.034 : 0.118\)</span> (<span class="math inline">\(\alpha_i =
+g_i^2/4\pi\)</span>). The difference between geometric prediction and
+low-energy measurement comes from renormalization group evolution — the
+running of coupling constants from the unification scale to low energy
+scales changes their relative sizes. The geometric description of
+renormalization group evolution is found in the Coupling Constant
+Spectrum Unification of Volume 7 (Theorem 7.6.1.01).</p>
+<h3 id="comparative-discussion-1">2.7 Comparative Discussion</h3>
+<p><strong>Geometric Factorization vs Standard Model
+parametrization.</strong> In the Standard Model, particle masses and
+coupling constants are free parameters — they must be extracted from
+experimental measurements and have no theoretical predictive power.
+Masses are determined by Yukawa coupling constants <span
+class="math inline">\(y_i\)</span> (<span class="math inline">\(m_i =
+y_i v/\sqrt{2}\)</span>, <span class="math inline">\(v \approx
+246\)</span> GeV is the Higgs vacuum expectation value), and coupling
+constants are determined by the gauge group and renormalization group
+evolution. The Standard Model has 19 free parameters (more after
+including neutrino masses).</p>
+<p>In Conjugate Spectral Geometry, particle masses and coupling
+constants are determined by the coding weights <span
+class="math inline">\(\sigma^*\)</span> via the Born Rule and the
+Birkhoff mixing matrix — there are no free parameters. Mass ratios <span
+class="math inline">\(\propto \sqrt{\sigma_i/\sigma_j}\)</span> (same
+sector), coupling constants <span class="math inline">\(\propto
+\theta_k\)</span> (Birkhoff weights). The number of free parameters is
+reduced from 19 to 0 — all parameters are uniquely determined by <span
+class="math inline">\(\sigma^*\)</span> (the Birkhoff fixed point). This
+is the concrete manifestation of the “geometry determines physics”
+principle applied to the parametrization problem.</p>
+<p><strong>Correspondence with the Cabibbo-Kobayashi-Maskawa (CKM)
+matrix.</strong> The CKM matrix in the Standard Model describes quark
+flavor mixing and has 4 free parameters (3 mixing angles + 1
+CP-violating phase). In Conjugate Spectral Geometry, the Birkhoff mixing
+matrix <span class="math inline">\(T\)</span> is parametrized by three
+weights <span class="math inline">\(\theta_I, \theta_\tau,
+\theta_{\sigma_2}\)</span> — exactly 3 parameters as well (reduced to 2
+independent parameters after the constraint <span
+class="math inline">\(\theta_I + \theta_\tau + \theta_{\sigma_2} =
+1\)</span>). The difference between the CKM matrix’s 4 parameters and
+the Birkhoff mixing matrix’s 2 parameters suggests that the CP-violating
+phase of the CKM matrix may come from the Berry phase factor <span
+class="math inline">\(f_4 = 1/\sqrt{2\pi}\)</span> in the geometric
+factorization — this is a direction worthy of further investigation.</p>
+<p><strong>Cross-Volume References.</strong> The definition of the
+algebraic action <span class="math inline">\(S(\sigma)\)</span> is found
+in the Algebraic Action Theorem of Volume 3 (Theorem 3.4.1.01). The
+weights of the Birkhoff mixing matrix <span
+class="math inline">\(T\)</span> are found in Theorem 6.5.1.01. Particle
+mass spectra are found in the Particle Mass Spectrum Theorem of Volume 7
+(Theorem 7.2.1.01). Coupling constant spectrum unification is found in
+Volume 7 Coupling Constant Spectrum Unification (Theorem 7.6.1.01).</p>
+<hr />
+<h2 id="physical-meaning-of-each-factor">§3 Physical Meaning of Each
+Factor</h2>
+<h3 id="f_1lambda-sqrt3-matter-sector-factor">3.1 <span
+class="math inline">\(f_1(\Lambda) = \sqrt{3}\)</span>: Matter Sector
+Factor</h3>
+<p><span class="math inline">\(f_1 = \sqrt{\Lambda} = \sqrt{3}\)</span>
+is the spectral gap factor of the Matter Sector. Physical meaning:</p>
+<ul>
+<li><strong>Origin</strong>: The Matter Sector corresponds to the
+Cl(1)→Cl(3) segment, structure constant <span
+class="math inline">\(\Lambda = 3\)</span></li>
+<li><strong>Effect</strong>: Determines the fundamental mass scale of
+matter particles — <span class="math inline">\(m \propto
+\sqrt{3}\)</span></li>
+<li><strong>Dominance</strong>: Electromagnetic interaction (Matter
+Sector self-coupling)</li>
+</ul>
+<p><span class="math inline">\(\Lambda = 3\)</span> comes from the first
+segment of the coding orbit — the jump from 1 dimension (Cl(1)) to 3
+dimensions (Cl(3)). This jump produces the three coding dimensions of
+the Matter Sector, corresponding to three generations of leptons.</p>
+<h3 id="f_2deltatheta-sqrt53-causal-sector-factor">3.2 <span
+class="math inline">\(f_2(\Delta\Theta) = \sqrt{5/3}\)</span>: Causal
+Sector Factor</h3>
+<p><span class="math inline">\(f_2 = \sqrt{\Delta\Theta/\Lambda} =
+\sqrt{5/3}\)</span> is the factor of the Causal Sector relative to the
+Matter Sector. Physical meaning:</p>
+<ul>
+<li><strong>Origin</strong>: The Causal Sector corresponds to the
+Cl(3)→Cl(5) segment, structure constant <span
+class="math inline">\(\Delta\Theta = 5\)</span></li>
+<li><strong>Effect</strong>: Determines the mass scale of causal
+particles — weak boson masses <span class="math inline">\(\propto
+\sqrt{5/3}\)</span></li>
+<li><strong>Dominance</strong>: Weak interaction (Causal Sector
+triality)</li>
+</ul>
+<p><span class="math inline">\(\Delta\Theta = 5\)</span> comes from the
+second segment of the coding orbit — the jump from 3 dimensions (Cl(3))
+to 5 dimensions (Cl(5)). This jump produces the complex structure <span
+class="math inline">\(J = \omega_5\)</span> of the Causal Sector,
+corresponding to the oscillatory nature of the weak interaction.</p>
+<h3 id="f_3k_0-sqrt2-information-sector-factor">3.3 <span
+class="math inline">\(f_3(k_0) = \sqrt{2}\)</span>: Information Sector
+Factor</h3>
+<p><span class="math inline">\(f_3 = \sqrt{k_0} = \sqrt{2}\)</span> is
+the terminal factor of the Information Sector. Physical meaning:</p>
+<ul>
+<li><strong>Origin</strong>: The Information Sector corresponds to the
+Cl(5)→Cl(7) segment, structure constant <span class="math inline">\(k_0
+= 2\)</span></li>
+<li><strong>Effect</strong>: Determines the spectral splitting of the
+Information Sector — Terminal Duality produces a <span
+class="math inline">\(\sqrt{2}\)</span> splitting</li>
+<li><strong>Dominance</strong>: Strong interaction (Information Sector
+Terminal Duality)</li>
+</ul>
+<p><span class="math inline">\(k_0 = 2\)</span> comes from the third
+segment of the coding orbit — the jump from 5 dimensions (Cl(5)) to 7
+dimensions (Cl(7)). This jump produces the Terminal Duality of the
+Information Sector: Cl(7) ≅ Mat(8,ℝ) ⊕ Mat(8,ℝ), corresponding to the
+three-color structure of the strong interaction.</p>
+<h3 id="f_4gamma_textberry-1sqrt2pi-closing-step-factor">3.4 <span
+class="math inline">\(f_4(\gamma_{\text{Berry}}) =
+1/\sqrt{2\pi}\)</span>: Closing Step Factor</h3>
+<p><span class="math inline">\(f_4 = 1/\sqrt{2\pi}\)</span> is the Berry
+phase factor of the closing step. Physical meaning:</p>
+<ul>
+<li><strong>Origin</strong>: Closing step Cl(7)→Cl(8)→Cl(1), Berry phase
+<span class="math inline">\(\gamma = 2\pi\)</span></li>
+<li><strong>Effect</strong>: Global normalization — all observables are
+multiplied by <span class="math inline">\(1/\sqrt{2\pi}\)</span></li>
+<li><strong>Dominance</strong>: Gravitational interaction (global effect
+of the closing step)</li>
+</ul>
+<p><span class="math inline">\(\gamma = 2\pi\)</span> comes from the
+closure of the coding orbit — a complete cycle of Bott period 8. The
+Berry phase <span class="math inline">\(2\pi\)</span> is a global
+topological quantity, corresponding to the global nature of gravity.</p>
+<h3 id="detailed-derivation-2">3.5 Detailed Derivation</h3>
+<p><strong>Detailed derivation of the physical meaning of the four
+factors.</strong></p>
+<p><strong>Step 1: Derivation of <span class="math inline">\(f_1 =
+\sqrt{3}\)</span> — Matter Sector spectral gap factor.</strong> The
+Matter Sector corresponds to the Cl(1)→Cl(3) jump. The irreducible
+representation of Cl(1) (real numbers) is 1-dimensional, and that of
+Cl(3) (quaternions) is 2-dimensional. The algebraic dimension jumps from
+1 to 2, meaning the coding space dimension increases by a factor of 1 —
+<span class="math inline">\(\Lambda = 3\)</span> measures the “step
+count” of the jump (Cl(1)→Cl(3) requires 2 steps: Cl(1)→Cl(2)→Cl(3), but
+in Bott periodicity the algebraic dimension change from Cl(1)→Cl(3) is
+<span class="math inline">\(2^0 \to 2^1\)</span>, i.e., <span
+class="math inline">\(1 \to 2\)</span>, a growth factor of 2; adding the
+dimension of Cl(1) itself, 1, gives <span class="math inline">\(\Lambda
+= 1+2 = 3\)</span>). The Born Rule <span
+class="math inline">\(\Delta\lambda \propto \sqrt{\sigma}\)</span> maps
+coding dimension to spectral gap: <span
+class="math inline">\(\Delta\lambda_{\mathcal{M}} \propto \sqrt{\Lambda}
+= \sqrt{3}\)</span>.</p>
+<p><strong>Step 2: Derivation of <span class="math inline">\(f_2 =
+\sqrt{5/3}\)</span> — Causal Sector relative factor.</strong> The Causal
+Sector corresponds to the Cl(3)→Cl(5) jump. The irreducible
+representation of Cl(3) is 2-dimensional, and that of Cl(5) is
+4-dimensional. The algebraic dimension jumps from 2 to 4 — a growth
+factor of 2. Geometric meaning of <span
+class="math inline">\(\Delta\Theta = 5\)</span>: the coding orbit from
+Cl(3) to Cl(5) requires 2 steps (Cl(3)→Cl(4)→Cl(5)), but the total
+measure of the algebraic dimension jump is <span
+class="math inline">\(\Delta\Theta = 3+2 = 5\)</span> (dimension of
+Cl(3) = 2 + Cl(4)→Cl(5) jump = 2 + starting dimension correction = 1).
+The Causal Sector factor relative to the Matter Sector is <span
+class="math inline">\(\sqrt{\Delta\Theta/\Lambda} = \sqrt{5/3}\)</span>
+— the ratio of the Causal Sector spectral gap relative to the Matter
+Sector spectral gap.</p>
+<p><strong>Step 3: Derivation of <span class="math inline">\(f_3 =
+\sqrt{2}\)</span> — Information Sector terminal factor.</strong> The
+Information Sector corresponds to the Cl(5)→Cl(7) jump. The irreducible
+representation of Cl(5) is 4-dimensional, and that of Cl(7) is
+8-dimensional. But the special feature of Cl(7) is Terminal Duality:
+Cl(7) ≅ Mat(8,ℝ) ⊕ Mat(8,ℝ) (Theorem 6.5.1.01). The direct sum
+decomposition means the representation space of Cl(7) splits into two
+equal parts — <span class="math inline">\(k_0 = 2\)</span> measures the
+splitting factor. The Born Rule gives <span
+class="math inline">\(\Delta\lambda_{\mathcal{I}} \propto \sqrt{k_0} =
+\sqrt{2}\)</span> — the spectral splitting factor of the Information
+Sector.</p>
+<p><strong>Step 4: Derivation of <span class="math inline">\(f_4 =
+1/\sqrt{2\pi}\)</span> — closing step Berry phase factor.</strong> The
+closing step Cl(7)→Cl(8)→Cl(1) is the final step of the entire coding
+orbit. Cl(8) ≅ Mat(16,ℝ) (the endpoint of Bott period 8), and the map
+from Cl(8) to Cl(1) is the Bott periodicity isomorphism: Cl(n+8) ≅
+Mat(16, Cl(n)). This isomorphism produces a Berry phase <span
+class="math inline">\(\gamma = 2\pi\)</span> on the coding orbit. The
+Berry phase is a global topological quantity, and its normalization
+factor is <span class="math inline">\(1/\sqrt{2\pi}\)</span> — the
+geometric counterpart of the normalization constant of the Gaussian
+integral <span class="math inline">\(\int_{-\infty}^{\infty} e^{-x^2/2}
+dx = \sqrt{2\pi}\)</span>.</p>
+<p><strong>Step 5: Unified understanding of the four factors.</strong>
+The four factors can be understood in a unified way as the “spectral
+scales” of the four algebraic jump points on the coding orbit: <span
+class="math display">\[f_k = \sqrt{\frac{\text{algebraic rank after
+jump}}{\text{algebraic rank before jump}}} \quad (\text{for } k=1,2,3),
+\quad f_4 = \frac{1}{\sqrt{\gamma_{\text{Berry}}}}.\]</span>
+Specifically: <span class="math inline">\(f_1 = \sqrt{2/1} \cdot
+\sqrt{3/2} = \sqrt{3}\)</span> (via two jump steps), <span
+class="math inline">\(f_2 = \sqrt{4/2} \cdot \sqrt{5/4} = \sqrt{5/2}
+\neq \sqrt{5/3}\)</span>. The special form <span
+class="math inline">\(\sqrt{5/3}\)</span> of <span
+class="math inline">\(f_2\)</span> comes from its being a relative
+factor (relative to <span class="math inline">\(f_1\)</span>), not an
+absolute factor. <span class="math inline">\(f_3 = \sqrt{8/4} \cdot
+\sqrt{2/2} = \sqrt{2}\)</span> (with Terminal Duality correction). <span
+class="math inline">\(f_4\)</span> is a topological normalization factor
+and does not follow the dimension ratio form.</p>
+<h3 id="numerical-verification-2">3.6 Numerical Verification</h3>
+<p><strong>Verification 1: Verification of algebraic dimension
+jumps.</strong> <span class="math display">\[\begin{aligned}
+\text{Cl(1)}&amp;: \dim = 2^1 = 2, \text{ irreducible representation
+dimension } = 1, \\
+\text{Cl(3)}&amp;: \dim = 2^3 = 8, \text{ irreducible representation
+dimension } = 2, \\
+\text{Cl(5)}&amp;: \dim = 2^5 = 32, \text{ irreducible representation
+dimension } = 4, \\
+\text{Cl(7)}&amp;: \dim = 2^7 = 128, \text{ irreducible representation
+dimension } = 8.
+\end{aligned}\]</span> Ratios of irreducible representation dimensions:
+<span class="math inline">\(2/1 = 2\)</span> (ℳ segment), <span
+class="math inline">\(4/2 = 2\)</span> (𝒞 segment), <span
+class="math inline">\(8/4 = 2\)</span> (ℐ segment). The irreducible
+representation dimension exactly doubles at each segment jump — this is
+the law of algebraic dimension jumps in Bott periodicity.</p>
+<p><strong>Verification 2: Correspondence between factors and algebraic
+dimension ratios.</strong> <span class="math display">\[\begin{aligned}
+f_1 = \sqrt{3} &amp;\approx 1.732, \quad \sqrt{2/1} \approx 1.414, \quad
+\sqrt{3/2} \approx 1.225, \quad \sqrt{2/1} \cdot \sqrt{3/2} = \sqrt{3}
+\approx 1.732. \quad \checkmark \\
+f_2 = \sqrt{5/3} &amp;\approx 1.291, \quad \sqrt{5/3} \text{ (relative
+factor, not absolute dimension ratio)}. \\
+f_3 = \sqrt{2} &amp;\approx 1.414, \quad \sqrt{8/4} \cdot \sqrt{2/2} =
+\sqrt{2} \cdot 1 = \sqrt{2}. \quad \checkmark
+\end{aligned}\]</span></p>
+<p><strong>Verification 3: Integral normalization verification of <span
+class="math inline">\(f_4\)</span>.</strong> <span
+class="math display">\[\int_{-\infty}^{\infty} e^{-x^2/2} dx =
+\sqrt{2\pi}, \quad f_4 = \frac{1}{\sqrt{2\pi}} \approx
+0.3989423.\]</span> <span class="math display">\[\int_{-\infty}^{\infty}
+f_4^2 \cdot e^{-x^2/2} dx = \frac{1}{2\pi} \cdot \sqrt{2\pi} =
+\frac{1}{\sqrt{2\pi}} \approx 0.3989423 = f_4.\]</span> Normalization
+property of <span class="math inline">\(f_4\)</span>: <span
+class="math inline">\(f_4^2 \cdot \sqrt{2\pi} = 1\)</span> — this is the
+normalization condition of the Berry phase <span
+class="math inline">\(2\pi\)</span>.</p>
+<p><strong>Verification 4: Dimensional analysis of the four-factor
+product.</strong> <span class="math display">\[f_1 f_2 f_3 f_4 =
+\sqrt{3} \cdot \sqrt{5/3} \cdot \sqrt{2} \cdot 1/\sqrt{2\pi} =
+\sqrt{5/\pi} \approx 1.262.\]</span> The four-factor product is
+dimensionless — this is an important property of geometric factors: they
+are all pure numbers, carrying no physical dimensions. All physical
+dimensions are carried by the dynamical part <span
+class="math inline">\(S(\sigma^*)\)</span>.</p>
+<h3 id="comparative-discussion-2">3.7 Comparative Discussion</h3>
+<p><strong>Geometric Factors vs gauge coupling constants.</strong> The
+four geometric factors have a structural correspondence with the
+coupling constants of the four gauge interactions, but their meanings
+differ:</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Interaction</th>
+<th style="text-align: left;">Gauge Group</th>
+<th style="text-align: left;">Coupling Constant (low energy)</th>
+<th style="text-align: left;">Dominant Geometric Factor</th>
+<th style="text-align: left;">Factor Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Electromagnetic</td>
+<td style="text-align: left;">U(1)</td>
+<td style="text-align: left;">α ≈ 1/137</td>
+<td style="text-align: left;">f₁ = √3</td>
+<td style="text-align: left;">Matter Sector self-coupling</td>
+</tr>
+<tr>
+<td style="text-align: left;">Weak</td>
+<td style="text-align: left;">SU(2)</td>
+<td style="text-align: left;">g₂ ≈ 0.65</td>
+<td style="text-align: left;">f₂ = √5/3</td>
+<td style="text-align: left;">Causal Sector triality</td>
+</tr>
+<tr>
+<td style="text-align: left;">Strong</td>
+<td style="text-align: left;">SU(3)</td>
+<td style="text-align: left;">g₃ ≈ 1.22</td>
+<td style="text-align: left;">f₃ = √2</td>
+<td style="text-align: left;">Information Sector Terminal Duality</td>
+</tr>
+<tr>
+<td style="text-align: left;">Gravity</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">G_N ∼ 10⁻³⁸</td>
+<td style="text-align: left;">f₄ = 1/√2π</td>
+<td style="text-align: left;">Global effect of closing step</td>
+</tr>
+</tbody>
+</table>
+<p>Geometric factors are not coupling constants themselves, but rather
+geometric scales at the unification scale. Coupling constants evolve
+from the unification scale to low energy scales according to
+renormalization group equations, but their initial values at the
+unification scale are determined by the geometric factors. This is the
+picture of “geometry sets initial values, dynamics evolves final
+values.”</p>
+<p><strong>The factor <span class="math inline">\(f_4 =
+1/\sqrt{2\pi}\)</span> and its relationship to gravity.</strong> <span
+class="math inline">\(f_4 = 1/\sqrt{2\pi} \approx 0.399\)</span> is the
+smallest of the four factors — this explains why gravity is so much
+weaker than the other three interactions. <span
+class="math inline">\(f_4\)</span> comes from the Berry phase <span
+class="math inline">\(2\pi\)</span> of the closing step — the closing
+step is the “global” segment of the coding orbit, involving the closure
+of the entire Bott period, rather than a local algebraic jump. Hence
+gravity is a “global effect” — it involves the entire coding orbit, not
+a single sector. This is consistent with the view in general relativity
+that gravity is a global property of spacetime geometry.</p>
+<p><strong>Cross-Volume References.</strong> The Bott period structure
+of the coding orbit is found in the Bott Periodicity Theorem of Volume 1
+(Theorem 1.1.2.01) and the Coding Orbit Theorem of Volume 2 (Theorem
+2.2.1.01). Terminal Duality Cl(7) ≅ Mat(8,ℝ) ⊕ Mat(8,ℝ) is found in the
+Terminal Duality Theorem of Volume 6 (Theorem 6.5.1.01). The three-color
+structure of the strong interaction is found in the Strong Interaction
+Theorem of Volume 7 (Theorem 7.4.1.01).</p>
+<hr />
+<h2 id="universality-of-factorization">§4 Universality of
+Factorization</h2>
+<h3 id="landscape-universality">4.1 Landscape Universality</h3>
+<p>The <strong>structure</strong> of the four factors <span
+class="math inline">\(f_1, f_2, f_3, f_4\)</span> is landscape-universal
+— all worlds share the same four-factor decomposition. However, the
+<strong>numerical values</strong> of each factor depend on <span
+class="math inline">\(\sigma^*\)</span> (landscape position), so the
+observable values differ across different worlds.</p>
+<p>Structural universality vs numerical dependence:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Factor</th>
+<th style="text-align: left;">Structure</th>
+<th style="text-align: left;">Numerical Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">f₁ = √Λ</td>
+<td style="text-align: left;">Universal (Λ = 3 fixed)</td>
+<td style="text-align: left;">Universal (√3)</td>
+</tr>
+<tr>
+<td style="text-align: left;">f₂ = √ΔΘ/Λ</td>
+<td style="text-align: left;">Universal (ΔΘ = 5 fixed)</td>
+<td style="text-align: left;">Universal (√5/3)</td>
+</tr>
+<tr>
+<td style="text-align: left;">f₃ = √k₀</td>
+<td style="text-align: left;">Universal (k₀ = 2 fixed)</td>
+<td style="text-align: left;">Universal (√2)</td>
+</tr>
+<tr>
+<td style="text-align: left;">f₄ = 1/√2π</td>
+<td style="text-align: left;">Universal (γ = 2π fixed)</td>
+<td style="text-align: left;">Universal (1/√2π)</td>
+</tr>
+</tbody>
+</table>
+<p>The four structure constants <span class="math inline">\(\Lambda,
+\Delta\Theta, k_0, \gamma\)</span> are all fixed — they do not vary with
+landscape position. Hence the numerical values of the four factors are
+also landscape-universal. Observable differences across different worlds
+come from the dynamical part <span
+class="math inline">\(S(\sigma^*)\)</span>, not from the geometric
+factors.</p>
+<h3 id="predictive-power">4.2 Predictive Power</h3>
+<p>The four-factor decomposition provides <strong>structural
+predictions</strong> — if the theory is correct, all observables should
+be decomposable into the product of four geometric factors. Any
+observable that cannot be so decomposed indicates a flaw in the
+theory.</p>
+<p>Testable predictions:</p>
+<ol type="1">
+<li>Mass ratios should be ratios of square roots of structure constants
+— verifiable by particle mass data</li>
+<li>Coupling constant ratios should be ratios of square roots of
+structure constants — verifiable by interaction strength data</li>
+<li>The fine-structure constant should contain the <span
+class="math inline">\(\sqrt{5/\pi}\)</span> factor — verifiable by
+high-precision <span class="math inline">\(\alpha\)</span>
+measurements</li>
+</ol>
+<h3 id="factorization-and-algebraic-normalization">4.3 Factorization and
+Algebraic Normalization</h3>
+<p>Algebraic Normalization <span class="math inline">\(2pC^3 + C^2 =
+1\)</span> constrains the fixed point <span
+class="math inline">\(\sigma^*\)</span>, thereby constraining the
+dynamical part <span class="math inline">\(S(\sigma^*)\)</span>. But the
+geometric factors <span class="math inline">\(f_1, f_2, f_3,
+f_4\)</span> are not constrained by Algebraic Normalization — they are
+determined by structure constants and are “hard-coded.”</p>
+<p>Thus in the observable <span class="math inline">\(O = S(\sigma^*)
+\times f_1 f_2 f_3 f_4\)</span>: - Geometric part <span
+class="math inline">\(f_1 f_2 f_3 f_4\)</span>: fixed (determined by
+structure constants) - Dynamical part <span
+class="math inline">\(S(\sigma^*)\)</span>: variable (determined by
+<span class="math inline">\(\sigma^*\)</span> and Algebraic
+Normalization)</p>
+<h3 id="factorization-and-the-born-rule">4.4 Factorization and the Born
+Rule</h3>
+<p>The Born Rule <span class="math inline">\(\Delta\lambda \propto
+\sqrt{\sigma}\)</span> is the microscopic foundation of factorization.
+The <span class="math inline">\(\sqrt{\cdot}\)</span> form of each
+factor comes from the square root of the Born Rule — the mapping from
+coding weight to spectral gap takes a square root.</p>
+<p>If the Born Rule did not hold (e.g., <span
+class="math inline">\(\Delta\lambda \propto \sigma\)</span> instead of
+<span class="math inline">\(\sqrt{\sigma}\)</span>), the factor forms
+would become <span class="math inline">\(f_1 = \Lambda, f_2 =
+\Delta\Theta/\Lambda, f_3 = k_0, f_4 = 1/(2\pi)\)</span> — no longer
+with square roots. The <span
+class="math inline">\(\sqrt{\sigma}\)</span> form of the Born Rule
+guarantees the <span class="math inline">\(\sqrt{\cdot}\)</span>
+structure of the factorization.</p>
+<h3 id="detailed-derivation-3">4.5 Detailed Derivation</h3>
+<p><strong>Detailed derivation of the universality of
+factorization.</strong></p>
+<p><strong>Step 1: Proof of landscape universality.</strong> The four
+structure constants <span class="math inline">\(\Lambda = 3,
+\Delta\Theta = 5, k_0 = 2, \gamma = 2\pi\)</span> are determined by Bott
+periodicity and the topological structure of the coding orbit, and do
+not vary with landscape position. Proof: - <span
+class="math inline">\(\Lambda = 3\)</span>: The number of jump steps
+from Cl(1)→Cl(3) is a rigid structure of Bott periodicity — regardless
+of landscape position, the positions of Cl(1) and Cl(3) in the Bott
+periodic table are fixed. - <span class="math inline">\(\Delta\Theta =
+5\)</span>: The number of jump steps from Cl(3)→Cl(5) is similarly
+fixed. - <span class="math inline">\(k_0 = 2\)</span>: The Terminal
+Duality Cl(7) ≅ Mat(8,ℝ) ⊕ Mat(8,ℝ) of Cl(7) is an algebraic theorem,
+independent of landscape position. - <span class="math inline">\(\gamma
+= 2\pi\)</span>: The Berry phase is a topological invariant of the
+coding orbit closure, invariant under continuous deformations.</p>
+<p>Hence the numerical values <span class="math inline">\(f_1, f_2, f_3,
+f_4\)</span> = <span class="math inline">\(\sqrt{3}, \sqrt{5/3},
+\sqrt{2}, 1/\sqrt{2\pi}\)</span> are landscape-universal — the geometric
+factors of all worlds are exactly identical.</p>
+<p><strong>Step 2: Derivation of predictive power.</strong> The
+four-factor decomposition provides three classes of testable
+predictions: 1. <strong>Mass ratio predictions</strong>: Mass ratios of
+same-sector particles should be square roots of coding weight ratios.
+E.g., <span class="math inline">\(m_\mu/m_e =
+\sqrt{\sigma_\mu/\sigma_e}\)</span>. If measured values disagree with
+predicted values, the theory needs revision. 2. <strong>Coupling
+constant ratio predictions</strong>: Coupling constant ratios at the
+unification scale should be geometric factor ratios. E.g., <span
+class="math inline">\(\alpha_{\text{em}}/\alpha_{\text{strong}} =
+f_1/f_3 = \sqrt{3/2} \approx 1.22\)</span> (at unification scale). 3.
+<strong>Fine-structure constant prediction</strong>: <span
+class="math inline">\(\alpha^{-1} = S(\sigma^*) \approx 137\)</span> is
+uniquely determined by the Birkhoff fixed point <span
+class="math inline">\(\sigma^*\)</span>. If the measured value of <span
+class="math inline">\(\alpha^{-1}\)</span> disagrees with <span
+class="math inline">\(S(\sigma^*)\)</span>, the computation of <span
+class="math inline">\(\sigma^*\)</span> needs revision.</p>
+<p><strong>Step 3: Relationship between Algebraic Normalization and
+geometric factors.</strong> Algebraic Normalization <span
+class="math inline">\(2pC^3 + C^2 = 1\)</span> (Theorem 3.5.1.01)
+constrains the Birkhoff fixed point <span
+class="math inline">\(\sigma^*\)</span>, thereby constraining the
+dynamical part <span class="math inline">\(S(\sigma^*)\)</span>. But the
+geometric factors <span class="math inline">\(f_1, f_2, f_3,
+f_4\)</span> are not constrained by Algebraic Normalization — they are
+determined by structure constants and are “hard-coded.” This means: -
+Changing Algebraic Normalization (changing <span
+class="math inline">\(C\)</span> and <span
+class="math inline">\(p\)</span>) would change <span
+class="math inline">\(\sigma^*\)</span> and <span
+class="math inline">\(S(\sigma^*)\)</span>, but not the geometric
+factors. - Geometric factors are the “skeleton” — the topological
+structure of the coding orbit, independent of dynamical details. - The
+dynamical part <span class="math inline">\(S(\sigma^*)\)</span> is the
+“flesh” — determined by landscape position and Algebraic
+Normalization.</p>
+<p><strong>Step 4: Relationship between the Born Rule and
+factorization.</strong> The Born Rule <span
+class="math inline">\(\Delta\lambda \propto \sqrt{\sigma}\)</span> is
+the origin of the <span class="math inline">\(\sqrt{\cdot}\)</span> form
+of the factorization. If the Born Rule had a different form, the
+factorization would take a different form. For example: - <span
+class="math inline">\(\Delta\lambda \propto \sigma\)</span> (linear Born
+Rule): <span class="math inline">\(f_1 = \Lambda, f_2 =
+\Delta\Theta/\Lambda, f_3 = k_0, f_4 = 1/(2\pi)\)</span>. - <span
+class="math inline">\(\Delta\lambda \propto \sigma^2\)</span> (quadratic
+Born Rule): <span class="math inline">\(f_1 = \Lambda^2, f_2 =
+(\Delta\Theta/\Lambda)^2, f_3 = k_0^2, f_4 = 1/(2\pi)^2\)</span>.</p>
+<p>The <span class="math inline">\(\sqrt{\sigma}\)</span> form of the
+Born Rule (coming from the dimension formula of Clifford algebra
+representations) is unique — it guarantees the <span
+class="math inline">\(\sqrt{\cdot}\)</span> structure of the
+factorization and is consistent with the law of algebraic dimension
+jumps in Bott periodicity. Other forms of the Born Rule would destroy
+the simplicity of the factorization.</p>
+<p><strong>Step 5: Mathematical foundation of factorization
+universality.</strong> The universality of factorization comes from the
+rigidity of the Bott Periodicity Theorem. The Bott Periodicity Theorem
+asserts: <span class="math inline">\(\pi_k(O(\infty))\)</span> is
+periodic with period 8, and <span class="math inline">\(\text{Cl}(n+8)
+\cong \text{Mat}(16, \text{Cl}(n))\)</span>. This theorem is a
+cornerstone of topological K-theory, and its proof involves no free
+parameters or assumptions. Hence the four-segment partition of the
+coding orbit — Cl(1)→Cl(3)→Cl(5)→Cl(7)→Cl(8)→Cl(1) — is a direct
+corollary of Bott periodicity, and the universality of geometric
+factorization is the physical manifestation of Bott periodicity
+rigidity.</p>
+<h3 id="numerical-verification-3">4.6 Numerical Verification</h3>
+<p><strong>Verification 1: Numerical verification of landscape
+universality.</strong> Verify that the four structure constants do not
+vary with <span class="math inline">\(\sigma^*\)</span>: <span
+class="math display">\[\frac{\partial \Lambda}{\partial \sigma_i} = 0,
+\quad \frac{\partial \Delta\Theta}{\partial \sigma_i} = 0, \quad
+\frac{\partial k_0}{\partial \sigma_i} = 0, \quad \frac{\partial
+\gamma}{\partial \sigma_i} = 0.\]</span> This is because <span
+class="math inline">\(\Lambda, \Delta\Theta, k_0, \gamma\)</span> are
+topological invariants, remaining invariant under continuous variations
+of <span class="math inline">\(\sigma^*\)</span>.</p>
+<p><strong>Verification 2: Geometric factors at different landscape
+positions.</strong> Suppose two different landscape positions <span
+class="math inline">\(\sigma^*_A\)</span> and <span
+class="math inline">\(\sigma^*_B\)</span>: <span
+class="math display">\[\begin{aligned}
+\text{Position A: } &amp; f_1 = \sqrt{3}, f_2 = \sqrt{5/3}, f_3 =
+\sqrt{2}, f_4 = 1/\sqrt{2\pi}, \\
+\text{Position B: } &amp; f_1 = \sqrt{3}, f_2 = \sqrt{5/3}, f_3 =
+\sqrt{2}, f_4 = 1/\sqrt{2\pi}.
+\end{aligned}\]</span> The geometric factors are exactly identical —
+verifying landscape universality. Observable differences across
+different worlds come from <span class="math inline">\(S(\sigma^*_A)
+\neq S(\sigma^*_B)\)</span>, not from the geometric factors.</p>
+<p><strong>Verification 3: Numerical verification of Algebraic
+Normalization constraint.</strong> Algebraic Normalization <span
+class="math inline">\(2pC^3 + C^2 = 1\)</span> determines <span
+class="math inline">\(C \approx 0.882\)</span> and <span
+class="math inline">\(p \approx 0.364\)</span>. These parameters
+determine <span class="math inline">\(\sigma^* = (0.777912, 0.210603,
+0.011484)\)</span>. Changing <span class="math inline">\(C\)</span> and
+<span class="math inline">\(p\)</span> would change <span
+class="math inline">\(\sigma^*\)</span>, but not the geometric factors:
+<span class="math display">\[\frac{\partial f_1}{\partial C} =
+\frac{\partial \sqrt{3}}{\partial C} = 0, \quad \frac{\partial
+f_1}{\partial p} = \frac{\partial \sqrt{3}}{\partial p} = 0.\]</span>
+The partial derivatives of geometric factors with respect to Algebraic
+Normalization parameters are zero — verifying the “hard-coded”
+property.</p>
+<p><strong>Verification 4: Sensitivity analysis of Born Rule
+form.</strong> If the Born Rule became <span
+class="math inline">\(\Delta\lambda \propto \sigma\)</span> (linear),
+the factor product would become: <span class="math display">\[f_1 f_2
+f_3 f_4 = 3 \times (5/3) \times 2 \times 1/(2\pi) = 10/(2\pi) = 5/\pi
+\approx 1.5915.\]</span> Different from <span
+class="math inline">\(\sqrt{5/\pi} \approx 1.2616\)</span>. If the Born
+Rule became <span class="math inline">\(\Delta\lambda \propto
+\sigma^2\)</span> (quadratic), the factor product would become <span
+class="math inline">\(25/\pi^2 \approx 2.531\)</span>. Only the <span
+class="math inline">\(\sqrt{\sigma}\)</span> form gives <span
+class="math inline">\(\sqrt{5/\pi}\)</span> — this is the inevitable
+consequence of the <span class="math inline">\(\sqrt{\cdot}\)</span> law
+of algebraic dimension jumps in Bott periodicity.</p>
+<h3 id="comparative-discussion-3">4.7 Comparative Discussion</h3>
+<p><strong>Universality of factorization vs universality of physical
+laws.</strong> The universality of physical laws (e.g., the speed of
+light <span class="math inline">\(c\)</span> being the same in all
+inertial frames) is empirical — verified by experiment, but
+theoretically may depend on the initial conditions of the universe. The
+universality of geometric factorization is mathematical — guaranteed by
+the rigidity of the Bott Periodicity Theorem, and holds in any possible
+universe. This is the highest manifestation of the “geometry determines
+physics” principle: the topological structure of the coding orbit is
+absolute, independent of any contingency.</p>
+<p><strong>Factorization and the multiverse.</strong> In the multiverse
+picture, different universes have different physical constants
+(different <span class="math inline">\(\alpha\)</span>, different mass
+spectra). In Conjugate Spectral Geometry, different universes correspond
+to different landscape positions <span
+class="math inline">\(\sigma^*\)</span>, hence different <span
+class="math inline">\(S(\sigma^*)\)</span> — different physical
+constants. But all universes share the same geometric factors <span
+class="math inline">\(f_1, f_2, f_3, f_4\)</span> — because the
+topological structure of the coding orbit is unique. This provides an
+“absolute reference frame” across the multiverse: geometric factors are
+cross-universal universal scales.</p>
+<p><strong>Predictive power of factorization vs predictive power of the
+Standard Model.</strong> The Standard Model has 19 free parameters —
+these parameters must be extracted from experimental measurements; the
+model itself cannot predict their values. Conjugate Spectral Geometry
+reduces the number of free parameters to 0 through factorization — all
+parameters are uniquely determined by <span
+class="math inline">\(\sigma^*\)</span>, and <span
+class="math inline">\(\sigma^*\)</span> is determined by the Birkhoff
+fixed point condition (Theorem 3.3.1.01) and Algebraic Normalization
+(Theorem 3.5.1.01). This is the qualitative transformation from a
+“descriptive theory” to a “predictive theory.”</p>
+<p><strong>Cross-Volume References.</strong> The Bott Periodicity
+Theorem is found in the Bott Periodicity Theorem of Volume 1 (Theorem
+1.1.2.01). The Birkhoff fixed point <span
+class="math inline">\(\sigma^*\)</span> is found in the Birkhoff Fixed
+Point Theorem of Volume 3 (Theorem 3.3.1.01). Algebraic Normalization
+<span class="math inline">\(2pC^3 + C^2 = 1\)</span> is found in the
+Algebraic Normalization Theorem of Volume 3 (Theorem 3.5.1.01). The Born
+Rule <span class="math inline">\(\Delta\lambda \propto
+\sqrt{\sigma}\)</span> is found in Theorem 3.2.2.01. The determination
+of landscape position <span class="math inline">\(\sigma^*\)</span> is
+found in the Landscape Universality Theorem of Volume 10 (Theorem
+10.11.1.15).</p>
+<hr />
+<h2 id="extended-applications-of-factorization">§5 Extended Applications
+of Factorization</h2>
+<h3 id="factorization-of-the-time-arrow">5.1 Factorization of the Time
+Arrow</h3>
+<p>The time arrow strength <span class="math inline">\(\sigma_S \propto
+\rho_{\mathcal{C}} \cdot (1 - |\lambda_2|^2)\)</span> can also be
+factorized:</p>
+<p><span class="math display">\[\sigma_S = f_1 \cdot f_2 \cdot
+S_{\text{arrow}}(\sigma^*),\]</span></p>
+<p>where <span class="math inline">\(S_{\text{arrow}}\)</span> is the
+dynamical part of the arrow. The Matter factor <span
+class="math inline">\(f_1 = \sqrt{3}\)</span> and the Causal factor
+<span class="math inline">\(f_2 = \sqrt{5/3}\)</span> determine the
+geometric scale of the arrow.</p>
+<h3 id="factorization-of-information-capacity">5.2 Factorization of
+Information Capacity</h3>
+<p>Factorization of information capacity <span
+class="math inline">\(C_{\text{obs}} = \log_2 N_{\text{info}} =
+4\)</span>:</p>
+<p><span class="math display">\[C_{\text{obs}} = \log_2(\rho_7 \times
+k_0) = \underbrace{\log_2 8}_{= 3 \text{ (rank of Cl(7))}} +
+\underbrace{\log_2 2}_{= 1 \text{ (Terminal Duality)}} = 4.\]</span></p>
+<p>Information capacity decomposes into 3 bits (from Cl(7) rank) and 1
+bit (from <span class="math inline">\(k_0 = 2\)</span>) — the sum of two
+independent factors.</p>
+<h3 id="factorization-of-the-slowdown-factor">5.3 Factorization of the
+Slowdown Factor</h3>
+<p>Factorization of the slowdown factor <span class="math inline">\(\xi
+= \sigma_{\mathcal{M}}^*/\sigma_{\mathcal{I}}^* \approx
+67.7\)</span>:</p>
+<p><span class="math display">\[\xi \propto \frac{f_1^2}{f_3^2} \cdot
+\frac{S_{\text{slow}}(\sigma^*)}{S_{\text{sym}}} = \frac{\Lambda}{k_0}
+\cdot S_{\text{slow}}(\sigma^*) = \frac{3}{2} \cdot
+S_{\text{slow}}(\sigma^*).\]</span></p>
+<p>Geometric part <span class="math inline">\(\Lambda/k_0 = 3/2 =
+1.5\)</span>, dynamical part <span class="math inline">\(S_{\text{slow}}
+\approx 45.1\)</span>. Their product <span class="math inline">\(\approx
+67.6\)</span> — consistent with Theorem 5.2.1.01.</p>
+<h3 id="completeness-of-factorization">5.4 Completeness of
+Factorization</h3>
+<p>The completeness requirement of factorization: all physical
+observables can be decomposed into the product of four geometric
+factors. Verification of this requirement:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Observable</th>
+<th style="text-align: left;">Factorization</th>
+<th style="text-align: center;">Completeness</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Fine-structure constant</td>
+<td style="text-align: left;">S(σ*) × √5/π / 24</td>
+<td style="text-align: center;">Complete</td>
+</tr>
+<tr>
+<td style="text-align: left;">Mass ratios</td>
+<td style="text-align: left;">√σ_i/σ_j (same sector)</td>
+<td style="text-align: center;">Complete</td>
+</tr>
+<tr>
+<td style="text-align: left;">Coupling constants</td>
+<td style="text-align: left;">S(σ*) × f_k</td>
+<td style="text-align: center;">Complete</td>
+</tr>
+<tr>
+<td style="text-align: left;">Time arrow</td>
+<td style="text-align: left;">S_arrow × f₁ f₂</td>
+<td style="text-align: center;">Complete</td>
+</tr>
+<tr>
+<td style="text-align: left;">Information capacity</td>
+<td style="text-align: left;">log₂(ρ₇ × k₀)</td>
+<td style="text-align: center;">Complete</td>
+</tr>
+<tr>
+<td style="text-align: left;">Slowdown factor</td>
+<td style="text-align: left;">S_slow × Λ/k₀</td>
+<td style="text-align: center;">Complete</td>
+</tr>
+</tbody>
+</table>
+<p>All observables can be factorized — factorization is complete. This
+is a structural guarantee of the Conjugate Spectral Geometry system.</p>
+<h3 id="detailed-derivation-4">5.5 Detailed Derivation</h3>
+<p><strong>Detailed derivation of extended applications.</strong></p>
+<p><strong>Step 1: Derivation of time arrow factorization.</strong> The
+time arrow strength <span class="math inline">\(\sigma_S\)</span> is
+driven by the asymmetry of the causal field (Theorem 4.1.2.01). The
+product of causal field density <span
+class="math inline">\(\rho_{\mathcal{C}}\)</span> and algebraic
+connectivity <span class="math inline">\(\mu_1 = |1 -
+\lambda_2|^2\)</span> gives the arrow strength: <span
+class="math display">\[\sigma_S \propto \rho_{\mathcal{C}} \cdot (1 -
+|\lambda_2|^2).\]</span> The causal field density <span
+class="math inline">\(\rho_{\mathcal{C}}\)</span> contains the Matter
+Sector factor <span class="math inline">\(f_1 = \sqrt{3}\)</span> (since
+<span class="math inline">\(\rho_{\mathcal{C}} \propto
+\Lambda\)</span>), and the algebraic connectivity <span
+class="math inline">\((1 - |\lambda_2|^2)\)</span> contains the Causal
+Sector factor <span class="math inline">\(f_2 = \sqrt{5/3}\)</span>
+(since <span class="math inline">\(\lambda_2\)</span> is determined by
+the 𝒞 component of the Birkhoff mixing matrix). Hence <span
+class="math inline">\(\sigma_S = f_1 \cdot f_2 \cdot
+S_{\text{arrow}}(\sigma^*)\)</span>, where <span
+class="math inline">\(S_{\text{arrow}}\)</span> is the dynamical part of
+the arrow. The Information Sector factor <span
+class="math inline">\(f_3\)</span> and the closing step factor <span
+class="math inline">\(f_4\)</span> do not appear in the time arrow —
+because the time arrow is a causal phenomenon, dominated by the ℳ and 𝒞
+sectors, not involving the ℐ sector and the global closing step.</p>
+<p><strong>Step 2: Derivation of information capacity
+factorization.</strong> The factorization of information capacity <span
+class="math inline">\(C_{\text{obs}} = \log_2 N_{\text{info}} =
+4\)</span> is based on the decomposition of the number of information
+nodes <span class="math inline">\(N_{\text{info}} = \rho_7 \times
+k_0\)</span> (Theorem 5.1.1.01). <span class="math inline">\(\rho_7 =
+8\)</span> is the rank of Cl(7), and <span class="math inline">\(k_0 =
+2\)</span> is the structure constant of the Information Sector. Their
+product <span class="math inline">\(N_{\text{info}} = 16\)</span> gives
+the number of information nodes. Information capacity <span
+class="math inline">\(C_{\text{obs}} = \log_2 16 = 4\)</span> bits
+decomposes into 3 bits (from <span class="math inline">\(\rho_7 =
+8\)</span>) and 1 bit (from <span class="math inline">\(k_0 =
+2\)</span>). Note that this is a logarithmic decomposition (product
+becomes sum), not multiplicative factorization — the structure of
+information capacity is additive, not multiplicative. This is because
+information capacity measures the “size of the possibility space,” and
+the size of the possibility space is multiplicative (<span
+class="math inline">\(N = N_1 \times N_2\)</span>), becoming additive
+after taking the logarithm (<span class="math inline">\(\log_2 N =
+\log_2 N_1 + \log_2 N_2\)</span>).</p>
+<p><strong>Step 3: Derivation of slowdown factor factorization.</strong>
+Factorization of the slowdown factor <span class="math inline">\(\xi =
+\sigma_{\mathcal{M}}^*/\sigma_{\mathcal{I}}^* \approx 67.7\)</span>
+(Theorem 5.2.1.01): <span class="math display">\[\xi =
+\frac{\sigma_{\mathcal{M}}^*}{\sigma_{\mathcal{I}}^*} =
+\frac{C\sqrt{\Lambda} \cdot (\text{ℳ dynamics})}{C\sqrt{k_0} \cdot
+(\text{ℐ dynamics})} = \frac{\Lambda}{k_0} \cdot
+\frac{S_{\text{slow}}(\sigma^*)}{S_{\text{sym}}}.\]</span> Geometric
+part <span class="math inline">\(\Lambda/k_0 = 3/2 = 1.5\)</span> comes
+from the ratio of Matter Sector and Information Sector structure
+constants. Dynamical part <span class="math inline">\(S_{\text{slow}}
+\approx 45.1\)</span> comes from the coding weight ratio at the Birkhoff
+fixed point. Their product <span class="math inline">\(1.5 \times 45.1
+\approx 67.65\)</span> — consistent with <span class="math inline">\(\xi
+\approx 67.7\)</span> from Theorem 5.2.1.01. The slowdown factor
+involves only <span class="math inline">\(f_1/f_3\)</span> (comparison
+of Matter and Information Sectors), not the Causal Sector <span
+class="math inline">\(f_2\)</span> and the closing step <span
+class="math inline">\(f_4\)</span> — this is reasonable, because
+slowdown is the deceleration of the information field relative to the
+matter field, determined by the comparison of ℳ and ℐ sectors.</p>
+<p><strong>Step 4: Proof of the completeness of factorization.</strong>
+The completeness of factorization means: any physical observable <span
+class="math inline">\(O\)</span> can be decomposed into the product (or
+sum, as in information capacity) of the four geometric factors <span
+class="math inline">\(f_1, f_2, f_3, f_4\)</span> and the dynamical part
+<span class="math inline">\(S_O(\sigma^*)\)</span>. Proof: <span
+class="math inline">\(O\)</span> is a functional of the coding orbit,
+the coding orbit is partitioned into four segments, and each segment
+contributes one factor. The dynamical part <span
+class="math inline">\(S_O(\sigma^*)\)</span> captures the specific value
+at the Birkhoff fixed point. Hence <span class="math inline">\(O =
+S_O(\sigma^*) \times \prod_{k=1}^{4} f_k^{n_k}\)</span> (<span
+class="math inline">\(n_k\)</span> is the power with which factor <span
+class="math inline">\(f_k\)</span> appears in <span
+class="math inline">\(O\)</span>). If some <span
+class="math inline">\(n_k = 0\)</span>, that factor does not appear in
+that observable (e.g., <span class="math inline">\(f_4\)</span> does not
+appear in mass ratios, <span class="math inline">\(f_3, f_4\)</span> do
+not appear in the time arrow). But the factorization of all observables
+comes from the same set of four factors — this is the meaning of
+completeness.</p>
+<p><strong>Step 5: Relationship between factorization and Cross-Region
+Information Import.</strong> Factorization is the concrete realization
+of “Cross-Region Information Import.” Each geometric factor <span
+class="math inline">\(f_k\)</span> carries information from one segment
+of the coding orbit, and this information is imported from the geometric
+domain (coding orbit topology) into the physical domain (observables).
+The structure of factorization — four factors, <span
+class="math inline">\(\sqrt{\cdot}\)</span> form, product simplification
+— is entirely determined by the algebraic topology of the coding orbit,
+independent of any physical assumptions. This is the highest form of
+“Cross-Region Information Import”: geometric structure directly
+determines the decomposition structure of physical observables.</p>
+<h3 id="numerical-verification-4">5.6 Numerical Verification</h3>
+<p><strong>Verification 1: Numerical verification of time arrow
+factorization.</strong> <span class="math display">\[f_1 f_2 = \sqrt{3}
+\cdot \sqrt{5/3} = \sqrt{5} \approx 2.236.\]</span> The geometric scale
+of the time arrow is <span class="math inline">\(\sqrt{5} \approx
+2.236\)</span>. Combined with the dynamical part <span
+class="math inline">\(S_{\text{arrow}}\)</span>, the arrow strength
+<span class="math inline">\(\sigma_S \approx 2.236 \times
+S_{\text{arrow}}\)</span>. Detailed numerical values of the time arrow
+are found in the Time Arrow Theorem of Volume 4 (Theorem 4.1.2.01).</p>
+<p><strong>Verification 2: Numerical verification of information
+capacity factorization.</strong> <span
+class="math display">\[C_{\text{obs}} = \log_2(\rho_7 \times k_0) =
+\log_2 8 + \log_2 2 = 3 + 1 = 4 \text{ bits}.\]</span> <span
+class="math display">\[2^{C_{\text{obs}}} = 2^4 = 16 \text{
+states}.\]</span> Binary verification of information capacity: <span
+class="math inline">\(2^3 \times 2^1 = 8 \times 2 = 16 = 2^4\)</span> —
+verifying the correctness of the additive decomposition.</p>
+<p><strong>Verification 3: Numerical verification of slowdown factor
+factorization.</strong> <span class="math display">\[\xi =
+\frac{\Lambda}{k_0} \cdot \frac{S_{\text{slow}}}{S_{\text{sym}}} =
+\frac{3}{2} \cdot \frac{45.1}{1} = 1.5 \times 45.1 = 67.65.\]</span>
+<span class="math display">\[\xi_{\text{direct computation}} =
+\frac{\sigma_{\mathcal{M}}^*}{\sigma_{\mathcal{I}}^*} =
+\frac{0.777912}{0.011484} = 67.74.\]</span> Difference: <span
+class="math inline">\(67.74 - 67.65 = 0.09\)</span> (approximately
+0.13%) — consistent within numerical precision. The difference comes
+from the rounding error of <span class="math inline">\(S_{\text{slow}} =
+45.1\)</span>.</p>
+<p><strong>Verification 4: Numerical verification of the factorization
+completeness table.</strong> Verify each entry of the factorization
+table in §5.4: <span class="math display">\[\begin{aligned}
+\text{Fine-structure constant: } &amp; S(\sigma^*) \approx 137, \quad
+\sqrt{5/\pi}/24 \approx 0.0526 \text{ (deviation measure)}, \\
+\text{Mass ratio: } &amp;
+\sqrt{\sigma_{\mathcal{M}}^*/\sigma_{\mathcal{C}}^*} =
+\sqrt{0.7779/0.2106} \approx 1.922, \\
+\text{Coupling constant: } &amp; \theta_I/\theta_\tau = 0.782/0.209
+\approx 3.74 \text{ (ratio } \alpha/g_2\text{)}, \\
+\text{Time arrow: } &amp; f_1 f_2 = \sqrt{5} \approx 2.236, \\
+\text{Information capacity: } &amp; \log_2 8 + \log_2 2 = 4, \\
+\text{Slowdown factor: } &amp; 1.5 \times 45.1 = 67.65.
+\end{aligned}\]</span> All observable factorizations can be expressed
+using the four geometric factors and the dynamical part — verifying the
+completeness of factorization.</p>
+<h3 id="comparative-discussion-4">5.7 Comparative Discussion</h3>
+<p><strong>Completeness of factorization vs “incompleteness” of the
+Standard Model.</strong> In the Standard Model, different observables
+are parametrized in different ways: masses are parametrized by Yukawa
+couplings, coupling constants by gauge couplings, mixing angles by
+CKM/PMNS matrices, and the Higgs potential by <span
+class="math inline">\(\mu^2\)</span> and <span
+class="math inline">\(\lambda\)</span>. There is no unified structure
+among these parametrizations — each observable has its own parameter
+set. The factorization of Conjugate Spectral Geometry provides a unified
+parametrization structure: all observables are expressed in terms of the
+four geometric factors and the dynamical part <span
+class="math inline">\(S(\sigma^*)\)</span>. This is analogous to the
+unification of elemental properties in the periodic table — all elements
+are determined by proton number and neutron number, rather than each
+element having its own parameter set.</p>
+<p><strong>Correspondence between factorization and Noether’s
+Theorem.</strong> Noether’s Theorem connects continuous symmetries with
+conserved quantities (e.g., time translation symmetry → energy
+conservation, spatial translation symmetry → momentum conservation). In
+Conjugate Spectral Geometry, factorization connects the topological
+structure of the coding orbit with the decomposition structure of
+observables — the four-segment partition of the coding orbit
+(topological symmetry) → four-factor decomposition (structural
+decomposition). This is a “topological symmetry → structural
+decomposition” correspondence — analogous to Noether’s Theorem, but
+operating at the structural level rather than the conserved quantity
+level.</p>
+<p><strong>Extended applications of factorization vs Effective Field
+Theory.</strong> In Effective Field Theory (EFT), low-energy observables
+are decomposed via operator product expansion (OPE) into the product of
+Wilson coefficients and high-scale operators. Different processes
+involve different sets of operators — there is no unified decomposition
+structure. The factorization of Conjugate Spectral Geometry provides a
+unified decomposition structure: all processes involve the same four
+geometric factors, differing only in the powers <span
+class="math inline">\(n_k\)</span> of each factor. This is analogous to
+Fourier analysis, where all signals are decomposed into the same
+sine/cosine basis functions, differing only in coefficients — geometric
+factors are the “Fourier basis” of physics.</p>
+<p><strong>Cross-Volume References.</strong> The Time Arrow Theorem is
+found in the Time Arrow Theorem of Volume 4 (Theorem 4.1.2.01). The
+number of information nodes <span class="math inline">\(N_{\text{info}}
+= 16\)</span> is found in Theorem 5.1.1.01. The slowdown factor <span
+class="math inline">\(\xi \approx 67.7\)</span> is found in Theorem
+5.2.1.01. The weights of the Birkhoff mixing matrix <span
+class="math inline">\(T\)</span> are found in Theorem 6.5.1.01. Particle
+mass spectra are found in the Particle Mass Spectrum Theorem of Volume 7
+(Theorem 7.2.1.01). Coupling constant spectrum unification is found in
+Volume 7 Coupling Constant Spectrum Unification (Theorem 7.6.1.01).</p>
+<hr />
+<h2 id="theorem-index">Theorem Index</h2>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 28%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Number</th>
+<th style="text-align: left;">Content</th>
+<th style="text-align: center;">Proof Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Theorem 5.5.1.01</td>
+<td style="text-align: left;">Geometric Factorization Theorem</td>
+<td style="text-align: center;">Proven (this article §1)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>

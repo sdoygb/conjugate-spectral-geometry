@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.1 ℳ Field Normal Geometry Structure | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Version: 260801.1">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/3/3.1_Matter_Field_Normal_Geometry_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">3.1 ℳ Field Normal Geometry Structure</span>
+  </nav>
+  <main class="article-content">
+<h1 id="ℳ-field-normal-geometry-structure">3.1 ℳ Field Normal Geometry
+Structure</h1>
+<p><strong>Version</strong>: 260801.1</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>This article defines the normal geometry structure of the Matter
+Sector ℳ. The ℳ sector corresponds to the Cl(0)→Cl(3) segment of the
+Coding Orbit, whose algebraic foundation is the Semisimple Splitting
+Cl(3) ≅ ℍ ⊕ ℍ. The normal geometry of the Matter Sector is described by
+the <span class="math inline">\(S^3(r_M)\)</span> sphere, with radius
+<span class="math inline">\(r_M\)</span> locked by the Interlock
+Constants. The two direct summands of the Semisimple Splitting
+correspond to left-handed and right-handed helicity of matter. This
+article further provides the geometric realization of Cl(3) ≅ ℍ ⊕ ℍ, the
+detailed construction of the normal projection operator, and the
+algebraic definition of the Mass Operator <span
+class="math inline">\(\hat{M}\)</span>, laying the foundation for mass
+generation dynamics.</p>
+<hr />
+<h2 id="chapter-1-introduction">Chapter 1　Introduction</h2>
+<p>This article is No. 3.1 in the Conjugate Spectral Geometry Series.
+The foundational framework of the series (Sole Axiom δ, Clifford
+Algebra, Coding Orbit structure, Born Rule, interaction mapping) has
+been established in the foundational theorems of Conjugate Spectral
+Geometry.</p>
+<p><strong>Core Positioning</strong>: This article defines the normal
+geometry structure of the Matter Sector ℳ. The ℳ sector corresponds to
+the Cl(0)→Cl(3) segment of the Coding Orbit, whose algebraic foundation
+is the Semisimple Splitting Cl(3) ≅ ℍ ⊕ ℍ (Theorem 7.8.6.03). This
+article provides the complete construction of the <span
+class="math inline">\(S^3(r_M)\)</span> spherical geometry, the Dirac
+Operator spectrum and Spectral Gap, the Coding Weight distribution, and
+the algebraic definition of the Mass Operator M̂, laying the geometric
+foundation for subsequent mass generation, sector coupling, and
+higher-order spectral expansion.</p>
+<p><strong>Key Dependencies</strong>: This article directly depends on
+Sole Axiom δ → Clifford Algebra (Theorem 10.12.2.01) → Cl(3) Semisimple
+Splitting (Theorem 7.8.6.03) → Birkhoff Mixing Matrix (Theorem
+2.3.7.02). The Structure Constants Λ=3, k₀=2, ΔΘ=5 are locked by the
+{2,3,5} Interlock Property, Consummate Reproduction (Theorem 2.3.7.01)
+establishes the bootstrap closure chain, and parameters are determined
+by local region properties.</p>
+<p><strong>Core Results</strong>: (1) Geometric realization of Cl(3) ≅ ℍ
+⊕ ℍ, construction of the normal projection operator, and helicity
+splitting; (2) Complete parametrization of <span
+class="math inline">\(S^3(r_M)\)</span> spherical geometry and rigorous
+derivation of the Dirac Operator spectrum; (3) Algebraic definition of
+the Mass Operator M̂ = {n̂_Cl, D_M}/2 + Cl(3) structure correction.</p>
+<hr />
+<h2 id="contents">Contents</h2>
+<p>§1　Algebraic Foundation of the Matter Sector 　1.1　Semisimple
+Splitting of Cl(3) 　1.2　Geometric Realization of the Semisimple
+Splitting 　1.3　Helicity Splitting 　1.4　Irreducible
+Representations</p>
+<p>§2　Normal Geometry 　2.1　S³ Sphere 　2.2　Construction of the
+Normal Projection Operator 　2.3　Radius Locking 　2.4　Scalar Curvature
+　2.5　Normal Connection</p>
+<p>§3　Dirac Operator of the Matter Field 　3.1　Definition of the Dirac
+Operator 　3.2　Spectrum 　3.3　Spectral Gap 　3.4　Spectral Symmetry
+and Helicity</p>
+<p>§4　Coding Weights of the ℳ Sector 　4.1　Initial Weights
+　4.2　Terminal Weights 　4.3　Physical Meaning 　4.4　Algebraic
+Normalization Constraint</p>
+<p>§5　Algebraic Definition of the Mass Operator 　5.1　Construction of
+the Mass Operator 　5.2　Mass Operator and Helicity 　5.3　Spectrum of
+the Mass Operator 　5.4　Connection to Subsequent Chapters</p>
+<hr />
+<h2 id="algebraic-foundation-of-the-matter-sector">§1 Algebraic
+Foundation of the Matter Sector</h2>
+<h3 id="semisimple-splitting-of-cl3">1.1 Semisimple Splitting of
+Cl(3)</h3>
+<p>The algebraic foundation of the Matter Sector is Cl(3) ≅ ℍ ⊕ ℍ
+(Theorem 7.8.6.03). The volume element <span
+class="math inline">\(\omega_3 = e_1 e_2 e_3\)</span> satisfies <span
+class="math inline">\(\omega_3^2 =1\)</span>, producing the
+projections:</p>
+<p><span class="math display">\[P_+ = \frac{1+\omega_3}{2}, \quad P_- =
+\frac{1 - \omega_3}{2}.\]</span></p>
+<p>The two projections divide Cl(3) into two independent quaternion
+subalgebras:</p>
+<p><span class="math display">\[\text{Cl}(3) = P_+ \text{Cl}(3) \oplus
+P_- \text{Cl}(3) \cong \mathbb{H} \oplus \mathbb{H}.\]</span></p>
+<h3 id="geometric-realization-of-the-semisimple-splitting">1.2 Geometric
+Realization of the Semisimple Splitting</h3>
+<p>The Semisimple Splitting is not only an algebraic fact but also a
+geometric realization. Selecting the generators <span
+class="math inline">\(e_1, e_2, e_3\)</span> of Cl(3) as three mutually
+orthogonal normal vector fields on <span
+class="math inline">\(S^3(r_M)\)</span>, the volume element <span
+class="math inline">\(\omega_3 = e_1 e_2 e_3\)</span> gives a normal
+3-form at each point of <span class="math inline">\(S^3\)</span>. Since
+the normal bundle of <span class="math inline">\(S^3\)</span> in <span
+class="math inline">\(\mathbb{R}^4\)</span> is one-dimensional, <span
+class="math inline">\(\omega_3\)</span> actually defines a
+<strong>global chiral structure</strong> on <span
+class="math inline">\(S^3\)</span>.</p>
+<p>Concretely, denote the coordinates of <span
+class="math inline">\(\mathbb{R}^4\)</span> as <span
+class="math inline">\((x_1, x_2, x_3, x_4)\)</span>, and define two
+Complex Structures:</p>
+<p><span class="math display">\[J_+ : (x_1, x_2, x_3, x_4) \mapsto
+(-x_2, x_1, -x_4, x_3),\]</span> <span class="math display">\[J_- :
+(x_1, x_2, x_3, x_4) \mapsto (-x_2, x_1, x_4, -x_3).\]</span></p>
+<p>One can verify that <span class="math inline">\(J_+^2 = J_-^2 =
+-\text{id}\)</span>, and <span class="math inline">\(J_+ J_- = -J_-
+J_+\)</span>. These two Complex Structures commute with <span
+class="math inline">\(P_+, P_-\)</span> respectively, thereby realizing
+<span class="math inline">\(S^3\)</span> as the geometric branches
+corresponding to the two quaternion subalgebras.</p>
+<p>The geometric significance of the Semisimple Splitting is that <span
+class="math inline">\(S^3(r_M)\)</span> in <span
+class="math inline">\(\mathbb{R}^4\)</span> admits two inequivalent
+Complex Structures, which correspond respectively to the geometric
+carriers of right-handed and left-handed Weyl Spinors. This is
+consistent with the real structure <span class="math inline">\(Cl_{3,0}
+\cong \mathbb{H} \oplus \mathbb{H}\)</span> of Cl(3) in the Bott
+Periodicity table.</p>
+<h3 id="helicity-splitting">1.3 Helicity Splitting</h3>
+<p>The two direct summands of the Semisimple Splitting correspond to the
+two helicities of matter:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Direct Summand</th>
+<th style="text-align: left;">Projection</th>
+<th style="text-align: center;">Helicity</th>
+<th style="text-align: left;">Physical Correspondence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">P₊ Cl(3)</td>
+<td style="text-align: left;">P₊</td>
+<td style="text-align: center;">Right-handed</td>
+<td style="text-align: left;">Right-handed particles</td>
+</tr>
+<tr>
+<td style="text-align: left;">P₋ Cl(3)</td>
+<td style="text-align: left;">P₋</td>
+<td style="text-align: center;">Left-handed</td>
+<td style="text-align: left;">Left-handed particles</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Theorem 3.1.1.01 (Helicity Splitting Theorem).</strong> The
+left-handed and right-handed helicities of the Matter Sector are
+uniquely determined by the Semisimple Splitting of Cl(3), without
+introducing additional parameters.</p>
+<p><strong>Proof.</strong> <span class="math inline">\(\omega_3^2
+=1\)</span> is a rigid property of the Clifford Algebra——the sign of
+<span class="math inline">\(\omega_3\)</span> is not adjustable. The
+projections <span class="math inline">\(P_{\pm}\)</span> are algebraic
+functions of <span class="math inline">\(\omega_3\)</span>, and there
+exist no continuous parameters to alter the splitting. Hence the
+helicity splitting is algebraically rigid. ∎</p>
+<h3 id="irreducible-representations">1.4 Irreducible
+Representations</h3>
+<p>The irreducible representation dimension of Cl(3) is <span
+class="math inline">\(\rho_3 = 4\)</span>, but the Semisimple Splitting
+separates it into two 2-dimensional representations:</p>
+<p><span class="math display">\[\rho_3^{(+)} = 2, \quad \rho_3^{(-)} =
+2.\]</span></p>
+<p>These two 2-dimensional representations correspond to Weyl
+Spinors——left-handed and right-handed Weyl Spinors each with 2
+components. This is the algebraic basis for the Matter Sector as the
+“minimal complete spinor carrier”: Cl(3) is the first Clifford Algebra
+on the Coding Orbit to simultaneously accommodate left-handed and
+right-handed Weyl Spinors.</p>
+<hr />
+<h2 id="normal-geometry">§2 Normal Geometry</h2>
+<h3 id="s³-sphere">2.1 S³ Sphere</h3>
+<p>The normal geometry of the Matter Sector is described by the
+three-dimensional sphere <span
+class="math inline">\(S^3(r_M)\)</span>:</p>
+<p><span class="math display">\[S^3(r_M) = \{(x_1, x_2, x_3, x_4) \in
+\mathbb{R}^4 : x_1^2 + x_2^2 + x_3^2 + x_4^2 = r_M^2\}.\]</span></p>
+<p><span class="math inline">\(S^3\)</span> is a compact, simply
+connected manifold with constant curvature <span
+class="math inline">\(6/r_M^2\)</span>. In Conjugate Spectral Geometry,
+<span class="math inline">\(S^3\)</span> is not an arbitrary
+background——it is the “unit sphere” of the Cl(3) irreducible
+representation space <span class="math inline">\(\mathbb{R}^4\)</span>,
+uniquely determined by the algebraic structure.</p>
+<h3 id="construction-of-the-normal-projection-operator">2.2 Construction
+of the Normal Projection Operator</h3>
+<p>The normal projection is the core construction of the Matter Sector
+geometry. Given the tangent bundle <span
+class="math inline">\(TS^3\)</span> and the normal bundle <span
+class="math inline">\(NS^3\)</span> on <span
+class="math inline">\(S^3(r_M)\)</span>, the normal projection operator
+<span class="math inline">\(\Pi_N\)</span> projects an arbitrary vector
+field <span class="math inline">\(V \in
+\Gamma(T\mathbb{R}^4|_{S^3})\)</span> onto the normal bundle:</p>
+<p><span class="math display">\[\Pi_N(V) = \langle V, \hat{n} \rangle
+\hat{n},\]</span></p>
+<p>where <span class="math inline">\(\hat{n} = x / r_M\)</span> is the
+unit outward normal of <span class="math inline">\(S^3\)</span>. The
+normal bundle <span class="math inline">\(NS^3\)</span> is
+one-dimensional in <span class="math inline">\(\mathbb{R}^4\)</span>,
+spanned by <span class="math inline">\(\hat{n}\)</span>.</p>
+<p>Combining the normal projection with Clifford multiplication, we
+define the <strong>Normal Clifford Multiplier</strong>:</p>
+<p><span class="math display">\[\hat{n}_{\text{Cl}} = \sum_{i=1}^{4}
+\frac{x_i}{r_M} \gamma_i \in \text{Cl}(4),\]</span></p>
+<p>where <span class="math inline">\(\gamma_i\)</span> are the standard
+Dirac matrices on <span class="math inline">\(\mathbb{R}^4\)</span>.
+<span class="math inline">\(\hat{n}_{\text{Cl}}\)</span> satisfies <span
+class="math inline">\(\hat{n}_{\text{Cl}}^2 =1\)</span>, hence it
+induces the helicity splitting of the spinor bundle on <span
+class="math inline">\(S^3\)</span>:</p>
+<p><span class="math display">\[\Sigma_\pm = \frac{1 \pm
+\hat{n}_{\text{Cl}}}{2} \cdot \Sigma.\]</span></p>
+<p>This is precisely the geometric realization of <span
+class="math inline">\(P_\pm\)</span> in §1.2——the algebraic projections
+<span class="math inline">\(P_\pm\)</span> and the geometric projections
+<span class="math inline">\(\Sigma_\pm\)</span> are identified via the
+Normal Clifford Multiplier <span
+class="math inline">\(\hat{n}_{\text{Cl}}\)</span>.</p>
+<p><strong>Proposition 3.1.2.01 (Normal-Algebraic
+Correspondence).</strong> The Normal Clifford Multiplier <span
+class="math inline">\(\hat{n}_{\text{Cl}}\)</span> and the volume
+element <span class="math inline">\(\omega_3\)</span> are conjugate in
+the spinor representation:</p>
+<p><span class="math display">\[\hat{n}_{\text{Cl}} = U^{-1} \omega_3
+U,\]</span></p>
+<p>where <span class="math inline">\(U\)</span> is the restriction map
+<span class="math inline">\(\text{Cl}(4) \to \text{Cl}(3)\)</span>.
+Thus, the geometric normal projection and the algebraic Semisimple
+Splitting are two descriptions of the same structure.</p>
+<h3 id="radius-locking">2.3 Radius Locking</h3>
+<p>The radius <span class="math inline">\(r_M\)</span> of the Matter
+Sector is locked by the Interlock Constants. The radius ratios of the
+three sectors are:</p>
+<p><span class="math display">\[r_M : r_C : r_I = 1 : \frac{1}{\sqrt{3}}
+: \frac{1}{\sqrt{6}}.\]</span></p>
+<p>This ratio is jointly determined by the three Structure Constants
+<span class="math inline">\(\Lambda = 3\)</span>, <span
+class="math inline">\(\Delta\Theta = 5\)</span>, <span
+class="math inline">\(k_0 = 2\)</span>——it is not adjustable.</p>
+<p><strong>Theorem 3.1.2.02 (Radius Locking Theorem).</strong> The
+radius ratios of the three sectors <span class="math inline">\(r_M : r_C
+: r_I = 1 : 1/\sqrt{3} : 1/\sqrt{6}\)</span> are uniquely determined by
+the Interlock Constants.</p>
+<p><strong>Proof.</strong></p>
+<ul>
+<li><span class="math inline">\(r_M = 1\)</span> (normalization
+baseline)</li>
+<li><span class="math inline">\(r_C = 1/\sqrt{\Lambda} =
+1/\sqrt{3}\)</span> (the Semisimple Splitting of <span
+class="math inline">\(\Lambda = 3\)</span> shrinks the Causal Sector
+radius by a factor of <span
+class="math inline">\(\sqrt{3}\)</span>)</li>
+<li><span class="math inline">\(r_I = 1/\sqrt{\Lambda k_0} = 1/\sqrt{3
+\times 2} = 1/\sqrt{6}\)</span> (the Information Sector radius is
+jointly determined by <span class="math inline">\(\Lambda\)</span> and
+<span class="math inline">\(k_0\)</span>)</li>
+</ul>
+<p>The exact values of the ratios are determined by the growth rates of
+irreducible representation dimensions at each step of the Bott
+Periodicity table. ∎</p>
+<blockquote>
+<p><strong>Note (Relationship between Radius Ratios and χ)</strong>: The
+radius ratios <span class="math inline">\(r_M:r_C:r_I =
+1:1/\sqrt{3}:1/\sqrt{6}\)</span> are determined by the Structure
+Constants <span class="math inline">\(\Lambda=3\)</span>, <span
+class="math inline">\(k_0=2\)</span>, and are different geometric
+quantities from the Cumulative Stretching Factors <span
+class="math inline">\(\chi=(8,9,1)\)</span>. <span
+class="math inline">\(\chi\)</span> describes the “cumulative stretch”
+of each sector on the Coding Orbit (the product of Bott periodicity step
+count and irreducible representation dimension), while the radius ratios
+describe the “compactness” of the normal sphere <span
+class="math inline">\(S^3\)</span> of each sector (the step count in the
+Semisimple Splitting). The two are indirectly related through the fixed
+point of <span class="math inline">\(M_5 = T \cdot
+\text{diag}(\chi)\)</span>——<span class="math inline">\(\chi\)</span>
+influences the terminal weight <span
+class="math inline">\(\sigma^*\)</span> after Birkhoff mixing, and <span
+class="math inline">\(\sigma^*\)</span> is related to the Spectral Gap
+<span class="math inline">\(\Delta\lambda \propto 1/r\)</span> via the
+Born Rule——but there is no simple <span class="math inline">\(r_i
+\propto \chi_i\)</span> or <span class="math inline">\(r_i \propto
+1/\chi_i\)</span> relationship.</p>
+</blockquote>
+<h3 id="scalar-curvature">2.4 Scalar Curvature</h3>
+<p>The Scalar Curvature of <span class="math inline">\(S^3(r_M)\)</span>
+is:</p>
+<p><span class="math display">\[R_M = \frac{6}{r_M^2} = 6.\]</span></p>
+<p>Scalar Curvatures of the three sectors:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Sector</th>
+<th style="text-align: center;">Radius</th>
+<th style="text-align: center;">Scalar Curvature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ℳ</td>
+<td style="text-align: center;">r_M = 1</td>
+<td style="text-align: center;">R_M = 6</td>
+</tr>
+<tr>
+<td style="text-align: left;">𝒞</td>
+<td style="text-align: center;">r_C = 1/√3</td>
+<td style="text-align: center;">R_C = 18</td>
+</tr>
+<tr>
+<td style="text-align: left;">ℐ</td>
+<td style="text-align: center;">r_I = 1/√6</td>
+<td style="text-align: center;">R_I = 36</td>
+</tr>
+</tbody>
+</table>
+<p>The curvature of the Causal Sector is 3 times that of the Matter
+Sector, and the curvature of the Information Sector is 6 times that of
+the Matter Sector——reflecting the increasing “compactness” of the
+sectors on the Coding Orbit.</p>
+<h3 id="normal-connection">2.5 Normal Connection</h3>
+<p>Although the normal bundle <span class="math inline">\(NS^3\)</span>
+is one-dimensional, it still carries a trivial <span
+class="math inline">\(U(1)\)</span> connection. In Conjugate Spectral
+Geometry, this normal <span class="math inline">\(U(1)\)</span>
+connection corresponds to the <strong>electromagnetic phase</strong> of
+the Matter Sector:</p>
+<p><span class="math display">\[\nabla^{\text{normal}} = d i
+A_M,\]</span></p>
+<p>where <span class="math inline">\(A_M\)</span> is the potential
+function of the normal connection. Since <span
+class="math inline">\(S^3\)</span> is simply connected, <span
+class="math inline">\(A_M\)</span> can be taken as zero globally, but it
+still contributes phase factors in local coordinate systems. The
+curvature of the normal connection is zero——consistent with the global
+curvature-free property of the electromagnetic field (no Magnetic
+Monopoles).</p>
+<hr />
+<h2 id="dirac-operator-of-the-matter-field">§3 Dirac Operator of the
+Matter Field</h2>
+<h3 id="definition-of-the-dirac-operator">3.1 Definition of the Dirac
+Operator</h3>
+<p>The Dirac Operator <span class="math inline">\(\mathcal{D}_M\)</span>
+of the Matter Sector acts on spinor fields on <span
+class="math inline">\(S^3(r_M)\)</span>:</p>
+<p><span class="math display">\[\mathcal{D}_M = \sum_{i=1}^{3} e_i \cdot
+\nabla_{e_i},\]</span></p>
+<p>where <span class="math inline">\(e_i\)</span> are the generators of
+Cl(3) and <span class="math inline">\(\nabla\)</span> is the Levi-Civita
+connection on <span class="math inline">\(S^3\)</span>. Equivalently,
+using the normal projection, <span
+class="math inline">\(\mathcal{D}_M\)</span> can be written as the
+tangential restriction of the Dirac Operator <span
+class="math inline">\(\mathcal{D}_{\mathbb{R}^4}\)</span> on <span
+class="math inline">\(\mathbb{R}^4\)</span> to <span
+class="math inline">\(S^3\)</span>:</p>
+<p><span class="math display">\[\mathcal{D}_M = \Pi_T \circ
+\mathcal{D}_{\mathbb{R}^4} \circ \Pi_T,\]</span></p>
+<p>where <span class="math inline">\(\Pi_T = 1 - \Pi_N\)</span> is the
+tangential projection. This form shows that <span
+class="math inline">\(\mathcal{D}_M\)</span> is entirely determined by
+the normal geometry——the normal projection <span
+class="math inline">\(\Pi_N\)</span> is the geometric prototype of the
+Mass Operator.</p>
+<h3 id="spectrum">3.2 Spectrum</h3>
+<p>The spectrum of the Dirac Operator on <span
+class="math inline">\(S^3\)</span> is discrete:</p>
+<p><span class="math display">\[\lambda_n = \pm \frac{n+1}{r_M}, \quad n
+= 0, 1, 2, \dots\]</span></p>
+<p>The multiplicity of each Eigenvalue is <span
+class="math inline">\((n+1)(n+2)\)</span>. The ground state (<span
+class="math inline">\(n=0\)</span>) has Eigenvalues <span
+class="math inline">\(\lambda_0 = \pm 1/r_M = \pm 1\)</span>, with
+multiplicity 2——corresponding to the two Weyl Spinor components.</p>
+<h3 id="spectral-gap">3.3 Spectral Gap</h3>
+<p><strong>Theorem 3.1.3.01 (Matter Sector Spectral Gap).</strong> The
+ground state Spectral Gap of the Matter Sector is:</p>
+<p><span class="math display">\[\Delta\lambda_M = |\lambda_0^+ -
+\lambda_0^-| = \frac{2}{r_M} = 2.\]</span></p>
+<p>By the Born Rule (Theorem 1.3.4.01), its relation to the Coding
+Weight <span class="math inline">\(\sigma_M\)</span> is:</p>
+<p><span class="math display">\[\Delta\lambda_M \propto
+\sqrt{\sigma_M}.\]</span></p>
+<p><strong>Proof.</strong> The spectrum of the Dirac Operator <span
+class="math inline">\(\mathcal{D}_M\)</span> on <span
+class="math inline">\(S^3(r_M)\)</span> is completely determined by
+spherical harmonic analysis. The ground state is given by the <span
+class="math inline">\(n = 0\)</span> Weyl Spinors, with Eigenvalues
+<span class="math inline">\(\pm 1/r_M\)</span>. The gap <span
+class="math inline">\(2/r_M\)</span> is the minimal “energy difference”
+of the Cl(3) irreducible representation, reflecting that the Semisimple
+Splitting separates left-handed and right-handed spinors into two
+independent energy levels. The non-vanishing of the gap is the geometric
+prerequisite for matter to possess mass. ∎</p>
+<h3 id="spectral-symmetry-and-helicity">3.4 Spectral Symmetry and
+Helicity</h3>
+<p>The positive-negative symmetry of the spectrum <span
+class="math inline">\(\lambda_n = \pm (n+1)/r_M\)</span> corresponds to
+helicity reversal: <span class="math inline">\(\lambda_n^+\)</span>
+corresponds to right-handed Weyl Spinors, <span
+class="math inline">\(\lambda_n^-\)</span> to left-handed Weyl Spinors.
+When the Matter Sector and Causal Sector are decoupled (<span
+class="math inline">\(\theta_\tau \to 0\)</span>), the positive and
+negative spectra are strictly symmetric, and the mass eigenstates are
+helicity eigenstates——mass is zero.</p>
+<p>When the ℳ-𝒞 coupling is turned on (<span
+class="math inline">\(\theta_\tau \neq 0\)</span>), the Triality 3-cycle
+<span class="math inline">\(\tau\)</span> mixes left- and right-handed
+helicities, the positive and negative spectra are no longer symmetric,
+and the mass eigenstates become linear combinations of left- and
+right-handed spinors——mass emerges. This mechanism is developed in
+detail in Sections 3.2 and 3.3.</p>
+<hr />
+<h2 id="coding-weights-of-the-ℳ-sector">§4 Coding Weights of the ℳ
+Sector</h2>
+<h3 id="initial-weights">4.1 Initial Weights</h3>
+<p>The initial Coding Weight of the Matter Sector is determined by the
+pullback initialization (Theorem 4.19d):</p>
+<p><span class="math display">\[\sigma_M^{(3)} \propto
+\frac{1}{\chi_M^2},\]</span></p>
+<p>where <span class="math inline">\(\chi_M = 8\)</span> is the
+Cumulative Stretching Factor of the Matter Sector. Hence:</p>
+<p><span class="math display">\[\sigma_M^{(3)} \propto
+\frac{1}{64}.\]</span></p>
+<h3 id="terminal-weights">4.2 Terminal Weights</h3>
+<p>After self-consistent iteration of the <span
+class="math inline">\(M_5\)</span> Birkhoff Mixing Matrix (Theorem
+2.3.7.02), the terminal weight of the Matter Sector is:</p>
+<p><span class="math display">\[\sigma_M^* \approx
+0.777912.\]</span></p>
+<p>This is the largest weight among the three sectors——the Matter Sector
+dominates in Coding Weight, consistent with the dominant role of matter
+in the physical world.</p>
+<h3 id="physical-meaning">4.3 Physical Meaning</h3>
+<p><span class="math inline">\(\sigma_M^* \approx 0.777912\)</span>
+implies:</p>
+<ol type="1">
+<li>The Matter Sector contributes approximately 78% of the coding
+information</li>
+<li>The Matter Sector has the largest Spectral Gap——the energy level
+spacing of the matter field is the largest</li>
+<li>In the Algebraic Action <span
+class="math inline">\(S(\sigma)\)</span>, the individual contribution of
+the Matter Sector <span class="math inline">\(1/\sigma_M \approx
+1.285\)</span> is the smallest——the matter field is “the most
+stable”</li>
+</ol>
+<h3 id="algebraic-normalization-constraint">4.4 Algebraic Normalization
+Constraint</h3>
+<p>The Matter Sector weight <span
+class="math inline">\(\sigma_M^*\)</span> is compatible with the
+Algebraic Normalization condition <span class="math inline">\(2 p C^3 +
+C^2 = 1\)</span> (<span class="math inline">\(p = \sqrt{\sigma_M
+\sigma_C \sigma_I}\)</span>). Substituting the fixed point:</p>
+<p><span class="math display">\[p^* = \sqrt{0.777912 \times 0.210603
+\times 0.011484} \approx 0.0434,\]</span></p>
+<p>corresponding to the normalization constant <span
+class="math inline">\(C^* \approx 0.904\)</span>. This constraint binds
+the Matter, Causal, and Information Sectors together in a nonlinear
+fashion——any change in a single sector’s weight propagates to the other
+sectors through <span class="math inline">\(C\)</span>.</p>
+<hr />
+<h2 id="algebraic-definition-of-the-mass-operator">§5 Algebraic
+Definition of the Mass Operator</h2>
+<h3 id="construction-of-the-mass-operator">5.1 Construction of the Mass
+Operator</h3>
+<p>In Conjugate Spectral Geometry, mass is not an external parameter but
+an operator output of the geometric structure. Define the <strong>Mass
+Operator</strong> <span class="math inline">\(\hat{M}\)</span> as the
+composition of the Normal Clifford Multiplier and the Dirac
+Operator:</p>
+<p><span class="math display">\[\hat{M} = \hat{n}_{\text{Cl}} \cdot
+\mathcal{D}_M\mathcal{D}_M \cdot \hat{n}_{\text{Cl}}.\]</span></p>
+<p>Since <span class="math inline">\(\hat{n}_{\text{Cl}}^2 =1\)</span>
+and <span class="math inline">\(\hat{n}_{\text{Cl}}\)</span>
+anticommutes with <span class="math inline">\(\mathcal{D}_M\)</span>
+(orthogonality of normal and tangential directions), the above
+antisymmetric combination vanishes. Therefore, the correct definition of
+the Mass Operator should take the <strong>symmetric
+combination</strong>:</p>
+<p><span class="math display">\[\hat{M} = \frac{1}{2}
+\{\hat{n}_{\text{Cl}}, \mathcal{D}_M\} + \text{Cl}(3) \text{ structure
+correction}.\]</span></p>
+<p>Under the Cl(3) Semisimple Splitting, the Eigenvalues of <span
+class="math inline">\(\hat{M}\)</span> are jointly determined by the
+Spectral Gap <span class="math inline">\(\Delta\lambda_M\)</span> and
+the Coding Weight <span class="math inline">\(\sigma_M\)</span>:</p>
+<p><span class="math display">\[m_M = K \cdot \Delta\lambda_M \cdot
+\sqrt{\sigma_M^*} = K \cdot \frac{2}{r_M} \cdot
+\sqrt{0.777912},\]</span></p>
+<p>where <span class="math inline">\(K\)</span> is the geometric factor
+given by <span class="math inline">\(\sin^3\theta_M\)</span> (see
+Section 3.2 for details). This construction of the Mass Operator
+guarantees that mass is the <strong>product of normal geometry and
+algebraic weight</strong>——determined purely by the structure of the ℳ
+sector.</p>
+<h3 id="mass-operator-and-helicity">5.2 Mass Operator and Helicity</h3>
+<p>The commutation relations between the Mass Operator <span
+class="math inline">\(\hat{M}\)</span> and the helicity projections
+<span class="math inline">\(P_\pm\)</span> determine the helicity
+structure of mass. Since <span
+class="math inline">\(\hat{n}_{\text{Cl}}\)</span> takes Eigenvalues
+<span class="math inline">\(\pm 1\)</span> under <span
+class="math inline">\(P_\pm\)</span> respectively, the Mass Operator
+splits in the diagonal basis as:</p>
+<p><span class="math display">\[\hat{M} = \hat{M}_+ \cdot P_+ +
+\hat{M}_- \cdot P_-.\]</span></p>
+<p>At the ℳ sector self-consistent fixed point, <span
+class="math inline">\(\hat{M}_+ = \hat{M}_-\)</span>——left- and
+right-handed masses are equal, which is the geometric reason why the
+mass eigenstates are Dirac spinors. When ℳ-𝒞 coupling is turned on,
+<span class="math inline">\(\hat{M}_+ \neq \hat{M}_-\)</span>, giving
+the geometric condition for Majorana mass splitting.</p>
+<h3 id="spectrum-of-the-mass-operator">5.3 Spectrum of the Mass
+Operator</h3>
+<p>The spectrum of the Mass Operator <span
+class="math inline">\(\hat{M}\)</span> corresponds one-to-one with the
+spectrum of the Dirac Operator <span
+class="math inline">\(\mathcal{D}_M\)</span>:</p>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 35%" />
+<col style="width: 28%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Dirac Eigenvalue</th>
+<th style="text-align: center;">Mass Operator Eigenvalue</th>
+<th style="text-align: left;">Physical Correspondence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">λ₀ = ±1/r_M</td>
+<td style="text-align: center;">m₀ = K · 2/r_M · √σ_M^*</td>
+<td style="text-align: left;">Ground state mass</td>
+</tr>
+<tr>
+<td style="text-align: center;">λ₁ = ±2/r_M</td>
+<td style="text-align: center;">m₁ = K · 4/r_M · √σ_M^*</td>
+<td style="text-align: left;">First excited state</td>
+</tr>
+<tr>
+<td style="text-align: center;">λ_n = ±(n+1)/r_M</td>
+<td style="text-align: center;">m_n = K · 2(n+1)/r_M · √σ_M^*</td>
+<td style="text-align: left;">n-th excited state</td>
+</tr>
+</tbody>
+</table>
+<p>The discreteness of the mass spectrum shares the same origin as the
+discreteness of the Dirac spectrum——both come from the compactness of
+<span class="math inline">\(S^3\)</span>. The ratio of excited-state
+mass to ground-state mass is <span class="math inline">\(m_n / m_0 =
+n+1\)</span>; this equally-spaced structure, under modulation by the
+breathing mode, produces the non-equally-spaced three-generation lepton
+spectrum (see Section 3.5 for details).</p>
+<h3 id="connection-to-subsequent-chapters">5.4 Connection to Subsequent
+Chapters</h3>
+<p>In the Eigenvalue expression of the Mass Operator <span
+class="math inline">\(\hat{M}\)</span>, <span class="math inline">\(m_M
+= K \cdot \Delta\lambda_M \cdot \sqrt{\sigma_M^*}\)</span>, the concrete
+derivation of the geometric factor <span class="math inline">\(K =
+\sin^3\theta_M\)</span>, the numerical determination of the constant
+<span class="math inline">\(K\)</span>, and the computation of the
+three-generation lepton mass ratios will be given in Section 3.2 (Mass
+Generation Dynamics). The normal geometry structure is the “hardware” of
+mass generation, while the Born Rule and the self-consistent iteration
+of Birkhoff mixing are the “software” of mass generation——together they
+determine the complete mass spectrum of matter particles.</p>
+<p>It must be emphasized that the construction of the Mass Operator
+<span class="math inline">\(\hat{M}\)</span> relies entirely on the
+normal geometry of the ℳ sector——the symmetric combination of the Normal
+Clifford Multiplier <span
+class="math inline">\(\hat{n}_{\text{Cl}}\)</span> and the Dirac
+Operator <span class="math inline">\(\mathcal{D}_M\)</span> yields the
+algebraic definition of mass. This construction is determined by local
+region properties, entirely fixed by the Cl(3) Semisimple Splitting and
+the <span class="math inline">\(S^3\)</span> spherical geometry.</p>
+<hr />
+<h2 id="theorem-index">Theorem Index</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Number</th>
+<th style="text-align: left;">Content</th>
+<th style="text-align: center;">Proof Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Theorem 2.3.2.03</td>
+<td style="text-align: left;">Helicity Splitting Theorem</td>
+<td style="text-align: center;">Proved (§1.3)</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 2.3.2.04</td>
+<td style="text-align: left;">Radius Locking Theorem</td>
+<td style="text-align: center;">Proved (§2.3)</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 3.1.3.01</td>
+<td style="text-align: left;">Matter Sector Spectral Gap</td>
+<td style="text-align: center;">Proved (§3.3)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="references">References</h2>
+<ul>
+<li>Lawson, Michelsohn, <em>Spin Geometry</em>, Princeton University
+Press</li>
+<li>Lawson, Michelsohn, <em>Spin Geometry</em>, Chapter II, §7 (Dirac
+Operator Spectrum Theorem)</li>
+<li>Gilkey, <em>Invariance Theory, the Heat Equation, and the
+Atiyah-Singer Index Theorem</em> (<span
+class="math inline">\(S^3\)</span> spectrum computation)</li>
+</ul>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>

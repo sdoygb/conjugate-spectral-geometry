@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Algebraization of δ: Clifford Algebra | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Version: 260730.1">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/0/0.2_Algebraization_of_Delta_Clifford_Algebra_EN_260721.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">The Algebraization of δ: Clifford Algebra</span>
+  </nav>
+  <main class="article-content">
+<h1 id="the-algebraization-of-δ-clifford-algebra">The Algebraization of
+δ: Clifford Algebra</h1>
+<p><strong>Version</strong>: 260730.1</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>This article algebraizes δ from in <strong>our region</strong>. The
+iteration of δ produces candidate parameters along the Coding Orbit; the
+Interlock Property of <span class="math inline">\(\{2, 3, 5\}\)</span>
+(proposition proved) causes them to satisfy the completeness condition
+(Berry phase closure, theorem proved); after consummation, they
+<strong>reproduce</strong> as the real Clifford algebra structure of
+Bott periodicity 8. δ is realized as the Bott step operator, acting on
+the sequence of real Clifford algebras <span
+class="math inline">\(\{\text{Cl}(n)\}_{n \in
+\mathbb{Z}_8}\)</span>.</p>
+<p>This article presents the classification table for the first 8
+Clifford algebras and proves two key lemmas: Semisimple Splitting and
+Complex Structure Emergence.</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<p>§1　δ as Bott Step Operator 　1.1　Semantics-to-Algebra
+Correspondence 　1.2　Definition of Clifford Algebra 　1.3　Stepwise
+Construction: From <span class="math inline">\(\mathbb{R}\)</span> to
+<span class="math inline">\(\mathbb{C}\)</span> to <span
+class="math inline">\(\mathbb{H}\)</span> 　1.4　Stepwise Derivation of
+the Classification Table 　1.5　General Formula for the Volume Element
+　1.6　Uniqueness of the Algebraization</p>
+<p>§2　Key Lemmas 　2.1　Semisimple Splitting 　2.2　Complex Structure
+Emergence 　2.3　Terminal Duality 　2.4　A Unified Perspective on the
+Three Lemmas</p>
+<p>§3　The Coding Orbit 　3.1　Stepwise Description of the Coding Orbit
+　3.2　The Algebraic “Breathing” of the Coding Orbit</p>
+<p>§4　Preview of Bott Periodicity 　4.1　The Algebraic Mechanism of
+Bott Periodicity 　4.2　Bott Periodicity and the Three Structure
+Constants</p>
+<hr />
+<h2 id="δ-as-bott-step-operator">§1 δ as Bott Step Operator</h2>
+<p><strong>Definition 3 (Consummate Reproduction: Clifford
+Algebraization).</strong> The iteration of δ produces candidate
+parameters along the Coding Orbit. The Interlock Property of <span
+class="math inline">\(\{2, 3, 5\}\)</span> (proposition proved: product
+<span class="math inline">\(= h(E_8) = 30\)</span>, assignable to <span
+class="math inline">\(D_4\)</span> triality orbit coefficients <span
+class="math inline">\(\{3,4,5\}\)</span>, satisfying the interlock
+equation) causes them to form a self-consistent closed circuit on the
+Coding Orbit — Berry phase closure (theorem proved). After consummation,
+<span class="math inline">\(\{2, 3, 5\}\)</span>
+<strong>reproduce</strong> as the real Clifford algebra structure of
+Bott periodicity 8. δ is realized as the Bott step operator:</p>
+<p><span class="math display">\[\delta(\text{Cl}(n)) =
+\text{Cl}(n+1),\]</span></p>
+<p>where <span class="math inline">\(\text{Cl}(n+1)\)</span> is obtained
+from <span class="math inline">\(\text{Cl}(n)\)</span> by adding a new
+generator <span class="math inline">\(e_{n+1}\)</span>, satisfying <span
+class="math display">\[e_{n+1}^2 = -1, \qquad e_{n+1} e_i + e_i e_{n+1}
+= 0 \quad (i \leq n).\]</span></p>
+<h3 id="semantics-to-algebra-correspondence">1.1 Semantics-to-Algebra
+Correspondence</h3>
+<blockquote>
+<p><strong>Note.</strong> The Three-Layer Self-Referential Closure ↔︎
+Algebra correspondence in the table below is
+<strong>derivational</strong> — the strict derivation chain is given by
+the Three-Layer Self-Referential Closure Theorem of 0.1 §3.5, not an
+externally imposed semantic presupposition.</p>
+</blockquote>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">0.1 §3.5 (Three-Layer Self-Referential
+Closure)</th>
+<th style="text-align: left;">Derivation Chain</th>
+<th style="text-align: left;">Algebra Layer (this article)</th>
+<th style="text-align: left;">Derivation Basis (0.1 §3.5)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Suppression (<span
+class="math inline">\(\delta^1\)</span> produces the first
+distinction)</td>
+<td style="text-align: left;">Non-idempotent ⇒ only <span
+class="math inline">\(e_i^2=-1\)</span> satisfies “non-idempotent and
+non-collapse”</td>
+<td style="text-align: left;">Generator <span
+class="math inline">\(e_i\)</span>, <span class="math inline">\(e_i^2 =
+-1\)</span></td>
+<td style="text-align: left;">Lemma 3.5.3: if <span
+class="math inline">\(e_i^2=+1\)</span> then idempotent (contradicts
+non-idempotence), if <span class="math inline">\(e_i^2=0\)</span> then
+collapse</td>
+</tr>
+<tr>
+<td style="text-align: left;">Trace (<span
+class="math inline">\(\delta^2\)</span> remembers the distinction)</td>
+<td style="text-align: left;">Non-commutative ⇒ order is encoded</td>
+<td style="text-align: left;">Anticommutativity <span
+class="math inline">\(e_i e_j = -e_j e_i\)</span></td>
+<td style="text-align: left;">Theorem 3.5.4: <span
+class="math inline">\(\delta^3\)</span> self-reference requires that the
+trace of <span class="math inline">\(\delta^2\)</span> be indelible →
+swapping order must produce a detectable difference</td>
+</tr>
+<tr>
+<td style="text-align: left;">Emergence (<span
+class="math inline">\(\delta^3\)</span> self-referential closure)</td>
+<td style="text-align: left;">Self-reference ⇒ type closure ⇒ 8-step
+topological return</td>
+<td style="text-align: left;">Bott periodicity <span
+class="math inline">\(\text{Cl}(n+8) \cong \text{Cl}(n) \otimes
+\text{Mat}(16, \mathbb{R})\)</span></td>
+<td style="text-align: left;">Principle 3.5.5: no new semantic dimension
+beyond three layers → type closure exactly realized at <span
+class="math inline">\(\delta^8\)</span> (verified in 0.3)</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math inline">\(e_i\)</span> says “I am myself, not
+something else” (<span class="math inline">\(e_i^2 = -1\)</span>), while
+<span class="math inline">\(e_i e_j = -e_j e_i\)</span> says “my
+identity depends on whom I am with” — the trace of relation. <strong>The
+Clifford algebra axioms are not an external choice, but the inevitable
+algebraic expression of Three-Layer Self-Referential
+Closure.</strong></p>
+<p><strong>1.1.1 Algebraic Expression of Zero Total Action.</strong> In
+0.1 §2.3, <span class="math inline">\(S_\text{total} = 0\)</span> is
+established as an inevitable consequence of the non-surjectivity of δ.
+At the algebra layer, this corresponds to the sum of the coding
+contributions of the three sectors being zero. Within the framework of
+Clifford algebraization, the three sectors correspond to three
+sub-segments of the Coding Orbit:</p>
+<ul>
+<li>ℳ (Matter): <span class="math inline">\(\text{Cl}(0) \to
+\text{Cl}(3)\)</span>, cumulative dimension expansion <span
+class="math inline">\(2^0 \to 2^3 = 8\)</span></li>
+<li>𝒞 (Causal): <span class="math inline">\(\text{Cl}(3) \to
+\text{Cl}(5)\)</span>, cumulative dimension expansion <span
+class="math inline">\(2^3 \to 2^5 = 32\)</span></li>
+<li>ℐ (Information): <span class="math inline">\(\text{Cl}(5) \to
+\text{Cl}(7)\)</span>, cumulative dimension expansion <span
+class="math inline">\(2^5 \to 2^7 = 128\)</span></li>
+</ul>
+<p>The meaning of <span class="math inline">\(S_\text{total} =
+0\)</span> at the algebra layer is: the coding contributions of the
+three sectors must exactly cancel before Bott closure. Subsequent
+article 0.5 will prove that this constraint is the algebraic root of
+<span class="math inline">\(\{2,3,5\}\)</span> being the unique
+self-consistent triple; 0.9 will prove that <span
+class="math inline">\(\alpha^{-1} = 137\)</span> is the residual leakage
+produced by triality breaking under the zero-sum constraint.</p>
+<h3 id="definition-of-clifford-algebra">1.2 Definition of Clifford
+Algebra</h3>
+<p><span class="math inline">\(\text{Cl}(n)\)</span> is the real
+associative algebra generated by <span class="math inline">\(e_1, \dots,
+e_n\)</span>, satisfying: <span class="math display">\[e_i^2 = -1,
+\qquad e_i e_j + e_j e_i = 0 \quad (i \neq j).\]</span></p>
+<p>Classification table for the first 8 <span
+class="math inline">\(\text{Cl}(n)\)</span>:</p>
+<table>
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 18%" />
+<col style="width: 22%" />
+<col style="width: 18%" />
+<col style="width: 18%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">n</th>
+<th style="text-align: left;">Cl(n)</th>
+<th style="text-align: center;">Irreducible rep. dimension <span
+class="math inline">\(\rho_n\)</span></th>
+<th style="text-align: left;">Structural Feature</th>
+<th style="text-align: left;">Physical Sector (conjecture)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbb{R}\)</span></td>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">Commutative field — no distinction</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbb{C}\)</span></td>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">Complex numbers — first distinction</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbb{H}\)</span></td>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;">Quaternions — non-commutative</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;"><span class="math inline">\(\mathbb{H}
+\oplus \mathbb{H}\)</span></td>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;"><strong>Semisimple Splitting</strong></td>
+<td style="text-align: left;">Matter (conjecture)</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;"><span class="math inline">\(\text{Mat}(2,
+\mathbb{H})\)</span></td>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;">Quaternion matrices</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;"><span class="math inline">\(\text{Mat}(4,
+\mathbb{C})\)</span></td>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;"><strong>Complex Structure
+Emergence</strong></td>
+<td style="text-align: left;">Causal (conjecture)</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;"><span class="math inline">\(\text{Mat}(8,
+\mathbb{R})\)</span></td>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;">Real matrices</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;"><span class="math inline">\(\text{Mat}(8,
+\mathbb{R}) \oplus \text{Mat}(8, \mathbb{R})\)</span></td>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;"><strong>Terminal Duality</strong></td>
+<td style="text-align: left;">Information (conjecture)</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;"><span class="math inline">\(\text{Mat}(16,
+\mathbb{R})\)</span></td>
+<td style="text-align: center;">16</td>
+<td style="text-align: left;">Bott return</td>
+<td style="text-align: left;">—</td>
+</tr>
+</tbody>
+</table>
+<p>This table is the mathematical foundation of the entire system. Each
+row corresponds to one step of δ; each step produces a new algebraic
+structure.</p>
+<h3 id="stepwise-construction-from-mathbbr-to-mathbbc-to-mathbbh">1.3
+Stepwise Construction: From <span
+class="math inline">\(\mathbb{R}\)</span> to <span
+class="math inline">\(\mathbb{C}\)</span> to <span
+class="math inline">\(\mathbb{H}\)</span></h3>
+<p>Each row of the classification table is one step of δ. Below we give
+the detailed construction of the first 3 steps, to illustrate how
+“adding a generator” triggers a qualitative change in the algebraic
+structure.</p>
+<p><strong>Step 0: <span class="math inline">\(\text{Cl}(0) =
+\mathbb{R}\)</span>.</strong> With no generators, <span
+class="math inline">\(\text{Cl}(0)\)</span> is the one-dimensional real
+field <span class="math inline">\(\mathbb{R}\)</span>. <span
+class="math inline">\(\mathbb{R}\)</span> is commutative — all elements
+commute with each other. This is the state of “no distinction”: without
+any <span class="math inline">\(e_i\)</span>, there is no
+distinction.</p>
+<p><strong>Step 1: <span class="math inline">\(\text{Cl}(1) =
+\mathbb{C}\)</span>.</strong> δ adds generator <span
+class="math inline">\(e_1\)</span>, satisfying <span
+class="math inline">\(e_1^2 = -1\)</span>. <span
+class="math inline">\(\text{Cl}(1)\)</span> is spanned by <span
+class="math inline">\(\{1, e_1\}\)</span> as a real vector space, with
+multiplication completely determined by <span
+class="math inline">\(e_1^2 = -1\)</span>. Identifying <span
+class="math inline">\(e_1 \leftrightarrow i\)</span> (the imaginary
+unit), we obtain <span class="math inline">\(\text{Cl}(1) \cong
+\mathbb{C}\)</span>. This is the “first distinction”: <span
+class="math inline">\(\mathbb{R}\)</span> is one-dimensional and
+commutative; <span class="math inline">\(\mathbb{C}\)</span> is
+two-dimensional, still commutative, but now has an “imaginary
+direction”. <span class="math inline">\(e_1^2 = -1\)</span> is the
+algebraic imprint of Suppression — <span
+class="math inline">\(e_1\)</span> negates its own possibility of being
+<span class="math inline">\(1\)</span>.</p>
+<p><strong>Step 2: <span class="math inline">\(\text{Cl}(2) =
+\mathbb{H}\)</span>.</strong> δ adds another generator <span
+class="math inline">\(e_2\)</span>, satisfying <span
+class="math inline">\(e_2^2 = -1\)</span>, <span
+class="math inline">\(e_1 e_2 = -e_2 e_1\)</span>. <span
+class="math inline">\(\text{Cl}(2)\)</span> is spanned by <span
+class="math inline">\(\{1, e_1, e_2, e_1 e_2\}\)</span> as a real vector
+space. Identifying: <span class="math display">\[e_1 \leftrightarrow
+\mathbf{i}, \quad e_2 \leftrightarrow \mathbf{j}, \quad e_1 e_2
+\leftrightarrow \mathbf{k},\]</span> we verify the Hamilton relations
+<span class="math inline">\(\mathbf{i}^2 = \mathbf{j}^2 = \mathbf{k}^2 =
+\mathbf{ijk} = -1\)</span>: - <span class="math inline">\(\mathbf{i}^2 =
+e_1^2 = -1\)</span> ✓ - <span class="math inline">\(\mathbf{j}^2 = e_2^2
+= -1\)</span> ✓ - <span class="math inline">\(\mathbf{k}^2 = (e_1 e_2)^2
+= e_1 e_2 e_1 e_2 = -e_1 e_1 e_2 e_2 = -(-1)(-1) = -1\)</span> ✓ - <span
+class="math inline">\(\mathbf{ijk} = e_1 \cdot e_2 \cdot e_1 e_2 = e_1
+e_2 e_1 e_2 = -1\)</span> ✓</p>
+<p>Hence <span class="math inline">\(\text{Cl}(2) \cong
+\mathbb{H}\)</span>. <span class="math inline">\(\mathbb{H}\)</span> is
+non-commutative — <span class="math inline">\(\mathbf{ij} = \mathbf{k}
+\neq -\mathbf{k} = \mathbf{ji}\)</span>. The anticommutativity relation
+<span class="math inline">\(e_1 e_2 = -e_2 e_1\)</span> is the algebraic
+imprint of Trace — the order is remembered.</p>
+<h3 id="stepwise-derivation-of-the-classification-table">1.4 Stepwise
+Derivation of the Classification Table</h3>
+<p>Starting from <span class="math inline">\(\text{Cl}(2) \cong
+\mathbb{H}\)</span>, subsequent <span
+class="math inline">\(\text{Cl}(n)\)</span> are determined by the
+“tensor-product-extension” recursion. The core recursion relations are:
+<span class="math display">\[\text{Cl}(n+2) \cong \text{Cl}(n)
+\otimes_{\mathbb{R}} \text{Mat}(2, \mathbb{R}) \quad (\text{when } n
+\text{ is even})\]</span> <span class="math display">\[\text{Cl}(n+2)
+\cong \text{Cl}(n) \otimes_{\mathbb{R}} \mathbb{H} \quad (\text{when } n
+\text{ is odd})\]</span></p>
+<p>But a more direct derivation uses the “center–volume element”
+analysis. Below we give the isomorphism determination for each step:</p>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 22%" />
+<col style="width: 27%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">n</th>
+<th style="text-align: left;">Center <span
+class="math inline">\(Z(\text{Cl}(n))\)</span></th>
+<th style="text-align: center;">Volume element <span
+class="math inline">\(\omega_n^2\)</span></th>
+<th style="text-align: left;">Isomorphism Determination</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbb{R}\)</span></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbb{R}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;"><span class="math inline">\(\mathbb{R}
+\oplus \mathbb{R}e_1 \cong \mathbb{C}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(e_1^2 =
+-1\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbb{C}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbb{R}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\((e_1e_2)^2 =
+-1\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbb{H}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;"><span class="math inline">\(\mathbb{R}
+\oplus \mathbb{R}\omega_3\)</span>, <span
+class="math inline">\(\omega_3^2 = 1\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(1\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\mathbb{H}
+\oplus \mathbb{H}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbb{R}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\omega_4^2 =
+1\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\text{Mat}(2,
+\mathbb{H})\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;"><span class="math inline">\(\mathbb{R}
+\oplus \mathbb{R}\omega_5\)</span>, <span
+class="math inline">\(\omega_5^2 = -1\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(-1\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\text{Mat}(4,
+\mathbb{C})\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbb{R}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\omega_6^2 =
+-1\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\text{Mat}(8,
+\mathbb{R})\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;"><span class="math inline">\(\mathbb{R}
+\oplus \mathbb{R}\omega_7\)</span>, <span
+class="math inline">\(\omega_7^2 = 1\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(1\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\text{Mat}(8,
+\mathbb{R}) \oplus \text{Mat}(8, \mathbb{R})\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbb{R}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\omega_8^2 =
+1\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\text{Mat}(16,
+\mathbb{R})\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The parity of the center dimension is key: when <span
+class="math inline">\(n\)</span> is odd, the volume element <span
+class="math inline">\(\omega_n\)</span> lies in the center (commutes
+with all generators), so the center dimension is 2 and the algebra
+decomposes semisimply into two direct summands (or remains simple but
+carries a complex structure); when <span
+class="math inline">\(n\)</span> is even, <span
+class="math inline">\(\omega_n\)</span> is not in the center, and the
+algebra is simple (center is <span
+class="math inline">\(\mathbb{R}\)</span>).</p>
+<h3 id="general-formula-for-the-volume-element">1.5 General Formula for
+the Volume Element</h3>
+<p><strong>Proposition 0.2.1.01 (Square of the Volume Element).</strong>
+Let <span class="math inline">\(\omega_n = e_1 e_2 \cdots e_n\)</span>
+be the volume element of <span
+class="math inline">\(\text{Cl}(n)\)</span>. Then <span
+class="math display">\[\omega_n^2 = (-1)^{n(n+1)/2}.\]</span></p>
+<p><strong>Proof.</strong> Compute <span
+class="math inline">\(\omega_n^2 = (e_1 e_2 \cdots e_n)(e_1 e_2 \cdots
+e_n)\)</span>. Moving <span class="math inline">\(e_1\)</span> from the
+rightmost factor to the left requires crossing <span
+class="math inline">\(n-1\)</span> generators (<span
+class="math inline">\(e_n, \dots, e_2\)</span>), each crossing producing
+<span class="math inline">\(-1\)</span>: <span
+class="math display">\[e_1 \cdot e_1 = (-1)^{n-1} e_1 \cdot e_1 \cdot
+(\text{rest})\]</span> But more directly, rearranging <span
+class="math inline">\(\omega_n^2\)</span> into <span
+class="math inline">\(\prod_{i=1}^{n} e_i^2\)</span> requires a total of
+<span class="math inline">\(n(n-1)/2\)</span> swaps (each <span
+class="math inline">\(e_i\)</span> must cross <span
+class="math inline">\(n-i\)</span> other generators). Each swap produces
+<span class="math inline">\(-1\)</span>, and <span
+class="math inline">\(\prod e_i^2 = (-1)^n\)</span>. Hence: <span
+class="math display">\[\omega_n^2 = (-1)^{n(n-1)/2} \cdot (-1)^n =
+(-1)^{n(n-1)/2 + n} = (-1)^{n(n+1)/2}. \quad \square\]</span></p>
+<p>Verification: - <span class="math inline">\(n=3\)</span>: <span
+class="math inline">\((-1)^{3 \cdot 4/2} = (-1)^6 = 1\)</span> ✓ - <span
+class="math inline">\(n=5\)</span>: <span class="math inline">\((-1)^{5
+\cdot 6/2} = (-1)^{15} = -1\)</span> ✓ - <span
+class="math inline">\(n=7\)</span>: <span class="math inline">\((-1)^{7
+\cdot 8/2} = (-1)^{28} = 1\)</span> ✓</p>
+<p>The sign of the square of the volume element determines whether <span
+class="math inline">\(\text{Cl}(n)\)</span> splits into a direct sum:
+when <span class="math inline">\(\omega_n^2 = 1\)</span>, <span
+class="math inline">\(\omega_n\)</span> is an involution (<span
+class="math inline">\(\omega_n^2 = 1\)</span>), and we can construct
+projectors <span class="math inline">\(P_{\pm} = (1 \pm
+\omega_n)/2\)</span>, causing the algebra to split; when <span
+class="math inline">\(\omega_n^2 = -1\)</span>, <span
+class="math inline">\(\omega_n\)</span> acts as a complex structure
+<span class="math inline">\(J\)</span> (<span class="math inline">\(J^2
+= -1\)</span>).</p>
+<h3 id="uniqueness-of-the-algebraization">1.6 Uniqueness of the
+Algebraization</h3>
+<p>Define δ as a “non-trivial self-map” with three semantic properties:
+Suppression, Trace, Emergence. §1.1 of this article algebraizes it as a
+Clifford algebra. A natural question is: is this algebraization unique?
+That is, do there exist other algebraic structures that also satisfy
+these three semantic properties?</p>
+<blockquote>
+<p><strong>Current position:</strong> The bridge from δ to Clifford has
+been <strong>upgraded from motivational to derivational</strong> (0.1
+§3.5 Three-Layer Self-Referential Closure Theorem):</p>
+<ol type="1">
+<li><strong>Consummate Reproduction</strong>: δ produces candidate
+parameters → <span class="math inline">\(\{2,3,5\}\)</span> Interlock
+Property (proposition proved) → Berry phase closure (theorem proved) →
+Consummate Reproduction as Clifford algebra. All three links are proved
+theorems — <strong>no longer dependent on working
+hypotheses</strong>.</li>
+<li><strong><span class="math inline">\(E_8\)</span> Bridging</strong>:
+After Consummate Reproduction, <span
+class="math inline">\(\{2,3,5\}\)</span> is determined by the rigorous
+chain KO theory → even unimodular lattice → <span
+class="math inline">\(E_8\)</span>. This is a proved theorem.</li>
+<li><strong>Three-Layer Self-Referential Closure (0.1 §3.5)</strong>:
+Suppression-Trace-Emergence has been <strong>rigorously derived from the
+iterative properties of δ</strong> (Lemma 3.5.2: no closure below three
+layers; Theorem 3.5.4: <span class="math inline">\(\delta^3\)</span>
+achieves self-reference; Principle 3.5.5: no new semantic dimension
+beyond three layers). Clifford algebraization is the <strong>algebraic
+realization</strong> of Three-Layer Self-Referential Closure, not an
+externally imposed semantic presupposition.</li>
+</ol>
+<p><strong>The logical structure of the framework is therefore:</strong>
+δ (axiom) → [Three-Layer Self-Referential Closure: derived in 0.1 §3.5]
+→ Clifford algebraization (this article §1.1) → [Consummate
+Reproduction: proved theorem-proposition] → [<span
+class="math inline">\(E_8\)</span> bridging: proved] → <span
+class="math inline">\(\{2,3,5\}\)</span> → spectral expansion → <span
+class="math inline">\(S=137.036\)</span>. <strong>There are no longer
+any steps in the framework that depend on working hypotheses</strong> —
+every step from δ to <span class="math inline">\(S=137.036\)</span> is
+based on proved theorems or standard mathematics.</p>
+</blockquote>
+<hr />
+<h2 id="key-lemmas">§2 Key Lemmas</h2>
+<h3 id="semisimple-splitting">2.1 Semisimple Splitting</h3>
+<p><strong>Lemma 0.2.2.01 (Semisimple Splitting).</strong> <span
+class="math inline">\(\text{Cl}(3) \cong \mathbb{H} \oplus
+\mathbb{H}\)</span> is the first splitting of a Clifford algebra from
+simple to semisimple.</p>
+<p><strong>Proof (complete).</strong></p>
+<p><strong>Step 1: Compute the center of <span
+class="math inline">\(\text{Cl}(3)\)</span>.</strong> <span
+class="math inline">\(\text{Cl}(3)\)</span> is generated by <span
+class="math inline">\(e_1, e_2, e_3\)</span>, with basis <span
+class="math inline">\(\{1, e_1, e_2, e_3, e_1 e_2, e_1 e_3, e_2 e_3, e_1
+e_2 e_3\}\)</span>, total dimension 8.</p>
+<p>Let <span class="math inline">\(x = a_0 + a_1 e_1 + a_2 e_2 + a_3 e_3
++ a_{12} e_1 e_2 + a_{13} e_1 e_3 + a_{23} e_2 e_3 + a_{123} e_1 e_2 e_3
+\in Z(\text{Cl}(3))\)</span>. Require <span
+class="math inline">\(x\)</span> to commute with all <span
+class="math inline">\(e_i\)</span>.</p>
+<p>Consider <span class="math inline">\(x e_1 = e_1 x\)</span>. Using
+<span class="math inline">\(e_1 e_i = -e_i e_1\)</span> (<span
+class="math inline">\(i \neq 1\)</span>): - <span
+class="math inline">\(e_2 \cdot e_1 = -e_1 e_2\)</span>, hence <span
+class="math inline">\(a_2 e_2\)</span> is not in the center (unless
+<span class="math inline">\(a_2 = 0\)</span>). - <span
+class="math inline">\(e_3 \cdot e_1 = -e_1 e_3\)</span>, hence <span
+class="math inline">\(a_3 = 0\)</span>. - <span
+class="math inline">\(e_1 e_2 \cdot e_1 = e_1 e_2 e_1 = -e_1 e_1 e_2 =
+e_2\)</span>, while <span class="math inline">\(e_1 \cdot e_1 e_2 =
+-e_2\)</span>, hence <span class="math inline">\(a_{12} = 0\)</span>. -
+Similarly <span class="math inline">\(a_{13} = a_{23} = 0\)</span>. -
+<span class="math inline">\(e_1 \cdot 1 = e_1 = 1 \cdot e_1\)</span>,
+hence <span class="math inline">\(a_0\)</span> is arbitrary. - <span
+class="math inline">\(e_1 e_2 e_3 \cdot e_1 = e_1 e_2 e_3 e_1 = (-1)^2
+e_1 e_1 e_2 e_3 = e_2 e_3\)</span>… but more succinctly: <span
+class="math inline">\(\omega_3 = e_1 e_2 e_3\)</span> commutes with
+<span class="math inline">\(e_1\)</span> after crossing 2 generators
+(<span class="math inline">\(e_2, e_3\)</span>), each producing <span
+class="math inline">\(-1\)</span>, total <span
+class="math inline">\((-1)^2 = 1\)</span>. Hence <span
+class="math inline">\(\omega_3 e_1 = e_1 \omega_3\)</span>.</p>
+<p>Therefore <span class="math inline">\(Z(\text{Cl}(3)) =
+\text{span}\{1, \omega_3\}\)</span>, dimension 2.</p>
+<p><strong>Step 2: Square of the volume element.</strong> <span
+class="math inline">\(\omega_3 = e_1 e_2 e_3\)</span>; by Proposition
+0.2.1.01 (Square of the Volume Element): <span
+class="math display">\[\omega_3^2 = (-1)^{3 \cdot 4/2} = (-1)^6 =
+1.\]</span></p>
+<p><strong>Step 3: Construct projection operators.</strong> From <span
+class="math inline">\(\omega_3^2 = 1\)</span>, define: <span
+class="math display">\[P_{\pm} = \frac{1}{2}(1 \pm
+\omega_3).\]</span></p>
+<p>Verify projection properties: - <span class="math inline">\(P_+ + P_-
+= \frac{1}{2}(1+\omega_3) + \frac{1}{2}(1 - \omega_3) = 1\)</span> ✓ -
+<span class="math inline">\(P_+P_- = \frac{1}{4}(1+\omega_3)(1 -
+\omega_3) = \frac{1}{4}(1 - \omega_3^2) = \frac{1}{4}(1 - 1) =
+0\)</span> ✓ - <span class="math inline">\(P_{\pm}^2 = \frac{1}{4}(1 \pm
+2\omega_3 + \omega_3^2) = \frac{1}{4}(1 \pm 2\omega_3 + 1) =
+\frac{1}{2}(1 \pm \omega_3) = P_{\pm}\)</span> ✓</p>
+<p><strong>Step 4: Direct sum decomposition.</strong> <span
+class="math inline">\(\text{Cl}(3) = P_+\text{Cl}(3) \oplus P_-
+\text{Cl}(3)\)</span>. Each direct summand <span
+class="math inline">\(P_{\pm} \text{Cl}(3)\)</span> is an ideal, and the
+center of <span class="math inline">\(P_{\pm} \text{Cl}(3)\)</span> is
+<span class="math inline">\(P_{\pm} \cdot Z(\text{Cl}(3)) =
+\text{span}\{P_{\pm}\}\)</span>, of dimension 1, so each direct summand
+is a simple algebra with center <span
+class="math inline">\(\mathbb{R}\)</span>.</p>
+<p><strong>Step 5: Identify the isomorphism type.</strong> <span
+class="math inline">\(\dim_{\mathbb{R}} \text{Cl}(3) = 2^3 = 8\)</span>,
+so each direct summand has dimension 4. A 4-dimensional simple algebra
+with center <span class="math inline">\(\mathbb{R}\)</span> is <span
+class="math inline">\(\mathbb{H}\)</span> (by Frobenius’ theorem).
+Hence: <span class="math display">\[\text{Cl}(3) \cong \mathbb{H} \oplus
+\mathbb{H}. \quad \square\]</span></p>
+<p><strong>Significance.</strong> This is the first appearance of
+“binary splitting” in the δ iteration — the algebra is no longer a
+single whole, but two independent “branches”. This splitting will
+subsequently correspond to the emergence of the Matter Sector <span
+class="math inline">\(\Lambda = 3\)</span>.</p>
+<h3 id="complex-structure-emergence">2.2 Complex Structure
+Emergence</h3>
+<p><strong>Lemma 0.2.2.02 (Complex Structure Emergence).</strong> <span
+class="math inline">\(\text{Cl}(5) \cong \text{Mat}(4,
+\mathbb{C})\)</span> is the first complex matrix algebra among the real
+Clifford algebras. The volume element <span
+class="math inline">\(\omega_5 = e_1 e_2 e_3 e_4 e_5\)</span> satisfies
+<span class="math inline">\(\omega_5^2 = -1\)</span> and commutes with
+all generators — <span class="math inline">\(\omega_5\)</span> acts as a
+complex structure <span class="math inline">\(J\)</span>.</p>
+<p><strong>Proof (complete).</strong></p>
+<p><strong>Step 1: Compute <span
+class="math inline">\(\omega_5^2\)</span>.</strong> By Proposition
+0.2.1.01 (Square of the Volume Element): <span
+class="math display">\[\omega_5^2 = (-1)^{5 \cdot 6/2} = (-1)^{15} =
+-1.\]</span></p>
+<p>Detailed expansion: <span class="math inline">\(\omega_5 = e_1 e_2
+e_3 e_4 e_5\)</span>, <span class="math inline">\(\omega_5^2 = (e_1 e_2
+e_3 e_4 e_5)(e_1 e_2 e_3 e_4 e_5)\)</span>.</p>
+<p>Move <span class="math inline">\(e_1\)</span> of the second factor to
+the far left: must cross <span class="math inline">\(e_5, e_4, e_3,
+e_2\)</span> (4 swaps), producing <span class="math inline">\((-1)^4 =
+1\)</span>. Similarly, <span class="math inline">\(e_2\)</span> crosses
+3 times (<span class="math inline">\(e_5, e_4, e_3\)</span>), <span
+class="math inline">\(e_3\)</span> crosses 2 times, <span
+class="math inline">\(e_4\)</span> crosses 1 time, <span
+class="math inline">\(e_5\)</span> crosses 0 times. Total swaps <span
+class="math inline">\(= 4+3+2+1+0 = 10\)</span>. Adding <span
+class="math inline">\(\prod e_i^2 = (-1)^5 = -1\)</span>: <span
+class="math display">\[\omega_5^2 = (-1)^{10} \cdot (-1)^5 = (1) \cdot
+(-1) = -1.\]</span></p>
+<p><strong>Step 2: Verify <span class="math inline">\(\omega_5\)</span>
+commutes with all generators.</strong> For any <span
+class="math inline">\(e_j\)</span> (<span class="math inline">\(1 \leq j
+\leq 5\)</span>), <span class="math inline">\(e_j \omega_5\)</span>
+requires <span class="math inline">\(e_j\)</span> to cross the other 4
+generators (the 4 generators in <span
+class="math inline">\(\omega_5\)</span> other than <span
+class="math inline">\(e_j\)</span>), each producing <span
+class="math inline">\(-1\)</span>: <span class="math display">\[e_j
+\omega_5 = (-1)^4 \omega_5 e_j = \omega_5 e_j.\]</span></p>
+<p>Hence <span class="math inline">\(\omega_5\)</span> commutes with all
+<span class="math inline">\(e_j\)</span>, and therefore with all of
+<span class="math inline">\(\text{Cl}(5)\)</span> — <span
+class="math inline">\(\omega_5 \in Z(\text{Cl}(5))\)</span>.</p>
+<p><strong>Step 3: Construct the complex structure.</strong> Define
+<span class="math inline">\(J := \omega_5\)</span>. Then: - <span
+class="math inline">\(J^2 = \omega_5^2 = -1\)</span> ✓ - <span
+class="math inline">\(J\)</span> commutes with all elements of <span
+class="math inline">\(\text{Cl}(5)\)</span> ✓</p>
+<p><span class="math inline">\(J\)</span> satisfies the two axioms of a
+complex structure (<span class="math inline">\(J^2 = -1\)</span>, <span
+class="math inline">\(J\)</span> is an algebra endomorphism), hence
+<span class="math inline">\(\text{Cl}(5)\)</span> is a <span
+class="math inline">\(\mathbb{C}\)</span>-algebra.</p>
+<p><strong>Step 4: Determine the matrix algebra type.</strong> <span
+class="math inline">\(\dim_{\mathbb{R}} \text{Cl}(5) = 2^5 =
+32\)</span>. As a <span
+class="math inline">\(\mathbb{C}\)</span>-algebra, <span
+class="math inline">\(\dim_{\mathbb{C}} \text{Cl}(5) = 16\)</span>.
+<span class="math inline">\(\text{Cl}(5)\)</span> is a simple algebra
+(center is <span class="math inline">\(\mathbb{R} \oplus \mathbb{R}J
+\cong \mathbb{C}\)</span>, but as a <span
+class="math inline">\(\mathbb{C}\)</span>-algebra the center is <span
+class="math inline">\(\mathbb{C}\)</span>), so <span
+class="math inline">\(\text{Cl}(5) \cong \text{Mat}(d,
+\mathbb{C})\)</span>, where <span class="math inline">\(d^2 =
+16\)</span>, <span class="math inline">\(d = 4\)</span>: <span
+class="math display">\[\text{Cl}(5) \cong \text{Mat}(4, \mathbb{C}).
+\quad \square\]</span></p>
+<p><strong>Significance.</strong> The emergence of the complex structure
+means the Causal Sector acquires the ability to “oscillate” — complex
+numbers naturally describe periodic motion. <span
+class="math inline">\(\Delta\Theta = 5\)</span> will be derived from
+this lemma in .</p>
+<h3 id="terminal-duality">2.3 Terminal Duality</h3>
+<p><strong>Lemma 0.2.2.03 (Terminal Duality).</strong> <span
+class="math inline">\(\text{Cl}(7) \cong \text{Mat}(8, \mathbb{R})
+\oplus \text{Mat}(8, \mathbb{R})\)</span>. Its center has dimension 2,
+producing an ineliminable binary direct sum structure.</p>
+<p><strong>Proof (complete).</strong></p>
+<p><strong>Step 1: Compute <span
+class="math inline">\(\omega_7^2\)</span>.</strong> By Proposition
+0.2.1.01 (Square of the Volume Element): <span
+class="math display">\[\omega_7^2 = (-1)^{7 \cdot 8/2} = (-1)^{28} =
+1.\]</span></p>
+<p>Detailed expansion: <span class="math inline">\(\omega_7 = e_1 e_2
+e_3 e_4 e_5 e_6 e_7\)</span>. Total swaps <span class="math inline">\(=
+6+5+4+3+2+1+0 = 21\)</span>. <span class="math inline">\(\prod e_i^2 =
+(-1)^7 = -1\)</span>. Hence: <span class="math display">\[\omega_7^2 =
+(-1)^{21} \cdot (-1)^7 = (-1) \cdot (-1) = 1.\]</span></p>
+<p><strong>Step 2: Verify <span class="math inline">\(\omega_7\)</span>
+commutes with all generators.</strong> For any <span
+class="math inline">\(e_j\)</span> (<span class="math inline">\(1 \leq j
+\leq 7\)</span>), <span class="math inline">\(e_j\)</span> must cross
+the other 6 generators: <span class="math display">\[e_j \omega_7 =
+(-1)^6 \omega_7 e_j = \omega_7 e_j.\]</span></p>
+<p>Hence <span class="math inline">\(\omega_7 \in
+Z(\text{Cl}(7))\)</span>, center dimension 2.</p>
+<p><strong>Step 3: Construct projectors and decompose.</strong> From
+<span class="math inline">\(\omega_7^2 = 1\)</span>, construct <span
+class="math inline">\(P_{\pm} = (1 \pm \omega_7)/2\)</span> just as for
+<span class="math inline">\(\text{Cl}(3)\)</span>, obtaining the direct
+sum decomposition: <span class="math display">\[\text{Cl}(7) =
+P_+\text{Cl}(7) \oplus P_- \text{Cl}(7).\]</span></p>
+<p><strong>Step 4: Identify the isomorphism type.</strong> <span
+class="math inline">\(\dim_{\mathbb{R}} \text{Cl}(7) = 2^7 =
+128\)</span>, each direct summand has dimension 64. Each direct summand
+is a simple algebra with center <span
+class="math inline">\(\mathbb{R}\)</span>. By the Artin-Wedderburn
+theorem, <span class="math inline">\(\text{Cl}(7) \cong \text{Mat}(d,
+\mathbb{R}) \oplus \text{Mat}(d, \mathbb{R})\)</span>, where <span
+class="math inline">\(2 d^2 = 128\)</span>, <span
+class="math inline">\(d = 8\)</span>: <span
+class="math display">\[\text{Cl}(7) \cong \text{Mat}(8, \mathbb{R})
+\oplus \text{Mat}(8, \mathbb{R}). \quad \square\]</span></p>
+<p><strong>Analogy with the <span
+class="math inline">\(\text{Cl}(3)\)</span> splitting.</strong> The
+splitting of <span class="math inline">\(\text{Cl}(7)\)</span> is
+perfectly parallel to that of <span
+class="math inline">\(\text{Cl}(3)\)</span> — both are direct sum
+decompositions caused by <span class="math inline">\(\omega_n^2 =
+1\)</span>. But the splitting of <span
+class="math inline">\(\text{Cl}(7)\)</span> occurs at the terminal end
+of the Coding Orbit (step 7), while that of <span
+class="math inline">\(\text{Cl}(3)\)</span> occurs at step 3. The
+splitting of <span class="math inline">\(\text{Cl}(7)\)</span> is
+“terminal” — it cannot be undone by subsequent steps, because the next
+step (<span class="math inline">\(\text{Cl}(8)\)</span>) is the Bott
+return.</p>
+<p><strong>Significance.</strong> Terminal Duality <span
+class="math inline">\(k_0 = 2\)</span> is the algebraic reason the
+Coding Orbit is truncated at the seventh layer.</p>
+<h3 id="a-unified-perspective-on-the-three-lemmas">2.4 A Unified
+Perspective on the Three Lemmas</h3>
+<p>The three lemmas 0.2.2.01–0.2.2.03 (Semisimple Splitting, Complex
+Structure Emergence, Terminal Duality) share a unified structural origin
+— the sign of the square of the volume element <span
+class="math inline">\(\omega_n\)</span>:</p>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 27%" />
+<col style="width: 22%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">n</th>
+<th style="text-align: center;"><span
+class="math inline">\(\omega_n^2\)</span></th>
+<th style="text-align: left;">Algebraic Effect</th>
+<th style="text-align: left;">Lemma</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;"><span
+class="math inline">\(1\)</span></td>
+<td style="text-align: left;">Projectors <span
+class="math inline">\(P_\pm = (1 \pm \omega_3)/2\)</span> → direct sum
+splitting</td>
+<td style="text-align: left;">Lemma 0.2.2.01</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;"><span
+class="math inline">\(-1\)</span></td>
+<td style="text-align: left;">Complex structure <span
+class="math inline">\(J = \omega_5\)</span>, <span
+class="math inline">\(J^2 = -1\)</span></td>
+<td style="text-align: left;">Lemma 0.2.2.02</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;"><span
+class="math inline">\(1\)</span></td>
+<td style="text-align: left;">Projectors <span
+class="math inline">\(P_\pm = (1 \pm \omega_7)/2\)</span> → direct sum
+splitting</td>
+<td style="text-align: left;">Lemma 0.2.2.03</td>
+</tr>
+</tbody>
+</table>
+<p>The sign sequence of <span class="math inline">\(\omega_n^2 =
+(-1)^{n(n+1)/2}\)</span> (for <span class="math inline">\(n = 0, 1,
+\dots, 7\)</span>) is <span class="math inline">\(1, -1, -1, 1, 1, -1,
+-1, 1\)</span>, exhibiting a 4-step period — this is half of the Bott
+8-periodicity (the other half comes from the center dimension). This
+sign sequence is the algebraic root from which the three Structure
+Constants emerge.</p>
+<p><strong>2.4.1 The Zero-Sum Constraint and the Three Lemmas.</strong>
+The three lemmas (Semisimple Splitting, Complex Structure Emergence,
+Terminal Duality) are not just independent features of algebraic
+structures — they mutually constrain each other via <span
+class="math inline">\(S_\text{total} = 0\)</span>. The coding
+contributions of the three sectors:</p>
+<ul>
+<li>ℳ: Semisimple Splitting of <span
+class="math inline">\(\text{Cl}(3)\)</span> → coding contribution <span
+class="math inline">\(S_\mathcal{M}\)</span></li>
+<li>𝒞: Complex Structure Emergence of <span
+class="math inline">\(\text{Cl}(5)\)</span> → coding contribution <span
+class="math inline">\(S_\mathcal{C}\)</span></li>
+<li>ℐ: Terminal Duality of <span
+class="math inline">\(\text{Cl}(7)\)</span> → coding contribution <span
+class="math inline">\(S_\mathcal{I}\)</span></li>
+</ul>
+<p>satisfy <span class="math inline">\(S_\mathcal{M} + S_\mathcal{C} +
+S_\mathcal{I} = 0\)</span>. This means the three lemmas are not
+independent — a change in the coding contribution of any one lemma must
+be compensated by opposite changes in the other two lemmas. This is the
+algebraic meaning of “mutual conjugation”: the coding contributions of
+the three sectors are mutually locked, with zero net balance. The
+zero-sum constraint will constrain <span
+class="math inline">\(\{2,3,5\}\)</span> as the unique self-consistent
+triple in 0.5, and will explain the leakage mechanism of <span
+class="math inline">\(\alpha^{-1} = 137\)</span> in 0.9.</p>
+<hr />
+<h2 id="the-coding-orbit">§3 The Coding Orbit</h2>
+<p>The 8-step orbit of δ acting on objects is called the <strong>Coding
+Orbit</strong>: <span class="math display">\[\text{Cl}(0)
+\xrightarrow{\delta} \text{Cl}(1) \xrightarrow{\delta} \text{Cl}(2)
+\xrightarrow{\delta} \cdots \xrightarrow{\delta} \text{Cl}(7)
+\xrightarrow{\delta} \text{Cl}(8).\]</span></p>
+<p>Key observations:</p>
+<ol type="1">
+<li><strong>Cl(0) → Cl(3)</strong>: From structureless (<span
+class="math inline">\(\mathbb{R}\)</span>) to semisimple splitting
+(<span class="math inline">\(\mathbb{H} \oplus \mathbb{H}\)</span>). The
+first 3 steps establish the algebraic foundation of the Matter
+Sector.</li>
+<li><strong>Cl(3) → Cl(5)</strong>: From semisimple splitting to complex
+structure emergence. The middle 2 steps establish the algebraic
+foundation of the Causal Sector.</li>
+<li><strong>Cl(5) → Cl(7)</strong>: From complex structure to terminal
+duality. The final 2 steps establish the algebraic foundation of the
+Information Sector.</li>
+<li><strong>Cl(7) → Cl(8)</strong>: From terminal duality to Bott
+return. The 8th step is the closure step — but not a trivial
+closure.</li>
+</ol>
+<p>These three segments (3+2+2+1=8) will crystallize in as the three
+Structure Constants: <span class="math inline">\(\Lambda = 3\)</span>,
+<span class="math inline">\(\Delta\Theta = 5\)</span>, <span
+class="math inline">\(k_0 = 2\)</span>.</p>
+<h3 id="stepwise-description-of-the-coding-orbit">3.1 Stepwise
+Description of the Coding Orbit</h3>
+<p>Each step of δ adds one generator, triggering a specific change in
+the algebraic structure. Below we describe in detail the generator added
+at each step and its physical significance:</p>
+<p><strong>Step 1 (<span class="math inline">\(E_1\)</span>): Add <span
+class="math inline">\(e_1\)</span>, <span
+class="math inline">\(\text{Cl}(0) \to \text{Cl}(1) \cong
+\mathbb{C}\)</span>.</strong> - Added generator: <span
+class="math inline">\(e_1\)</span>, <span class="math inline">\(e_1^2 =
+-1\)</span>. - Algebraic effect: From <span
+class="math inline">\(\mathbb{R}\)</span> (commutative field) to <span
+class="math inline">\(\mathbb{C}\)</span> (commutative field, but with
+an imaginary direction). - Physical significance: The first distinction
+— the binary “presence vs. absence” emerges. This is step 1 of the
+Matter Sector. - Corresponds to 0.1 §3.5 (Three-Layer Self-Referential
+Closure): the algebraic derivation of Suppression — <span
+class="math inline">\(e_1^2 = -1\)</span> is the algebraic imprint of
+the non-idempotence of δ (Lemma 3.5.3).</p>
+<p><strong>Step 2 (<span class="math inline">\(E_2\)</span>): Add <span
+class="math inline">\(e_2\)</span>, <span
+class="math inline">\(\text{Cl}(1) \to \text{Cl}(2) \cong
+\mathbb{H}\)</span>.</strong> - Added generator: <span
+class="math inline">\(e_2\)</span>, <span class="math inline">\(e_2^2 =
+-1\)</span>, <span class="math inline">\(e_1 e_2 = -e_2 e_1\)</span>. -
+Algebraic effect: From <span class="math inline">\(\mathbb{C}\)</span>
+(commutative) to <span class="math inline">\(\mathbb{H}\)</span>
+(non-commutative). - Physical significance: The algebraization of Trace
+— the anticommutativity relation means that order is remembered. Step 2
+of the Matter Sector. - Corresponds to 0.1 §3.5 (Three-Layer
+Self-Referential Closure): the algebraic derivation of Trace — <span
+class="math inline">\(e_1 e_2 = -e_2 e_1\)</span> is the algebraic
+imprint of the indelibility of the <span
+class="math inline">\(\delta^2\)</span> trace (Theorem 3.5.4).</p>
+<p><strong>Step 3 (<span class="math inline">\(E_3\)</span>): Add <span
+class="math inline">\(e_3\)</span>, <span
+class="math inline">\(\text{Cl}(2) \to \text{Cl}(3) \cong \mathbb{H}
+\oplus \mathbb{H}\)</span>.</strong> - Added generator: <span
+class="math inline">\(e_3\)</span>, <span class="math inline">\(e_3^2 =
+-1\)</span>, <span class="math inline">\(e_3 e_i = -e_i e_3\)</span>
+(<span class="math inline">\(i = 1, 2\)</span>). - Algebraic effect:
+From <span class="math inline">\(\mathbb{H}\)</span> (simple algebra) to
+<span class="math inline">\(\mathbb{H} \oplus \mathbb{H}\)</span>
+(semisimple algebra) — the first splitting. - Physical significance: The
+terminal of the Matter Sector — binary duality emerges (the two direct
+summands correspond to two “matter ground states”). <span
+class="math inline">\(\Lambda = 3\)</span> crystallizes here. -
+Corresponds to 0.1 §3.5 (Three-Layer Self-Referential Closure): the
+algebraic derivation of Emergence — semisimple splitting is the first
+qualitative change of accumulated structure after self-referential
+closure (Principle 3.5.5).</p>
+<p><strong>Step 4 (<span class="math inline">\(E_4\)</span>): Add <span
+class="math inline">\(e_4\)</span>, <span
+class="math inline">\(\text{Cl}(3) \to \text{Cl}(4) \cong \text{Mat}(2,
+\mathbb{H})\)</span>.</strong> - Added generator: <span
+class="math inline">\(e_4\)</span>, <span class="math inline">\(e_4^2 =
+-1\)</span>, <span class="math inline">\(e_4 e_i = -e_i e_4\)</span>
+(<span class="math inline">\(i = 1, 2, 3\)</span>). - Algebraic effect:
+From <span class="math inline">\(\mathbb{H} \oplus \mathbb{H}\)</span>
+(semisimple) to <span class="math inline">\(\text{Mat}(2,
+\mathbb{H})\)</span> (simple) — the split is “re-stitched” into a matrix
+algebra. - Physical significance: Step 1 of the Causal Sector — the
+binary duality of semisimple splitting is “integrated” into a
+higher-dimensional structure.</p>
+<p><strong>Step 5 (<span class="math inline">\(E_5\)</span>): Add <span
+class="math inline">\(e_5\)</span>, <span
+class="math inline">\(\text{Cl}(4) \to \text{Cl}(5) \cong \text{Mat}(4,
+\mathbb{C})\)</span>.</strong> - Added generator: <span
+class="math inline">\(e_5\)</span>, <span class="math inline">\(e_5^2 =
+-1\)</span>. - Algebraic effect: From <span
+class="math inline">\(\text{Mat}(2, \mathbb{H})\)</span> (real matrix
+algebra) to <span class="math inline">\(\text{Mat}(4,
+\mathbb{C})\)</span> (complex matrix algebra) — complex structure
+emergence. - Physical significance: The terminal of the Causal Sector —
+the complex structure endows the ability to “oscillate”. <span
+class="math inline">\(\Delta\Theta = 5\)</span> crystallizes here. -
+Corresponds to 0.1 §3.5 (Three-Layer Self-Referential Closure): the
+deepening of Emergence — the complex structure is the algebraic
+realization of the causal dimension (Principle 3.5.5, <span
+class="math inline">\(\Delta\Theta=5\)</span>) after self-referential
+closure.</p>
+<p><strong>Step 6 (<span class="math inline">\(E_6\)</span>): Add <span
+class="math inline">\(e_6\)</span>, <span
+class="math inline">\(\text{Cl}(5) \to \text{Cl}(6) \cong \text{Mat}(8,
+\mathbb{R})\)</span>.</strong> - Added generator: <span
+class="math inline">\(e_6\)</span>, <span class="math inline">\(e_6^2 =
+-1\)</span>. - Algebraic effect: From <span
+class="math inline">\(\text{Mat}(4, \mathbb{C})\)</span> (complex
+matrices) to <span class="math inline">\(\text{Mat}(8,
+\mathbb{R})\)</span> (real matrices) — the complex structure is
+“realified”. - Physical significance: Step 1 of the Information Sector —
+complex oscillations are encoded as real data.</p>
+<p><strong>Step 7 (<span class="math inline">\(E_7\)</span>): Add <span
+class="math inline">\(e_7\)</span>, <span
+class="math inline">\(\text{Cl}(6) \to \text{Cl}(7) \cong \text{Mat}(8,
+\mathbb{R}) \oplus \text{Mat}(8, \mathbb{R})\)</span>.</strong> - Added
+generator: <span class="math inline">\(e_7\)</span>, <span
+class="math inline">\(e_7^2 = -1\)</span>. - Algebraic effect: From
+<span class="math inline">\(\text{Mat}(8, \mathbb{R})\)</span> (simple)
+to <span class="math inline">\(\text{Mat}(8, \mathbb{R}) \oplus
+\text{Mat}(8, \mathbb{R})\)</span> (semisimple) — terminal duality. -
+Physical significance: The terminal of the Information Sector — the
+Coding Orbit ends with binary splitting. <span class="math inline">\(k_0
+= 2\)</span> crystallizes here. - Corresponds to 0.1 §3.5 (Three-Layer
+Self-Referential Closure): the terminal of Emergence — terminal duality
+is the algebraic seal of self-referential closure (Principle 3.5.5,
+<span class="math inline">\(k_0=2\)</span>).</p>
+<p><strong>Step 8 (<span class="math inline">\(E_8\)</span>, closure
+step): Add <span class="math inline">\(e_8\)</span>, <span
+class="math inline">\(\text{Cl}(7) \to \text{Cl}(8) \cong \text{Mat}(16,
+\mathbb{R})\)</span>.</strong> - Added generator: <span
+class="math inline">\(e_8\)</span>, <span class="math inline">\(e_8^2 =
+-1\)</span>. - Algebraic effect: From <span
+class="math inline">\(\text{Mat}(8, \mathbb{R}) \oplus \text{Mat}(8,
+\mathbb{R})\)</span> (semisimple) to <span
+class="math inline">\(\text{Mat}(16, \mathbb{R})\)</span> (simple) — the
+binary duality is “re-stitched” into a simple algebra of 16 times the
+dimension. - Physical significance: The closure step — Bott return. But
+this is not a trivial return: Berry phase <span class="math inline">\(=
+2\pi\)</span> (proved).</p>
+<h3 id="the-algebraic-breathing-of-the-coding-orbit">3.2 The Algebraic
+“Breathing” of the Coding Orbit</h3>
+<p>The Coding Orbit exhibits a “split-stitch-split-stitch” breathing
+rhythm:</p>
+<table>
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 23%" />
+<col style="width: 23%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Step</th>
+<th style="text-align: left;">Algebra</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rhythm</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbb{R}\)</span></td>
+<td style="text-align: left;">Simple (commutative)</td>
+<td style="text-align: left;">Starting point</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbb{C}\)</span></td>
+<td style="text-align: left;">Simple (commutative)</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbb{H}\)</span></td>
+<td style="text-align: left;">Simple (non-commutative)</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;"><span class="math inline">\(\mathbb{H}
+\oplus \mathbb{H}\)</span></td>
+<td style="text-align: left;"><strong>Semisimple</strong></td>
+<td style="text-align: left;">Split</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;"><span class="math inline">\(\text{Mat}(2,
+\mathbb{H})\)</span></td>
+<td style="text-align: left;">Simple</td>
+<td style="text-align: left;">Stitch</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;"><span class="math inline">\(\text{Mat}(4,
+\mathbb{C})\)</span></td>
+<td style="text-align: left;">Simple</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;"><span class="math inline">\(\text{Mat}(8,
+\mathbb{R})\)</span></td>
+<td style="text-align: left;">Simple</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;"><span class="math inline">\(\text{Mat}(8,
+\mathbb{R}) \oplus \text{Mat}(8, \mathbb{R})\)</span></td>
+<td style="text-align: left;"><strong>Semisimple</strong></td>
+<td style="text-align: left;">Split</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;"><span class="math inline">\(\text{Mat}(16,
+\mathbb{R})\)</span></td>
+<td style="text-align: left;">Simple</td>
+<td style="text-align: left;">Stitch</td>
+</tr>
+</tbody>
+</table>
+<p>The two “splits” (step 3, step 7) correspond to two direct-sum
+algebras; the two “stitches” (step 4, step 8) reintegrate the splits
+into higher-dimensional simple algebras. This rhythm is the intrinsic
+cadence of the δ iteration, not an artificial design.</p>
+<hr />
+<h2 id="preview-of-bott-periodicity">§4 Preview of Bott Periodicity</h2>
+<p><strong>Proposition 0.2.4.01 (Bott Periodicity).</strong> <span
+class="math inline">\(\delta^8(\text{Cl}(n)) = \text{Cl}(n+8) \cong
+\text{Cl}(n) \otimes \text{Mat}(16, \mathbb{R})\)</span>.</p>
+<p>This is a direct corollary of the Bott Periodicity Theorem. Starting
+from <span class="math inline">\(\text{Cl}(0) \cong \mathbb{R}\)</span>,
+δ iterates 8 steps to reach <span class="math inline">\(\text{Cl}(8)
+\cong \text{Mat}(16, \mathbb{R}) = \mathbb{R} \otimes \text{Mat}(16,
+\mathbb{R})\)</span> — the structure “returns to the origin” but
+magnified 16-fold.</p>
+<p>Key question: Is the closure of <span
+class="math inline">\(\delta^8\)</span> trivial? That is, is the Berry
+phase zero? The answer is negative — <span
+class="math inline">\(\delta^8\)</span> carries a topological phase of
+<span class="math inline">\(2\pi\)</span>. This non-trivial closure is
+the root of the existence of the entire physical world. The complete
+proof is given in .</p>
+<h3 id="the-algebraic-mechanism-of-bott-periodicity">4.1 The Algebraic
+Mechanism of Bott Periodicity</h3>
+<p>The algebraic mechanism of Bott periodicity <span
+class="math inline">\(\text{Cl}(n+8) \cong \text{Cl}(n) \otimes
+\text{Mat}(16, \mathbb{R})\)</span> can be understood from three
+angles:</p>
+<p><strong>Angle 1: Dimension doubling.</strong> <span
+class="math inline">\(\dim \text{Cl}(n) = 2^n\)</span>, <span
+class="math inline">\(\dim \text{Cl}(n+8) = 2^{n+8} = 256 \cdot
+2^n\)</span>, and <span class="math inline">\(\dim(\text{Cl}(n) \otimes
+\text{Mat}(16, \mathbb{R})) = 2^n \cdot 256 = 256 \cdot 2^n\)</span>.
+Dimension matches. But dimension matching is only a necessary condition,
+not a guarantee of isomorphism.</p>
+<p><strong>Angle 2: Periodic sign pattern.</strong> The sign sequence of
+the square of the volume element <span class="math inline">\(\omega_n^2
+= (-1)^{n(n+1)/2}\)</span> (for <span class="math inline">\(n = 0, 1,
+\dots\)</span>) is: <span class="math display">\[1, -1, -1, 1, 1, -1,
+-1, 1, 1, -1, -1, 1, \dots\]</span> This is a 4-step period (the block
+<span class="math inline">\(1, -1, -1, 1\)</span> repeats). But the full
+period of the algebraic structure is 8 steps — because the center
+dimension also has a 2-step period (center dimension 2 for odd steps, 1
+for even steps), and the least common multiple of the two is 8.</p>
+<p><strong>Angle 3: Representation dimension sequence.</strong> The
+irreducible representation dimension sequence <span
+class="math inline">\(\rho_n = 1, 2, 4, 4, 8, 8, 8, 8, 16, 16, 32,
+\dots\)</span> first returns, at <span class="math inline">\(n =
+8\)</span>, to 16 times <span class="math inline">\(\rho_0 = 1\)</span>
+— this is the representation-theoretic imprint of Bott periodicity.</p>
+<h3 id="bott-periodicity-and-the-three-structure-constants">4.2 Bott
+Periodicity and the Three Structure Constants</h3>
+<p>Within the 8-step cycle of Bott periodicity <span
+class="math inline">\(\delta^8\)</span>, the three Structure Constants
+correspond to three “structural jump points”:</p>
+<ul>
+<li><strong>Step 3</strong> (<span class="math inline">\(\Lambda =
+3\)</span>): First semisimple splitting — from simple algebra to
+semisimple algebra.</li>
+<li><strong>Step 5</strong> (<span class="math inline">\(\Delta\Theta =
+5\)</span>): First complex structure emergence — from real matrices to
+complex matrices.</li>
+<li><strong>Step 7</strong> (<span class="math inline">\(k_0 =
+2\)</span>): Terminal duality — the semisimple splitting at the terminal
+of the Coding Orbit.</li>
+</ul>
+<p>These three jump points are not arbitrary — they are rigidly
+determined by the sign sequence of <span
+class="math inline">\(\omega_n^2\)</span> (steps 3 and 7 are splittings
+caused by <span class="math inline">\(\omega_n^2 = 1\)</span>, step 5 is
+the complex structure caused by <span class="math inline">\(\omega_n^2 =
+-1\)</span>). will rigorously prove the interlock property of the
+three.</p>
+<hr />
+<h2 id="theorem-index">Theorem Index</h2>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 28%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Number</th>
+<th style="text-align: left;">Content</th>
+<th style="text-align: center;">Proof Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Theorem</td>
+<td style="text-align: left;">Bott step operator definition: <span
+class="math inline">\(\delta(\text{Cl}(n)) =
+\text{Cl}(n+1)\)</span></td>
+<td style="text-align: center;">Definition</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem</td>
+<td style="text-align: left;">Algebraization derivability: δ →
+Three-Layer Self-Referential Closure → Clifford algebra</td>
+<td style="text-align: center;">Derived (0.1 §3.5 + this article §1.1,
+§1.6)</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem</td>
+<td style="text-align: left;">Semisimple Splitting Lemma: <span
+class="math inline">\(\text{Cl}(3) \cong \mathbb{H} \oplus
+\mathbb{H}\)</span></td>
+<td style="text-align: center;">Proved (this article §2.1)</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem</td>
+<td style="text-align: left;">Complex Structure Emergence Lemma: <span
+class="math inline">\(\text{Cl}(5) \cong \text{Mat}(4,
+\mathbb{C})\)</span></td>
+<td style="text-align: center;">Proved (this article §2.2)</td>
+</tr>
+<tr>
+<td style="text-align: center;">Lemma</td>
+<td style="text-align: left;">Terminal Duality: <span
+class="math inline">\(\text{Cl}(7) \cong \text{Mat}(8, \mathbb{R})
+\oplus \text{Mat}(8, \mathbb{R})\)</span></td>
+<td style="text-align: center;">Proved (this article §2.3)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="references">References</h2>
+<ul>
+<li>Atiyah, Bott, Shapiro, <em>Clifford Modules</em>, Topology 3
+(1964)</li>
+<li>Lawson, Michelsohn, <em>Spin Geometry</em>, Princeton University
+Press</li>
+<li>Frobenius, <em>Über lineare Substitutionen und bilineare
+Formen</em>, J. reine angew. Math. 84 (1878)</li>
+</ul>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>

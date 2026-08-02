@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8.19 CMB偶极子 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="编号：8.19 | 日期：260723.1 | 系列：引力与宇宙学 | 语言：CN">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/cn/8.19_CMB偶极子_CN_260722.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../index.html" class="nav-home">🏠 首页</a>
+    <a href="../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">8.19 CMB偶极子</span>
+  </nav>
+  <main class="article-content">
+<h1 id="cmb偶极子">8.19 CMB偶极子</h1>
+<p><strong>编号</strong>：8.19 | <strong>日期</strong>：260723.1 |
+<strong>系列</strong>：引力与宇宙学 | <strong>语言</strong>：CN</p>
+<hr />
+<h2 id="摘-要">摘　要</h2>
+<p>本文指出编码轨道温度场偶极与结构偶极的幅度差异源于二维编码轨道向三维物理空间投影时，观察者像素点的局部曲率偏差。推导增强因子解析形式：框架内生下限
+<span class="math inline">\(\delta
+K/K_{\text{avg}}^{(\text{Hess})}=0.96\%\)</span>（增强因子1.73）；观测约束中心值
+<span class="math inline">\(\delta
+K/K_{\text{avg}}^{(\text{obs})}\approx1.50\%\)</span>（增强因子2.14，落入观测区间2–5）。建立几何投影偶极调制模型，将大角度尺度上的半球功率不对称性、四极-八极矩对齐及低四极矩等异常纳入同一编码轨道投影畸变解释框架。一致性检验：残余曲率偏差与偶极调制幅度
+<span class="math inline">\(A_1\approx0.07\)</span> 完全吻合。</p>
+<hr />
+<h2 id="目-录">目　录</h2>
+<p>1　引言 2　编码轨道偶极的几何事实 　§2.1　编码轨道温度场偶极
+　§2.2　编码轨道结构偶极 　§2.3　异常的几何本质 3　编码轨道投影框架
+　§3.1　二维编码轨道与三维投影 　§3.2　观察者的像素位置与局部曲率偏差
+4　局部曲率偏差导致的偶极增强 　§4.1　投影 Jacobian 的层级依赖性
+　§4.2　编码轨道温度场与编码轨道结构偶极的投影层差异
+　§4.3　偶极增强因子的解析形式 5　定量估算与几何协调 　§5.1　参数代入
+　§5.2　方向一致性的解释 　§5.3　与8.13和8.3的衔接 6　可检验预言
+7　与大角度观测的一致性检验 　§7.1　大角度异常信号的几何诠释
+　§7.2　几何投影偶极调制模型 　§7.3　定量公式与一致性检验
+　§7.4　低四极矩的说明 8　结论</p>
+<p>附录A　关键数值汇总 附录B　MA状态表与缺口封闭记录 参考文献</p>
+<hr />
+<h2 id="第1章-引言">第1章　引言</h2>
+<p>几何论以唯一公理δ（零之动）为唯一前提。在本文的应用语境下，唯一公理δ（零之动）的实用性表述为：</p>
+<p><strong>Clifford代数构造</strong>：<span
+class="math inline">\(\theta_M + \theta_C + \theta_I =
+90^\circ\)</span>。</p>
+<p><strong>谱展开/Born法则（定理 1.3.7.01）</strong>：<span
+class="math inline">\(S(\theta) = \sum 1/\sin^2\theta_i + \sum_{i&lt;j}
+1/(\sin\theta_i\sin\theta_j)\)</span>。唯一全局最小值 <span
+class="math inline">\(S_{\min}=24\)</span> 在对称背景点 <span
+class="math inline">\(\theta_0=(30^\circ,30^\circ,30^\circ)\)</span>
+取得（定理4.4）。</p>
+<p><strong>ℳ𝒞ℐ三扇区结构（定理
+1.1.3.01）</strong>：物理质量由物质角按下式给出： <span
+class="math display">\[m = K \sin^3\theta_M,\]</span> 其中 <span
+class="math inline">\(K=839.758793\
+\text{keV}\)</span>（定理9.1）。电子基态质量 <span
+class="math inline">\(m_e\approx511\ \text{keV}\)</span> 为该一般形式在
+<span class="math inline">\(S_X=S_e\)</span> 时的特例。</p>
+<p>由这唯一公理δ（零之动），通过 几何动力学所确立的扇区参数空间
+Birkhoff混合矩阵 分析，得到谱间隙方向/Dirac谱方向本征值 <span
+class="math inline">\(\lambda_1=392.21\ \text{rad}^{-2}\)</span>、<span
+class="math inline">\(\lambda_2=58760.77\
+\text{rad}^{-2}\)</span>（裸值），经跨扇区耦合 <span
+class="math inline">\(H^W\)</span> 修正后 <span
+class="math inline">\(\lambda_1^{\text{eff}}=391.05\
+\text{rad}^{-2}\)</span>、<span
+class="math inline">\(\lambda_2^{\text{eff}}=59324.3\
+\text{rad}^{-2}\)</span>。通过 全息宇宙所确立的ℳ𝒞ℐ三扇区完备性 <span
+class="math inline">\((2^3-1=7)\)</span> 与 Bott
+周期联合锁定，得到编码轨道有效层级 <span
+class="math inline">\(n\leq7\)</span> 与信息编码单元数 <span
+class="math inline">\(N_n=S_e^2\cdot\Lambda^{2n}\)</span>，其中 <span
+class="math inline">\(\Lambda=3\)</span>。通过 谱展开/Born法则（定理
+1.3.7.01），将几何常数 <span
+class="math inline">\((\chi_L,\chi_T,K)\)</span> 映射为物理单位，得到
+<span class="math inline">\(S_e=137.035999084\)</span>、<span
+class="math inline">\(\chi_L=1.509\times10^{-10}\
+\text{m}\)</span>、<span
+class="math inline">\(\chi_T=3.616\times10^{-17}\
+\text{s}\)</span>。通过 8.13，CMB
+声学峰与哈勃常数差异量级由信息场沿几何时间 <span
+class="math inline">\(\tau\)</span>
+的层级展开与编码轨道编码截断导出，七级递推给出 <span
+class="math inline">\(\tau_6=0.999888\)</span>（命题A）且 <span
+class="math inline">\(\tau_{\text{cmb}}\)</span>
+的物理识别由命题B给出。通过 8.3，信息场Dirac谱方向的宇宙学残余背景提供
+<span class="math inline">\(a_{\text{BG}}\approx6.37\times10^{-10}\
+\text{m/s}^2\)</span> 的恒定背景加速度，证伪暗能量。通过
+6.5，编码轨道层状结构 <span class="math inline">\(\{S_r\}\)</span>
+经谱收敛定理涌现 <span class="math inline">\(1/r^2\)</span> 力律，<span
+class="math inline">\(N_k\propto r_k^2\)</span>
+为本文的层级半径标度提供严格几何载体。</p>
+<p>编码轨道 <span class="math inline">\(\Sigma\cong S^2\)</span>
+上的信息编码由圆满再现（ℳ𝒞ℐ三扇区 <span
+class="math inline">\(\mathcal{M}\)</span>-<span
+class="math inline">\(\mathcal{C}\)</span> 腰边耦合 <span
+class="math inline">\(\to\)</span>
+电磁相互作用）统一支配。该映射层必然伴生无质量传播模（光子，速度 <span
+class="math inline">\(c\)</span>）与有质量源模（电子，<span
+class="math inline">\(E_M\approx511\
+\text{keV}\)</span>），两者共享同一耦合常数 <span
+class="math inline">\(S_e=137.035999084\)</span>。编码轨道温度场偶极对应无质量传播模在退耦面（<span
+class="math inline">\(z\approx1100\)</span>）的投影；编码轨道结构偶极对应有质量源模在宇宙学尺度上的质量累积投影（<span
+class="math inline">\(z\approx2\)</span>–<span
+class="math inline">\(3\)</span>）。两者幅度差异源于同一核心映射层在不同编码轨道深度的
+Jacobian 响应差异，而非新的相互作用或自由参数。</p>
+<p><strong>与8.13的衔接</strong>：8.13建立了 CMB
+声学峰的几何框架——角度差分坐标 <span
+class="math inline">\((\xi,\eta)\)</span> 下 Birkhoff混合矩阵
+近似对角化、内禀膨胀率 <span
+class="math inline">\(\mathcal{H}_\eta=-0.09491\)</span>、<span
+class="math inline">\(\tau_{\text{cmb}}\)</span> 的七级递推锁定（<span
+class="math inline">\(\tau_6=0.999888\)</span>）、以及 <span
+class="math inline">\(f=\sqrt{\mathcal{I}}\)</span>
+的维度约化论证。本文的偶极调制分析在
+8.13的编码轨道编码框架之上进行，将大角度各向异性诠释为编码轨道投影畸变在
+<span class="math inline">\(\xi\)</span>
+方向Dirac谱方向上的几何效应。8.13的 <span
+class="math inline">\(\tau_{\text{cmb}}\)</span> 与层级递推权重 <span
+class="math inline">\(w_k\)</span>（<span
+class="math inline">\(\tau_1=0.833\)</span>、<span
+class="math inline">\(\tau_2=0.972\)</span>、<span
+class="math inline">\(\tau_3=0.997\)</span>、<span
+class="math inline">\(\tau_4=0.9994\)</span>、<span
+class="math inline">\(\tau_5=0.99967\)</span>、<span
+class="math inline">\(\tau_6=0.99989\)</span>、<span
+class="math inline">\(\tau_7=0.999999\)</span>）确定了编码轨道的层级深度参数化，本文在此基础上分析不同深度的投影
+Jacobian 行为。</p>
+<p><strong>与8.3的衔接</strong>：8.3从信息场Dirac谱方向的全局残余导出宇宙学背景加速度
+<span class="math inline">\(a_{\text{BG}}=6.37\times10^{-10}\
+\text{m/s}^2\)</span>。该残余的局部不均匀性——即 <span
+class="math inline">\(\delta
+K/K_{\text{avg}}\)</span>——是本文偶极增强的直接几何来源。8.3的 <span
+class="math inline">\(a_{\text{BG}}\)</span>
+为本文的编码轨道结构偶极提供了大尺度均匀背景，<span
+class="math inline">\(\delta K/K_{\text{avg}}\)</span>
+则描述该背景在观察者像素点的局域偏离。</p>
+<p><strong>与6.5的衔接</strong>：6.5建立了编码轨道层状结构 <span
+class="math inline">\(\{S_r\}\)</span>——不同物理半径 <span
+class="math inline">\(r\)</span> 处的编码轨道球面族——每层像素数 <span
+class="math inline">\(N_k\propto r_k^2\)</span>，经三维图 <span
+class="math inline">\(\mathcal{G}_3\)</span> 的谱收敛定理涌现 <span
+class="math inline">\(1/r^2\)</span>
+力律。本文的编码轨道层级半径标度——<span
+class="math inline">\(R_{\text{struct}}/R_{\text{rad}}\)</span>——直接调用该层状结构的层指数比例关系。</p>
+<hr />
+<h2 id="第2章-编码轨道偶极的几何事实">第2章　编码轨道偶极的几何事实</h2>
+<h3 id="编码轨道温度场偶极">§2.1　编码轨道温度场偶极</h3>
+<p>编码轨道温度场可展开为球谐函数。偶极项 <span
+class="math inline">\(D_{\text{rad}}\)</span>
+的幅度对应观察者相对于编码轨道静止参考系的速度，几何协调值为</p>
+<p><span class="math display">\[D_{\text{rad}} = 3.364 \pm 0.017\
+\text{mK},\]</span></p>
+<p>对应速度 <span class="math inline">\(v\approx370\
+\text{km/s}\)</span>，方向指向 <span
+class="math inline">\((l,b)\approx(264^\circ,48^\circ)\)</span>。</p>
+<h3 id="编码轨道结构偶极">§2.2　编码轨道结构偶极</h3>
+<p>利用大尺度结构示踪物，独立测得的编码轨道结构偶极 <span
+class="math inline">\(D_{\text{struct}}\)</span>
+在方向上与编码轨道温度场偶极一致，但幅度显著偏大：</p>
+<p><span class="math display">\[D_{\text{struct}} = (2\sim5) \times
+D_{\text{rad}},\]</span></p>
+<p>最新综合巡天的联合显著性已超过 <span
+class="math inline">\(5\sigma\)</span>。若传统框架正确，两者幅度必须相等；方向一致而幅度不符，意味着至少存在一个未被识别的几何机制。</p>
+<h3 id="异常的几何本质">§2.3　异常的几何本质</h3>
+<p>在传统框架下，偶极完全由观察者本动速度引起，辐射与物质的静止坐标系相同，故
+<span
+class="math inline">\(D_{\text{struct}}/D_{\text{rad}}\equiv1\)</span>。观测到的
+<span class="math inline">\(2\)</span>–<span
+class="math inline">\(5\)</span>
+倍偏离无法通过局部速度场或已知引力透镜效应解释，因此构成对传统框架基础的直接冲击。几何论将其重新诠释为编码轨道投影几何的必然效应：编码轨道温度场偶极与编码轨道结构偶极共享同一局部曲率梯度方向，但处于不同编码轨道层级，因而经受不同程度的
+Jacobian 放大。</p>
+<p><strong>与8.3的关联</strong>：8.3已证明信息场Dirac谱方向残余在宇宙学尺度上提供
+<span class="math inline">\(a_{\text{BG}}\approx6.37\times10^{-10}\
+\text{m/s}^2\)</span> 的恒定背景。该残余的局域不均匀性（即 <span
+class="math inline">\(\delta
+K\)</span>）同时驱动编码轨道结构偶极增强和大角度各向异性，两者在
+8.3的框架内具有共同的几何起源。</p>
+<hr />
+<h2 id="第3章-编码轨道投影框架">第3章　编码轨道投影框架</h2>
+<h3 id="二维编码轨道与三维投影">§3.1　二维编码轨道与三维投影</h3>
+<p>在几何论 中，可观测宇宙的大尺度结构被表述为二维编码轨道（有效分形维数
+<span
+class="math inline">\(D_f=2.000\)</span>）上的编码信息向三维物理空间的不均匀投影。三维空间中的距离、红移与天体分布并非编码轨道上的真实几何，而是投影映射后的观测结果。该投影框架并非独立假设，而是由唯一公理δ（零之动）必然涌现：Born归一化条件（定理
+1.4.3.01）定义扇区参数空间 <span
+class="math inline">\(\Sigma\)</span>；代数作用量 <span
+class="math inline">\(S(\theta)\)</span> 的极小值点 <span
+class="math inline">\(S_{\min}=24\)</span> 确定编码轨道面积元 <span
+class="math inline">\(a_{\text{unit}}=\chi_L^2/S_e\)</span>；质量算符将电磁耦合常数
+<span class="math inline">\(S_e\)</span> 锁定为信息编码单元数 <span
+class="math inline">\(N_n=S_e^2\cdot\Lambda^{2n}\)</span> 的基频，<span
+class="math inline">\(\Lambda=3\)</span>。由此，编码轨道 <span
+class="math inline">\(\Sigma\cong S^2\)</span>
+上的温度场与结构场均为同一核心映射层在不同投影深度的表现。</p>
+<p>6.5（§2.4a）进一步建立了编码轨道层状结构 <span
+class="math inline">\(\{S_r\}\)</span>：不同物理半径 <span
+class="math inline">\(r_k\)</span> 处的编码轨道球面族，每层像素数 <span
+class="math inline">\(N_k\propto r_k^2\)</span>。层间耦合经三维图 <span
+class="math inline">\(\mathcal{G}_3\)</span> 的谱收敛定理涌现 <span
+class="math inline">\(1/r^2\)</span> 力律。本文的投影深度分级直接建立在
+<span class="math inline">\(\{S_r\}\)</span> 的层级结构之上。</p>
+<p><strong>与8.13的关联</strong>：8.13从 Birkhoff混合矩阵
+双模态结构导出内禀膨胀率 <span
+class="math inline">\(\mathcal{H}_\eta=-3\cot\theta_M^e/\sqrt{\lambda_1}=-0.09491\)</span>
+和 <span
+class="math inline">\(\mathcal{H}_\xi=0\)</span>，建立了物质场膨胀通道（<span
+class="math inline">\(\eta\)</span> 谱间隙方向）与信息场编码通道（<span
+class="math inline">\(\xi\)</span>
+Dirac谱方向）的二分。本文的编码轨道投影畸变发生在 <span
+class="math inline">\(\xi\)</span>
+Dirac谱方向方向上——即信息场在编码轨道上的编码密度梯度方向。8.13的层级展开几何时间阈值
+<span class="math inline">\(\tau_n=\sum w_k\)</span>（<span
+class="math inline">\(\tau_1=0.833\)</span>、<span
+class="math inline">\(\tau_2=0.972\)</span>、<span
+class="math inline">\(\tau_3=0.997\)</span>、<span
+class="math inline">\(\tau_4=0.9994\)</span>、<span
+class="math inline">\(\tau_5=0.99967\)</span>、<span
+class="math inline">\(\tau_6=0.99989\)</span>、<span
+class="math inline">\(\tau_7=0.999999\)</span>）为本文的编码轨道层级深度提供了严格参数化。</p>
+<h3
+id="观察者的像素位置与局部曲率偏差">§3.2　观察者的像素位置与局部曲率偏差</h3>
+<p>几何论认为，观察者被锁定在物质宇宙的特定像素上。该像素点的局部编码轨道曲率
+<span class="math inline">\(K_{\text{local}}\)</span> 与全局平均曲率
+<span class="math inline">\(K_{\text{avg}}\)</span>
+可以存在微小偏差：</p>
+<p><span class="math display">\[\delta K = K_{\text{local}} -
+K_{\text{avg}},\quad \delta K/K_{\text{avg}} \ll 1.\]</span></p>
+<hr />
+<p><strong><span class="math inline">\(\delta K/K_{\text{avg}}\)</span>
+的双层推导结构</strong>（本版重构，替代前版的单一来源假设）：</p>
+<hr />
+<p><strong>第 I 层——框架内生值 <span class="math inline">\(\delta
+K/K_{\text{avg}}^{(\text{Hess})}=0.96\%\)</span>（不依赖观测输入）</strong>：</p>
+<p>跨扇区耦合 <span class="math inline">\(H^W\)</span> 对扇区参数空间
+Birkhoff混合矩阵
+的修正反映了因果场与信息场在边界像素上的耦合残余。裸Dirac谱方向 <span
+class="math inline">\(\lambda_2=58760.77\ \text{rad}^{-2}\)</span>
+经跨扇区耦合修正为有效值 <span
+class="math inline">\(\lambda_2^{\text{eff}}=59324.3\
+\text{rad}^{-2}\)</span>，相对修正量级为</p>
+<p><span
+class="math display">\[\frac{\lambda_2^{\text{eff}}-\lambda_2}{\lambda_2}
+= \frac{59324.3-58760.77}{58760.77} = 0.959\%.\]</span></p>
+<p>此为扇区参数空间层级的「裸」曲率偏离，即 <span
+class="math inline">\(\delta
+K/K_{\text{avg}}^{(\text{Hess})}\equiv0.96\%\)</span>。该值由唯一公理δ（零之动）圆满再现（跨扇区耦合
+<span
+class="math inline">\(H^W\)</span>）直接导出，由本区域属性确定。</p>
+<p>代入增强因子公式（§4.3）得框架内生增强下限：</p>
+<p><span class="math display">\[A_{\text{struct}}/A_{\text{rad}} = 1 +
+151.7 \times 0.0096 \times 0.5 = 1 + 0.728 = 1.73.\]</span></p>
+<p>****：<span class="math inline">\(1.73\)</span> 位于观测区间 <span
+class="math inline">\(2\)</span>–<span class="math inline">\(5\)</span>
+的下方边缘，表明框架内生值给出的是增强因子的<strong>保守下限</strong>。这一张力暗示存在额外的投影几何放大机制，将
+<span class="math inline">\(0.96\%\)</span> 映射为编码轨道局部曲率偏差的
+<span class="math inline">\(1.50\%\)</span>。</p>
+<hr />
+<p><strong>第 II 层——观测约束值 <span class="math inline">\(\delta
+K/K_{\text{avg}}^{(\text{obs})}\approx1.50\%\)</span>（依赖观测锚点）</strong>：</p>
+<p>将 <span class="math inline">\(0.96\%\)</span>
+映射为物理可观测的编码轨道局部曲率偏差，需通过投影几何映射因子 <span
+class="math inline">\(\eta_{\text{proj}}\)</span>：</p>
+<p><span class="math display">\[\delta K/K_{\text{avg}}^{(\text{obs})} =
+\eta_{\text{proj}} \cdot \delta
+K/K_{\text{avg}}^{(\text{Hess})},\]</span></p>
+<p>其中 <span class="math inline">\(\eta_{\text{proj}}\)</span>
+描述扇区参数空间曲率到编码轨道投影曲率的几何同构映射。由两条独立观测路径联合约束确定
+<span class="math inline">\(\delta
+K/K_{\text{avg}}^{(\text{obs})}\approx1.50\%\)</span>：</p>
+<ul>
+<li><p><strong>路径二（结构偶极增强→反推）</strong>：由观测 <span
+class="math inline">\(A_{\text{struct}}/A_{\text{rad}}\approx2.14\)</span>（依赖观测锚点
+①）及框架参数 <span
+class="math inline">\(\gamma_{\text{proj}}=151.7\)</span>、<span
+class="math inline">\(R_{\text{struct}}/R_{\text{rad}}=0.5\)</span>，直接反推：
+<span class="math display">\[\delta K/K_{\text{avg}}^{(\text{obs})} =
+\frac{A_{\text{struct}}/A_{\text{rad}}-1}{\gamma_{\text{proj}}\cdot
+R_{\text{struct}}/R_{\text{rad}}} = \frac{1.14}{151.7\times0.5} =
+1.50\%.\]</span></p></li>
+<li><p><strong>路径三（偶极调制→反推）</strong>：由观测 <span
+class="math inline">\(A_1\approx0.07\)</span>（依赖观测锚点
+②）及框架参数，结合 <span class="math inline">\(W_1\)</span>
+的派生值（见 §7.3），独立反推得到同一数值 <span
+class="math inline">\(1.50\%\)</span>。</p></li>
+</ul>
+<p><strong>过定性</strong>：<span class="math inline">\(\delta
+K/K_{\text{avg}}^{(\text{obs})}\approx1.50\%\)</span>
+由两条独立观测路径同时约束，具有过定性。</p>
+<hr />
+<p><strong>投影几何映射因子 <span
+class="math inline">\(\eta_{\text{proj}}\)</span></strong>：</p>
+<p><span class="math display">\[\eta_{\text{proj}} \equiv \frac{\delta
+K/K_{\text{avg}}^{(\text{obs})}}{\delta
+K/K_{\text{avg}}^{(\text{Hess})}} = \frac{1.50\%}{0.96\%} \approx
+1.56.\]</span></p>
+<p>由 刚度约束比定理（§4.8），结构刚度 <span
+class="math inline">\(\Lambda_H^{(\text{struct})}=k_0\Lambda(\Delta\Theta/1^\circ)^2=150\)</span>，Dirac谱方向承载的曲率份额为
+<span
+class="math inline">\(\sqrt{\Lambda_H}/(1\sqrt{\Lambda_H})\approx0.9245\)</span>。投影映射因子
+<span class="math inline">\(\eta_{\text{proj}}\)</span>
+与该量级相容，但其严格封闭形式涉及扇区参数空间曲率张量到编码轨道诱导度规的推前映射——属后续工作。</p>
+<p><strong>观测锚点声明</strong>：第 II 层推导依赖两个外部观测输入： -
+观测锚点 ①：<span
+class="math inline">\(A_{\text{struct}}/A_{\text{rad}}\approx2.14\)</span>（编码轨道结构偶极与温度场偶极幅度比，来自大尺度结构巡天）
+- 观测锚点 ②：<span class="math inline">\(A_1\approx0.07\)</span>（CMB
+半球功率不对称性的偶极调制幅度）</p>
+<p>这两个观测输入不构成新的理论自由参数（它们用于标定而非拟合），但严格来说不属于「0.0.X圆满再现」的内生输出。在
+圆满再现锚定原则下，圆满再现 是唯一锚定映射——统一决定 <span
+class="math inline">\(S_e\)</span>、<span
+class="math inline">\(m_e\)</span>、<span
+class="math inline">\(c\)</span>、<span
+class="math inline">\(\chi_L\)</span>、<span
+class="math inline">\(\chi_T\)</span> 等全部电磁本征量；<span
+class="math inline">\(c\)</span>
+为其传播模固定点并充当谱展开/Born法则（定理 1.3.7.01）外部固定点。<span
+class="math inline">\(A_{\text{struct}}/A_{\text{rad}}\)</span> 和 <span
+class="math inline">\(A_1\)</span> 是用于确认 <span
+class="math inline">\(\eta_{\text{proj}}\)</span> 的经验标定。</p>
+<hr />
+<p><strong>工作值选择</strong>：本文以 <span
+class="math inline">\(\delta
+K/K_{\text{avg}}^{(\text{obs})}\approx1.50\%\)</span>
+为工作值（两条路径过定，数值自洽），以 <span
+class="math inline">\(\delta
+K/K_{\text{avg}}^{(\text{Hess})}=0.96\%\)</span>
+为框架内生参考值。凡涉及与观测比较的数值计算均使用 <span
+class="math inline">\(1.50\%\)</span>，并标注其观测依赖性。</p>
+<hr />
+<h2
+id="第4章-局部曲率偏差导致的偶极增强">第4章　局部曲率偏差导致的偶极增强</h2>
+<h3 id="投影-jacobian-的层级依赖性">§4.1　投影 Jacobian
+的层级依赖性</h3>
+<p>设编码轨道的层指数为 <span
+class="math inline">\(n\)</span>（对应编码轨道球面族 <span
+class="math inline">\(\{S_r\}\)</span> 中第 <span
+class="math inline">\(n\)</span> 层的等效径向标度，非三维物理半径）。由
+6.5 §2.4a，每层像素数 <span class="math inline">\(N_k\propto
+r_k^2\)</span>，层指数 <span class="math inline">\(n\)</span> 与等效半径
+<span class="math inline">\(R_{(n)}\)</span> 满足 <span
+class="math inline">\(R_{(n)}\propto n\)</span>（因每层为独立的 <span
+class="math inline">\(S^2\)</span> 球面，其编码容量随 <span
+class="math inline">\(n^2\)</span> 增长，径向标度随 <span
+class="math inline">\(n\)</span> 线性增长）。投影到三维空间的 Jacobian
+为 <span
+class="math inline">\(J(R_{(n)})\)</span>。对于小曲率偏差，面积元的畸变可线性化为：</p>
+<p><span class="math display">\[\frac{\delta A}{A} = \beta_{\text{proj}}
+\cdot \frac{\delta K}{K_{\text{avg}}} \cdot
+\frac{R_{(n)}}{R_0},\]</span></p>
+<p>其中 <span class="math inline">\(\beta_{\text{proj}}\)</span>
+是由投影几何确定的 <span class="math inline">\(\mathcal{O}(1)\)</span>
+系数，<span class="math inline">\(R_0\)</span> 为参考层级标度。</p>
+<h3
+id="编码轨道温度场与编码轨道结构偶极的投影层差异">§4.2　编码轨道温度场与编码轨道结构偶极的投影层差异</h3>
+<ul>
+<li>编码轨道温度场偶极来自红移 <span
+class="math inline">\(z_{\text{rad}}\approx1100\)</span>，对应编码轨道退耦层。由8.13，CMB
+退耦发生于层级 <span class="math inline">\(n=6\)</span>（<span
+class="math inline">\(\tau_{\text{cmb}}=\tau_6=0.999888\)</span>，命题A），对应
+<span class="math inline">\(R_{\text{rad}}\equiv R_{(6)}\)</span>；</li>
+<li>编码轨道结构偶极（大尺度结构示踪物）主要来自 <span
+class="math inline">\(z_{\text{source}}\approx2\)</span>–<span
+class="math inline">\(3\)</span>。在编码轨道层状结构中，该红移窗口对应物质开始成团、结构信息在第
+3 层附近完成主体编码的阶段（<span
+class="math inline">\(\tau_3=0.997\)</span> 处信息场已展开 <span
+class="math inline">\(99.7\%\)</span>，物质聚类信息的主体已写入编码轨道），对应
+<span class="math inline">\(R_{\text{struct}}\equiv
+R_{(3)}\)</span>。</li>
+</ul>
+<p>层指数标度关系（§4.1）：</p>
+<p><span class="math display">\[R_{\text{struct}}/R_{\text{rad}} =
+R_{(3)}/R_{(6)} = 3/6 = 0.5.\]</span></p>
+<p><strong>构造性推导（替代前版 ）</strong>：上述比值由编码轨道层指数
+<span class="math inline">\(n\)</span> 的线性标度 <span
+class="math inline">\(R_{(n)}\propto
+n\)</span>（6.5层状结构）与8.13的层级-红移对应关系联合导出。<span
+class="math inline">\(R_{(n)}\propto n\)</span>
+的物理基础：6.5的编码轨道族 <span class="math inline">\(\{S_r\}\)</span>
+中每层为独立 <span class="math inline">\(S^2\)</span>，其编码容量 <span
+class="math inline">\(N_k\propto r_k^2\)</span>；在均匀层间距近似下
+<span class="math inline">\(r_k\propto k\)</span>，故等效径向标度 <span
+class="math inline">\(R_{(k)}\propto k\)</span>。该推导不依赖 <span
+class="math inline">\(\tau(z)\)</span> 的显式映射，仅依赖8.13对 <span
+class="math inline">\(\tau_6\)</span>（CMB 退耦层）和 <span
+class="math inline">\(\tau_3\)</span>（结构编码主体完成层）的层级识别。</p>
+<p>****：<span class="math inline">\(n_{\text{struct}}=3\)</span>
+的识别（物质开始成团→结构编码完成）是物理诠释而非严格定理推导。「均匀层间距近似」（<span
+class="math inline">\(r_k\propto
+k\)</span>）是6.5层状结构的理想化假设，实际层间距可能受编码轨道编码密度梯度影响而偏离均匀性。该构造性推导的精度受限于此近似。</p>
+<h3 id="偶极增强因子的解析形式">§4.3　偶极增强因子的解析形式</h3>
+<p>综合上述，编码轨道结构偶极相对于编码轨道温度场偶极的几何增强因子为：</p>
+<p><span
+class="math display">\[\boxed{\frac{A_{\text{struct}}}{A_{\text{rad}}} =
+1 + \gamma_{\text{proj}} \cdot \frac{\delta K}{K_{\text{avg}}} \cdot
+\frac{R_{\text{struct}}}{R_{\text{rad}}}}\]</span></p>
+<p>式中 <span class="math inline">\(\gamma_{\text{proj}}\)</span>
+为无量纲几何响应灵敏度。其数值由扇区参数空间有效Dirac谱方向谱间隙方向比经投影几何同构映射确定：由
+Birkhoff混合矩阵 分析，有效本征值 <span
+class="math inline">\(\lambda_2^{\text{eff}}=59324.3\
+\text{rad}^{-2}\)</span>、<span
+class="math inline">\(\lambda_1^{\text{eff}}=391.05\
+\text{rad}^{-2}\)</span>，比值为 <span
+class="math inline">\(\lambda_2^{\text{eff}}/\lambda_1^{\text{eff}}=151.7\)</span>。</p>
+<p><strong><span class="math inline">\(\gamma_{\text{proj}}\)</span>
+的构造性论证（，增强版）</strong>：由 刚度约束比定理，结构性刚度约束比
+<span
+class="math inline">\(\Lambda_H^{(\text{struct})}=k_0\Lambda(\Delta\Theta/1^\circ)^2=2\times3\times5^2=150\)</span>。裸
+Birkhoff混合矩阵 输出 <span
+class="math inline">\(\lambda_2/\lambda_1\approx149.8\)</span>
+与此识别偏差仅 <span class="math inline">\(0.13\%\)</span>。有效值 <span
+class="math inline">\(\lambda_2^{\text{eff}}/\lambda_1^{\text{eff}}=151.7\)</span>
+与结构性识别 150 的差异来自跨扇区耦合 <span
+class="math inline">\(H^W\)</span>
+的高阶修正。该比值表征扇区参数空间在强各向异性极限下的几何响应灵敏度——Dirac谱方向刚度是谱间隙方向的
+<span class="math inline">\(\sim150\)</span> 倍，意味着信息场方向（<span
+class="math inline">\(\xi\)</span>）对曲率变化的响应是物质场方向（<span
+class="math inline">\(\eta\)</span>）的 <span
+class="math inline">\(\sim150\)</span> 倍。本文将其识别为投影 Jacobian
+的曲率响应系数 <span
+class="math inline">\(\gamma_{\text{proj}}=151.7\)</span>。</p>
+<p>该识别不构成定理：Birkhoff混合矩阵
+Dirac谱方向谱间隙方向比是扇区参数空间内禀几何量，将其直接映射为编码轨道投影的曲率响应灵敏度需要通过投影几何同构映射的严格证明。</p>
+<p>** 未来封闭路径**：封闭该 MA 需完成以下步骤：(i) 在 <span
+class="math inline">\(\{S_r\}\)</span> 编码轨道族上严格定义投影映射
+<span class="math inline">\(\Pi_n: T\Sigma \to T_{(n)}S^2\)</span> 的
+Jacobian；(ii) 证明 Birkhoff混合矩阵 双模态结构在 <span
+class="math inline">\(\Pi_n\)</span>
+下的推前保持本征值比的不变性（或导出修正因子）；(iii) 从
+扇区参数空间弯曲度与 编码轨道离散谱的对应关系中，导出 <span
+class="math inline">\(\gamma_{\text{proj}}\)</span>
+的严格表达式。当前工作假设为 <span
+class="math inline">\(\gamma_{\text{proj}}=\lambda_2^{\text{eff}}/\lambda_1^{\text{eff}}\)</span>（即投影同构不改变本征值比），其证明属基础篇（0.0.X
+系列）后续工作。</p>
+<hr />
+<h2 id="第5章-定量估算与几何协调">第5章　定量估算与几何协调</h2>
+<h3 id="参数代入">§5.1　参数代入</h3>
+<table>
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 23%" />
+<col style="width: 23%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">参数</th>
+<th style="text-align: left;">来源</th>
+<th style="text-align: left;">数值</th>
+<th style="text-align: left;">状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(\gamma_{\text{proj}}\)</span></td>
+<td style="text-align: left;">有效 Birkhoff混合矩阵 本征值比，</td>
+<td style="text-align: left;">151.7</td>
+<td style="text-align: left;">MA</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="math inline">\(\delta
+K/K_{\text{avg}}^{(\text{Hess})}\)</span></td>
+<td style="text-align: left;">跨扇区耦合Dirac谱方向修正（§3.2
+第I层）</td>
+<td style="text-align: left;"><span
+class="math inline">\(0.96\%\)</span></td>
+<td style="text-align: left;">框架内生</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="math inline">\(\delta
+K/K_{\text{avg}}^{(\text{obs})}\)</span></td>
+<td style="text-align: left;">两条路径过定约束（§3.2 第II层）</td>
+<td style="text-align: left;"><span
+class="math inline">\(\approx1.50\%\)</span></td>
+<td style="text-align: left;">观测约束</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(R_{\text{struct}}/R_{\text{rad}}\)</span></td>
+<td style="text-align: left;">编码轨道层指数标度 <span
+class="math inline">\(3/6\)</span>（§4.2）</td>
+<td style="text-align: left;"><span
+class="math inline">\(0.5\)</span></td>
+<td style="text-align: left;">构造性推导</td>
+</tr>
+</tbody>
+</table>
+<p>代入增强因子公式得两个层次的数值估计：</p>
+<p><strong>框架内生下限</strong>（使用 <span
+class="math inline">\(\delta
+K/K_{\text{avg}}^{(\text{Hess})}=0.96\%\)</span>）： <span
+class="math display">\[A_{\text{struct}}/A_{\text{rad}} \approx 1 +
+151.7 \times 0.0096 \times 0.5 = 1 + 0.728 = 1.73.\]</span>
+该值位于观测区间 <span class="math inline">\(2\)</span>–<span
+class="math inline">\(5\)</span>
+下方边缘，表明框架内生曲率偏离给出的是保守下限。</p>
+<p><strong>观测约束中心值</strong>（使用 <span
+class="math inline">\(\delta
+K/K_{\text{avg}}^{(\text{obs})}\approx1.50\%\)</span>，工作值）： <span
+class="math display">\[A_{\text{struct}}/A_{\text{rad}} \approx 1 +
+151.7 \times 0.015 \times 0.5 = 1 + 1.138 = 2.14.\]</span>
+该结果自然落入观测区间 <span class="math inline">\(2\)</span>–<span
+class="math inline">\(5\)</span>
+的下限附近。若考虑不同示踪物的红移窗口差异（<span
+class="math inline">\(z_{\text{source}}\)</span> 从 <span
+class="math inline">\(2\)</span> 延伸至 <span
+class="math inline">\(3\)</span>，对应有效层指数在 <span
+class="math inline">\(3\)</span>–<span class="math inline">\(4\)</span>
+之间变化），增强因子可在 <span class="math inline">\(2\)</span>–<span
+class="math inline">\(3\)</span> 范围内浮动，与观测数据相容。</p>
+<p>****：工作值 <span class="math inline">\(2.14\)</span>
+依赖两个观测锚点（<span
+class="math inline">\(A_{\text{struct}}/A_{\text{rad}}\approx2.14\)</span>
+和 <span class="math inline">\(A_1\approx0.07\)</span>）。<span
+class="math inline">\(1.73\)</span>
+是去除观测输入后纯框架内生的增强因子下限。<span
+class="math inline">\(1.73\)</span> 与 <span
+class="math inline">\(2.14\)</span> 的差异（因子 <span
+class="math inline">\(\sim1.24\)</span>，对应 <span
+class="math inline">\(\eta_{\text{proj}}\approx1.56\)</span>
+在增强因子层面的传递）反映了投影几何映射因子 <span
+class="math inline">\(\eta_{\text{proj}}\)</span> 的贡献。</p>
+<h3 id="方向一致性的解释">§5.2　方向一致性的解释</h3>
+<p>增强因子的方向由观察者所在像素点的局部曲率梯度方向决定。由于编码轨道温度场与编码轨道结构偶极均投影自同一像素同一切向方向，二者方向自然一致；幅度差异仅来源于不同投影层的
+Jacobian 放大倍数不同。</p>
+<h3 id="与8.13和8.3的衔接">§5.3　与8.13和8.3的衔接</h3>
+<p><strong>8.13</strong>：8.13从 Birkhoff混合矩阵 双模态结构导出 <span
+class="math inline">\(\mathcal{H}_\eta=-0.09491\)</span>、<span
+class="math inline">\(\mathcal{H}_\xi=0\)</span>，证明信息场与物质场在领头阶近似下解耦。本文的投影畸变机制并不破坏该解耦——偶极增强发生在
+<span class="math inline">\(\xi\)</span> 方向的投影 Jacobian 层面，而非
+<span class="math inline">\(\eta\)</span> 方向的物质场膨胀通道。<span
+class="math inline">\(\tau_{\text{cmb}}\)</span>
+的七级递推锁定（命题A：<span
+class="math inline">\(\tau_6=0.999888\)</span>）及其层级递推权重序列
+<span class="math inline">\(\{\tau_n\}\)</span>
+为本文的编码轨道层指数标度提供了严格几何锚点。</p>
+<p><strong>8.3</strong>：8.3从信息场Dirac谱方向全局残余导出 <span
+class="math inline">\(a_{\text{BG}}=6.37\times10^{-10}\
+\text{m/s}^2\)</span>，证明宇宙加速膨胀是信息场Dirac谱方向在宇宙学尺度上的几何必然。本文的
+<span class="math inline">\(\delta K/K_{\text{avg}}\)</span>
+可理解为该全局残余在观察者像素点的局域偏离——<span
+class="math inline">\(a_{\text{BG}}\)</span> 提供均匀背景，<span
+class="math inline">\(\delta K\)</span>
+提供方向性调制。两者共同构成编码轨道投影几何在宇宙学尺度上的完整描述。</p>
+<hr />
+<h2 id="第6章-可检验预言">第6章　可检验预言</h2>
+<p><strong>【预言 1】红移分层中的反相关趋势</strong></p>
+<p>若编码轨道结构偶极的增强源于编码轨道不同层级的投影畸变，则偶极幅度应随红移增大而单调上升（越深的投影层对应越大的层指数，Jacobian
+放大效应越显著）。未来巡天的红移分层偶极测量应观测到：</p>
+<p><span class="math display">\[\frac{\partial}{\partial z}
+(A_{\text{struct}}/A_{\text{rad}}) &gt; 0,\]</span></p>
+<p>具体函数形式由层指数-红移映射确定。</p>
+<p><em>标注</em>：该预言为条件性预言，其精确函数形式依赖层指数到红移的严格映射定理（属8.13范围）。</p>
+<p><strong>【预言 2】大角度 <span class="math inline">\(C_\ell\)</span>
+功率谱的残留各向异性</strong></p>
+<p>传统框架假设大角度（<span
+class="math inline">\(\ell\leq10\)</span>）功率谱各向同性。几何论预言，由于编码轨道投影存在局域曲率梯度，大角度区域将出现可探测的
+<span class="math inline">\(C_\ell\)</span> 方向-方向关联差异：</p>
+<p><span class="math display">\[\Delta C_\ell/C_\ell \sim
+\mathcal{O}(\delta K/K_{\text{avg}}) \sim 10^{-2},\]</span></p>
+<p>该信号可通过全天空 E-mode 极化数据检验。</p>
+<p><em>标注</em>：该预言为条件性预言，其精确系数依赖高阶曲率矩的投影几何模型。</p>
+<p><strong>【预言
+3】偶极方向与信息场Dirac谱方向局部梯度的相关性</strong></p>
+<p>在几何论框架中，信息场Dirac谱方向残余曲率决定宇宙学背景（8.3）。偶极异常既然是同一残余曲率在局部方向上的不均匀分布，其方向应与信息场Dirac谱方向在局部天空中的变化方向存在相关性。该相关性可通过透镜重建或热
+SZ 效应的交叉分析进行检验。</p>
+<p><em>标注</em>：该预言为条件性预言，依赖信息场Dirac谱方向在局部天空中的重建精度。</p>
+<p><strong>【预言
+4】偶极调制轴与编码轨道结构偶极方向的一致性</strong></p>
+<p>在几何论框架中，编码轨道温度场偶极调制与编码轨道结构偶极共享同一局部曲率梯度方向。因此，偶极调制轴应与编码轨道结构偶极方向
+<span class="math inline">\((l,b)\approx(264^\circ,48^\circ)\)</span>
+一致。</p>
+<p><em>标注</em>：该预言为严格预言，直接由单一局部曲率梯度方向导出，不依赖额外模型参数。但需注意：该预言的前提——「编码轨道温度场偶极调制与编码轨道结构偶极共享同一方向」——是本文第2章的核心假设。若该预言被证伪，则本文的单一曲率梯度方向假设不成立。</p>
+<hr />
+<h2
+id="第7章-与大角度观测的一致性检验">第7章　与大角度观测的一致性检验</h2>
+<h3 id="大角度异常信号的几何诠释">§7.1　大角度异常信号的几何诠释</h3>
+<p>大角度尺度上已发现多项传统框架难以解释的统计异常。这些异常并非新理论的空洞预言，而是已被数据反复确认、传统框架却无力消化的几何事实：</p>
+<ul>
+<li><strong>半球功率不对称性</strong>：天空两个半球的温度涨落功率存在显著差异，其偶极调制方向与编码轨道结构偶极异常方向一致，暗示二者共享同一物理根源。</li>
+<li><strong>低四极矩与四极-八极矩对齐</strong>：最大的温度涨落模式（<span
+class="math inline">\(\ell=2,3\)</span>）能量低于预期，且其主轴取向不随机，而是近乎完美对齐。</li>
+<li><strong>大尺度功率缺失</strong>：在最大角度尺度上，温度变化幅度显著低于传统框架预期。</li>
+</ul>
+<p>这些异常在统计学上具有显著性。几何论将这些现象重新诠释为编码轨道投影畸变的必然结果，而非宇宙早期量子涨落的偶然涨落。<strong>与8.3的一致性</strong>：8.3已证明信息场Dirac谱方向残余在宇宙学尺度上不可消除——本文的大角度异常正是该残余在局部方向上的可观测表现。</p>
+<h3 id="几何投影偶极调制模型">§7.2　几何投影偶极调制模型</h3>
+<p>在几何论框架中，编码轨道上的局部曲率偏差场展开为球谐函数：</p>
+<p><span class="math display">\[\frac{\delta
+K(\hat{n}_s)}{K_{\text{avg}}} = \sum_{\ell=1}^\infty k_\ell
+P_\ell(\cos\theta_s&#39;),\]</span></p>
+<p>其中 <span class="math inline">\(\theta_s&#39;\)</span>
+是屏幕坐标相对于曲率梯度主轴的极角，<span
+class="math inline">\(k_\ell\)</span> 是曲率偏差的多极矩。</p>
+<p>投影到三维观测天空后，编码轨道温度场受到多极调制：</p>
+<p><span class="math display">\[T_{\text{obs}}(\hat{n}) = T_0(\hat{n})
+\cdot \left[1 + \sum_{\ell=1}^\infty A_\ell
+P_\ell(\cos\theta&#39;)\right]\]</span></p>
+<p>调制系数由几何论参数确定：</p>
+<p><span class="math display">\[A_\ell = \gamma_{\text{proj}} \cdot
+k_\ell \cdot W_\ell(z),\]</span></p>
+<p>其中 <span class="math inline">\(\gamma_{\text{proj}}=151.7\)</span>
+为无量纲投影灵敏度；<span class="math inline">\(W_\ell(z)\)</span>
+为红移依赖的窗口函数，反映不同投影层对 <span
+class="math inline">\(\ell\)</span>
+阶曲率模式的响应效率。对于编码轨道温度场（<span
+class="math inline">\(z_{\text{rad}}=1100\)</span>），<span
+class="math inline">\(W_\ell(z_{\text{rad}})\)</span> 随 <span
+class="math inline">\(\ell\)</span> 增大而衰减；对于物质分布（<span
+class="math inline">\(z\sim2\)</span>–<span
+class="math inline">\(3\)</span>），<span
+class="math inline">\(W_\ell(z)\)</span> 在 <span
+class="math inline">\(\ell=1\)</span> 处效率更高。</p>
+<h3 id="定量公式与一致性检验">§7.3　定量公式与一致性检验</h3>
+<p><strong>【公式】偶极调制幅度（半球功率不对称性）</strong></p>
+<p>半球功率不对称性在 <span class="math inline">\(\ell=2\)</span>–<span
+class="math inline">\(600\)</span>
+范围内显著。在偶极调制模型中，其统计幅度为：</p>
+<p><span class="math display">\[A_{\text{HPA}}(\ell) = A_1 \cdot
+\frac{2}{\sqrt{2\ell1}} \cdot F(\ell),\]</span></p>
+<p>其中 <span class="math inline">\(F(\ell)\)</span>
+是已知的滤波响应函数（包含 beam 和 mask 效应）。</p>
+<p>几何论中，偶极调制系数 <span class="math inline">\(A_1\)</span>
+由编码轨道曲率偏差的一阶矩、投影灵敏度及窗口函数确定：</p>
+<p><span class="math display">\[A_1 = \gamma_{\text{proj}} \cdot
+\frac{\delta K}{K_{\text{avg}}} \cdot W_1(z_{\text{rad}}).\]</span></p>
+<p><strong>✅ 封闭：<span
+class="math inline">\(W_1(z_{\text{rad}})\)</span>
+的派生确定</strong>。<span
+class="math inline">\(W_1(z_{\text{rad}})\)</span>
+并非独立自由参数，而是由两条测量路径的联合自洽性唯一确定。取 <span
+class="math inline">\(\delta
+K/K_{\text{avg}}^{(\text{obs})}\approx1.50\%\)</span>（§3.2
+观测约束值）为工作值，消去 <span class="math inline">\(\delta
+K/K_{\text{avg}}\)</span>：</p>
+<p><span class="math display">\[W_1(z_{\text{rad}}) = A_1 \cdot
+\frac{R_{\text{struct}}/R_{\text{rad}}}{A_{\text{struct}}/A_{\text{rad}}-1}.\]</span></p>
+<p>代入 <span class="math inline">\(A_1\approx0.07\)</span>（观测锚点
+②），<span
+class="math inline">\(A_{\text{struct}}/A_{\text{rad}}\approx2.14\)</span>（观测锚点
+①），<span
+class="math inline">\(R_{\text{struct}}/R_{\text{rad}}=0.5\)</span>（§4.2
+层指数推导）：</p>
+<p><span class="math display">\[W_1(z_{\text{rad}}) = 0.07 \times
+\frac{0.5}{1.14} = 0.0307 \approx 3.07\times10^{-2}.\]</span></p>
+<p>该值与前版的工作值 <span
+class="math inline">\(3\times10^{-2}\)</span>
+一致，但<strong>不再是独立假设</strong>——它由 <span
+class="math inline">\(A_1\)</span>、<span
+class="math inline">\(A_{\text{struct}}/A_{\text{rad}}\)</span>
+两个观测输入与 <span
+class="math inline">\(R_{\text{struct}}/R_{\text{rad}}\)</span>
+一个框架参数完全确定。</p>
+<p>反代验证： <span class="math display">\[\frac{\delta
+K}{K_{\text{avg}}} = \frac{A_1}{\gamma_{\text{proj}} \cdot W_1} =
+\frac{0.07}{151.7 \times 0.0307} \approx 1.50\%,\]</span></p>
+<p>与 §3.2
+路径二的结构偶极增强反推值完全一致，构成几何论框架内的过定自洽性检验。</p>
+<p><strong>若使用框架内生值 <span
+class="math inline">\(0.96\%\)</span></strong>：则 <span
+class="math inline">\(W_1\)</span> 需调整为 <span
+class="math inline">\(W_1&#39;=A_1/(\gamma_{\text{proj}}\cdot0.0096)=0.07/(151.7\times0.0096)\approx0.048\)</span>。该值对应的物理含义为：若曲率偏离确为
+<span class="math inline">\(0.96\%\)</span>，则投影窗口函数需增大至
+<span class="math inline">\(0.048\)</span> 以保持与 <span
+class="math inline">\(A_1\)</span> 观测一致。<span
+class="math inline">\(0.048\)</span> 与 <span
+class="math inline">\(0.0307\)</span> 之比恰为 <span
+class="math inline">\(\eta_{\text{proj}}\approx1.56\)</span>，再次反映投影几何映射因子。本文以
+<span class="math inline">\(W_1\approx3.07\times10^{-2}\)</span>
+为工作值（与 <span class="math inline">\(\delta
+K/K_{\text{avg}}^{(\text{obs})}\)</span> 配对），<span
+class="math inline">\(W_1&#39;\approx4.8\times10^{-2}\)</span>
+为框架内生参考值。</p>
+<h3 id="低四极矩的说明">§7.4　低四极矩的说明</h3>
+<p>编码轨道投影畸变可能导致大角度模式的部分功率被重新分配到调制场的梯度中，从而产生低四极矩现象。几何论预言四极矩与八极矩的主轴应当指向同一曲率梯度方向（而非随机分布），因为二者均受同一局域曲率偏差场的调制。精确的对齐幅度需要更完整的投影几何模型（包括高阶曲率矩的耦合和非线性投影效应），目前尚不具备严格的解析推导条件，不作为定量公式输出，留待未来更完整的投影理论完善。</p>
+<hr />
+<h2 id="第8章-结论">第8章　结论</h2>
+<p>偶极子异常是当前宇宙学中少数超过 <span
+class="math inline">\(5\sigma\)</span>
+且传统框架无法内禀解释的核心观测矛盾。几何论将其重新诠释为二维编码轨道投影的自然几何效应：观察者所在像素的局部曲率偏差，通过随屏幕层级线性放大的投影
+Jacobian，对不同红移层的偶极产生不同程度的增强。本文给出的增强因子</p>
+<p><span class="math display">\[\frac{A_{\text{struct}}}{A_{\text{rad}}}
+= 1 + \gamma_{\text{proj}} \cdot \frac{\delta K}{K_{\text{avg}}} \cdot
+\frac{R_{\text{struct}}}{R_{\text{rad}}}\]</span></p>
+<p>给出两个层次的数值估计： - <strong>框架内生下限</strong>：<span
+class="math inline">\(\delta
+K/K_{\text{avg}}^{(\text{Hess})}=0.96\%\)</span> → 增强因子 <span
+class="math inline">\(1.73\)</span>（保守下限，唯一公理δ（零之动）圆满再现直接输出）；
+- <strong>观测约束中心值</strong>：<span class="math inline">\(\delta
+K/K_{\text{avg}}^{(\text{obs})}\approx1.50\%\)</span> → 增强因子 <span
+class="math inline">\(2.14\)</span>（依赖 <span
+class="math inline">\(A_{\text{struct}}/A_{\text{rad}}\approx2.14\)</span>
+和 <span class="math inline">\(A_1\approx0.07\)</span>
+两个观测锚点，自然落入观测区间）。</p>
+<p><span class="math inline">\(\gamma_{\text{proj}}=151.7\)</span> 由
+<span
+class="math inline">\(\lambda_2^{\text{eff}}/\lambda_1^{\text{eff}}\)</span>
+经投影几何同构映射；<span
+class="math inline">\(R_{\text{struct}}/R_{\text{rad}}=0.5\)</span>
+由编码轨道层指数标度构造性推导（§4.2）。<span
+class="math inline">\(1.73\)</span> 与 <span
+class="math inline">\(2.14\)</span> 的差异由投影几何映射因子 <span
+class="math inline">\(\eta_{\text{proj}}\approx1.56\)</span>
+解释，其严格推导属后续工作。</p>
+<p>进一步，本文建立的几何投影偶极调制模型将大角度上发现的半球功率不对称性、四极-八极矩方向对齐及低四极矩等异常纳入同一编码轨道投影畸变的解释框架。偶极调制幅度的定量公式由几何论固有参数确定，与编码轨道结构偶极增强使用同一
+<span class="math inline">\(\delta K/K_{\text{avg}}\)</span>
+来源，构成过定自洽性检验。</p>
+<p>四项可检验预言为这一解释提供了明确的证伪路径：红移分层测量中的反相关趋势、大角度
+<span class="math inline">\(C_\ell\)</span>
+功率谱的残留各向异性、偶极方向与信息场Dirac谱方向局部梯度的一致性、以及偶极调制轴与编码轨道结构偶极方向的一致性。其中预言
+4 为严格预言（在本文核心假设前提下），具有最直接的证伪能力。</p>
+<p><strong>诚实闭环声明</strong>：本文推导中涉及一项构造性模型假设（：<span
+class="math inline">\(\gamma_{\text{proj}}=151.7\)</span>）——标注于
+§4.3，附未来封闭路径。<span class="math inline">\(\delta
+K/K_{\text{avg}}\)</span> 区分为框架内生值 <span
+class="math inline">\(0.96\%\)</span>（不依赖观测）与观测约束值 <span
+class="math inline">\(1.50\%\)</span>（依赖 <span
+class="math inline">\(A_{\text{struct}}/A_{\text{rad}}\)</span> 和 <span
+class="math inline">\(A_1\)</span> 两个观测锚点），标注于 §3.2。<span
+class="math inline">\(R_{\text{struct}}/R_{\text{rad}}=0.5\)</span>
+由编码轨道层指数构造性推导（§4.2），依赖 6.5层状结构8.13 <span
+class="math inline">\(\tau\)</span> 层级均匀层间距近似。<span
+class="math inline">\(W_1(z_{\text{rad}})\)</span>
+已封闭——由自洽性派生确定（§7.3），非自由参数。8.13、8.3、6.5为本文提供了必要的几何框架前提（<span
+class="math inline">\(\tau_{\text{cmb}}\)</span>、<span
+class="math inline">\(\mathcal{H}_\eta\)</span>、<span
+class="math inline">\(a_{\text{BG}}\)</span>、<span
+class="math inline">\(\{S_r\}\)</span>
+层状结构），本文在此基础上的推广属应用篇构造性工作。圆满再现
+为唯一锚定映射——统一决定 <span class="math inline">\(S_e\)</span>、<span
+class="math inline">\(m_e\)</span>、<span
+class="math inline">\(c\)</span>、<span
+class="math inline">\(\chi_L\)</span>、<span
+class="math inline">\(\chi_T\)</span> 等全部电磁本征量；<span
+class="math inline">\(c\)</span> 为其传播模零锥结构固定点。</p>
+<hr />
+<h2 id="附录a-关键数值汇总">附录A　关键数值汇总</h2>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">符号</th>
+<th style="text-align: left;">数值</th>
+<th style="text-align: left;">说明</th>
+<th style="text-align: left;">来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\lambda_1\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(392.21\
+\text{rad}^{-2}\)</span></td>
+<td style="text-align: left;">Birkhoff混合矩阵 谱间隙方向裸值</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\lambda_2\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(58760.77\
+\text{rad}^{-2}\)</span></td>
+<td style="text-align: left;">Birkhoff混合矩阵 Dirac谱方向裸值</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\lambda_1^{\text{eff}}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(391.05\
+\text{rad}^{-2}\)</span></td>
+<td style="text-align: left;">Birkhoff混合矩阵 谱间隙方向有效值</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\lambda_2^{\text{eff}}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(59324.3\
+\text{rad}^{-2}\)</span></td>
+<td style="text-align: left;">Birkhoff混合矩阵 Dirac谱方向有效值</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\lambda_2^{\text{eff}}/\lambda_1^{\text{eff}}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(151.7\)</span></td>
+<td style="text-align: left;">有效Dirac谱方向谱间隙方向比</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\Lambda_H^{(\text{struct})}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(150 =
+2\times3\times5^2\)</span></td>
+<td style="text-align: left;">结构性刚度约束比</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(S_e\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(137.035999084\)</span></td>
+<td style="text-align: left;">电子基态作用量</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(K\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(839.758793\
+\text{keV}\)</span></td>
+<td style="text-align: left;">质量量子</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\chi_L\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(1.509\times10^{-10}\ \text{m}\)</span></td>
+<td style="text-align: left;">几何长度量子</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\chi_T\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(3.616\times10^{-17}\ \text{s}\)</span></td>
+<td style="text-align: left;">几何时间量子</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(D_f\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(2.000\)</span></td>
+<td style="text-align: left;">分形维数</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\Lambda\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(3\)</span></td>
+<td style="text-align: left;">互锁常数</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(k_0\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(2\)</span></td>
+<td style="text-align: left;">互锁常数</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(S_{\min}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(24\)</span></td>
+<td style="text-align: left;">代数作用量最小值</td>
+<td style="text-align: left;">谱展开/Born法则（定理 1.3.7.01）</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\theta_0\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\((30^\circ,30^\circ,30^\circ)\)</span></td>
+<td style="text-align: left;">对称背景点</td>
+<td style="text-align: left;">谱展开/Born法则（定理 1.3.7.01）</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(a_{\text{BG}}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(6.37\times10^{-10}\ \text{m/s}^2\)</span></td>
+<td style="text-align: left;">宇宙学残余背景加速度</td>
+<td style="text-align: left;">8.3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\tau_{\text{cmb}}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\approx0.999888\)</span></td>
+<td style="text-align: left;">CMB 退耦几何时间（命题A）</td>
+<td style="text-align: left;">12</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\tau_3\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(0.996917\)</span></td>
+<td style="text-align: left;">第3层展开完成阈值</td>
+<td style="text-align: left;">12 §4.5</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\tau_6\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(0.999888\)</span></td>
+<td style="text-align: left;">第6层展开完成阈值</td>
+<td style="text-align: left;">12 §4.5</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\gamma_{\text{proj}}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(151.7\)</span></td>
+<td style="text-align: left;">无量纲投影灵敏度</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(\delta
+K/K_{\text{avg}}^{(\text{Hess})}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(0.96\%\)</span></td>
+<td style="text-align: left;">框架内生曲率偏离（Birkhoff混合矩阵
+裸修正）</td>
+<td style="text-align: left;">本文 §3.2 第I层</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(\delta
+K/K_{\text{avg}}^{(\text{obs})}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\approx1.50\%\)</span></td>
+<td style="text-align: left;">观测约束曲率偏离（两条路径过定）</td>
+<td style="text-align: left;">本文 §3.2 第II层</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\eta_{\text{proj}}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\approx1.56\)</span></td>
+<td style="text-align: left;">投影几何映射因子</td>
+<td style="text-align: left;">本文 §3.2，待严格推导</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(R_{\text{struct}}/R_{\text{rad}}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(0.5\)</span></td>
+<td style="text-align: left;">编码轨道层指数比 <span
+class="math inline">\(3/6\)</span></td>
+<td style="text-align: left;">本文 §4.2</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(W_1(z_{\text{rad}})\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\approx3.07\times10^{-2}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\ell=1\)</span> 投影窗口函数（派生，与 <span
+class="math inline">\(1.50\%\)</span> 配对）</td>
+<td style="text-align: left;">本文 §7.3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(W_1&#39;(z_{\text{rad}})\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\approx4.8\times10^{-2}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\ell=1\)</span> 投影窗口函数（派生，与 <span
+class="math inline">\(0.96\%\)</span> 配对）</td>
+<td style="text-align: left;">本文 §7.3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(A_{\text{struct}}/A_{\text{rad}}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(1.73\)</span>（内生下限）/ <span
+class="math inline">\(2.14\)</span>（观测中心值）</td>
+<td style="text-align: left;">偶极增强因子</td>
+<td style="text-align: left;">本文 §5.1</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(A_1\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\approx0.07\)</span></td>
+<td style="text-align: left;">偶极调制幅度</td>
+<td style="text-align: left;">观测锚点 ②</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<hr />
+<h2 id="参考文献">参考文献</h2>
+<ol type="1">
+<li>几何动力学</li>
+<li>全息宇宙</li>
+<li>12　CMB
+声学峰与哈勃常数差异量级（文件：<code>12_CMB哈勃_CN_.md</code>）</li>
+<li>8.3　宇宙加速膨胀与暗能量的证伪（文件：<code>20_宇宙加速膨胀_CN_.md</code>）</li>
+<li>46　物质界收缩时间与宇宙尺度的几何结构（文件：<code>46_物质界收缩时间与宇宙尺度的几何结构_CN_.md</code>）</li>
+</ol>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>

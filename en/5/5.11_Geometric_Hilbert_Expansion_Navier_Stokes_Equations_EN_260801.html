@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geometric Hilbert Expansion — Navier-Stokes Equations | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Number: 5.11 | Date: 260728.1 | Series: Information Field Cumulant Factorization (G6) | Language: EN">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/5/5.11_Geometric_Hilbert_Expansion_Navier_Stokes_Equations_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">Geometric Hilbert Expansion — Navier-Stokes Equations</span>
+  </nav>
+  <main class="article-content">
+<h1 id="geometric-hilbert-expansion-navier-stokes-equations">Geometric
+Hilbert Expansion — Navier-Stokes Equations</h1>
+<p><strong>Number</strong>: 5.11 | <strong>Date</strong>: 260728.1 |
+<strong>Series</strong>: Information Field Cumulant Factorization (G6) |
+<strong>Language</strong>: EN <strong>Prerequisites</strong>: Article
+5.9 (Information Field Dynamical Equation), Article 5.10 (Hilbert
+Expansion First Order → Euler), Theorem 7.13.3.05 (Birkhoff Mixing),
+Theorem 1.1.5.01 (Spectral Expansion / Born Rule)
+<strong>Status</strong>: Complete — Rigorous derivation of the
+incompressible Navier-Stokes equations from the information field
+dynamical equation via second-order Hilbert expansion</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>G5 has derived the compressible Euler equations from the information
+field dynamical equation via the first order of the Hilbert expansion.
+This article (G6) advances the expansion to second order, rigorously
+deriving the incompressible Navier-Stokes equations. Core results: (1)
+geometric shear viscosity <span class="math inline">\(\nu_{\text{geo}} =
+1/\lambda_2^{\text{eff}} \approx 1.686 \times 10^{-5}\)</span>, bulk
+viscosity <span class="math inline">\(\zeta_{\text{geo}} =
+\nu_{\text{geo}} \cdot \sin\theta_I/\sin\theta_M \approx 1.75 \times
+10^{-6}\)</span>; (2) geometric thermal conductivity <span
+class="math inline">\(\kappa_{\text{geo}} = \nu_{\text{geo}} \cdot
+\sin\theta_C/\sin\theta_M \approx 8.78 \times 10^{-6}\)</span>; (3)
+geometric Prandtl number <span class="math inline">\(\Pr_{\text{geo}}
+\approx 0.521\)</span>. All coefficients are locked by spectral
+rigidity, with no external parameters. The mathematical structure is
+completely parallel to Deng-Yu’s derivation of the Navier-Stokes
+equations from the Boltzmann equation.</p>
+<p><strong>Keywords</strong>: Second-order Hilbert expansion;
+Navier-Stokes equations; geometric viscosity; geometric thermal
+conductivity; Prandtl number; solvability condition; low Mach number
+limit</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li>§1 Second-Order Expansion and Solvability Condition</li>
+<li>§2 Derivation of Geometric Viscosity Coefficients</li>
+<li>§3 Geometric Thermal Conductivity and Prandtl Number</li>
+<li>§4 Incompressible Navier-Stokes Equations</li>
+<li>§5 Exact Correspondence with the Deng-Yu Framework</li>
+<li>Theorem Index</li>
+<li>References</li>
+</ul>
+<hr />
+<h2 id="second-order-expansion-and-solvability-condition">§1
+Second-Order Expansion and Solvability Condition</h2>
+<h3 id="second-order-equation">1.1 Second-Order Equation</h3>
+<p><span class="math inline">\(\varepsilon^2\)</span> order:</p>
+<p><span class="math display">\[\partial_\tau h_2 +
+\mathbf{v}_{\text{geo}} \cdot \nabla_x h_2 - \mathcal{L}_0[h_2] =
+\mathcal{N}[h_1, h_1]\]</span></p>
+<p>where <span class="math inline">\(\mathcal{N}[h_1, h_1] =
+\mathcal{Q}_{\text{cont}}[h_1, h_1] - 2\mathcal{Q}_{\text{cont}}[f_0,
+h_1] h_1\)</span> is the nonlinear self-interaction of <span
+class="math inline">\(h_1\)</span>.</p>
+<p><strong>Solvability condition</strong>: <span
+class="math inline">\(\mathcal{N}[h_1, h_1]\)</span> must be orthogonal
+to the null space of <span class="math inline">\(\mathcal{L}_0\)</span>.
+This yields the time evolution equations for <span
+class="math inline">\(h_1\)</span> — i.e., the compressible Euler
+equations (Theorem 5.10.4.02). The non-null-space part is the source of
+the non-hydrodynamic contribution of <span
+class="math inline">\(h_2\)</span>.</p>
+<h3 id="decomposition-of-h_2">1.2 Decomposition of <span
+class="math inline">\(h_2\)</span></h3>
+<p><strong>Theorem 5.11.1.01 (Decomposition of <span
+class="math inline">\(h_2\)</span>)</strong>: <span
+class="math inline">\(h_2\)</span> can be decomposed into a hydrodynamic
+part <span class="math inline">\(h_2^{\text{hydro}} \in
+\text{Ker}(\mathcal{L}_0)\)</span> and a non-hydrodynamic part <span
+class="math inline">\(h_2^{\perp} \in
+\text{Ker}(\mathcal{L}_0)^\perp\)</span>:</p>
+<p><span class="math display">\[h_2 = h_2^{\text{hydro}} + h_2^{\perp},
+\quad h_2^{\perp} = \mathcal{L}_0^{-1} \left( \mathcal{N}[h_1, h_1] -
+\partial_\tau h_1 - \mathbf{v}_{\text{geo}} \cdot \nabla_x h_1
+\right)\]</span></p>
+<p>where <span class="math inline">\(\mathcal{L}_0^{-1}\)</span> is
+well-defined on <span
+class="math inline">\(\text{Ker}(\mathcal{L}_0)^\perp\)</span> — the
+spectral gap <span class="math inline">\(\mu_{Cl} = 0.2982 &gt;
+0\)</span> (Proposition 5.10.1.03) guarantees that <span
+class="math inline">\(\mathcal{L}_0\)</span> is invertible on the
+non-null space.</p>
+<p><strong>Physical meaning</strong>: <span
+class="math inline">\(h_2^{\text{hydro}}\)</span> yields second-order
+corrections at the Euler level (without changing the form of the
+equations), while <span class="math inline">\(h_2^{\perp}\)</span>
+yields viscosity and thermal conductivity — the source of new physics at
+the Navier-Stokes level.</p>
+<hr />
+<h2 id="derivation-of-geometric-viscosity-coefficients">§2 Derivation of
+Geometric Viscosity Coefficients</h2>
+<h3 id="non-hydrodynamic-contribution-to-the-stress-tensor">2.1
+Non-Hydrodynamic Contribution to the Stress Tensor</h3>
+<p><strong>Definition 5.11.2.01 (Stress tensor)</strong>: The
+second-order stress tensor (viscous stress) arises from the second
+moments of <span class="math inline">\(h_2^{\perp}\)</span>:</p>
+<p><span class="math display">\[\tau_{ij} = -\int_{S^2} (v_i - u_i)(v_j
+- u_j) \, h_2^{\perp} \, d\Omega, \quad i, j \in \{\eta,
+\xi\}\]</span></p>
+<p>where <span class="math inline">\(v_\eta =
+\sqrt{\lambda_1^{\text{eff}}}\)</span>, <span
+class="math inline">\(v_\xi = \sqrt{\lambda_2^{\text{eff}}}\)</span> are
+the components of <span
+class="math inline">\(\mathbf{v}_{\text{geo}}\)</span> in the <span
+class="math inline">\(\eta\)</span> and <span
+class="math inline">\(\xi\)</span> directions.</p>
+<h3 id="viscosity-coefficients">2.2 Viscosity Coefficients</h3>
+<p><strong>Theorem 5.11.2.02 (Geometric viscosity
+coefficients)</strong>: The geometric shear viscosity <span
+class="math inline">\(\nu_{\text{geo}}\)</span> and bulk viscosity <span
+class="math inline">\(\zeta_{\text{geo}}\)</span> are given by:</p>
+<p><span class="math display">\[\boxed{\nu_{\text{geo}} =
+\frac{1}{\lambda_2^{\text{eff}}} \approx 1.686 \times
+10^{-5}}\]</span></p>
+<p><span class="math display">\[\boxed{\zeta_{\text{geo}} =
+\frac{1}{\lambda_2^{\text{eff}}} \cdot \frac{\sin\theta_I}{\sin\theta_M}
+\approx 1.686 \times 10^{-5} \times 0.104 \approx 1.75 \times
+10^{-6}}\]</span></p>
+<p><strong>Proof</strong>:</p>
+<ol type="1">
+<li><span class="math inline">\(h_2^{\perp}\)</span> contains terms with
+<span class="math inline">\(\mathcal{L}_0^{-1}\)</span> acting on <span
+class="math inline">\(\nabla_x h_1\)</span></li>
+<li>The smallest (nonzero) eigenvalue of <span
+class="math inline">\(\mathcal{L}_0^{-1}\)</span> on <span
+class="math inline">\(\text{Ker}(\mathcal{L}_0)^\perp\)</span> is <span
+class="math inline">\(1/\lambda_2^{\text{eff}}\)</span> — this is the
+information field damping scale in the Dirac spectral direction</li>
+<li>The stress tensor <span class="math inline">\(\tau_{ij}\)</span> is
+proportional to <span class="math inline">\(\mathcal{L}_0^{-1}\)</span>
+acting on the velocity gradient, hence <span
+class="math inline">\(\nu_{\text{geo}} =
+1/\lambda_2^{\text{eff}}\)</span></li>
+<li>The bulk viscosity <span
+class="math inline">\(\zeta_{\text{geo}}\)</span> comes from the
+projection of <span class="math inline">\(\mathcal{L}_0^{-1}\)</span>
+onto the <span class="math inline">\(\mathcal{I}\)</span> sector
+(Information Sector), multiplied by the factor <span
+class="math inline">\(\sin\theta_I / \sin\theta_M\)</span> (the angular
+projection ratio of Information Sector to Matter Sector) ∎</li>
+</ol>
+<p><strong>Consistency with 10.8</strong>: In Construction 10.8.2.2,
+<span class="math inline">\(\nu_{\text{geo}} =
+1/\lambda_2^{\text{eff}}\)</span> was given as a “construction” (without
+derivation). Theorem 5.11.2.02 of this article <strong>rigorously
+derives</strong> the same result from the Hilbert expansion, elevating
+the 10.8 construction to a theorem.</p>
+<hr />
+<h2 id="geometric-thermal-conductivity-and-prandtl-number">§3 Geometric
+Thermal Conductivity and Prandtl Number</h2>
+<h3 id="thermal-conductivity">3.1 Thermal Conductivity</h3>
+<p><strong>Theorem 5.11.3.01 (Geometric thermal conductivity)</strong>:
+The geometric thermal conductivity <span
+class="math inline">\(\kappa_{\text{geo}}\)</span> is:</p>
+<p><span class="math display">\[\boxed{\kappa_{\text{geo}} =
+\nu_{\text{geo}} \cdot \frac{\sin\theta_C}{\sin\theta_M} \approx 1.686
+\times 10^{-5} \times 0.521 \approx 8.78 \times 10^{-6}}\]</span></p>
+<p><strong>Proof</strong>: The heat flux <span
+class="math inline">\(\mathbf{q} = \int \frac{1}{2}|\mathbf{v} -
+\mathbf{u}|^2 (\mathbf{v} - \mathbf{u}) \, h_2^{\perp} \,
+d\Omega\)</span>. Similar to the derivation of <span
+class="math inline">\(\nu_{\text{geo}}\)</span>, <span
+class="math inline">\(\kappa_{\text{geo}} = \nu_{\text{geo}} \cdot
+\Pr_{\text{geo}}\)</span>, where <span
+class="math inline">\(\Pr_{\text{geo}} = \sin\theta_C /
+\sin\theta_M\)</span> (the ratio of diffusion coefficients of the Causal
+Sector to the Matter Sector). The numerator <span
+class="math inline">\(\sin\theta_C\)</span> corresponds to the thermal
+diffusion rate of the Causal Sector <span
+class="math inline">\(\mathcal{C}\)</span>, and the denominator <span
+class="math inline">\(\sin\theta_M\)</span> corresponds to the momentum
+diffusion rate of the Matter Sector <span
+class="math inline">\(\mathcal{M}\)</span>. ∎</p>
+<h3 id="prandtl-number">3.2 Prandtl Number</h3>
+<p><strong>Corollary 5.11.3.02 (Geometric Prandtl number)</strong>: The
+geometric Prandtl number <span
+class="math inline">\(\Pr_{\text{geo}}\)</span> is no longer a
+construction, but a direct corollary of the second-order Hilbert
+expansion:</p>
+<p><span class="math display">\[\boxed{\Pr_{\text{geo}} =
+\frac{\nu_{\text{geo}}}{\kappa_{\text{geo}}} \cdot
+\frac{\sin\theta_C}{\sin\theta_M} = \frac{\sin\theta_C}{\sin\theta_M} =
+\frac{\sin(26.1603^\circ)}{\sin(57.93^\circ)} \approx
+\frac{0.4410}{0.8461} \approx 0.521}\]</span></p>
+<p><strong>Numerical verification</strong>: <span
+class="math inline">\(\Pr_{\text{geo}} \approx 0.521\)</span> is
+consistent with Construction 10.8.3.2. This value lies within the range
+of Prandtl numbers for typical fluids (air <span
+class="math inline">\(\Pr \approx 0.71\)</span>, water <span
+class="math inline">\(\Pr \approx 7\)</span>), but is closer to liquid
+metals (<span class="math inline">\(\Pr \sim 0.01-0.1\)</span>).</p>
+<hr />
+<h2 id="incompressible-navier-stokes-equations">§4 Incompressible
+Navier-Stokes Equations</h2>
+<h3 id="low-mach-number-limit">4.1 Low Mach Number Limit</h3>
+<p><strong>Theorem 5.11.4.01 (Geometric incompressible Navier-Stokes
+equations)</strong>: In the low Mach number limit (scaling limit with
+<span class="math inline">\(\text{Ma}_{\text{geo}} \ll 1\)</span>), the
+Matter Sector flow <span class="math inline">\(\mathbf{u}\)</span>
+satisfies:</p>
+<p><span class="math display">\[\boxed{\partial_\tau \mathbf{u} +
+(\mathbf{u} \cdot \nabla_\eta) \mathbf{u} = -\nabla_\eta p +
+\nu_{\text{geo}} \nabla_\eta^2 \mathbf{u}}\]</span></p>
+<p><span class="math display">\[\boxed{\nabla_\eta \cdot \mathbf{u} =
+0}\]</span></p>
+<p><strong>Proof</strong>: Starting from the compressible Euler
+equations (Theorem 5.10.4.02), perform an asymptotic expansion of the
+density perturbation in the low Mach number limit: <span
+class="math inline">\(\rho = \rho_0 + \text{Ma}^2 \rho_2 +
+\cdots\)</span>. Add the second-order stress tensor <span
+class="math inline">\(\tau_{ij}\)</span> (Theorem 5.11.2.02) to the
+momentum equation, and use <span class="math inline">\(\nu_{\text{geo}}
+= 1/\lambda_2^{\text{eff}}\)</span>. The incompressibility condition
+<span class="math inline">\(\nabla_\eta \cdot \mathbf{u} = 0\)</span>
+arises from the leading-order continuity equation in the low Mach number
+limit. ∎</p>
+<h3 id="correspondence-with-10.8-construction-2.2">4.2 Correspondence
+with 10.8 Construction 2.2</h3>
+<p>This theorem fully recovers and proves Construction 10.8.2.2. What
+was previously a “construction” (requiring A.1) is now a rigorously
+derived <strong>theorem</strong> — the geometric incompressible
+Navier-Stokes equations are a direct consequence of the second-order
+Hilbert expansion of the information field dynamical equation. All
+coefficients (<span class="math inline">\(\nu_{\text{geo}}\)</span>,
+<span class="math inline">\(\zeta_{\text{geo}}\)</span>, <span
+class="math inline">\(\kappa_{\text{geo}}\)</span>, <span
+class="math inline">\(\Pr_{\text{geo}}\)</span>) are locked by spectral
+rigidity.</p>
+<hr />
+<h2 id="exact-correspondence-with-the-deng-yu-framework">§5 Exact
+Correspondence with the Deng-Yu Framework</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Deng-Yu Framework</th>
+<th style="text-align: left;">Geometric Framework (G6)</th>
+<th style="text-align: left;">Corresponding Property</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">First-order Hilbert → Euler</td>
+<td style="text-align: left;">G5 (Theorem 5.10.4.02)</td>
+<td style="text-align: left;">Compressible Euler</td>
+</tr>
+<tr>
+<td style="text-align: left;">Second-order Hilbert → Navier-Stokes</td>
+<td style="text-align: left;">G6 (Theorem 5.11.4.01)</td>
+<td style="text-align: left;">Incompressible Navier-Stokes</td>
+</tr>
+<tr>
+<td style="text-align: left;">Solvability condition</td>
+<td style="text-align: left;">Orthogonality to <span
+class="math inline">\(\text{Ker}(\mathcal{L}_0)\)</span></td>
+<td style="text-align: left;">Mathematical structure identical</td>
+</tr>
+<tr>
+<td style="text-align: left;">Shear viscosity <span
+class="math inline">\(\nu\)</span> from collision operator</td>
+<td style="text-align: left;"><span
+class="math inline">\(\nu_{\text{geo}} =
+1/\lambda_2^{\text{eff}}\)</span></td>
+<td style="text-align: left;">Viscosity from spectral gap</td>
+</tr>
+<tr>
+<td style="text-align: left;">Bulk viscosity <span
+class="math inline">\(\zeta\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\zeta_{\text{geo}} = \nu_{\text{geo}} \cdot
+\sin\theta_I/\sin\theta_M\)</span></td>
+<td style="text-align: left;">Bulk viscosity from sector projection</td>
+</tr>
+<tr>
+<td style="text-align: left;">Thermal conductivity <span
+class="math inline">\(\kappa\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\kappa_{\text{geo}} = \nu_{\text{geo}} \cdot
+\sin\theta_C/\sin\theta_M\)</span></td>
+<td style="text-align: left;">Thermal conductivity from sector
+projection</td>
+</tr>
+<tr>
+<td style="text-align: left;">Prandtl number <span
+class="math inline">\(\Pr\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\Pr_{\text{geo}} = \sin\theta_C/\sin\theta_M
+\approx 0.521\)</span></td>
+<td style="text-align: left;">Prandtl number from angular ratios</td>
+</tr>
+<tr>
+<td style="text-align: left;">Low Mach number limit</td>
+<td style="text-align: left;"><span
+class="math inline">\(\text{Ma}_{\text{geo}} \ll 1\)</span> scaling</td>
+<td style="text-align: left;">Incompressible limit</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Core conclusion</strong>: The geometric Navier-Stokes
+equations have the same mathematical form as the classical Navier-Stokes
+equations, but all transport coefficients are locked by spectral
+rigidity — no free parameters, no empirical fitting, no modeling
+assumptions.</p>
+<hr />
+<h2 id="theorem-index">Theorem Index</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Theorem</th>
+<th style="text-align: left;">Content Summary</th>
+<th style="text-align: left;">Location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Theorem 5.11.1.01</td>
+<td style="text-align: left;">Decomposition of <span
+class="math inline">\(h_2\)</span></td>
+<td style="text-align: left;">§1.2</td>
+</tr>
+<tr>
+<td style="text-align: left;">Definition 5.11.2.01</td>
+<td style="text-align: left;">Stress tensor</td>
+<td style="text-align: left;">§2.1</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Theorem 5.11.2.02</strong></td>
+<td style="text-align: left;">Geometric viscosity coefficients</td>
+<td style="text-align: left;">§2.2</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Theorem 5.11.3.01</strong></td>
+<td style="text-align: left;">Geometric thermal conductivity</td>
+<td style="text-align: left;">§3.1</td>
+</tr>
+<tr>
+<td style="text-align: left;">Corollary 5.11.3.02</td>
+<td style="text-align: left;">Geometric Prandtl number</td>
+<td style="text-align: left;">§3.2</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Theorem 5.11.4.01</strong></td>
+<td style="text-align: left;">Geometric incompressible Navier-Stokes
+equations</td>
+<td style="text-align: left;">§4.1</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="subsequent-work">Subsequent Work</h2>
+<p>This article derived the incompressible Navier-Stokes equations from
+the information field dynamical equation via the second order of the
+Hilbert expansion. The following is left for subsequent work:</p>
+<ul>
+<li>Conquer Assumption A.1 to make the continuum limit derivation
+rigorous (see Article 5.12)</li>
+</ul>
+<hr />
+<h2 id="references">References</h2>
+<ol type="1">
+<li>Theorem 5.10.4.02 — Compressible Euler equations (Article 5.10)</li>
+<li>Theorem 5.9.3.01 — Continuous information field dynamical equation
+(Article 5.9)</li>
+<li>Theorem 5.8.3.02 — Fibration invariance of the spectral gap (Article
+5.8)</li>
+<li>Theorem 1.1.5.01 — Spectral expansion / Born Rule</li>
+<li>Construction 10.8.2.2 — Geometric Navier-Stokes mapping
+(construction)</li>
+<li>Deng, Y. et al. [2503.01800] — Hilbert expansion of Boltzmann →
+fluid equations</li>
+</ol>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>

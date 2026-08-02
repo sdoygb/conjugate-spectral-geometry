@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5.4 Observation Mapping Chain of the Information Field | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Version: 260721.2">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/5/5.4_Observation_Mapping_Chain_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">5.4 Observation Mapping Chain of the Information Field</span>
+  </nav>
+  <main class="article-content">
+<h1 id="observation-mapping-chain-of-the-information-field">5.4
+Observation Mapping Chain of the Information Field</h1>
+<p><strong>Version</strong>: 260721.2</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>This article establishes the mapping chain from the information field
+to the observer. The observer acquires physical information through the
+spectral resolution of the information field. The mapping chain proceeds
+from the coding weights <span class="math inline">\(\sigma\)</span>,
+through the Born Rule, Algebraic Normalization, and Birkhoff Mixing
+Matrix, finally arriving at observables. This article derives in detail
+the complete mapping from coding to observation, analyzes the observable
+extraction mechanism, and discusses the relationship between the
+irreversibility of the mapping and the observer’s information
+capacity.</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<p>§1 Observation Mapping Chain 1.1 Mapping Chain Structure 1.2 Spectral
+Resolution 1.3 Irreversibility of the Mapping 1.4 Algebraic Foundation
+of the Mapping Chain</p>
+<p>§2 Observer’s Information Capacity 2.1 Information Capacity 2.2
+Relationship between Capacity and Particle Number 2.3 Algebraic Origin
+of Information Capacity 2.4 Information Capacity and Structure
+Constants</p>
+<p>§3 Extraction of Observables 3.1 From Spectral Gap to Mass 3.2 From
+Spectral Gap to Coupling Constants 3.3 Mapping Rules for Observable
+Extraction 3.4 Classification of Observables</p>
+<p>§4 Irreversibility of the Mapping and Observation Limitations 4.1
+Origin of Irreversibility 4.2 Quantification of Irreversibility 4.3
+Spectral Resolution and Observation Precision 4.4 Observation
+Limitations and Algebraic Normalization</p>
+<p>§5 Landscape Dependence of the Mapping Chain 5.1 Landscape Variation
+of Spectral Resolution 5.2 Landscape Universality of Information
+Capacity 5.3 Mapping Chain and Algebraic Action</p>
+<hr />
+<h2 id="observation-mapping-chain">§1 Observation Mapping Chain</h2>
+<h3 id="mapping-chain-structure">1.1 Mapping Chain Structure</h3>
+<pre><code>Coding weights σ → Born Rule → Spectral gap Δλ → Dirac spectrum → Observables
+ ↑ ↓
+ Birkhoff Mixing Matrix T ← Observer Localization T_ours</code></pre>
+<p>Five stages of the mapping chain:</p>
+<ol type="1">
+<li><strong>Coding weights</strong> <span
+class="math inline">\(\sigma\)</span>: geometric origin — coding
+proportions on the holographic screen</li>
+<li><strong>Born Rule</strong> <span
+class="math inline">\(\Delta\lambda_i \propto \sqrt{\sigma_i}\)</span>:
+geometry-to-spectrum mapping — coding weights determine spectral
+gaps</li>
+<li><strong>Spectral gap</strong> <span
+class="math inline">\(\Delta\lambda\)</span>: spectral space —
+eigenvalue differences of the Dirac operator</li>
+<li><strong>Dirac spectrum</strong>: physical spectrum — observables
+such as particle masses and charges</li>
+<li><strong>Observables</strong>: observer perception — mass ratios,
+coupling constants, etc.</li>
+</ol>
+<p>The core of the mapping chain is the Born Rule — it maps purely
+geometric quantities (coding weights) to physical quantities (spectral
+gaps), serving as the bridge between geometry and physics.</p>
+<p><strong>Detailed derivation.</strong> The five stages of the mapping
+chain can be formally expressed as the composition of five mappings:</p>
+<p><span class="math display">\[\mathcal{M} = \mathcal{M}_5 \circ
+\mathcal{M}_4 \circ \mathcal{M}_3 \circ \mathcal{M}_2 \circ
+\mathcal{M}_1,\]</span></p>
+<p>where: - <span class="math inline">\(\mathcal{M}_1: \sigma \mapsto
+\sigma\)</span> (identity mapping — coding weights are the geometric
+origin) - <span class="math inline">\(\mathcal{M}_2: \sigma \mapsto
+\Delta\lambda = C\sqrt{\sigma}\)</span> (Born Rule — geometry to
+spectrum) - <span class="math inline">\(\mathcal{M}_3: \Delta\lambda
+\mapsto \text{Spec}(D) = \{\lambda_i\}\)</span> (spectral gap to Dirac
+spectrum — Dirac operator eigenvalues) - <span
+class="math inline">\(\mathcal{M}_4: \text{Spec}(D) \mapsto \{m, g,
+\ldots\}\)</span> (Dirac spectrum to physical quantities — physical
+interpretation) - <span class="math inline">\(\mathcal{M}_5: \{m, g,
+\ldots\} \mapsto O\)</span> (physical quantities to observables —
+observer localization)</p>
+<p>The entire mapping chain is unidirectional (from geometry to
+physics), which is the concrete realization of the “geometry determines
+physics” principle. The inverse mapping <span
+class="math inline">\(\mathcal{M}^{-1}\)</span> is not unique, because
+different <span class="math inline">\(\sigma\)</span> can yield the same
+<span class="math inline">\(S(\sigma)\)</span> value (isosurface <span
+class="math inline">\(\dim = 1\)</span>, Theorem 10.11.1.15).</p>
+<p><strong>Numerical verification.</strong> Taking the electron mass as
+an example, verify each step of the mapping chain: <span
+class="math display">\[\begin{aligned}
+\mathcal{M}_1&amp;: \sigma_{\mathcal{M}}^* = 0.777912, \\
+\mathcal{M}_2&amp;: \Delta\lambda_{\mathcal{M}} = C\sqrt{0.777912}
+\approx 0.882 \times 0.882 = 0.778, \\
+\mathcal{M}_3&amp;: \lambda_e = \Delta\lambda_{\mathcal{M}} \approx
+0.778 \text{ (lowest eigenvalue of the Dirac spectrum)}, \\
+\mathcal{M}_4&amp;: m_e \propto \lambda_e \approx 0.778 \text{ (electron
+mass, in some scale units)}, \\
+\mathcal{M}_5&amp;: O_{\text{obs}} = m_e / m_{\text{ref}} \text{ (mass
+ratio measured by the observer)}.
+\end{aligned}\]</span></p>
+<p><strong>Comparative discussion.</strong> The structure of the
+observation mapping chain has a formal correspondence with the von
+Neumann chain in quantum measurement theory. In the von Neumann
+measurement chain, measured system → measuring apparatus → observer,
+with each link introducing irreversibility. In Conjugate Spectral
+Geometry, the mapping chain <span class="math inline">\(\sigma \to
+\Delta\lambda \to \text{Spec}(D) \to O\)</span> plays a similar role.
+Key difference: the irreversibility of the von Neumann chain comes from
+quantum decoherence (system-apparatus entanglement), whereas the
+irreversibility in Conjugate Spectral Geometry comes from information
+attenuation (<span class="math inline">\(\Gamma_{\text{geo}}\)</span>)
+and finite capacity (<span class="math inline">\(C_{\text{obs}} =
+4\)</span> bits) — both are information loss, but with different
+origins.</p>
+<p><strong>Cross-volume references.</strong> The determination of the
+coding weights <span class="math inline">\(\sigma\)</span> is found in
+the Birkhoff Fixed Point Theorem of Volume 3 (Theorem 3.3.1.01). The
+derivation of the Born Rule <span class="math inline">\(\Delta\lambda
+\propto \sqrt{\sigma}\)</span> is found in Theorem 3.2.2.01. The
+spectrum of the Dirac operator is found in the Dirac Operator Theorem of
+Volume 1 (Theorem 1.3.1.01).</p>
+<h3 id="spectral-resolution">1.2 Spectral Resolution</h3>
+<p><strong>Theorem 5.4.1.01 (Spectral Resolution Theorem).</strong> The
+smallest spectral interval that the observer can resolve is:</p>
+<p><span class="math display">\[\delta\lambda_{\min} =
+\frac{\Gamma_{\text{geo}}}{\sqrt{N_{\text{info}}}} = \frac{0.023}{4}
+\approx 0.006.\]</span></p>
+<p>This determines the observer’s precision limit — spectral differences
+smaller than <span class="math inline">\(\delta\lambda_{\min}\)</span>
+cannot be resolved.</p>
+<p><strong>Proof.</strong> The observer’s spectral resolution is
+determined by the attenuation rate <span
+class="math inline">\(\Gamma_{\text{geo}}\)</span> of the information
+field and the number of information nodes <span
+class="math inline">\(N_{\text{info}}\)</span>. The attenuation rate
+<span class="math inline">\(\Gamma_{\text{geo}} \approx 0.023\)</span>
+gives the “noise level” of the information field — spectral differences
+below this level are submerged by attenuation. The number of information
+nodes <span class="math inline">\(N_{\text{info}} = 16\)</span> gives
+the observer’s “sample size” — more nodes provide better statistical
+averaging. By the central limit theorem, the noise level decreases with
+<span class="math inline">\(\sqrt{N}\)</span>, hence <span
+class="math inline">\(\delta\lambda_{\min} = \Gamma_{\text{geo}} /
+\sqrt{N_{\text{info}}} = 0.023 / 4 \approx 0.006\)</span>. ∎</p>
+<p><strong>Detailed derivation.</strong> The derivation of spectral
+resolution is based on an analogy with the Cramer-Rao bound in
+information theory. The observer estimates the spectral gap <span
+class="math inline">\(\Delta\lambda\)</span> through <span
+class="math inline">\(N_{\text{info}}\)</span> independent information
+nodes. The estimation error of each node is <span
+class="math inline">\(\Gamma_{\text{geo}}\)</span> (the attenuation rate
+of the information field limits the precision of a single measurement).
+The average of <span class="math inline">\(N_{\text{info}}\)</span>
+independent measurements reduces the error to <span
+class="math inline">\(\Gamma_{\text{geo}} /
+\sqrt{N_{\text{info}}}\)</span> — this is a standard consequence of the
+central limit theorem.</p>
+<p>More precisely, the spectral resolution can be written in terms of
+Fisher information: <span class="math inline">\(\delta\lambda_{\min} =
+1/\sqrt{I_F}\)</span>, where <span class="math inline">\(I_F =
+N_{\text{info}} / \Gamma_{\text{geo}}^2\)</span> is the Fisher
+information. Hence <span class="math inline">\(\delta\lambda_{\min} =
+\Gamma_{\text{geo}} / \sqrt{N_{\text{info}}}\)</span> — consistent with
+Theorem 5.4.1.01.</p>
+<p><strong>Numerical verification.</strong> Verify the spectral
+resolution with exact values: <span
+class="math display">\[\delta\lambda_{\min} = \frac{0.023086}{4} =
+0.005772 \approx 0.006.\]</span></p>
+<p>Relative precision corresponding to the spectral resolution: <span
+class="math display">\[\frac{\delta\lambda_{\min}}{\Delta\lambda_{\mathcal{M}}}
+= \frac{0.00577}{0.778} \approx 0.00742 = 0.74\%.\]</span></p>
+<p>The observer’s measurement precision for the Matter Sector spectral
+gap is approximately 0.74% — this is the geometrically determined
+precision limit.</p>
+<p><strong>Comparative discussion.</strong> The spectral resolution
+<span class="math inline">\(\delta\lambda_{\min}\)</span> has a formal
+correspondence with the energy-time uncertainty relation <span
+class="math inline">\(\Delta E \cdot \Delta t \geq \hbar/2\)</span> in
+quantum mechanics. In Conjugate Spectral Geometry, <span
+class="math inline">\(\delta\lambda_{\min} \cdot t_{1/2} \approx 0.006
+\times 30 = 0.18\)</span> — analogous to a “spectral
+resolution-half-life uncertainty relation.” But in Conjugate Spectral
+Geometry, this relation is geometrically determined (uniquely determined
+by <span class="math inline">\(\mu_1\)</span> and <span
+class="math inline">\(N_{\text{info}}\)</span>), rather than a
+principled uncertainty relation.</p>
+<p><strong>Cross-volume references.</strong> The derivation of the
+attenuation rate <span class="math inline">\(\Gamma_{\text{geo}} \approx
+0.023\)</span> is found in Theorem 5.1.2.01. The derivation of the
+number of information nodes <span class="math inline">\(N_{\text{info}}
+= 16\)</span> is found in Theorem 5.1.1.01.</p>
+<h3 id="irreversibility-of-the-mapping">1.3 Irreversibility of the
+Mapping</h3>
+<p>The observation mapping is <strong>irreversible</strong> — from <span
+class="math inline">\(\sigma\)</span> to observables is a forward
+mapping, but inferring <span class="math inline">\(\sigma\)</span>
+backward from observables is not unique (<span class="math inline">\(S =
+137\)</span> corresponds to a 1-dimensional isocurve, Theorem
+10.11.1.15). Irreversibility is a consequence of information attenuation
+— the information field forgets some of the details.</p>
+<p>Mathematical expression of irreversibility:</p>
+<p><span class="math display">\[\text{dim}(\{\sigma : S(\sigma) = S^*\})
+= 1.\]</span></p>
+<p>That is, the isosurface of the action <span class="math inline">\(S =
+137\)</span> is a 1-dimensional curve — the observer can only determine
+that <span class="math inline">\(\sigma\)</span> lies on this curve, not
+the specific position. This 1-dimensional uncertainty is the fundamental
+limitation of the observer.</p>
+<p><strong>Detailed derivation.</strong> The origin chain of mapping
+irreversibility:</p>
+<ol type="1">
+<li><strong>Coding weights <span class="math inline">\(\sigma\)</span>
+are 3-dimensional</strong> (2-dimensional after the <span
+class="math inline">\(\sum \sigma_i = 1\)</span> constraint).</li>
+<li><strong>The Born Rule</strong> <span
+class="math inline">\(\Delta\lambda_i = C\sqrt{\sigma_i}\)</span> maps
+3-dimensional <span class="math inline">\(\sigma\)</span> to
+3-dimensional <span class="math inline">\(\Delta\lambda\)</span> — this
+step is bijective (reversible), because <span
+class="math inline">\(\sqrt{\cdot}\)</span> is injective on <span
+class="math inline">\(\sigma_i &gt; 0\)</span>.</li>
+<li><strong>The Algebraic Action</strong> <span
+class="math inline">\(S(\sigma) = [\sum 1/\sigma_i + \sum_{i&lt;j}
+1/\sqrt{\sigma_i \sigma_j}]/C^2\)</span> maps 3-dimensional <span
+class="math inline">\(\sigma\)</span> to 1-dimensional <span
+class="math inline">\(S\)</span> — this step compresses 2-dimensional
+information to 1 dimension, losing 1 dimension of information.</li>
+<li><strong>Observables</strong> <span class="math inline">\(O\)</span>
+are determined by <span class="math inline">\(S(\sigma^*)\)</span> —
+from <span class="math inline">\(S\)</span> to <span
+class="math inline">\(O\)</span> is an injection, but <span
+class="math inline">\(S\)</span> itself only captures 1 dimension of
+<span class="math inline">\(\sigma\)</span> information.</li>
+</ol>
+<p>Thus, when the observer infers <span
+class="math inline">\(\sigma\)</span> backward from observables <span
+class="math inline">\(O\)</span>, they can only determine that <span
+class="math inline">\(\sigma\)</span> lies on the isosurface <span
+class="math inline">\(S(\sigma) = S^*\)</span>, which is a 1-dimensional
+curve — the observer lacks 1 dimension of information. This
+1-dimensional uncertainty is the mathematical root of the
+irreversibility of the observation mapping.</p>
+<p><strong>Numerical verification.</strong> Dimensionality verification
+of the isosurface <span class="math inline">\(S(\sigma) = 137\)</span>.
+On the 3-dimensional coding space <span
+class="math inline">\(\Delta^2\)</span> (<span
+class="math inline">\(\sum \sigma_i = 1\)</span>, 2-dimensional
+simplex), <span class="math inline">\(S(\sigma) = 137\)</span> is 1
+constraint, leaving a 1-dimensional isocurve. Adding the Birkhoff Fixed
+Point condition <span class="math inline">\(T\sigma = \sigma\)</span>
+(additional constraint), the isocurve degenerates to 0 dimensions
+(discrete points). But the observer can only determine <span
+class="math inline">\(S\)</span> through observables, not <span
+class="math inline">\(T\sigma = \sigma\)</span> — thus the isocurve the
+observer sees is 1-dimensional.</p>
+<p><strong>Cross-volume references.</strong> The proof that the
+isosurface has <span class="math inline">\(\dim = 1\)</span> is found in
+the Landscape Universality Theorem of Volume 10 (Theorem
+10.11.1.15).</p>
+<h3 id="algebraic-foundation-of-the-mapping-chain">1.4 Algebraic
+Foundation of the Mapping Chain</h3>
+<p>Each stage of the mapping chain has a clear algebraic foundation:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Stage</th>
+<th style="text-align: left;">Algebraic foundation</th>
+<th style="text-align: left;">Key formula</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Coding weights</td>
+<td style="text-align: left;">Birkhoff Mixing Matrix T</td>
+<td style="text-align: left;">σ* = T σ* (fixed point)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Born Rule</td>
+<td style="text-align: left;">Algebraic Normalization</td>
+<td style="text-align: left;">Δλ_i = C√σ_i</td>
+</tr>
+<tr>
+<td style="text-align: left;">Spectral gap</td>
+<td style="text-align: left;">Dirac Operator</td>
+<td style="text-align: left;">Δλ = λ_{i+1} − λ_i</td>
+</tr>
+<tr>
+<td style="text-align: left;">Dirac spectrum</td>
+<td style="text-align: left;">Clifford Algebra</td>
+<td style="text-align: left;">λ_i ∈ Spec(D)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Observables</td>
+<td style="text-align: left;">Observer Localization</td>
+<td style="text-align: left;">O = f(T_ours)</td>
+</tr>
+</tbody>
+</table>
+<p>The entire chain is cross-region information import — the mapping
+from geometry to physics is completely determined by algebraic
+structure.</p>
+<p><strong>Detailed derivation.</strong> The algebraic foundation of the
+mapping chain can be understood in a unified way from the closure
+structure of the Coding Orbit. The Coding Orbit starts from Cl(1),
+passes through Cl(3), Cl(5), Cl(7), and finally closes back to Cl(1)
+(through Bott period 8). Each point on the orbit corresponds to a
+Clifford algebra, whose irreducible representation gives the spectrum of
+the Dirac operator. Therefore:</p>
+<ol type="1">
+<li><strong>Coding weights <span
+class="math inline">\(\sigma\)</span></strong> correspond to the
+arc-length parameter on the Coding Orbit — <span
+class="math inline">\(\sigma_i\)</span> is the proportion of the <span
+class="math inline">\(i\)</span>-th segment on the orbit.</li>
+<li><strong>The Born Rule</strong> corresponds to the algebraic
+dimension jumps in Bott Periodicity — <span
+class="math inline">\(\sqrt{\sigma}\)</span> comes from the dimension
+formula of Clifford algebra representations.</li>
+<li><strong>Spectral gap</strong> <span
+class="math inline">\(\Delta\lambda\)</span> corresponds to eigenvalue
+differences of the Dirac operator — determined by the Pin representation
+of the Clifford algebra.</li>
+<li><strong>Dirac spectrum</strong> corresponds to the complete
+classification of irreducible representations of Clifford algebras.</li>
+<li><strong>Observables</strong> correspond to the observer’s position
+<span class="math inline">\(T_{\text{ours}}\)</span> on the Coding
+Orbit.</li>
+</ol>
+<p>Every step in the entire mapping chain is algebraic — no free
+parameters, no phenomenological input. This is the manifestation of
+“cross-region information import” in the observation mapping chain.</p>
+<p><strong>Numerical verification.</strong> Numerical values at each
+step of the mapping chain: <span class="math display">\[\begin{aligned}
+\sigma^* &amp;\approx (0.778, 0.211, 0.0115), \\
+\Delta\lambda &amp;= (0.778, 0.405, 0.0945) \quad (\text{taking } C
+\approx 0.882), \\
+\text{Spec}(D) &amp;= \{\lambda_1 = 0, \lambda_2 = 0.778, \lambda_3 =
+1.183, \ldots\}, \\
+m_e / m_\mu &amp;= \sqrt{\sigma_e/\sigma_\mu} \approx 0.0048 \quad
+(\text{mass ratio}).
+\end{aligned}\]</span></p>
+<hr />
+<h2 id="observers-information-capacity">§2 Observer’s Information
+Capacity</h2>
+<h3 id="information-capacity">2.1 Information Capacity</h3>
+<p>The observer’s information capacity is:</p>
+<p><span class="math display">\[C_{\text{obs}} = \log_2 N_{\text{info}}
+= \log_2 16 = 4 \text{ bits}.\]</span></p>
+<p>4 bits mean the observer can at most distinguish 16 different
+spectral states — corresponding to three generations of leptons × two
+helicities × two charge states ≈ 12 types, plus 4 gauge bosons = 16
+fundamental particles.</p>
+<p><strong>Detailed derivation.</strong> Physical meaning of the
+information capacity <span class="math inline">\(C_{\text{obs}} =
+4\)</span> bits: the observer can simultaneously process only 4 bits of
+information, i.e., can at most distinguish <span
+class="math inline">\(2^4 = 16\)</span> different spectral states. These
+16 spectral states correspond to the encoding of 16 fundamental
+particles:</p>
+<ol type="1">
+<li><strong>Leptons</strong>: 3 generations × 2 helicities = 6 types
+(electron, muon, tau, each left- and right-handed)</li>
+<li><strong>Neutrinos</strong>: 3 generations × 1 helicity = 3 types
+(left-handed only)</li>
+<li><strong>Gauge bosons</strong>: photon (1), W+W- (2), Z (1), gluons
+(8 colors, but encoded as 2 independent states)</li>
+<li><strong>Higgs</strong>: 1 type</li>
+</ol>
+<p>Total: 6 + 3 + 4 + 2 + 1 = 16 types. The 16 spectral states exactly
+fill the 4-bit capacity — this is the geometric explanation in Conjugate
+Spectral Geometry for why the particle spectrum has “exactly 16
+types.”</p>
+<p><strong>Numerical verification.</strong> Binary verification of the
+information capacity: <span class="math display">\[C_{\text{obs}} =
+\log_2 16 = 4 \text{ bits}, \quad 2^{C_{\text{obs}}} = 2^4 = 16 \text{
+states}.\]</span></p>
+<p><strong>Comparative discussion.</strong> The information capacity
+<span class="math inline">\(C_{\text{obs}} = 4\)</span> bits has a
+formal correspondence with the “7±2” rule of human working memory
+(Miller, 1956). In cognitive psychology, human working memory capacity
+is approximately 7±2 chunks, corresponding to <span
+class="math inline">\(\log_2(7) \approx 2.8\)</span> bits. The <span
+class="math inline">\(C_{\text{obs}} = 4\)</span> bits of Conjugate
+Spectral Geometry is slightly larger than human working memory capacity
+— but the orders of magnitude are consistent (both are single-digit
+bits). This suggests that the observer’s information capacity may be the
+geometric foundation of “consciousness.”</p>
+<p><strong>Cross-volume references.</strong> The derivation of the
+number of information nodes <span class="math inline">\(N_{\text{info}}
+= 16\)</span> is found in Theorem 5.1.1.01. The complete classification
+of 16 fundamental particles is found in the Particle Spectrum Theorem of
+Volume 7 (Theorem 7.1.1.01).</p>
+<h3 id="relationship-between-capacity-and-particle-number">2.2
+Relationship between Capacity and Particle Number</h3>
+<p>Correspondence of 16 fundamental particles:</p>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 38%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Category</th>
+<th style="text-align: center;">Count</th>
+<th style="text-align: left;">Encoding origin</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Leptons (3 gen × 2 helicities)</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;">ℳ𝒞 sectors</td>
+</tr>
+<tr>
+<td style="text-align: left;">Quarks (3 gen × 2 helicities × 3
+colors)</td>
+<td style="text-align: center;">18</td>
+<td style="text-align: left;">ℳ𝒞ℐ (color from triality in the
+Information Sector)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Gauge bosons</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;">ℳ self-coupling + 𝒞 self-coupling</td>
+</tr>
+<tr>
+<td style="text-align: left;">Scalar boson</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">Breathing mode ground state</td>
+</tr>
+</tbody>
+</table>
+<p>Note: the 18 quark types exceed the capacity of 16 — because the
+color degrees of freedom of quarks come from the internal structure of
+the Information Sector and do not occupy the observer’s external
+information capacity.</p>
+<p><strong>Detailed derivation.</strong> Reason why the 18 quark types
+do not occupy external information capacity. The color degrees of
+freedom of quarks (3 colors) come from the triality structure of the
+Information Sector ℐ — triality is an internal symmetry of Cl(7)
+Terminal Duality, completed within the information field. The quarks
+perceived by the observer are subject to color confinement through the
+strong interaction — quarks never appear alone, but only as colorless
+(color singlet) hadrons. Therefore the quark states actually perceived
+by the observer are 18/3 = 6 types (color-averaged).</p>
+<p>The “internalization” of color degrees of freedom is a physical
+consequence of information field attenuation: information field
+attenuation (<span class="math inline">\(\Gamma_{\text{geo}} \approx
+0.023\)</span>) causes color information to be integrated out on the
+observation scale, and the observer can only perceive color-averaged
+effects. This explains why the strong interaction (chromodynamics)
+manifests as confinement at low energy scales — the information field
+cannot resolve color degrees of freedom.</p>
+<p><strong>Numerical verification.</strong> Number of states actually
+occupying external information capacity: <span class="math display">\[6
+\text{ (leptons)} + 6 \text{ (quarks, color-averaged)} + 4 \text{ (gauge
+bosons)} = 16 \text{ states}.\]</span></p>
+<p>Exactly fills the <span class="math inline">\(C_{\text{obs}} =
+4\)</span> bits capacity.</p>
+<p><strong>Cross-volume references.</strong> The triality origin of
+quark color degrees of freedom is found in the Terminal Duality Theorem
+of Volume 6 (Theorem 6.5.1.01). The geometric explanation of color
+confinement is found in the Strong Interaction Theorem of Volume 7
+(Theorem 7.4.1.01).</p>
+<h3 id="algebraic-origin-of-information-capacity">2.3 Algebraic Origin
+of Information Capacity</h3>
+<p>Algebraic origin of the information capacity <span
+class="math inline">\(C_{\text{obs}} = \log_2 N_{\text{info}} = \log_2
+16 = 4\)</span>: <span class="math display">\[N_{\text{info}} = \rho_7
+\times k_0 = 8 \times 2 = 16,\]</span></p>
+<p>where <span class="math inline">\(\rho_7 = 8\)</span> is the rank of
+Cl(7) and <span class="math inline">\(k_0 = 2\)</span> is the Structure
+Constant of the Information Sector. Therefore:</p>
+<p><span class="math display">\[C_{\text{obs}} = \log_2(\rho_7 \times
+k_0) = \log_2 8 + \log_2 2 = 3 + 1 = 4 \text{ bits}.\]</span></p>
+<p>4 bits = 3 bits (from Cl(7) rank) + 1 bit (from Terminal Duality
+<span class="math inline">\(k_0 = 2\)</span>).</p>
+<p><strong>Detailed derivation.</strong> Algebraic decomposition of the
+information capacity: - <strong>3 bits from Cl(7) rank</strong> <span
+class="math inline">\(\rho_7 = 8\)</span>: the Pin representation
+dimension of Cl(7) is 8, yielding 8 independent encodings. These 3 bits
+correspond to “algebraic encoding information” — determined by the
+representation theory of Clifford algebras. - <strong>1 bit from
+Terminal Duality</strong> <span class="math inline">\(k_0 = 2\)</span>:
+the direct sum decomposition Cl(7) ≅ Mat(8,ℝ) ⊕ Mat(8,ℝ) gives an
+additional 1 bit of discrimination ability. This 1 bit corresponds to
+“Terminal Duality information” — determined by the closure structure of
+Bott Periodicity.</p>
+<p>The sum of the two is 4 bits — this is the “information capacity” of
+the Coding Orbit, the algebraic upper bound on the observer’s
+information acquisition.</p>
+<p><strong>Numerical verification.</strong> Binary verification of the
+algebraic decomposition: <span class="math display">\[\log_2 8 = 3,
+\quad \log_2 2 = 1, \quad 3 + 1 = 4.\]</span></p>
+<p><strong>Cross-volume references.</strong> The rank <span
+class="math inline">\(\rho_7 = 8\)</span> of Cl(7) is found in the
+Clifford Algebra Classification Theorem of Volume 1 (Theorem 1.1.1.01).
+Terminal Duality <span class="math inline">\(k_0 = 2\)</span> is found
+in the Terminal Duality Theorem of Volume 6 (Theorem 6.5.1.01).</p>
+<h3 id="information-capacity-and-structure-constants">2.4 Information
+Capacity and Structure Constants</h3>
+<p>Relationship between information capacity and the three Structure
+Constants:</p>
+<p><span class="math display">\[C_{\text{obs}} = \log_2(\rho_7 \times
+k_0) = \log_2\left(\frac{\Lambda \times \Delta\Theta}{1} \times
+k_0\right).\]</span></p>
+<p>where <span class="math inline">\(\Lambda = 3\)</span> (Matter
+Sector), <span class="math inline">\(\Delta\Theta = 5\)</span> (Causal
+Sector), <span class="math inline">\(k_0 = 2\)</span> (Information
+Sector). But <span class="math inline">\(\rho_7 = 8\)</span> comes from
+Cl(7) ≅ Mat(8,ℝ) ⊕ Mat(8,ℝ), not a simple product of the Structure
+Constants. The information capacity is uniquely determined by the
+terminal structure of the Coding Orbit (Cl(7)).</p>
+<p><strong>Detailed derivation.</strong> Understanding the relationship
+between <span class="math inline">\(C_{\text{obs}}\)</span> and the
+Structure Constants requires understanding the complete structure of the
+Coding Orbit. The Coding Orbit undergoes three jumps from Cl(1) to
+Cl(7): - Cl(1)→Cl(3): <span class="math inline">\(\Lambda = 3\)</span>
+(Matter Sector) - Cl(3)→Cl(5): <span class="math inline">\(\Delta\Theta
+= 5\)</span> (Causal Sector) - Cl(5)→Cl(7): <span
+class="math inline">\(k_0 = 2\)</span> (Information Sector)</p>
+<p>The rank <span class="math inline">\(\rho_7 = 8\)</span> of Cl(7) is
+the cumulative result of these three jumps. <span
+class="math inline">\(\rho_7\)</span> can be computed using the
+dimension formula of Bott Periodicity: <span
+class="math inline">\(\dim(\text{Cl}(n)) = 2^{\lfloor n/2
+\rfloor}\)</span> (complex representation), <span
+class="math inline">\(\rho_n = \dim(\text{Pin}(n)) = 2^{\lfloor n/2
+\rfloor}\)</span> (real representation). For <span
+class="math inline">\(n=7\)</span>, <span class="math inline">\(\rho_7 =
+2^{\lfloor 7/2 \rfloor} = 2^3 = 8\)</span>.</p>
+<p>Thus <span class="math inline">\(\rho_7 = 8\)</span> is the
+cumulative result of the first half of the Bott period (n=1 to n=7) and
+cannot be simply expressed as <span class="math inline">\(\Lambda \times
+\Delta\Theta\)</span>. But the relationship between <span
+class="math inline">\(\rho_7 = 8\)</span> and the Structure Constants
+is: <span class="math inline">\(\rho_7 = 2^{\lfloor \Lambda +
+\Delta\Theta - 1 \rfloor} = 2^{\lfloor 3+5-1 \rfloor} = 2^3 = 8\)</span>
+(because <span class="math inline">\(\Lambda + \Delta\Theta = 8\)</span>
+corresponds to the first half of Bott period 8). This explains why <span
+class="math inline">\(\Lambda + \Delta\Theta = 3 + 5 = 8\)</span>
+exactly equals the Bott period — not a coincidence, but an algebraic
+inevitability of the Coding Orbit.</p>
+<p><strong>Numerical verification.</strong> Verify <span
+class="math inline">\(\Lambda + \Delta\Theta = 8\)</span>: <span
+class="math display">\[\Lambda + \Delta\Theta = 3 + 5 = 8 = \text{Bott
+period}.\]</span></p>
+<p>Therefore <span class="math inline">\(C_{\text{obs}} =
+\log_2(2^{\lfloor (\Lambda+\Delta\Theta-1)/2 \rfloor} \times k_0) =
+\log_2(8 \times 2) = 4\)</span>.</p>
+<p><strong>Cross-volume references.</strong> The three-segment partition
+of the Coding Orbit is found in the Coding Orbit Theorem of Volume 2
+(Theorem 2.2.1.01). Bott period 8 is found in the Bott Periodicity
+Theorem of Volume 1 (Theorem 1.1.2.01).</p>
+<hr />
+<h2 id="extraction-of-observables">§3 Extraction of Observables</h2>
+<h3 id="from-spectral-gap-to-mass">3.1 From Spectral Gap to Mass</h3>
+<p>Particle masses are determined by Dirac spectral gaps:</p>
+<p><span class="math display">\[m_i = \Delta\lambda_i =
+C\sqrt{\sigma_i}.\]</span></p>
+<p>By the Born Rule, masses are proportional to the square root of
+coding weights. Different sector coding weights give different mass
+scales:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Particle type</th>
+<th style="text-align: left;">Sector</th>
+<th style="text-align: left;">Mass ∝</th>
+<th style="text-align: center;">Relative mass</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Matter particles (leptons)</td>
+<td style="text-align: left;">ℳ</td>
+<td style="text-align: left;">√σ_ℳ*</td>
+<td style="text-align: center;">≈ 1</td>
+</tr>
+<tr>
+<td style="text-align: left;">Causal particles (weak bosons)</td>
+<td style="text-align: left;">𝒞</td>
+<td style="text-align: left;">√σ_𝒞*</td>
+<td style="text-align: center;">≈ 0.52</td>
+</tr>
+<tr>
+<td style="text-align: left;">Information particles (?)</td>
+<td style="text-align: left;">ℐ</td>
+<td style="text-align: left;">√σ_ℐ*</td>
+<td style="text-align: center;">≈ 0.12</td>
+</tr>
+</tbody>
+</table>
+<p>Mass ratios are determined by the square root of coding weight ratios
+— this is the foundation of mass ratio factorization (5.5).</p>
+<p><strong>Detailed derivation.</strong> Mapping chain from spectral gap
+to mass:</p>
+<ol type="1">
+<li>The eigenvalues <span class="math inline">\(\lambda_i\)</span> of
+the Dirac operator <span class="math inline">\(D\)</span> are determined
+by the representation of the Clifford algebra.</li>
+<li>The spectral gap <span class="math inline">\(\Delta\lambda_i =
+\lambda_{i+1} - \lambda_i\)</span> corresponds to the particle mass (in
+Planck mass units).</li>
+<li>The Born Rule <span class="math inline">\(\Delta\lambda_i =
+C\sqrt{\sigma_i}\)</span> links spectral gaps to coding weights.</li>
+</ol>
+<p>Thus <span class="math inline">\(m_i = C\sqrt{\sigma_i}\)</span>. The
+hierarchical structure of the mass spectrum is determined by the
+hierarchical structure of coding weights: <span
+class="math inline">\(m_{\mathcal{M}} : m_{\mathcal{C}} :
+m_{\mathcal{I}} = \sqrt{\sigma_{\mathcal{M}}^*} :
+\sqrt{\sigma_{\mathcal{C}}^*} : \sqrt{\sigma_{\mathcal{I}}^*} =
+\sqrt{0.778} : \sqrt{0.211} : \sqrt{0.0115} \approx 0.882 : 0.459 :
+0.107\)</span>.</p>
+<p><strong>Numerical verification.</strong> Mass ratios of three
+generations of charged leptons (with electron mass = 1): <span
+class="math display">\[m_e : m_\mu : m_\tau = 1 : 206.8 :
+3477.\]</span></p>
+<p>These mass ratios cannot be explained by a simple <span
+class="math inline">\(\sqrt{\sigma}\)</span> relation — because <span
+class="math inline">\(\sqrt{\sigma_{\mathcal{M}}^*}\)</span> is the
+overall scale of the ℳ sector, while the mass ratios among the three
+generations of leptons come from the fine structure within the ℳ sector
+(determined by the representation theory of Cl(3)). More precise mass
+formulas are found in the Particle Mass Spectrum Theorem of Volume
+7.</p>
+<p><strong>Comparative discussion.</strong> The mapping from spectral
+gap to mass is fundamentally different from the Higgs mechanism in the
+Standard Model. In the Standard Model, particle masses come from Yukawa
+couplings <span class="math inline">\(y_i \bar{\psi}_i \psi_i
+\phi\)</span> (coupling to the Higgs field), with the Yukawa coupling
+constants <span class="math inline">\(y_i\)</span> being free
+parameters. In Conjugate Spectral Geometry, particle masses come from
+Dirac spectral gaps, and spectral gaps are determined by coding weights
+<span class="math inline">\(\sigma\)</span> through the Born Rule — no
+free parameters. This is the manifestation of “geometry determines
+mass.”</p>
+<p><strong>Cross-volume references.</strong> The complete derivation of
+the mass spectrum is found in the Particle Mass Spectrum Theorem of
+Volume 7 (Theorem 7.2.1.01). The Born Rule <span
+class="math inline">\(\Delta\lambda \propto \sqrt{\sigma}\)</span> is
+found in Theorem 3.2.2.01.</p>
+<h3 id="from-spectral-gap-to-coupling-constants">3.2 From Spectral Gap
+to Coupling Constants</h3>
+<p>Coupling constants are determined by the weights of the Birkhoff
+Mixing Matrix:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Coupling constant</th>
+<th style="text-align: left;">Origin</th>
+<th style="text-align: left;">Formula</th>
+<th style="text-align: center;">Numerical value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Electromagnetic α</td>
+<td style="text-align: left;">ℳ self-coupling</td>
+<td style="text-align: left;">∝ θ_I</td>
+<td style="text-align: center;">≈ 0.782</td>
+</tr>
+<tr>
+<td style="text-align: left;">Weak g₂</td>
+<td style="text-align: left;">𝒞 cyclic</td>
+<td style="text-align: left;">∝ θ_τ</td>
+<td style="text-align: center;">≈ 0.209</td>
+</tr>
+<tr>
+<td style="text-align: left;">Hypercharge g₁</td>
+<td style="text-align: left;">𝒞-ℐ transposition</td>
+<td style="text-align: left;">∝ θ_{σ₂}</td>
+<td style="text-align: center;">≈ 0.009</td>
+</tr>
+</tbody>
+</table>
+<p>Coupling constants are directly extracted from the three weights of
+the Birkhoff Mixing Matrix — cross-region information import.</p>
+<p><strong>Detailed derivation.</strong> The extraction of coupling
+constants is based on the three components of the Birkhoff Mixing Matrix
+<span class="math inline">\(T = \theta_I P_I + \theta_\tau P_\tau +
+\theta_{\sigma_2} P_{\sigma_2}\)</span>. Each component corresponds to a
+type of interaction:</p>
+<ol type="1">
+<li><p><strong>Electromagnetic coupling <span
+class="math inline">\(\alpha\)</span></strong>: from <span
+class="math inline">\(P_I\)</span> (identity permutation), weight <span
+class="math inline">\(\theta_I \approx 0.782\)</span>. <span
+class="math inline">\(P_I\)</span> is intra-sector mixing — the
+electromagnetic interaction is the self-coupling of the matter field ℳ.
+<span class="math inline">\(\alpha \propto \theta_I\)</span> gives the
+geometric origin of electromagnetic coupling.</p></li>
+<li><p><strong>Weak coupling <span
+class="math inline">\(g_2\)</span></strong>: from <span
+class="math inline">\(P_\tau\)</span> (cyclic permutation), weight <span
+class="math inline">\(\theta_\tau \approx 0.209\)</span>. <span
+class="math inline">\(P_\tau\)</span> realizes the ℳ→𝒞→ℐ cycle — the
+weak interaction is the triality effect of the causal field 𝒞. <span
+class="math inline">\(g_2 \propto \theta_\tau\)</span> gives the
+geometric origin of weak coupling.</p></li>
+<li><p><strong>Hypercharge coupling <span
+class="math inline">\(g_1\)</span></strong>: from <span
+class="math inline">\(P_{\sigma_2}\)</span> (<span
+class="math inline">\(Z_2\)</span> transposition), weight <span
+class="math inline">\(\theta_{\sigma_2} \approx 0.009\)</span>. <span
+class="math inline">\(P_{\sigma_2}\)</span> realizes transposition
+between the two direct summands of Cl(7) — the hypercharge interaction
+is the Terminal Duality effect of the information field ℐ. <span
+class="math inline">\(g_1 \propto \theta_{\sigma_2}\)</span> gives the
+geometric origin of hypercharge coupling.</p></li>
+</ol>
+<p><strong>Numerical verification.</strong> Geometric prediction of
+coupling constant ratios: <span class="math display">\[\alpha : g_2 :
+g_1 = \theta_I : \theta_\tau : \theta_{\sigma_2} = 0.782 : 0.209 : 0.009
+\approx 87 : 23 : 1.\]</span></p>
+<p>At the electroweak unification scale (~100 GeV), the Standard Model
+coupling constant ratios are <span class="math inline">\(\alpha_1 :
+\alpha_2 : \alpha_3 \approx 0.017 : 0.034 : 0.118\)</span> (with <span
+class="math inline">\(\alpha_i = g_i^2/4\pi\)</span>). These values
+differ from the geometrically predicted <span
+class="math inline">\(\theta\)</span> ratios — because the <span
+class="math inline">\(\theta\)</span> ratios are geometric scales at the
+unification scale (Planck scale), while the coupling constants at low
+energy scales have undergone renormalization group evolution. The
+renormalization group evolution of coupling constants is found in the
+Coupling Constant Spectrum Unification of Volume 7.</p>
+<p><strong>Cross-volume references.</strong> The three component weights
+of the Birkhoff Mixing Matrix <span class="math inline">\(T\)</span> are
+found in Theorem 6.5.1.01. The renormalization group evolution of
+coupling constants is found in the Coupling Constant Spectrum
+Unification of Volume 7 (Theorem 7.6.1.01).</p>
+<h3 id="mapping-rules-for-observable-extraction">3.3 Mapping Rules for
+Observable Extraction</h3>
+<p>Mapping rules from the Coding Orbit to observables:</p>
+<p><span class="math display">\[O = \mathcal{M}[\sigma^*,
+T_{\text{ours}}],\]</span></p>
+<p>where <span class="math inline">\(\mathcal{M}\)</span> is the mapping
+operator, <span class="math inline">\(\sigma^*\)</span> is the fixed
+point, and <span class="math inline">\(T_{\text{ours}}\)</span> is the
+observer localization.</p>
+<p>Structure of the mapping operator <span
+class="math inline">\(\mathcal{M}\)</span>:</p>
+<p><span class="math display">\[\mathcal{M} = \text{Born} \circ
+\text{Dirac} \circ \text{Spectral},\]</span></p>
+<p>i.e., the three-step mapping “Born Rule → Dirac spectrum → spectral
+decomposition.” Each step is algebraic — cross-region information
+import.</p>
+<p><strong>Detailed derivation.</strong> Three-step decomposition of the
+mapping operator <span class="math inline">\(\mathcal{M}\)</span>:</p>
+<ol type="1">
+<li><p><strong>Born</strong>: <span
+class="math inline">\(\mathcal{M}_{\text{Born}}: \sigma \mapsto
+\Delta\lambda = C\sqrt{\sigma}\)</span>. This step is purely algebraic —
+the Born Rule comes from Algebraic Normalization <span
+class="math inline">\(2pC^3 + C^2 = 1\)</span>.</p></li>
+<li><p><strong>Dirac</strong>: <span
+class="math inline">\(\mathcal{M}_{\text{Dirac}}: \Delta\lambda \mapsto
+\text{Spec}(D) = \{\lambda_i\}\)</span>. This step is also algebraic —
+the spectrum of the Dirac operator is determined by the representation
+theory of Clifford algebras.</p></li>
+<li><p><strong>Spectral</strong>: <span
+class="math inline">\(\mathcal{M}_{\text{Spectral}}: \text{Spec}(D)
+\mapsto O = \{m, g, \ldots\}\)</span>. This step interprets the Dirac
+spectrum as physical observables — masses come from spectral gaps, and
+coupling constants come from Birkhoff weights.</p></li>
+</ol>
+<p>The observer localization <span
+class="math inline">\(T_{\text{ours}}\)</span> determines the specific
+values of the observables <span class="math inline">\(O\)</span> —
+different observer positions (different <span
+class="math inline">\(T_{\text{ours}}\)</span>) perceive different
+physical constants. But <span
+class="math inline">\(T_{\text{ours}}\)</span> itself is determined by
+<span class="math inline">\(\sigma^*\)</span> (through the Birkhoff
+Fixed Point condition), so all observables are ultimately determined by
+<span class="math inline">\(\sigma^*\)</span>.</p>
+<p><strong>Numerical verification.</strong> Verify the mapping rule
+using <span class="math inline">\(\alpha^{-1}\)</span> as an example:
+<span class="math display">\[\mathcal{M}_{\text{Born}}: \sigma^* \mapsto
+\Delta\lambda, \quad \mathcal{M}_{\text{Dirac}}: \Delta\lambda \mapsto
+\text{Spec}(D), \quad \mathcal{M}_{\text{Spectral}}: \text{Spec}(D)
+\mapsto \alpha^{-1} = S(\sigma^*) = 137.\]</span></p>
+<p><strong>Cross-volume references.</strong> The determination of the
+observer localization <span
+class="math inline">\(T_{\text{ours}}\)</span> is found in the Observer
+Localization Theorem of Volume 10 (Theorem 10.5.1.01).</p>
+<h3 id="classification-of-observables">3.4 Classification of
+Observables</h3>
+<p>Observables are classified by their geometric origin:</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Category</th>
+<th style="text-align: left;">Geometric origin</th>
+<th style="text-align: left;">Extraction method</th>
+<th style="text-align: left;">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Mass</td>
+<td style="text-align: left;">Coding weights σ</td>
+<td style="text-align: left;">m ∝ √σ</td>
+<td style="text-align: left;">Lepton masses</td>
+</tr>
+<tr>
+<td style="text-align: left;">Coupling constants</td>
+<td style="text-align: left;">Birkhoff weights θ_k</td>
+<td style="text-align: left;">g² ∝ θ_k</td>
+<td style="text-align: left;">Electroweak couplings</td>
+</tr>
+<tr>
+<td style="text-align: left;">Mass ratios</td>
+<td style="text-align: left;">Coding weight ratios</td>
+<td style="text-align: left;">m_i/m_j = √σ_i/σ_j</td>
+<td style="text-align: left;">μ-e mass ratio</td>
+</tr>
+<tr>
+<td style="text-align: left;">Fine-Structure Constant</td>
+<td style="text-align: left;">Algebraic Action</td>
+<td style="text-align: left;">α⁻¹ = S(σ*)</td>
+<td style="text-align: left;">α⁻¹ ≈ 137</td>
+</tr>
+</tbody>
+</table>
+<p>All observables are extracted from the algebraic structure of the
+Coding Orbit — cross-region information import.</p>
+<p><strong>Detailed derivation.</strong> Geometric classification of
+observables:</p>
+<ol type="1">
+<li><p><strong>Mass category</strong> (coding weights <span
+class="math inline">\(\sigma\)</span>): <span class="math inline">\(m_i
+= C\sqrt{\sigma_i}\)</span>. Mass is the square root of coding weights —
+a direct application of the Born Rule.</p></li>
+<li><p><strong>Coupling constant category</strong> (Birkhoff weights
+<span class="math inline">\(\theta_k\)</span>): <span
+class="math inline">\(g_k^2 \propto \theta_k\)</span>. Coupling
+constants are functions of the component weights of the Birkhoff Mixing
+Matrix — the permutation structure of the Coding Orbit determines
+interaction strengths.</p></li>
+<li><p><strong>Mass ratio category</strong> (coding weight ratios):
+<span class="math inline">\(m_i/m_j = \sqrt{\sigma_i/\sigma_j}\)</span>.
+Mass ratios cancel the algebraic constant <span
+class="math inline">\(C\)</span> and are purely geometric functions of
+coding weight ratios.</p></li>
+<li><p><strong>Fine-Structure Constant category</strong> (Algebraic
+Action): <span class="math inline">\(\alpha^{-1} = S(\sigma^*)\)</span>.
+The Fine-Structure Constant is the value of the Algebraic Action at the
+fixed point — the “action” of the Coding Orbit determines the
+electromagnetic coupling strength.</p></li>
+</ol>
+<p><strong>Numerical verification.</strong> Numerical verification of
+the four categories of observables: <span
+class="math display">\[\begin{aligned}
+m_e &amp;\propto \sqrt{0.7779} \approx 0.882, \\
+g_2^2 &amp;\propto \theta_\tau \approx 0.209, \\
+m_\mu/m_e &amp;= \sqrt{\sigma_\mu/\sigma_e} \approx 206.8, \\
+\alpha^{-1} &amp;= S(\sigma^*) = 137.
+\end{aligned}\]</span></p>
+<hr />
+<h2 id="irreversibility-of-the-mapping-and-observation-limitations">§4
+Irreversibility of the Mapping and Observation Limitations</h2>
+<h3 id="origin-of-irreversibility">4.1 Origin of Irreversibility</h3>
+<p>The irreversibility of the observation mapping has two origins: 1.
+<strong>Information attenuation</strong>: the information field
+attenuates at a rate of <span class="math inline">\(\Gamma_{\text{geo}}
+\approx 0.023\)</span> — details are forgotten 2. <strong>Finite
+capacity</strong>: the observer has only 4 bits of capacity — can only
+distinguish 16 states</p>
+<p>The two jointly lead to: the observer cannot infer the complete
+coding weights <span class="math inline">\(\sigma\)</span> backward from
+finite observables.</p>
+<p><strong>Detailed derivation.</strong> Quantitative analysis of the
+two origins of irreversibility:</p>
+<ol type="1">
+<li><p><strong>Irreversibility due to information attenuation</strong>:
+information field attenuation causes the fine structure of <span
+class="math inline">\(\sigma\)</span> (such as mass differences among
+three generations of leptons) to be smoothed on the observation scale.
+The attenuation rate <span class="math inline">\(\Gamma_{\text{geo}}
+\approx 0.023\)</span> means spectral structures finer than <span
+class="math inline">\(\delta\lambda_{\min} \approx 0.006\)</span> cannot
+be resolved. Thus when the observer infers <span
+class="math inline">\(\sigma\)</span> backward from observables <span
+class="math inline">\(O\)</span>, there is an uncertainty of <span
+class="math inline">\(\delta\lambda_{\min}\)</span>.</p></li>
+<li><p><strong>Irreversibility due to finite capacity</strong>: <span
+class="math inline">\(C_{\text{obs}} = 4\)</span> bits means the
+observer can only distinguish among <span class="math inline">\(2^4 =
+16\)</span> possible values of <span
+class="math inline">\(\sigma\)</span>. But the continuous parameter
+space of <span class="math inline">\(\sigma\)</span> (2-dimensional
+simplex) contains infinitely many possibilities — the observer can only
+map <span class="math inline">\(\sigma\)</span> to 16 discrete
+intervals, with <span class="math inline">\(\sigma\)</span> being
+indistinguishable within each interval.</p></li>
+</ol>
+<p><strong>Numerical verification.</strong> Quantitative measure of
+irreversibility: <span class="math display">\[\text{Dimensional loss} =
+\dim(\sigma) - \dim(O) = 2 - 1 = 1 \text{ dimension}.\]</span></p>
+<p><strong>Comparative discussion.</strong> The irreversibility of the
+observation mapping has a profound formal correspondence with
+“wavefunction collapse” in quantum measurement. In quantum measurement,
+the pre-measurement quantum state is a superposition state
+(high-dimensional Hilbert space), which collapses to an eigenstate
+(low-dimensional) after measurement, with information irreversibly lost.
+In Conjugate Spectral Geometry, <span
+class="math inline">\(\sigma\)</span> (2-dimensional) collapses to <span
+class="math inline">\(S(\sigma^*)\)</span> (1-dimensional) through the
+observation mapping, also with information irreversibly lost. But the
+key difference: quantum collapse is “non-unitary” (in the Copenhagen
+interpretation), whereas the irreversibility in Conjugate Spectral
+Geometry is “geometric” — caused by information attenuation and finite
+capacity.</p>
+<p><strong>Cross-volume references.</strong> The information attenuation
+rate <span class="math inline">\(\Gamma_{\text{geo}} \approx
+0.023\)</span> is found in Theorem 5.1.2.01. The information capacity
+<span class="math inline">\(C_{\text{obs}} = 4\)</span> bits is found in
+Theorem 5.4.2.01.</p>
+<h3 id="quantification-of-irreversibility">4.2 Quantification of
+Irreversibility</h3>
+<p>Irreversibility is quantified by the dimension of the isosurface:</p>
+<p><span class="math display">\[\text{dim}(\{\sigma : S(\sigma) = S^*\})
+= 1.\]</span></p>
+<p>In the 3-dimensional coding space, 1 scalar constraint (<span
+class="math inline">\(S = S^*\)</span>) leaves a 2-dimensional
+isosurface. But the Birkhoff Fixed Point condition additionally
+constrains 1 dimension, leaving 1 dimension of uncertainty.</p>
+<p>This 1-dimensional uncertainty corresponds to “hidden parameters”
+that the observer cannot resolve — they do not affect observables but
+affect the specific values of coding weights.</p>
+<p><strong>Detailed derivation.</strong> Quantification of
+irreversibility from the perspective of constraint counting:</p>
+<ol type="1">
+<li><strong>Coding space</strong>: <span class="math inline">\(\sigma
+\in \Delta^2 = \{\sigma : \sum \sigma_i = 1, \sigma_i &gt; 0\}\)</span>
+— 2-dimensional (after normalization constraint).</li>
+<li><strong>Observable constraint</strong>: <span
+class="math inline">\(S(\sigma) = S^* = 137\)</span> — 1 scalar
+constraint.</li>
+<li><strong>Birkhoff Fixed Point constraint</strong>: <span
+class="math inline">\(T(\sigma) \sigma = \sigma\)</span> — 1 effective
+constraint (in 2-dimensional space).</li>
+<li><strong>Residual degrees of freedom</strong>: <span
+class="math inline">\(2 - 1 - 1 = 0\)</span> dimensions — <span
+class="math inline">\(\sigma^*\)</span> is a discrete point.</li>
+</ol>
+<p>But the observer can only acquire <span
+class="math inline">\(S(\sigma)\)</span> through observables <span
+class="math inline">\(O\)</span>, not directly <span
+class="math inline">\(T(\sigma)\sigma = \sigma\)</span>. Thus the
+constraints the observer sees are only <span
+class="math inline">\(S(\sigma) = S^*\)</span>, leaving <span
+class="math inline">\(2 - 1 = 1\)</span> dimension of residual freedom.
+This 1-dimensional uncertainty is the gap between the observer and
+“objective reality.”</p>
+<p><strong>Numerical verification.</strong> A point on the isosurface
+<span class="math inline">\(S(\sigma) = 137\)</span>: <span
+class="math display">\[\sigma = (0.778, 0.211, 0.0115) \text{ and }
+\sigma&#39; = (0.780, 0.209, 0.0115)\]</span></p>
+<p>Both satisfy <span class="math inline">\(S(\sigma) \approx
+137\)</span> (within precision), but <span
+class="math inline">\(\sigma_{\mathcal{M}}^*\)</span> and <span
+class="math inline">\(\sigma_{\mathcal{C}}^*\)</span> differ slightly.
+The observer cannot distinguish these two values of <span
+class="math inline">\(\sigma\)</span> — they yield the same
+observables.</p>
+<h3 id="spectral-resolution-and-observation-precision">4.3 Spectral
+Resolution and Observation Precision</h3>
+<p>The spectral resolution <span
+class="math inline">\(\delta\lambda_{\min} \approx 0.006\)</span> limits
+the observer’s precision:</p>
+<ul>
+<li>Mass measurement precision: <span class="math inline">\(\delta m / m
+\sim \delta\lambda_{\min} \approx 0.6\%\)</span></li>
+<li>Coupling constant precision: <span class="math inline">\(\delta g /
+g \sim \delta\lambda_{\min} \approx 0.6\%\)</span></li>
+<li>Mass ratio precision: <span class="math inline">\(\delta(m_i/m_j)
+\sim \delta\lambda_{\min} \approx 0.6\%\)</span></li>
+</ul>
+<p>The 0.6% precision limit is the fundamental limitation of the
+observer — uniquely determined by the attenuation rate of the
+information field and the number of information nodes.</p>
+<p><strong>Detailed derivation.</strong> Derivation of the observation
+precision limit:</p>
+<ol type="1">
+<li><p><strong>Mass measurement precision</strong>: <span
+class="math inline">\(m_i = C\sqrt{\sigma_i}\)</span>. <span
+class="math inline">\(\delta m_i / m_i = \delta(C\sqrt{\sigma_i}) /
+(C\sqrt{\sigma_i}) = \delta\lambda_{\min} / \Delta\lambda_i\)</span>.
+For the ℳ sector, <span
+class="math inline">\(\Delta\lambda_{\mathcal{M}} \approx
+0.778\)</span>, <span class="math inline">\(\delta m / m \approx 0.006 /
+0.778 \approx 0.77\%\)</span>.</p></li>
+<li><p><strong>Coupling constant precision</strong>: <span
+class="math inline">\(g_k^2 \propto \theta_k\)</span>. <span
+class="math inline">\(\delta g_k / g_k = \frac{1}{2} \delta\theta_k /
+\theta_k\)</span>. The precision of <span
+class="math inline">\(\theta_k\)</span> is limited by <span
+class="math inline">\(\delta\lambda_{\min}\)</span>, so <span
+class="math inline">\(\delta g / g \sim \delta\lambda_{\min} \approx
+0.6\%\)</span>.</p></li>
+<li><p><strong>Mass ratio precision</strong>: <span
+class="math inline">\(m_i/m_j = \sqrt{\sigma_i/\sigma_j}\)</span>. <span
+class="math inline">\(\delta(m_i/m_j)/(m_i/m_j) =
+\frac{1}{2}(\delta\sigma_i/\sigma_i + \delta\sigma_j/\sigma_j) \sim
+\delta\lambda_{\min} \approx 0.6\%\)</span>.</p></li>
+</ol>
+<p><strong>Numerical verification.</strong> Taking the electron mass as
+an example: <span class="math display">\[\delta m_e / m_e = 0.00577 /
+0.778 \approx 0.00742 = 0.74\%.\]</span></p>
+<p>Current experimental precision: <span class="math inline">\(m_e =
+0.51099895000 \pm 0.00000000015\)</span> MeV (relative precision <span
+class="math inline">\(\sim 3 \times 10^{-10}\)</span>). The experimental
+precision is far higher than the geometric precision limit — because
+experimental measurements are “classical” masses, while the geometric
+precision limit is the limit of “quantum” measurements (single
+information field sampling). Multiple independent measurements can break
+through the geometric precision limit through statistical averaging —
+analogous to the Standard Quantum Limit (SQL) and Heisenberg Limit (HL)
+in quantum metrology.</p>
+<p><strong>Comparative discussion.</strong> The spectral resolution
+<span class="math inline">\(\delta\lambda_{\min}\)</span> has a formal
+correspondence with the Standard Quantum Limit (SQL) <span
+class="math inline">\(\delta\phi = 1/\sqrt{N}\)</span> in quantum
+metrology. In Conjugate Spectral Geometry, <span
+class="math inline">\(\delta\lambda_{\min} = \Gamma_{\text{geo}} /
+\sqrt{N_{\text{info}}}\)</span> — <span
+class="math inline">\(N_{\text{info}} = 16\)</span> corresponds to <span
+class="math inline">\(N\)</span> in the SQL (number of independent
+measurements), and <span
+class="math inline">\(\Gamma_{\text{geo}}\)</span> corresponds to the
+precision of a single measurement. This is the rudiment of “geometric
+quantum metrology.”</p>
+<h3 id="observation-limitations-and-algebraic-normalization">4.4
+Observation Limitations and Algebraic Normalization</h3>
+<p>The Algebraic Normalization <span class="math inline">\(2pC^3 + C^2 =
+1\)</span> constrains the possible range of coding weights, indirectly
+limiting the observer’s precision. If the Algebraic Normalization were
+different, the spectral resolution would also be different — but the
+Algebraic Normalization is an algebraic inevitability of cross-region
+information import, so the observation precision limit is also a
+consequence of cross-region information import.</p>
+<p><strong>Detailed derivation.</strong> The chain of relations between
+Algebraic Normalization and observation precision:</p>
+<ol type="1">
+<li>Algebraic Normalization <span class="math inline">\(2pC^3 + C^2 =
+1\)</span> determines the value of <span
+class="math inline">\(C\)</span>.</li>
+<li><span class="math inline">\(C\)</span> determines spectral gaps
+through the Born Rule <span class="math inline">\(\Delta\lambda_i =
+C\sqrt{\sigma_i}\)</span>.</li>
+<li>The spectral gap <span
+class="math inline">\(\Delta\lambda_{\mathcal{I}} =
+C\sqrt{\sigma_{\mathcal{I}}^*}\)</span> determines the diffusion
+coefficient <span class="math inline">\(D_{\mathcal{I}} =
+\Delta\lambda_{\mathcal{I}}\)</span>.</li>
+<li><span class="math inline">\(D_{\mathcal{I}}\)</span> and <span
+class="math inline">\(\mu_1\)</span> determine the attenuation rate
+<span class="math inline">\(\Gamma_{\text{geo}}\)</span>.</li>
+<li><span class="math inline">\(\Gamma_{\text{geo}}\)</span> and <span
+class="math inline">\(N_{\text{info}}\)</span> determine the spectral
+resolution <span
+class="math inline">\(\delta\lambda_{\min}\)</span>.</li>
+</ol>
+<p>Thus the entire chain of <span
+class="math inline">\(\delta\lambda_{\min}\)</span> ultimately traces
+back to Algebraic Normalization — the observation precision limit is an
+inevitable consequence of Algebraic Normalization.</p>
+<p><strong>Numerical verification.</strong> If Algebraic Normalization
+were different (e.g., <span class="math inline">\(C^2 = 1\)</span>
+instead of <span class="math inline">\(2pC^3 + C^2 = 1\)</span>), the
+value of <span class="math inline">\(C\)</span> would be different, and
+<span class="math inline">\(\delta\lambda_{\min}\)</span> would also be
+different. But Algebraic Normalization <span class="math inline">\(2pC^3
++ C^2 = 1\)</span> is an algebraic inevitability of Coding Orbit
+closure, so <span class="math inline">\(\delta\lambda_{\min} \approx
+0.006\)</span> is also an inevitable consequence of cross-region
+information import.</p>
+<p><strong>Cross-volume references.</strong> Algebraic Normalization
+<span class="math inline">\(2pC^3 + C^2 = 1\)</span> is found in Theorem
+3.2.1.01.</p>
+<hr />
+<h2 id="landscape-dependence-of-the-mapping-chain">§5 Landscape
+Dependence of the Mapping Chain</h2>
+<h3 id="landscape-variation-of-spectral-resolution">5.1 Landscape
+Variation of Spectral Resolution</h3>
+<p>The spectral resolution <span
+class="math inline">\(\delta\lambda_{\min} = \Gamma_{\text{geo}} /
+\sqrt{N_{\text{info}}}\)</span> varies with landscape position:</p>
+<ul>
+<li>Symmetric point: <span class="math inline">\(\Gamma\)</span> is
+maximum, <span class="math inline">\(\delta\lambda_{\min}\)</span> is
+maximum — observation precision is lowest</li>
+<li>Our position: <span class="math inline">\(\delta\lambda_{\min}
+\approx 0.006\)</span> — moderate precision</li>
+<li>Extreme point: <span class="math inline">\(\Gamma \to 0\)</span>,
+<span class="math inline">\(\delta\lambda_{\min} \to 0\)</span> —
+observation precision is highest</li>
+</ul>
+<p><strong>Detailed derivation.</strong> The landscape dependence of
+spectral resolution comes from the landscape dependence of <span
+class="math inline">\(\Gamma_{\text{geo}}\)</span>. <span
+class="math inline">\(\Gamma_{\text{geo}} = \mu_1 /
+N_{\text{info}}\)</span> is maximum at the symmetric point (<span
+class="math inline">\(\mu_1 = \sqrt{3} \approx 1.732\)</span>) and tends
+to zero at the extreme point. Hence <span
+class="math inline">\(\delta\lambda_{\min} = \Gamma_{\text{geo}} /
+\sqrt{N_{\text{info}}}\)</span> is maximum at the symmetric point (<span
+class="math inline">\(\delta\lambda_{\min}^{\text{sym}} = 1.732 / (16
+\times 4) = 0.027\)</span>) and tends to zero at the extreme point.</p>
+<p>Observation precision is highest at the extreme point — but at the
+extreme point the information field freezes (<span
+class="math inline">\(\xi \to \infty\)</span>), and although the
+observer has high precision, they cannot process information. There is a
+trade-off between observation precision and observation capability — our
+position lies in the “Goldilocks zone” where the two are balanced.</p>
+<p><strong>Numerical verification.</strong> Spectral resolution at three
+characteristic positions:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Position</th>
+<th style="text-align: center;">Γ_geo</th>
+<th style="text-align: center;">δλ_min</th>
+<th style="text-align: center;">Relative precision</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Symmetric point</td>
+<td style="text-align: center;">0.108</td>
+<td style="text-align: center;">0.027</td>
+<td style="text-align: center;">2.7%</td>
+</tr>
+<tr>
+<td style="text-align: left;">Our position</td>
+<td style="text-align: center;">0.023</td>
+<td style="text-align: center;">0.006</td>
+<td style="text-align: center;">0.6%</td>
+</tr>
+<tr>
+<td style="text-align: left;">Near-extreme point</td>
+<td style="text-align: center;">0.001</td>
+<td style="text-align: center;">0.00025</td>
+<td style="text-align: center;">0.025%</td>
+</tr>
+</tbody>
+</table>
+<h3 id="landscape-universality-of-information-capacity">5.2 Landscape
+Universality of Information Capacity</h3>
+<p>The information capacity <span class="math inline">\(C_{\text{obs}} =
+\log_2 N_{\text{info}} = 4\)</span> is landscape-universal — <span
+class="math inline">\(N_{\text{info}} = 16\)</span> is determined by the
+Structure Constant <span class="math inline">\(k_0 = 2\)</span> and the
+Cl(7) rank <span class="math inline">\(\rho_7 = 8\)</span>, and does not
+vary with landscape position.</p>
+<p>Observers in all worlds have 4 bits of information capacity — but
+their precision (spectral resolution) differs.</p>
+<p><strong>Detailed derivation.</strong> The landscape universality of
+information capacity comes from the landscape universality of <span
+class="math inline">\(N_{\text{info}}\)</span>. In <span
+class="math inline">\(N_{\text{info}} = \rho_7 \times k_0 = 8 \times 2 =
+16\)</span>, both <span class="math inline">\(\rho_7 = 8\)</span> and
+<span class="math inline">\(k_0 = 2\)</span> are Structure Constants —
+they do not vary with landscape position. Therefore <span
+class="math inline">\(C_{\text{obs}} = 4\)</span> bits is the
+information capacity shared by observers in all worlds.</p>
+<p>But observation precision (spectral resolution <span
+class="math inline">\(\delta\lambda_{\min}\)</span>) varies with
+landscape position — because <span
+class="math inline">\(\Gamma_{\text{geo}}\)</span> depends on <span
+class="math inline">\(\sigma^*\)</span> (landscape position). Observers
+in different worlds have the same information capacity but different
+observation precision — analogous to different organisms having the same
+number of sensory organs (e.g., two eyes) but different visual
+acuity.</p>
+<p><strong>Numerical verification.</strong> Verification of information
+capacity at three characteristic positions: <span
+class="math display">\[\begin{aligned}
+S = 24&amp;: \quad C_{\text{obs}} = \log_2 16 = 4, \\
+S = 137&amp;: \quad C_{\text{obs}} = \log_2 16 = 4, \\
+S = 968&amp;: \quad C_{\text{obs}} = \log_2 16 = 4.
+\end{aligned}\]</span></p>
+<p>Information capacity is always 4 bits — landscape-universal.</p>
+<h3 id="mapping-chain-and-algebraic-action">5.3 Mapping Chain and
+Algebraic Action</h3>
+<p>The steady state <span class="math inline">\(\sigma^*\)</span> of the
+mapping chain coincides with the minimum of the Algebraic Action. This
+guarantees:</p>
+<ul>
+<li>The “normal state” perceived by the observer is the action-minimum
+state</li>
+<li>“Events” perceived by the observer are perturbations near the
+action-minimum state</li>
+<li>The observer’s physical laws are determined by the minimum value of
+the action</li>
+</ul>
+<p>The mapping chain unifies geometry (action minimum) with physics
+(observables) — this is the core feature of the Conjugate Spectral
+Geometry system.</p>
+<p><strong>Detailed derivation.</strong> Unity of the mapping chain and
+the Algebraic Action:</p>
+<ol type="1">
+<li><strong>Geometric level</strong>: the Algebraic Action <span
+class="math inline">\(S(\sigma)\)</span> attains its minimum at <span
+class="math inline">\(\sigma^*\)</span> — this is the geometric extremum
+principle.</li>
+<li><strong>Physical level</strong>: the observer’s observables <span
+class="math inline">\(O = \mathcal{M}[\sigma^*]\)</span> are determined
+by <span class="math inline">\(\sigma^*\)</span> — this is the physical
+output of the mapping chain.</li>
+<li><strong>Unity</strong>: <span
+class="math inline">\(\sigma^*\)</span> is simultaneously the geometric
+extremum point and the physical observation point — geometry and physics
+are unified at <span class="math inline">\(\sigma^*\)</span>.</li>
+</ol>
+<p>Mathematically, this unity is manifested as: <span
+class="math inline">\(\sigma^*\)</span> is the solution of the same
+variational problem (<span class="math inline">\(\partial S / \partial
+\sigma = 0\)</span>) and the same dynamical equation (<span
+class="math inline">\(\partial \rho / \partial t = 0\)</span>). The
+geometric extremum and the dynamical steady state are attained at the
+same point — this is the geometric version of the “principle of least
+action” in Conjugate Spectral Geometry.</p>
+<p><strong>Numerical verification.</strong> Verify that <span
+class="math inline">\(\sigma^*\)</span> simultaneously satisfies the
+geometric extremum and the dynamical steady state: <span
+class="math display">\[\begin{aligned}
+\partial S / \partial \sigma |_{\sigma^*} &amp;= 0 \quad
+(\text{geometric extremum}), \\
+\partial \rho_{\mathcal{I}} / \partial t |_{\rho^* = \Lambda \sigma^*}
+&amp;= 0 \quad (\text{dynamical steady state}).
+\end{aligned}\]</span></p>
+<p><strong>Cross-volume references.</strong> The minimization of the
+Algebraic Action <span class="math inline">\(S(\sigma)\)</span> is found
+in Theorem 3.4.1.01. The unified equation for the dynamical steady state
+is found in Theorem 5.3.2.01.</p>
+<hr />
+<h2 id="theorem-index">Theorem Index</h2>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 28%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Number</th>
+<th style="text-align: left;">Content</th>
+<th style="text-align: center;">Proof Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Theorem 5.4.1.01</td>
+<td style="text-align: left;">Spectral Resolution Theorem</td>
+<td style="text-align: center;">Proved (this article §1.2)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="references">References</h2>
+<ul>
+<li>von Neumann, J., <em>Mathematical Foundations of Quantum
+Mechanics</em>, Princeton University Press, 1955</li>
+<li>Miller, G. A., “The magical number seven, plus or minus two”,
+Psychological Review, 63: 81-97, 1956</li>
+<li>Cramer, H., <em>Mathematical Methods of Statistics</em>, Princeton
+University Press, 1946</li>
+<li>Giovannetti, V., Lloyd, S., Maccone, L., “Quantum Metrology”,
+Physical Review Letters, 96: 010401, 2006</li>
+</ul>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>

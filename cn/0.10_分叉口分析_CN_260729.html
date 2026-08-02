@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0.10 分叉口分析：必然与选择 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="版本: 260730.1">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/cn/0.10_分叉口分析_CN_260729.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../index.html" class="nav-home">🏠 首页</a>
+    <a href="../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">0.10 分叉口分析：必然与选择</span>
+  </nav>
+  <main class="article-content">
+<h1 id="分叉口分析必然与选择">0.10 分叉口分析：必然与选择</h1>
+<p><strong>版本</strong>: 260730.1<br />
+<strong>前置依赖</strong>: 0.1—0.9 全部卷0文章<br />
+<strong>定位</strong>: 卷0收束——标注从 δ 到 α⁻¹
+全链条中哪些是几何必然、哪些是区域相关的选择</p>
+<hr />
+<h2 id="摘要">摘要</h2>
+<p>共扼谱几何从 δ 到 α⁻¹ ≈ 137.036
+的推导链条中有<strong>四个分叉口</strong>。其中<strong>第一段无分叉</strong>（δ
+到 {2,3,5}
+是几何必然），<strong>第二段有一个不可消除的区域选择</strong>（Triality
+破缺的 Z₂ 子群），<strong>第三段和第四段是参数性分叉</strong>（σ₀
+的编码轨道简并、观测者位置 T）。我们区域的 B₀ = 137 来自 Z₂^(v)（固定 ℳ
+扇区）的选择。这不是几何缺陷——它是共扼谱几何对不同区域的物理常数差异的<strong>可验证预测</strong>。</p>
+<hr />
+<h2 id="分叉口全景">§1 分叉口全景</h2>
+<pre><code>δ 非幂等非满射                        [必然]
+  │
+  ▼
+三层自指闭合                          [必然]
+  │
+  ▼
+Clifford代数化 (e_i² = -1)           [必然]
+  │
+  ▼
+Bott周期 = 8                          [必然]
+  │
+  ▼
+E₈ 偶幺模格 → h = 30 → {2,3,5}       [必然]
+  │
+  ▼
+七层编码轨道 (3+2+2)                  [必然]
+  │
+  ▼
+扇区绑定: ℳ↔Λ, 𝒞↔ΔΘ, ℐ↔k₀          [必然]
+  │
+  ▼
+Spin(8) Triality (S₃ 对称)            [必然]
+  │
+  ▼
+  ╔══════════════════════════════════╗
+  ║  🔴 分叉口1: Triality 破缺      ║
+  ║  S₃ → Z₂, 三个 Z₂ 数学等价      ║
+  ║  我们区域: Z₂^(v) → p=3 → 137  ║
+  ╚══════════════════════════════════╝
+  │
+  ▼
+B₀ = 2⁷ + p²                         [形式必然，p值区域相关]
+  │
+  ▼
+B₁ = 1/p³                            [形式必然，p值区域相关]
+  │
+  ▼
+  ╔══════════════════════════════════╗
+  ║  🟡 分叉口2: σ₀ 的精确值       ║
+  ║  编码轨道容量分配是否唯一？     ║
+  ║  开放问题                        ║
+  ╚══════════════════════════════════╝
+  │
+  ▼
+B₂ = -p × q / 14400                  [ε普适，分子区域相关]
+  │
+  ▼
+B₃–B₅ (干涉/残留/传播)              [形式必然，系数区域相关]
+  │
+  ▼
+  ╔══════════════════════════════════╗
+  ║  🟡 分叉口3: 观测者位置 T      ║
+  ║  Birkhoff参数化 → σ* 局部偏移   ║
+  ║  同一区域内不同观测者略异       ║
+  ╚══════════════════════════════════╝
+  │
+  ▼
+α⁻¹ ≈ 137.036  [我们的区域特有的物理常数]</code></pre>
+<hr />
+<h2 id="第一段无分叉区δ-235">§2 第一段：无分叉区（δ → {2,3,5}）</h2>
+<h3 id="每一步的必然性">2.1 每一步的必然性</h3>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">步骤</th>
+<th style="text-align: left;">必然 / 选择</th>
+<th style="text-align: left;">理由</th>
+<th style="text-align: left;">证明来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">δ 非幂等非满射</td>
+<td style="text-align: left;">✅ 必然</td>
+<td style="text-align: left;">0.1 公理——共扼谱几何的唯一出发点</td>
+<td style="text-align: left;">0.1 §1</td>
+</tr>
+<tr>
+<td style="text-align: left;">三层自指闭合</td>
+<td style="text-align: left;">✅ 必然</td>
+<td style="text-align: left;">δ 在三层迭代后必然形成互扼循环</td>
+<td style="text-align: left;">0.1 §3.5, §3.6</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(e_i^2 =
+-1\)</span></td>
+<td style="text-align: left;">✅ 必然</td>
+<td style="text-align: left;">δ
+抑制的最小非幂等规则——四次闭合是唯一简选</td>
+<td style="text-align: left;">0.2 §1.6</td>
+</tr>
+<tr>
+<td style="text-align: left;">Bott 周期 = 8</td>
+<td style="text-align: left;">✅ 必然</td>
+<td style="text-align: left;">实 Clifford 代数的 KO
+理论刚性——数学定理</td>
+<td style="text-align: left;">0.3 §1</td>
+</tr>
+<tr>
+<td style="text-align: left;">E₈ 偶幺模格</td>
+<td style="text-align: left;">✅ 必然</td>
+<td style="text-align: left;">维度 8 唯一的偶幺模格</td>
+<td style="text-align: left;">0.3 §2</td>
+</tr>
+<tr>
+<td style="text-align: left;">h = 30</td>
+<td style="text-align: left;">✅ 必然</td>
+<td style="text-align: left;">Coxeter 数 = 240/8</td>
+<td style="text-align: left;">0.3 §2</td>
+</tr>
+<tr>
+<td style="text-align: left;">{2,3,5}</td>
+<td style="text-align: left;">✅ 必然</td>
+<td style="text-align: left;">30 = 2×3×5, 加性 2+3=5 无替代</td>
+<td style="text-align: left;">0.5 §1–2</td>
+</tr>
+<tr>
+<td style="text-align: left;">七层截断 (3+2+2)</td>
+<td style="text-align: left;">✅ 必然</td>
+<td style="text-align: left;">Bott 周期 + Berry = 2π（七层→闭合）</td>
+<td style="text-align: left;">0.3 §3, 0.6 §2</td>
+</tr>
+<tr>
+<td style="text-align: left;">扇区-结构常数绑定</td>
+<td style="text-align: left;">✅ 必然</td>
+<td style="text-align: left;">编码轨道位置决定——triality 破缺前已定</td>
+<td style="text-align: left;">0.3 §3.1, 0.5 §3</td>
+</tr>
+</tbody>
+</table>
+<h3 id="第一段的哲学含义">2.2 第一段的哲学含义</h3>
+<p>任何从 δ 出发的编码体系，只要导向 Clifford
+代数，<strong>必然</strong>导向
+{2,3,5}。这三个素数不是”选出来的”——它们是 E₈ 偶幺模格的 Coxeter 数 30
+的素因子分解加上加性约束 <span class="math inline">\(2+3=5\)</span>
+的必然产物。</p>
+<p><strong>第一段是整个理论的地基。它不包含任何自由选择。</strong></p>
+<hr />
+<h2 id="第二段-分叉口-1triality-破缺的-z₂-选择">§3 第二段 &amp; 分叉口
+1：Triality 破缺的 Z₂ 选择</h2>
+<h3 id="triality-的数学结构">3.1 Triality 的数学结构</h3>
+<p>Spin(8) 有三个 8 维不可约表示：</p>
+<p><span class="math display">\[8_v \text{（向量）}, \quad 8_s
+\text{（旋量）}, \quad 8_c \text{（共轭旋量）}\]</span></p>
+<p>Triality 对称群 <span class="math inline">\(S_3\)</span>
+置换这三个表示。这是 Spin(8) 独有的性质——Spin(n) 对于 n ≠ 8 没有
+triality。</p>
+<h3 id="triality-破缺">3.2 Triality 破缺</h3>
+<p>编码轨道 <span class="math inline">\(E_4 \to E_5\)</span> 对应
+Cl(4)→Cl(5) 过渡。此过渡中复结构涌现，triality 必然破缺：</p>
+<p><span class="math display">\[S_3 \to Z_2\]</span></p>
+<p><span class="math inline">\(S_3\)</span> 有<strong>三个</strong>
+<span class="math inline">\(Z_2\)</span> 子群，数学上完全等价（<span
+class="math inline">\(S_3\)</span> 的自同构可置换它们）：</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Z₂ 子群</th>
+<th style="text-align: left;">固定</th>
+<th style="text-align: left;">交换</th>
+<th style="text-align: left;">稳定扇区</th>
+<th style="text-align: left;">泄漏的结构常数平方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(Z_2^{(v)}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(8_v\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(8_s
+\leftrightarrow 8_c\)</span></td>
+<td style="text-align: left;">ℳ (<span class="math inline">\(\Lambda =
+3\)</span>)</td>
+<td style="text-align: left;"><span class="math inline">\(\Lambda^2 =
+9\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(Z_2^{(s)}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(8_s\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(8_v
+\leftrightarrow 8_c\)</span></td>
+<td style="text-align: left;">𝒞 (<span class="math inline">\(k_0 =
+2\)</span>)</td>
+<td style="text-align: left;"><span class="math inline">\(k_0^2 =
+4\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(Z_2^{(c)}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(8_c\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(8_v
+\leftrightarrow 8_s\)</span></td>
+<td style="text-align: left;">ℐ (<span
+class="math inline">\(\Delta\Theta = 5\)</span>)</td>
+<td style="text-align: left;"><span class="math inline">\(\Delta\Theta^2
+= 25\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><strong>这是第一个真正的分叉口，而且无法在纯几何框架内证明”必须选这个”。</strong></p>
+<h3 id="三种选择的物理后果">3.3 三种选择的物理后果</h3>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">保留的 Z₂</th>
+<th style="text-align: left;">稳定扇区</th>
+<th style="text-align: left;"><span
+class="math inline">\(p\)</span></th>
+<th style="text-align: left;"><span class="math inline">\(B_0 = 128 +
+p^2\)</span></th>
+<th style="text-align: left;"><span class="math inline">\(B_1 =
+1/p^3\)</span></th>
+<th style="text-align: left;"><span class="math inline">\(\alpha^{-1}
+\approx\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(Z_2^{(v)}\)</span></td>
+<td style="text-align: left;">ℳ</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;"><strong>137</strong></td>
+<td style="text-align: left;">1/27 ≈ 0.03704</td>
+<td style="text-align: left;"><strong>~137.036</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(Z_2^{(s)}\)</span></td>
+<td style="text-align: left;">𝒞</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;"><strong>132</strong></td>
+<td style="text-align: left;">1/8 = 0.125</td>
+<td style="text-align: left;"><strong>~132.1</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(Z_2^{(c)}\)</span></td>
+<td style="text-align: left;">ℐ</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;"><strong>153</strong></td>
+<td style="text-align: left;">1/125 = 0.008</td>
+<td style="text-align: left;"><strong>~153.0</strong></td>
+</tr>
+</tbody>
+</table>
+<p>我们区域的 <span class="math inline">\(\alpha^{-1} \approx
+137.036\)</span> 对应 <span class="math inline">\(Z_2^{(v)}\)</span>
+选择。</p>
+<h3 id="为什么我们不能证明我们选了-z₂v">3.4 为什么我们不能”证明”我们选了
+Z₂^(v)？</h3>
+<p>三个 <span class="math inline">\(Z_2\)</span>
+在纯几何上完全等价。<span class="math inline">\(S_3\)</span> 的自同构
+<span class="math inline">\(\text{Aut}(S_3) \cong S_3\)</span>
+可以置换三个 <span class="math inline">\(Z_2\)</span>
+子群。<strong>没有内在的几何量可以区分它们。</strong></p>
+<p>这是<strong>区域相关的选择</strong>——不是几何必然。</p>
+<h3 id="但我们可以说什么">3.5 但我们可以说什么？</h3>
+<p><strong>我们可以预测</strong>：如果存在其他区域（triality
+破缺选了其他 <span class="math inline">\(Z_2\)</span>），那里的 <span
+class="math inline">\(\alpha^{-1}\)</span> 会是约 132.1 或约 153.0。</p>
+<p><strong>我们还可以说</strong>：在我们区域，<span
+class="math inline">\(Z_2^{(v)}\)</span> 固定了 ℳ 扇区（物质）。ℳ 不参与
+triality 的 8_s ↔︎ 8_c 交换 → 物质结构稳定 → σ_M ≈ 78%
+主导编码预算。如果选了 <span
+class="math inline">\(Z_2^{(s)}\)</span>（固定 𝒞）或 <span
+class="math inline">\(Z_2^{(c)}\)</span>（固定 ℐ），物质扇区会被
+triality 扰动——也许根本不会形成稳定的物质观察者。</p>
+<p><strong>这是人择边界——不是几何证明，是存在条件。</strong>
+但它仍然是科学上可验证的：其他区域的 <span
+class="math inline">\(\alpha^{-1}\)</span>
+如果真的不同，就能被（远未来的）跨区域观测检验。</p>
+<hr />
+<h2 id="第三段-分叉口-2σ₀-的精确值">§4 第三段 &amp; 分叉口 2：σ₀
+的精确值</h2>
+<h3 id="triality-破缺选择固定后σ₀-是否唯一">4.1 Triality
+破缺选择固定后，σ₀ 是否唯一？</h3>
+<p>B₀ 和 B₁ 的形式在给定 <span class="math inline">\(p\)</span>
+后是必然的：</p>
+<p><span class="math display">\[B_0 = 2^7 + p^2, \quad B_1 =
+1/p^3\]</span></p>
+<p>但
+σ₀（三扇区编码份额的精确值）是否唯一取决于<strong>编码轨道容量分配是否由
+{2,3,5} 和 χ 唯一确定</strong>。</p>
+<h3 id="两种可能">4.2 两种可能</h3>
+<p><strong>可能
+A（唯一）</strong>：编码轨道的扇区容量分配是刚性的——{2,3,5} 和 χ =
+(8,9,1) 通过编码预算独立分配原理（1.1 §2）唯一确定
+σ₀。此时同一分支（同一个 <span
+class="math inline">\(p\)</span>）内所有区域有完全相同的 α⁻¹。</p>
+<p><strong>可能
+B（简并）</strong>：编码轨道有多个容量分配配置，它们给出相同的 <span
+class="math inline">\(S(\sigma_0)\)</span>
+但不同中间值。此时同一分支内的不同区域可能有略微不同的 α⁻¹（变化在 B₁ 的
+O(10⁻⁵) 范围内）。</p>
+<p><strong>这是一个开放问题。</strong> 当前理论尚未回答。</p>
+<h3 id="即使简并b₀-不变">4.3 即使简并，B₀ 不变</h3>
+<p>无论 σ₀ 是否有简并，B₀ = 137 不变（<span
+class="math inline">\(p=3\)</span> 区域）。简并只影响 B₁
+的精确数值系数和 Bott 回声的扇区分配——α⁻¹ 的变化在 10⁻⁵
+量级，不改变基数。</p>
+<hr />
+<h2 id="第四段-分叉口-3观测者位置-t">§5 第四段 &amp; 分叉口
+3：观测者位置 T</h2>
+<h3 id="birkhoff-参数化">5.1 Birkhoff 参数化</h3>
+<p>2.2 的 Birkhoff 矩阵 <span class="math inline">\(T = \theta_I \cdot I
++ \theta_\tau \cdot P_{(123)} + \theta_{\sigma_2} \cdot
+P_{(132)}\)</span> 与观测者位置相关。不同观测者在同一区域内的不同位置 →
+略微不同的 σ → 略微不同的 α⁻¹。</p>
+<h3 id="这影响什么">5.2 这影响什么？</h3>
+<p>观测者位置 T 的影响在 Bott 回声层（B₂ 及以后），量级 <span
+class="math inline">\(\sim \varepsilon = 1/14400 \sim
+10^{-5}\)</span>。它不影响 B₀ 和 B₁。</p>
+<p>这是<strong>参数性分叉</strong>——不是一个独立的宇宙（不同 <span
+class="math inline">\(p\)</span>），而是同一宇宙内不同观测点的微小差异。</p>
+<hr />
+<h2 id="跨区域预测">§6 跨区域预测</h2>
+<h3 id="可验证的预测">6.1 可验证的预测</h3>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">预测</th>
+<th style="text-align: left;">内容</th>
+<th style="text-align: left;">验证可行性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">P1</td>
+<td style="text-align: left;">我们区域的 α⁻¹ ≈ 137.036（由 <span
+class="math inline">\(p=3\)</span> 决定的精确值）</td>
+<td style="text-align: left;">✅ 已测量</td>
+</tr>
+<tr>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">如果存在 <span
+class="math inline">\(p=2\)</span> 区域，α⁻¹ ≈ 132.1</td>
+<td style="text-align: left;">⚠️ 需要跨区域观测</td>
+</tr>
+<tr>
+<td style="text-align: left;">P3</td>
+<td style="text-align: left;">如果存在 <span
+class="math inline">\(p=5\)</span> 区域，α⁻¹ ≈ 153.0</td>
+<td style="text-align: left;">⚠️ 需要跨区域观测</td>
+</tr>
+<tr>
+<td style="text-align: left;">P4</td>
+<td style="text-align: left;">同一分支内不同区域（若 σ₀ 简并）α⁻¹ 差异
+&lt; 10⁻⁵</td>
+<td style="text-align: left;">❓ 依赖分叉口 2 的解答</td>
+</tr>
+</tbody>
+</table>
+<h3 id="p2-和-p3-的验证路径">6.2 P2 和 P3 的验证路径</h3>
+<p>跨区域观测在当前技术下不可行。但这不意味着预测没有意义——它告诉我们在理论的完备框架中，精细结构常数<strong>不是一个普适常数</strong>，而是<strong>区域标签</strong>。如果未来有任何跨区域观测手段（如
+2.6
+中讨论的区域生命周期——生成、流转、参数锁定），这些预测将变得可验证。</p>
+<hr />
+<h2 id="人择边界我们为什么选了-z₂v">§7 人择边界：我们为什么选了
+Z₂^(v)？</h2>
+<h3 id="不是几何必然但是存在条件">7.1 不是几何必然，但是存在条件</h3>
+<p>Triality 破缺有三条等价的代数路径。为什么我们区域选了 Z₂^(v)？</p>
+<p><strong>在纯几何框架内无法回答。</strong> 三条路径数学上等价。</p>
+<p><strong>但在存在论层面可以论证</strong>：只有 Z₂^(v) 选择下，物质扇区
+ℳ 保持稳定（不参与 triality 扰动）。如果选了 Z₂^(s) 或 Z₂^(c)，ℳ
+扇区在编码轨道 <span class="math inline">\(E_4 \to E_5\)</span> 中会被 8
+维表示的交换扰动——也许物质结构根本无法稳定形成。</p>
+<p>这意味着：<strong>在三个数学等价的 Z₂ 中，只有 Z₂^(v)
+能产生物质观察者。</strong> 我们必然发现自己在一个 ℳ
+稳定的区域——不是因为我们选了它，而是因为我们只能在这样的区域中存在。</p>
+<h3 id="这不是逃避问题">7.2 这不是”逃避问题”</h3>
+<p>人择边界不是理论的缺陷。它是<strong>选择效应</strong>——类似于”为什么地球在这个轨道上”（因为在这个轨道上液态水才能存在）。选择效应本身是科学上合法的解释，前提是存在多个可能的选择并且理论能给出每个选择的后果。</p>
+<p><strong>我们的理论做到了这一点：它给出了三个选择的明确物理后果（不同的
+α⁻¹），并且唯一与我们观测一致的选择恰好也是唯一能让物质观察者存在的选择。</strong></p>
+<hr />
+<h2 id="诚实标注">§8 诚实标注</h2>
+<h3 id="必然-vs-选择的完整清单">8.1 必然 vs 选择的完整清单</h3>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">内容</th>
+<th style="text-align: left;">类别</th>
+<th style="text-align: left;">我们区域的取值</th>
+<th style="text-align: left;">其他可能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">δ 的存在和非幂等性</td>
+<td style="text-align: left;">✅ 公理</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;">{2,3,5}</td>
+<td style="text-align: left;">✅ 几何必然</td>
+<td style="text-align: left;">3,2,5</td>
+<td style="text-align: left;">无（唯一）</td>
+</tr>
+<tr>
+<td style="text-align: left;">Bott 周期 = 8, E₈</td>
+<td style="text-align: left;">✅ 几何必然</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">无（唯一）</td>
+</tr>
+<tr>
+<td style="text-align: left;">七层截断 3+2+2</td>
+<td style="text-align: left;">✅ 几何必然</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">无（唯一）</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Triality 破缺 Z₂
+选择</strong></td>
+<td style="text-align: left;">🔴 <strong>区域选择</strong></td>
+<td style="text-align: left;">Z₂^(v) → p=3</td>
+<td style="text-align: left;">Z₂^(s) → p=2, Z₂^(c) → p=5</td>
+</tr>
+<tr>
+<td style="text-align: left;">B₀ = 2⁷ + p²</td>
+<td style="text-align: left;">⚠️ 形式必然，值区域相关</td>
+<td style="text-align: left;">137</td>
+<td style="text-align: left;">132 或 153</td>
+</tr>
+<tr>
+<td style="text-align: left;">B₁ = 1/p³</td>
+<td style="text-align: left;">⚠️ 形式必然，值区域相关</td>
+<td style="text-align: left;">1/27</td>
+<td style="text-align: left;">1/8 或 1/125</td>
+</tr>
+<tr>
+<td style="text-align: left;">σ₀ 的精确值</td>
+<td style="text-align: left;">❓ 开放</td>
+<td style="text-align: left;">(0.778, 0.211, 0.011)</td>
+<td style="text-align: left;">可能有编码轨道简并</td>
+</tr>
+<tr>
+<td style="text-align: left;">观测者位置 T</td>
+<td style="text-align: left;">🔴 局部参数</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">区域内变化</td>
+</tr>
+<tr>
+<td style="text-align: left;">B₂–B₅ 的分子</td>
+<td style="text-align: left;">⚠️ 部分区域相关</td>
+<td style="text-align: left;">依赖 p 和 q</td>
+<td style="text-align: left;">不同区域不同</td>
+</tr>
+<tr>
+<td style="text-align: left;">α⁻¹（最终值）</td>
+<td style="text-align: left;">🔴 区域特有的物理常数</td>
+<td style="text-align: left;">~137.036</td>
+<td style="text-align: left;">~132.1 或 ~153.0</td>
+</tr>
+</tbody>
+</table>
+<h3 id="不是缺陷">8.2 不是缺陷</h3>
+<p><strong>理论有分叉口不是缺陷。</strong>
+恰好相反——它表明理论有足够的丰富性来描述”不同区域可能有不同物理常数”这一深层事实。一个声称能推导
+α⁻¹ = 137.036 但无法解释”为什么是 137 而不是
+153”的理论，不如一个能同时说明 137、132、153
+分别对应何种区域的理论。</p>
+<p><strong>共扼谱几何属于后者。</strong> 它给出了 α⁻¹
+的<strong>结构谱系</strong>，其中 137.036 是我们区域的特征值。</p>
+<hr />
+<h2 id="与相关文章的关系">§9 与相关文章的关系</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">文章</th>
+<th style="text-align: left;">关系</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>0.9</strong></td>
+<td style="text-align: left;">B₀–B₅ 的推导。本文解释为什么 B₀=137
+而非其他数——标注了推导中隐含的区域选择</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>2.2</strong></td>
+<td style="text-align: left;">不动点与 α⁻¹ 导出。观测者位置 T
+的分叉口（§5）是其 Birkhoff 参数化的直接后果</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>2.6</strong></td>
+<td style="text-align: left;">区域的生命周期。本文的分叉口分析为 2.6
+的区域生成与流转提供了”分叉到底发生在哪一步”的基础</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>11.11</strong></td>
+<td style="text-align: left;">试错、累积与锁定。本文的 Z₂ 选择提供了
+11.11 中”锁定”发生的具体代数位置</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="参考文献">参考文献</h2>
+<ol type="1">
+<li>0.1 零之动与区分（CN, v260730.1）</li>
+<li>0.2 δ 的代数化：Clifford 代数（CN, v260730.1）</li>
+<li>0.3 Bott 周期与七层截断（CN, v260730.1）</li>
+<li>0.5 结构常数的代数涌现（CN, v260730.1）</li>
+<li>0.9 基数 137：Bott 终端与因果扭力（CN, v260730.4）</li>
+<li>2.2 不动点与 α⁻¹ 导出（CN, v260722.1）</li>
+<li>2.6 区域的生命周期（CN, v260729.1）</li>
+</ol>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>

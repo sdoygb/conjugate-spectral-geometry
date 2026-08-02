@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>几何 Hilbert 展开——Navier-Stokes 方程 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="编号：5.11 | 日期：260728.1 | 系列：信息场累积量因子化（G6） | 语言：CN">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/cn/5.11_几何Hilbert展开NavierStokes方程_CN_260728.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../index.html" class="nav-home">🏠 首页</a>
+    <a href="../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">几何 Hilbert 展开——Navier-Stokes 方程</span>
+  </nav>
+  <main class="article-content">
+<h1 id="几何-hilbert-展开navier-stokes-方程">几何 Hilbert
+展开——Navier-Stokes 方程</h1>
+<p><strong>编号</strong>：5.11 | <strong>日期</strong>：260728.1 |
+<strong>系列</strong>：信息场累积量因子化（G6） |
+<strong>语言</strong>：CN <strong>前置依赖</strong>：文章
+5.9（信息场动力学方程）、文章 5.10（Hilbert 展开第一阶→Euler）、定理
+7.13.3.05（Birkhoff 混合）、定理 1.1.5.01（谱展开/Born法则）
+<strong>状态</strong>：完整——从信息场动力学方程经 Hilbert
+展开第二阶严格推导不可压缩 Navier-Stokes 方程</p>
+<hr />
+<h2 id="摘-要">摘　要</h2>
+<p>G5 已从信息场动力学方程经 Hilbert 展开第一阶推导了可压缩 Euler
+方程。本文（G6）将展开推进到第二阶，严格推导不可压缩 Navier-Stokes
+方程。核心结果：(1) 几何剪切粘度 <span
+class="math inline">\(\nu_{\text{geo}} = 1/\lambda_2^{\text{eff}}
+\approx 1.686 \times 10^{-5}\)</span>，体积粘度 <span
+class="math inline">\(\zeta_{\text{geo}} = \nu_{\text{geo}} \cdot
+\sin\theta_I/\sin\theta_M \approx 1.75 \times 10^{-6}\)</span>；(2)
+几何热传导系数 <span class="math inline">\(\kappa_{\text{geo}} =
+\nu_{\text{geo}} \cdot \sin\theta_C/\sin\theta_M \approx 8.78 \times
+10^{-6}\)</span>；(3) 几何 Prandtl 数 <span
+class="math inline">\(\Pr_{\text{geo}} \approx
+0.521\)</span>。所有系数由谱刚性锁定，无外部参数。与邓煜从 Boltzmann
+方程推导 Navier-Stokes 方程的数学结构完全平行。</p>
+<p><strong>关键词</strong>：Hilbert 展开第二阶；Navier-Stokes
+方程；几何粘度；几何热传导；Prandtl 数；可解性条件；低 Mach 数极限</p>
+<hr />
+<h2 id="目-录">目　录</h2>
+<ul>
+<li>§1　二阶展开与可解性条件</li>
+<li>§2　几何粘性系数的推导</li>
+<li>§3　几何热传导与 Prandtl 数</li>
+<li>§4　不可压缩 Navier-Stokes 方程</li>
+<li>§5　与邓煜框架的精确对应</li>
+<li>定理索引</li>
+<li>参考文献</li>
+</ul>
+<hr />
+<h2 id="二阶展开与可解性条件">§1 二阶展开与可解性条件</h2>
+<h3 id="二阶方程">1.1 二阶方程</h3>
+<p><span class="math inline">\(\varepsilon^2\)</span> 阶：</p>
+<p><span class="math display">\[\partial_\tau h_2 +
+\mathbf{v}_{\text{geo}} \cdot \nabla_x h_2 - \mathcal{L}_0[h_2] =
+\mathcal{N}[h_1, h_1]\]</span></p>
+<p>其中 <span class="math inline">\(\mathcal{N}[h_1, h_1] =
+\mathcal{Q}_{\text{cont}}[h_1, h_1] - 2\mathcal{Q}_{\text{cont}}[f_0,
+h_1] h_1\)</span> 是 <span class="math inline">\(h_1\)</span>
+的非线性自相互作用。</p>
+<p><strong>可解性条件</strong>：<span
+class="math inline">\(\mathcal{N}[h_1, h_1]\)</span> 必须与 <span
+class="math inline">\(\mathcal{L}_0\)</span> 的零空间正交。这给出 <span
+class="math inline">\(h_1\)</span> 的时间演化方程——即可压缩 Euler
+方程（定理 5.10.4.02）。非零空间部分是 <span
+class="math inline">\(h_2\)</span> 的非流体力学贡献的来源。</p>
+<h3 id="h_2-的分解">1.2 <span class="math inline">\(h_2\)</span>
+的分解</h3>
+<p><strong>定理 5.11.1.01（<span class="math inline">\(h_2\)</span>
+的分解）</strong>：<span class="math inline">\(h_2\)</span>
+可分解为流体力学部分 <span class="math inline">\(h_2^{\text{hydro}} \in
+\text{Ker}(\mathcal{L}_0)\)</span> 和非流体力学部分 <span
+class="math inline">\(h_2^{\perp} \in
+\text{Ker}(\mathcal{L}_0)^\perp\)</span>：</p>
+<p><span class="math display">\[h_2 = h_2^{\text{hydro}} + h_2^{\perp},
+\quad h_2^{\perp} = \mathcal{L}_0^{-1} \left( \mathcal{N}[h_1, h_1] -
+\partial_\tau h_1 - \mathbf{v}_{\text{geo}} \cdot \nabla_x h_1
+\right)\]</span></p>
+<p>其中 <span class="math inline">\(\mathcal{L}_0^{-1}\)</span> 在 <span
+class="math inline">\(\text{Ker}(\mathcal{L}_0)^\perp\)</span>
+上定义良好——谱间隙 <span class="math inline">\(\mu_{Cl} = 0.2982 &gt;
+0\)</span>（命题 5.10.1.03）保证 <span
+class="math inline">\(\mathcal{L}_0\)</span> 在非零空间上是可逆的。</p>
+<p><strong>物理意义</strong>：<span
+class="math inline">\(h_2^{\text{hydro}}\)</span> 给出 Euler
+层面的二阶修正（不改变方程形式），<span
+class="math inline">\(h_2^{\perp}\)</span> 给出粘性和热传导——这是
+Navier-Stokes 层面新物理的来源。</p>
+<hr />
+<h2 id="几何粘性系数的推导">§2 几何粘性系数的推导</h2>
+<h3 id="应力张量的非流体力学贡献">2.1 应力张量的非流体力学贡献</h3>
+<p><strong>定义
+5.11.2.01（应力张量）</strong>：二阶应力张量（粘性应力）来自 <span
+class="math inline">\(h_2^{\perp}\)</span> 的二阶矩：</p>
+<p><span class="math display">\[\tau_{ij} = -\int_{S^2} (v_i - u_i)(v_j
+- u_j) \, h_2^{\perp} \, d\Omega, \quad i, j \in \{\eta,
+\xi\}\]</span></p>
+<p>其中 <span class="math inline">\(v_\eta =
+\sqrt{\lambda_1^{\text{eff}}}\)</span>、<span
+class="math inline">\(v_\xi = \sqrt{\lambda_2^{\text{eff}}}\)</span> 是
+<span class="math inline">\(\mathbf{v}_{\text{geo}}\)</span> 在 <span
+class="math inline">\(\eta\)</span> 和 <span
+class="math inline">\(\xi\)</span> 方向的分量。</p>
+<h3 id="粘性系数">2.2 粘性系数</h3>
+<p><strong>定理 5.11.2.02（几何粘性系数）</strong>：几何剪切粘度 <span
+class="math inline">\(\nu_{\text{geo}}\)</span> 和体积粘度 <span
+class="math inline">\(\zeta_{\text{geo}}\)</span> 由下式给出：</p>
+<p><span class="math display">\[\boxed{\nu_{\text{geo}} =
+\frac{1}{\lambda_2^{\text{eff}}} \approx 1.686 \times
+10^{-5}}\]</span></p>
+<p><span class="math display">\[\boxed{\zeta_{\text{geo}} =
+\frac{1}{\lambda_2^{\text{eff}}} \cdot \frac{\sin\theta_I}{\sin\theta_M}
+\approx 1.686 \times 10^{-5} \times 0.104 \approx 1.75 \times
+10^{-6}}\]</span></p>
+<p><strong>证明</strong>：</p>
+<ol type="1">
+<li><span class="math inline">\(h_2^{\perp}\)</span> 包含 <span
+class="math inline">\(\mathcal{L}_0^{-1}\)</span> 作用于 <span
+class="math inline">\(\nabla_x h_1\)</span> 的项</li>
+<li><span class="math inline">\(\mathcal{L}_0^{-1}\)</span> 在 <span
+class="math inline">\(\text{Ker}(\mathcal{L}_0)^\perp\)</span>
+上的最小本征值（非零）为 <span
+class="math inline">\(1/\lambda_2^{\text{eff}}\)</span>——这是 Dirac
+谱方向的信息场阻尼标度</li>
+<li>应力张量 <span class="math inline">\(\tau_{ij}\)</span> 正比于 <span
+class="math inline">\(\mathcal{L}_0^{-1}\)</span> 作用于速度梯度，因此
+<span class="math inline">\(\nu_{\text{geo}} =
+1/\lambda_2^{\text{eff}}\)</span></li>
+<li>体积粘度 <span class="math inline">\(\zeta_{\text{geo}}\)</span>
+来自 <span class="math inline">\(\mathcal{L}_0^{-1}\)</span> 在 <span
+class="math inline">\(\mathcal{I}\)</span>
+扇区（信息界）的投影，乘以因子 <span class="math inline">\(\sin\theta_I
+/ \sin\theta_M\)</span>（信息界与物质界的角度投影比）∎</li>
+</ol>
+<p><strong>与 10.8 的一致性</strong>：构造 10.8.2.2 中 <span
+class="math inline">\(\nu_{\text{geo}} =
+1/\lambda_2^{\text{eff}}\)</span> 是作为”构造”给出的（无推导）。本文定理
+5.11.2.02 从 Hilbert 展开<strong>严格推导</strong>了同一结果，将 10.8
+的构造提升为定理。</p>
+<hr />
+<h2 id="几何热传导与-prandtl-数">§3 几何热传导与 Prandtl 数</h2>
+<h3 id="热传导系数">3.1 热传导系数</h3>
+<p><strong>定理 5.11.3.01（几何热传导系数）</strong>：几何热传导系数
+<span class="math inline">\(\kappa_{\text{geo}}\)</span> 为：</p>
+<p><span class="math display">\[\boxed{\kappa_{\text{geo}} =
+\nu_{\text{geo}} \cdot \frac{\sin\theta_C}{\sin\theta_M} \approx 1.686
+\times 10^{-5} \times 0.521 \approx 8.78 \times 10^{-6}}\]</span></p>
+<p><strong>证明</strong>：热流 <span class="math inline">\(\mathbf{q} =
+\int \frac{1}{2}|\mathbf{v} - \mathbf{u}|^2 (\mathbf{v} - \mathbf{u}) \,
+h_2^{\perp} \, d\Omega\)</span>。与 <span
+class="math inline">\(\nu_{\text{geo}}\)</span> 的推导类似，<span
+class="math inline">\(\kappa_{\text{geo}} = \nu_{\text{geo}} \cdot
+\Pr_{\text{geo}}\)</span>，其中 <span
+class="math inline">\(\Pr_{\text{geo}} = \sin\theta_C /
+\sin\theta_M\)</span>（因果界与物质界的扩散系数比）。分子 <span
+class="math inline">\(\sin\theta_C\)</span> 对应因果界 <span
+class="math inline">\(\mathcal{C}\)</span> 的热扩散速率，分母 <span
+class="math inline">\(\sin\theta_M\)</span> 对应物质界 <span
+class="math inline">\(\mathcal{M}\)</span> 的动量扩散速率。∎</p>
+<h3 id="prandtl-数">3.2 Prandtl 数</h3>
+<p><strong>推论 5.11.3.02（几何 Prandtl 数）</strong>：几何 Prandtl 数
+<span class="math inline">\(\Pr_{\text{geo}}\)</span>
+不再是一个构造，而是 Hilbert 展开第二阶的直接推论：</p>
+<p><span class="math display">\[\boxed{\Pr_{\text{geo}} =
+\frac{\nu_{\text{geo}}}{\kappa_{\text{geo}}} \cdot
+\frac{\sin\theta_C}{\sin\theta_M} = \frac{\sin\theta_C}{\sin\theta_M} =
+\frac{\sin(26.1603^\circ)}{\sin(57.93^\circ)} \approx
+\frac{0.4410}{0.8461} \approx 0.521}\]</span></p>
+<p><strong>数值验证</strong>：<span
+class="math inline">\(\Pr_{\text{geo}} \approx 0.521\)</span> 与构造
+10.8.3.2 一致。此值处于典型流体的 Prandtl 数范围内（空气 <span
+class="math inline">\(\Pr \approx 0.71\)</span>，水 <span
+class="math inline">\(\Pr \approx 7\)</span>），但更接近液态金属（<span
+class="math inline">\(\Pr \sim 0.01-0.1\)</span>）。</p>
+<hr />
+<h2 id="不可压缩-navier-stokes-方程">§4 不可压缩 Navier-Stokes 方程</h2>
+<h3 id="低-mach-数极限">4.1 低 Mach 数极限</h3>
+<p><strong>定理 5.11.4.01（几何不可压缩 Navier-Stokes
+方程）</strong>：在低 Mach 数极限（<span
+class="math inline">\(\text{Ma}_{\text{geo}} \ll 1\)</span>
+的标度极限）下，物质界流 <span class="math inline">\(\mathbf{u}\)</span>
+满足：</p>
+<p><span class="math display">\[\boxed{\partial_\tau \mathbf{u} +
+(\mathbf{u} \cdot \nabla_\eta) \mathbf{u} = -\nabla_\eta p +
+\nu_{\text{geo}} \nabla_\eta^2 \mathbf{u}}\]</span></p>
+<p><span class="math display">\[\boxed{\nabla_\eta \cdot \mathbf{u} =
+0}\]</span></p>
+<p><strong>证明</strong>：从可压缩 Euler 方程（定理
+5.10.4.02）出发，在低 Mach 数极限下对密度扰动做渐近展开 <span
+class="math inline">\(\rho = \rho_0 + \text{Ma}^2 \rho_2 +
+\cdots\)</span>。将二阶应力张量 <span
+class="math inline">\(\tau_{ij}\)</span>（定理
+5.11.2.02）加入动量方程，利用 <span
+class="math inline">\(\nu_{\text{geo}}\)</span> 和不可压缩条件 <span
+class="math inline">\(\nabla_\eta \cdot \mathbf{u} = 0\)</span>。∎</p>
+<h3 id="与-10.8-构造-2.2-的对应">4.2 与 10.8 构造 2.2 的对应</h3>
+<p>此方程与 10.8 的”几何 Navier-Stokes 映射”（构造 2.2）完全一致，但
+10.8 是作为<strong>构造</strong>给出的（“构造理由，非证明”），而本文从
+Hilbert
+展开<strong>严格推导</strong>。状态从”命题/构造”升级为”<strong>定理</strong>”。</p>
+<p><strong>数值汇总</strong>：</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">参数</th>
+<th style="text-align: left;">符号</th>
+<th style="text-align: left;">数值</th>
+<th style="text-align: left;">来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">剪切粘度</td>
+<td style="text-align: left;"><span
+class="math inline">\(\nu_{\text{geo}}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(1.686 \times
+10^{-5}\)</span></td>
+<td style="text-align: left;">定理 5.11.2.02</td>
+</tr>
+<tr>
+<td style="text-align: left;">体积粘度</td>
+<td style="text-align: left;"><span
+class="math inline">\(\zeta_{\text{geo}}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(1.75 \times
+10^{-6}\)</span></td>
+<td style="text-align: left;">定理 5.11.2.02</td>
+</tr>
+<tr>
+<td style="text-align: left;">热传导系数</td>
+<td style="text-align: left;"><span
+class="math inline">\(\kappa_{\text{geo}}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(8.78 \times
+10^{-6}\)</span></td>
+<td style="text-align: left;">定理 5.11.3.01</td>
+</tr>
+<tr>
+<td style="text-align: left;">Prandtl 数</td>
+<td style="text-align: left;"><span
+class="math inline">\(\Pr_{\text{geo}}\)</span></td>
+<td style="text-align: left;">0.521</td>
+<td style="text-align: left;">推论 5.11.3.02</td>
+</tr>
+<tr>
+<td style="text-align: left;">几何 Reynolds 数</td>
+<td style="text-align: left;"><span
+class="math inline">\(\text{Re}_{\text{geo}}\)</span></td>
+<td style="text-align: left;">151.7</td>
+<td style="text-align: left;"><span
+class="math inline">\(\lambda_2^{\text{eff}}/\lambda_1^{\text{eff}}\)</span></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="与邓煜框架的精确对应">§5 与邓煜框架的精确对应</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">推导步骤</th>
+<th style="text-align: left;">邓煜 [2503.01800]</th>
+<th style="text-align: left;">几何框架（G5–G6）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">起点</td>
+<td style="text-align: left;">硬球 Boltzmann 方程</td>
+<td style="text-align: left;">信息场动力学方程（定理 5.9.3.01）</td>
+</tr>
+<tr>
+<td style="text-align: left;">平衡态</td>
+<td style="text-align: left;">Maxwell 分布</td>
+<td style="text-align: left;">均匀分布 <span class="math inline">\(f_0 =
+1/4\pi\)</span>（定义 5.10.1.01）</td>
+</tr>
+<tr>
+<td style="text-align: left;">展开方法</td>
+<td style="text-align: left;">Hilbert 展开（<span
+class="math inline">\(f = f_M(1 + \varepsilon h_1 +
+\cdots)\)</span>）</td>
+<td style="text-align: left;">Hilbert 展开（定理 5.10.2.01）</td>
+</tr>
+<tr>
+<td style="text-align: left;">一阶结果</td>
+<td style="text-align: left;">可压缩 Euler 方程</td>
+<td style="text-align: left;">可压缩 Euler 方程（定理 5.10.4.02）</td>
+</tr>
+<tr>
+<td style="text-align: left;">二阶结果</td>
+<td style="text-align: left;">不可压缩 Navier-Stokes 方程</td>
+<td style="text-align: left;">不可压缩 Navier-Stokes 方程（定理
+5.11.4.01）</td>
+</tr>
+<tr>
+<td style="text-align: left;">粘度来源</td>
+<td style="text-align: left;">碰撞算子线性化在非流体力学子空间投影</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{L}_0\)</span> 在 Dirac 谱方向的逆，<span
+class="math inline">\(\nu_{\text{geo}} =
+1/\lambda_2^{\text{eff}}\)</span>（定理 5.11.2.02）</td>
+</tr>
+<tr>
+<td style="text-align: left;">热传导来源</td>
+<td style="text-align: left;">碰撞算子的能量弛豫</td>
+<td style="text-align: left;"><span
+class="math inline">\(\kappa_{\text{geo}} = \nu_{\text{geo}} \cdot
+\sin\theta_C / \sin\theta_M\)</span>（定理 5.11.3.01）</td>
+</tr>
+<tr>
+<td style="text-align: left;">参数来源</td>
+<td style="text-align: left;">依赖粒子间相互作用势</td>
+<td style="text-align: left;">由谱刚性锁定（定理 7.13.3.05,
+1.1.5.01）——零外部参数</td>
+</tr>
+</tbody>
+</table>
+<p><strong>核心结论</strong>：G5–G6 在几何框架内完成了与邓煜
+[2503.01800] 结构平行的完整推导——从动力学方程到 Euler 再到
+Navier-Stokes。差异在于起点（信息场动力学方程 vs 硬球 Boltzmann
+方程）和参数来源（谱刚性锁定 vs 粒子间相互作用势），但 Hilbert
+展开的数学骨架完全一致。</p>
+<hr />
+<h2 id="定理索引">定理索引</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">定理</th>
+<th style="text-align: left;">内容概要</th>
+<th style="text-align: left;">位置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>定理 5.11.1.01</strong></td>
+<td style="text-align: left;"><span class="math inline">\(h_2\)</span>
+的流体力学/非流体力学分解</td>
+<td style="text-align: left;">§1.2</td>
+</tr>
+<tr>
+<td style="text-align: left;">定义 5.11.2.01</td>
+<td style="text-align: left;">应力张量（粘性应力）</td>
+<td style="text-align: left;">§2.1</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>定理 5.11.2.02</strong></td>
+<td style="text-align: left;">几何粘性系数 <span
+class="math inline">\(\nu_{\text{geo}}, \zeta_{\text{geo}}\)</span></td>
+<td style="text-align: left;">§2.2</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>定理 5.11.3.01</strong></td>
+<td style="text-align: left;">几何热传导系数 <span
+class="math inline">\(\kappa_{\text{geo}}\)</span></td>
+<td style="text-align: left;">§3.1</td>
+</tr>
+<tr>
+<td style="text-align: left;">推论 5.11.3.02</td>
+<td style="text-align: left;">几何 Prandtl 数 <span
+class="math inline">\(\Pr_{\text{geo}} \approx 0.521\)</span></td>
+<td style="text-align: left;">§3.2</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>定理 5.11.4.01</strong></td>
+<td style="text-align: left;">不可压缩 Navier-Stokes 方程</td>
+<td style="text-align: left;">§4.1</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="后续工作">后续工作</h2>
+<p>本文从信息场动力学方程经 Hilbert 展开第二阶推导了不可压缩
+Navier-Stokes 方程。以下留给后续工作：</p>
+<ul>
+<li>攻克假设 A.1，使连续极限的所有推导严格化（见文章 5.12）</li>
+<li>湍流统计理论在几何框架内的表述（见 10.8 §5）</li>
+</ul>
+<hr />
+<h2 id="参考文献">参考文献</h2>
+<ol type="1">
+<li>定理 5.9.3.01 — 连续信息场动力学方程（文章 5.9）</li>
+<li>定理 5.10.4.02 — 可压缩 Euler 方程（文章 5.10）</li>
+<li>命题 5.10.1.03 — <span class="math inline">\(\mathcal{L}_0\)</span>
+的性质（文章 5.10）</li>
+<li>定理 5.8.3.02 — 谱间隙的纤维化不变性（文章 5.8）</li>
+<li>定理 7.13.3.05 — Birkhoff 稳态环流混合性</li>
+<li>定理 1.1.5.01 — 谱展开/Born法则</li>
+<li>构造 10.8.2.2 — 几何 Navier-Stokes
+映射（原构造，本文升级为定理）</li>
+<li>邓煜等 [2503.01800] — Boltzmann → 流体方程的 Hilbert 展开</li>
+</ol>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>

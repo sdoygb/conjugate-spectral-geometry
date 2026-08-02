@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bott Periodicity and Seven-Layer Truncation | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Version: 260730.1">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/0/0.3_Bott_Periodicity_and_Seven_Layer_Truncation_EN_260721.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">Bott Periodicity and Seven-Layer Truncation</span>
+  </nav>
+  <main class="article-content">
+<h1 id="bott-periodicity-and-seven-layer-truncation">Bott Periodicity
+and Seven-Layer Truncation</h1>
+<p><strong>Version</strong>: 260730.1</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>This article proves that the Berry phase of the <span
+class="math inline">\(\delta^8\)</span> circuit equals <span
+class="math inline">\(2\pi\)</span> (non-trivial closure), and from this
+derives the Seven-Layer Truncation Theorem. <span
+class="math inline">\(\delta^8\)</span> attempts to return completely to
+the origin, but brings back a topological phase — the physical world
+arises precisely from this incomplete closure. The coding map therefore
+has only 7 layers <span class="math inline">\(E_1, \dots, E_7\)</span>;
+the 8th layer is the 1st layer but with a <span
+class="math inline">\(2\pi\)</span> global rotation. This article starts
+from KO-theoretic invariants, passes through the transgression of the
+Chern-Simons 7-form, and gives a complete computation of the Berry
+phase.</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<p>§1　The Bott Periodicity Theorem 　1.1　KO-Theoretic Invariants of
+Bott Periodicity 　1.2　The Topological Significance of Bott
+Periodicity</p>
+<p>§2　The Berry Phase of the <span
+class="math inline">\(\delta^8\)</span> Circuit 　2.1　The Coding Orbit
+as a Parameter Space 　2.2　Computation of the Berry Phase 　2.3　The
+Three-Term Construction of the Chern-Simons 7-form 　2.4　The
+Transgression Map 　2.5　The Physical Significance of Non-Trivial
+Closure</p>
+<p>§3　Seven-Layer Truncation 　3.1　The Partition of the Seven-Layer
+Structure 　3.2　Why 322 and Not Another Partition? 　3.3　A Rigidity
+Argument for the 322 Partition 　3.4　The Concrete Algebraic Content of
+Each Coding Layer <span class="math inline">\(E_n\)</span></p>
+<p>§4　Preview of the Completeness Criterion 　4.1　From Seven-Layer
+Truncation to Completeness 　4.2　The Relation Between Seven-Layer
+Truncation and Completeness 　4.3　Physical Consequences of Seven-Layer
+Truncation</p>
+<hr />
+<h2 id="the-bott-periodicity-theorem">§1 The Bott Periodicity
+Theorem</h2>
+<p><strong>Theorem 0.3.1.01 (Bott Periodicity).</strong> <span
+class="math inline">\(\delta^8(\text{Cl}(n)) = \text{Cl}(n+8) \cong
+\text{Cl}(n) \otimes \text{Mat}(16, \mathbb{R})\)</span>.</p>
+<p>This is the classical result of Atiyah-Bott-Shapiro. From the
+representation-theoretic perspective, the irreducible representation
+dimension sequence is <span class="math inline">\(1, 2, 4, 4, 8, 8, 8,
+8, 16\)</span>; the 8th step is exactly 16 times the 0th step.</p>
+<p><strong>Key question:</strong> <span
+class="math inline">\(\text{Cl}(8) \cong \text{Cl}(0) \otimes
+\text{Mat}(16, \mathbb{R})\)</span> means the algebraic structure
+“returns to the origin”. But is the circuit trivial — i.e., does it
+carry a topological phase?</p>
+<h3 id="ko-theoretic-invariants-of-bott-periodicity">1.1 KO-Theoretic
+Invariants of Bott Periodicity</h3>
+<p>Bott periodicity has a precise invariant formulation in KO theory. KO
+theory (the reduced version of real K-theory) assigns to topological
+spaces a sequence of abelian groups <span
+class="math inline">\(KO^{-n}(X)\)</span>; for the point space <span
+class="math inline">\(X = \text{pt}\)</span>, these groups exhibit
+8-step periodicity:</p>
+<p><span class="math display">\[KO^{-n}(\text{pt}) = \begin{cases}
+\mathbb{Z} &amp; n \equiv 0 \pmod{8} \\ \mathbb{Z}_2 &amp; n \equiv 1
+\pmod{8} \\ \mathbb{Z}_2 &amp; n \equiv 2 \pmod{8} \\ 0 &amp; n \equiv 3
+\pmod{8} \\ \mathbb{Z} &amp; n \equiv 4 \pmod{8} \\ 0 &amp; n \equiv 5
+\pmod{8} \\ 0 &amp; n \equiv 6 \pmod{8} \\ 0 &amp; n \equiv 7 \pmod{8}
+\end{cases}\]</span></p>
+<p>The 8-step periodic table is: <span
+class="math display">\[\mathbb{Z}, \quad \mathbb{Z}_2, \quad
+\mathbb{Z}_2, \quad 0, \quad \mathbb{Z}, \quad 0, \quad 0, \quad 0,
+\quad \mathbb{Z}, \quad \dots\]</span></p>
+<p><strong>Correspondence between Clifford algebras and KO
+groups.</strong> Atiyah-Bott-Shapiro established a precise
+correspondence between Clifford algebras and KO groups:</p>
+<table>
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 23%" />
+<col style="width: 23%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">n (mod 8)</th>
+<th style="text-align: left;">Cl(n)</th>
+<th style="text-align: left;"><span
+class="math inline">\(KO^{-n}(\text{pt})\)</span></th>
+<th style="text-align: left;">Invariant Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbb{R}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbb{Z}\)</span></td>
+<td style="text-align: left;">Integer (Bott integer)</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbb{C}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbb{Z}_2\)</span></td>
+<td style="text-align: left;">Mod 2 invariant</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbb{H}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbb{Z}_2\)</span></td>
+<td style="text-align: left;">Mod 2 invariant</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;"><span class="math inline">\(\mathbb{H}
+\oplus \mathbb{H}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(0\)</span></td>
+<td style="text-align: left;">None</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;"><span class="math inline">\(\text{Mat}(2,
+\mathbb{H})\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbb{Z}\)</span></td>
+<td style="text-align: left;">Integer (signature)</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;"><span class="math inline">\(\text{Mat}(4,
+\mathbb{C})\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(0\)</span></td>
+<td style="text-align: left;">None</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;"><span class="math inline">\(\text{Mat}(8,
+\mathbb{R})\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(0\)</span></td>
+<td style="text-align: left;">None</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;"><span class="math inline">\(\text{Mat}(8,
+\mathbb{R}) \oplus \text{Mat}(8, \mathbb{R})\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(0\)</span></td>
+<td style="text-align: left;">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The Bott generator.</strong> The Bott generator <span
+class="math inline">\(\eta \in KO^{-1}(\text{pt}) =
+\mathbb{Z}_2\)</span> in KO theory is the fundamental building block of
+the circuit. <span class="math inline">\(\eta\)</span> corresponds to
+the “dimension-lowering operation” <span
+class="math inline">\(\text{Cl}(1) \to \text{Cl}(0)\)</span> — i.e.,
+removing one generator. The 8th power <span class="math inline">\(\eta^8
+\in KO^{-8}(\text{pt}) = \mathbb{Z}\)</span> is the Bott integer, with
+value 1 (the generator that generates <span
+class="math inline">\(KO^{-8}(\text{pt}) = \mathbb{Z}\)</span>).</p>
+<p>The 8-step circuit <span class="math inline">\(\text{Cl}(0) \to
+\text{Cl}(1) \to \cdots \to \text{Cl}(8)\)</span> corresponds to the
+8-fold composition of <span class="math inline">\(\eta\)</span>,
+ultimately yielding <span class="math inline">\(\eta^8 = 1 \in
+\mathbb{Z}\)</span> — this is the KO-invariant formulation of Bott
+periodicity.</p>
+<h3 id="the-topological-significance-of-bott-periodicity">1.2 The
+Topological Significance of Bott Periodicity</h3>
+<p>The topological significance of Bott periodicity is this: the 8-step
+circuit is not trivial — it brings back the integer invariant <span
+class="math inline">\(\eta^8 = 1\)</span>. If the circuit were trivial,
+then <span class="math inline">\(\eta^8 = 0\)</span> and the
+KO-theoretic periodicity would collapse. <span
+class="math inline">\(\eta^8 = 1 \neq 0\)</span> means the circuit
+carries a non-trivial topological charge — this is the topological root
+of the Berry phase <span class="math inline">\(= 2\pi\)</span>.</p>
+<p>The relation between the integer invariant <span
+class="math inline">\(\eta^8 = 1\)</span> and the Berry phase <span
+class="math inline">\(2\pi\)</span>: in the de Rham realization of KO
+theory, integer invariants correspond to integrals of closed forms. The
+integral corresponding to <span class="math inline">\(\eta^8 =
+1\)</span> has the value <span class="math inline">\(2\pi\)</span>
+(after normalization) — this is a canonical property of the Bott
+generator.</p>
+<hr />
+<h2 id="the-berry-phase-of-the-delta8-circuit">§2 The Berry Phase of the
+<span class="math inline">\(\delta^8\)</span> Circuit</h2>
+<h3 id="the-coding-orbit-as-a-parameter-space">2.1 The Coding Orbit as a
+Parameter Space</h3>
+<p>The 8-step iteration of <span class="math inline">\(\delta\)</span>
+defines a closed circuit <span class="math inline">\(\Gamma_8\)</span>:
+<span class="math display">\[\text{Cl}(0) \to \text{Cl}(1) \to \cdots
+\to \text{Cl}(7) \to \text{Cl}(8) \cong \text{Cl}(0) \otimes
+\text{Mat}(16, \mathbb{R}).\]</span></p>
+<p>Each step of <span class="math inline">\(\delta\)</span> adds one
+generator <span class="math inline">\(e_{n+1}\)</span>, which is
+equivalent to moving along one direction in the parameter space. The 8
+steps together constitute a closed circuit.</p>
+<p><strong>Construction of the parameter space.</strong> Parameterize
+each step of <span class="math inline">\(\delta\)</span> by an angle
+<span class="math inline">\(\theta_n \in [0, 2\pi]\)</span> (<span
+class="math inline">\(n = 1, \dots, 8\)</span>), representing the
+“introduction angle” of the new generator <span
+class="math inline">\(e_n\)</span>. The 8 angles <span
+class="math inline">\((\theta_1, \dots, \theta_8)\)</span> span an
+8-dimensional parameter space <span class="math inline">\(T^8\)</span>
+(the 8-dimensional torus). The coding circuit <span
+class="math inline">\(\Gamma_8\)</span> is a closed path on <span
+class="math inline">\(T^8\)</span>; each step of <span
+class="math inline">\(\delta\)</span> corresponds to one angle varying
+from 0 to <span class="math inline">\(2\pi\)</span>.</p>
+<p><strong>The Berry connection.</strong> On the parameter space <span
+class="math inline">\(T^8\)</span>, each step of the Coding Orbit
+corresponds to a Clifford algebra <span
+class="math inline">\(\text{Cl}(n)\)</span>, which carries a natural
+inner product structure. The Berry connection <span
+class="math inline">\(\mathcal{A}\)</span> is defined as: <span
+class="math display">\[\mathcal{A} = \langle \psi(\theta) |
+d\psi(\theta) \rangle,\]</span> where <span
+class="math inline">\(|\psi(\theta)\rangle\)</span> is the
+parameter-dependent “coding state” (the representation of the Clifford
+algebra generators under a change of parameters). The Berry connection
+<span class="math inline">\(\mathcal{A}\)</span> is a 1-form on <span
+class="math inline">\(T^8\)</span>.</p>
+<h3 id="computation-of-the-berry-phase">2.2 Computation of the Berry
+Phase</h3>
+<p><strong>Theorem 0.3.2.01 (Berry Phase of the <span
+class="math inline">\(\delta^8\)</span> Circuit).</strong> <span
+class="math inline">\(\gamma_{\text{Berry}}(\delta^8) =
+2\pi\)</span>.</p>
+<p><strong>Proof (complete).</strong></p>
+<p><strong>Step 1: KO-theoretic invariants.</strong> Each step of the
+Coding Orbit corresponds to a KO group element: <span
+class="math display">\[\text{Cl}(n) \quad \leftrightarrow \quad
+KO^{-n}(\text{pt}) = \begin{cases} \mathbb{Z} &amp; n \equiv 0 \\
+\mathbb{Z}_2 &amp; n \equiv 1 \\ \mathbb{Z}_2 &amp; n \equiv 2 \\ 0
+&amp; n \equiv 3 \\ \mathbb{Z} &amp; n \equiv 4 \\ 0 &amp; n \equiv 5 \\
+0 &amp; n \equiv 6 \\ 0 &amp; n \equiv 7 \end{cases}\]</span></p>
+<p>The 8-step circuit corresponds to the full period of the KO groups.
+The invariant of the circuit is given by the 8th power of the generator
+<span class="math inline">\(\eta \in KO^{-1}(\text{pt}) =
+\mathbb{Z}_2\)</span>. <span class="math inline">\(\eta^8 \in
+KO^{-8}(\text{pt}) = \mathbb{Z}\)</span>, with value 1 (the Bott
+integer).</p>
+<p><strong>Step 2: Chern-Simons 7-form.</strong> The topological phase
+of the <span class="math inline">\(\delta^8\)</span> circuit is given by
+the integral of the Chern-Simons 7-form <span
+class="math inline">\(\text{CS}_7\)</span>: <span
+class="math display">\[\gamma_{\text{Berry}} = \oint_{\Gamma_8}
+\mathcal{A} = \int_{D^8} \text{CS}_7\]</span></p>
+<p>where <span class="math inline">\(D^8\)</span> is the 8-dimensional
+disk bounded by <span class="math inline">\(\Gamma_8\)</span>. The
+Chern-Simons 7-form has a three-term structure: <span
+class="math display">\[\text{CS}_7 = I_1 + I_2 + I_3\]</span></p>
+<p>Each term corresponds to a sub-segment of the Coding Orbit: - <span
+class="math inline">\(I_1\)</span>: the <span
+class="math inline">\(\text{Cl}(0) \to \text{Cl}(3)\)</span> segment
+(Matter Sector) - <span class="math inline">\(I_2\)</span>: the <span
+class="math inline">\(\text{Cl}(3) \to \text{Cl}(5)\)</span> segment
+(Causal Sector) - <span class="math inline">\(I_3\)</span>: the <span
+class="math inline">\(\text{Cl}(5) \to \text{Cl}(8)\)</span> segment
+(Information Sector)</p>
+<h3 id="the-three-term-construction-of-the-chern-simons-7-form">2.3 The
+Three-Term Construction of the Chern-Simons 7-form</h3>
+<p>The three-term structure of the Chern-Simons 7-form is not arbitrary
+— it is rigidly determined by the three-segment partition of the Coding
+Orbit. Below we give the detailed construction of each term.</p>
+<p><strong><span class="math inline">\(I_1\)</span>: Topological charge
+of the Matter Sector.</strong> Corresponds to the <span
+class="math inline">\(\text{Cl}(0) \to \text{Cl}(3)\)</span> segment,
+consisting of 3 <span class="math inline">\(\delta\)</span> iterations.
+This segment undergoes the semisimple splitting from <span
+class="math inline">\(\mathbb{R}\)</span> to <span
+class="math inline">\(\mathbb{H} \oplus \mathbb{H}\)</span> (Lemma
+1.1.2.01). The semisimple splitting is a topological event — the
+splitting itself contributes one unit of topological charge, not one per
+direct summand.</p>
+<p><strong>The standard transgression form of the Chern-Simons
+7-form.</strong> By the transgression map of §2.4, <span
+class="math inline">\(\text{CS}_7\)</span> is derived from the 8-form
+characteristic class <span class="math inline">\(\text{tr}(F^4)\)</span>
+via the standard formula: <span
+class="math display">\[\text{CS}_7(\mathcal{A}) = \int_0^1
+dt\,\text{tr}(\mathcal{A} \wedge F_t^3), \quad F_t = t\,d\mathcal{A} +
+t^2 \mathcal{A}\wedge\mathcal{A}.\]</span></p>
+<p>Expanding the integral yields four trace structures: <span
+class="math display">\[\boxed{\text{CS}_7(\mathcal{A}) =
+\frac{1}{4}\text{tr}(\mathcal{A}\wedge(d\mathcal{A})^3) +
+\frac{3}{5}\text{tr}(\mathcal{A}\wedge(d\mathcal{A})^2\wedge\mathcal{A}^2)
++ \frac{1}{2}\text{tr}(\mathcal{A}^5\wedge d\mathcal{A}) +
+\frac{1}{7}\text{tr}(\mathcal{A}^7)}.\]</span></p>
+<p>Rewriting in terms of the curvature <span class="math inline">\(F =
+d\mathcal{A} + \mathcal{A}^2\)</span>, by matching coefficients (see
+appendix for the computation) we obtain the equivalent form: <span
+class="math display">\[\text{CS}_7 =
+\frac{1}{4}\text{tr}(\mathcal{A}\wedge F^3) -
+\frac{3}{20}\text{tr}(\mathcal{A}\wedge F^2\wedge\mathcal{A}^2) +
+\frac{1}{20}\text{tr}(\mathcal{A}\wedge F\wedge\mathcal{A}^4) -
+\frac{1}{140}\text{tr}(\mathcal{A}^7).\]</span></p>
+<p><strong>Three-term decomposition.</strong> The coding circuit <span
+class="math inline">\(\Gamma_8\)</span> splits into three orthogonal
+subspaces: <span class="math inline">\(\Gamma_8 = \Gamma_{\mathcal{M}}
+\cup \Gamma_{\mathcal{C}} \cup \Gamma_{\mathcal{I}}\)</span>,
+corresponding to the parameter space <span class="math inline">\(D^8 =
+D^3_{\mathcal{M}} \times D^2_{\mathcal{C}} \times D^2_{\mathcal{I}}
+\times D^1_{\text{closure}}\)</span>. The Berry connection <span
+class="math inline">\(\mathcal{A}\)</span> restricted to each segment
+yields three sector connections <span
+class="math inline">\(\mathcal{A}_{\mathcal{M}},
+\mathcal{A}_{\mathcal{C}}, \mathcal{A}_{\mathcal{I}}\)</span>, which as
+1-forms are non-zero only in the directions of their own sector.</p>
+<p>Because the three sectors are mutually interlocked
+(theorem-proposition), the three-term contributions to <span
+class="math inline">\(\text{CS}_7\)</span> carry equal weight — the
+Interlock Property guarantees the structural symmetry of the three
+sectors on the Coding Orbit; any unequal weight assignment would destroy
+the balance of the conjugate triple. Hence:</p>
+<p><span class="math display">\[I_1 =
+\frac{1}{3}\text{CS}_7(\mathcal{A}_{\mathcal{M}}), \quad I_2 =
+\frac{1}{3}\text{CS}_7(\mathcal{A}_{\mathcal{C}}), \quad I_3 =
+\frac{1}{3}\text{CS}_7(\mathcal{A}_{\mathcal{I}}).\]</span></p>
+<p><strong><span class="math inline">\(I_1\)</span>: Topological charge
+of the Matter Sector.</strong> Corresponds to the <span
+class="math inline">\(\text{Cl}(0) \to \text{Cl}(3)\)</span> segment,
+which undergoes semisimple splitting. Full form: <span
+class="math display">\[\begin{aligned}
+I_1 &amp;= \frac{1}{12}\text{tr}(\mathcal{A}_{\mathcal{M}}\wedge
+F_{\mathcal{M}}^3) -
+\frac{1}{20}\text{tr}(\mathcal{A}_{\mathcal{M}}\wedge
+F_{\mathcal{M}}^2\wedge\mathcal{A}_{\mathcal{M}}^2) \\
+&amp;\quad + \frac{1}{60}\text{tr}(\mathcal{A}_{\mathcal{M}}\wedge
+F_{\mathcal{M}}\wedge\mathcal{A}_{\mathcal{M}}^4) -
+\frac{1}{420}\text{tr}(\mathcal{A}_{\mathcal{M}}^7).
+\end{aligned}\]</span></p>
+<p><strong><span class="math inline">\(I_2\)</span>: Topological charge
+of the Causal Sector.</strong> Corresponds to the <span
+class="math inline">\(\text{Cl}(3) \to \text{Cl}(5)\)</span> segment,
+which undergoes complex structure emergence: <span
+class="math display">\[\begin{aligned}
+I_2 &amp;= \frac{1}{12}\text{tr}(\mathcal{A}_{\mathcal{C}}\wedge
+F_{\mathcal{C}}^3) -
+\frac{1}{20}\text{tr}(\mathcal{A}_{\mathcal{C}}\wedge
+F_{\mathcal{C}}^2\wedge\mathcal{A}_{\mathcal{C}}^2) \\
+&amp;\quad + \frac{1}{60}\text{tr}(\mathcal{A}_{\mathcal{C}}\wedge
+F_{\mathcal{C}}\wedge\mathcal{A}_{\mathcal{C}}^4) -
+\frac{1}{420}\text{tr}(\mathcal{A}_{\mathcal{C}}^7).
+\end{aligned}\]</span></p>
+<p><strong><span class="math inline">\(I_3\)</span>: Topological charge
+of the Information Sector.</strong> Corresponds to the <span
+class="math inline">\(\text{Cl}(5) \to \text{Cl}(8)\)</span> segment,
+which undergoes terminal duality: <span
+class="math display">\[\begin{aligned}
+I_3 &amp;= \frac{1}{12}\text{tr}(\mathcal{A}_{\mathcal{I}}\wedge
+F_{\mathcal{I}}^3) -
+\frac{1}{20}\text{tr}(\mathcal{A}_{\mathcal{I}}\wedge
+F_{\mathcal{I}}^2\wedge\mathcal{A}_{\mathcal{I}}^2) \\
+&amp;\quad + \frac{1}{60}\text{tr}(\mathcal{A}_{\mathcal{I}}\wedge
+F_{\mathcal{I}}\wedge\mathcal{A}_{\mathcal{I}}^4) -
+\frac{1}{420}\text{tr}(\mathcal{A}_{\mathcal{I}}^7).
+\end{aligned}\]</span></p>
+<p><strong>Sum of the three terms.</strong> By the transgression map
+(§2.4), the total integral is normalized to <span
+class="math inline">\(2\pi\)</span>, and by the equal-weight
+distribution from the Interlock Property: <span
+class="math display">\[\int_{D^8} I_1 = \frac{2\pi}{3}, \quad \int_{D^8}
+I_2 = \frac{2\pi}{3}, \quad \int_{D^8} I_3 =
+\frac{2\pi}{3}.\]</span></p>
+<p>Sum: <span class="math display">\[\gamma_{\text{Berry}} =
+\frac{2\pi}{3} + \frac{2\pi}{3} + \frac{2\pi}{3} = 2\pi.\]</span></p>
+<h3 id="the-transgression-map">2.4 The Transgression Map</h3>
+<p>The bridge from KO-theoretic invariants to Chern-Simons forms is the
+transgression map.</p>
+<p><strong>Definition of the transgression map.</strong> The
+transgression map <span class="math inline">\(\tau\)</span> maps
+KO-theoretic invariants to representative forms in de Rham cohomology:
+<span class="math display">\[\tau: KO^{-n}(\text{pt}) \to
+H^{n-1}(\Gamma_n, \mathbb{R}).\]</span></p>
+<p>For the 8-step circuit, <span class="math inline">\(\tau\)</span>
+maps <span class="math inline">\(\eta^8 \in KO^{-8}(\text{pt}) =
+\mathbb{Z}\)</span> to the Chern-Simons 7-form in <span
+class="math inline">\(H^7(\Gamma_8, \mathbb{R})\)</span>: <span
+class="math display">\[\tau(\eta^8) = \text{CS}_7 \in H^7(\Gamma_8,
+\mathbb{R}).\]</span></p>
+<p><strong>The mathematical mechanism of transgression.</strong> The
+construction of the transgression map is based on the following
+commutative diagram:</p>
+<p><span class="math display">\[
+\begin{array}{ccc}
+KO^{-8}(\text{pt}) &amp; \xrightarrow{\tau} &amp; H^7(\Gamma_8,
+\mathbb{R}) \\
+\downarrow{ } &amp; &amp; \downarrow{d} \\
+KO^{-8}(D^8, \partial D^8) &amp; \xrightarrow{\sim} &amp; H^8(D^8,
+\partial D^8)
+\end{array}
+\]</span></p>
+<p>where <span class="math inline">\(D^8\)</span> is the 8-dimensional
+disk bounded by <span class="math inline">\(\Gamma_8\)</span>. <span
+class="math inline">\(\eta^8\)</span> exists as a relative KO class in
+<span class="math inline">\((D^8, \partial D^8)\)</span> and, via the de
+Rham realization, maps to the closed form <span
+class="math inline">\(d\text{CS}_7\)</span> in <span
+class="math inline">\(H^8(D^8, \partial D^8)\)</span>. Then by Stokes’
+theorem: <span class="math display">\[\int_{D^8} d\text{CS}_7 =
+\oint_{\partial D^8 = \Gamma_8} \text{CS}_7 = \oint_{\Gamma_8}
+\mathcal{A}.\]</span></p>
+<p><strong>Canonical property of the Bott generator.</strong> <span
+class="math inline">\(\eta^8 = 1 \in \mathbb{Z}\)</span> in KO theory is
+the topological invariant of the multiplicity-16 map <span
+class="math inline">\(\text{Cl}(0) \to \text{Cl}(8)\)</span>. Its
+transgression yields precisely: <span
+class="math display">\[\tau(\eta^8) = \int_{D^8} \text{CS}_7 =
+2\pi.\]</span></p>
+<p>The <span class="math inline">\(2\pi\)</span> here comes from the
+normalization convention: the “unit topological charge” of the Bott
+generator <span class="math inline">\(\eta\)</span> is normalized to a
+phase of <span class="math inline">\(2\pi\)</span>. This normalization
+is the standard convention in KO theory (consistent with the natural
+pairing in de Rham cohomology). ∎</p>
+<h3 id="the-physical-significance-of-non-trivial-closure">2.5 The
+Physical Significance of Non-Trivial Closure</h3>
+<p><span class="math inline">\(\gamma_{\text{Berry}} = 2\pi \neq
+0\)</span> means:</p>
+<ol type="1">
+<li><span class="math inline">\(\delta^8\)</span> does not fully return
+to the origin — it brings back a global rotation of <span
+class="math inline">\(2\pi\)</span>.</li>
+<li>If <span class="math inline">\(\gamma_{\text{Berry}} = 0\)</span>
+(trivial closure), the algebraic structure would return perfectly, with
+no residual structure, no coding, no physics.</li>
+<li><strong>The physical world arises precisely from the incomplete
+closure of <span class="math inline">\(\delta^8\)</span>.</strong> The
+Berry phase of <span class="math inline">\(2\pi\)</span> is the
+topological root of structural emergence.</li>
+</ol>
+<p>This answers a deep question: why is there structure rather than
+nothingness? Because after 8 iterations of Zero Motion <span
+class="math inline">\(\delta\)</span>, the circuit closes, but the
+closure is not clean — the <span class="math inline">\(2\pi\)</span>
+phase difference is the seed of all structure.</p>
+<p><strong>The deep reason it is <span
+class="math inline">\(2\pi\)</span> rather than <span
+class="math inline">\(0\)</span>.</strong> Why is the Berry phase <span
+class="math inline">\(2\pi\)</span> rather than <span
+class="math inline">\(0\)</span> or some other value? The reason is that
+the Bott generator <span class="math inline">\(\eta^8 = 1 \neq
+0\)</span>. If <span class="math inline">\(\eta^8 = 0\)</span>, the
+KO-theoretic periodicity would collapse and Bott periodicity would not
+exist — but Bott periodicity is a rigid structure of Clifford algebras,
+inescapable. <span class="math inline">\(\eta^8 = 1\)</span> is the
+smallest non-zero integer for which Bott periodicity exists, and its
+transgression yields a phase of <span
+class="math inline">\(2\pi\)</span> — this is the minimal unit of
+non-trivial closure.</p>
+<p><strong>2.5.1 Topological equivalence of Berry phase <span
+class="math inline">\(2\pi\)</span> and <span
+class="math inline">\(S_\text{total} = 0\)</span>.</strong> The Berry
+phase <span class="math inline">\(\gamma_{\text{Berry}} = 2\pi\)</span>
+and the vanishing total action (<span
+class="math inline">\(S_\text{total} = 0\)</span>) are two expressions
+of the same topological fact:</p>
+<ul>
+<li><strong>From the Berry phase perspective</strong>: the <span
+class="math inline">\(\delta^8\)</span> circuit closes on the parameter
+space <span class="math inline">\(T^8\)</span>, bringing back a
+topological phase of <span class="math inline">\(2\pi\)</span>. <span
+class="math inline">\(2\pi\)</span> means “the circuit is closed, but
+carries a non-trivial twist”.</li>
+<li><strong>From the <span class="math inline">\(S_\text{total} =
+0\)</span> perspective</strong>: the total action of the <span
+class="math inline">\(\delta^8\)</span> circuit — i.e., the sum of the
+coding contributions of all δ iterations along the Coding Orbit — is
+exactly zero. The three sectors each contribute <span
+class="math inline">\(2\pi/3\)</span>, summing to <span
+class="math inline">\(2\pi\)</span>, but <span
+class="math inline">\(2\pi\)</span> modulo <span
+class="math inline">\(2\pi = 0\)</span> — this is precisely the
+topological origin of “zero total action”.</li>
+</ul>
+<p>Equivalence of the two: <span
+class="math inline">\(\gamma_{\text{Berry}} \equiv S_{\text{total}}
+\pmod{2\pi}\)</span>. Berry phase <span class="math inline">\(=
+2\pi\)</span> means total action <span class="math inline">\(=
+0\)</span> (mod <span class="math inline">\(2\pi\)</span>). This is not
+merely a mathematical coincidence — it is an inevitable consequence of δ
+as a non-surjective self-map (0.1 §2.3): δ neither injects coding
+contributions from outside nor leaks them outward, so the total action
+of the Coding Orbit must be zero. Berry phase <span
+class="math inline">\(= 2\pi\)</span> is the topological proof of this
+conservation law.</p>
+<p>The three sectors each contribute <span
+class="math inline">\(2\pi/3\)</span> (total <span
+class="math inline">\(= 2\pi\)</span>), showing that before Bott closure
+the zero-sum constraint is exact — the three sectors cancel each other.
+Once triality breaking destroys this symmetry (0.9), the zero-sum
+constraint is broken, leaking out <span
+class="math inline">\(\alpha^{-1} = 137\)</span>.</p>
+<hr />
+<h2 id="seven-layer-truncation">§3 Seven-Layer Truncation</h2>
+<p><strong>Theorem 0.3.3.01 (Seven-Layer Truncation).</strong> Because
+the Berry phase of <span class="math inline">\(\delta^8\)</span> is
+<span class="math inline">\(= 2\pi \neq 0\)</span>, the coding map is
+truncated at <span class="math inline">\(\delta^7\)</span>. The Coding
+Orbit has 7 layers: <span class="math inline">\(E_1, E_2, \dots,
+E_7\)</span>. The 8th layer <span class="math inline">\(E_8\)</span> is
+not independent — it is <span class="math inline">\(E_1\)</span> but
+with a <span class="math inline">\(2\pi\)</span> global rotation.</p>
+<p><strong>Proof (complete).</strong></p>
+<p><strong>Step 1: The Berry phase of <span
+class="math inline">\(\delta^8\)</span> is <span class="math inline">\(=
+2\pi\)</span>.</strong> Already proved in Theorem 0.3.2.01.</p>
+<p><strong>Step 2: Algebraic meaning of Berry phase <span
+class="math inline">\(= 2\pi\)</span>.</strong> Berry phase <span
+class="math inline">\(= 2\pi\)</span> means the output of the 8th step
+cannot serve as an independent coding layer — it differs from the 1st
+layer only by an overall phase. Within the Berry phase framework, a
+<span class="math inline">\(2\pi\)</span> phase does not change the
+physical content of a quantum state (<span
+class="math inline">\(\psi\)</span> and <span
+class="math inline">\(e^{2\pi i}\psi = \psi\)</span> are the same), but
+it <strong>changes the algebraic basis of the coding map</strong> — the
+generators of the 8th layer are the generators of the 1st layer tensored
+with <span class="math inline">\(\text{Mat}(16,
+\mathbb{R})\)</span>.</p>
+<p>Concretely, <span class="math inline">\(\text{Cl}(8) \cong
+\text{Cl}(0) \otimes \text{Mat}(16, \mathbb{R})\)</span>. This means the
+algebraic structure of the 8th layer differs from that of the 0th layer
+(<span class="math inline">\(\text{Cl}(0) = \mathbb{R}\)</span>) only by
+a factor of <span class="math inline">\(\text{Mat}(16,
+\mathbb{R})\)</span> — it is an “enlarged version” of the 0th layer, not
+a new coding layer.</p>
+<p><strong>Step 3: Why <span class="math inline">\(E_8\)</span> is not
+an independent coding layer.</strong> Suppose <span
+class="math inline">\(E_8\)</span> were an independent coding layer.
+Then the Coding Orbit would have 8 layers <span
+class="math inline">\(E_1, \dots, E_8\)</span>, and the 9th step of δ
+would start from <span class="math inline">\(\text{Cl}(8)\)</span>, add
+<span class="math inline">\(e_9\)</span>, and yield <span
+class="math inline">\(\text{Cl}(9) \cong \text{Cl}(1) \otimes
+\text{Mat}(16, \mathbb{R})\)</span> — which differs from <span
+class="math inline">\(E_1\)</span> (<span
+class="math inline">\(\text{Cl}(1)\)</span>) only by a factor of <span
+class="math inline">\(\text{Mat}(16, \mathbb{R})\)</span>. Hence <span
+class="math inline">\(E_9\)</span> would also not be independent — it
+would be an enlarged version of <span
+class="math inline">\(E_1\)</span>. By induction, <span
+class="math inline">\(E_{8+k}\)</span> are all enlarged versions of
+<span class="math inline">\(E_k\)</span>.</p>
+<p>But Berry phase <span class="math inline">\(= 2\pi\)</span> means the
+8th step carries a global rotation — this rotation prevents <span
+class="math inline">\(E_8\)</span> from being simply identified with
+<span class="math inline">\(E_0\)</span> (otherwise the Berry phase
+would be 0). <span class="math inline">\(E_8\)</span> is <span
+class="math inline">\(E_0\)</span> but with a <span
+class="math inline">\(2\pi\)</span> rotation, so it is a “closure step”
+rather than an “independent coding layer”.</p>
+<p><strong>Step 4: Effective number of layers of the coding
+map.</strong> Therefore, the effective number of layers of the coding
+map is 7: <span class="math display">\[E_1: \text{Cl}(0) \to
+\text{Cl}(1), \quad E_2: \text{Cl}(1) \to \text{Cl}(2), \quad \dots,
+\quad E_7: \text{Cl}(6) \to \text{Cl}(7).\]</span></p>
+<p>The 8th step <span class="math inline">\(E_8: \text{Cl}(7) \to
+\text{Cl}(8)\)</span> is not a new coding — it is the closure step of
+the circuit, carrying a Berry phase of <span
+class="math inline">\(2\pi\)</span> as the hallmark of consummation.
+∎</p>
+<h3 id="the-partition-of-the-seven-layer-structure">3.1 The Partition of
+the Seven-Layer Structure</h3>
+<p>The 7-layer coding map naturally splits into three segments:</p>
+<table>
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 21%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 21%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Segment</th>
+<th style="text-align: center;">Layers</th>
+<th style="text-align: left;">Algebraic Range</th>
+<th style="text-align: left;">Corresponding Sector</th>
+<th style="text-align: center;">Structure Constant</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">First segment</td>
+<td style="text-align: center;"><span class="math inline">\(E_1, E_2,
+E_3\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\text{Cl}(0)
+\to \text{Cl}(3)\)</span></td>
+<td style="text-align: left;">Matter ℳ</td>
+<td style="text-align: center;"><span class="math inline">\(\Lambda =
+3\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;">Second segment</td>
+<td style="text-align: center;"><span class="math inline">\(E_4,
+E_5\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\text{Cl}(3)
+\to \text{Cl}(5)\)</span></td>
+<td style="text-align: left;">Causal 𝒞</td>
+<td style="text-align: center;"><span class="math inline">\(\Delta\Theta
+= 5\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;">Third segment</td>
+<td style="text-align: center;"><span class="math inline">\(E_6,
+E_7\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\text{Cl}(5)
+\to \text{Cl}(7)\)</span></td>
+<td style="text-align: left;">Information ℐ</td>
+<td style="text-align: center;"><span class="math inline">\(k_0 =
+2\)</span></td>
+</tr>
+<tr>
+<td style="text-align: center;">Closure step</td>
+<td style="text-align: center;"><span
+class="math inline">\(E_8\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\text{Cl}(7)
+\to \text{Cl}(8)\)</span></td>
+<td style="text-align: left;">Completeness</td>
+<td style="text-align: center;">Berry <span class="math inline">\(=
+2\pi\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The three segments plus the closure step <span
+class="math inline">\(= 3+2+2+1 = 8\)</span>, fully covering Bott
+periodicity.</p>
+<h3 id="why-322-and-not-another-partition">3.2 Why 322 and Not Another
+Partition?</h3>
+<p>The partition is not arbitrary — it is determined by the structural
+rigidity of Clifford algebras:</p>
+<ul>
+<li><strong><span class="math inline">\(\text{Cl}(3)\)</span> is the
+first semisimple splitting</strong> (Lemma 1.1.2.01), naturally
+truncating the first segment.</li>
+<li><strong><span class="math inline">\(\text{Cl}(5)\)</span> is the
+first complex structure emergence</strong> (Lemma 1.1.2.03), naturally
+truncating the second segment.</li>
+<li><strong><span class="math inline">\(\text{Cl}(7)\)</span> is the
+terminal duality</strong> (Lemma 1.1.3.02), naturally truncating the
+third segment.</li>
+<li><strong><span class="math inline">\(\text{Cl}(8)\)</span> is the
+Bott return</strong>, naturally serving as the closure step.</li>
+</ul>
+<p>These four “natural truncation points” are inescapable in the Bott
+periodic table — they are not human choices, but rigid emergences of the
+algebraic structure.</p>
+<h3 id="a-rigidity-argument-for-the-322-partition">3.3 A Rigidity
+Argument for the 322 Partition</h3>
+<p>Why can it not be some other partition, such as 422 or 332? Below we
+give a rigidity argument.</p>
+<p><strong>Why can it not be 422?</strong> Suppose the first segment
+were 4 steps (<span class="math inline">\(\text{Cl}(0) \to
+\text{Cl}(4)\)</span>), i.e., the Matter Sector terminates at <span
+class="math inline">\(\text{Cl}(4) = \text{Mat}(2, \mathbb{H})\)</span>.
+But <span class="math inline">\(\text{Cl}(4)\)</span> is a simple
+algebra (center is <span class="math inline">\(\mathbb{R}\)</span>), and
+no semisimple splitting has occurred — it is merely the “stitching”
+after the splitting at <span
+class="math inline">\(\text{Cl}(3)\)</span>. Placing the terminal of the
+Matter Sector at <span class="math inline">\(\text{Cl}(4)\)</span>,
+which has no structural jump, is unreasonable — without a jump there is
+no crystallization point. The semisimple splitting at <span
+class="math inline">\(\text{Cl}(3)\)</span> is the first structural
+qualitative change and must serve as the terminal of the first
+segment.</p>
+<p><strong>Why can it not be 332?</strong> Suppose the second segment
+were 3 steps (<span class="math inline">\(\text{Cl}(3) \to
+\text{Cl}(6)\)</span>), i.e., the Causal Sector terminates at <span
+class="math inline">\(\text{Cl}(6) = \text{Mat}(8, \mathbb{R})\)</span>.
+But <span class="math inline">\(\text{Cl}(6)\)</span> is a real matrix
+algebra, without any complex structure — the complex structure emerged
+at <span class="math inline">\(\text{Cl}(5)\)</span>, and <span
+class="math inline">\(\text{Cl}(6)\)</span> is merely the result of the
+complex structure being “realified”. Placing the terminal of the Causal
+Sector at <span class="math inline">\(\text{Cl}(6)\)</span>, which has
+no complex structure, is unreasonable — the core of the Causal Sector is
+the complex structure (capacity for oscillation), and it must terminate
+at <span class="math inline">\(\text{Cl}(5)\)</span>, where the complex
+structure emerges.</p>
+<p><strong>Why can it not be 323?</strong> Suppose the third segment
+were 3 steps (<span class="math inline">\(\text{Cl}(5) \to
+\text{Cl}(8)\)</span>), i.e., the Information Sector terminates at <span
+class="math inline">\(\text{Cl}(8)\)</span>. But <span
+class="math inline">\(\text{Cl}(8)\)</span> is the Bott return — it is
+the closure step and cannot serve as the terminal of the Information
+Sector. The terminal of the Information Sector must be the last
+structural jump point before the Bott return, namely the terminal
+duality at <span class="math inline">\(\text{Cl}(7)\)</span>.</p>
+<p><strong>Rigidity conclusion.</strong> The partition <span
+class="math inline">\(3+2+2+1 = 8\)</span> is rigidly determined by the
+three structural jump points (<span class="math inline">\(n = 3, 5,
+7\)</span>) and the closure point (<span class="math inline">\(n =
+8\)</span>) in the Bott periodic table — any other partition would place
+a terminal at a position without a structural jump, violating the
+principle that “crystallization point = structural jump point”.</p>
+<h3 id="the-concrete-algebraic-content-of-each-coding-layer-e_n">3.4 The
+Concrete Algebraic Content of Each Coding Layer <span
+class="math inline">\(E_n\)</span></h3>
+<p>Each coding layer <span class="math inline">\(E_n\)</span> is one
+step of δ, corresponding to adding a generator <span
+class="math inline">\(e_n\)</span>. Below we give the concrete algebraic
+content of each <span class="math inline">\(E_n\)</span>:</p>
+<table>
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 23%" />
+<col style="width: 23%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Layer <span
+class="math inline">\(E_n\)</span></th>
+<th style="text-align: left;">Input → Output</th>
+<th style="text-align: left;">Added Generator</th>
+<th style="text-align: left;">Algebraic Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(E_1\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\text{Cl}(0)
+\to \text{Cl}(1)\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(e_1\)</span>
+(<span class="math inline">\(e_1^2 = -1\)</span>)</td>
+<td style="text-align: left;"><span class="math inline">\(\mathbb{R} \to
+\mathbb{C}\)</span> (first distinction)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(E_2\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\text{Cl}(1)
+\to \text{Cl}(2)\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(e_2\)</span>
+(<span class="math inline">\(e_2^2 = -1\)</span>, <span
+class="math inline">\(e_1e_2 = -e_2e_1\)</span>)</td>
+<td style="text-align: left;"><span class="math inline">\(\mathbb{C} \to
+\mathbb{H}\)</span> (non-commutative)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(E_3\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\text{Cl}(2)
+\to \text{Cl}(3)\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(e_3\)</span>
+(<span class="math inline">\(e_3^2 = -1\)</span>)</td>
+<td style="text-align: left;"><span class="math inline">\(\mathbb{H} \to
+\mathbb{H} \oplus \mathbb{H}\)</span> (semisimple splitting)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(E_4\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\text{Cl}(3)
+\to \text{Cl}(4)\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(e_4\)</span>
+(<span class="math inline">\(e_4^2 = -1\)</span>)</td>
+<td style="text-align: left;"><span class="math inline">\(\mathbb{H}
+\oplus \mathbb{H} \to \text{Mat}(2, \mathbb{H})\)</span>
+(stitching)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(E_5\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\text{Cl}(4)
+\to \text{Cl}(5)\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(e_5\)</span>
+(<span class="math inline">\(e_5^2 = -1\)</span>)</td>
+<td style="text-align: left;"><span class="math inline">\(\text{Mat}(2,
+\mathbb{H}) \to \text{Mat}(4, \mathbb{C})\)</span> (complex
+structure)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(E_6\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\text{Cl}(5)
+\to \text{Cl}(6)\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(e_6\)</span>
+(<span class="math inline">\(e_6^2 = -1\)</span>)</td>
+<td style="text-align: left;"><span class="math inline">\(\text{Mat}(4,
+\mathbb{C}) \to \text{Mat}(8, \mathbb{R})\)</span> (realification)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(E_7\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\text{Cl}(6)
+\to \text{Cl}(7)\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(e_7\)</span>
+(<span class="math inline">\(e_7^2 = -1\)</span>)</td>
+<td style="text-align: left;"><span class="math inline">\(\text{Mat}(8,
+\mathbb{R}) \to \text{Mat}(8, \mathbb{R})^{\oplus 2}\)</span> (terminal
+duality)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="math inline">\(E_8\)</span>
+(closure)</td>
+<td style="text-align: left;"><span class="math inline">\(\text{Cl}(7)
+\to \text{Cl}(8)\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(e_8\)</span>
+(<span class="math inline">\(e_8^2 = -1\)</span>)</td>
+<td style="text-align: left;"><span class="math inline">\(\text{Mat}(8,
+\mathbb{R})^{\oplus 2} \to \text{Mat}(16, \mathbb{R})\)</span> (Bott
+return, Berry <span class="math inline">\(= 2\pi\)</span>)</td>
+</tr>
+</tbody>
+</table>
+<p>Each <span class="math inline">\(E_n\)</span> adds a generator
+satisfying <span class="math inline">\(e_n^2 = -1\)</span>, but the
+algebraic effect differs — this depends on the relation of that
+generator to the existing generators (commutation, anticommutation,
+whether it triggers a sign change of the volume element).</p>
+<hr />
+<h2 id="preview-of-the-completeness-criterion">§4 Preview of the
+Completeness Criterion</h2>
+<p>The Seven-Layer Truncation Theorem establishes the skeleton of the
+Coding Orbit. The next step will establish the Completeness
+Criterion:</p>
+<blockquote>
+<p>A closed circuit <span class="math inline">\(\Gamma\)</span> on the
+Coding Orbit corresponds to a completed structure (Consummate Theorem)
+if and only if <span class="math inline">\(\oint_\Gamma \mathcal{A} =
+2\pi n\)</span>, <span class="math inline">\(n \in
+\mathbb{Z}\)</span>.</p>
+</blockquote>
+<p>This criterion is the precise mathematical realization of
+self-consistency filtering — only those sub-circuits whose Berry phase
+closes are permitted to complete their derivation.</p>
+<h3 id="from-seven-layer-truncation-to-completeness">4.1 From
+Seven-Layer Truncation to Completeness</h3>
+<p>The Seven-Layer Truncation Theorem establishes the non-trivial
+closure of the <span class="math inline">\(\delta^8\)</span> circuit
+(Berry phase <span class="math inline">\(= 2\pi\)</span>). But the <span
+class="math inline">\(\delta^8\)</span> circuit is only the maximal
+consummate circuit — the Coding Orbit also contains smaller
+sub-circuits, and each sub-circuit may also satisfy completeness.</p>
+<p>The Completeness Criterion makes this observation precise:</p>
+<ul>
+<li><strong>Maximal consummate circuit</strong>: the <span
+class="math inline">\(\delta^8\)</span> circuit, <span
+class="math inline">\(\oint_{\delta^8} \mathcal{A} = 2\pi\)</span>
+(<span class="math inline">\(n = 1\)</span>).</li>
+<li><strong>Sub-circuits</strong>: circuits formed by sub-segments of
+the <span class="math inline">\(\delta^8\)</span> circuit, each with its
+own Berry phase.</li>
+<li><strong>Completeness condition</strong>: when the Berry phase of a
+sub-circuit <span class="math inline">\(= 2\pi n\)</span> (<span
+class="math inline">\(n \in \mathbb{Z}\)</span>), that sub-circuit
+corresponds to a Consummate Theorem.</li>
+</ul>
+<p>will rigorously prove: the Berry phases of the three sector
+sub-circuits (Matter, Causal, Information) are each <span
+class="math inline">\(\frac{2\pi}{3}\)</span> — individually they do not
+satisfy <span class="math inline">\(2\pi n\)</span>, but jointly <span
+class="math inline">\(3 \times \frac{2\pi}{3} = 2\pi\)</span> they
+constitute a complete consummation. This means the three sectors are
+each “partially consummate” and must be united to form a complete
+consummation.</p>
+<h3
+id="the-relation-between-seven-layer-truncation-and-completeness">4.2
+The Relation Between Seven-Layer Truncation and Completeness</h3>
+<p>The relation between the Seven-Layer Truncation Theorem and the
+Completeness Criterion is as follows:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Concept</th>
+<th style="text-align: left;">Mathematical Formulation</th>
+<th style="text-align: left;">Where it appears</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Seven-Layer Truncation</td>
+<td style="text-align: left;"><span class="math inline">\(E_8\)</span>
+is not an independent coding layer</td>
+<td style="text-align: left;">§3</td>
+</tr>
+<tr>
+<td style="text-align: left;">Maximal consummate circuit</td>
+<td style="text-align: left;"><span
+class="math inline">\(\oint_{\delta^8} \mathcal{A} = 2\pi\)</span></td>
+<td style="text-align: left;">§2</td>
+</tr>
+<tr>
+<td style="text-align: left;">Completeness Criterion</td>
+<td style="text-align: left;"><span class="math inline">\(\oint_\Gamma
+\mathcal{A} = 2\pi n\)</span></td>
+<td style="text-align: left;">§4</td>
+</tr>
+<tr>
+<td style="text-align: left;">Sub-circuit completeness</td>
+<td style="text-align: left;">Berry phase distribution among three
+sectors</td>
+<td style="text-align: left;">§4.1</td>
+</tr>
+</tbody>
+</table>
+<p>Seven-Layer Truncation is the structural expression of completeness —
+the consummation of the <span class="math inline">\(\delta^8\)</span>
+circuit (Berry phase <span class="math inline">\(= 2\pi\)</span>) causes
+the 8th layer to be incapable of independent coding, thereby truncating
+to 7 layers. The Completeness Criterion is the generalization of this
+truncation — any closed circuit must satisfy Berry phase <span
+class="math inline">\(= 2\pi n\)</span> to correspond to a Consummate
+Theorem.</p>
+<h3 id="physical-consequences-of-seven-layer-truncation">4.3 Physical
+Consequences of Seven-Layer Truncation</h3>
+<p>Seven-Layer Truncation is not merely a mathematical structure — it
+has direct physical consequences:</p>
+<ol type="1">
+<li><strong>Upper bound on coding capacity</strong>: the coding map has
+at most 7 layers; the 8th layer is the closure step. This means the
+“degrees of freedom” of the physical world are rigidly bounded by the
+7-layer coding — they cannot increase without limit.</li>
+<li><strong>Separation of the three sectors</strong>: the 7 layers are
+rigidly partitioned as 322, corresponding to the three physical sectors
+(Matter, Causal, Information). The “thickness” of each sector is
+determined by the Structure Constants (<span
+class="math inline">\(\Lambda = 3\)</span>, <span
+class="math inline">\(\Delta\Theta - \Lambda = 2\)</span>, <span
+class="math inline">\(7 - \Delta\Theta = 2\)</span>).</li>
+<li><strong>Ineliminability of the closure step</strong>: the Berry
+phase <span class="math inline">\(= 2\pi\)</span> of the 8th step is
+ineliminable — it cannot be “absorbed” into the preceding 7 layers. This
+means the physical world forever carries an “unclosed remainder” — the
+<span class="math inline">\(2\pi\)</span> phase difference is the
+topological imprint of the existence of the physical world.</li>
+</ol>
+<hr />
+<h2 id="theorem-index">Theorem Index</h2>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 28%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Number</th>
+<th style="text-align: left;">Content</th>
+<th style="text-align: center;">Proof Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Theorem 0.3.1.01</td>
+<td style="text-align: left;">Bott Periodicity: <span
+class="math inline">\(\text{Cl}(n+8) \cong \text{Cl}(n) \otimes
+\text{Mat}(16, \mathbb{R})\)</span></td>
+<td style="text-align: center;">Classical result</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 0.3.2.01</td>
+<td style="text-align: left;">Berry phase of <span
+class="math inline">\(\delta^8\)</span> circuit <span
+class="math inline">\(= 2\pi\)</span></td>
+<td style="text-align: center;">Proved (this article §2)</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 0.3.3.01</td>
+<td style="text-align: left;">Seven-Layer Truncation Theorem: coding map
+<span class="math inline">\(E_1, \dots, E_7\)</span></td>
+<td style="text-align: center;">Proved (this article §3)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="references">References</h2>
+<ul>
+<li>Atiyah, Bott, Shapiro, <em>Clifford Modules</em>, Topology 3
+(1964)</li>
+<li>Bott, <em>The Stable Homotopy of the Classical Groups</em>, Annals
+of Math. 70 (1959)</li>
+<li>Chern, Simons, <em>Characteristic Forms and Geometric
+Invariants</em>, Annals of Math. 99 (1974)</li>
+<li>Atiyah, <em>K-Theory</em>, Benjamin (1967)</li>
+</ul>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>

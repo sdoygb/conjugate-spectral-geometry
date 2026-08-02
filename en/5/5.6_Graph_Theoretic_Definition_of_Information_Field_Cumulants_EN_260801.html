@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Graph-Theoretic Definition of Information Field Cumulants | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Prerequisites: Theorem 5.1.1.01 (Algebraic Connectivity), Theorem 7.13.3.05 (Birkhoff Mixing), Theorem 7.13.4.01 (Hard-Direction Lyapunov Contraction)">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/5/5.6_Graph_Theoretic_Definition_of_Information_Field_Cumulants_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">Graph-Theoretic Definition of Information Field Cumulants</span>
+  </nav>
+  <main class="article-content">
+<h1
+id="graph-theoretic-definition-of-information-field-cumulants">Graph-Theoretic
+Definition of Information Field Cumulants</h1>
+<p><strong>Prerequisites</strong>: Theorem 5.1.1.01 (Algebraic
+Connectivity), Theorem 7.13.3.05 (Birkhoff Mixing), Theorem 7.13.4.01
+(Hard-Direction Lyapunov Contraction)</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>This article provides a graph-theoretic precise definition of
+information field cumulants, filling G1 in the proof framework of
+“information field cumulant factorization.” The definition has two
+levels: the base Clifford graph (<span
+class="math inline">\(N_{\text{info}}=16\)</span>) and the
+parameter-space fine-grained graph (<span
+class="math inline">\(N_{\text{info}}\approx 9.024\times
+10^{22}\)</span>). The two levels share the same algebraic structure,
+differing only in node count. Core result: the upper bound of the k-th
+order cumulant is jointly controlled by the Birkhoff spectral gap <span
+class="math inline">\(\lambda_1^{\text{eff}}\)</span> and the
+hard-direction Lyapunov exponent <span
+class="math inline">\(\Lambda_\xi\)</span>.</p>
+<hr />
+<h2 id="graph-structure-and-dynamics">§1 Graph Structure and
+Dynamics</h2>
+<h3 id="information-field-graph">1.1 Information Field Graph</h3>
+<p><strong>Definition 1.1 (Information Field Graph)</strong>: The
+information field graph <span class="math inline">\(G_{\mathcal{I}} =
+(V, E, w)\)</span> is a weighted directed graph, where:</p>
+<ul>
+<li><span class="math inline">\(V = \{1, 2, \ldots,
+N_{\text{info}}\}\)</span> is the set of nodes</li>
+<li><span class="math inline">\(E \subseteq V \times V\)</span> is the
+set of edges, <span class="math inline">\(e_{ij} \in E\)</span> iff
+<span class="math inline">\(T_{ij} &gt; 0\)</span></li>
+<li><span class="math inline">\(w: E \to (0, 1]\)</span> is the edge
+weight, <span class="math inline">\(w(e_{ij}) = T_{ij}\)</span></li>
+</ul>
+<p>The Birkhoff mixing matrix <span class="math inline">\(T\)</span> is
+an <span class="math inline">\(N_{\text{info}} \times
+N_{\text{info}}\)</span> doubly stochastic matrix:</p>
+<p><span class="math display">\[\sum_{j} T_{ij} = \sum_{i} T_{ij} = 1,
+\quad T_{ij} \geq 0.\]</span></p>
+<p>The graph Laplacian is <span class="math inline">\(L_{\mathcal{I}} =
+I - T\)</span> (Theorem 5.1.1.01).</p>
+<p><strong>Two-Level Implementation</strong>:</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Level</th>
+<th style="text-align: left;"><span
+class="math inline">\(N_{\text{info}}\)</span></th>
+<th style="text-align: left;">Origin</th>
+<th style="text-align: left;">Construction of <span
+class="math inline">\(T\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Base level</strong> (Clifford
+algebra)</td>
+<td style="text-align: left;">16</td>
+<td style="text-align: left;">Cl(7) ≅ Mat(8,ℝ) ⊕ Mat(8,ℝ), ρ₇ × k₀ = 8 ×
+2</td>
+<td style="text-align: left;"><span class="math inline">\(3 \times
+3\)</span> core block of <span class="math inline">\(T\)</span> +
+intra-sector degeneracy (Theorem 3.3.1.01)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Parameter space level</strong>
+(continuum limit)</td>
+<td style="text-align: left;">≈ 9.024 × 10²²</td>
+<td style="text-align: left;">Discretization of sector parameter space Σ
+≈ S² (Theorem 3.2.2.01)</td>
+<td style="text-align: left;">Fibration structure: at each point,
+replicate the base-level T; points are coupled by the parameter space
+graph Laplacian</td>
+</tr>
+</tbody>
+</table>
+<p>The algebraic structure of the two levels is identical — the
+eigenvalues of <span class="math inline">\(T\)</span>, <span
+class="math inline">\(\lambda_1=1\)</span>, <span
+class="math inline">\(\lambda_{2,3}=0.678\pm 0.181i\)</span>, and the
+corresponding spectral gap <span
+class="math inline">\(\lambda_1^{\text{eff}}=391.05\text{
+rad}^{-2}\)</span>, are invariant — the only differences lie in matrix
+dimension and degeneracy.</p>
+<h3 id="information-density-distribution">1.2 Information Density
+Distribution</h3>
+<p><strong>Definition 1.2 (Information Density Distribution)</strong>:
+At time <span class="math inline">\(\tau\)</span> (causal advance
+steps), the information density distribution on the information field
+graph is a probability vector:</p>
+<p><span class="math display">\[\rho_\tau \in \Delta^{N_{\text{info}}-1}
+= \left\{ \rho \in \mathbb{R}_+^{N_{\text{info}}} \;\middle|\;
+\sum_{i=1}^{N_{\text{info}}} \rho_i = 1 \right\}.\]</span></p>
+<p><span class="math inline">\(\rho_\tau(i)\)</span> represents the
+share of information carried by node <span
+class="math inline">\(i\)</span> at time <span
+class="math inline">\(\tau\)</span>. The distribution evolves with
+causal advance:</p>
+<p><span class="math display">\[\rho_{\tau+1} = T \rho_\tau, \quad
+\text{or in continuous form } \partial_\tau \rho = -L_{\mathcal{I}}
+\rho.\]</span></p>
+<p>Steady-state distribution (<span class="math inline">\(\tau \to
+\infty\)</span>): By the Perron-Frobenius theorem, <span
+class="math inline">\(\rho_\infty(i) = 1/N_{\text{info}}\)</span>
+(uniform distribution).</p>
+<hr />
+<h2 id="information-field-cumulants">§2 Information Field Cumulants</h2>
+<h3 id="moments-and-joint-expectations">2.1 Moments and Joint
+Expectations</h3>
+<p><strong>Definition 2.1 (k-point joint density)</strong>: Under the
+steady-state causal circulation <span
+class="math inline">\(T_{ss}\)</span>, the k-point joint information
+density of <span class="math inline">\(k\)</span> nodes <span
+class="math inline">\((i_1, \ldots, i_k) \in V^k\)</span> is:</p>
+<p><span class="math display">\[\rho^{(k)}_\tau(i_1, \ldots, i_k) =
+\mathbb{E}_{T_{ss}^\tau}\left[ \prod_{j=1}^{k} \delta_{X_j, i_j}
+\right],\]</span></p>
+<p>where <span class="math inline">\(X_j\)</span> is the node-position
+random variable of the <span class="math inline">\(j\)</span>-th
+information trajectory, and <span class="math inline">\(\delta\)</span>
+is the Kronecker delta. The joint density is normalized with respect to
+each of the <span class="math inline">\(k\)</span> coordinates:</p>
+<p><span class="math display">\[\sum_{i_1, \ldots, i_k}
+\rho^{(k)}_\tau(i_1, \ldots, i_k) = 1.\]</span></p>
+<p><strong>Definition 2.2 (k-th order joint moment)</strong>: For
+observation functions <span class="math inline">\(f_1, \ldots, f_k: V
+\to \mathbb{R}\)</span>, the k-th order joint moment is:</p>
+<p><span class="math display">\[M_k(f_1, \ldots, f_k; \tau) =
+\mathbb{E}_{T_{ss}^\tau}\left[ \prod_{j=1}^{k} f_j(X_j) \right] =
+\sum_{i_1, \ldots, i_k} \left( \prod_{j=1}^{k} f_j(i_j) \right)
+\rho^{(k)}_\tau(i_1, \ldots, i_k).\]</span></p>
+<p>When <span class="math inline">\(f_j = \delta_{i_j}\)</span>
+(indicator functions), <span class="math inline">\(M_k\)</span> reduces
+to <span class="math inline">\(\rho^{(k)}_\tau(i_1, \ldots,
+i_k)\)</span>.</p>
+<h3 id="combinatorial-definition-of-cumulants">2.2 Combinatorial
+Definition of Cumulants</h3>
+<p><strong>Definition 2.3 (k-th order information field
+cumulant)</strong>: The k-th order information field cumulant <span
+class="math inline">\(C_k\)</span> is defined by the standard
+combinatorial formula for cumulants. For <span
+class="math inline">\(k\)</span> nodes <span class="math inline">\((i_1,
+\ldots, i_k)\)</span>:</p>
+<p><span class="math display">\[C_k(i_1, \ldots, i_k; \tau) = \sum_{\pi
+\in \Pi_k} (-1)^{|\pi|-1} (|\pi|-1)! \prod_{B \in \pi}
+\rho^{(|B|)}_\tau(\{i_j\}_{j \in B}),\]</span></p>
+<p>where:</p>
+<ul>
+<li><span class="math inline">\(\Pi_k\)</span> is the set of all
+partitions of <span class="math inline">\(\{1, 2, \ldots,
+k\}\)</span></li>
+<li><span class="math inline">\(\pi\)</span> is a partition, <span
+class="math inline">\(|\pi|\)</span> is the number of blocks in the
+partition</li>
+<li><span class="math inline">\(B \in \pi\)</span> is a block in the
+partition, <span class="math inline">\(|B|\)</span> is the size of that
+block</li>
+<li><span class="math inline">\(\rho^{(|B|)}_\tau(\{i_j\}_{j \in
+B})\)</span> is the <span class="math inline">\(|B|\)</span>-point joint
+density corresponding to the nodes in block <span
+class="math inline">\(B\)</span></li>
+</ul>
+<p><strong>Equivalent form (generating function
+definition)</strong>:</p>
+<p><span class="math display">\[C_k(i_1, \ldots, i_k; \tau) = \left.
+\frac{\partial^k}{\partial t_1 \cdots \partial t_k} \log
+\mathbb{E}_{T_{ss}^\tau}\left[ \exp\left( \sum_{j=1}^{k} t_j
+\delta_{X_j, i_j} \right) \right] \right|_{t_1 = \cdots = t_k =
+0}.\]</span></p>
+<p><strong>Physical interpretation</strong>: <span
+class="math inline">\(C_k\)</span> measures the <strong>residual in the
+information density of <span class="math inline">\(k\)</span> nodes that
+cannot be explained by any lower-order correlations</strong>. For
+example:</p>
+<ul>
+<li><span class="math inline">\(C_1(i) = \rho_\tau(i)\)</span> — the
+first-order cumulant is simply the marginal distribution itself</li>
+<li><span class="math inline">\(C_2(i, j) = \rho^{(2)}_\tau(i, j) -
+\rho_\tau(i) \rho_\tau(j)\)</span> — the second-order cumulant is the
+covariance (correlation beyond the independent product)</li>
+<li><span class="math inline">\(C_3(i, j, k)\)</span> — the third-order
+cumulant is the residual after subtracting all pairwise correlations and
+the three-body independent product. <strong>If <span
+class="math inline">\(C_3 = 0\)</span>, then three-body correlations are
+completely explained by two-body correlations.</strong></li>
+</ul>
+<h3 id="factorization-condition">2.3 Factorization Condition</h3>
+<p><strong>Definition 2.4 (k-th order factorization)</strong>: The
+information field at time <span class="math inline">\(\tau\)</span> is
+called k-th order factorized if, for all <span class="math inline">\(m
+\geq k\)</span>:</p>
+<p><span class="math display">\[C_m(i_1, \ldots, i_m; \tau) = 0, \quad
+\forall (i_1, \ldots, i_m) \in V^m.\]</span></p>
+<p>Equivalently, the joint density is completely determined by
+correlations of order at most <span class="math inline">\(k-1\)</span> —
+i.e., <span class="math inline">\(\rho^{(m)}_\tau\)</span> (for <span
+class="math inline">\(m \geq k\)</span>) can be expressed via products
+and sums of lower-order joint densities (<span
+class="math inline">\(\leq k-1\)</span>), as given by the combinatorial
+inversion formula of cumulants.</p>
+<p><strong>Factorization hierarchy</strong>: - <strong>First-order
+factorization</strong> (<span class="math inline">\(k=2\)</span>, i.e.,
+<span class="math inline">\(C_m = 0\)</span> for all <span
+class="math inline">\(m \geq 2\)</span>): all cumulants vanish; the
+joint density completely factorizes into the product of marginals <span
+class="math inline">\(\rho^{(m)}_\tau = \prod \rho_\tau\)</span>. This
+corresponds to the “molecular chaos hypothesis” in statistical mechanics
+— many-body probabilities are completely determined by single-body
+probabilities. - <strong>Second-order factorization</strong> (<span
+class="math inline">\(k=3\)</span>, i.e., <span
+class="math inline">\(C_m = 0\)</span> for all <span
+class="math inline">\(m \geq 3\)</span>): third- and higher-order
+cumulants vanish, but pairwise correlations <span
+class="math inline">\(C_2\)</span> may be nonzero. The joint density is
+determined by first- and second-order correlations — a weaker condition
+than molecular chaos.</p>
+<p><strong>Note</strong>: In Definition 2.3, the arguments of <span
+class="math inline">\(C_k\)</span> are graph node labels <span
+class="math inline">\((i_1, \ldots, i_k)\)</span>. At the parameter
+space level (<span class="math inline">\(N_{\text{info}} \approx
+10^{22}\)</span>), node labels can be mapped to continuous coordinates
+<span class="math inline">\(x \in \Sigma \approx S^2\)</span>, so that
+<span class="math inline">\(C_k\)</span> reduces to connected Green’s
+functions in continuum field theory. This correspondence is guaranteed
+by Assumption A.1 (graph Laplacian <span
+class="math inline">\(\to\)</span> Laplace-Beltrami), but the definition
+of <span class="math inline">\(C_k\)</span> itself <strong>does not
+require</strong> A.1 — it is defined purely on the graph <span
+class="math inline">\(G_{\mathcal{I}}\)</span>.</p>
+<hr />
+<h2 id="connection-to-birkhoff-mixing">§3 Connection to Birkhoff
+Mixing</h2>
+<h3 id="mixing-two-point-correlation-decay">3.1 Mixing ⇒ Two-Point
+Correlation Decay</h3>
+<p><strong>Proposition 5.6.3.01 (Mixing decay of two-point
+cumulant)</strong>: Under the steady state <span
+class="math inline">\(T_{ss}\)</span>, for any two observation functions
+<span class="math inline">\(f, g: V \to \mathbb{R}\)</span>, the
+two-point cumulant satisfies:</p>
+<p><span class="math display">\[|C_2(f, g; \tau)| = \left|
+\mathbb{E}_{T_{ss}^\tau}[f(X) g(Y)] - \mathbb{E}[f] \mathbb{E}[g]
+\right| \leq \|f\| \cdot \|g\| \cdot e^{-\lambda_1^{\text{eff}}
+\tau},\]</span></p>
+<p>where <span class="math inline">\(\|f\| = \max_i |f(i)|\)</span>, and
+<span class="math inline">\(\lambda_1^{\text{eff}} = 391.05\text{
+rad}^{-2}\)</span> is the effective spectral gap (Theorem
+7.13.3.05).</p>
+<p><strong>Proof</strong> (outline): By Birkhoff mixing (Theorem
+7.13.3.05), the action of <span class="math inline">\(T_{ss}\)</span> on
+the state space satisfies: for any square-integrable functions <span
+class="math inline">\(f, g\)</span>,</p>
+<p><span class="math display">\[\left| \langle f(T_{ss}^\tau x) g(x)
+\rangle_{\mu_{ss}} - \langle f \rangle \langle g \rangle \right| \leq
+\|f\|_2 \|g\|_2 \cdot e^{-\lambda_1^{\text{eff}} \tau}.\]</span></p>
+<p>Taking <span class="math inline">\(f = \delta_i -
+1/N_{\text{info}}\)</span>, <span class="math inline">\(g = \delta_j -
+1/N_{\text{info}}\)</span> yields the node version. <span
+class="math inline">\(\|f\|_2 = \sqrt{\sum_i f(i)^2
+\mu_{ss}(i)}\)</span>, which is equivalent to the <span
+class="math inline">\(\sup\)</span> norm on the space of bounded
+functions (up to a constant factor). ∎</p>
+<h3 id="graph-theoretic-recursion-for-higher-order-cumulants">3.2
+Graph-Theoretic Recursion for Higher-Order Cumulants</h3>
+<p><strong>Lemma 5.6.3.02 (Graph-theoretic expansion of
+cumulants)</strong>: The k-th order cumulant <span
+class="math inline">\(C_k(i_1, \ldots, i_k; \tau)\)</span> can be
+expanded as a weighted sum over all connected k-point paths on the
+graph:</p>
+<p><span class="math display">\[C_k(i_1, \ldots, i_k; \tau) =
+\sum_{\substack{\gamma: \text{connected k-path} \\ \text{connecting }
+i_1, \ldots, i_k}} w(\gamma) \cdot \prod_{e \in \gamma}
+T_{ss}(e)^\tau,\]</span></p>
+<p>where a connected k-path <span class="math inline">\(\gamma\)</span>
+is a subgraph of <span class="math inline">\(G_{\mathcal{I}}\)</span>
+whose vertex set is exactly <span class="math inline">\(\{i_1, \ldots,
+i_k\}\)</span> and is connected; <span
+class="math inline">\(w(\gamma)\)</span> is a combinatorial weight; and
+<span class="math inline">\(T_{ss}(e)^\tau\)</span> is the transition
+probability along edge <span class="math inline">\(e\)</span> under
+<span class="math inline">\(\tau\)</span> steps of causal advance.</p>
+<p><strong>Explanation</strong>: This expansion is a direct consequence
+of the combinatorial definition of cumulants (Definition 2.3) — the
+joint density <span class="math inline">\(\rho^{(|B|)}_\tau\)</span> is
+itself given by the product of transition probabilities on the graph,
+and the partition sum formula for cumulants automatically filters out
+the “connected contribution” (disconnected parts are canceled by
+lower-order terms). This property is known in statistical mechanics as
+the “cluster decomposition” of cumulants, and it continues to hold on
+graphs.</p>
+<hr />
+<h2 id="basic-properties-of-cumulants">§4 Basic Properties of
+Cumulants</h2>
+<h3 id="identities">4.1 Identities</h3>
+<p><strong>Proposition 5.6.4.01 (Basic properties of
+cumulants)</strong>:</p>
+<ol type="1">
+<li><strong>Multilinearity</strong>: <span
+class="math inline">\(C_k\)</span> is multilinear in each argument — if
+<span class="math inline">\(f_j = a g_j + b h_j\)</span>, then <span
+class="math inline">\(C_k\)</span> decomposes linearly</li>
+<li><strong>Translation invariance</strong>: <span
+class="math inline">\(C_k(f_1 + c_1, \ldots, f_k + c_k) = C_k(f_1,
+\ldots, f_k)\)</span> (<span class="math inline">\(k \geq
+2\)</span>)</li>
+<li><strong>Independence ⇔ vanishing</strong>: If <span
+class="math inline">\(\{X_1, \ldots, X_k\}\)</span> can be partitioned
+into two independent subsets, then <span class="math inline">\(C_k =
+0\)</span></li>
+<li><strong>Scaling</strong>: <span class="math inline">\(C_k(a_1 f_1,
+\ldots, a_k f_k) = \left( \prod_{j=1}^{k} a_j \right) C_k(f_1, \ldots,
+f_k)\)</span></li>
+<li><strong>Symmetry</strong>: <span class="math inline">\(C_k\)</span>
+is symmetric in its arguments</li>
+</ol>
+<p>These are standard properties inherited directly from the
+combinatorial definition of cumulants, and they continue to hold on
+graphs — because they depend only on the algebraic structure of the
+expectation operator, not on the specific nature of the underlying
+space.</p>
+<h3 id="steady-state-limit">4.2 Steady-State Limit</h3>
+<p><strong>Proposition 5.6.4.02 (Trivialization of steady-state
+cumulants)</strong>: As <span class="math inline">\(\tau \to
+\infty\)</span>, all cumulants of order <span class="math inline">\(k
+\geq 2\)</span> tend to zero:</p>
+<p><span class="math display">\[\lim_{\tau \to \infty} C_k(i_1, \ldots,
+i_k; \tau) = 0, \quad \forall k \geq 2.\]</span></p>
+<p><strong>Proof</strong>: The steady-state distribution <span
+class="math inline">\(\rho_\infty(i) = 1/N_{\text{info}}\)</span> is
+uniform. By Birkhoff double stochasticity, <span
+class="math inline">\(T_{ss}^\infty\)</span> projects any initial
+distribution onto the uniform distribution, and this projection is a
+rank-1 operator. The joint density <span
+class="math inline">\(\rho^{(k)}_\infty(i_1, \ldots, i_k) =
+1/N_{\text{info}}^k = \prod_{j=1}^{k} \rho_\infty(i_j)\)</span>
+factorizes completely. By Definition 2.3, complete factorization ⇒ all
+<span class="math inline">\(C_k = 0\)</span> (<span
+class="math inline">\(k \geq 2\)</span>). ∎</p>
+<hr />
+<h2 id="unification-of-the-two-level-structure">§5 Unification of the
+Two-Level Structure</h2>
+<p><strong>Definition 5.1 (Fibration lift of information field
+cumulants)</strong>: At the parameter space level (<span
+class="math inline">\(N_{\text{info}} \approx 9.024 \times
+10^{22}\)</span>), node labels <span class="math inline">\(i\)</span>
+map to parameter space coordinates <span class="math inline">\(x_i \in
+\Sigma \approx S^2\)</span>. The cumulants <span
+class="math inline">\(C_k\)</span> admit a continuum limit form:</p>
+<p><span class="math display">\[c_k(x_1, \ldots, x_k; \tau) =
+\lim_{N_{\text{info}} \to \infty} N_{\text{info}}^k \cdot C_k(i(x_1),
+\ldots, i(x_k); \tau),\]</span></p>
+<p>where <span class="math inline">\(i(x)\)</span> is the graph node
+label to which <span class="math inline">\(x\)</span> belongs. The
+existence of this limit is guaranteed by Assumption A.1 (Theorem
+3.2.2.01, Appendix B).</p>
+<p><strong>Note</strong>: The factor <span
+class="math inline">\(N_{\text{info}}^k\)</span> comes from the Jacobian
+mapping discrete probability density to continuous density — in the
+continuum limit, single-point probability <span
+class="math inline">\(\rho(i) \sim 1/N_{\text{info}}\)</span>, so that
+<span class="math inline">\(c_k\)</span> as a continuous density is
+<span class="math inline">\(O(1)\)</span>. However, Definition 2.3
+(discrete cumulant) itself <strong>does not depend on this
+limit</strong> — it can be computed directly for finite <span
+class="math inline">\(N_{\text{info}}\)</span>.</p>
+<hr />
+<h2 id="theorem-index">Theorem Index</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Proposition</th>
+<th style="text-align: left;">Content</th>
+<th style="text-align: left;">Location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Definition 1.1</td>
+<td style="text-align: left;">Information field graph <span
+class="math inline">\(G_{\mathcal{I}}\)</span></td>
+<td style="text-align: left;">§1.1</td>
+</tr>
+<tr>
+<td style="text-align: left;">Definition 1.2</td>
+<td style="text-align: left;">Information density distribution <span
+class="math inline">\(\rho_\tau\)</span></td>
+<td style="text-align: left;">§1.2</td>
+</tr>
+<tr>
+<td style="text-align: left;">Definition 2.1</td>
+<td style="text-align: left;">k-point joint density</td>
+<td style="text-align: left;">§2.1</td>
+</tr>
+<tr>
+<td style="text-align: left;">Definition 2.2</td>
+<td style="text-align: left;">k-th order joint moment</td>
+<td style="text-align: left;">§2.1</td>
+</tr>
+<tr>
+<td style="text-align: left;">Definition 2.3</td>
+<td style="text-align: left;">k-th order information field cumulant</td>
+<td style="text-align: left;">§2.2</td>
+</tr>
+<tr>
+<td style="text-align: left;">Definition 2.4</td>
+<td style="text-align: left;">k-th order factorization</td>
+<td style="text-align: left;">§2.3</td>
+</tr>
+<tr>
+<td style="text-align: left;">Proposition 5.6.3.01</td>
+<td style="text-align: left;">Mixing decay of two-point cumulant</td>
+<td style="text-align: left;">§3.1</td>
+</tr>
+<tr>
+<td style="text-align: left;">Lemma 5.6.3.02</td>
+<td style="text-align: left;">Graph-theoretic expansion of
+cumulants</td>
+<td style="text-align: left;">§3.2</td>
+</tr>
+<tr>
+<td style="text-align: left;">Proposition 5.6.4.01</td>
+<td style="text-align: left;">Basic properties of cumulants</td>
+<td style="text-align: left;">§4.1</td>
+</tr>
+<tr>
+<td style="text-align: left;">Proposition 5.6.4.02</td>
+<td style="text-align: left;">Trivialization of steady-state
+cumulants</td>
+<td style="text-align: left;">§4.2</td>
+</tr>
+<tr>
+<td style="text-align: left;">Definition 5.1</td>
+<td style="text-align: left;">Fibration lift</td>
+<td style="text-align: left;">§5</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="subsequent-work">Subsequent Work</h2>
+<p>This article only provides the graph-theoretic precise definition of
+cumulants. The following is left for subsequent work:</p>
+<ul>
+<li>Prove that <span class="math inline">\(|C_k(\tau)| \leq A_k \cdot
+e^{-(k-2)\lambda_1^{\text{eff}} \tau} \cdot e^{-|\Lambda_\xi| \cdot
+d_\xi}\)</span>. Proposition 5.6.3.01 of this article only gives the
+<span class="math inline">\(k=2\)</span> case; higher-order
+generalizations require Doeblin-type coupling arguments on graphs (see
+Article 5.7).</li>
+<li>Prove that the above bound holds uniformly as <span
+class="math inline">\(N_{\text{info}} \to \infty\)</span> — this is
+homologous to Assumption A.1 (see Article 5.8).</li>
+</ul>
+<hr />
+<h2 id="references">References</h2>
+<ol type="1">
+<li>Theorem 5.1.1.01 — Algebraic connectivity <span
+class="math inline">\(\mu_1 \approx 0.369\)</span></li>
+<li>Theorem 7.13.3.05 — Birkhoff steady-state circulation mixing</li>
+<li>Theorem 7.13.4.01 — Hard-direction Lyapunov exponent <span
+class="math inline">\(\Lambda_\xi \approx -2.51\)</span></li>
+<li>Theorem 3.2.2.01 — <span class="math inline">\(N_{\text{info}}
+\approx 9.024 \times 10^{22}\)</span>, <span
+class="math inline">\(N_{\text{dec}} \approx 1.74 \times
+10^{22}\)</span></li>
+<li>Theorem 3.3.1.01 — Birkhoff Fixed Point Theorem</li>
+<li>Theorem 1.1.5.01 — Green’s function existence and uniqueness
+(spectral expansion / Born Rule)</li>
+</ol>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>

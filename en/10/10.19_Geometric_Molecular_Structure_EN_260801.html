@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10.19 Geometric Molecular Structure | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Number: 10.19 | Date: 260723.1 | Series: Applications | Language: EN">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/10/10.19_Geometric_Molecular_Structure_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">10.19 Geometric Molecular Structure</span>
+  </nav>
+  <main class="article-content">
+<h1 id="geometric-molecular-structure">10.19 Geometric Molecular
+Structure</h1>
+<p><strong>Number</strong>: 10.19 | <strong>Date</strong>: 260723.1 |
+<strong>Series</strong>: Applications | <strong>Language</strong>:
+EN</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>Using group representation theory and algebraic topology as
+analytical tools, a framework-level exploration of Geometric Theory in
+the condensed matter domain is established. Core contributions include:
+an irreducible representation classification framework for the 230 space
+groups, a fiber bundle construction for Fermi surfaces, a homotopy class
+classification of dislocation cores, and an index-theoretic formal
+framework for surface states. : Group representation theory tools are
+not rigorously derived from upstream axioms; most algebraic topology
+constructions are at the stage of framework-level correspondence.</p>
+<p><strong>Keywords:</strong> Group Representation Theory; Algebraic
+Topology; Fiber Bundle; Chern Class; Homotopy Group; Index Theorem;
+Character; Irreducible Representation; Fermi Surface; Dislocation</p>
+<hr />
+<h2 id="contents">Contents</h2>
+<ul>
+<li>Chapter 1 Introduction</li>
+<li>Chapter 2 Molecular Structure Foundations of the Geometric Sector
+Parameter Space</li>
+<li>§2.1 Basic Framework</li>
+<li>§2.2 Spectral Expansion/Born Rule (Theorem 1.1.5.01) and Physical
+Constants</li>
+<li>Chapter 3 Representation-Theoretic Classification of the 230 Space
+Groups</li>
+<li>§3.1 Irreducible Representations of Point Groups</li>
+<li>§3.2 Projective Representations of Space Groups</li>
+<li>§3.3 Geometric Constraint on Coordination Number</li>
+<li>Chapter 4 Representation-Theoretic Selection Rules for Charge
+Transfer Gaps</li>
+<li>§4.1 Formula Structure</li>
+<li>§4.2 Representation-Theoretic Selection Rules</li>
+<li>Chapter 5 Phonon Frequencies and Green Function Percolation</li>
+<li>§5.1 Representation-Theoretic Selection Rules</li>
+<li>§5.2 Character Projection and the Wigner-Eckart Theorem</li>
+<li>Chapter 6 Fiber Bundles and Algebraic Topology of Fermi
+Surfaces</li>
+<li>§6.1 Complex Line Bundles and U(1) Principal Bundles</li>
+<li>§6.2 Chern Classes and Topological Invariants</li>
+<li>§6.3 Homological Form of the Area Formula</li>
+<li>§6.4 Homotopy Analysis of Connectivity</li>
+<li>Chapter 7 Surface States and Index Theorems</li>
+<li>§7.1 APS Index Theorem Form for Surface States</li>
+<li>§7.2 Unified Surface Bridge Theory</li>
+<li>Chapter 8 Helical Structures and Chirality</li>
+<li>§8.1 Representation Theory of Multi-Helices</li>
+<li>§8.2 Topological Interpretation of Chirality</li>
+<li>Chapter 9 Homotopy Class Classification of Dislocations</li>
+<li>§9.1 Dislocation Cores as Topological Defects</li>
+<li>§9.2 Two-Dimensional Spectral Expansion/Born Rule (Theorem 1.1.5.01)
+Compression</li>
+<li>Chapter 10 Constructive Enumeration of the Structural Stability
+Upper Bound</li>
+<li>Chapter 11 Conclusion</li>
+<li>Appendix Summary of Key Numerical Values</li>
+<li>References</li>
+</ul>
+<hr />
+<h2 id="chapter-1-introduction">Chapter 1 Introduction</h2>
+<p>The Geometric Sector Parameter Space theory (Theorem 1.2.3.01–Theorem
+1.1.5.01-20) establishes a zero-anchor mapping from pure mathematical
+structure to physical constants. This paper extends this framework to
+the condensed matter domain, introducing group representation theory and
+algebraic topology as analytical tools.</p>
+<p>****: Group representation theory (230 space groups, irreducible
+representations, characters, Wigner-Eckart theorem) and algebraic
+topology (fiber bundles, Chern classes, homotopy groups, index theorems)
+are introduced as <strong>independent analytical languages</strong> for
+Geometric Theory in the condensed matter domain, and are not rigorously
+derived from Theorem 1.4.3.01 or upstream axioms. Theorem 1.4.3.01 is a
+scaling framework, explicitly stating that “the geometric origin of the
+Standard Model gauge group is not asserted in this paper.” The group
+representation theory tools of this paper belong to an independently
+introduced mathematical analysis layer; their rigorous connection to the
+Sole Axiom δ (Zero Motion) of Geometric Theory is an open research
+direction.</p>
+<p>Algebraic topology constructions (Fermi surface complex line bundles,
+APS index theorem, dislocation homotopy classes) are mostly at the
+<strong>“framework-level correspondence”</strong> stage, labeled as
+“construction” or “framework” rather than “theorem”; their rigorous
+geometric-physical bridges await establishment in subsequent papers.</p>
+<p>This paper introduces no new physical hypotheses; all geometric
+constants derive from upstream papers, and group representation theory
+and algebraic topology serve only as analytical languages for existing
+geometric structures.</p>
+<hr />
+<h2
+id="chapter-2-molecular-structure-foundations-of-the-geometric-sector-parameter-space">Chapter
+2 Molecular Structure Foundations of the Geometric Sector Parameter
+Space</h2>
+<h3 id="basic-framework">§2.1 Basic Framework</h3>
+<p>The Geometric Sector Parameter Space theory is built on the following
+Sole Axiom δ (Zero Motion) system (Theorem , Theorem 1.1.5.01):</p>
+<p><strong>Born Normalization Condition (Theorem 1.2.3.01)</strong>: The
+three sectors ℳ𝒞ℐ of <span class="math inline">\(T\Sigma = M \oplus C
+\oplus I\)</span> satisfy <span
+class="math display">\[\theta_M+\theta_C+\theta_I =
+90^\circ\]</span></p>
+<p><strong>Algebraic Action S(σ) (Theorem 1.4.3.01)</strong>: On the
+constraint manifold <span class="math inline">\(C\)</span>, the action
+<span class="math display">\[S(\theta) =
+\sum_{i=1}^{3}\frac{1}{\sin^2\theta_i} +
+\sum_{i&lt;j}\frac{1}{\sin\theta_i \sin\theta_j}\]</span> attains its
+minimum <span class="math inline">\(S_{\min} = 24\)</span> at <span
+class="math inline">\(\theta_0 = (30^\circ, 30^\circ,
+30^\circ)\)</span>.</p>
+<p><strong>Mass Operator M̂ (Theorem 1.1.5.01-20, Spectral Interlock
+Theorem)</strong>: The electron mass is uniquely determined from the
+matter realm angle <span class="math inline">\(\theta_M\)</span> via the
+mapping <span class="math display">\[m_e = K \sin^3\theta_M\]</span>
+where <span class="math inline">\(K = 839.758793\ \mathrm{keV}\)</span>
+is the geometric mass scale (Theorem 1.1.5.01-20).</p>
+<p>The nine-dimensional mother manifold <span class="math inline">\(M(a)
+= S^3(a) \times S^3(a/\sqrt{3}) \times S^3(a/\sqrt{6})\)</span> is
+equipped with the <span class="math inline">\(\mathrm{Cl}(9)\)</span>
+spinor bundle, and the three sectors ℳ𝒞ℐ <span
+class="math inline">\(T\Sigma = M \oplus C \oplus I\)</span> have sector
+parameter space <span class="math inline">\(\Sigma \cong S^2\)</span>
+carrying three-dimensional crystallographic point groups as discrete
+subgroup reductions of the <span
+class="math inline">\(\mathrm{Spin}(8)\)</span> root geometry. All group
+representation classifications in this paper are the irreducible
+representation decompositions of this nine-dimensional structure on the
+three-dimensional matter realm <span
+class="math inline">\(\mathcal{M}\)</span>.</p>
+<p>Baseline angles of the three-duality space (Birkhoff Fixed Point σ*,
+Theorem 1.1.5.01): <span class="math display">\[\theta_M^0 =
+57.93^\circ,\quad \theta_C^0 = 26.16^\circ,\quad \theta_I^0 =
+5.91^\circ\]</span> satisfying the Born Normalization Condition (Theorem
+1.2.3.01) <span class="math inline">\(\theta_M+\theta_C+\theta_I =
+90^\circ\)</span>.</p>
+<p><strong>Intrinsic Coordinates</strong> (this paper adopts the
+definition of Theorem 1.1.5.01): <span class="math display">\[\boxed{\xi
+= \theta_I - \theta_I^0,\quad \eta = (\theta_I\theta_C) -
+(\theta_I^0\theta_C^0)}\]</span></p>
+<p>Inverse solution: <span class="math inline">\(\theta_I = \theta_I^0 +
+\xi,\ \theta_C = \theta_C^0 + \eta - \xi,\ \theta_M = \theta_M^0 -
+\eta\)</span>. The merits of this coordinate system are fully discussed
+in Theorem 1.1.5.01: the <span class="math inline">\(\eta\)</span>
+direction is parallel to the approximate spectral gap direction near the
+Birkhoff Fixed Point σ* (eigenvalue <span
+class="math inline">\(\lambda_1 \approx 392.21\
+\mathrm{rad}^{-2}\)</span>), and the <span
+class="math inline">\(\xi\)</span> direction is parallel to the
+approximate Dirac spectral direction (eigenvalue <span
+class="math inline">\(\lambda_2 \approx 58760.77\
+\mathrm{rad}^{-2}\)</span>).</p>
+<p>Birkhoff Mixing Matrix eigenvalues (Theorem 1.1.5.01): <span
+class="math display">\[\lambda_1 = 392.21\ \mathrm{rad}^{-2},\quad
+\lambda_2 = 58760.77\ \mathrm{rad}^{-2},\quad
+\frac{\lambda_2}{\lambda_1} \approx 149.8\]</span></p>
+<p>Effective Birkhoff Mixing Matrix eigenvalues (after cross-sector
+coupling correction, Theorem 1.1.5.01-20): <span
+class="math display">\[\lambda_1^{\mathrm{eff}} = 391.05\
+\mathrm{rad}^{-2},\quad \lambda_2^{\mathrm{eff}} = 59324.3\
+\mathrm{rad}^{-2},\quad
+\frac{\lambda_2^{\mathrm{eff}}}{\lambda_1^{\mathrm{eff}}} \approx
+151.7\]</span></p>
+<p>Structural stiffness constraint ratio (Theorem 1.1.5.01): <span
+class="math display">\[\Lambda_H^{(\text{struct})} = k_0 \Lambda
+\left(\frac{\Delta\Theta}{1^\circ}\right)^2 = 2 \times 3 \times 5^2 =
+150\]</span></p>
+<p>Relationship of the three ratios: the Birkhoff Mixing Matrix outputs
+149.8, the effective Birkhoff Mixing Matrix outputs 151.7, and the
+structural identification value is 150. The bare value deviates from 150
+by 0.13%, absorbed in the higher-order corrections of the seven-level
+recursion.</p>
+<p>Effective percolation function matrix (Theorem , Theorem ): <span
+class="math display">\[\Phi = \begin{pmatrix} 12.4415 &amp; 22.6281 \\
+22.6281 &amp; 12.4415 \end{pmatrix}, \quad H^W = \begin{pmatrix} 1.577
+&amp; 0.867 \\ 0.867 &amp; 1.577 \end{pmatrix}\]</span></p>
+<blockquote>
+<p><strong>[Note on Φ and H^W]</strong> These two matrices constitute
+part of the complete data structure of the geometric sector parameter
+space, rigorously determined by Theorem . Chapters §3–§10 of this paper
+are framework-level explorations (group representation classification,
+phonon selection rules, Fermi surface construction, etc.) and do not
+directly use the numerical values of Φ and H^W; they are reserved for
+subsequent quantitative calculations on specific materials (e.g., the
+<span class="math inline">\(\Phi_G^{(\alpha)}(\Gamma)\)</span>
+projection in the phonon frequency formula of §5.2 must be derived from
+Φ, and the connection of the Fermi surface complex line bundle in §6
+must be derived from the cross-sector coupling structure of H^W).
+<strong>Origin of S_e</strong> (corrected): The reciprocal of the
+fine-structure constant <span class="math inline">\(S_e =
+137.035999084\)</span> is a <strong>geometric intrinsic quantity of
+Consummate Reproduction</strong>, uniquely determined by the M-C
+waist-edge coupling of the ℳ𝒞ℐ three sectors and the self-consistency of
+the mass operator <span class="math inline">\(m = K
+\sin^3\theta_M\)</span> (Theorem 1.1.5.01-20 Spectral Interlock
+Theorem). The seven-level recursion of Theorem 1.1.5.01 precisely
+reaches <span class="math inline">\(S_7 = 137.035999083\)</span> from
+the Birkhoff Fixed Point σ* <span class="math inline">\(S_0 =
+137.0000000009\)</span>, verifying the accessibility from the Birkhoff
+Fixed Point σ* to <span class="math inline">\(S_e\)</span> on the sector
+parameter space, with deviation <span
+class="math inline">\(10^{-9}\)</span>. Theorem 1.2.3.01 only
+establishes two topological axioms and the intermediate value theorem,
+and <strong>does not contain the numerical value of <span
+class="math inline">\(S_e\)</span></strong>.</p>
+</blockquote>
+<h3
+id="spectral-expansionborn-rule-theorem-1.1.5.01-and-physical-constants">§2.2
+Spectral Expansion/Born Rule (Theorem 1.1.5.01) and Physical
+Constants</h3>
+<p>From Theorem 1.1.5.01-20 Spectral Expansion/Born Rule (Theorem
+1.1.5.01), the relations between fundamental physical constants and
+geometric parameters are as follows:</p>
+<ul>
+<li><p><strong>Spectral Interlock Theorem</strong> (Theorem
+1.1.5.01-20): The mapping <span class="math inline">\(\Phi(S,
+K\sin^3\theta_M)\)</span> is locally diffeomorphic and globally
+injective on the constraint manifold <span
+class="math inline">\(C\)</span>; <span class="math inline">\((S_e,
+m_e)\)</span> is the unique compatible solution of the ℳ𝒞ℐ three-sector
+axiomatic system. The two cannot be specified independently.</p></li>
+<li><p><strong>Fine-Structure Constant</strong>: <span
+class="math inline">\(\alpha = 1/S_e = 7.2973525693 \times
+10^{-3}\)</span></p></li>
+<li><p><strong>Electron Mass</strong>: <span class="math inline">\(m_e =
+K \cdot \sin^3\theta_M = 510.99895\ \mathrm{keV}\)</span></p></li>
+<li><p><strong>Hydrogen Ground State Energy</strong>: <span
+class="math inline">\(E_H = \frac{1}{2}\alpha^2 m_e c^2 = 13.6057\
+\mathrm{eV}\)</span></p></li>
+<li><p><strong>Geometric Velocity (Algebraic Self-Consistent
+Value)</strong> (Theorem 1.1.5.01-20): <span
+class="math display">\[v_{\mathrm{geo}}^{\mathrm{alg}} = \frac{3\pi^2
+\cdot S_e \cdot \sqrt{\lambda_1^{\mathrm{eff}}}}{v_p} =
+71.832113\]</span> where <span class="math inline">\(v_p = 1117\)</span>
+is the integer characteristic quantity associated with the
+prefactor.</p></li>
+<li><p><strong>Geometric Length Scale</strong>: <span
+class="math inline">\(\chi_L = 1.5092231080 \times 10^{-10}\
+\mathrm{m}\)</span></p></li>
+<li><p><strong>Geometric Time Scale</strong>: <span
+class="math inline">\(\chi_T = 3.6161912064 \times 10^{-17}\
+\mathrm{s}\)</span></p></li>
+</ul>
+<p>Information field hierarchical characteristic scales (concept from
+Theorem Dirac Spectral Freezing and Seven-Layer Truncation framework;
+specific numerical values computed in this paper): <span
+class="math display">\[\rho_n = \chi_L \cdot \Lambda^n \cdot S_e^{1/2},
+\quad n \in [0, 7]\]</span> where <span class="math inline">\(\Lambda =
+\lambda_2/\lambda_1 \approx 150\)</span> is the geometric ratio of the
+spectral gap direction to the Dirac spectral direction (Birkhoff Mixing
+Matrix ratio 149.8, effective ratio 151.7, consistent with the
+structural identification value 150, with deviations absorbed in the
+higher-order corrections of the seven-level recursion). Note: <span
+class="math inline">\(\Lambda\)</span> is the Birkhoff Mixing Matrix
+eigenvalue ratio itself, <strong>not</strong> its square root.</p>
+<p><strong>Verification</strong>: <span class="math inline">\(\rho_0 =
+\chi_L \cdot S_e^{1/2} = 1.5092\times10^{-10} \times 11.706 =
+1.77\times10^{-9}\ \mathrm{m}\)</span>. <span
+class="math inline">\(\rho_1 = 1.77\times10^{-9} \times 150 =
+2.65\times10^{-7}\ \mathrm{m}\)</span>.</p>
+<p>Key hierarchical correspondence:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Level n</th>
+<th style="text-align: left;">Characteristic Scale ρₙ</th>
+<th style="text-align: left;">Physical Correspondence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: left;">1.77×10⁻⁹ m</td>
+<td style="text-align: left;">Quantum ground state</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">2.65×10⁻⁷ m</td>
+<td style="text-align: left;">Atomic scale</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">3.97×10⁻⁵ m</td>
+<td style="text-align: left;">Molecular scale</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;">3.02×10⁶ m</td>
+<td style="text-align: left;">Earth-system information characteristic
+scale</td>
+</tr>
+</tbody>
+</table>
+<p>The resolvable information levels of the matter realm are strictly
+bounded by <span class="math inline">\(n \leq 7\)</span>, locked by Bott
+periodicity (Theorem , Theorem ).</p>
+<hr />
+<h2
+id="chapter-3-representation-theoretic-classification-of-the-230-space-groups">Chapter
+3 Representation-Theoretic Classification of the 230 Space Groups</h2>
+<blockquote>
+<p><strong>[Tool Layer Declaration]</strong> The group representation
+theory used in this chapter (Frobenius reciprocity theorem, character
+formulas, induced representations) is standard mathematical tooling, not
+derived from the Sole Axiom δ (Zero Motion) of Geometric Theory. It is
+introduced as an analytical language to classify crystallographic
+symmetries on the geometric sector parameter space. The rigorous
+connection between group representation theory and the Geometric Theory
+framework is an open research direction (see Theorem 1.4.3.01).</p>
+</blockquote>
+<h3 id="irreducible-representations-of-point-groups">§3.1 Irreducible
+Representations of Point Groups</h3>
+<p><strong>Proposition 10.19.3.01 (Point Group Representation
+Compatibility)</strong>: The information field spherical harmonic modes
+on the geometric sector parameter space <span
+class="math inline">\(\Sigma \cong S^2\)</span> are compatible with the
+irreducible representations of the 32 three-dimensional crystallographic
+point groups.</p>
+<p><strong>Argument</strong>: The information field modes on the coding
+orbit <span class="math inline">\(\Sigma \cong S^2\)</span> are expanded
+in spherical harmonics <span class="math inline">\(Y_l^m\)</span>.
+Spherical harmonics transform under <span
+class="math inline">\(SO(3)\)</span> rotations according to irreducible
+representations <span class="math inline">\(D^{(l)}\)</span> (dimension
+<span class="math inline">\(2l+1\)</span>). The 32 crystallographic
+point groups are discrete subgroups of <span
+class="math inline">\(SO(3)\)</span>. By Frobenius reciprocity, the
+<span class="math inline">\(SO(3)\)</span> representation <span
+class="math inline">\(D^{(l)}\)</span> decomposes under the point group
+<span class="math inline">\(G\)</span> as a direct sum of irreducible
+representations of <span class="math inline">\(G\)</span>: <span
+class="math display">\[D^{(l)}|_G = \bigoplus_\alpha n_\alpha^{(l)}
+D^{(\alpha)}\]</span> where <span
+class="math inline">\(n_\alpha^{(l)}\)</span> is the multiplicity of the
+irreducible representation <span
+class="math inline">\(D^{(\alpha)}\)</span>, determined by the character
+formula: <span class="math display">\[n_\alpha^{(l)} = \frac{1}{|G|}
+\sum_{g \in G} \chi^{(l)}(g)^* \chi^{(\alpha)}(g)\]</span> The
+decompositions of low-order spherical harmonics (<span
+class="math inline">\(l=0,1,2\)</span>) naturally cover the 32 point
+groups: <span class="math inline">\(l=0\)</span> (<span
+class="math inline">\(D^{(0)}\)</span>, 1-dim) → totally symmetric
+representation <span class="math inline">\(A_{1g}\)</span>; <span
+class="math inline">\(l=1\)</span> (<span
+class="math inline">\(D^{(1)}\)</span>, 3-dim) → decomposes as <span
+class="math inline">\(A_{2u} \oplus E_u\)</span> (cubic group) or <span
+class="math inline">\(A_{2u} \oplus E_{1u}\)</span> (hexagonal group);
+<span class="math inline">\(l=2\)</span> (<span
+class="math inline">\(D^{(2)}\)</span>, 5-dim) → decomposes as <span
+class="math inline">\(E_g \oplus T_{2g}\)</span> (cubic group) or <span
+class="math inline">\(E_{1g} \oplus E_{2g}\)</span> (hexagonal
+group).</p>
+<h3 id="projective-representations-of-space-groups">§3.2 Projective
+Representations of Space Groups</h3>
+<p><strong>Proposition 10.19.3.02 (Projective Representations of Space
+Groups)</strong>: The 230 space groups, as discrete subgroups of the
+Euclidean group <span class="math inline">\(E(3)\)</span>, have their
+projective representations jointly determined by point group
+representations and Bloch’s theorem for the translation group.</p>
+<p><strong>Argument</strong>: An element of the space group <span
+class="math inline">\(S\)</span> is <span
+class="math inline">\(\{R|\mathbf{t}\}\)</span>, where <span
+class="math inline">\(R \in G\)</span> (point group) and <span
+class="math inline">\(\mathbf{t}\)</span> is a translation. By the Seitz
+representation, the space group acts on Hilbert space as: <span
+class="math display">\[\hat{P}(R|\mathbf{t})\psi(\mathbf{r}) =
+\psi(R^{-1}\mathbf{r} - R^{-1}\mathbf{t})\]</span> By Bloch’s theorem,
+the irreducible representations of the translation subgroup <span
+class="math inline">\(T\)</span> are <span
+class="math inline">\(\exp(i\mathbf{k}\cdot\mathbf{t})\)</span>, so the
+space group representation can be reduced to representations of the
+“little group” of the point group at <span
+class="math inline">\(\mathbf{k}\)</span>. The complete classification
+of the 230 space groups is accomplished by induced representations from
+the little group representations.</p>
+<h3 id="geometric-constraint-on-coordination-number">§3.3 Geometric
+Constraint on Coordination Number</h3>
+<p><strong>Proposition 10.19.3.03 (Geometric Constraint on Coordination
+Number)</strong>: The coordination number (CN) is constrained by the
+irreducible representation dimensions of spherical harmonics on the
+coding orbit <span class="math inline">\(S^2\)</span> under point group
+actions. The irreducible decomposition of low-order modes (<span
+class="math inline">\(l \leq 2\)</span>) provides an upper-bound
+estimate of the number of independent geometric directions.</p>
+<p>The coordination number describes the nearest-neighbor interaction
+count of a central atom and is a crystallographic geometric parameter.
+On <span class="math inline">\(S^2\)</span>, low-order spherical
+harmonic modes correspond to fundamental geometric directions: <span
+class="math inline">\(l=0\)</span> (<span
+class="math inline">\(D^{(0)}\)</span>, 1-dim): 1 totally symmetric
+direction; <span class="math inline">\(l=1\)</span> (<span
+class="math inline">\(D^{(1)}\)</span>, 3-dim): 3 independent spatial
+directions; <span class="math inline">\(l=2\)</span> (<span
+class="math inline">\(D^{(2)}\)</span>, 5-dim): 5 independent quadrupole
+directions. Crystallographic point group symmetry further reduces the
+number of independent directions. This framework provides a qualitative
+constraint relationship between the number of geometric modes and the
+coordination number, not a quantitative equation.</p>
+<hr />
+<h2
+id="chapter-4-representation-theoretic-selection-rules-for-charge-transfer-gaps">Chapter
+4 Representation-Theoretic Selection Rules for Charge Transfer Gaps</h2>
+<h3 id="formula-structure">§4.1 Formula Structure</h3>
+<p>Charge transfer gap formula (framework-level): <span
+class="math display">\[\Delta_{\mathrm{CT}} = E_H \cdot |Z_M - Z_X|
+\cdot \sin^2\theta_C \cdot F_{\mathrm{orb}} / \sqrt{S_e}\]</span> where
+<span class="math inline">\(F_{\mathrm{orb}} =
+\sqrt{(n_M^{\mathrm{act}}/N_M^{\mathrm{orb}})(n_X^{\mathrm{act}}/N_X^{\mathrm{orb}})}\)</span>
+is the orbital activity factor.</p>
+<p>The effective nuclear charge and bond length are determined by the
+chemical mapping: <span class="math display">\[Z_{\mathrm{eff}} = Z -
+\Sigma\sigma\]</span> where <span
+class="math inline">\(\Sigma\sigma\)</span> is the shielding
+constant.</p>
+<h3 id="representation-theoretic-selection-rules">§4.2
+Representation-Theoretic Selection Rules</h3>
+<p><strong>Proposition 10.19.4.01 (Representation-Theoretic Selection
+Rules for Orbital Activity)</strong>: Under the point group <span
+class="math inline">\(G\)</span>, atomic orbitals are classified by
+irreducible representations <span
+class="math inline">\(D^{(\alpha)}\)</span>. The orbital degeneracy
+<span class="math inline">\(N^{\mathrm{orb}}\)</span> equals the
+dimension <span class="math inline">\(d_\alpha\)</span> of the
+irreducible representation.</p>
+<p><strong>Argument</strong>: The <span class="math inline">\(d\)</span>
+orbitals (<span class="math inline">\(l=2\)</span>) decompose under the
+<span class="math inline">\(O_h\)</span> point group as <span
+class="math inline">\(e_g\)</span> (2-dim) and <span
+class="math inline">\(t_{2g}\)</span> (3-dim). The number of active
+electrons <span class="math inline">\(n^{\mathrm{act}}\)</span> is the
+electron count in the partially filled representation: e.g., <span
+class="math inline">\(d^9\)</span> (<span
+class="math inline">\(\mathrm{Cu}^{2}\)</span>): <span
+class="math inline">\(e_g^4 t_{2g}^5\)</span>, active electron is the
+hole in <span class="math inline">\(t_{2g}\)</span>, <span
+class="math inline">\(n^{\mathrm{act}} = 1\)</span>; <span
+class="math inline">\(d^5\)</span> (<span
+class="math inline">\(\mathrm{Mn}^{2}\)</span>): <span
+class="math inline">\(t_{2g}^3 e_g^2\)</span>, high spin, <span
+class="math inline">\(n^{\mathrm{act}} = 5\)</span>. The orbital
+degeneracy <span class="math inline">\(N^{\mathrm{orb}}\)</span> equals
+the irreducible representation dimension <span
+class="math inline">\(d_\alpha\)</span>. Hence <span
+class="math inline">\(F_{\mathrm{orb}}\)</span> can be rewritten as:
+<span class="math display">\[F_{\mathrm{orb}} = \sqrt{\sum_\alpha
+\frac{n_\alpha}{d_\alpha} \cdot \sum_\beta
+\frac{n_\beta}{d_\beta}}\]</span> where <span
+class="math inline">\(n_\alpha\)</span> is the electron count in
+representation <span class="math inline">\(D^{(\alpha)}\)</span>.</p>
+<hr />
+<h2
+id="chapter-5-phonon-frequencies-and-green-function-percolation">Chapter
+5 Phonon Frequencies and Green Function Percolation</h2>
+<h3 id="representation-theoretic-selection-rules-1">§5.1
+Representation-Theoretic Selection Rules</h3>
+<p><strong>Proposition 10.19.5.01 (Representation-Theoretic
+Classification of Phonon Modes)</strong>: Optical phonon modes at the
+Brillouin zone center are classified by irreducible representations of
+the point group; active modes are determined by character
+projection.</p>
+<p><strong>Argument</strong>: Phonon modes correspond to normal modes of
+lattice vibrations, transforming under the point group according to
+irreducible representations. By the character projection operator: <span
+class="math display">\[\hat{P}^{(\alpha)} = \frac{d_\alpha}{|G|} \sum_{g
+\in G} \chi^{(\alpha)}(g)^* \hat{P}(g)\]</span> the dynamical matrix is
+projected onto irreducible representation subspaces, yielding
+symmetry-classified phonon modes. Infrared-active modes require that the
+direct product of the representation with the dipole moment (<span
+class="math inline">\(l=1\)</span>) contains the totally symmetric
+representation; Raman-active modes require that the direct product with
+the polarizability (<span class="math inline">\(l=2\)</span>) contains
+the totally symmetric representation.</p>
+<h3
+id="character-projection-and-wigner-eckart-the-phonon-frequency-green-function-percolation-formula-rewritten-in-representation-theoretic-language-is-framework-level-formula">§5.2
+Character Projection and Wigner-Eckart: The phonon frequency Green
+function percolation formula, rewritten in representation-theoretic
+language, is (framework-level formula):</h3>
+<p><span class="math display">\[\omega_{\mathrm{phonon}}^{(\alpha)} =
+v_{\mathrm{geo}}^{\mathrm{alg}} \cdot
+\sqrt{\frac{\lambda_1^{\mathrm{eff}}}{\bar{\rho}}} \cdot
+\frac{\Phi_G^{(\alpha)}(\Gamma)}{S_e} \cdot
+\frac{1}{\chi_T}\]</span></p>
+<p>where <span class="math inline">\(\Phi_G^{(\alpha)}\)</span> is the
+percolation function projection onto irreducible representation <span
+class="math inline">\(\alpha\)</span>, <span
+class="math inline">\(v_{\mathrm{geo}}^{\mathrm{alg}} =
+71.832113\)</span> is the algebraic self-consistent value of the
+geometric velocity, <span class="math inline">\(\lambda_1^{\mathrm{eff}}
+= 391.05\ \mathrm{rad}^{-2}\)</span> is the effective eigenvalue in the
+spectral gap direction, <span class="math inline">\(\bar{\rho}\)</span>
+is the reduced density parameter (dimensionless), and <span
+class="math inline">\(\chi_T = 3.6161912064 \times 10^{-17}\
+\mathrm{s}\)</span> is the geometric time scale. The factor <span
+class="math inline">\(1/\chi_T\)</span> converts the rad⁻¹ dimension to
+s⁻¹, giving <span class="math inline">\(\omega\)</span> the correct
+frequency dimension.</p>
+<p>By the Wigner-Eckart theorem, matrix elements depend only on
+representation labels: <span class="math display">\[\langle \alpha |
+\Phi | \beta \rangle = \langle \alpha \| \Phi \| \beta \rangle \cdot
+\begin{pmatrix} \alpha &amp; \Gamma &amp; \beta \\ m_\alpha &amp;
+m_\Gamma &amp; m_\beta \end{pmatrix}\]</span> where the double-bar
+matrix element is the reduced matrix element, depending only on
+representation labels; the parentheses denote Clebsch-Gordan
+coefficients.</p>
+<hr />
+<h2
+id="chapter-6-fiber-bundles-and-algebraic-topology-of-fermi-surfaces">Chapter
+6 Fiber Bundles and Algebraic Topology of Fermi Surfaces</h2>
+<blockquote>
+<p><strong>[Hierarchy Declaration]</strong> All “theorems” in this
+chapter are downgraded to “constructions” or “framework-level
+correspondences.” The construction of the complex line bundle <span
+class="math inline">\(L\)</span> relies on the complexification of the
+percolation function <span class="math inline">\(\Phi\)</span> (<span
+class="math inline">\(\Phi_{\mathbb{C}} = \Phi + i\Phi^\perp\)</span>),
+where the rigorous geometric construction of <span
+class="math inline">\(\Phi^\perp\)</span> has not yet been completed by
+Theorem 1.1.5.01. The content of this chapter constitutes an
+<strong>exploratory application</strong> of algebraic topology tools
+within Geometric Theory and does not constitute a rigorous
+geometric-physical mapping theorem.</p>
+</blockquote>
+<h3 id="complex-line-bundles-and-u1-principal-bundles">§6.1 Complex Line
+Bundles and U(1) Principal Bundles</h3>
+<p><strong>Construction 6.1 (Fiber Bundle of the Fermi
+Surface)</strong>: The metallic Fermi surface can be formally regarded
+as a holographic section of the <span
+class="math inline">\(U(1)\)</span> principal bundle of a complex line
+bundle <span class="math inline">\(L\)</span> over the coding orbit
+<span class="math inline">\(\Sigma \cong S^2\)</span>, with total space
+<span class="math inline">\(P\)</span> being the percolation function
+level set, base space <span class="math inline">\(B = \Sigma\)</span>,
+and fiber <span class="math inline">\(F = U(1)\)</span>.</p>
+<p><strong>Construction Idea</strong>: The complex-valued percolation
+function <span class="math inline">\(\Phi_{\mathbb{C}} = \Phi +
+i\Phi^\perp\)</span> (where <span
+class="math inline">\(\Phi^\perp\)</span> is determined by the adjoint
+solution of the Theorem 1.1.5.01 percolation function analytic
+framework) takes the level set <span
+class="math inline">\(\Phi_{\mathbb{C}} = \Phi_F\)</span> on <span
+class="math inline">\(\Sigma\)</span>. The level set is locally
+homeomorphic to <span class="math inline">\(S^1\)</span> and thus can be
+regarded as a bundle with fiber <span
+class="math inline">\(S^1\)</span>. Gauge transformations <span
+class="math inline">\(U(1)\)</span> correspond to the phase degree of
+freedom of the complex line bundle: <span
+class="math inline">\(\Phi_{\mathbb{C}} \to
+e^{i\chi}\Phi_{\mathbb{C}}\)</span>. The connection 1-form <span
+class="math inline">\(A =
+\Phi_{\mathbb{C}}^{-1}d\Phi_{\mathbb{C}}\)</span> defines parallel
+transport.</p>
+<h3 id="chern-classes-and-topological-invariants">§6.2 Chern Classes and
+Topological Invariants</h3>
+<p><strong>Construction 6.2 (First Chern Class)</strong>: If the
+construction of the complex line bundle <span
+class="math inline">\(L\)</span> is completed, its first Chern class
+<span class="math inline">\(c_1(L) \in H^2(\Sigma; \mathbb{Z})\)</span>
+is determined by the winding number of the complex percolation function
+level set: <span class="math display">\[c_1(L) = \frac{1}{2\pi}
+\int_\Sigma F = \frac{1}{2\pi} \oint_{\Phi_{\mathbb{C}}=\Phi_F} dA = n
+\in \mathbb{Z}\]</span> where <span class="math inline">\(F =
+dA\)</span> is the curvature 2-form and <span
+class="math inline">\(n\)</span> is the number of times the level set
+winds around the North pole of <span
+class="math inline">\(S^2\)</span>.</p>
+<p><strong>Key Statement</strong>: The specific integer value of <span
+class="math inline">\(c_1(L)\)</span> is determined by the homotopy
+class of the clutching function <span class="math inline">\([\Sigma,
+U(1)] \cong \mathbb{Z}\)</span> and is <strong>not necessarily
+2</strong>. A previous version claimed “if <span
+class="math inline">\(L\)</span> is compatible with the complexified
+tangent bundle then <span class="math inline">\(c_1=2\)</span>” — that
+“if” was never verified. <span class="math inline">\(c_1(TS^2) =
+2\)</span> is the Chern class of the complexified tangent bundle, a
+fixed value; but <span class="math inline">\(c_1(L)\)</span> is the
+Chern class of the constructed complex line bundle <span
+class="math inline">\(L\)</span>, not the tangent bundle Chern class,
+and the two are conceptually distinct with not necessarily equal
+values.</p>
+<p><strong>Topological Invariants</strong>: The number of connected
+components <span class="math inline">\(N\)</span> of the Fermi surface,
+the genus <span class="math inline">\(g\)</span> of each component, and
+the Chern number <span class="math inline">\(c_1\)</span>, if
+well-defined, are topological invariants preserved under
+perturbations.</p>
+<h3 id="homological-form-of-the-area-formula">§6.3 Homological Form of
+the Area Formula</h3>
+<p><strong>Framework 6.3 (Homological Form of the Area
+Formula)</strong>: The Fermi surface area is placed in formal
+correspondence with the generator of the homology group <span
+class="math inline">\(H_2(S^2; \mathbb{Z}) \cong \mathbb{Z}\)</span> of
+<span class="math inline">\(S^2\)</span>: <span
+class="math display">\[A_{\mathrm{FS}} \sim \langle [\Phi_F], [S^2]
+\rangle \cdot 4\pi = n \cdot 4\pi\]</span> where <span
+class="math inline">\([\Phi_F] \in H^2(S^2)\)</span> is the Poincaré
+dual of the region enclosed by the percolation function level set, <span
+class="math inline">\([S^2] \in H_2(S^2)\)</span> is the fundamental
+class, and <span class="math inline">\(\langle \cdot, \cdot
+\rangle\)</span> is the Kronecker pairing.</p>
+<h3 id="homotopy-analysis-of-connectivity">§6.4 Homotopy Analysis of
+Connectivity</h3>
+<p><strong>Framework 6.4 (Homotopy Analysis of Connectivity)</strong>:
+The number of connected components of the Fermi surface is determined
+approximately by the homotopy class corresponding to the pole structure
+of the source term <span class="math inline">\(Q\)</span>.</p>
+<p>The maxima of the source term <span class="math inline">\(Q\)</span>
+approximately correspond to the maxima of the percolation function <span
+class="math inline">\(\Phi\)</span> (a rigorous correspondence requires
+consideration of the smoothing effect of the Green function
+convolution). Each maximum region forms an occupied “island” below the
+level set <span class="math inline">\(\Phi = \Phi_F\)</span>. The
+boundary of an island is a simple closed curve, homotopy-equivalent to
+<span class="math inline">\(S^1\)</span> on <span
+class="math inline">\(S^2\)</span>. By the van Kampen theorem, the
+fundamental group of the union of <span class="math inline">\(N\)</span>
+disjoint islands is the free product of <span
+class="math inline">\(N\)</span> copies of <span
+class="math inline">\(S^1\)</span>: <span
+class="math inline">\(\pi_1(\mathrm{FS}) = \underbrace{\mathbb{Z} *
+\mathbb{Z} * \cdots * \mathbb{Z}}_{N\text{ copies}}\)</span>.</p>
+<hr />
+<h2 id="chapter-7-surface-states-and-index-theorems">Chapter 7 Surface
+States and Index Theorems</h2>
+<blockquote>
+<p><strong>[Hierarchy Declaration]</strong> The application of the APS
+index theorem in this chapter is a <strong>formal framework</strong>;
+the spectral symmetry hypothesis for the boundary Dirac operator has not
+been rigorously verified. The fiber bundle interpretation of the bridge
+function is a constructive definition, not a rigorous theorem.</p>
+</blockquote>
+<h3 id="aps-index-theorem-form-for-surface-states">§7.1 APS Index
+Theorem Form for Surface States</h3>
+<p><strong>Framework 7.1 (APS Index Theorem Form)</strong>: The number
+of zero modes of surface states is given by the APS index of the Dirac
+operator: <span class="math display">\[\mathrm{Ind}_{\mathrm{APS}}(D) =
+\int_{\Sigma_{\mathrm{bulk}}} \hat{A}(T\Sigma) \wedge \mathrm{ch}(E) -
+\frac{1}{2}\left( \eta(D_{\partial})\dim\ker D_{\partial}
+\right)\]</span> where <span class="math inline">\(\hat{A}\)</span> is
+the A-roof genus, <span class="math inline">\(\mathrm{ch}(E)\)</span> is
+the Chern character, and <span
+class="math inline">\(\eta(D_{\partial})\)</span> is the eta invariant
+of the boundary Dirac operator.</p>
+<p>In the geometric sector parameter space framework, the surface <span
+class="math inline">\(\partial\Sigma\)</span> is the boundary of the
+coding orbit. The Dirac operator <span class="math inline">\(D =
+\gamma^\mu D_\mu\)</span> acts on percolation function sections. For a
+two-dimensional surface, <span class="math inline">\(\hat{A} =
+1\)</span>, and the topological index part is <span
+class="math inline">\(\int_{\Sigma_{\mathrm{bulk}}} c_1(E)\)</span>.</p>
+<h3 id="unified-surface-bridge-theory">§7.2 Unified Surface Bridge
+Theory</h3>
+<p><strong>Construction 7.2 (Fiber Bundle Interpretation of the Bridge
+Function)</strong>: The unified surface bridge function <span
+class="math inline">\(\mathcal{B}_{\mathrm{surf}}(\xi,\eta)\)</span> is
+a gauge fixing of the connection 1-form <span
+class="math inline">\(A\)</span> of the complex line bundle <span
+class="math inline">\(L\)</span>, describing the clutching of the bulk
+fiber bundle and the surface fiber bundle.</p>
+<p><strong>Construction Idea</strong>: The bulk percolation function
+<span class="math inline">\(\Phi_{\mathrm{bulk}}\)</span> defines the
+complex line bundle <span
+class="math inline">\(L_{\mathrm{bulk}}\)</span>, and the surface
+percolation function <span
+class="math inline">\(\Phi_{\mathrm{surf}}\)</span> defines the complex
+line bundle <span class="math inline">\(L_{\mathrm{surf}}\)</span>. The
+bridge function <span
+class="math inline">\(\mathcal{B}_{\mathrm{surf}}\)</span> is the
+clutching function between the two bundles: <span
+class="math inline">\(\mathcal{B}_{\mathrm{surf}}|_{\partial\Sigma} =
+\Phi_{\mathrm{surf}} / \Phi_{\mathrm{bulk}}\)</span>. By the clutching
+construction of fiber bundles, the existence of the clutching function
+is guaranteed by <span class="math inline">\(\pi_0(U(1)) = 0\)</span>
+(<span class="math inline">\(U(1)\)</span> is connected).</p>
+<hr />
+<h2 id="chapter-8-helical-structures-and-chirality">Chapter 8 Helical
+Structures and Chirality</h2>
+<h3 id="representation-theory-of-multi-helices">§8.1 Representation
+Theory of Multi-Helices</h3>
+<p><strong>Proposition 10.19.8.01 (Representation Theory of Helical
+Structures)</strong>: An <span
+class="math inline">\(N\)</span>-connected helical structure corresponds
+to the <span class="math inline">\(N\)</span>-fold covering
+representation of <span class="math inline">\(SO(2)\)</span>, <span
+class="math inline">\(D^{(N)}: SO(2) \to U(1)\)</span>, <span
+class="math inline">\(D^{(N)}(\varphi) = e^{iN\varphi}\)</span>.</p>
+<p><strong>Argument</strong>: The <span
+class="math inline">\(N\)</span>-fold rotational symmetry of a helical
+structure corresponds to the <span class="math inline">\(N\)</span>-th
+order representation of <span class="math inline">\(SO(2)\)</span>.
+Spherical harmonics <span class="math inline">\(Y_l^m\)</span> transform
+under the helical operation as <span class="math inline">\(m \to
+mN\)</span>. The Fermi velocity correction for an <span
+class="math inline">\(N\)</span>-connected helix is determined by the
+representation dimension <span class="math inline">\(N\)</span>
+(framework-level formula): <span class="math display">\[v_F^{(N)} =
+v_F^{(0)} \cdot \left[1\frac{1}{N^2} \cdot
+\frac{\lambda_1^{\mathrm{eff}}}{\lambda_2^{\mathrm{eff}}} \cdot
+\left(\frac{d_{\mathrm{wire}}}{\chi_L}\right)^2\right]^{-1/2}\]</span></p>
+<h3 id="topological-interpretation-of-chirality">§8.2 Topological
+Interpretation of Chirality</h3>
+<p><strong>Proposition 10.19.8.02 (Topological Interpretation of
+Chirality)</strong>: Chirality corresponds to the existence constraint
+on non-vanishing sections of the spinor bundle <span
+class="math inline">\(S\)</span>, determined by topological invariants
+of the spinor bundle.</p>
+<p><strong>Argument</strong>: Chiral symmetry breaking corresponds to
+the non-vanishing existence of the spinor field <span
+class="math inline">\(\psi \in \Gamma(S)\)</span>. The spinor field is a
+section of the spinor bundle <span class="math inline">\(S\)</span>, not
+the tangent bundle <span class="math inline">\(TS^2\)</span>. By the
+Atiyah-Singer index theorem, the index of the Dirac operator on the
+spinor bundle is determined by the <span
+class="math inline">\(\hat{A}\)</span> class: <span
+class="math inline">\(\mathrm{Ind}(D_S) = \chi(S^2)/4 = 1/2\)</span>.
+For a racemic mixture, the indices of left-handed and right-handed
+spinor fields are opposite: <span
+class="math inline">\(\mathrm{Ind}(D_L) = -\mathrm{Ind}(D_R)\)</span>,
+so the total index vanishes.</p>
+<hr />
+<h2 id="chapter-9-homotopy-class-classification-of-dislocations">Chapter
+9 Homotopy Class Classification of Dislocations</h2>
+<h3 id="dislocation-cores-as-topological-defects">§9.1 Dislocation Cores
+as Topological Defects</h3>
+<p><strong>Framework 9.1 (Homotopy Classes of Dislocations)</strong>:
+Dislocation cores correspond to the homotopy class <span
+class="math inline">\([Q] \in \pi_1(S^1) \cong \mathbb{Z}\)</span> of
+vortex singularities in the source term <span
+class="math inline">\(Q\)</span>, with the topological charge <span
+class="math inline">\(m \in \mathbb{Z}\)</span> being the quantization
+of the Burgers vector.</p>
+<p><strong>Construction Idea</strong>: Dislocation cores correspond to
+the vortex phase <span class="math inline">\(\exp(im\varphi)\)</span> in
+the source term <span class="math inline">\(Q(\rho,\varphi) = Q_0
+\exp(-\rho^2/2\sigma^2) \exp(im\varphi)\)</span>. The homotopy class of
+the vortex map <span class="math inline">\(S^1 \to S^1\)</span>
+(azimuthal angle to phase) is <span class="math inline">\(\pi_1(S^1)
+\cong \mathbb{Z}\)</span>, labeled by the winding number <span
+class="math inline">\(m\)</span>. The Burgers vector is <span
+class="math inline">\(\mathbf{b} = m \cdot \mathbf{a}\)</span> (<span
+class="math inline">\(\mathbf{a}\)</span> being the lattice basis
+vector), so <span class="math inline">\(m\)</span> is the quantization
+unit of the Burgers vector.</p>
+<p><strong>Homotopy Invariant</strong>: The stability of dislocations is
+protected by the homotopy class — continuous deformations do not change
+the winding number <span class="math inline">\(m\)</span>, so
+dislocations cannot be eliminated by local perturbations.</p>
+<h3
+id="two-dimensional-spectral-expansionborn-rule-theorem-1.1.5.01-compression">§9.2
+Two-Dimensional Spectral Expansion/Born Rule (Theorem 1.1.5.01)
+Compression</h3>
+<p>The weak coupling parameter is derived from the compression of
+Theorem 1.1.5.01-20 Spectral Expansion/Born Rule (Theorem 1.1.5.01)
+under a two-dimensional constraint: <span
+class="math display">\[\chi_L^{(2D)} = \chi_L \cdot
+\sqrt{\frac{\lambda_1^{\mathrm{eff}}}{\lambda_2^{\mathrm{eff}}}} \cdot
+\varepsilon_{\mathrm{weak}}\]</span> where the weak coupling parameter
+is <span class="math display">\[\varepsilon_{\mathrm{weak}} =
+\frac{\chi_L^{(2D)}}{\chi_L} \cdot
+\sqrt{\frac{\lambda_1^{\mathrm{eff}}}{\lambda_2^{\mathrm{eff}}}} \approx
+0.0102 \approx 10^{-2}\]</span> This scale is determined by the freezing
+of the information field in the Dirac spectral direction and its
+activity in the spectral gap direction on the sector parameter space
+<span class="math inline">\(\Sigma\)</span>.</p>
+<hr />
+<h2
+id="chapter-10-constructive-enumeration-of-the-structural-stability-upper-bound">Chapter
+10 Constructive Enumeration of the Structural Stability Upper Bound</h2>
+<p><strong>Constructive Enumeration (<span
+class="math inline">\(N_{\mathrm{eff}} = 7\)</span>)</strong>: The
+number of effective structural modes of the geometric sector parameter
+space is constructively determined as <span
+class="math inline">\(N_{\mathrm{eff}} = 7\)</span> from the total
+number of irreducible decompositions of <span
+class="math inline">\(SO(3)\)</span> representations under
+crystallographic point groups.</p>
+<p><strong>Enumeration Rule</strong>: The eigenvalues <span
+class="math inline">\(l(l+1)\)</span> of the Laplace-Beltrami operator
+on <span class="math inline">\(S^2\)</span> correspond to irreducible
+representations <span class="math inline">\(D^{(l)}\)</span> of <span
+class="math inline">\(SO(3)\)</span> (dimension <span
+class="math inline">\(2l+1\)</span>). After considering the symmetry
+constraints of crystallographic point groups: - <span
+class="math inline">\(l=0\)</span>: <span class="math inline">\(D^{(0)}
+= A_{1g}\)</span> (1 mode, totally symmetric, no constraint) → effective
+1 - <span class="math inline">\(l=1\)</span>: <span
+class="math inline">\(D^{(1)} = A_{2u} \oplus E_u\)</span> (3 modes, but
+translational degrees of freedom correspond to overall motion, not
+intrinsic deformation, subtract 1) → effective 2 - <span
+class="math inline">\(l=2\)</span>: <span class="math inline">\(D^{(2)}
+= E_g \oplus T_{2g}\)</span> (5 modes, but rotational degrees of freedom
+correspond to overall rotation, not intrinsic deformation, subtract 1) →
+effective 4</p>
+<p>Total effective independent modes: <span class="math inline">\(1+2+4
+= 7\)</span>.</p>
+<hr />
+<h2 id="chapter-11-conclusion">Chapter 11 Conclusion</h2>
+<p>This paper, within the geometric sector parameter space framework,
+establishes a framework-level exploration of geometric molecular
+structure spanning from atoms to crystals, from bulk materials to
+surface states, and from surface states to macroscopic helical
+structures, introducing group representation theory and algebraic
+topology as analytical tools.</p>
+<p>Contributions of group representation theory: irreducible
+representation classification framework for space groups, geometric
+constraint framework for coordination numbers, selection rules for
+phonons, constructive enumeration of the structural stability upper
+bound.</p>
+<p>Contributions of algebraic topology: fiber bundle construction for
+Fermi surfaces, homotopy class classification framework for
+dislocations, APS index theorem formal framework for surface states,
+spinor bundle interpretation of chirality.</p>
+<hr />
+<h2 id="appendix-summary-of-key-numerical-values">Appendix Summary of
+Key Numerical Values</h2>
+<h3 id="geometric-parameters">Geometric Parameters</h3>
+<table>
+<colgroup>
+<col style="width: 38%" />
+<col style="width: 30%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Parameter</th>
+<th style="text-align: left;">Value</th>
+<th style="text-align: left;">Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">θ_M⁰</td>
+<td style="text-align: left;">57.93°</td>
+<td style="text-align: left;">Theorem 1.1.5.01 Birkhoff Fixed Point
+σ*</td>
+</tr>
+<tr>
+<td style="text-align: center;">θ_C⁰</td>
+<td style="text-align: left;">26.16°</td>
+<td style="text-align: left;">Theorem 1.1.5.01 Birkhoff Fixed Point
+σ*</td>
+</tr>
+<tr>
+<td style="text-align: center;">θ_I⁰</td>
+<td style="text-align: left;">5.91°</td>
+<td style="text-align: left;">Theorem 1.1.5.01 Birkhoff Fixed Point
+σ*</td>
+</tr>
+<tr>
+<td style="text-align: center;">S_e</td>
+<td style="text-align: left;">137.035999084</td>
+<td style="text-align: left;">Consummate Reproduction Theorem 1.1.5.01
+seven-level recursion</td>
+</tr>
+<tr>
+<td style="text-align: center;">λ₁ (bare)</td>
+<td style="text-align: left;">392.21 rad⁻²</td>
+<td style="text-align: left;">Theorem 1.1.5.01</td>
+</tr>
+<tr>
+<td style="text-align: center;">λ₂ (bare)</td>
+<td style="text-align: left;">58760.77 rad⁻²</td>
+<td style="text-align: left;">Theorem 1.1.5.01</td>
+</tr>
+<tr>
+<td style="text-align: center;">λ₂/λ₁ (bare)</td>
+<td style="text-align: left;">149.8</td>
+<td style="text-align: left;">Theorem 1.1.5.01</td>
+</tr>
+<tr>
+<td style="text-align: center;">λ₁^eff</td>
+<td style="text-align: left;">391.05 rad⁻²</td>
+<td style="text-align: left;">Theorem 1.1.5.01-20</td>
+</tr>
+<tr>
+<td style="text-align: center;">λ₂^eff</td>
+<td style="text-align: left;">59324.3 rad⁻²</td>
+<td style="text-align: left;">Theorem 1.1.5.01-20</td>
+</tr>
+<tr>
+<td style="text-align: center;">λ₂<sup>eff/λ₁</sup>eff</td>
+<td style="text-align: left;">151.7</td>
+<td style="text-align: left;">Theorem 1.1.5.01-20</td>
+</tr>
+<tr>
+<td style="text-align: center;">Λ_H^(struct)</td>
+<td style="text-align: left;">150</td>
+<td style="text-align: left;">Theorem 1.1.5.01</td>
+</tr>
+<tr>
+<td style="text-align: center;">v_geo (algebraic self-consistent
+value)</td>
+<td style="text-align: left;">71.832113</td>
+<td style="text-align: left;">Theorem 1.1.5.01-20</td>
+</tr>
+<tr>
+<td style="text-align: center;">α</td>
+<td style="text-align: left;">7.2973525693×10⁻³</td>
+<td style="text-align: left;">1/S_e</td>
+</tr>
+<tr>
+<td style="text-align: center;">E_H</td>
+<td style="text-align: left;">13.6057 eV</td>
+<td style="text-align: left;">Standard hydrogen energy level</td>
+</tr>
+<tr>
+<td style="text-align: center;">K</td>
+<td style="text-align: left;">839.758793 keV</td>
+<td style="text-align: left;">Theorem 1.1.5.01-20</td>
+</tr>
+<tr>
+<td style="text-align: center;">m_e</td>
+<td style="text-align: left;">510.99895 keV</td>
+<td style="text-align: left;">K·sin³θ_M</td>
+</tr>
+<tr>
+<td style="text-align: center;">χ_L</td>
+<td style="text-align: left;">1.5092231080×10⁻¹⁰ m</td>
+<td style="text-align: left;">Theorem 1.1.5.01-20 Spectral
+Expansion/Born Rule (Theorem 1.1.5.01)</td>
+</tr>
+<tr>
+<td style="text-align: center;">χ_T</td>
+<td style="text-align: left;">3.6161912064×10⁻¹⁷ s</td>
+<td style="text-align: left;">Theorem 1.1.5.01-20 Spectral
+Expansion/Born Rule (Theorem 1.1.5.01)</td>
+</tr>
+</tbody>
+</table>
+<h3
+id="birkhoff-mixing-matrix-elements-birkhoff-fixed-point-σ-theorem-1.1.5.01">Birkhoff
+Mixing Matrix Elements (Birkhoff Fixed Point σ*, Theorem 1.1.5.01)</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Parameter</th>
+<th style="text-align: left;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">H_MM</td>
+<td style="text-align: left;">31.3012 rad⁻²</td>
+</tr>
+<tr>
+<td style="text-align: center;">H_CC</td>
+<td style="text-align: left;">367.7347 rad⁻²</td>
+</tr>
+<tr>
+<td style="text-align: center;">H_II</td>
+<td style="text-align: left;">59259.35 rad⁻²</td>
+</tr>
+<tr>
+<td style="text-align: center;">H_MC</td>
+<td style="text-align: left;">3.4145 rad⁻²</td>
+</tr>
+<tr>
+<td style="text-align: center;">H_MI</td>
+<td style="text-align: left;">69.3547 rad⁻²</td>
+</tr>
+<tr>
+<td style="text-align: center;">H_CI</td>
+<td style="text-align: left;">433.1578 rad⁻²</td>
+</tr>
+</tbody>
+</table>
+<p>The off-diagonal elements <span class="math inline">\(H_{MC}, H_{MI},
+H_{CI}\)</span> are derived from the induced metric of the constraint
+manifold <span class="math inline">\(C\)</span> and the Lagrange
+multiplier method (Theorem 1.1.5.01). <span class="math inline">\(H_{CI}
+= 433.1578\)</span> is consistent with Theorem 1.1.5.01.</p>
+<h3
+id="information-field-hierarchical-characteristic-scales-λ-λ₂λ₁-150">Information
+Field Hierarchical Characteristic Scales (Λ = λ₂/λ₁ ≈ 150)</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Level n</th>
+<th style="text-align: left;">Characteristic Scale ρₙ</th>
+<th style="text-align: left;">Physical Correspondence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: left;">1.77×10⁻⁹ m</td>
+<td style="text-align: left;">Quantum ground state</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">2.65×10⁻⁷ m</td>
+<td style="text-align: left;">Atomic scale</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">3.97×10⁻⁵ m</td>
+<td style="text-align: left;">Molecular scale</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;">3.02×10⁶ m</td>
+<td style="text-align: left;">Earth-system information characteristic
+scale</td>
+</tr>
+</tbody>
+</table>
+<p>Formula: <span class="math inline">\(\rho_n = \chi_L \cdot \Lambda^n
+\cdot S_e^{1/2}\)</span>, <span class="math inline">\(\Lambda =
+\lambda_2/\lambda_1 \approx 150\)</span> (Birkhoff Mixing Matrix ratio
+149.8, effective ratio 151.7, consistent with the structural
+identification value Λ_H^(struct) = 150). Conceptual framework from
+Theorem Dirac Spectral Freezing and Seven-Layer Truncation.</p>
+<h3
+id="topological-invariants-reference-values-not-direct-outputs">Topological
+Invariants (Reference Values, Not Direct Outputs)</h3>
+<table>
+<colgroup>
+<col style="width: 38%" />
+<col style="width: 30%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Parameter</th>
+<th style="text-align: left;">Numerical Structure</th>
+<th style="text-align: left;">Remarks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">e(TS²)</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">Euler class of tangent bundle = χ(S²)
+(fixed value)</td>
+</tr>
+<tr>
+<td style="text-align: center;">c₁(TS²)</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">First Chern class of complexified tangent
+bundle (fixed value)</td>
+</tr>
+<tr>
+<td style="text-align: center;">χ(S²)</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">Euler characteristic (fixed value)</td>
+</tr>
+<tr>
+<td style="text-align: center;">c₁(L)</td>
+<td style="text-align: left;">n ∈ ℤ</td>
+<td style="text-align: left;">Chern class of Fermi surface complex line
+bundle (determined by clutching function, not necessarily 2)</td>
+</tr>
+<tr>
+<td style="text-align: center;">π₁(S¹)</td>
+<td style="text-align: left;">ℤ</td>
+<td style="text-align: left;">Fundamental group</td>
+</tr>
+<tr>
+<td style="text-align: center;">H₂(S²; ℤ)</td>
+<td style="text-align: left;">ℤ</td>
+<td style="text-align: left;">Second homology group</td>
+</tr>
+<tr>
+<td style="text-align: center;">N_eff</td>
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">Constructive enumeration (working
+hypothesis, numerically consistent with Bott period truncation)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Important Remark</strong>: The Euler class <span
+class="math inline">\(e(TS^2)\)</span> is a topological invariant of the
+real tangent bundle; the first Chern class <span
+class="math inline">\(c_1(TS^2)\)</span> is the invariant of the complex
+line bundle after complexifying the tangent bundle. The two are
+numerically equal (<span class="math inline">\(=2\)</span>) but
+conceptually distinct. The Fermi surface Chern class <span
+class="math inline">\(c_1(L)\)</span> is the Chern class of the
+constructed complex line bundle <span class="math inline">\(L\)</span>,
+<strong>not</strong> the tangent bundle Chern class; its value <span
+class="math inline">\(n \in \mathbb{Z}\)</span> is determined by the
+homotopy class of the clutching function <span
+class="math inline">\([\Sigma, U(1)] \cong \mathbb{Z}\)</span>.</p>
+<hr />
+<h2 id="references">References</h2>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 28%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">No.</th>
+<th style="text-align: left;">Title</th>
+<th style="text-align: center;">Version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Theorem 1.2.3.01</td>
+<td style="text-align: left;">Axiomatization and Existence Theorem for
+Excited State Parameter Space</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem</td>
+<td style="text-align: left;">Spectral Rigidity of Product Sphere
+Classes</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem</td>
+<td style="text-align: left;">Geometric Structure of ℳ𝒞ℐ Three Sectors
+and Coding Orbits</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem</td>
+<td style="text-align: left;">10-Direction Geometric Space</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: left;">Geometric Dynamics</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem</td>
+<td style="text-align: left;">Three-Duality Geometric Space and Sector
+Coupling Dynamics</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem</td>
+<td style="text-align: left;">Algebraic Structure of Cross-Sector
+Coupling Hᵂ Prefactor</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 1.1.5.01</td>
+<td style="text-align: left;">Mathematical Structure of the Geometric
+Sector Parameter Space</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 1.1.5.01</td>
+<td style="text-align: left;">Analytic Framework of the Percolation
+Function</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem</td>
+<td style="text-align: left;">Holographic Universe and Bott Period
+Truncation</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem</td>
+<td style="text-align: left;">Curved Structure Quantization of the
+Geometric Sector Parameter Space</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem</td>
+<td style="text-align: left;">Chemical Mapping</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 1.1.5.01-20</td>
+<td style="text-align: left;">Spectral Expansion/Born Rule (Theorem
+1.1.5.01)</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">Theorem 1.4.3.01</td>
+<td style="text-align: left;">Interaction Framework</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: left;">Information Field Dynamics</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">[16]</td>
+<td style="text-align: left;">Hamermesh M. Group Theory and Its
+Application to Physical Problems. Addison-Wesley (1962).</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">[17]</td>
+<td style="text-align: left;">Nakahara M. Geometry, Topology and
+Physics. IOP Publishing (2003).</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">[18]</td>
+<td style="text-align: left;">Atiyah M F, Singer I M. The index of
+elliptic operators on compact manifolds. Bull. Amer. Math. Soc. 69,
+422–433 (1963).</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">[19]</td>
+<td style="text-align: left;">Atiyah M F, Patodi V K, Singer I M.
+Spectral asymmetry and Riemannian geometry. I. Math. Proc. Cambridge
+Philos. Soc. 77, 43–69 (1975).</td>
+<td style="text-align: center;">—</td>
+</tr>
+</tbody>
+</table>
+<hr />
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>

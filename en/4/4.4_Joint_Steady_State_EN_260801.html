@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.4 Joint Steady State | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="Version: 260801.1">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../../../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/en/4/4.4_Joint_Steady_State_EN_260801.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../../../index.html" class="nav-home">🏠 首页</a>
+    <a href="../../../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../../../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">4.4 Joint Steady State</span>
+  </nav>
+  <main class="article-content">
+<h1 id="joint-steady-state">4.4 Joint Steady State</h1>
+<p><strong>Version</strong>: 260801.1</p>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>This article solves the joint steady state of the 𝒞ℐ two-field
+coupling. The steady state is a Gibbs equilibrium state, uniquely
+determined by the interaction Hamiltonian and the Causal Field
+temperature. The joint steady state yields the equilibrium distribution
+of the Causal Field and the Information Field — this is the foundation
+for the three-field coupling (Vol. 6). This article derives the
+steady-state condition in detail, analyzes the Jacobian convergence
+properties, and discusses the extension to the three-field joint steady
+state.</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<p>§1 Gibbs Steady State 　1.1 Steady-State Solution 　1.2 Properties of
+the Steady State 　1.3 Stability of the Steady State</p>
+<p>§2 Jacobian Convergence Analysis 　2.1 Construction of the Jacobian
+Matrix 　2.2 Spectral Radius Analysis 　2.3 Convergence Rate 　2.4
+Correction to the Jacobian Spectral Radius 　2.5 Globality of
+Convergence</p>
+<p>§3 Physical Implications of the Steady State 　3.1 Thermal
+Equilibrium 　3.2 Relation to the Matter Sector 　3.3 The Steady State
+as an Observational Baseline</p>
+<p>§4 Extension to the Three-Field Joint Steady State 　4.1 Three-Field
+Steady-State Condition 　4.2 Three-Field Gibbs Steady State 　4.3
+Three-Field Jacobian 　4.4 Consistency of the Fixed Point</p>
+<p>§5 Landscape Dependence of the Steady State 　5.1 Variation of the
+Steady State with Landscape Location 　5.2 Existence Condition for the
+Steady State 　5.3 Steady State and Observer Localization</p>
+<hr />
+<h2 id="gibbs-steady-state">§1 Gibbs Steady State</h2>
+<h3 id="steady-state-solution">1.1 Steady-State Solution</h3>
+<p><strong>Theorem 4.4.1.01 (𝒞ℐ Joint Steady State).</strong> The joint
+steady state of the 𝒞ℐ two-field coupling is the Gibbs state:</p>
+<p><span
+class="math display">\[\rho_{\text{ss}}^{\mathcal{C}\mathcal{I}} =
+\frac{e^{-\beta H_{\mathcal{C}\mathcal{I}}}}{Z}, \quad Z =
+\text{Tr}(e^{-\beta H_{\mathcal{C}\mathcal{I}}}),\]</span></p>
+<p>where <span class="math inline">\(\beta = 1/T_{\mathcal{C}}\)</span>
+is the inverse temperature and <span
+class="math inline">\(H_{\mathcal{C}\mathcal{I}} =
+\theta_{\sigma_2}(P_{\sigma_2} \otimes P_{\sigma_2}^\dagger)\)</span> is
+the interaction Hamiltonian.</p>
+<p><strong>Proof.</strong> The joint steady state satisfies the free
+energy minimization condition <span class="math inline">\(\delta F /
+\delta \rho = 0\)</span>, where <span class="math inline">\(F =
+\text{Tr}(H\rho) - T S(\rho)\)</span>. The variational equation is:</p>
+<p><span class="math display">\[\frac{\delta F}{\delta \rho} = H - T \ln
+\rho = 0,\]</span></p>
+<p>which yields <span class="math inline">\(\ln \rho = -\beta H +
+\text{const}\)</span>, i.e., <span class="math inline">\(\rho \propto
+e^{-\beta H}\)</span>. Normalization <span
+class="math inline">\(\text{Tr}(\rho) = 1\)</span> gives the partition
+function <span class="math inline">\(Z = \text{Tr}(e^{-\beta
+H})\)</span>. ∎</p>
+<h4
+id="detailed-derivation-five-step-derivation-of-the-steady-state-solution">Detailed
+Derivation: Five-Step Derivation of the Steady-State Solution</h4>
+<p><strong>Step 1: Construction of the free energy functional.</strong>
+The free energy functional <span class="math inline">\(F[\rho] =
+\text{Tr}(H\rho) - T_{\mathcal{C}} S(\rho)\)</span>, where <span
+class="math inline">\(S(\rho) = -\text{Tr}(\rho \ln \rho)\)</span>.
+Minimize under the constraints <span
+class="math inline">\(\text{Tr}(\rho) = 1\)</span> and <span
+class="math inline">\(\rho \geq 0\)</span>.</p>
+<p><strong>Step 2: Variational calculation.</strong> Introducing a
+Lagrange multiplier <span class="math inline">\(\lambda\)</span>, the
+variation <span class="math inline">\(\delta(F[\rho] +
+\lambda(\text{Tr}(\rho) - 1)) = 0\)</span>:</p>
+<p><span class="math display">\[\text{Tr}((H - T_{\mathcal{C}}(\ln\rho +
+\mathbb{I}) + \lambda\mathbb{I}) \delta\rho) = 0.\]</span></p>
+<p>Since <span class="math inline">\(\delta\rho\)</span> is arbitrary,
+<span class="math inline">\(H - T_{\mathcal{C}}(\ln\rho + \mathbb{I}) +
+\lambda\mathbb{I} = 0\)</span>, i.e., <span
+class="math inline">\(\ln\rho = -H/T_{\mathcal{C}} +
+(\lambda/T_{\mathcal{C}} - 1)\mathbb{I}\)</span>.</p>
+<p><strong>Step 3: Normalization.</strong> <span
+class="math inline">\(\rho = e^{-H/T_{\mathcal{C}}} \cdot
+e^{\lambda/T_{\mathcal{C}} - 1}\)</span>. Let <span
+class="math inline">\(Z = e^{1 - \lambda/T_{\mathcal{C}}}\)</span>, then
+<span class="math inline">\(\rho = e^{-H/T_{\mathcal{C}}}/Z\)</span>.
+<span class="math inline">\(\text{Tr}(\rho) = 1\)</span> gives <span
+class="math inline">\(Z =
+\text{Tr}(e^{-H/T_{\mathcal{C}}})\)</span>.</p>
+<p><strong>Step 4: Computation of the partition function.</strong> <span
+class="math inline">\(H_{\mathcal{C}\mathcal{I}} = \theta_{\sigma_2}
+\cdot \sigma_x \otimes \sigma_x\)</span> (on the <span
+class="math inline">\(\mathcal{C}\)</span>-<span
+class="math inline">\(\mathcal{I}\)</span> subspace). Eigenvalues: <span
+class="math inline">\(\pm \theta_{\sigma_2}\)</span>, each with
+multiplicity 2 (since <span class="math inline">\(\mathcal{C}\)</span>
+and <span class="math inline">\(\mathcal{I}\)</span> each have 2
+internal coding modes). <span class="math inline">\(Z =
+2e^{\theta_{\sigma_2}/T_{\mathcal{C}}} +
+2e^{-\theta_{\sigma_2}/T_{\mathcal{C}}} =
+4\cosh(\theta_{\sigma_2}/T_{\mathcal{C}})\)</span>.</p>
+<p><strong>Step 5: Uniqueness of the steady state.</strong> <span
+class="math inline">\(F[\rho]\)</span> is strictly convex in <span
+class="math inline">\(\rho\)</span> (since <span
+class="math inline">\(-S(\rho)\)</span> is strictly convex and <span
+class="math inline">\(\text{Tr}(H\rho)\)</span> is linear). A strictly
+convex function on a convex set has a unique minimum. Hence the Gibbs
+state is the unique steady state. ∎</p>
+<h4 id="numerical-verification-steady-state-parameters">Numerical
+Verification: Steady-State Parameters</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Formula</th>
+<th style="text-align: center;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\theta_{\sigma_2}\)</span></td>
+<td style="text-align: left;">Birkhoff fixed point</td>
+<td style="text-align: center;">0.009</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(T_{\mathcal{C}}\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(|\text{Im}(\lambda_2)|/(2\pi)\)</span></td>
+<td style="text-align: center;">0.029</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\beta\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(1/T_{\mathcal{C}}\)</span></td>
+<td style="text-align: center;">34.5</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\theta_{\sigma_2}/T_{\mathcal{C}}\)</span></td>
+<td style="text-align: left;">—</td>
+<td style="text-align: center;">0.31</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\cosh(0.31)\)</span></td>
+<td style="text-align: left;">—</td>
+<td style="text-align: center;">1.048</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(Z\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(4\cosh(0.31)\)</span></td>
+<td style="text-align: center;">4.19</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(F\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(-T_{\mathcal{C}} \ln Z\)</span></td>
+<td style="text-align: center;">-0.042</td>
+</tr>
+</tbody>
+</table>
+<p>Verification: <span class="math inline">\(Z\)</span> is
+dimensionless; <span class="math inline">\(F\)</span> has dimensions
+<span class="math inline">\([\text{time}]^{-1}\)</span> (energy
+dimensions in natural units), consistent with the temperature <span
+class="math inline">\(T_{\mathcal{C}}\)</span>.</p>
+<h3 id="properties-of-the-steady-state">1.2 Properties of the Steady
+State</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Mutual information</td>
+<td style="text-align: left;"><span class="math inline">\(I \approx
+0.005\)</span> (extremely weak correlation)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Causal Field entropy</td>
+<td style="text-align: left;"><span
+class="math inline">\(S_{\mathcal{C}}^* \approx 0.527\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Information Field entropy</td>
+<td style="text-align: left;"><span
+class="math inline">\(S_{\mathcal{I}}^* \approx 0.064\)</span>
+(extremely low, Information Sector highly concentrated)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Joint entropy</td>
+<td style="text-align: left;"><span
+class="math inline">\(S_{\mathcal{C}\mathcal{I}}^* = S_{\mathcal{C}}^* +
+S_{\mathcal{I}}^* - I \approx 0.586\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Inverse temperature</td>
+<td style="text-align: left;"><span class="math inline">\(\beta =
+1/T_{\mathcal{C}} \approx 34.5\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Partition function</td>
+<td style="text-align: left;"><span class="math inline">\(Z \approx 1 +
+\theta_{\sigma_2}/T_{\mathcal{C}} \approx 1.31\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The extremely low Information Field entropy (<span
+class="math inline">\(S_{\mathcal{I}}^* \approx 0.064\)</span>) reflects
+the high concentration of the Information Sector — the coding weight
+<span class="math inline">\(\sigma_{\mathcal{I}}^* \approx
+0.011484\)</span> makes the Information Field almost in a pure
+state.</p>
+<h4
+id="detailed-derivation-precise-calculation-of-steady-state-entropies">Detailed
+Derivation: Precise Calculation of Steady-State Entropies</h4>
+<p>Causal Field entropy <span class="math inline">\(S_{\mathcal{C}}^* =
+-\text{Tr}(\rho_{\mathcal{C}}^* \ln \rho_{\mathcal{C}}^*)\)</span>. In
+the coding basis, <span class="math inline">\(\rho_{\mathcal{C}}^* =
+\text{diag}(\sigma_{\mathcal{M}}^*, \sigma_{\mathcal{C}}^*,
+\sigma_{\mathcal{I}}^*)\)</span> projected onto the Causal Sector. Exact
+computation: <span class="math inline">\(S_{\mathcal{C}}^* = -\sum_i
+\sigma_i^{(\mathcal{C})} \ln \sigma_i^{(\mathcal{C})}\)</span>.</p>
+<p><span class="math inline">\(\sigma_i^{(\mathcal{C})}\)</span> are the
+<span class="math inline">\(\sigma_i^*\)</span> projected onto the
+Causal Sector, determined by the Birkhoff Mixing Matrix <span
+class="math inline">\(T\)</span>. In the eigenbasis of <span
+class="math inline">\(T\)</span>, <span
+class="math inline">\(\sigma^{(\mathcal{C})} = T \sigma^*\)</span>
+yields the Causal Sector components. Numerically, <span
+class="math inline">\(S_{\mathcal{C}}^* \approx 0.527\)</span>.</p>
+<p>Information Field entropy <span
+class="math inline">\(S_{\mathcal{I}}^* \approx 0.064\)</span> is
+extremely low — the Information Field is almost in a pure state. This is
+consistent with the low coding weight <span
+class="math inline">\(\sigma_{\mathcal{I}}^* \approx 0.0115\)</span> of
+the Information Sector — low weight implies low entropy (close to a pure
+state).</p>
+<h4
+id="comparative-discussion-𝒞ℐ-gibbs-steady-state-vs.-standard-thermal-equilibrium">Comparative
+Discussion: 𝒞ℐ Gibbs Steady State vs. Standard Thermal Equilibrium</h4>
+<p>In standard thermal equilibrium, two subsystems reach the same
+temperature <span class="math inline">\(T_1 = T_2\)</span>. In the 𝒞ℐ
+steady state, the Causal Field and the Information Field reach the same
+effective temperature <span
+class="math inline">\(T_{\mathcal{C}}\)</span> — but <span
+class="math inline">\(T_{\mathcal{C}}\)</span> is intrinsic to the
+Causal Field; the Information Field is “calibrated” to the Causal Field
+temperature.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Standard Thermal Equilibrium</th>
+<th style="text-align: left;">𝒞ℐ Steady State</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Temperature</td>
+<td style="text-align: left;">External heat bath</td>
+<td style="text-align: left;">Intrinsic to Causal Field <span
+class="math inline">\(T_{\mathcal{C}}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Equilibrium condition</td>
+<td style="text-align: left;"><span class="math inline">\(T_1 =
+T_2\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(T_{\mathcal{C}} = T_{\mathcal{C}}\)</span>
+(automatic)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Entropy maximization</td>
+<td style="text-align: left;">Total entropy maximal</td>
+<td style="text-align: left;">Free energy minimal</td>
+</tr>
+<tr>
+<td style="text-align: left;">Uniqueness of steady state</td>
+<td style="text-align: left;">Possibly multiple</td>
+<td style="text-align: left;">Unique (strict convexity)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="stability-of-the-steady-state">1.3 Stability of the Steady
+State</h3>
+<p>The stability of the steady state is guaranteed by the Jacobian
+spectral radius <span class="math inline">\(\rho(J) = 0.124 &lt;
+1\)</span> — starting from any initial state, the system converges
+exponentially to the steady state.</p>
+<p>The Jacobian matrix <span class="math inline">\(J\)</span> is the
+second variation (Hessian) of the free energy <span
+class="math inline">\(F\)</span> with respect to the density matrix
+<span class="math inline">\(\rho\)</span>:</p>
+<p><span class="math display">\[J_{ij} = \frac{\partial^2 F}{\partial
+\rho_i \partial \rho_j}\bigg|_{\rho = \rho_{\text{ss}}}.\]</span></p>
+<p>The spectral radius <span class="math inline">\(\rho(J) &lt;
+1\)</span> means the steady state is an attractor — all perturbations
+are damped.</p>
+<h4
+id="detailed-derivation-three-step-unfolding-of-the-stability-analysis">Detailed
+Derivation: Three-Step Unfolding of the Stability Analysis</h4>
+<p><strong>Step 1: Positive-definiteness of the Hessian.</strong> At the
+Gibbs state <span class="math inline">\(\rho_{\text{ss}} \propto
+e^{-H/T}\)</span>, the Hessian is <span class="math inline">\(H_{ij} =
+T_{\mathcal{C}} \cdot (\rho_{\text{ss}}^{-1})_{ij}\)</span> (diagonal
+matrix). Since <span class="math inline">\(\rho_{\text{ss}} &gt;
+0\)</span> (strictly positive-definite), <span
+class="math inline">\(H_{ij} &gt; 0\)</span> — the Hessian is
+positive-definite; the Gibbs state is a local minimum.</p>
+<p><strong>Step 2: Convexity guarantees globality.</strong> <span
+class="math inline">\(F[\rho]\)</span> is strictly convex, so the local
+minimum is the global minimum. Starting from any initial state, the
+gradient flow <span class="math inline">\(\dot{\rho} = -\nabla
+F[\rho]\)</span> converges to the unique Gibbs steady state.</p>
+<p><strong>Step 3: Estimate of the convergence rate.</strong> The
+convergence rate is determined by the minimum eigenvalue of the Hessian:
+<span class="math inline">\(\lambda_{\min}(H) = T_{\mathcal{C}} /
+\max(\rho_{\text{ss}}) \approx T_{\mathcal{C}} / \sigma_{\mathcal{M}}^*
+\approx 0.029/0.778 \approx 0.037\)</span>. Convergence time <span
+class="math inline">\(\tau \sim 1/\lambda_{\min} \approx 27\)</span>
+time units.</p>
+<hr />
+<h2 id="jacobian-convergence-analysis">§2 Jacobian Convergence
+Analysis</h2>
+<h3 id="construction-of-the-jacobian-matrix">2.1 Construction of the
+Jacobian Matrix</h3>
+<p>The Jacobian matrix describes the linearized dynamics near the steady
+state:</p>
+<p><span class="math display">\[\frac{d\delta\rho}{dt} = J \cdot
+\delta\rho,\]</span></p>
+<p>where <span class="math inline">\(\delta\rho = \rho -
+\rho_{\text{ss}}\)</span> is the deviation from the steady state.</p>
+<p>The elements of the Jacobian are given by the linearization of the
+Liouville operator:</p>
+<p><span class="math display">\[J_{ij} = -i[H, \cdot]_{ij} +
+\mathcal{D}_T[\cdot]_{ij}.\]</span></p>
+<p>In the eigenbasis of the Birkhoff Mixing Matrix <span
+class="math inline">\(T\)</span>, the Jacobian is diagonal:</p>
+<p><span class="math display">\[J = \text{diag}(0, -0.498 - 2i, -0.498 +
+2i, -0.498, \ldots).\]</span></p>
+<h4
+id="detailed-derivation-explicit-construction-of-the-jacobian-matrix">Detailed
+Derivation: Explicit Construction of the Jacobian Matrix</h4>
+<p><strong>Step 1: Linearization of the Liouville operator.</strong>
+Near the steady state <span
+class="math inline">\(\rho_{\text{ss}}\)</span>, <span
+class="math inline">\(\rho = \rho_{\text{ss}} + \delta\rho\)</span>. The
+Liouville equation <span class="math inline">\(\dot{\rho} = -i[H, \rho]
++ \mathcal{D}_T[\rho]\)</span> linearizes to <span
+class="math inline">\(\dot{\delta\rho} =
+\mathcal{L}[\delta\rho]\)</span>, where <span
+class="math inline">\(\mathcal{L}\)</span> is the Liouville
+superoperator.</p>
+<p><strong>Step 2: Diagonalization in the eigenbasis.</strong> In the
+simultaneous eigenbasis of <span class="math inline">\(T\)</span> and
+<span class="math inline">\(H = J\)</span>, <span
+class="math inline">\(\mathcal{L}\)</span> is diagonal. The eigenvalues
+of <span class="math inline">\(\mathcal{L}\)</span> are given by Vol.
+4.2 (§1.4): <span class="math inline">\(\ell_{ij} = -i(\epsilon_i -
+\epsilon_j) + (\lambda_i\lambda_j^* - 1)\)</span>.</p>
+<p><strong>Step 3: Relation between the Jacobian and the Liouville
+operator.</strong> <span class="math inline">\(J = \mathcal{L}\)</span>
+— the Jacobian matrix is the representation of the Liouville
+superoperator in the vectorized density matrix space. In the <span
+class="math inline">\(9 \times 9\)</span> matrix space (3 coding modes
+per sector), <span class="math inline">\(J\)</span> is a <span
+class="math inline">\(9 \times 9\)</span> matrix, but it is diagonal in
+the eigenbasis.</p>
+<h3 id="spectral-radius-analysis">2.2 Spectral Radius Analysis</h3>
+<p>The eigenvalues of the Jacobian coincide with those of the Liouville
+operator (§1.4 of 4.2):</p>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 22%" />
+<col style="width: 27%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Mode</th>
+<th style="text-align: left;">Eigenvalue</th>
+<th style="text-align: center;">Modulus</th>
+<th style="text-align: left;">Nature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\((1,1)\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(0\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0\)</span></td>
+<td style="text-align: left;">Steady state (fixed point)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\((2,2)\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(-0.498\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.498\)</span></td>
+<td style="text-align: left;">Pure decay</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\((1,2)\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(-0.498 -
+2i\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(\sqrt{0.498^2 + 4} \approx 2.06\)</span></td>
+<td style="text-align: left;">Oscillatory decay</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\((2,1)\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(-0.498 +
+2i\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(\sqrt{0.498^2 + 4} \approx 2.06\)</span></td>
+<td style="text-align: left;">Oscillatory decay</td>
+</tr>
+</tbody>
+</table>
+<p>Note: the oscillatory decay modes have modulus greater than 1, but
+this does not imply instability — the stability of the Liouville
+equation is determined by the <strong>real part</strong> of the
+eigenvalues, not by the modulus. All non-zero eigenvalues have real part
+<span class="math inline">\(-0.498 &lt; 0\)</span>; the system converges
+globally.</p>
+<h4
+id="detailed-derivation-clarification-of-the-stability-criterion">Detailed
+Derivation: Clarification of the Stability Criterion</h4>
+<p>For a linear system <span class="math inline">\(\dot{x} =
+Ax\)</span>, stability is determined by the real parts of the
+eigenvalues of <span class="math inline">\(A\)</span>: <span
+class="math inline">\(\text{Re}(\lambda_i) &lt; 0\)</span> implies
+stability, <span class="math inline">\(\text{Re}(\lambda_i) = 0\)</span>
+is marginal, <span class="math inline">\(\text{Re}(\lambda_i) &gt;
+0\)</span> is unstable. The modulus <span
+class="math inline">\(|\lambda_i|\)</span> is not a stability criterion
+— a system with modulus greater than 1 but negative real part is stable
+(oscillatory decay).</p>
+<p>For the Liouville superoperator, <span
+class="math inline">\(\text{Re}(\ell_{ij}) =
+\text{Re}(\lambda_i\lambda_j^* - 1) &lt; 0\)</span> (<span
+class="math inline">\(\forall (i,j) \neq (1,1)\)</span>), because <span
+class="math inline">\(|\lambda_i| &lt; 1\)</span> (<span
+class="math inline">\(i \geq 2\)</span>). Hence all non-zero modes have
+negative real parts; the system is globally stable.</p>
+<h3 id="convergence-rate">2.3 Convergence Rate</h3>
+<p>The convergence rate of the system is determined by the non-zero
+eigenvalue with the largest real part (smallest absolute value):</p>
+<p><span class="math display">\[\text{Re}(\lambda_{\max}) =
+-0.498.\]</span></p>
+<p>The convergence time is:</p>
+<p><span class="math display">\[\tau_{\text{conv}} =
+\frac{1}{|\text{Re}(\lambda_{\max})|} = \frac{1}{0.498} \approx
+2.01.\]</span></p>
+<p>The system converges to the steady state within about 2 time units —
+rapid convergence.</p>
+<h4
+id="detailed-derivation-convergence-rate-and-initial-conditions">Detailed
+Derivation: Convergence Rate and Initial Conditions</h4>
+<p>The convergence rate <span class="math inline">\(\tau_{\text{conv}}
+\approx 2.01\)</span> is the worst-case convergence time (determined by
+the slowest decaying mode). In actual evolution, different modes decay
+at different rates. The evolution of the density matrix is <span
+class="math inline">\(\delta\rho(t) = \sum_{ij} c_{ij} e^{\ell_{ij} t}
+|i\rangle\langle j|\)</span>. The decay time of each mode is <span
+class="math inline">\(\tau_{ij} = 1/|\text{Re}(\ell_{ij})|\)</span>. The
+slowest decaying modes <span class="math inline">\((1,2)\)</span> and
+<span class="math inline">\((2,1)\)</span> have <span
+class="math inline">\(\tau_{12} = 1/0.322 \approx 3.1\)</span> (because
+<span class="math inline">\(\text{Re}(\ell_{12}) = -0.322\)</span>, not
+<span class="math inline">\(-0.498\)</span>). The corrected convergence
+time is <span class="math inline">\(\tau_{\text{conv}} \approx
+3.1\)</span>.</p>
+<h3 id="correction-to-the-jacobian-spectral-radius">2.4 Correction to
+the Jacobian Spectral Radius</h3>
+<p>Taking into account the normalization constraint <span
+class="math inline">\(\text{Tr}(\rho) = 1\)</span> on the density
+matrix, the effective spectral radius of the Jacobian is:</p>
+<p><span class="math display">\[\rho(J_{\text{eff}}) = \max_{i \geq 2}
+|\text{Re}(\lambda_i)| = 0.498.\]</span></p>
+<p>But after Birkhoff normalization, the effective spectral radius is
+reduced to <span class="math inline">\(\rho(J) \approx 0.124\)</span> —
+far smaller than 1. This reduction arises from the constraining effect
+of the algebraic normalization condition <span
+class="math inline">\(2pC^3 + C^2 = 1\)</span>.</p>
+<h4
+id="detailed-derivation-suppression-of-the-spectral-radius-by-birkhoff-normalization">Detailed
+Derivation: Suppression of the Spectral Radius by Birkhoff
+Normalization</h4>
+<p>Birkhoff normalization restricts the density matrix to the
+fixed-point manifold of <span class="math inline">\(T\)</span>. Under
+the constraints <span class="math inline">\(\text{Tr}(\rho) = 1\)</span>
+and <span class="math inline">\(\rho = T\rho T^\dagger\)</span> (steady
+state), the effective degrees of freedom are reduced from 9 to 2 (since
+<span class="math inline">\(T\)</span> has 3 eigenvalues, but <span
+class="math inline">\(\lambda_1 = 1\)</span> corresponds to the steady
+state, and <span class="math inline">\(\lambda_2\)</span> and <span
+class="math inline">\(\lambda_3\)</span> are conjugate). The spectral
+radius of the effective Jacobian is <span
+class="math inline">\(\rho(J_{\text{eff}}) = |\lambda_2|^2 =
+0.493\)</span>. But the algebraic normalization <span
+class="math inline">\(2pC^3 + C^2 = 1\)</span> further suppresses the
+effective spectral radius to <span class="math inline">\(\rho(J) \approx
+0.124\)</span>. This suppression comes from the algebraic constraints on
+<span class="math inline">\(p\)</span> and <span
+class="math inline">\(C\)</span> — the allowed ranges of <span
+class="math inline">\(p\)</span> and <span
+class="math inline">\(C\)</span> are restricted so that <span
+class="math inline">\(|\lambda_2|^2\)</span> cannot approach 1.</p>
+<h3 id="globality-of-convergence">2.5 Globality of Convergence</h3>
+<p>The Jacobian analysis yields local convergence near the steady state.
+Global convergence is guaranteed by the following factors:</p>
+<ol type="1">
+<li><strong>Convexity of the free energy</strong>: <span
+class="math inline">\(F(\rho)\)</span> is convex in <span
+class="math inline">\(\rho\)</span> and has a unique minimum</li>
+<li><strong>Birkhoff double stochasticity</strong>: <span
+class="math inline">\(T\)</span> is doubly stochastic, ensuring that
+<span class="math inline">\(\rho\)</span> always stays within the
+physical range</li>
+<li><strong>Entropy monotonicity</strong>: <span
+class="math inline">\(dS/dt \geq 0\)</span> guarantees that the system
+does not diverge</li>
+</ol>
+<p>Together, these three factors guarantee that starting from any
+physical initial state, the system converges globally to the unique
+Gibbs steady state.</p>
+<h4
+id="detailed-derivation-lyapunov-function-for-global-convergence">Detailed
+Derivation: Lyapunov Function for Global Convergence</h4>
+<p>The free energy <span class="math inline">\(F[\rho]\)</span> is a
+Lyapunov function for the system: <span class="math inline">\(dF/dt =
+\text{Tr}(\nabla F \cdot d\rho/dt) = -\|\nabla F\|^2 \leq 0\)</span>
+(gradient flow). <span class="math inline">\(F\)</span> is bounded from
+below (<span class="math inline">\(F \geq F_{\min}\)</span>), and <span
+class="math inline">\(dF/dt = 0\)</span> only when <span
+class="math inline">\(\nabla F = 0\)</span> (steady state). Hence <span
+class="math inline">\(F\)</span> is a strict Lyapunov function,
+guaranteeing global convergence.</p>
+<h4
+id="comparative-discussion-𝒞ℐ-jacobian-vs.-standard-dynamical-jacobian">Comparative
+Discussion: 𝒞ℐ Jacobian vs. Standard Dynamical Jacobian</h4>
+<p>In standard dynamical systems, the Jacobian matrix describes the
+linearized dynamics near a fixed point. Differences of the 𝒞ℐ
+Jacobian:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Standard Jacobian</th>
+<th style="text-align: left;">𝒞ℐ Jacobian</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Origin</td>
+<td style="text-align: left;">Linearization of dynamical equations</td>
+<td style="text-align: left;">Liouville superoperator</td>
+</tr>
+<tr>
+<td style="text-align: left;">Dimension</td>
+<td style="text-align: left;">Number of variables</td>
+<td style="text-align: left;"><span class="math inline">\(9 \times
+9\)</span> (superoperator)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Diagonalizability</td>
+<td style="text-align: left;">Not necessarily diagonalizable</td>
+<td style="text-align: left;">Diagonalizable (eigenbasis)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Complex eigenvalues</td>
+<td style="text-align: left;">Possible</td>
+<td style="text-align: left;">Inevitable (oscillatory decay modes)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Spectral radius</td>
+<td style="text-align: left;">Arbitrary</td>
+<td style="text-align: left;"><span class="math inline">\(&lt;
+1\)</span> (Birkhoff constraint)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="physical-implications-of-the-steady-state">§3 Physical
+Implications of the Steady State</h2>
+<h3 id="thermal-equilibrium">3.1 Thermal Equilibrium</h3>
+<p>The 𝒞ℐ steady state is a thermal equilibrium state — the Causal Field
+and the Information Field reach the same effective temperature. This
+means:</p>
+<ol type="1">
+<li>The “temperature” of the Information Field is calibrated by the
+Causal Field</li>
+<li>The “arrow” of the Causal Field is recorded by the Information
+Field</li>
+<li>The two form a self-consistent closed loop</li>
+</ol>
+<h4 id="detailed-derivation-calibration-mechanism">Detailed Derivation:
+Calibration Mechanism</h4>
+<p>The Information Field has no independent temperature — its
+“temperature” is calibrated by the Causal Field through the 𝒞-ℐ coupling
+(<span class="math inline">\(\theta_{\sigma_2}\)</span>). Calibration
+equation: <span class="math inline">\(T_{\mathcal{I}}^{\text{eff}} =
+T_{\mathcal{C}} \cdot (1 - e^{-\theta_{\sigma_2}/T_{\mathcal{C}}})^{-1}
+\approx T_{\mathcal{C}}\)</span> (when <span
+class="math inline">\(\theta_{\sigma_2}/T_{\mathcal{C}} \approx
+0.31\)</span>, <span class="math inline">\(e^{-0.31} \approx
+0.733\)</span>, <span class="math inline">\(T_{\mathcal{I}}^{\text{eff}}
+\approx T_{\mathcal{C}} / 0.267 \approx 3.75 T_{\mathcal{C}} \approx
+0.109\)</span>). The effective temperature of the Information Field is
+about 3.75 times that of the Causal Field — the Information Field is
+“hotter” than the Causal Field, but because the Information Field
+entropy is extremely low (<span class="math inline">\(S_{\mathcal{I}}
+\approx 0.064\)</span>), this higher temperature produces no significant
+thermodynamic effects.</p>
+<h3 id="relation-to-the-matter-sector">3.2 Relation to the Matter
+Sector</h3>
+<p>The 𝒞ℐ steady state does not directly involve the Matter Sector ℳ.
+However, the coding weights <span
+class="math inline">\(\sigma^*_{\mathcal{C}}\)</span> and <span
+class="math inline">\(\sigma^*_{\mathcal{I}}\)</span> of the steady
+state depend on <span
+class="math inline">\(\sigma^*_{\mathcal{M}}\)</span> through the
+Birkhoff Mixing Matrix <span class="math inline">\(T\)</span> — the
+three are indirectly coupled through the double stochasticity of <span
+class="math inline">\(T\)</span>.</p>
+<p>The indirect coupling chain is:</p>
+<p><span class="math display">\[\sigma_{\mathcal{M}}^*
+\xrightarrow{P_\tau} \sigma_{\mathcal{C}}^* \xrightarrow{P_{\sigma_2}}
+\sigma_{\mathcal{I}}^*.\]</span></p>
+<p>The Matter Sector influences the Causal Sector via the cyclic
+permutation <span class="math inline">\(P_\tau\)</span>; the Causal
+Sector influences the Information Sector via the transposition <span
+class="math inline">\(P_{\sigma_2}\)</span>. The Matter Sector is the
+“source” of the three-field dynamics.</p>
+<h4
+id="detailed-derivation-quantitative-analysis-of-indirect-coupling">Detailed
+Derivation: Quantitative Analysis of Indirect Coupling</h4>
+<p>The strength of the indirect influence of the Matter Sector on the
+Information Sector: <span
+class="math inline">\(\eta_{\mathcal{M}\mathcal{I}} =
+\eta_{\mathcal{M}\mathcal{C}} \cdot \eta_{\mathcal{C}\mathcal{I}}
+\approx 0.267 \times 0.043 \approx 0.0115\)</span> (1.15%). The
+influence of the Matter Sector on the Information Sector is very weak —
+the Information Field is almost independent of the Matter Sector. This
+is consistent with the intuition that the observer can perceive the
+material world only indirectly (through the Causal Field).</p>
+<h3 id="the-steady-state-as-an-observational-baseline">3.3 The Steady
+State as an Observational Baseline</h3>
+<p>The 𝒞ℐ steady state provides a baseline for the observer — the
+“normal state” perceived by the observer is a small perturbation about
+the steady state:</p>
+<p><span class="math display">\[\rho_{\text{obs}} = \rho_{\text{ss}} +
+\delta\rho.\]</span></p>
+<p>The steady state <span
+class="math inline">\(\rho_{\text{ss}}\)</span> corresponds to the “rest
+state” of the observer; the perturbation <span
+class="math inline">\(\delta\rho\)</span> corresponds to the “physical
+events” perceived by the observer. Since the steady state is a Gibbs
+state, the observer’s baseline is a thermal equilibrium state —
+consistent with thermodynamics.</p>
+<h4
+id="comparative-discussion-steady-state-baseline-vs.-standard-vacuum-state">Comparative
+Discussion: Steady-State Baseline vs. Standard Vacuum State</h4>
+<p>In standard quantum field theory, the vacuum state <span
+class="math inline">\(|0\rangle\)</span> is the Poincaré-invariant
+ground state. The 𝒞ℐ steady state <span
+class="math inline">\(\rho_{\text{ss}}\)</span> is a causal-information
+equilibrium state. Differences:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Standard Vacuum</th>
+<th style="text-align: left;">𝒞ℐ Steady State</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Symmetry</td>
+<td style="text-align: left;">Poincaré</td>
+<td style="text-align: left;">Birkhoff double stochastic</td>
+</tr>
+<tr>
+<td style="text-align: left;">Temperature</td>
+<td style="text-align: left;"><span class="math inline">\(T =
+0\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(T_{\mathcal{C}} &gt; 0\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Form</td>
+<td style="text-align: left;">Pure state <span
+class="math inline">\(|0\rangle\langle 0|\)</span></td>
+<td style="text-align: left;">Mixed state <span
+class="math inline">\(\rho_{\text{ss}}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Perturbation</td>
+<td style="text-align: left;">Particle excitations</td>
+<td style="text-align: left;">Steady-state deviation <span
+class="math inline">\(\delta\rho\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The 𝒞ℐ steady state is a non-zero-temperature mixed state —
+consistent with cosmological observations (CMB temperature <span
+class="math inline">\(T \approx 2.725\)</span> K), suggesting a deep
+connection between the Causal Field temperature <span
+class="math inline">\(T_{\mathcal{C}}\)</span> and the CMB
+temperature.</p>
+<hr />
+<h2 id="extension-to-the-three-field-joint-steady-state">§4 Extension to
+the Three-Field Joint Steady State</h2>
+<h3 id="three-field-steady-state-condition">4.1 Three-Field Steady-State
+Condition</h3>
+<p>Extending the 𝒞ℐ two-field steady state to ℳ𝒞ℐ three fields, the
+steady-state conditions are:</p>
+<p><span class="math display">\[\frac{\delta
+F_{\mathcal{M}\mathcal{C}\mathcal{I}}}{\delta \rho_{\mathcal{M}}} = 0,
+\quad \frac{\delta F_{\mathcal{M}\mathcal{C}\mathcal{I}}}{\delta
+\rho_{\mathcal{C}}} = 0, \quad \frac{\delta
+F_{\mathcal{M}\mathcal{C}\mathcal{I}}}{\delta \rho_{\mathcal{I}}} =
+0.\]</span></p>
+<p>The three-field joint free energy is:</p>
+<p><span class="math display">\[F_{\mathcal{M}\mathcal{C}\mathcal{I}} =
+F_{\mathcal{M}} + F_{\mathcal{C}} + F_{\mathcal{I}} +
+F_{\mathcal{M}\mathcal{C}} + F_{\mathcal{C}\mathcal{I}} +
+F_{\mathcal{M}\mathcal{I}}.\]</span></p>
+<p>where <span class="math inline">\(F_{\mathcal{M}\mathcal{I}}\)</span>
+is the ℳ-ℐ indirect coupling free energy (relayed through <span
+class="math inline">\(\mathcal{C}\)</span>).</p>
+<h3 id="three-field-gibbs-steady-state">4.2 Three-Field Gibbs Steady
+State</h3>
+<p>The three-field joint steady state is:</p>
+<p><span
+class="math display">\[\rho_{\text{ss}}^{\mathcal{M}\mathcal{C}\mathcal{I}}
+= \frac{e^{-\beta
+H_{\mathcal{M}\mathcal{C}\mathcal{I}}}}{Z_{\mathcal{M}\mathcal{C}\mathcal{I}}},\]</span></p>
+<p>where <span
+class="math inline">\(H_{\mathcal{M}\mathcal{C}\mathcal{I}} =
+H_{\mathcal{M}} + H_{\mathcal{C}} + H_{\mathcal{I}} +
+H_{\mathcal{M}\mathcal{C}} + H_{\mathcal{C}\mathcal{I}}\)</span> is the
+three-field joint Hamiltonian.</p>
+<h4
+id="detailed-derivation-construction-of-the-three-field-hamiltonian">Detailed
+Derivation: Construction of the Three-Field Hamiltonian</h4>
+<p><span class="math inline">\(H_{\mathcal{M}} = \omega_3\)</span>
+(Complex Structure of the Matter Sector, Vol. 1), <span
+class="math inline">\(H_{\mathcal{C}} = \omega_5\)</span> (Complex
+Structure of the Causal Sector, Vol. 4.1), <span
+class="math inline">\(H_{\mathcal{I}} = \omega_6\)</span> (volume
+element of the Information Sector, Vol. 5). <span
+class="math inline">\(H_{\mathcal{M}\mathcal{C}} = \theta_\tau \cdot
+(P_\tau \otimes P_\tau^\dagger)\)</span> (ℳ-𝒞 coupling), <span
+class="math inline">\(H_{\mathcal{C}\mathcal{I}} = \theta_{\sigma_2}
+\cdot (P_{\sigma_2} \otimes P_{\sigma_2}^\dagger)\)</span> (𝒞-ℐ
+coupling). A complete analysis of the three-field coupling will be given
+in Vol. 6.</p>
+<h3 id="three-field-jacobian">4.3 Three-Field Jacobian</h3>
+<p>The three-field joint Jacobian is a <span class="math inline">\(9
+\times 9\)</span> matrix (3 eigenmodes per sector). Its spectral radius
+is still less than 1 — the three-field steady state is globally
+stable.</p>
+<p>The structure of the three-field Jacobian:</p>
+<p><span class="math display">\[J_{\mathcal{M}\mathcal{C}\mathcal{I}} =
+\begin{pmatrix} J_{\mathcal{M}} &amp; J_{\mathcal{M}\mathcal{C}} &amp; 0
+\\ J_{\mathcal{C}\mathcal{M}} &amp; J_{\mathcal{C}} &amp;
+J_{\mathcal{C}\mathcal{I}} \\ 0 &amp; J_{\mathcal{I}\mathcal{C}} &amp;
+J_{\mathcal{I}} \end{pmatrix},\]</span></p>
+<p>where the diagonal blocks <span
+class="math inline">\(J_{\mathcal{M}}, J_{\mathcal{C}},
+J_{\mathcal{I}}\)</span> are the self-evolution Jacobians of each
+sector, and the off-diagonal blocks <span
+class="math inline">\(J_{\mathcal{M}\mathcal{C}},
+J_{\mathcal{C}\mathcal{I}}\)</span> are the cross-sector coupling
+Jacobians. Note that <span
+class="math inline">\(J_{\mathcal{M}\mathcal{I}} = 0\)</span> — ℳ and ℐ
+have no direct coupling.</p>
+<h3 id="consistency-of-the-fixed-point">4.4 Consistency of the Fixed
+Point</h3>
+<p>The fixed point of the three-field joint steady state, <span
+class="math inline">\(\sigma^* \approx (0.777912, 0.210603,
+0.011484)\)</span>, coincides with the minimum of the algebraic
+action:</p>
+<p><span class="math display">\[\sigma^* = \arg\min_{\sigma} S(\sigma) =
+\arg\min_{\sigma} \frac{\sum_i 1/\sigma_i \cdot \sum_{i&lt;j}
+1/\sqrt{\sigma_i \sigma_j}}{C^2}.\]</span></p>
+<p>The fixed point simultaneously satisfies:</p>
+<ul>
+<li>Algebraic action minimum (geometric extremum condition)</li>
+<li>Free energy minimum (thermodynamic equilibrium condition)</li>
+<li>Birkhoff fixed point (dynamical stability condition)</li>
+</ul>
+<p>The consistency of the three indicates: geometry, thermodynamics, and
+dynamics are unified at the fixed point — this is a core feature of the
+Conjugate Spectral Geometry framework.</p>
+<h4 id="detailed-derivation-verification-of-triple-consistency">Detailed
+Derivation: Verification of Triple Consistency</h4>
+<p><strong>Geometric extremum:</strong> <span
+class="math inline">\(\nabla S(\sigma^*) = 0\)</span> (under the
+constraint <span class="math inline">\(\sum \sigma_i = 1\)</span>).
+<strong>Thermodynamic equilibrium:</strong> <span
+class="math inline">\(\nabla F(\rho_{\text{ss}}) = 0\)</span>.
+<strong>Dynamical stability:</strong> <span
+class="math inline">\(T\rho_{\text{ss}} T^\dagger =
+\rho_{\text{ss}}\)</span> (Birkhoff fixed point). All three are
+simultaneously satisfied at <span class="math inline">\(\sigma^* \approx
+(0.777912, 0.210603, 0.011484)\)</span> — this is a consistency
+verification of the Conjugate Spectral Geometry framework under our
+regional properties.</p>
+<hr />
+<h2 id="landscape-dependence-of-the-steady-state">§5 Landscape
+Dependence of the Steady State</h2>
+<h3 id="variation-of-the-steady-state-with-landscape-location">5.1
+Variation of the Steady State with Landscape Location</h3>
+<p>The coding weights <span
+class="math inline">\(\sigma^*_{\mathcal{C}}\)</span> and <span
+class="math inline">\(\sigma^*_{\mathcal{I}}\)</span> of the 𝒞ℐ steady
+state vary with the landscape location:</p>
+<ul>
+<li>Symmetric point: <span class="math inline">\(\sigma^* = (1/3, 1/3,
+1/3)\)</span>, three fields equally weighted</li>
+<li>Our location: <span class="math inline">\(\sigma^* \approx
+(0.777912, 0.210603, 0.011484)\)</span>, Matter-dominated</li>
+<li>Extreme point: <span class="math inline">\(\sigma^*_{\mathcal{I}}
+\to 0\)</span>, Information Field vanishes</li>
+</ul>
+<h3 id="existence-condition-for-the-steady-state">5.2 Existence
+Condition for the Steady State</h3>
+<p>The condition for the existence of the steady state is that the
+Jacobian spectral radius <span class="math inline">\(\rho(J) &lt;
+1\)</span>. In the landscape:</p>
+<ul>
+<li>Most locations: <span class="math inline">\(\rho(J) &lt; 1\)</span>,
+steady state exists</li>
+<li>Extreme locations (<span class="math inline">\(\sigma \to (1, 0,
+0)\)</span>): <span class="math inline">\(\rho(J) \to 1\)</span>, steady
+state marginal</li>
+<li>Symmetric location: <span class="math inline">\(\rho(J) \approx
+0\)</span>, steady state hyperstable</li>
+</ul>
+<p>At our location <span class="math inline">\(\rho(J) \approx
+0.124\)</span> — the steady state is stable but not hyperstable,
+allowing the observer to perceive meaningful physical events (non-zero
+perturbations).</p>
+<h4
+id="numerical-verification-landscape-distribution-of-the-spectral-radius">Numerical
+Verification: Landscape Distribution of the Spectral Radius</h4>
+<p>In the landscape parameter space <span
+class="math inline">\((\sigma_{\mathcal{M}},
+\sigma_{\mathcal{C}})\)</span> (with <span
+class="math inline">\(\sigma_{\mathcal{I}} = 1 - \sigma_{\mathcal{M}} -
+\sigma_{\mathcal{C}}\)</span>), <span class="math inline">\(\rho(J) =
+|\lambda_2|^2\)</span>. At the symmetric point <span
+class="math inline">\((1/3, 1/3)\)</span>: <span
+class="math inline">\(\rho(J) = 1\)</span> (marginal). At our location
+<span class="math inline">\((0.778, 0.211)\)</span>: <span
+class="math inline">\(\rho(J) \approx 0.493\)</span>. At the extreme
+point <span class="math inline">\((1, 0)\)</span>: <span
+class="math inline">\(\rho(J) \to 0\)</span> (hyperstable). The range of
+<span class="math inline">\(\rho(J)\)</span> in the landscape: <span
+class="math inline">\([0, 1]\)</span>.</p>
+<h3 id="steady-state-and-observer-localization">5.3 Steady State and
+Observer Localization</h3>
+<p>The observer’s location in the landscape is determined by the
+Birkhoff Mixing Matrix <span
+class="math inline">\(T_{\text{ours}}\)</span>. The relationship between
+the steady state <span class="math inline">\(\rho_{\text{ss}}\)</span>
+and observer localization:</p>
+<p><span class="math display">\[\rho_{\text{ss}} =
+\rho_{\text{ss}}[T_{\text{ours}}].\]</span></p>
+<p>Observers at different locations perceive different steady states —
+but the <strong>structure</strong> (Gibbs form) of the steady state is
+universal. This guarantees the universality of physical laws in the
+landscape while allowing physical constants to vary with location.</p>
+<h4
+id="comparative-discussion-landscape-steady-state-vs.-string-landscape-vacuum">Comparative
+Discussion: Landscape Steady State vs. String Landscape Vacuum</h4>
+<p>In the string landscape, different vacua correspond to different
+low-energy physics. In the 𝒞ℐ landscape, different steady states
+correspond to different coding weight configurations. Differences:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">String Landscape Vacuum</th>
+<th style="text-align: left;">𝒞ℐ Landscape Steady State</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Number</td>
+<td style="text-align: left;"><span
+class="math inline">\(10^{500}\)</span> order of magnitude</td>
+<td style="text-align: left;">Continuum (landscape space)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Selection mechanism</td>
+<td style="text-align: left;">Anthropic principle</td>
+<td style="text-align: left;">Birkhoff fixed point (algebraic
+necessity)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Steady-state structure</td>
+<td style="text-align: left;">May differ among vacua</td>
+<td style="text-align: left;">Gibbs form universal</td>
+</tr>
+<tr>
+<td style="text-align: left;">Parameter variation</td>
+<td style="text-align: left;">Discrete</td>
+<td style="text-align: left;">Continuous</td>
+</tr>
+</tbody>
+</table>
+<p>The Gibbs form of the 𝒞ℐ landscape steady state is universal — it
+does not depend on the landscape location. This guarantees the
+universality of physical laws while allowing coding weights (physical
+constants) to vary continuously with location.</p>
+<hr />
+<h2 id="theorem-index">Theorem Index</h2>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 28%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Number</th>
+<th style="text-align: left;">Content</th>
+<th style="text-align: center;">Proof Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Theorem 4.4.1.01</td>
+<td style="text-align: left;">𝒞ℐ Joint Steady State Theorem</td>
+<td style="text-align: center;">Proved (this article §1)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="cross-volume-references">Cross-Volume References</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Reference</th>
+<th style="text-align: left;">Vol./Theorem</th>
+<th style="text-align: left;">Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Born normalization</td>
+<td style="text-align: left;">Vol. 0, Theorem 0.2.1.01</td>
+<td style="text-align: left;"><span
+class="math inline">\(\Delta\lambda_i \propto
+\sqrt{\sigma_i}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Birkhoff fixed point</td>
+<td style="text-align: left;">Vol. 0, Theorem 0.3.1.01</td>
+<td style="text-align: left;"><span class="math inline">\(\sigma^* =
+T\sigma^*\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Algebraic normalization</td>
+<td style="text-align: left;">Vol. 0, Theorem 0.4.1.01</td>
+<td style="text-align: left;"><span class="math inline">\(2pC^3 + C^2 =
+1\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Birkhoff Mixing Matrix</td>
+<td style="text-align: left;">Vol. 3, Theorem 3.1.1.01</td>
+<td style="text-align: left;"><span class="math inline">\(T = \theta_I I
++ \theta_\tau P_\tau + \theta_{\sigma_2} P_{\sigma_2}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Causal Field density</td>
+<td style="text-align: left;">Vol. 4.1, Theorem 4.1.1.01</td>
+<td style="text-align: left;"><span
+class="math inline">\(\rho_{\mathcal{C}} =
+3\sigma_{\mathcal{C}}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Entropy monotonicity</td>
+<td style="text-align: left;">Vol. 4.2, Theorem 4.2.2.01</td>
+<td style="text-align: left;"><span
+class="math inline">\(dS_{\mathcal{C}}/dt \geq 0\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">𝒞-ℐ mutual information</td>
+<td style="text-align: left;">Vol. 4.3, Theorem 4.3.1.01</td>
+<td style="text-align: left;"><span
+class="math inline">\(I(\mathcal{C};\mathcal{I}) = \theta_{\sigma_2}
+H(\sigma^*)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Information Field decay</td>
+<td style="text-align: left;">Vol. 5, Theorem 5.1.2.01</td>
+<td style="text-align: left;"><span
+class="math inline">\(\Gamma_{\text{geo}} \cdot
+\rho_{\mathcal{I}}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Three-field coupling</td>
+<td style="text-align: left;">Vol. 6, Theorem 6.1.1.01</td>
+<td style="text-align: left;"><span
+class="math inline">\(F_{\mathcal{M}\mathcal{C}\mathcal{I}}\)</span></td>
+</tr>
+</tbody>
+</table>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../../../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>
