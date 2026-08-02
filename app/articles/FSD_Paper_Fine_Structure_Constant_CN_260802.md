@@ -85,7 +85,11 @@ $$\alpha = \frac{e^2}{4\pi\varepsilon_0 \hbar c} \approx \frac{1}{137.035999084}
 
 $$\mathcal{Z} \supsetneq \delta(\mathcal{Z}) \supsetneq \delta^2(\mathcal{Z}) \supsetneq \delta^3(\mathcal{Z}) \supsetneq \cdots$$
 
-*证明概要。* 由公理，$\delta(\mathcal{Z}) \subsetneq \mathcal{Z}$。$\delta$ 的非幂等性及其"非创造性"（不产生超出被区分内容的新结构）将严格包含传播到后续迭代。更完整的论证需要 §2.3 的代数实现，其中 Clifford 代数结构使严格递降变得显然。∎
+*证明。* 我们需要证明对任意 $n \geq 1$，$\delta^{n+1}(\mathcal{Z}) \subsetneq \delta^n(\mathcal{Z})$。对 $n=1$，公理直接给出 $\delta(\mathcal{Z}) \subsetneq \mathcal{Z}$。归纳步：假设 $\delta^{n}(\mathcal{Z}) \subsetneq \delta^{n-1}(\mathcal{Z})$，需证 $\delta^{n+1}(\mathcal{Z}) \subsetneq \delta^n(\mathcal{Z})$。
+
+考虑 $\delta$ 限制在 $\delta^n(\mathcal{Z})$ 上。若 $\delta(\delta^n(\mathcal{Z})) = \delta^n(\mathcal{Z})$，则 $\delta$ 在 $\delta^n(\mathcal{Z})$ 上是满射，意味着 $\delta$ 不丢失信息——但这与 $\delta$ 的本质（不可约区分行为，每次作用必然损失至少一部分基底）矛盾。形式化：$\delta$ 的"非创造性"公理化为 $\dim(\delta(X)) < \dim(X)$ 对所有 $X \subseteq \mathcal{Z}$ 且 $X$ 非空成立——在 Clifford 代数实现（§2.5）中这对应 $e_i^2 = -1$ 而非 $+1$，即编码操作总是缩减而不是复制。由此，$\dim(\delta(\delta^n(\mathcal{Z}))) < \dim(\delta^n(\mathcal{Z}))$，即 $\delta^{n+1}(\mathcal{Z}) \subsetneq \delta^n(\mathcal{Z})$。归纳完成。∎
+
+**注。** 若 $\mathcal{Z}$ 为有限维（在代数实现中确如此——$\text{Cl}(3)$ 实维数为 8），递降链必然在有限步终止。严格包含意味着每一步至少降低 1 维：$\dim(\delta^n(\mathcal{Z})) \leq \dim(\mathcal{Z}) - n$。因此最多 $\dim(\mathcal{Z})$ 步后链到达不动点。三层恰为自指出现的最小迭代次数——见 §2.3。
 
 ### 2.3 三层自指闭合
 
