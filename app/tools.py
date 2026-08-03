@@ -19,8 +19,23 @@ from datetime import datetime
 _read_cache: Dict[str, Tuple[str, float]] = {}
 _READ_CACHE_TTL = 10  # 秒
 
-from config import GAI_API_KEY, GAI_BASE_URL, GAI_MODEL, UPLOAD_FOLDER, OPENWEBUI_DB_PATH, logger
+from config import GAI_API_KEY, GAI_BASE_URL, GAI_MODEL, UPLOAD_FOLDER, OPENWEBUI_DB_PATH, PROJECT_ROOT, logger
 from models import personal_db, _save_personal_db
+
+# 编程工具的工作目录（项目根目录 = PROJECT_ROOT 的父目录，即 GeometryAI-Mac-Build）
+CODE_WORK_DIR = os.path.abspath(os.path.join(PROJECT_ROOT, '..'))
+# 编程工具允许访问的目录列表（白名单）
+CODE_ALLOWED_DIRS = [
+    CODE_WORK_DIR,                    # 项目根目录
+    os.path.expanduser('~/.codex'),   # Codex 配置目录
+]
+# Shell 执行黑名单命令（禁止高危操作）
+SHELL_BLACKLIST = [
+    'rm -rf /', 'rm -rf ~', 'rm -rf .', 'mkfs', 'dd if=', '> /dev/sd',
+    ':(){ :|:& };:', 'wget ', 'curl ', 'chmod 777', 'sudo ', 'su ',
+    'reboot', 'shutdown', 'init 0', 'init 6', 'poweroff',
+    'passwd', 'useradd', 'userdel', 'usermod',
+]
 
 # ==================== 互联网搜索函数 ====================
 
@@ -702,6 +717,109 @@ ARTICLE_TOOLS = [
                     }
                 },
                 "required": ["query"]
+            }
+        }
+    },
+    # ==================== 编程工具（Codex 使用） ====================
+    {
+        "type": "function",
+        "function": {
+            "name": "shell_execute",
+            "description": "执行 shell 命令。在项目根目录下运行命令，返回 stdout 和 stderr。适用于：编译代码、运行测试、安装依赖、git 操作、查看文件系统状态等。注意：高危命令（rm -rf /、sudo、格式化等）被禁止。每次执行超时 60 秒。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "command": {
+                        "type": "string",
+                        "description": "要执行的 shell 命令。例如：'ls -la'、'python3 -c \"print(1+1)\"'、'git status'、'npm test'、'pip list'。无需 cd 到项目目录，已在项目根目录执行。"
+                    },
+                    "timeout": {
+                        "type": "integer",
+                        "description": "超时秒数，默认 30，最大 120。长时间运行的任务请适当增加。",
+                        "default": 30
+                    },
+                    "workdir": {
+                        "type": "string",
+                        "description": "工作目录（相对于项目根目录）。默认空 = 项目根目录。例如 'app' 表示在 app/ 下执行，'build_linux' 表示在 build_linux/ 下执行。",
+                        "default": ""
+                    }
+                },
+                "required": ["command"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "file_read",
+            "description": "读取项目目录中的文件内容。支持任意文本文件（.py, .md, .json, .toml, .yaml, .txt, .sh, .html, .css, .js 等）。返回文件内容，最多 100000 字符。适用于：查看代码文件、配置文件、文章内容、日志等。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "path": {
+                        "type": "string",
+                        "description": "文件路径，相对于项目根目录。例如 'app/server.py'、'app/tools.py'、'app/config.py'、'app/.env'、'README.md'、'Dockerfile'。"
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "description": "最多读取的字符数，默认 50000，最大 100000。大文件可分段读取。",
+                        "default": 50000
+                    },
+                    "offset": {
+                        "type": "integer",
+                        "description": "从第 N 个字符开始读取（默认 0=从头开始）。大文件可通过 offset 分段读取。",
+                        "default": 0
+                    }
+                },
+                "required": ["path"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "file_write",
+            "description": "写入文件到项目目录。支持覆盖写入和追加两种模式。适用于：创建新代码文件、修改现有代码、写入配置、生成报告等。注意：不要覆盖 articles/ 目录下的文章（请用 write_article 工具）。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "path": {
+                        "type": "string",
+                        "description": "文件路径，相对于项目根目录。例如 'app/server.py'、'test.py'、'output/result.json'。父目录会自动创建。"
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "要写入的文件内容（文本格式）。对于大文件（>50000 字符），请先 mode=write 写入前半部分，再用 mode=append 追加剩余部分。"
+                    },
+                    "mode": {
+                        "type": "string",
+                        "enum": ["write", "append"],
+                        "description": "写入模式：write=覆盖写入（默认，首次使用），append=追加写入（续写大文件的后续部分）"
+                    }
+                },
+                "required": ["path", "content"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "file_list",
+            "description": "列出项目目录中的文件和目录。支持 glob 模式匹配。适用于：查看项目结构、查找特定文件、确认文件是否存在、浏览目录内容。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "pattern": {
+                        "type": "string",
+                        "description": "glob 匹配模式，相对于项目根目录。例如：'**/*.py' 列出所有 Python 文件，'app/**' 列出 app 目录下所有内容，'*' 列出根目录下所有文件，'**/Dockerfile' 查找所有 Dockerfile。"
+                    },
+                    "max_results": {
+                        "type": "integer",
+                        "description": "最大返回结果数，默认 50，最大 200。",
+                        "default": 50
+                    }
+                },
+                "required": ["pattern"]
             }
         }
     }
@@ -2586,6 +2704,183 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                 return "\n".join(lines)
             except Exception as e:
                 return f"搜索真理层失败: {e}"
+
+        # ==================== 编程工具（Codex 使用） ====================
+        elif name == "shell_execute":
+            command = arguments.get("command", "")
+            timeout = min(int(arguments.get("timeout", 30) or 30), 120)
+            workdir = arguments.get("workdir", "") or ""
+            if not command:
+                return "错误：缺少 command 参数"
+            # 黑名单检查
+            cmd_lower = command.lower()
+            for black in SHELL_BLACKLIST:
+                if black in cmd_lower:
+                    return f"错误：命令 '{command}' 被禁止（匹配黑名单: {black}）"
+            import subprocess
+            import shlex
+            try:
+                # 确定工作目录
+                cwd = CODE_WORK_DIR
+                if workdir:
+                    workdir_abs = os.path.abspath(os.path.join(CODE_WORK_DIR, workdir))
+                    # 安全检查：不能跳出项目目录
+                    if not workdir_abs.startswith(CODE_WORK_DIR):
+                        return f"错误：工作目录 '{workdir}' 超出项目根目录范围"
+                    cwd = workdir_abs
+                # 执行命令
+                result = subprocess.run(
+                    command,
+                    shell=True,
+                    capture_output=True,
+                    cwd=cwd,
+                    timeout=timeout,
+                    text=True,
+                )
+                output = ""
+                if result.stdout:
+                    output += f"[stdout]\n{result.stdout[:50000]}"
+                if result.stderr:
+                    if output:
+                        output += "\n"
+                    output += f"[stderr]\n{result.stderr[:20000]}"
+                if not output:
+                    output = "(命令执行完毕，无输出)"
+                # 截断过长输出
+                if len(output) > 70000:
+                    output = output[:70000] + "\n...(输出过长，已截断)"
+                exit_info = f"退出码: {result.returncode}"
+                if result.returncode == 0:
+                    return f"✅ {exit_info}\n{output}"
+                else:
+                    return f"❌ {exit_info}\n{output}"
+            except subprocess.TimeoutExpired:
+                return f"错误：命令执行超时（{timeout}秒）"
+            except Exception as e:
+                return f"命令执行失败: {e}"
+
+        elif name == "file_read":
+            path = arguments.get("path", "")
+            limit = min(int(arguments.get("limit", 50000) or 50000), 100000)
+            offset = int(arguments.get("offset", 0) or 0)
+            if not path:
+                return "错误：缺少 path 参数"
+            # 安全检查：解析为绝对路径，确认在允许范围内
+            try:
+                abs_path = os.path.abspath(os.path.join(CODE_WORK_DIR, path))
+                # 检查是否在允许目录内
+                is_allowed = False
+                for d in CODE_ALLOWED_DIRS:
+                    d_abs = os.path.abspath(d)
+                    if abs_path.startswith(d_abs + os.sep) or abs_path == d_abs:
+                        is_allowed = True
+                        break
+                if not is_allowed:
+                    return f"错误：路径 '{path}' 不在允许访问的目录范围内"
+                if not os.path.exists(abs_path):
+                    return f"错误：文件 '{path}' 不存在"
+                if not os.path.isfile(abs_path):
+                    return f"错误：'{path}' 不是文件"
+                # 文件大小检查
+                file_size = os.path.getsize(abs_path)
+                if file_size > 500000:  # 500KB
+                    return f"错误：文件 '{path}' 过大（{file_size//1024}KB），最大支持 500KB。请缩小 offset/limit 范围。"
+                with open(abs_path, 'r', encoding='utf-8', errors='replace') as f:
+                    if offset > 0:
+                        f.seek(offset)
+                    content = f.read(limit)
+                total = min(file_size, offset + limit) if offset > 0 else min(file_size, limit)
+                return f"文件: {path} ({file_size} 字符, 显示 {offset}-{offset+len(content)})\n\n{content}"
+            except ValueError as e:
+                return f"错误：{e}"
+            except Exception as e:
+                return f"读取文件失败: {e}"
+
+        elif name == "file_write":
+            path = arguments.get("path", "")
+            content = arguments.get("content", "")
+            mode = arguments.get("mode", "write")
+            if not path:
+                return "错误：缺少 path 参数"
+            if not content:
+                return "错误：缺少 content 参数"
+            # 安全检查
+            try:
+                abs_path = os.path.abspath(os.path.join(CODE_WORK_DIR, path))
+                if not abs_path.startswith(CODE_WORK_DIR + os.sep) and abs_path != CODE_WORK_DIR:
+                    return f"错误：路径 '{path}' 超出项目根目录范围"
+            except Exception as e:
+                return f"错误：{e}"
+            try:
+                # 确保父目录存在
+                parent = os.path.dirname(abs_path)
+                os.makedirs(parent, exist_ok=True)
+                if mode == "append":
+                    with open(abs_path, 'a', encoding='utf-8') as f:
+                        f.write(content)
+                    total = os.path.getsize(abs_path)
+                    return f"✅ 已追加到 {path}（当前共 {total} 字符）"
+                else:
+                    # 截断保护
+                    if os.path.exists(abs_path):
+                        old_size = os.path.getsize(abs_path)
+                        new_size = len(content.encode('utf-8'))
+                        if old_size > 100000 and new_size < old_size * 0.3:
+                            return (f"⚠️ 截断保护：原文件 {old_size//1024}KB，新内容仅 {new_size//1024}KB"
+                                    f"（不足原文件的 30%）。请确认 content 包含完整内容，或使用 mode=append 追加。")
+                    with open(abs_path, 'w', encoding='utf-8') as f:
+                        f.write(content)
+                    return f"✅ 已写入 {path}（{len(content)} 字符）"
+            except Exception as e:
+                return f"写入文件失败: {e}"
+
+        elif name == "file_list":
+            pattern = arguments.get("pattern", "")
+            max_results = min(int(arguments.get("max_results", 50) or 50), 200)
+            if not pattern:
+                return "错误：缺少 pattern 参数"
+            try:
+                import glob as _glob
+                # 在项目根目录下搜索
+                full_pattern = os.path.join(CODE_WORK_DIR, pattern)
+                matches = sorted(_glob.glob(full_pattern, recursive=True))
+                # 过滤掉 .venv, __pycache__ 等目录
+                filtered = []
+                skip_dirs = {'.venv', '__pycache__', '.git', 'node_modules', '.obsidian', 'chroma_db'}
+                for m in matches:
+                    rel = os.path.relpath(m, CODE_WORK_DIR)
+                    parts = rel.replace('\\', '/').split('/')
+                    if any(skip in parts for skip in skip_dirs):
+                        continue
+                    filtered.append(rel)
+                total = len(filtered)
+                if total == 0:
+                    return f"未找到匹配 '{pattern}' 的文件"
+                # 分组显示：目录和文件
+                dirs = [f for f in filtered if os.path.isdir(os.path.join(CODE_WORK_DIR, f))]
+                files = [f for f in filtered if os.path.isfile(os.path.join(CODE_WORK_DIR, f))]
+                result_parts = [f"匹配 '{pattern}': 共 {total} 个结果"]
+                if dirs:
+                    result_parts.append(f"\n📁 目录 ({len(dirs)}):")
+                    for d in dirs[:max_results]:
+                        result_parts.append(f"  {d}/")
+                remaining = max_results - len(dirs[:max_results])
+                if files and remaining > 0:
+                    result_parts.append(f"\n📄 文件 ({len(files)}):")
+                    for f in files[:remaining]:
+                        fsize = os.path.getsize(os.path.join(CODE_WORK_DIR, f))
+                        if fsize < 1024:
+                            size_str = f"{fsize}B"
+                        elif fsize < 1024 * 1024:
+                            size_str = f"{fsize//1024}KB"
+                        else:
+                            size_str = f"{fsize//1024//1024}MB"
+                        result_parts.append(f"  {f}  ({size_str})")
+                if total > max_results:
+                    result_parts.append(f"\n... 还有 {total - max_results} 个结果未显示")
+                return "\n".join(result_parts)
+            except Exception as e:
+                return f"文件列表查询失败: {e}"
 
         else:
             return f"未知工具: {name}"
