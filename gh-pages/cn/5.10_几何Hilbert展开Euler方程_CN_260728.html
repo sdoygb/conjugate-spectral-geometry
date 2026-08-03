@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>几何 Hilbert 展开——Euler 方程 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="编号：5.10 | 日期：260728.1 | 系列：信息场累积量因子化（G5） | 语言：CN">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/cn/5.10_几何Hilbert展开Euler方程_CN_260728.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../index.html" class="nav-home">🏠 首页</a>
+    <a href="../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">几何 Hilbert 展开——Euler 方程</span>
+  </nav>
+  <main class="article-content">
+<h1 id="几何-hilbert-展开euler-方程">几何 Hilbert 展开——Euler 方程</h1>
+<p><strong>编号</strong>：5.10 | <strong>日期</strong>：260728.1 |
+<strong>系列</strong>：信息场累积量因子化（G5） |
+<strong>语言</strong>：CN <strong>前置依赖</strong>：文章
+5.9（信息场动力学方程）、定理 7.13.3.05（Birkhoff 混合）、定理
+1.1.5.01（谱展开/Born法则）、定理 1.4.3.01（代数作用量）
+<strong>状态</strong>：完整——从信息场动力学方程经 Hilbert
+展开严格推导可压缩 Euler 方程</p>
+<hr />
+<h2 id="摘-要">摘　要</h2>
+<p>G4 已导出信息场动力学方程——几何版的 Boltzmann
+方程。本文（G5）对该方程执行 Hilbert 展开的第一阶，严格推导可压缩 Euler
+方程。核心结果：(1) 平衡态为 <span class="math inline">\(S^2\)</span>
+上的均匀分布 <span class="math inline">\(f_0 = 1/4\pi\)</span>；(2)
+一阶展开给出连续性方程、动量方程和能量方程；(3) 几何压力 <span
+class="math inline">\(p_{\text{geo}} = S(\theta)|_{\Sigma}\)</span>
+由代数作用量确定，绝热指数 <span class="math inline">\(\gamma =
+9/7\)</span> 由 Clifford 代数 <span
+class="math inline">\(Cl(7,0)\)</span> 维数确定。与邓煜从 Boltzmann
+方程推导 Euler 方程的数学结构完全平行，但所有参数均由谱刚性锁定。</p>
+<p><strong>关键词</strong>：Hilbert 展开；Euler
+方程；平衡态分布；碰撞不变量；矩封闭；几何压力；代数作用量</p>
+<hr />
+<h2 id="目-录">目　录</h2>
+<ul>
+<li>§1　平衡态分布与线性化</li>
+<li>§2　Hilbert 展开的几何设定</li>
+<li>§3　零阶：平衡态恒等式</li>
+<li>§4　一阶：可压缩 Euler 方程推导</li>
+<li>§5　宏观变量的矩封闭</li>
+<li>定理索引</li>
+<li>参考文献</li>
+</ul>
+<hr />
+<h2 id="平衡态分布与线性化">§1 平衡态分布与线性化</h2>
+<h3 id="平衡态">1.1 平衡态</h3>
+<p><strong>定义 5.10.1.01（平衡态分布）</strong>：信息场在扇区参数空间
+<span class="math inline">\(S^2\)</span> 上的平衡态分布为均匀分布：</p>
+<p><span class="math display">\[f_0(x) = \frac{1}{\text{Vol}(S^2)} =
+\frac{1}{4\pi}, \quad x \in S^2\]</span></p>
+<p><strong>验证</strong>：<span
+class="math inline">\(\mathcal{L}_{\text{mix}}[f_0] =
+\Delta_{S^2}(1/4\pi) + \mathcal{L}_{Cl}(1/4\pi) = 0\)</span>（常函数是
+Laplace-Beltrami 算子的零模，且 Clifford
+跳跃算子在均匀分布上为零）。<span
+class="math inline">\(\mathcal{Q}_{\text{cont}}[f_0, f_0] =
+0\)</span>（均匀分布无跨扇区净流——信息在所有扇区间均匀分配时不产生净交换）。</p>
+<p><strong>物理意义</strong>：<span class="math inline">\(f_0 =
+1/4\pi\)</span> 对应信息在 <span class="math inline">\(S^2\)</span>
+上的最大熵状态——所有方向和所有扇区同等概率。这与经典 Boltzmann 方程的
+Maxwell 分布 <span class="math inline">\(f_M \propto
+e^{-|v|^2/2kT}\)</span> 在数学角色上对应：两者都是碰撞算子的零模。</p>
+<h3 id="线性化碰撞算子">1.2 线性化碰撞算子</h3>
+<p><strong>定义 5.10.1.02（线性化碰撞算子）</strong>：在平衡态 <span
+class="math inline">\(f_0\)</span> 附近线性化：</p>
+<p><span class="math display">\[\mathcal{L}_0[h] =
+\mathcal{L}_{\text{mix}}[h] + 2\mathcal{Q}_{\text{cont}}[f_0,
+h]\]</span></p>
+<p><strong>命题 5.10.1.03（<span
+class="math inline">\(\mathcal{L}_0\)</span> 的性质）</strong>： 1.
+<span class="math inline">\(\mathcal{L}_0\)</span> 是 <span
+class="math inline">\(L^2(S^2)\)</span> 上的自伴算子 2.
+其零空间（流体力学子空间）由碰撞不变量张成：<span
+class="math inline">\(\text{Ker}(\mathcal{L}_0) = \text{span}\{1,
+v_\eta, v_\xi, |v|^2\}\)</span> 3. 非零本征值有正下界 <span
+class="math inline">\(\mu_{Cl} = 0.2982\)</span>（来自定理
+5.8.3.02）</p>
+<p>碰撞不变量的物理意义：<span class="math inline">\(1\)</span> =
+质量守恒，<span class="math inline">\(v_\eta, v_\xi\)</span> =
+动量守恒（<span class="math inline">\(\eta\)</span> 和 <span
+class="math inline">\(\xi\)</span> 方向），<span
+class="math inline">\(|v|^2\)</span> = 能量守恒。这些守恒律来自 Birkhoff
+双随机性（命题 5.9.3.02）。</p>
+<hr />
+<h2 id="hilbert-展开的几何设定">§2 Hilbert 展开的几何设定</h2>
+<p><strong>定理 5.10.2.01（几何 Hilbert
+展开）</strong>：在平衡态附近，将分布函数展开为：</p>
+<p><span class="math display">\[f = f_0(1 + \varepsilon h_1 +
+\varepsilon^2 h_2 + \cdots)\]</span></p>
+<p>其中 <span class="math inline">\(\varepsilon\)</span> 是 Knudsen
+数的几何类比：</p>
+<p><span class="math display">\[\varepsilon \sim
+\frac{\ell_{\text{mfp}}}{L_{\text{macro}}}, \quad \ell_{\text{mfp}} =
+\frac{1}{\sqrt{\lambda_1^{\text{eff}}}} \approx 0.0506\]</span></p>
+<p><span class="math inline">\(\ell_{\text{mfp}}\)</span>
+为几何平均自由程——信息在参数空间上扩散一个谱间隙波长所需的特征长度。<span
+class="math inline">\(L_{\text{macro}}\)</span>
+为宏观流动的特征尺度。</p>
+<p>将展开代入信息场动力学方程（定理 5.9.3.01）：</p>
+<p><span class="math display">\[\partial_\tau f +
+\mathbf{v}_{\text{geo}} \cdot \nabla_x f = \mathcal{L}_{\text{mix}}[f] +
+\mathcal{Q}_{\text{cont}}[f, f]\]</span></p>
+<p>按 <span class="math inline">\(\varepsilon\)</span>
+的幂次匹配各阶方程。</p>
+<hr />
+<h2 id="零阶平衡态恒等式">§3 零阶：平衡态恒等式</h2>
+<p><span class="math inline">\(\varepsilon^0\)</span> 阶：</p>
+<p><span class="math display">\[\mathcal{L}_{\text{mix}}[f_0] +
+\mathcal{Q}_{\text{cont}}[f_0, f_0] = 0\]</span></p>
+<p>恒成立（平衡态定义 5.10.1.01）。这对应于经典 Hilbert 展开中 <span
+class="math inline">\(Q(f_M, f_M) = 0\)</span> 的几何类比。</p>
+<hr />
+<h2 id="一阶可压缩-euler-方程推导">§4 一阶：可压缩 Euler 方程推导</h2>
+<h3 id="一阶方程">4.1 一阶方程</h3>
+<p><span class="math inline">\(\varepsilon^1\)</span> 阶：</p>
+<p><span class="math display">\[\partial_\tau h_1 +
+\mathbf{v}_{\text{geo}} \cdot \nabla_x h_1 =
+\mathcal{L}_0[h_1]\]</span></p>
+<p><strong>定义 5.10.4.01（宏观变量——矩）</strong>：定义 <span
+class="math inline">\(h_1\)</span> 的流体力学矩：</p>
+<p><span class="math display">\[\rho^{(1)}(\eta, \tau) = \int_{S^2}
+h_1(\eta, \xi, \tau) \, d\Omega \quad \text{（密度扰动）}\]</span></p>
+<p><span class="math display">\[\rho^{(1)} \mathbf{u}^{(1)}(\eta, \tau)
+= \int_{S^2} \mathbf{v}_{\text{geo}} \, h_1(\eta, \xi, \tau) \, d\Omega
+\quad \text{（动量密度）}\]</span></p>
+<p><span class="math display">\[p^{(1)}(\eta, \tau) = \frac{1}{2}
+\int_{S^2} |\mathbf{v}_{\text{geo}}|^2 \, h_1(\eta, \xi, \tau) \,
+d\Omega \quad \text{（能量密度/压力扰动）}\]</span></p>
+<h3 id="euler-方程">4.2 Euler 方程</h3>
+<p><strong>定理 5.10.4.02（几何 Euler 方程）</strong>：一阶矩满足可压缩
+Euler 方程：</p>
+<p><span class="math display">\[\boxed{\partial_\tau \rho + \nabla_\eta
+\cdot (\rho \mathbf{u}) = 0}\]</span></p>
+<p><span class="math display">\[\boxed{\partial_\tau (\rho \mathbf{u}) +
+\nabla_\eta \cdot (\rho \mathbf{u} \otimes \mathbf{u}) = -\nabla_\eta
+p_{\text{geo}}}\]</span></p>
+<p><span class="math display">\[\boxed{\partial_\tau E + \nabla_\eta
+\cdot [(E + p_{\text{geo}}) \mathbf{u}] = 0}\]</span></p>
+<p>其中： - <span class="math inline">\(p_{\text{geo}} =
+S(\theta)|_{\Sigma}\)</span> 为几何压力——代数作用量 <span
+class="math inline">\(S(\theta) = \sum 1/\sin^2\theta_i \sum_{i&lt;j}
+1/(\sin\theta_i \sin\theta_j)\)</span> 在扇区参数空间 <span
+class="math inline">\(\Sigma\)</span> 上的限制 - <span
+class="math inline">\(E = \frac{1}{2}\rho|\mathbf{u}|^2 +
+p_{\text{geo}}/(\gamma-1)\)</span> 为总能量密度 - <span
+class="math inline">\(\gamma = 9/7\)</span> 为绝热指数，由 Clifford 代数
+<span class="math inline">\(Cl(7,0)\)</span> 的维数确定：<span
+class="math inline">\(\gamma = (d+2)/d = 9/7\)</span>，其中 <span
+class="math inline">\(d = 7\)</span>（Clifford 代数的生成元数）</p>
+<p><strong>证明概要</strong>：</p>
+<ol type="1">
+<li>将 <span class="math inline">\(\varepsilon^1\)</span> 阶方程分别乘
+<span class="math inline">\(1\)</span>, <span
+class="math inline">\(\mathbf{v}_{\text{geo}}\)</span>, <span
+class="math inline">\(|\mathbf{v}_{\text{geo}}|^2\)</span> 并在 <span
+class="math inline">\(S^2\)</span> 上积分</li>
+<li><span class="math inline">\(h_1\)</span> 属于 <span
+class="math inline">\(\mathcal{L}_0\)</span>
+的零空间（流体力学子空间），故 <span class="math inline">\(\int
+\mathbf{v}_{\text{geo}} \mathcal{L}_0[h_1] d\Omega = 0\)</span>、<span
+class="math inline">\(\int |\mathbf{v}_{\text{geo}}|^2
+\mathcal{L}_0[h_1] d\Omega = 0\)</span>（碰撞不变量）</li>
+<li>输运项 <span class="math inline">\(\int \mathbf{v}_{\text{geo}}
+(\mathbf{v}_{\text{geo}} \cdot \nabla_x h_1) d\Omega\)</span> 产生 <span
+class="math inline">\(\nabla_\eta \cdot (\rho \mathbf{u} \otimes
+\mathbf{u} + pI)\)</span></li>
+<li>压力 <span class="math inline">\(p_{\text{geo}}\)</span>
+由代数作用量 <span class="math inline">\(S(\theta)\)</span>
+的平衡态值给出——这是几何框架的独特之处：压力不是热力学量，而是<strong>几何量</strong>
+∎</li>
+</ol>
+<p><strong>关键创新</strong>：在经典 Boltzmann → Euler
+的推导中，压力来自分布函数的二阶矩，依赖状态方程。在几何框架中，压力直接由代数作用量
+<span class="math inline">\(S(\theta)\)</span> 给出——它是 Clifford
+代数构造的内禀几何量，不需要状态方程假设。</p>
+<hr />
+<h2 id="宏观变量的矩封闭">§5 宏观变量的矩封闭</h2>
+<p>Euler 层面的矩封闭是<strong>精确的</strong>——<span
+class="math inline">\(h_1\)</span> 完全在 <span
+class="math inline">\(\mathcal{L}_0\)</span>
+的零空间（流体力学子空间）中，不需要模型假设。这与 Boltzmann 方程的标准
+Hilbert 展开一致。</p>
+<p><strong>流体力学子空间的维数</strong>：<span
+class="math inline">\(\dim \text{Ker}(\mathcal{L}_0) = 4\)</span>（质量
++ 2 个动量分量 + 能量），对应 <span class="math inline">\(S^2\)</span>
+上 <span class="math inline">\(\ell = 0\)</span> 和 <span
+class="math inline">\(\ell = 1\)</span> 的球谐函数（<span
+class="math inline">\(1 + 3 = 4\)</span> 维）。这 4 个自由度完全确定了
+Euler 层面的宏观描述。</p>
+<p><strong>与经典 Euler 方程的差异</strong>： 1. 压力由 <span
+class="math inline">\(S(\theta)\)</span>
+替代（非热力学状态方程，是纯几何量） 2. 绝热指数 <span
+class="math inline">\(\gamma = 9/7\)</span> 由 Clifford 代数维数锁定 3.
+定义域为 <span class="math inline">\(S^2\)</span>（约化二维流形）而非
+<span class="math inline">\(\mathbb{R}^3\)</span> 4. 因果时间 <span
+class="math inline">\(\tau\)</span> 替代牛顿时间 <span
+class="math inline">\(t\)</span></p>
+<hr />
+<h2 id="定理索引">定理索引</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">定理</th>
+<th style="text-align: left;">内容概要</th>
+<th style="text-align: left;">位置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">定义 5.10.1.01</td>
+<td style="text-align: left;">平衡态分布 <span class="math inline">\(f_0
+= 1/4\pi\)</span></td>
+<td style="text-align: left;">§1.1</td>
+</tr>
+<tr>
+<td style="text-align: left;">定义 5.10.1.02</td>
+<td style="text-align: left;">线性化碰撞算子 <span
+class="math inline">\(\mathcal{L}_0\)</span></td>
+<td style="text-align: left;">§1.2</td>
+</tr>
+<tr>
+<td style="text-align: left;">命题 5.10.1.03</td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{L}_0\)</span>
+的性质（自伴/零空间/谱间隙）</td>
+<td style="text-align: left;">§1.2</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>定理 5.10.2.01</strong></td>
+<td style="text-align: left;">几何 Hilbert 展开设定</td>
+<td style="text-align: left;">§2</td>
+</tr>
+<tr>
+<td style="text-align: left;">定义 5.10.4.01</td>
+<td style="text-align: left;">宏观变量（矩）定义</td>
+<td style="text-align: left;">§4.1</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>定理 5.10.4.02</strong></td>
+<td style="text-align: left;">可压缩 Euler 方程推导</td>
+<td style="text-align: left;">§4.2</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="后续工作">后续工作</h2>
+<p>本文从信息场动力学方程经 Hilbert 展开第一阶推导了可压缩 Euler
+方程。以下留给后续工作：</p>
+<ul>
+<li>展开到第二阶，推导 Navier-Stokes 方程（含粘性和热传导）（见文章
+5.11）</li>
+<li>在低 Mach 数极限下取不可压缩极限（见文章 5.11 §4）</li>
+</ul>
+<hr />
+<h2 id="参考文献">参考文献</h2>
+<ol type="1">
+<li>定理 5.9.3.01 — 连续信息场动力学方程（文章 5.9）</li>
+<li>命题 5.9.3.02 — 碰撞不变量（文章 5.9）</li>
+<li>定理 5.8.3.02 — 谱间隙的纤维化不变性（文章 5.8）</li>
+<li>定理 1.4.3.01 — 代数作用量 <span
+class="math inline">\(S(\theta)\)</span></li>
+<li>定理 1.1.5.01 — 谱展开/Born法则</li>
+<li>邓煜等 [2503.01800] — Boltzmann → 流体方程的 Hilbert 展开</li>
+</ol>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>

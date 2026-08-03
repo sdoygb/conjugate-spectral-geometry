@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10.19 几何分子结构 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="编号：10.19 | 日期：260723.1 | 系列：应用 | 语言：CN">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/cn/10.19_几何分子结构_CN_260722.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../index.html" class="nav-home">🏠 首页</a>
+    <a href="../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">10.19 几何分子结构</span>
+  </nav>
+  <main class="article-content">
+<h1 id="几何分子结构">10.19 几何分子结构</h1>
+<p><strong>编号</strong>：10.19 | <strong>日期</strong>：260723.1 |
+<strong>系列</strong>：应用 | <strong>语言</strong>：CN</p>
+<hr />
+<h2 id="摘-要">摘　要</h2>
+<p>以群表示论与代数拓扑为分析工具，建立几何论在凝聚态领域的框架性探索。核心工作包括：230空间群的不可约表示分类框架、费米面的纤维丛构造、位错核心的同伦类分类、表面态的指标定理形式框架。：群表示论工具并非从上游公理严格导出，代数拓扑构造大部分处于框架性对应阶段。</p>
+<p><strong>关键词：</strong>
+群表示论；代数拓扑；纤维丛；陈类；同伦群；指标定理；特征标；不可约表示；费米面；位错</p>
+<hr />
+<h2 id="目-录">目　录</h2>
+<ul>
+<li>第1章　引言</li>
+<li>第2章　几何扇区参数空间的分子结构基础</li>
+<li>§2.1　基本框架</li>
+<li>§2.2　谱展开/Born法则（定理 1.1.5.01）与物理常数</li>
+<li>第3章　230 空间群的表示论分类</li>
+<li>§3.1　点群的不可约表示</li>
+<li>§3.2　空间群的投影表示</li>
+<li>§3.3　配位数的几何约束</li>
+<li>第4章　电荷转移能隙的表示论选择定则</li>
+<li>§4.1　公式结构</li>
+<li>§4.2　表示论选择定则</li>
+<li>第5章　声子频率与 Green 函数渗透</li>
+<li>§5.1　表示论选择定则</li>
+<li>§5.2　特征标投影与 Wigner-Eckart 定理</li>
+<li>第6章　费米面的纤维丛与代数拓扑</li>
+<li>§6.1　复线丛与 U(1) 主丛</li>
+<li>§6.2　陈类与拓扑不变量</li>
+<li>§6.3　面积公式的同调形式</li>
+<li>§6.4　连通性的同伦分析</li>
+<li>第7章　表面态与指标定理</li>
+<li>§7.1　表面态的 APS 指标定理形式</li>
+<li>§7.2　统一表面桥理论</li>
+<li>第8章　螺旋结构与手性</li>
+<li>§8.1　多螺旋的表示论</li>
+<li>§8.2　手性的拓扑解释</li>
+<li>第9章　位错的同伦类分类</li>
+<li>§9.1　位错核心作为拓扑缺陷</li>
+<li>§9.2　二维谱展开/Born法则（定理 1.1.5.01）压缩</li>
+<li>第10章　结构稳定性上限的构造性计数</li>
+<li>第11章　结论</li>
+<li>附录　关键数值汇总</li>
+<li>参考文献</li>
+</ul>
+<hr />
+<h2 id="第1章-引言">第1章　引言</h2>
+<p>几何扇区参数空间理论（定理 1.2.3.01–定理
+1.1.5.01-20）建立了从纯数学结构到物理常数的零锚点映射。本文将这一框架扩展至凝聚态物质领域，引入群表示论与代数拓扑作为分析工具。</p>
+<p>****：群表示论（230 空间群、不可约表示、特征标、Wigner-Eckart
+定理）和代数拓扑（纤维丛、陈类、同伦群、指标定理）是作为几何论在凝聚态领域的<strong>独立分析语言</strong>引入的，并非从
+定理 1.4.3.01 或上游公理严格导出。定理
+1.4.3.01是标度框架，明确指出”标准模型规范群的几何起源本文不做断言”。本文的群表示论工具属于独立引入的数学分析层，其与几何论唯一公理δ（零之动）的严格衔接是开放研究方向。</p>
+<p>代数拓扑构造（费米面复线丛、APS
+指标定理、位错同伦类）大部分处于<strong>“框架性对应”</strong>阶段，标记为”构造”或”框架”而非”定理”，其严格几何-物理桥梁有待后续文章建立。</p>
+<p>本文不引入新物理假设，所有几何常数来自上游文章，群表示论和代数拓扑仅作为既有几何结构的分析语言。</p>
+<hr />
+<h2
+id="第2章-几何扇区参数空间的分子结构基础">第2章　几何扇区参数空间的分子结构基础</h2>
+<h3 id="基本框架">§2.1　基本框架</h3>
+<p>几何扇区参数空间理论建立在如下唯一公理δ（零之动）体系之上（定理, 定理
+1.1.5.01）：</p>
+<p><strong>Born归一化条件（定理 1.2.3.01）</strong>：ℳ𝒞ℐ三扇区 <span
+class="math inline">\(T\Sigma = M \oplus C \oplus I\)</span>
+的三个扇区角满足 <span class="math display">\[\theta_M+\theta_C+\theta_I
+= 90^\circ\]</span></p>
+<p><strong>代数作用量S(σ)（定理 1.4.3.01）</strong>：在约束流形 <span
+class="math inline">\(C\)</span> 上，作用量 <span
+class="math display">\[S(\theta) =
+\sum_{i=1}^{3}\frac{1}{\sin^2\theta_i} +
+\sum_{i&lt;j}\frac{1}{\sin\theta_i \sin\theta_j}\]</span> 在 <span
+class="math inline">\(\theta_0 = (30^\circ, 30^\circ, 30^\circ)\)</span>
+处取得最小值 <span class="math inline">\(S_{\min} = 24\)</span>。</p>
+<p><strong>质量算符M̂（定理
+1.1.5.01-20，谱互锁定理）</strong>：电子质量由物质界角 <span
+class="math inline">\(\theta_M\)</span> 通过映射 <span
+class="math display">\[m_e = K \sin^3\theta_M\]</span> 唯一确定，其中
+<span class="math inline">\(K = 839.758793\ \mathrm{keV}\)</span>
+为几何质量标度（定理 1.1.5.01-20）。</p>
+<p>九维母流形 <span class="math inline">\(M(a) = S^3(a) \times
+S^3(a/\sqrt{3}) \times S^3(a/\sqrt{6})\)</span> 配备 <span
+class="math inline">\(\mathrm{Cl}(9)\)</span> 旋量丛，ℳ𝒞ℐ三扇区 <span
+class="math inline">\(T\Sigma = M \oplus C \oplus I\)</span>
+的扇区参数空间 <span class="math inline">\(\Sigma \cong S^2\)</span>
+承载三维晶体学点群，作为 <span
+class="math inline">\(\mathrm{Spin}(8)\)</span>
+根系几何的离散子群约化。本文所有群表示论分类即为此九维结构在三维物质界
+<span class="math inline">\(\mathcal{M}\)</span>
+上的不可约表示分解。</p>
+<p>三对偶空间的基准角度（Birkhoff不动点σ*，定理 1.1.5.01）： <span
+class="math display">\[\theta_M^0 = 57.93^\circ,\quad \theta_C^0 =
+26.16^\circ,\quad \theta_I^0 = 5.91^\circ\]</span>
+满足Born归一化条件（定理 1.2.3.01） <span
+class="math inline">\(\theta_M+\theta_C+\theta_I =
+90^\circ\)</span>。</p>
+<p><strong>内禀坐标</strong>（本文采用 定理 1.1.5.01 的定义）： <span
+class="math display">\[\boxed{\xi = \theta_I - \theta_I^0,\quad \eta =
+(\theta_I\theta_C) - (\theta_I^0\theta_C^0)}\]</span></p>
+<p>反解：<span class="math inline">\(\theta_I = \theta_I^0 + \xi,\
+\theta_C = \theta_C^0 + \eta - \xi,\ \theta_M = \theta_M^0 -
+\eta\)</span>。该坐标系的优点在 定理 1.1.5.01 中充分讨论：<span
+class="math inline">\(\eta\)</span>
+方向平行于Birkhoff不动点σ*处的近似谱间隙方向（本征值 <span
+class="math inline">\(\lambda_1 \approx 392.21\
+\mathrm{rad}^{-2}\)</span>），<span class="math inline">\(\xi\)</span>
+方向平行于近似Dirac谱方向（本征值 <span class="math inline">\(\lambda_2
+\approx 58760.77\ \mathrm{rad}^{-2}\)</span>）。</p>
+<p>Birkhoff混合矩阵本征值（定理 1.1.5.01）： <span
+class="math display">\[\lambda_1 = 392.21\ \mathrm{rad}^{-2},\quad
+\lambda_2 = 58760.77\ \mathrm{rad}^{-2},\quad
+\frac{\lambda_2}{\lambda_1} \approx 149.8\]</span></p>
+<p>有效 Birkhoff混合矩阵 本征值（跨扇区耦合修正后，定理 1.1.5.01-20）：
+<span class="math display">\[\lambda_1^{\mathrm{eff}} = 391.05\
+\mathrm{rad}^{-2},\quad \lambda_2^{\mathrm{eff}} = 59324.3\
+\mathrm{rad}^{-2},\quad
+\frac{\lambda_2^{\mathrm{eff}}}{\lambda_1^{\mathrm{eff}}} \approx
+151.7\]</span></p>
+<p>结构性刚度约束比（定理 1.1.5.01）： <span
+class="math display">\[\Lambda_H^{(\text{struct})} = k_0 \Lambda
+\left(\frac{\Delta\Theta}{1^\circ}\right)^2 = 2 \times 3 \times 5^2 =
+150\]</span></p>
+<p>三个比值的关系：Birkhoff混合矩阵输出 149.8，有效 Birkhoff混合矩阵
+输出 151.7，结构性识别值为 150。裸值与 150 偏差
+0.13%，在七级递推的高阶修正中被吸收。</p>
+<p>有效渗透函数矩阵（定理, 定理）： <span class="math display">\[\Phi =
+\begin{pmatrix} 12.4415 &amp; 22.6281 \\ 22.6281 &amp; 12.4415
+\end{pmatrix}, \quad H^W = \begin{pmatrix} 1.577 &amp; 0.867 \\ 0.867
+&amp; 1.577 \end{pmatrix}\]</span></p>
+<blockquote>
+<p><strong>【Φ 与 H^W 说明】</strong>
+此二矩阵为几何扇区参数空间完整数据结构的组成部分，由 定理严格确定。本文
+§3–§10
+为框架性探索（群表示论分类、声子选择定则、费米面构造等），不直接使用 Φ
+和 H^W 的数值；它们预留给后续针对具体材料的定量计算（如 §5.2
+声子频率公式中的 <span
+class="math inline">\(\Phi_G^{(\alpha)}(\Gamma)\)</span> 投影需从 Φ
+出发，§6 费米面复线丛的联络需从 H^W 的跨扇区耦合结构导出）。 <strong>S_e
+的来源</strong>（修正）：精细结构常数倒数 <span
+class="math inline">\(S_e = 137.035999084\)</span>
+是<strong>圆满再现的几何本征量</strong>，由ℳ𝒞ℐ三扇区 M-C
+腰边耦合与质量算符 <span class="math inline">\(m = K
+\sin^3\theta_M\)</span> 的自洽性唯一确定（定理 1.1.5.01-20
+谱互锁定理）。定理 1.1.5.01 的七级递推从Birkhoff不动点σ* <span
+class="math inline">\(S_0 = 137.0000000009\)</span> 精确到达 <span
+class="math inline">\(S_7 =
+137.035999083\)</span>，验证了扇区参数空间上从Birkhoff不动点σ*到 <span
+class="math inline">\(S_e\)</span> 的可达性，偏差 <span
+class="math inline">\(10^{-9}\)</span>。定理 1.2.3.01
+仅建立了两条拓扑公理和介值定理，<strong>不包含 <span
+class="math inline">\(S_e\)</span> 的数值</strong>。</p>
+</blockquote>
+<h3
+id="谱展开born法则定理-1.1.5.01与物理常数">§2.2　谱展开/Born法则（定理
+1.1.5.01）与物理常数</h3>
+<p>由 定理 1.1.5.01-20 谱展开/Born法则（定理
+1.1.5.01），基础物理常数与几何参数的关系如下：</p>
+<ul>
+<li><p><strong>谱互锁定理</strong>（定理 1.1.5.01-20）：映射 <span
+class="math inline">\(\Phi(S, K\sin^3\theta_M)\)</span> 在约束流形 <span
+class="math inline">\(C\)</span> 上局部微分同胚且全局单射，<span
+class="math inline">\((S_e, m_e)\)</span>
+是ℳ𝒞ℐ三扇区公理体系的唯一相容解。二者不可独立指定。</p></li>
+<li><p><strong>精细结构常数</strong>：<span class="math inline">\(\alpha
+= 1/S_e = 7.2973525693 \times 10^{-3}\)</span></p></li>
+<li><p><strong>电子质量</strong>：<span class="math inline">\(m_e = K
+\cdot \sin^3\theta_M = 510.99895\ \mathrm{keV}\)</span></p></li>
+<li><p><strong>氢原子基态能量</strong>：<span class="math inline">\(E_H
+= \frac{1}{2}\alpha^2 m_e c^2 = 13.6057\ \mathrm{eV}\)</span></p></li>
+<li><p><strong>几何速度（代数自洽值）</strong>（定理 1.1.5.01-20）：
+<span class="math display">\[v_{\mathrm{geo}}^{\mathrm{alg}} =
+\frac{3\pi^2 \cdot S_e \cdot \sqrt{\lambda_1^{\mathrm{eff}}}}{v_p} =
+71.832113\]</span> 其中 <span class="math inline">\(v_p = 1117\)</span>
+为前因子关联的整数特征量。</p></li>
+<li><p><strong>几何长度标度</strong>：<span class="math inline">\(\chi_L
+= 1.5092231080 \times 10^{-10}\ \mathrm{m}\)</span></p></li>
+<li><p><strong>几何时间标度</strong>：<span class="math inline">\(\chi_T
+= 3.6161912064 \times 10^{-17}\ \mathrm{s}\)</span></p></li>
+</ul>
+<p>信息场层级特征尺度（概念来自 定理
+Dirac谱冻结与七层截断框架，具体数值由本文计算）： <span
+class="math display">\[\rho_n = \chi_L \cdot \Lambda^n \cdot S_e^{1/2},
+\quad n \in [0, 7]\]</span> 其中 <span class="math inline">\(\Lambda =
+\lambda_2/\lambda_1 \approx 150\)</span>
+为谱间隙方向与Dirac谱方向几何比（Birkhoff混合矩阵比 149.8，有效比
+151.7，与结构性识别值 150
+一致，偏差在七级递推高阶修正中被吸收）。注意：<span
+class="math inline">\(\Lambda\)</span> 是 Birkhoff混合矩阵
+本征值比本身，<strong>非</strong>其平方根。</p>
+<p><strong>验证</strong>：<span class="math inline">\(\rho_0 = \chi_L
+\cdot S_e^{1/2} = 1.5092\times10^{-10} \times 11.706 =
+1.77\times10^{-9}\ \mathrm{m}\)</span>。<span
+class="math inline">\(\rho_1 = 1.77\times10^{-9} \times 150 =
+2.65\times10^{-7}\ \mathrm{m}\)</span>。</p>
+<p>关键层级对应：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">层级 n</th>
+<th style="text-align: left;">特征尺度 ρₙ</th>
+<th style="text-align: left;">物理对应</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: left;">1.77×10⁻⁹ m</td>
+<td style="text-align: left;">量子基态</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">2.65×10⁻⁷ m</td>
+<td style="text-align: left;">原子尺度</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">3.97×10⁻⁵ m</td>
+<td style="text-align: left;">分子尺度</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;">3.02×10⁶ m</td>
+<td style="text-align: left;">地球系统信息特征尺度</td>
+</tr>
+</tbody>
+</table>
+<p>物质界可解析信息层级严格限于 <span class="math inline">\(n \leq
+7\)</span>，由 Bott 周期锁定（定理, 定理）。</p>
+<hr />
+<h2 id="第3章-230-空间群的表示论分类">第3章　230 空间群的表示论分类</h2>
+<blockquote>
+<p><strong>【工具层声明】</strong> 本章使用的群表示论（Frobenius
+互反定理、特征标公式、诱导表示）是标准数学工具，并非从几何论唯一公理δ（零之动）导出。它们作为分析语言引入，用以在几何扇区参数空间上分类晶体学对称性。群表示论与几何论框架的严格衔接是开放研究方向（见
+定理 1.4.3.01）。</p>
+</blockquote>
+<h3 id="点群的不可约表示">§3.1　点群的不可约表示</h3>
+<p><strong>命题 10.19.3.01（点群表示论兼容）</strong>：几何扇区参数空间
+<span class="math inline">\(\Sigma \cong S^2\)</span>
+上的信息场球谐模式与三维晶体学 32 种点群的不可约表示兼容。</p>
+<p><strong>论证</strong>：编码轨道 <span class="math inline">\(\Sigma
+\cong S^2\)</span> 上的信息场模式由球谐函数 <span
+class="math inline">\(Y_l^m\)</span> 展开。球谐函数在 <span
+class="math inline">\(SO(3)\)</span> 旋转下按不可约表示 <span
+class="math inline">\(D^{(l)}\)</span>（维数 <span
+class="math inline">\(2l+1\)</span>）变换。32 种晶体学点群是 <span
+class="math inline">\(SO(3)\)</span> 的离散子群。由 Frobenius
+互反定理，<span class="math inline">\(SO(3)\)</span> 的表示 <span
+class="math inline">\(D^{(l)}\)</span> 在点群 <span
+class="math inline">\(G\)</span> 作用下分解为 <span
+class="math inline">\(G\)</span> 的不可约表示的直和： <span
+class="math display">\[D^{(l)}|_G = \bigoplus_\alpha n_\alpha^{(l)}
+D^{(\alpha)}\]</span> 其中 <span
+class="math inline">\(n_\alpha^{(l)}\)</span> 为不可约表示 <span
+class="math inline">\(D^{(\alpha)}\)</span> 的重数，由特征标公式确定：
+<span class="math display">\[n_\alpha^{(l)} = \frac{1}{|G|} \sum_{g \in
+G} \chi^{(l)}(g)^* \chi^{(\alpha)}(g)\]</span> 低阶球谐（<span
+class="math inline">\(l=0,1,2\)</span>）的分解天然涵盖 32 种点群：<span
+class="math inline">\(l=0\)</span>（<span
+class="math inline">\(D^{(0)}\)</span>，1 维）→ 全对称表示 <span
+class="math inline">\(A_{1g}\)</span>；<span
+class="math inline">\(l=1\)</span>（<span
+class="math inline">\(D^{(1)}\)</span>，3 维）→ 分解为 <span
+class="math inline">\(A_{2u} \oplus E_u\)</span>（立方群）或 <span
+class="math inline">\(A_{2u} \oplus E_{1u}\)</span>（六方群）；<span
+class="math inline">\(l=2\)</span>（<span
+class="math inline">\(D^{(2)}\)</span>，5 维）→ 分解为 <span
+class="math inline">\(E_g \oplus T_{2g}\)</span>（立方群）或 <span
+class="math inline">\(E_{1g} \oplus E_{2g}\)</span>（六方群）。</p>
+<h3 id="空间群的投影表示">§3.2　空间群的投影表示</h3>
+<p><strong>命题 10.19.3.02（空间群的投影表示）</strong>：230
+空间群作为欧氏空间 <span class="math inline">\(E(3)\)</span>
+的离散子群，其投影表示由点群表示和平移群的 Bloch 定理共同确定。</p>
+<p><strong>论证</strong>：空间群 <span class="math inline">\(S\)</span>
+的元为 <span class="math inline">\(\{R|\mathbf{t}\}\)</span>，其中 <span
+class="math inline">\(R \in G\)</span>（点群），<span
+class="math inline">\(\mathbf{t}\)</span> 为平移。由 Seitz
+表示，空间群在 Hilbert 空间上的作用为： <span
+class="math display">\[\hat{P}(R|\mathbf{t})\psi(\mathbf{r}) =
+\psi(R^{-1}\mathbf{r} - R^{-1}\mathbf{t})\]</span> 由 Bloch
+定理，平移子群 <span class="math inline">\(T\)</span> 的不可约表示为
+<span
+class="math inline">\(\exp(i\mathbf{k}\cdot\mathbf{t})\)</span>，因此空间群的表示可约化为点群在
+<span class="math inline">\(\mathbf{k}\)</span> 点的”小群”（little
+group）表示。230 空间群的完备分类由小群表示的诱导表示完成。</p>
+<h3 id="配位数的几何约束">§3.3　配位数的几何约束</h3>
+<p><strong>命题
+10.19.3.03（配位数的几何约束）</strong>：配位数（CN）受编码轨道 <span
+class="math inline">\(S^2\)</span>
+上球谐函数在点群作用下的不可约表示维数约束。低阶模式（<span
+class="math inline">\(l \leq
+2\)</span>）的不可约分解给出独立几何方向数的上限估计。</p>
+<p>配位数描述中心原子的最近邻相互作用数，是晶体学几何参数。在 <span
+class="math inline">\(S^2\)</span>
+上，低阶球谐模式对应基本几何方向：<span
+class="math inline">\(l=0\)</span>（<span
+class="math inline">\(D^{(0)}\)</span>，1 维）：1 个全对称方向；<span
+class="math inline">\(l=1\)</span>（<span
+class="math inline">\(D^{(1)}\)</span>，3 维）：3 个独立空间方向；<span
+class="math inline">\(l=2\)</span>（<span
+class="math inline">\(D^{(2)}\)</span>，5 维）：5
+个独立四极方向。晶体学点群对称性进一步约化独立方向数。此框架给出几何模式数与配位数之间的定性约束关系，非定量等式。</p>
+<hr />
+<h2
+id="第4章-电荷转移能隙的表示论选择定则">第4章　电荷转移能隙的表示论选择定则</h2>
+<h3 id="公式结构">§4.1　公式结构</h3>
+<p>电荷转移能隙公式（框架性）： <span
+class="math display">\[\Delta_{\mathrm{CT}} = E_H \cdot |Z_M - Z_X|
+\cdot \sin^2\theta_C \cdot F_{\mathrm{orb}} / \sqrt{S_e}\]</span> 其中
+<span class="math inline">\(F_{\mathrm{orb}} =
+\sqrt{(n_M^{\mathrm{act}}/N_M^{\mathrm{orb}})(n_X^{\mathrm{act}}/N_X^{\mathrm{orb}})}\)</span>
+为轨道活性因子。</p>
+<p>有效核电荷与键长由 化学映射确定： <span
+class="math display">\[Z_{\mathrm{eff}} = Z - \Sigma\sigma\]</span> 其中
+<span class="math inline">\(\Sigma\sigma\)</span> 为屏蔽常数。</p>
+<h3 id="表示论选择定则">§4.2　表示论选择定则</h3>
+<p><strong>命题 10.19.4.01（轨道活性的表示论选择定则）</strong>：在点群
+<span class="math inline">\(G\)</span> 作用下，原子轨道按不可约表示
+<span class="math inline">\(D^{(\alpha)}\)</span> 分类。轨道简并度 <span
+class="math inline">\(N^{\mathrm{orb}}\)</span> 为不可约表示的维数 <span
+class="math inline">\(d_\alpha\)</span>。</p>
+<p><strong>论证</strong>：<span class="math inline">\(d\)</span>
+轨道（<span class="math inline">\(l=2\)</span>）在 <span
+class="math inline">\(O_h\)</span> 点群下分解为 <span
+class="math inline">\(e_g\)</span>（2 维）和 <span
+class="math inline">\(t_{2g}\)</span>（3 维）。活性电子数 <span
+class="math inline">\(n^{\mathrm{act}}\)</span>
+为部分填充表示中的电子数：如 <span
+class="math inline">\(d^9\)</span>（<span
+class="math inline">\(\mathrm{Cu}^{2}\)</span>）：<span
+class="math inline">\(e_g^4 t_{2g}^5\)</span>，活性电子为 <span
+class="math inline">\(t_{2g}\)</span> 中的空穴，<span
+class="math inline">\(n^{\mathrm{act}} = 1\)</span>；<span
+class="math inline">\(d^5\)</span>（<span
+class="math inline">\(\mathrm{Mn}^{2}\)</span>）：<span
+class="math inline">\(t_{2g}^3 e_g^2\)</span>，高自旋，<span
+class="math inline">\(n^{\mathrm{act}} = 5\)</span>。轨道简并度 <span
+class="math inline">\(N^{\mathrm{orb}}\)</span> 即为不可约表示维数 <span
+class="math inline">\(d_\alpha\)</span>。因此 <span
+class="math inline">\(F_{\mathrm{orb}}\)</span> 可重写为： <span
+class="math display">\[F_{\mathrm{orb}} = \sqrt{\sum_\alpha
+\frac{n_\alpha}{d_\alpha} \cdot \sum_\beta
+\frac{n_\beta}{d_\beta}}\]</span> 其中 <span
+class="math inline">\(n_\alpha\)</span> 为表示 <span
+class="math inline">\(D^{(\alpha)}\)</span> 中的电子数。</p>
+<hr />
+<h2 id="第5章-声子频率与-green-函数渗透">第5章　声子频率与 Green
+函数渗透</h2>
+<h3 id="表示论选择定则-1">§5.1　表示论选择定则</h3>
+<p><strong>命题
+10.19.5.01（声子模式的表示论分类）</strong>：布里渊区中心光学声子模式按点群的不可约表示分类，活性模式由特征标投影确定。</p>
+<p><strong>论证</strong>：声子模式对应晶格振动的正则模式，在点群作用下按不可约表示变换。由特征标投影算子：
+<span class="math display">\[\hat{P}^{(\alpha)} = \frac{d_\alpha}{|G|}
+\sum_{g \in G} \chi^{(\alpha)}(g)^* \hat{P}(g)\]</span>
+将动力学矩阵投影到不可约表示子空间，得到对称性分类的声子模式。红外活性模式要求表示与偶极矩（<span
+class="math inline">\(l=1\)</span>）的直积含全对称表示；Raman
+活性要求与极化率（<span
+class="math inline">\(l=2\)</span>）的直积含全对称表示。</p>
+<h3
+id="特征标投影与-wigner-eckart-声子频率的-green-函数渗透公式在表示论下重写为框架性公式">§5.2　特征标投影与
+Wigner-Eckart 声子频率的 Green
+函数渗透公式在表示论下重写为（框架性公式）：</h3>
+<p><span class="math display">\[\omega_{\mathrm{phonon}}^{(\alpha)} =
+v_{\mathrm{geo}}^{\mathrm{alg}} \cdot
+\sqrt{\frac{\lambda_1^{\mathrm{eff}}}{\bar{\rho}}} \cdot
+\frac{\Phi_G^{(\alpha)}(\Gamma)}{S_e} \cdot
+\frac{1}{\chi_T}\]</span></p>
+<p>其中 <span class="math inline">\(\Phi_G^{(\alpha)}\)</span>
+为不可约表示 <span class="math inline">\(\alpha\)</span>
+的渗透函数投影，<span
+class="math inline">\(v_{\mathrm{geo}}^{\mathrm{alg}} =
+71.832113\)</span> 为几何速度代数自洽值，<span
+class="math inline">\(\lambda_1^{\mathrm{eff}} = 391.05\
+\mathrm{rad}^{-2}\)</span> 为谱间隙方向有效本征值，<span
+class="math inline">\(\bar{\rho}\)</span>
+为约化密度参数（无量纲），<span class="math inline">\(\chi_T =
+3.6161912064 \times 10^{-17}\ \mathrm{s}\)</span> 为几何时间标度。因子
+<span class="math inline">\(1/\chi_T\)</span> 将 rad⁻¹ 量纲转换为
+s⁻¹，使 <span class="math inline">\(\omega\)</span>
+具有正确的频率量纲。</p>
+<p>由 Wigner-Eckart 定理，矩阵元仅依赖于表示标签： <span
+class="math display">\[\langle \alpha | \Phi | \beta \rangle = \langle
+\alpha \| \Phi \| \beta \rangle \cdot \begin{pmatrix} \alpha &amp;
+\Gamma &amp; \beta \\ m_\alpha &amp; m_\Gamma &amp; m_\beta
+\end{pmatrix}\]</span>
+其中双竖线矩阵元为约化矩阵元，仅依赖表示标签；圆括号为 Clebsch-Gordan
+系数。</p>
+<hr />
+<h2
+id="第6章-费米面的纤维丛与代数拓扑">第6章　费米面的纤维丛与代数拓扑</h2>
+<blockquote>
+<p><strong>【层级声明】</strong>
+本章所有”定理”降级为”构造”或”框架性对应”。复线丛 <span
+class="math inline">\(L\)</span> 的构造依赖渗透函数 <span
+class="math inline">\(\Phi\)</span> 的复化（<span
+class="math inline">\(\Phi_{\mathbb{C}} = \Phi +
+i\Phi^\perp\)</span>），其中 <span
+class="math inline">\(\Phi^\perp\)</span> 的严格几何构造尚未由 定理
+1.1.5.01
+完成。本章内容为代数拓扑工具在几何论中的<strong>探索性应用</strong>，不构成严格的几何-物理映射定理。</p>
+</blockquote>
+<h3 id="复线丛与-u1-主丛">§6.1　复线丛与 U(1) 主丛</h3>
+<p><strong>构造
+6.1（费米面的纤维丛）</strong>：金属费米面可形式地视为编码轨道 <span
+class="math inline">\(\Sigma \cong S^2\)</span> 上复线丛 <span
+class="math inline">\(L\)</span> 的 <span
+class="math inline">\(U(1)\)</span> 主丛的全息截面，其总空间 <span
+class="math inline">\(P\)</span> 为渗透函数等值线，基空间 <span
+class="math inline">\(B = \Sigma\)</span>，纤维 <span
+class="math inline">\(F = U(1)\)</span>。</p>
+<p><strong>构造思路</strong>：复值渗透函数 <span
+class="math inline">\(\Phi_{\mathbb{C}} = \Phi +
+i\Phi^\perp\)</span>（其中 <span
+class="math inline">\(\Phi^\perp\)</span> 由 定理 1.1.5.01
+渗透函数解析框架的伴随解确定）在 <span
+class="math inline">\(\Sigma\)</span> 上取等值线 <span
+class="math inline">\(\Phi_{\mathbb{C}} =
+\Phi_F\)</span>。等值线局部同胚于 <span
+class="math inline">\(S^1\)</span>，因此可视为以 <span
+class="math inline">\(S^1\)</span> 为纤维的丛。规范变换 <span
+class="math inline">\(U(1)\)</span> 对应复线丛的相位自由度：<span
+class="math inline">\(\Phi_{\mathbb{C}} \to
+e^{i\chi}\Phi_{\mathbb{C}}\)</span>。联络 1-形式 <span
+class="math inline">\(A =
+\Phi_{\mathbb{C}}^{-1}d\Phi_{\mathbb{C}}\)</span> 定义平行输运。</p>
+<h3 id="陈类与拓扑不变量">§6.2　陈类与拓扑不变量</h3>
+<p><strong>构造 6.2（第一陈类）</strong>：若复线丛 <span
+class="math inline">\(L\)</span> 的构造完成，则其第一陈类 <span
+class="math inline">\(c_1(L) \in H^2(\Sigma; \mathbb{Z})\)</span>
+由复渗透函数的等值线环绕数确定： <span class="math display">\[c_1(L) =
+\frac{1}{2\pi} \int_\Sigma F = \frac{1}{2\pi}
+\oint_{\Phi_{\mathbb{C}}=\Phi_F} dA = n \in \mathbb{Z}\]</span> 其中
+<span class="math inline">\(F = dA\)</span> 为曲率 2-形式，<span
+class="math inline">\(n\)</span> 为等值线环绕 <span
+class="math inline">\(S^2\)</span> 北极的次数。</p>
+<p><strong>关键声明</strong>：<span
+class="math inline">\(c_1(L)\)</span> 的具体整数值由拼接函数的同伦类
+<span class="math inline">\([\Sigma, U(1)] \cong \mathbb{Z}\)</span>
+确定，<strong>不一定是 2</strong>。前版中声称”若 <span
+class="math inline">\(L\)</span> 与切丛复化相容则 <span
+class="math inline">\(c_1=2\)</span>“——这个”若”从未被验证。<span
+class="math inline">\(c_1(TS^2) = 2\)</span>
+是切丛复化的陈类，是固定值；但 <span
+class="math inline">\(c_1(L)\)</span> 是构造性复线丛 <span
+class="math inline">\(L\)</span>
+的陈类，非切丛陈类，二者概念不同，数值未必相等。</p>
+<p><strong>拓扑不变量</strong>：费米面的连通分支数 <span
+class="math inline">\(N\)</span>、各分支的亏格 <span
+class="math inline">\(g\)</span>、陈数 <span
+class="math inline">\(c_1\)</span>
+若能被良好定义，则为拓扑不变量，在微扰下保持不变。</p>
+<h3 id="面积公式的同调形式">§6.3　面积公式的同调形式</h3>
+<p><strong>框架 6.3（面积公式的同调形式）</strong>：费米面面积与 <span
+class="math inline">\(S^2\)</span> 的同调群 <span
+class="math inline">\(H_2(S^2; \mathbb{Z}) \cong \mathbb{Z}\)</span>
+的生成元建立形式对应： <span class="math display">\[A_{\mathrm{FS}} \sim
+\langle [\Phi_F], [S^2] \rangle \cdot 4\pi = n \cdot 4\pi\]</span> 其中
+<span class="math inline">\([\Phi_F] \in H^2(S^2)\)</span>
+为渗透函数等值线所围区域的 Poincaré 对偶，<span
+class="math inline">\([S^2] \in H_2(S^2)\)</span> 为基本类，<span
+class="math inline">\(\langle \cdot, \cdot \rangle\)</span> 为 Kronecker
+配对。</p>
+<h3 id="连通性的同伦分析">§6.4　连通性的同伦分析</h3>
+<p><strong>框架
+6.4（连通性的同伦分析）</strong>：费米面的连通分支数由源项 <span
+class="math inline">\(Q\)</span> 的极点结构近似对应的同伦类确定。</p>
+<p>源项 <span class="math inline">\(Q\)</span> 的极大值近似对应渗透函数
+<span class="math inline">\(\Phi\)</span> 的极大值区域（严格对应需考虑
+Green 函数卷积的平滑效应）。每个极大值区域在等值线 <span
+class="math inline">\(\Phi = \Phi_F\)</span>
+下方形成一个占据”岛屿”。岛屿的边界为简单闭曲线，在 <span
+class="math inline">\(S^2\)</span> 上同伦等价于 <span
+class="math inline">\(S^1\)</span>。由 van Kampen 定理，<span
+class="math inline">\(N\)</span> 个不相交岛屿的并的基本群为 <span
+class="math inline">\(N\)</span> 个 <span
+class="math inline">\(S^1\)</span> 的自由积：<span
+class="math inline">\(\pi_1(\mathrm{FS}) = \underbrace{\mathbb{Z} *
+\mathbb{Z} * \cdots * \mathbb{Z}}_{N\text{ 个}}\)</span>。</p>
+<hr />
+<h2 id="第7章-表面态与指标定理">第7章　表面态与指标定理</h2>
+<blockquote>
+<p><strong>【层级声明】</strong> 本章的 APS
+指标定理应用为<strong>形式框架</strong>，边界 Dirac
+算子的谱对称性假设未经严格验证。桥函数的纤维丛解释是构造性定义，非严格定理。</p>
+</blockquote>
+<h3 id="表面态的-aps-指标定理形式">§7.1　表面态的 APS 指标定理形式</h3>
+<p><strong>框架 7.1（APS 指标定理形式）</strong>：表面态的零模数由 Dirac
+算子的 APS 指标给出： <span
+class="math display">\[\mathrm{Ind}_{\mathrm{APS}}(D) =
+\int_{\Sigma_{\mathrm{bulk}}} \hat{A}(T\Sigma) \wedge \mathrm{ch}(E) -
+\frac{1}{2}\left( \eta(D_{\partial})\dim\ker D_{\partial}
+\right)\]</span> 其中 <span class="math inline">\(\hat{A}\)</span> 为
+A-roof 亏格，<span class="math inline">\(\mathrm{ch}(E)\)</span>
+为陈特征，<span class="math inline">\(\eta(D_{\partial})\)</span> 为边界
+Dirac 算子的 <span class="math inline">\(\eta\)</span> 不变量。</p>
+<p>在几何扇区参数空间框架中，表面 <span
+class="math inline">\(\partial\Sigma\)</span> 为编码轨道边界。Dirac 算子
+<span class="math inline">\(D = \gamma^\mu D_\mu\)</span>
+作用于渗透函数截面。对于二维表面，<span class="math inline">\(\hat{A} =
+1\)</span>，拓扑指标部分为 <span
+class="math inline">\(\int_{\Sigma_{\mathrm{bulk}}}
+c_1(E)\)</span>。</p>
+<h3 id="统一表面桥理论">§7.2　统一表面桥理论</h3>
+<p><strong>构造 7.2（桥函数的纤维丛解释）</strong>：统一表面桥接函数
+<span
+class="math inline">\(\mathcal{B}_{\mathrm{surf}}(\xi,\eta)\)</span>
+为复线丛 <span class="math inline">\(L\)</span> 的联络 1-形式 <span
+class="math inline">\(A\)</span>
+的规范固定，描述体态纤维丛与表面纤维丛的拼接。</p>
+<p><strong>构造思路</strong>：体态渗透函数 <span
+class="math inline">\(\Phi_{\mathrm{bulk}}\)</span> 定义复线丛 <span
+class="math inline">\(L_{\mathrm{bulk}}\)</span>，表面渗透函数 <span
+class="math inline">\(\Phi_{\mathrm{surf}}\)</span> 定义复线丛 <span
+class="math inline">\(L_{\mathrm{surf}}\)</span>。桥接函数 <span
+class="math inline">\(\mathcal{B}_{\mathrm{surf}}\)</span>
+为两丛之间的拼接函数：<span
+class="math inline">\(\mathcal{B}_{\mathrm{surf}}|_{\partial\Sigma} =
+\Phi_{\mathrm{surf}} /
+\Phi_{\mathrm{bulk}}\)</span>。由纤维丛的拼接构造，拼接函数的存在性由
+<span class="math inline">\(\pi_0(U(1)) = 0\)</span>（<span
+class="math inline">\(U(1)\)</span> 连通）保证。</p>
+<hr />
+<h2 id="第8章-螺旋结构与手性">第8章　螺旋结构与手性</h2>
+<h3 id="多螺旋的表示论">§8.1　多螺旋的表示论</h3>
+<p><strong>命题 10.19.8.01（螺旋结构的表示论）</strong>：<span
+class="math inline">\(N\)</span> 连通螺旋结构对应 <span
+class="math inline">\(SO(2)\)</span> 的 <span
+class="math inline">\(N\)</span> 重覆盖表示 <span
+class="math inline">\(D^{(N)}: SO(2) \to U(1)\)</span>，<span
+class="math inline">\(D^{(N)}(\varphi) = e^{iN\varphi}\)</span>。</p>
+<p><strong>论证</strong>：螺旋结构的 <span
+class="math inline">\(N\)</span> 重旋转对称性对应 <span
+class="math inline">\(SO(2)\)</span> 的 <span
+class="math inline">\(N\)</span> 阶表示。球谐函数 <span
+class="math inline">\(Y_l^m\)</span> 在螺旋操作下按 <span
+class="math inline">\(m \to mN\)</span> 变换。<span
+class="math inline">\(N\)</span> 连通螺旋的费米速度修正由表示的维数
+<span class="math inline">\(N\)</span> 决定（框架性公式）： <span
+class="math display">\[v_F^{(N)} = v_F^{(0)} \cdot \left[1\frac{1}{N^2}
+\cdot \frac{\lambda_1^{\mathrm{eff}}}{\lambda_2^{\mathrm{eff}}} \cdot
+\left(\frac{d_{\mathrm{wire}}}{\chi_L}\right)^2\right]^{-1/2}\]</span></p>
+<h3 id="手性的拓扑解释">§8.2　手性的拓扑解释</h3>
+<p><strong>命题 10.19.8.02（手性的拓扑解释）</strong>：手性对应旋量丛
+<span class="math inline">\(S\)</span>
+上非零截面的存在性约束，由旋量丛的拓扑不变量决定。</p>
+<p><strong>论证</strong>：手性破缺对应旋量场 <span
+class="math inline">\(\psi \in \Gamma(S)\)</span>
+的非零存在性。旋量场是旋量丛 <span class="math inline">\(S\)</span>
+的截面，非切丛 <span class="math inline">\(TS^2\)</span> 的截面。由
+Atiyah-Singer 指标定理，旋量丛上 Dirac 算子的指标由 <span
+class="math inline">\(\hat{A}\)</span> 类决定：<span
+class="math inline">\(\mathrm{Ind}(D_S) = \chi(S^2)/4 =
+1/2\)</span>。对于外消旋混合物，左手与右手旋量场的指标相反：<span
+class="math inline">\(\mathrm{Ind}(D_L) =
+-\mathrm{Ind}(D_R)\)</span>，总指标为零。</p>
+<hr />
+<h2 id="第9章-位错的同伦类分类">第9章　位错的同伦类分类</h2>
+<h3 id="位错核心作为拓扑缺陷">§9.1　位错核心作为拓扑缺陷</h3>
+<p><strong>框架 9.1（位错的同伦类）</strong>：位错核心对应源项 <span
+class="math inline">\(Q\)</span> 中涡旋奇点的同伦类 <span
+class="math inline">\([Q] \in \pi_1(S^1) \cong
+\mathbb{Z}\)</span>，拓扑荷 <span class="math inline">\(m \in
+\mathbb{Z}\)</span> 为 Burgers 矢量的量子化。</p>
+<p><strong>构造思路</strong>：位错核心对应源项 <span
+class="math inline">\(Q(\rho,\varphi) = Q_0 \exp(-\rho^2/2\sigma^2)
+\exp(im\varphi)\)</span> 中的涡旋相位 <span
+class="math inline">\(\exp(im\varphi)\)</span>。涡旋映射 <span
+class="math inline">\(S^1 \to S^1\)</span>（方位角到相位）的同伦类为
+<span class="math inline">\(\pi_1(S^1) \cong \mathbb{Z}\)</span>，由绕数
+<span class="math inline">\(m\)</span> 标记。Burgers 矢量 <span
+class="math inline">\(\mathbf{b} = m \cdot \mathbf{a}\)</span>（<span
+class="math inline">\(\mathbf{a}\)</span> 为晶格基矢），因此 <span
+class="math inline">\(m\)</span> 为 Burgers 矢量的量子化单位。</p>
+<p><strong>同伦不变量</strong>：位错的稳定性由同伦类保护——连续形变不改变绕数
+<span
+class="math inline">\(m\)</span>，因此位错无法通过局部微扰消除。</p>
+<h3
+id="二维谱展开born法则定理-1.1.5.01压缩">§9.2　二维谱展开/Born法则（定理
+1.1.5.01）压缩</h3>
+<p>弱耦合参数由 定理 1.1.5.01-20 谱展开/Born法则（定理
+1.1.5.01）在二维约束下的压缩导出： <span
+class="math display">\[\chi_L^{(2D)} = \chi_L \cdot
+\sqrt{\frac{\lambda_1^{\mathrm{eff}}}{\lambda_2^{\mathrm{eff}}}} \cdot
+\varepsilon_{\mathrm{weak}}\]</span> 其中弱耦合参数 <span
+class="math display">\[\varepsilon_{\mathrm{weak}} =
+\frac{\chi_L^{(2D)}}{\chi_L} \cdot
+\sqrt{\frac{\lambda_1^{\mathrm{eff}}}{\lambda_2^{\mathrm{eff}}}} \approx
+0.0102 \approx 10^{-2}\]</span> 该标度由扇区参数空间 <span
+class="math inline">\(\Sigma\)</span>
+上信息场在Dirac谱方向方向的冻结与谱间隙方向方向的活跃性决定。</p>
+<hr />
+<h2
+id="第10章-结构稳定性上限的构造性计数">第10章　结构稳定性上限的构造性计数</h2>
+<p><strong>构造性计数（<span class="math inline">\(N_{\mathrm{eff}} =
+7\)</span>）</strong>：几何扇区参数空间的有效结构模式数由 <span
+class="math inline">\(SO(3)\)</span>
+表示在晶体学点群下的不可约分解总数构造性确定为 <span
+class="math inline">\(N_{\mathrm{eff}} = 7\)</span>。</p>
+<p><strong>计数规则</strong>：<span class="math inline">\(S^2\)</span>
+上 Laplace-Beltrami 算子的本征值 <span
+class="math inline">\(l(l+1)\)</span> 对应 <span
+class="math inline">\(SO(3)\)</span> 的不可约表示 <span
+class="math inline">\(D^{(l)}\)</span>（维数 <span
+class="math inline">\(2l+1\)</span>）。考虑晶体学点群的对称性约束后： -
+<span class="math inline">\(l=0\)</span>：<span
+class="math inline">\(D^{(0)} = A_{1g}\)</span>（1
+个模式，全对称，无约束）→ 有效 1 - <span
+class="math inline">\(l=1\)</span>：<span class="math inline">\(D^{(1)}
+= A_{2u} \oplus E_u\)</span>（3
+个模式，但平移自由度对应整体运动，非内禀形变，扣除 1 个）→ 有效 2 -
+<span class="math inline">\(l=2\)</span>：<span
+class="math inline">\(D^{(2)} = E_g \oplus T_{2g}\)</span>（5
+个模式，但旋转自由度对应整体转动，非内禀形变，扣除 1 个）→ 有效 4</p>
+<p>总有效独立模式：<span class="math inline">\(1+2+4 = 7\)</span>。</p>
+<hr />
+<h2 id="第11章-结论">第11章　结论</h2>
+<p>本文在几何扇区参数空间框架内建立了从原子到晶体、从体材料到表面态、从表面态到宏观螺旋结构的几何分子结构框架性探索，引入群表示论与代数拓扑作为分析工具。</p>
+<p>群表示论贡献：空间群的不可约表示分类框架、配位数的几何约束框架、声子的选择定则、结构稳定性上限的构造性计数。</p>
+<p>代数拓扑贡献：费米面的纤维丛构造、位错的同伦类分类框架、表面态的 APS
+指标定理形式框架、手性的旋量丛解释。</p>
+<hr />
+<h2 id="附录-关键数值汇总">附录　关键数值汇总</h2>
+<h3 id="几何参数">几何参数</h3>
+<table>
+<colgroup>
+<col style="width: 38%" />
+<col style="width: 30%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">参数</th>
+<th style="text-align: left;">数值</th>
+<th style="text-align: left;">来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">θ_M⁰</td>
+<td style="text-align: left;">57.93°</td>
+<td style="text-align: left;">定理 1.1.5.01 Birkhoff不动点σ*</td>
+</tr>
+<tr>
+<td style="text-align: center;">θ_C⁰</td>
+<td style="text-align: left;">26.16°</td>
+<td style="text-align: left;">定理 1.1.5.01 Birkhoff不动点σ*</td>
+</tr>
+<tr>
+<td style="text-align: center;">θ_I⁰</td>
+<td style="text-align: left;">5.91°</td>
+<td style="text-align: left;">定理 1.1.5.01 Birkhoff不动点σ*</td>
+</tr>
+<tr>
+<td style="text-align: center;">S_e</td>
+<td style="text-align: left;">137.035999084</td>
+<td style="text-align: left;">圆满再现定理 1.1.5.01 七级递推</td>
+</tr>
+<tr>
+<td style="text-align: center;">λ₁ (裸)</td>
+<td style="text-align: left;">392.21 rad⁻²</td>
+<td style="text-align: left;">定理 1.1.5.01</td>
+</tr>
+<tr>
+<td style="text-align: center;">λ₂ (裸)</td>
+<td style="text-align: left;">58760.77 rad⁻²</td>
+<td style="text-align: left;">定理 1.1.5.01</td>
+</tr>
+<tr>
+<td style="text-align: center;">λ₂/λ₁ (裸)</td>
+<td style="text-align: left;">149.8</td>
+<td style="text-align: left;">定理 1.1.5.01</td>
+</tr>
+<tr>
+<td style="text-align: center;">λ₁^eff</td>
+<td style="text-align: left;">391.05 rad⁻²</td>
+<td style="text-align: left;">定理 1.1.5.01-20</td>
+</tr>
+<tr>
+<td style="text-align: center;">λ₂^eff</td>
+<td style="text-align: left;">59324.3 rad⁻²</td>
+<td style="text-align: left;">定理 1.1.5.01-20</td>
+</tr>
+<tr>
+<td style="text-align: center;">λ₂<sup>eff/λ₁</sup>eff</td>
+<td style="text-align: left;">151.7</td>
+<td style="text-align: left;">定理 1.1.5.01-20</td>
+</tr>
+<tr>
+<td style="text-align: center;">Λ_H^(struct)</td>
+<td style="text-align: left;">150</td>
+<td style="text-align: left;">定理 1.1.5.01</td>
+</tr>
+<tr>
+<td style="text-align: center;">v_geo（代数自洽值）</td>
+<td style="text-align: left;">71.832113</td>
+<td style="text-align: left;">定理 1.1.5.01-20</td>
+</tr>
+<tr>
+<td style="text-align: center;">α</td>
+<td style="text-align: left;">7.2973525693×10⁻³</td>
+<td style="text-align: left;">1/S_e</td>
+</tr>
+<tr>
+<td style="text-align: center;">E_H</td>
+<td style="text-align: left;">13.6057 eV</td>
+<td style="text-align: left;">标准氢原子能级</td>
+</tr>
+<tr>
+<td style="text-align: center;">K</td>
+<td style="text-align: left;">839.758793 keV</td>
+<td style="text-align: left;">定理 1.1.5.01-20</td>
+</tr>
+<tr>
+<td style="text-align: center;">m_e</td>
+<td style="text-align: left;">510.99895 keV</td>
+<td style="text-align: left;">K·sin³θ_M</td>
+</tr>
+<tr>
+<td style="text-align: center;">χ_L</td>
+<td style="text-align: left;">1.5092231080×10⁻¹⁰ m</td>
+<td style="text-align: left;">定理 1.1.5.01-20 谱展开/Born法则（定理
+1.1.5.01）</td>
+</tr>
+<tr>
+<td style="text-align: center;">χ_T</td>
+<td style="text-align: left;">3.6161912064×10⁻¹⁷ s</td>
+<td style="text-align: left;">定理 1.1.5.01-20 谱展开/Born法则（定理
+1.1.5.01）</td>
+</tr>
+</tbody>
+</table>
+<h3
+id="birkhoff混合矩阵-矩阵元birkhoff不动点σ定理-1.1.5.01">Birkhoff混合矩阵
+矩阵元（Birkhoff不动点σ*，定理 1.1.5.01）</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">参数</th>
+<th style="text-align: left;">数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">H_MM</td>
+<td style="text-align: left;">31.3012 rad⁻²</td>
+</tr>
+<tr>
+<td style="text-align: center;">H_CC</td>
+<td style="text-align: left;">367.7347 rad⁻²</td>
+</tr>
+<tr>
+<td style="text-align: center;">H_II</td>
+<td style="text-align: left;">59259.35 rad⁻²</td>
+</tr>
+<tr>
+<td style="text-align: center;">H_MC</td>
+<td style="text-align: left;">3.4145 rad⁻²</td>
+</tr>
+<tr>
+<td style="text-align: center;">H_MI</td>
+<td style="text-align: left;">69.3547 rad⁻²</td>
+</tr>
+<tr>
+<td style="text-align: center;">H_CI</td>
+<td style="text-align: left;">433.1578 rad⁻²</td>
+</tr>
+</tbody>
+</table>
+<p>非对角元 <span class="math inline">\(H_{MC}, H_{MI}, H_{CI}\)</span>
+由约束流形 <span class="math inline">\(C\)</span>
+的诱导度量与拉格朗日乘子法导出（定理 1.1.5.01）。<span
+class="math inline">\(H_{CI} = 433.1578\)</span> 与 定理
+1.1.5.01一致。</p>
+<h3 id="信息场层级特征尺度λ-λ₂λ₁-150">信息场层级特征尺度（Λ = λ₂/λ₁ ≈
+150）</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">层级 n</th>
+<th style="text-align: left;">特征尺度 ρₙ</th>
+<th style="text-align: left;">物理对应</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: left;">1.77×10⁻⁹ m</td>
+<td style="text-align: left;">量子基态</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">2.65×10⁻⁷ m</td>
+<td style="text-align: left;">原子尺度</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">3.97×10⁻⁵ m</td>
+<td style="text-align: left;">分子尺度</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;">3.02×10⁶ m</td>
+<td style="text-align: left;">地球系统信息特征尺度</td>
+</tr>
+</tbody>
+</table>
+<p>公式：<span class="math inline">\(\rho_n = \chi_L \cdot \Lambda^n
+\cdot S_e^{1/2}\)</span>，<span class="math inline">\(\Lambda =
+\lambda_2/\lambda_1 \approx 150\)</span>（Birkhoff混合矩阵比
+149.8，有效比 151.7，与结构性识别值 Λ_H^(struct) = 150
+一致）。概念框架来自 定理 Dirac谱冻结与七层截断。</p>
+<h3
+id="拓扑不变量参考值非直接输出">拓扑不变量（参考值，非直接输出）</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">参数</th>
+<th style="text-align: left;">数值结构</th>
+<th style="text-align: left;">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">e(TS²)</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">切丛 Euler 类 = χ(S²)（固定值）</td>
+</tr>
+<tr>
+<td style="text-align: center;">c₁(TS²)</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">切丛复化后的第一陈类（固定值）</td>
+</tr>
+<tr>
+<td style="text-align: center;">χ(S²)</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">Euler 示性数（固定值）</td>
+</tr>
+<tr>
+<td style="text-align: center;">c₁(L)</td>
+<td style="text-align: left;">n ∈ ℤ</td>
+<td style="text-align: left;">费米面复线丛陈类（由拼接函数决定，不一定是
+2）</td>
+</tr>
+<tr>
+<td style="text-align: center;">π₁(S¹)</td>
+<td style="text-align: left;">ℤ</td>
+<td style="text-align: left;">基本群</td>
+</tr>
+<tr>
+<td style="text-align: center;">H₂(S²; ℤ)</td>
+<td style="text-align: left;">ℤ</td>
+<td style="text-align: left;">二阶同调群</td>
+</tr>
+<tr>
+<td style="text-align: center;">N_eff</td>
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">构造性计数（工作假设，与 Bott
+周期截断数值一致）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>重要说明</strong>：Euler 类 <span
+class="math inline">\(e(TS^2)\)</span> 是实切丛的拓扑不变量；第一陈类
+<span class="math inline">\(c_1(TS^2)\)</span>
+是切丛复化后的复线丛不变量。二者数值相等（<span
+class="math inline">\(=2\)</span>），但概念不同。费米面陈类 <span
+class="math inline">\(c_1(L)\)</span> 是构造性复线丛 <span
+class="math inline">\(L\)</span>
+的陈类，<strong>非切丛陈类</strong>，其值 <span class="math inline">\(n
+\in \mathbb{Z}\)</span> 由拼接函数的同伦类 <span
+class="math inline">\([\Sigma, U(1)] \cong \mathbb{Z}\)</span>
+确定。</p>
+<hr />
+<h2 id="参考文献">参考文献</h2>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 28%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">编号</th>
+<th style="text-align: left;">标题</th>
+<th style="text-align: center;">版本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">定理 1.2.3.01</td>
+<td style="text-align: left;">激发态参数空间的公理化与存在性定理</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理</td>
+<td style="text-align: left;">乘积球面类的谱刚性</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理</td>
+<td style="text-align: left;">ℳ𝒞ℐ三扇区与编码轨道的几何结构</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理</td>
+<td style="text-align: left;">10方几何空间</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: left;">几何动力学</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理</td>
+<td style="text-align: left;">三对偶几何空间与扇区耦合动力学</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理</td>
+<td style="text-align: left;">跨扇区耦合 Hᵂ 前因子的代数结构</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理 1.1.5.01</td>
+<td style="text-align: left;">几何扇区参数空间的数学结构</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理 1.1.5.01</td>
+<td style="text-align: left;">渗透函数解析框架</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理</td>
+<td style="text-align: left;">全息宇宙与 Bott 周期截断</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理</td>
+<td style="text-align: left;">几何扇区参数空间的弯曲结构量子化</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理</td>
+<td style="text-align: left;">化学映射</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理 1.1.5.01-20</td>
+<td style="text-align: left;">谱展开/Born法则（定理 1.1.5.01）</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理 1.4.3.01</td>
+<td style="text-align: left;">相互作用框架</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: left;">信息场动力学</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">[16]</td>
+<td style="text-align: left;">Hamermesh M. Group Theory and Its
+Application to Physical Problems. Addison-Wesley (1962).</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">[17]</td>
+<td style="text-align: left;">Nakahara M. Geometry, Topology and
+Physics. IOP Publishing (2003).</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">[18]</td>
+<td style="text-align: left;">Atiyah M F, Singer I M. The index of
+elliptic operators on compact manifolds. Bull. Amer. Math. Soc. 69,
+422–433 (1963).</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">[19]</td>
+<td style="text-align: left;">Atiyah M F, Patodi V K, Singer I M.
+Spectral asymmetry and Riemannian geometry. I. Math. Proc. Cambridge
+Philos. Soc. 77, 43–69 (1975).</td>
+<td style="text-align: center;">—</td>
+</tr>
+</tbody>
+</table>
+<hr />
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>

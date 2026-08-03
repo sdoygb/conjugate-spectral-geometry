@@ -6,7 +6,7 @@
 # ============================================
 
 # 你的 GitHub 仓库地址（替换为你的实际仓库）
-GITHUB_REPO="https://github.com/oygb/GeometryAI-Mac-Build.git"
+GITHUB_REPO="https://github.com/sdoygb/conjugate-spectral-geometry.git"
 # 分支名
 BRANCH="gh-pages"
 

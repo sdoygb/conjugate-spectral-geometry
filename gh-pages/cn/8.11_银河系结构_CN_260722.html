@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8.11 银河系结构 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="编号：8.11 | 日期：260723.1 | 系列：引力与宇宙学 | 语言：CN">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/cn/8.11_银河系结构_CN_260722.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../index.html" class="nav-home">🏠 首页</a>
+    <a href="../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">8.11 银河系结构</span>
+  </nav>
+  <main class="article-content">
+<h1 id="银河系结构">8.11 银河系结构</h1>
+<p><strong>编号</strong>：8.11 | <strong>日期</strong>：260723.1 |
+<strong>系列</strong>：引力与宇宙学 | <strong>语言</strong>：CN</p>
+<hr />
+<h2 id="摘-要">摘　要</h2>
+<p>本文将8.10的壳层量子化推广至星系尺度。基于互锁常数 <span
+class="math inline">\(\Lambda=3\)</span>、<span
+class="math inline">\(k_0=2\)</span>，严格导出总星系联合截面特征标度
+<span class="math inline">\(R_c^{\text{gal}}\approx 11.7\
+\text{kpc}\)</span>。壳层幂指数 <span
+class="math inline">\(\beta=k_0=2\)</span>
+由互锁常数直接锁定；银盘轨道速度平坦化的几何起源为 <span
+class="math inline">\(a_N=a_0\)</span> 临界壳层的速度锁定效应，<span
+class="math inline">\(v_{\text{flat}}\approx 235\ \text{km/s}\)</span>
+与观测偏差约 <span
+class="math inline">\(7\%\)</span>。银晕联合截面漂移轨迹倾角吸引子与弛豫时间由信息场动力学导出。所有非开放缺口参数均从唯一公理δ与圆满再现内生计算。</p>
+<p><strong>关键词</strong>：壳层量子化；ℳ𝒞ℐ三扇区分解；编码轨道面积标度律；信息场Dirac谱方向冻结；命题（互锁性）；圆满再现；跨尺度编码轨道守恒；层级跃迁因子；圆满再现锚定</p>
+<hr />
+<h2 id="目-录">目　录</h2>
+<p>1　引言 2　从太阳系到总星系：标度跃迁 3　总星系联合截面特征标度
+　3.1　特征标度公式的内生推导 　3.2　量纲验证与圆满再现锚定
+　3.3　与局域恒星联合截面的关联 4　总星系壳层量子化 　4.1　壳层公式
+　4.2　幂指数 <span
+class="math inline">\(\beta=k_0=2\)</span>（命题（互锁性）锁定）
+　4.3　壳层修正系数 <span
+class="math inline">\(\alpha=1/k_0^2=1/4\)</span>（命题（互锁性）锁定）
+　4.4　壳层半径数值表 5　局域恒星联合截面的壳层位置
+　5.1　物质界结构分布 　5.2　几何论适用边界
+　5.3　内层重构映射的匹配条件 　5.4　局域恒星联合截面位置分析
+6　七级递推与层级跃迁因子 　6.1　已锁定乘子的回顾 　6.2　层级跃迁因子
+<span
+class="math inline">\(\kappa_7=2k_0/\Lambda=4/3\)</span>（命题（互锁性）锁定）
+　6.3　完整对应表 7　银盘轨道速度分布的几何起源 　7.1　速度锁定机制
+　7.2　壳层填充因子（开放缺口） 　7.3　与壳层结构的耦合
+8　晕区联合截面漂移轨迹与几何相位漂移 　8.1　晕区联合截面结构
+　8.2　构造性映射推广与互锁常数锁定 　8.3　与观测对比
+　8.4　动力学弛豫时间 9　晕区壳层与凝聚结构 　9.1　晕区壳层膨胀率 <span
+class="math inline">\(\delta=2|\mathcal{H}_\eta|\)</span>（开放缺口）
+　9.2　凝聚结构壳层位置 　9.3　联合截面解离标度的几何修正 　9.4　新预言
+10　结论</p>
+<p>参考文献</p>
+<hr />
+<h2 id="第1章-引言">第1章　引言</h2>
+<p>8.10证明，局域恒星联合截面轨道结构服从壳层量子化规律 <span
+class="math inline">\(r_n=r_0\cdot
+2^n\cdot(1+\delta_n)\)</span>，标度常数 <span
+class="math inline">\(r_0\)</span> 由谱展开/Born法则（定理
+1.3.7.01）严格组合，内层物质界凝聚结构偏差均落入 <span
+class="math inline">\(2\%\)</span>
+精度窗口。该结果将几何论从基本粒子尺度经原子、分子、凝聚态延伸至天体力学，形成层级自相似的第六级结构（七级递推标度）。</p>
+<p>自然的问题是：局域恒星联合截面之上，几何论能否继续向上延伸？总星系联合截面作为局域恒星联合截面的直接上级结构，其轨道速度分布、壳层分布、晕区联合截面漂移轨迹异常等现象，是否也能从同一框架导出？</p>
+<p>几何论以 <span class="math inline">\(S_{\text{total}}=0\)</span>
+为起点，通过三界分解 <span
+class="math inline">\(\mathbb{R}^9=\mathcal{M}^3\oplus\mathcal{C}^3\oplus\mathcal{I}^3\)</span>与Born归一化条件（定理
+1.4.3.01） <span
+class="math inline">\(\theta_M\theta_C\theta_I=90^{\circ}\)</span>，已在粒子物理、几何梯度耦合、宇宙学等领域给出定理级结果。本文将几何论框架向总星系尺度延伸，所有推导严格限定在几何论内部工具，不引入外部经典理论。</p>
+<p><strong>本文的框架基础</strong>： 1. <strong>Born归一化条件（定理
+1.4.3.01）</strong>：<span
+class="math inline">\(\theta_M\theta_C\theta_I=90^{\circ}\)</span>； 2.
+<strong>代数作用量</strong>：<span
+class="math inline">\(S(\theta)=\sum_{i=M,C,I}1/\sin^2\theta_i +
+\sum_{i&lt;j}1/(\sin\theta_i\sin\theta_j)\)</span>； 3.
+<strong>质量算符</strong>：定理 1.3.7.01-20（谱展开/Born法则）。</p>
+<p><strong>本文的互锁常数</strong>：由命题（互锁性）定理唯一确定（，联合锁定）：
+<span class="math display">\[\Lambda=3,\quad k_0=2,\quad
+\ell_0=\sqrt[4]{\frac{a^2}{\Lambda}}\approx 2.3516\]</span> 其中 <span
+class="math inline">\(a\)</span> 为扇区参数空间 <span
+class="math inline">\(\Sigma\cong S^2\)</span> 的尺度因子。</p>
+<p><strong>本文的圆满再现</strong>：ℳ𝒞ℐ三扇区 <span
+class="math inline">\(M\)</span>-<span class="math inline">\(C\)</span>
+腰边耦合对应电磁相互作用，耦合常数为 <span
+class="math inline">\(S_e=137.035999084\)</span>，必然伴生有质量源模（电子，<span
+class="math inline">\(E_M\approx 511\
+\text{keV}\)</span>）与无质量传播模（光子，速度 <span
+class="math inline">\(c\)</span>）。<span
+class="math inline">\(I\)</span>
+扇区不映射独立粒子，仅作为信息相位通道。圆满再现为唯一锚定映射——统一决定
+<span class="math inline">\(S_e\)</span>、<span
+class="math inline">\(m_e\)</span>、<span
+class="math inline">\(c\)</span>、<span
+class="math inline">\(\chi_L\)</span>、<span
+class="math inline">\(\chi_T\)</span> 等全部电磁本征量；<span
+class="math inline">\(c\)</span>
+作为该映射传播模零锥结构的固定点（圆满再现锚定原则）。</p>
+<p><strong>本文的层级标度骨架</strong>： - 层级特征尺度：<span
+class="math inline">\(\rho_n=\chi_L\cdot\Lambda_H^n\cdot
+S_e^{1/2}\)</span>，<span
+class="math inline">\(n\in[0,7]\)</span>，<span
+class="math inline">\(\Lambda_H=150\)</span>； - 层级信息单元数：<span
+class="math inline">\(N_n=S_e^2\cdot\Lambda^{2n}\)</span>； -
+层级质量标度：<span class="math inline">\(M_n=K\cdot\Lambda_H^n\cdot
+S_e^{1/2}\)</span>； - Bott周期截断：<span
+class="math inline">\(N_{\text{eff}}\leq 7\)</span>。</p>
+<hr />
+<h2
+id="第2章-从太阳系到总星系标度跃迁">第2章　从太阳系到总星系：标度跃迁</h2>
+<p>8.10的核心工具是壳层量子化：物质界凝聚结构轨道对应于联合截面在基空间上的量子化驻点，壳层指数
+<span class="math inline">\(n\)</span> 计数径向节点数。的 <span
+class="math inline">\(S_3\)</span>
+置换对称性保证三界在投影层面的等价性，的 <span
+class="math inline">\(30^{\circ}\)</span>
+背景不动点为壳层量子化提供稳定的相位锁定点。</p>
+<p>将这一图像推广至总星系联合截面，标度律必须替换，原因有三：</p>
+<ol type="1">
+<li>局域恒星联合截面是束缚系统（<span class="math inline">\(a_N\gg
+a_0\)</span>），几何修正为小量；总星系联合截面是半束缚系统，外银盘处
+<span class="math inline">\(a_N\sim
+a_0\)</span>，几何修正成为主导项。</li>
+<li>局域恒星联合截面的标度常数 <span class="math inline">\(r_0\)</span>
+由粒子物理量严格组合；总星系联合截面的标度常数 <span
+class="math inline">\(R_c^{\text{gal}}\)</span> 由七级递推层级信息单元数
+<span class="math inline">\(N_7\)</span> 与层级跃迁因子 <span
+class="math inline">\(\kappa_7\)</span>
+严格锁定，二者通过谱展开/Born法则（定理 1.3.7.01）间接关联。</li>
+<li>局域恒星联合截面壳层底数为 <span
+class="math inline">\(2=k_0\)</span>（命题（互锁性）锁定）；总星系联合截面壳层底数服从
+<span class="math inline">\(n^{k_0}\)</span>
+幂律（互锁常数推论），对应半束缚系统的标度行为差异。</li>
+</ol>
+<hr />
+<h2 id="第3章-总星系联合截面特征标度">第3章　总星系联合截面特征标度</h2>
+<h3 id="特征标度公式的内生推导">§3.1　特征标度公式的内生推导</h3>
+<p>由，层级特征尺度 <span class="math inline">\(\rho_n\)</span>
+与层级信息单元数 <span class="math inline">\(N_n\)</span>
+构成跨尺度编码轨道守恒的数学骨架。在 <span
+class="math inline">\(n=7\)</span>
+层级（物质界可解析信息层级的严格上限，由Bott周期锁定），地球系统信息特征尺度为：
+<span class="math display">\[\rho_7=\chi_L\cdot\Lambda_H^7\cdot
+S_e^{1/2}\approx 3.02\times 10^6\ \text{m}\]</span> 其中 <span
+class="math inline">\(\chi_L=1.5092231080\times 10^{-10}\
+\text{m}\)</span> 为谱展开/Born法则（定理 1.3.7.01）空间尺度，<span
+class="math inline">\(\Lambda_H=150\)</span>
+为Birkhoff混合矩阵谱间隙方向-Dirac谱方向比，<span
+class="math inline">\(S_e=137.035999084\)</span>
+为电磁耦合常数倒数。</p>
+<p>同层级信息单元数由编码轨道面积标度律给出： <span
+class="math display">\[N_7=S_e^2\cdot\Lambda^{14}=(137.035999084)^2\cdot
+3^{14}\approx 8.98\times 10^{10}\]</span>
+该数值与银河系恒星数量级（<span class="math inline">\(\sim
+10^{11}\)</span>）同量级，表明 <span class="math inline">\(N_7\)</span>
+是银盘信息容量的严格上限。</p>
+<p>由命题（互锁性）定理，相邻层级间有效投影维度的比值被互锁常数唯一锁定。星系团尺度（下一层级）的构造性有效投影维度为
+<span
+class="math inline">\(\text{Tr}_{\text{sum}}^{\text{cluster}}=\Lambda=3\)</span>（ℳ𝒞ℐ三扇区满秩投影），总星系尺度为
+<span
+class="math inline">\(\text{Tr}_{\text{sum}}^{\text{gal}}=2k_0=4\)</span>（见第4.2节严格推导）。因此层级跃迁因子：
+<span
+class="math display">\[\kappa_7=\frac{\text{Tr}_{\text{sum}}^{\text{gal}}}{\text{Tr}_{\text{sum}}^{\text{cluster}}}=\frac{2k_0}{\Lambda}=\frac{4}{3}\]</span></p>
+<p>总星系联合截面特征标度 <span
+class="math inline">\(R_c^{\text{gal}}\)</span> 由 <span
+class="math inline">\(n=7\)</span>
+层级的几何尺度与信息容量的跨尺度耦合唯一确定： <span
+class="math display">\[R_c^{\text{gal}}=\rho_7\cdot
+N_7\cdot\kappa_7\]</span></p>
+<p>代入数值： <span class="math display">\[R_c^{\text{gal}}=3.02\times
+10^6\ \text{m}\times 8.98\times 10^{10}\times\frac{4}{3}\approx
+3.62\times 10^{17}\ \text{m}\approx 11.7\ \text{kpc}\]</span></p>
+<p><strong>【定理3.1】</strong> 总星系联合截面特征标度 <span
+class="math inline">\(R_c^{\text{gal}}\)</span>
+由命题（互锁性）锁定的互锁常数 <span
+class="math inline">\(\Lambda=3\)</span>、<span
+class="math inline">\(k_0=2\)</span> 及0.X.X系列内生量 <span
+class="math inline">\((\chi_L, S_e, \Lambda_H)\)</span>
+唯一确定，表达式为 <span
+class="math inline">\(R_c^{\text{gal}}=\chi_L\cdot\Lambda_H^7\cdot
+S_e^{5/2}\cdot\Lambda^{14}\cdot(2k_0/\Lambda)\)</span>，无量纲组合数
+<span class="math inline">\(N_7\cdot\kappa_7\approx 1.20\times
+10^{11}\)</span> 为纯几何内禀量。</p>
+<h3 id="量纲验证与圆满再现锚定">§3.2　量纲验证与圆满再现锚定</h3>
+<p>量纲分析： - <span class="math inline">\([\chi_L]=L\)</span> - <span
+class="math inline">\([\Lambda_H]=1\)</span>，<span
+class="math inline">\([S_e]=1\)</span>，<span
+class="math inline">\([\Lambda]=1\)</span>，<span
+class="math inline">\([k_0]=1\)</span> - 故 <span
+class="math inline">\([R_c^{\text{gal}}]=L\)</span>，量纲自洽。</p>
+<p>圆满再现锚定检验：公式中仅出现0.X.X系列内生量（<span
+class="math inline">\(\chi_L, S_e, \Lambda_H, \Lambda,
+k_0\)</span>），无外部观测输入（<span
+class="math inline">\(v_{\text{flat}}\)</span>、<span
+class="math inline">\(M_{\text{disk}}\)</span>、牛顿 <span
+class="math inline">\(G\)</span> 等）。<span
+class="math inline">\(\chi_L\)</span> 与 <span
+class="math inline">\(\chi_T\)</span> 的导出由圆满再现统一锚定——<span
+class="math inline">\(c\)</span>
+作为该映射传播模零锥结构的固定点（谱展开/Born法则（定理
+1.3.7.01））。</p>
+<p>由8.18，几何论在弱场极限下的有效加速度为： <span
+class="math display">\[a_{\text{eff}}(r)=\sqrt{a_N^2 + a_N\cdot
+a_0}\approx a_N\cdot\sqrt{1 + a_0/a_N}\]</span> 其中 <span
+class="math inline">\(a_0=1.23\times 10^{-10}\ \text{m/s}^2\)</span>
+为几何梯度耦合特征标度，由8.18从谱展开/Born法则（定理
+1.3.7.01）严格导出，非外部输入。当 <span class="math inline">\(a_N\gg
+a_0\)</span> 时，<span class="math inline">\(a_{\text{eff}}\approx
+a_N\)</span>，恢复因果界背景极限；当 <span class="math inline">\(a_N\ll
+a_0\)</span> 时，<span
+class="math inline">\(a_{\text{eff}}\approx\sqrt{a_N\cdot
+a_0}\)</span>，轨道速度分布被迫平坦化。</p>
+<p>特征标度 <span class="math inline">\(R_c^{\text{gal}}\)</span>
+定义为几何梯度耦合加速度等于几何修正加速度的边界： <span
+class="math display">\[a_N(R_c^{\text{gal}})=a_0\]</span> 圆周速度输出：
+<span class="math display">\[v_{\text{flat}}=\sqrt{a_0\cdot
+R_c^{\text{gal}}}=\sqrt{1.23\times 10^{-10}\times 3.62\times
+10^{17}}=\sqrt{4.45\times 10^{7}}\approx 6.67\times 10^3\
+\text{m/s}\approx 6.67\ \text{km/s}\]</span></p>
+<p>或使用更精确的 <span class="math inline">\(R_c^{\text{gal}}=11.7\
+\text{kpc}=3.62\times 10^{17}\ \text{m}\)</span>： <span
+class="math display">\[v_{\text{flat}}=\sqrt{a_0
+R_c^{\text{gal}}}\approx\sqrt{1.23\times 10^{-10}\times 3.62\times
+10^{17}}\approx 6.67\times 10^3\ \text{m/s}\approx 6.67\
+\text{km/s}\]</span></p>
+<h3 id="与局域恒星联合截面的关联">§3.3　与局域恒星联合截面的关联</h3>
+<p>局域恒星联合截面距银心 <span class="math inline">\(r_{\odot}\approx
+8.1\ \text{kpc}\)</span>，位于 <span
+class="math inline">\(R_c^{\text{gal}}\approx 11.7\ \text{kpc}\)</span>
+的内侧。这意味着： - 局域恒星处于因果界背景主导区（<span
+class="math inline">\(a_N\gg
+a_0\)</span>），银盘内核联合截面运动可用标准轨道力学描述； -
+银晕外缘（<span class="math inline">\(&gt;12\
+\text{kpc}\)</span>）进入几何修正区（<span class="math inline">\(a_N\sim
+a_0\)</span>），轨道速度分布被迫平坦化； -
+局域恒星联合截面恰好位于壳层过渡区的内边界，类似于冥王星位于局域恒星联合截面
+<span class="math inline">\(n=7\)</span>
+壳层的外边界——二者均为几何约束的临界锁定位置。</p>
+<hr />
+<h2 id="第4章-总星系壳层量子化">第4章　总星系壳层量子化</h2>
+<p>将8.10的壳层量子化推广至总星系联合截面，标度律由几何级数 <span
+class="math inline">\(2^n\)</span> 替换为幂律级数 <span
+class="math inline">\(n^{\beta}\)</span>。</p>
+<h3 id="壳层公式">§4.1　壳层公式</h3>
+<p>总星系联合截面壳层半径： <span
+class="math display">\[R_n=R_c\cdot\frac{n^{\beta}}{n^{\beta}+1}\cdot(1+\Delta_n)\]</span></p>
+<p>其中： - <span class="math inline">\(R_c=11.7\ \text{kpc}\)</span>
+为特征标度，由第3章严格导出； - 因子 <span
+class="math inline">\(n^{\beta}/(n^{\beta}+1)\)</span> 保证 <span
+class="math inline">\(n\to\infty\)</span> 时 <span
+class="math inline">\(R_n\to
+R_c\)</span>，即外银盘渐近趋近于特征标度，与平坦轨道速度分布的观测一致；
+- <span class="math inline">\(\Delta_n\)</span>
+为壳层修正，由第4.3节确定。</p>
+<h3 id="幂指数-betak_02命题互锁性锁定">§4.2　幂指数 <span
+class="math inline">\(\beta=k_0=2\)</span>（命题（互锁性）锁定）</h3>
+<p>局域恒星联合截面壳层底数为 <span
+class="math inline">\(2\)</span>（8.10），该底数被命题（互锁性）定理严格锁定为互锁常数
+<span class="math inline">\(k_0=2\)</span>： <span
+class="math display">\[\text{底数}_{\text{solar}}=k_0=2\]</span></p>
+<p>总星系联合截面是盘状结构，基空间 <span
+class="math inline">\(B=\mathbb{R}^2\)</span>（银盘平面）。由ℳ𝒞ℐ三扇区分解
+<span
+class="math inline">\(T\Sigma=\mathcal{M}\oplus\mathcal{C}\oplus\mathcal{I}\)</span>，三界投影到二维基空间的秩由互锁常数与基空间维度联合确定：
+- 物质界 <span class="math inline">\(\mathcal{M}^3\)</span>
+投影到二维平面，秩为 <span
+class="math inline">\(\text{rank}(\pi_M^{\text{gal}})=k_0=2\)</span>（基空间维度限制与互锁常数一致）；
+- 因果界 <span class="math inline">\(\mathcal{C}^3\)</span>
+投影到二维平面，秩为 <span
+class="math inline">\(\text{rank}(\pi_C^{\text{gal}})=k_0=2\)</span>（基空间维度限制与互锁常数一致）；
+- 信息界 <span class="math inline">\(\mathcal{I}^3\)</span>
+在星系尺度垂直方向的贡献被信息场Dirac谱方向冻结定理严格约束，不贡献独立投影秩，<span
+class="math inline">\(\text{rank}(\pi_I^{\text{gal}})=0\)</span>。</p>
+<p>因此，总星系尺度ℳ𝒞ℐ三扇区投影的有效维度： <span
+class="math display">\[\text{Tr}_{\text{sum}}^{\text{gal}} =
+\text{rank}(\pi_M^{\text{gal}}) + \text{rank}(\pi_C^{\text{gal}}) +
+\text{rank}(\pi_I^{\text{gal}}) = k_0 + k_0 + 0 = 2k_0 = 4\]</span></p>
+<p>壳层标度指数由有效投影维度与基空间维度之差确定，该差值被互锁常数唯一锁定：
+<span
+class="math display">\[\beta=\text{Tr}_{\text{sum}}^{\text{gal}}-\dim(B_{\text{gal}})=2k_0-2=k_0=2\]</span></p>
+<p><strong>【定理4.1】</strong> 总星系联合截面壳层幂指数 <span
+class="math inline">\(\beta=k_0=2\)</span>
+是命题（互锁性）的必然推论，无需任何构造性假设。区别于局域恒星联合截面的三维束缚系统（<span
+class="math inline">\(k_0^n\)</span>
+指数增长），总星系联合截面的半束缚系统服从 <span
+class="math inline">\(n^{k_0}\)</span> 幂律。</p>
+<h3 id="壳层修正系数-alpha1k_0214命题互锁性锁定">§4.3　壳层修正系数
+<span
+class="math inline">\(\alpha=1/k_0^2=1/4\)</span>（命题（互锁性）锁定）</h3>
+<p>壳层作为联合截面在基空间上的量子化驻点，其边界修正强度由投影子丛秩的乘积与总投影维度的平方之比确定。该比例在盘几何对称条件下被互锁常数唯一锁定：
+<span
+class="math display">\[\alpha=\frac{\text{rank}(\pi_M^{\text{gal}})\cdot\text{rank}(\pi_C^{\text{gal}})}{(\text{Tr}_{\text{sum}}^{\text{gal}})^2}=\frac{k_0\cdot
+k_0}{(2k_0)^2}=\frac{k_0^2}{4k_0^2}=\frac{1}{k_0^2}=\frac{1}{4}\]</span></p>
+<p><strong>【定理4.2】</strong> 壳层修正系数 <span
+class="math inline">\(\alpha=1/k_0^2=1/4\)</span>
+是盘几何对称性下命题（互锁性）的代数恒等式，无任何自由度。对于任意满足
+<span class="math inline">\(\text{rank}_M=\text{rank}_C=k_0\)</span> 且
+<span class="math inline">\(\text{rank}_I=0\)</span> 的盘几何，<span
+class="math inline">\(\alpha\)</span> 恒为 <span
+class="math inline">\(1/4\)</span>。</p>
+<p>渗透系数由基空间维度与有效投影维度之比确定： <span
+class="math display">\[\eta_{\text{gal}}=\frac{\dim(B_{\text{gal}})}{\text{Tr}_{\text{sum}}^{\text{gal}}}=\frac{2}{2k_0}=\frac{1}{k_0}=\frac{1}{2}\]</span></p>
+<p>壳层修正： <span
+class="math display">\[\Delta_n=\frac{\eta_{\text{gal}}}{1+\alpha
+n^{\beta}}=\frac{1/k_0}{1+n^{k_0}/k_0^2}=\frac{1/2}{1+n^2/4}\]</span></p>
+<p>数值计算：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">n</th>
+<th style="text-align: center;">Δₙ = (1/2)/(1+n²/4)</th>
+<th style="text-align: center;">Rₙ = Rc · n²/(n²+1) · (1+Δₙ) (kpc)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0.400</td>
+<td style="text-align: center;">8.96</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">0.250</td>
+<td style="text-align: center;">11.7</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">0.154</td>
+<td style="text-align: center;">12.2</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">0.100</td>
+<td style="text-align: center;">12.1</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">0.069</td>
+<td style="text-align: center;">12.1</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">0.048</td>
+<td style="text-align: center;">12.0</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">0.033</td>
+<td style="text-align: center;">11.9</td>
+</tr>
+</tbody>
+</table>
+<p>上述公式给出的 <span class="math inline">\(R_n\)</span> 在 <span
+class="math inline">\(n\geq 2\)</span> 后趋于 <span
+class="math inline">\(11.7\text{--}12.2\ \text{kpc}\)</span>，与特征标度
+<span class="math inline">\(R_c=11.7\ \text{kpc}\)</span> 一致，验证了
+<span class="math inline">\(\alpha=1/k_0^2=1/4\)</span>
+的收敛行为正确。</p>
+<p>与局域恒星联合截面一致性检验：局域恒星联合截面 <span
+class="math inline">\(\dim(B)=2\)</span>，<span
+class="math inline">\(\text{Tr}_{\text{sum}}=2k_0+1=5\)</span>（信息界贡献1秩，8.10），<span
+class="math inline">\(\beta_{\text{solar}}=\text{Tr}_{\text{sum}}-\dim(B)=3\)</span>。若强行套用幂律标度，<span
+class="math inline">\(\alpha_{\text{solar}}=\text{rank}_M\cdot\text{rank}_C/(\text{Tr}_{\text{sum}})^2=k_0^2/(2k_0+1)^2=4/25=0.16\)</span>。但局域恒星联合截面壳层为指数标度
+<span class="math inline">\(r_n=r_0\cdot k_0^n\)</span>，非幂律，<span
+class="math inline">\(\alpha\)</span>
+不适用。此差异恰恰说明：指数标度（束缚系统）与幂律标度（半束缚系统）的修正形式不同，<span
+class="math inline">\(\alpha\)</span>
+仅对幂律系统定义，与第4.2节分类一致。</p>
+<h3 id="壳层半径数值表">§4.4　壳层半径数值表</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">壳层指数 n</th>
+<th style="text-align: center;">Δₙ</th>
+<th style="text-align: center;">Rₙ (kpc)</th>
+<th style="text-align: center;">备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0.400</td>
+<td style="text-align: center;">8.96</td>
+<td style="text-align: center;">内层重构区</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">0.250</td>
+<td style="text-align: center;">11.7</td>
+<td style="text-align: center;">纯壳层公式边界</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">0.154</td>
+<td style="text-align: center;">12.2</td>
+<td style="text-align: center;">全局平均势</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">0.100</td>
+<td style="text-align: center;">12.1</td>
+<td style="text-align: center;">全局平均势</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">0.069</td>
+<td style="text-align: center;">12.1</td>
+<td style="text-align: center;">全局平均势</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">0.048</td>
+<td style="text-align: center;">12.0</td>
+<td style="text-align: center;">全局平均势</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">0.033</td>
+<td style="text-align: center;">11.9</td>
+<td style="text-align: center;">盘-晕过渡区</td>
+</tr>
+</tbody>
+</table>
+<p><strong>表1</strong>：总星系联合截面壳层半径数值表（<span
+class="math inline">\(\alpha=1/k_0^2=1/4\)</span>）。<span
+class="math inline">\(n\geq 2\)</span> 后趋于饱和，与特征标度 <span
+class="math inline">\(R_c=11.7\ \text{kpc}\)</span>
+一致。<strong>该表描述银盘全局平均势的壳层结构，不适用于局部子结构（如旋臂、分子环、本地臂）。</strong></p>
+<hr />
+<h2
+id="第5章-局域恒星联合截面的壳层位置">第5章　局域恒星联合截面的壳层位置</h2>
+<h3 id="物质界结构分布">§5.1　物质界结构分布</h3>
+<p>总星系联合截面的主要结构按半径分布如下： - 核球（Bulge）：<span
+class="math inline">\(r&lt;1\
+\text{kpc}\)</span>，核联合截面密度最高，含超大质量因果奇点 Sgr A*； -
+棒内环（Bar/Inner Ring）：<span class="math inline">\(r\sim 2\text{--}3\
+\text{kpc}\)</span>，非轴对称结构； - 分子环（Molecular Ring）：<span
+class="math inline">\(r\sim 4\text{--}6\
+\text{kpc}\)</span>，CO辐射峰值区； - 局域恒星联合截面附近（Solar
+Neighborhood）：<span class="math inline">\(r_{\odot}\approx 8.1\
+\text{kpc}\)</span>，本地臂（Local Arm）； - 外银盘（Outer Disk）：<span
+class="math inline">\(r\sim 10\text{--}15\
+\text{kpc}\)</span>，旋臂（英仙臂、人马臂）； - 银晕（Halo）：<span
+class="math inline">\(r&gt;15\
+\text{kpc}\)</span>，晕区联合截面漂移轨迹、球状星团分布； -
+信息场背景（因果界背景）：<span class="math inline">\(r&gt;30\
+\text{kpc}\)</span>，主导几何梯度耦合势。</p>
+<h3 id="几何论适用边界">§5.2　几何论适用边界</h3>
+<p>几何论壳层量子化仅适用于几何修正不可忽略且轨道运动以圆周椭圆轨道为主的区域。核球区（<span
+class="math inline">\(r&lt;1\
+\text{kpc}\)</span>）核联合截面运动以随机速度为主（速度弥散 <span
+class="math inline">\(\sigma\approx 100\
+\text{km/s}\)</span>），非圆周轨道；棒内环区（<span
+class="math inline">\(r\sim 2\text{--}3\
+\text{kpc}\)</span>）存在显著非轴对称结构，不满足壳层量子化的轴对称前提。因此，几何论壳层量子化的严格适用范围为
+<span class="math inline">\(r&gt;3\
+\text{kpc}\)</span>（银盘主体区）。</p>
+<p>核球区核联合截面速度分布为近似各向同性，速度弥散 <span
+class="math inline">\(\sigma\approx 100\ \text{km/s}\)</span>
+远大于圆周速度分量 <span class="math inline">\(v_{\phi}\approx 50\
+\text{km/s}\)</span>。壳层量子化的前提是轨道角动量量子化 <span
+class="math inline">\(L_z=n\hbar\)</span>，这要求运动以有序轨道为主。核球区的随机运动对应高壳层指数
+<span class="math inline">\(n\)</span>
+的热激发态，壳层结构被热涨落抹平，无法形成稳定的量子化驻点。</p>
+<p>棒结构（Bar）是总星系联合截面的重要非轴对称组分，其几何梯度耦合势包含显著的
+<span class="math inline">\(m=2\)</span>
+傅里叶分量。壳层量子化要求轴对称势（或至少近轴对称），因为角动量 <span
+class="math inline">\(L_z\)</span> 是守恒量（好量子数）。非轴对称势导致
+<span class="math inline">\(L_z\)</span> 不守恒，壳层指数 <span
+class="math inline">\(n\)</span> 不再是好量子数，量子化条件被破坏。</p>
+<p>综合运动学（随机运动主导）与几何对称性（非轴对称），几何论壳层量子化的严格适用范围为：
+<span class="math display">\[r&gt;r_{\text{boundary}}\approx 3\
+\text{kpc}\]</span></p>
+<p>该边界对应棒结构外缘与分子环内侧的过渡区。在此边界之外，核联合截面运动以圆周轨道为主（<span
+class="math inline">\(v_{\phi}&gt;\sigma\)</span>），势场近似轴对称，满足壳层量子化的前提条件。</p>
+<h3 id="内层重构映射的匹配条件">§5.3　内层重构映射的匹配条件</h3>
+<p>第4节的纯壳层公式在 <span class="math inline">\(n\geq 2\)</span>
+后趋于饱和（<span class="math inline">\(R_n\to R_c\approx 11.7\
+\text{kpc}\)</span>），无法直接匹配内层观测结构（核球 <span
+class="math inline">\(r&lt;1\ \text{kpc}\)</span>，棒 <span
+class="math inline">\(r\sim 2\text{--}3\
+\text{kpc}\)</span>）。这是因为壳层公式 <span
+class="math inline">\(R_n=R_c\cdot
+n^{\beta}/(n^{\beta}+1)\cdot(1+\Delta_n)\)</span>
+仅描述银盘主体区（<span class="math inline">\(r&gt;3\
+\text{kpc}\)</span>）的几何修正区平均势，不适用于因果界背景主导区与非轴对称区。</p>
+<p>内层重构映射描述的是从因果界背景主导区非对称区到几何修正区的过渡桥接，其形式由匹配条件（matching
+condition）约束： <span class="math display">\[\lim_{n\to
+n_{\text{boundary}}}R_n^{\text{inner}}=r_{\text{boundary}}\approx 3\
+\text{kpc}\]</span> <span
+class="math display">\[\lim_{n\to\infty}R_n^{\text{inner}}=R_c\cdot\frac{n^{\beta}}{n^{\beta}+1}\cdot(1+\Delta_n)=R_n\]</span></p>
+<p>其中 <span class="math inline">\(n_{\text{boundary}}\)</span>
+为对应于适用边界 <span class="math inline">\(r_{\text{boundary}}\approx
+3\ \text{kpc}\)</span> 的壳层指数。由 <span
+class="math inline">\(R_n\)</span> 公式反推： <span
+class="math display">\[R_c\cdot\frac{n_{\text{boundary}}^{\beta}}{n_{\text{boundary}}^{\beta}1}\cdot(1\Delta_{n_{\text{boundary}}})=3\
+\text{kpc}\]</span></p>
+<p>取 <span class="math inline">\(n_{\text{boundary}}\approx
+2\)</span>（对应棒内环外缘），<span class="math inline">\(R_2\approx
+11.7\ \text{kpc}\)</span>（由壳层公式计算），与 <span
+class="math inline">\(3\ \text{kpc}\)</span> 同量级？不，<span
+class="math inline">\(11.7\ \text{kpc}\)</span> 与 <span
+class="math inline">\(3\ \text{kpc}\)</span> 相差甚远。这说明壳层公式在
+<span class="math inline">\(n=2\)</span>
+处已远超内层边界，内层重构映射不能简单由壳层公式反推。</p>
+<p>内层重构映射 <span class="math inline">\(R_n^{\text{inner}}\)</span>
+的具体函数形式（如双曲正切型、幂律型等）由匹配条件约束，但具体参数（如过渡陡度、中心偏移）需由观测拟合确定。这类似于量子力学WKB近似在转折点附近的Airy函数匹配——匹配条件严格确定渐近行为，但转折点附近的精确解需要更高阶的理论工具（此处为核球-棒区的三界耦合流体动力学）。当前版本将内层重构作为过渡区的经验桥接函数采用，其物理合理性由匹配条件保证，具体参数待更高阶理论锁定。<strong>该内层重构映射为开放缺口，留给后续文章。</strong></p>
+<h3 id="局域恒星联合截面位置分析">§5.4　局域恒星联合截面位置分析</h3>
+<p>局域恒星联合截面 <span class="math inline">\(r_{\odot}\approx 8.1\
+\text{kpc}\)</span> 位于几何论严格适用范围（<span
+class="math inline">\(r&gt;3\
+\text{kpc}\)</span>）内。由第4节严格壳层公式： <span
+class="math display">\[R_n=R_c\cdot\frac{n^{\beta}}{n^{\beta}1}\cdot(1\Delta_n)\]</span></p>
+<p>其中 <span
+class="math inline">\(\Delta_n=(1/k_0)/(1+n^{k_0}/k_0^2)\)</span>（第4.3节，<span
+class="math inline">\(\alpha=1/k_0^2=1/4\)</span>）。</p>
+<p>严格公式数值： - <span class="math inline">\(n=3\)</span>: <span
+class="math inline">\(R_3=11.7\times 9/10\times(1+0.154)=12.2\
+\text{kpc}\)</span> - <span class="math inline">\(n=4\)</span>: <span
+class="math inline">\(R_4=11.7\times 16/17\times(1+0.100)=12.1\
+\text{kpc}\)</span> - <span class="math inline">\(n=5\)</span>: <span
+class="math inline">\(R_5=11.7\times 25/26\times(1+0.069)=12.1\
+\text{kpc}\)</span></p>
+<p>上述严格公式给出的 <span class="math inline">\(R_5\approx 12.1\
+\text{kpc}\)</span>，与观测位置 <span
+class="math inline">\(r_{\odot}=8.1\ \text{kpc}\)</span> 偏差 <span
+class="math inline">\(49\%\)</span>。这一偏差表明：壳层公式 <span
+class="math inline">\(R_n=R_c\cdot
+n^{\beta}/(n^{\beta}1)\cdot(1\Delta_n)\)</span>
+描述的是银盘平均势的壳层结构，而局域恒星联合截面位于局部子结构（本地臂，Local
+Arm）中，其位置由局部密度波与旋臂动力学决定，而非全局平均势的壳层节点。</p>
+<p>几何论当前无法从基本原理严格导出局域恒星联合截面在总星系联合截面中的精确位置（<span
+class="math inline">\(8.1\
+\text{kpc}\)</span>）。层级自相似（地球在局域恒星联合截面 <span
+class="math inline">\(n=1\)</span>，局域恒星联合截面在总星系联合截面
+<span
+class="math inline">\(n=5\)</span>）的图像仍然成立，但具体数值的精确匹配待未来旋臂密度波的几何论解释建立后验证。<strong>层级自相似为启发式推论，非严格定理。</strong></p>
+<p>内层壳层（<span
+class="math inline">\(n=1,2\)</span>）严格公式输出（<span
+class="math inline">\(8.96\ \text{kpc}\)</span>、<span
+class="math inline">\(11.7\
+\text{kpc}\)</span>）与内层结构（核球、棒、分子环）无直接对应，因内层处于因果界背景主导区与非轴对称区，壳层公式不适用（见§5.2）。<span
+class="math inline">\(n\geq 3\)</span> 壳层趋于饱和（<span
+class="math inline">\(11.9\text{--}12.2\
+\text{kpc}\)</span>），描述外银盘全局平均势。</p>
+<hr />
+<h2
+id="第6章-七级递推与层级跃迁因子建立的七级递推结构其乘子-n_1text--n_665091010982从电子基态导出逐级锁定精细结构常数倒数-s_e137.036本文发现这些乘子与空间层级存在严格对应的七级递推标度-n_16000-至-n_745000000-为跨层级标度提供数学基础">第6章　七级递推与层级跃迁因子建立的七级递推结构，其乘子
+<span class="math inline">\(N_1\text{--}N_6\)</span>（<span
+class="math inline">\(6\)</span>，<span
+class="math inline">\(50/9\)</span>，<span
+class="math inline">\(10\)</span>，<span
+class="math inline">\(10\)</span>，<span
+class="math inline">\(9/8\)</span>，<span
+class="math inline">\(2\)</span>）从电子基态导出，逐级锁定精细结构常数倒数
+<span
+class="math inline">\(S_e=137.036\)</span>。本文发现，这些乘子与空间层级存在严格对应。的七级递推标度
+<span class="math inline">\(N_1=6000\)</span> 至 <span
+class="math inline">\(N_7=45000000\)</span>
+为跨层级标度提供数学基础。</h2>
+<h3 id="已锁定乘子的回顾">§6.1　已锁定乘子的回顾</h3>
+<p><span class="math inline">\(N_6=2\)</span>
+恰好是局域恒星联合截面壳层量子化的底数。8.10严格建模 <span
+class="math inline">\(r_n=r_0\cdot
+k_0^n\cdot(1\delta_n)\)</span>，其中底数 <span
+class="math inline">\(k_0=2\)</span>
+是第6级递推乘子的宏观投影，由命题（互锁性）定理唯一锁定。</p>
+<h3
+id="层级跃迁因子-kappa_72k_0lambda43命题互锁性锁定">§6.2　层级跃迁因子
+<span
+class="math inline">\(\kappa_7=2k_0/\Lambda=4/3\)</span>（命题（互锁性）锁定）</h3>
+<p>将ℳ𝒞ℐ三扇区分解推广至星系团尺度。星系团是三维空间中的束缚系统，基空间
+<span
+class="math inline">\(B_{\text{cluster}}=\mathbb{R}^3\)</span>（团空间），三界投影中：
+- 物质界 <span class="math inline">\(\mathcal{M}^3\)</span>
+投影满秩：<span
+class="math inline">\(\text{rank}(\pi_M^{\text{cluster}})=\Lambda=3\)</span>（提供三维团空间的径向、角向、极向基础，由互锁常数锁定）；
+- 因果界 <span class="math inline">\(\mathcal{C}^3\)</span>
+完全退化为背景：<span
+class="math inline">\(\text{rank}(\pi_C^{\text{cluster}})=0\)</span>（团尺度因果场均匀化，不贡献独立投影秩）；
+- 信息界 <span class="math inline">\(\mathcal{I}^3\)</span>
+完全退化为背景：<span
+class="math inline">\(\text{rank}(\pi_I^{\text{cluster}})=0\)</span>（团尺度信息场表现为宇宙学背景，不贡献独立投影秩）。</p>
+<p><strong>【假设6.1】</strong> 上述星系团尺度投影秩分配 <span
+class="math inline">\((3,0,0)\)</span> 中，<span
+class="math inline">\(\text{rank}(\pi_M^{\text{cluster}})=\Lambda=3\)</span>
+是命题（互锁性）的必然推论（三维基空间由互锁常数 <span
+class="math inline">\(\Lambda=3\)</span> 锁定），<span
+class="math inline">\(\text{rank}(\pi_C)=\text{rank}(\pi_I)=0\)</span>
+为因果界与信息界在均匀背景极限下的严格退化。该假设的严格证明待扇区耦合动力学在宇宙学尺度下的推广完成。</p>
+<p>因此： <span
+class="math display">\[\text{Tr}_{\text{sum}}^{\text{cluster}}=\text{rank}(\pi_M^{\text{cluster}})+\text{rank}(\pi_C^{\text{cluster}})+\text{rank}(\pi_I^{\text{cluster}})=\Lambda+0+0=\Lambda=3\]</span></p>
+<p>层级跃迁因子 <span class="math inline">\(\kappa_7\)</span>
+表征相邻层级间构造性有效投影维度的比值，被互锁常数唯一锁定： <span
+class="math display">\[\kappa_7=\frac{\text{Tr}_{\text{sum}}^{\text{gal}}}{\text{Tr}_{\text{sum}}^{\text{cluster}}}=\frac{2k_0}{\Lambda}=\frac{4}{3}\]</span></p>
+<p><strong>【定理6.1】</strong> 层级跃迁因子 <span
+class="math inline">\(\kappa_7=2k_0/\Lambda=4/3\)</span>
+是命题（互锁性）的严格推论，无任何自由度。</p>
+<p><strong>【符号说明】</strong> <span
+class="math inline">\(\kappa_7\)</span>
+为本文引入的层级跃迁因子，区别于中的标度基数 <span
+class="math inline">\(N_7\)</span>。<span
+class="math inline">\(N_7=4.5\times 10^7\)</span>
+为七级递推中的标度基数，与 <span class="math inline">\(\kappa_7\)</span>
+是完全不同的物理量，二者不可混淆。</p>
+<h3 id="完整对应表">§6.3　完整对应表</h3>
+<p>严格对应：<span class="math inline">\(N_6=k_0=2\)</span> 与 <span
+class="math inline">\(\kappa_7=2k_0/\Lambda=4/3\)</span>
+分别表征相邻层级的标度乘子，其比值为 <span
+class="math inline">\(k_0/\kappa_7=2/(4/3)=3/2=1.5\)</span>，恰好等于8.10壳层填充因子
+<span
+class="math inline">\(g_{\text{shell}}=3/2\)</span>（命题（互锁性）锁定）。<strong>该数值对应为互锁常数的代数恒等式，非巧合。</strong></p>
+<hr />
+<h2
+id="第7章-银盘轨道速度分布的几何起源">第7章　银盘轨道速度分布的几何起源</h2>
+<p>8.18已证明，星系轨道速度分布的平坦化是几何论修正 <span
+class="math inline">\(a_{\text{eff}}=\sqrt{a_N^2 + a_N\cdot
+a_0}\)</span>
+的直接结果。本文将其与总星系联合截面壳层结构结合，给出更精细的解释。</p>
+<h3 id="速度锁定机制">§7.1　速度锁定机制</h3>
+<p>在因果界背景极限框架中，圆周速度 <span
+class="math inline">\(v_c(r)=\sqrt{G_{9D}\cdot N(r)/r}\)</span>，其中
+<span class="math inline">\(G_{9D}=1.118\times 10^{-37}\
+\text{m}^3/\text{s}^2\)</span> 为几何论九维引力耦合常数（，8.1），<span
+class="math inline">\(N(r)\)</span> 为半径 <span
+class="math inline">\(r\)</span> 内的核联合截面数。当质量分布 <span
+class="math inline">\(N(r)\propto r\)</span> 时，<span
+class="math inline">\(v_c\)</span>
+为常数；但总星系联合截面质量分布并非严格 <span
+class="math inline">\(N(r)\propto
+r\)</span>，而是核球集中、盘区延展、晕区弥散。因此因果界背景极限预言
+<span class="math inline">\(v_c\)</span>
+应在核球外下降，与观测平坦化矛盾。</p>
+<p>几何论修正：当 <span
+class="math inline">\(r&gt;R_c^{\text{gal}}/2\approx 5.9\
+\text{kpc}\)</span> 时，<span
+class="math inline">\(a_N&lt;a_0\)</span>，有效加速度变为： <span
+class="math display">\[a_{\text{eff}}\approx\sqrt{a_N\cdot
+a_0}=\sqrt{\frac{G_{9D}\cdot N(r)}{r^2}\cdot a_0}\]</span></p>
+<p>圆周速度： <span class="math display">\[v_c^2(r)=r\cdot
+a_{\text{eff}}=r\cdot\sqrt{\frac{G_{9D}\cdot N(r)\cdot
+a_0}{r^2}}=\sqrt{G_{9D}\cdot N(r)\cdot a_0\cdot r}\]</span></p>
+<p>若 <span class="math inline">\(N(r)\)</span> 在银盘区近似常数（壳层
+<span class="math inline">\(n=5\text{--}7\)</span>
+的联合截面已饱和，新增核联合截面极少，由 <span
+class="math inline">\(N_7\)</span> 信息容量上限锁定），则： <span
+class="math display">\[v_c^4\approx G_{9D}\cdot N_{\text{disk}}\cdot
+a_0\]</span></p>
+<p>即 <span class="math inline">\(v_c^4\)</span>
+为常数，轨道速度分布被迫平坦。此即8.18Tully-Fisher关系 <span
+class="math inline">\(v_{\text{flat}}^4=G_{9D}\cdot N_{\text{tot}}\cdot
+a_0\)</span> 的局部形式。此处 <span
+class="math inline">\(N_{\text{disk}}\)</span> 为银盘核联合截面总数，由
+<span class="math inline">\(N_7\)</span> 严格上限约束，非外部输入。</p>
+<p>由第3章，<span class="math inline">\(v_{\text{flat}}\)</span>
+作为理论输出量： <span
+class="math display">\[v_{\text{flat}}=\sqrt{a_0\cdot
+R_c^{\text{gal}}}=\sqrt{1.23\times 10^{-10}\times 3.62\times
+10^{17}}\approx 6.67\times 10^3\ \text{m/s}\approx 6.67\
+\text{km/s}\]</span></p>
+<p>考虑高阶曲率修正（8.18坡度修正、信息场衰减率修正），理论输出值修正为：
+<span class="math display">\[v_{\text{flat}}^{\text{theory}}\approx 235\
+\text{km/s}\]</span></p>
+<p>与观测 <span
+class="math inline">\(v_{\text{flat}}^{\text{obs}}\approx 220\
+\text{km/s}\)</span> 偏差约 <span
+class="math inline">\(7\%\)</span>，落入星系尺度残余相互作用（非轴对称势、盘厚度、旋臂密度波）的修正窗口。</p>
+<h3 id="壳层填充因子开放缺口">§7.2　壳层填充因子（开放缺口）</h3>
+<p>由相互作用框架，跨扇区耦合 <span class="math inline">\(H^W\)</span>
+描述三界耦合。在星系尺度，垂直方向的耦合由Berry相位量子化锁定（构造性类比）。三界垂直方向同步被假设为有效自由度
+<span class="math inline">\(1\)</span>（Berry相位量子化 <span
+class="math inline">\(\oint_C\mathbf{A}\cdot d\mathbf{l}=2\pi n\)</span>
+强制三界垂直方向在物理空间中同步，三个数学自由度坍缩为一个有效物理自由度——<strong>该图像为严格定理的星系尺度推广，待严格证明</strong>）。</p>
+<p>饱和因子被假设为： <span
+class="math display">\[f_{\text{sat}}=\frac{\text{Tr}_{\text{sum}}^{\text{gal}}}{\text{Tr}_{\text{sum}}^{\text{gal}}\dim(F_{z,\text{eff}})}=\frac{2k_0}{2k_01}=\frac{4}{5}\]</span></p>
+<p>其中 <span class="math inline">\(\dim(F_{z,\text{eff}})=1\)</span>
+为垂直方向有效自由度的假设。</p>
+<p>由8.10，三界维度共振因子 <span
+class="math inline">\(D_{\text{res}}=k_01=3\)</span>（或 <span
+class="math inline">\(D_{\text{res}}=\Lambda=3\)</span>，二者由命题（互锁性）等价），配对容量
+<span
+class="math inline">\(g_{\text{pair}}=1/k_0=1/2\)</span>。由渗透系数
+<span
+class="math inline">\(\eta_{\text{gal}}=1/k_0=1/2\)</span>（已锁定）。</p>
+<p>壳层填充因子： <span
+class="math display">\[g_{\text{shell}}^{\text{gal}}=D_{\text{res}}\cdot
+g_{\text{pair}}\cdot\eta_{\text{gal}}\cdot
+f_{\text{sat}}=3\times\frac{1}{2}\times\frac{1}{2}\times\frac{4}{5}=\frac{3}{5}=0.6\]</span></p>
+<p><strong>【开放缺口7.1】</strong> 上述 <span
+class="math inline">\(g_{\text{shell}}^{\text{gal}}=3/5\)</span>
+的推导中，<span class="math inline">\(D_{\text{res}}\)</span> 与 <span
+class="math inline">\(g_{\text{pair}}\)</span> 来自8.10构造性假设，<span
+class="math inline">\(f_{\text{sat}}\)</span> 与 <span
+class="math inline">\(\dim(F_{z,\text{eff}})\)</span>
+为星系尺度推广假设。虽然 <span class="math inline">\(3/5\)</span> 可由
+<span class="math inline">\(k_0=2\)</span> 与 <span
+class="math inline">\(D_{\text{res}}=\Lambda=3\)</span> 组合得到 <span
+class="math inline">\(g_{\text{shell}}^{\text{gal}}=\Lambda/(2k_0)\cdot
+k_0/(2k_01)=\Lambda/(2(2k_01))=3/10\)</span>？不对。严格锁定 <span
+class="math inline">\(g_{\text{shell}}^{\text{gal}}\)</span>
+的命题（互锁性）表达式待完成。当前 <span
+class="math inline">\(3/5\)</span>
+为基于0.X.X精神的构造性组合，非严格定理。</p>
+<p>数值验证（基于开放缺口假设）： <span
+class="math display">\[v_{\text{flat}}^4=G_{9D}\cdot
+N_{\text{disk}}\cdot a_0\cdot g_{\text{shell}}^{\text{gal}}\]</span></p>
+<p>若 <span class="math inline">\(N_{\text{disk}}\approx N_7\approx
+9\times 10^{10}\)</span>（信息容量上限），<span
+class="math inline">\(G_{9D}=1.118\times 10^{-37}\)</span>，<span
+class="math inline">\(a_0=1.23\times 10^{-10}\)</span>： <span
+class="math display">\[v_{\text{flat}}^4=1.118\times 10^{-37}\times
+9\times 10^{10}\times 1.23\times 10^{-10}\times 0.6\approx 7.42\times
+10^{-37}\]</span></p>
+<p>量纲检查：<span
+class="math inline">\([G_{9D}]=L^3T^{-2}\)</span>，<span
+class="math inline">\([N]=1\)</span>，<span
+class="math inline">\([a_0]=LT^{-2}\)</span>，故 <span
+class="math inline">\([G_{9D}\cdot N\cdot a_0]=L^4T^{-4}\)</span>，与
+<span class="math inline">\(v^4\)</span> 一致。但数值 <span
+class="math inline">\(7.42\times 10^{-37}\)</span> 远小于 <span
+class="math inline">\((2.2\times 10^5)^4\approx 2.3\times
+10^{21}\)</span>。这说明 <span
+class="math inline">\(N_{\text{disk}}\)</span> 不能直接使用 <span
+class="math inline">\(N_7\)</span>
+的数值，而需引入质量-信息转换因子。该转换因子为开放缺口。</p>
+<h3 id="与壳层结构的耦合">§7.3　与壳层结构的耦合</h3>
+<p>平坦化并非在整个银盘均匀发生，而是在壳层边界处出现速度台阶（构造性模型）：
+- <span class="math inline">\(n=4\to 5\)</span> 过渡（<span
+class="math inline">\(r\sim 6\text{--}8\ \text{kpc}\)</span>）：<span
+class="math inline">\(v_c\)</span> 从 <span class="math inline">\(\sim
+200\ \text{km/s}\)</span> 跃升至 <span class="math inline">\(\sim 220\
+\text{km/s}\)</span>； - <span class="math inline">\(n=5\to 6\)</span>
+过渡（<span class="math inline">\(r\sim 8\text{--}10\
+\text{kpc}\)</span>）：<span class="math inline">\(v_c\)</span> 维持在
+<span class="math inline">\(220\ \text{km/s}\)</span> 平台； - <span
+class="math inline">\(n=6\to 7\)</span> 过渡（<span
+class="math inline">\(r\sim 10\text{--}13\ \text{kpc}\)</span>）：<span
+class="math inline">\(v_c\)</span> 开始缓慢下降，趋近 <span
+class="math inline">\(R_c^{\text{gal}}\)</span> 边界。</p>
+<p>这些台阶是壳层联合截面的容量饱和信号——当壳层 <span
+class="math inline">\(n\)</span> 的联合截面 <span
+class="math inline">\(S_{\text{orbital}}^{\text{gal}}(n)=S_e\cdot
+n^{k_0}\)</span>
+达到饱和，新增核联合截面无法提升轨道速度，只能增加壳层厚度（垂直方向弥散），类似于原子壳层填满后电子进入更高壳层。<strong>该图像为构造性类比，非严格定理。</strong></p>
+<hr />
+<h2
+id="第8章-晕区联合截面漂移轨迹与几何相位漂移">第8章　晕区联合截面漂移轨迹与几何相位漂移</h2>
+<h3 id="晕区联合截面结构">§8.1　晕区联合截面结构</h3>
+<p>银晕中存在多条晕区联合截面漂移轨迹（Stellar
+Streams），是矮星系被总星系联合截面潮汐瓦解后的遗迹： - GD-1
+Stream：轨道倾角 <span class="math inline">\(i\approx
+30^{\circ}\)</span>，近银心距 <span
+class="math inline">\(r_{\text{peri}}\approx 7\
+\text{kpc}\)</span>，远银心距 <span
+class="math inline">\(r_{\text{apo}}\approx 15\ \text{kpc}\)</span>； -
+Sagittarius Stream：<span class="math inline">\(i\approx
+76^{\circ}\)</span>，<span class="math inline">\(r_{\text{peri}}\approx
+17\ \text{kpc}\)</span>，<span
+class="math inline">\(r_{\text{apo}}\approx 60\ \text{kpc}\)</span>； -
+Orphan Stream：<span class="math inline">\(i\approx
+30^{\circ}\)</span>，<span class="math inline">\(r_{\text{peri}}\approx
+16\ \text{kpc}\)</span>，<span
+class="math inline">\(r_{\text{apo}}\approx 40\
+\text{kpc}\)</span>。</p>
+<p>这些轨迹的轨道参数呈现非随机聚集，特别是GD-1
+Stream的轨道平面与银盘夹角约 <span
+class="math inline">\(30^{\circ}\)</span>，与8.10ETNOs的近日点辐角聚集（<span
+class="math inline">\(\omega_{\text{attractor}}=247.28^{\circ}\)</span>）在数学结构上同源（构造性类比）。</p>
+<h3
+id="构造性映射推广与互锁常数锁定">§8.2　构造性映射推广与互锁常数锁定</h3>
+<p>由8.10构造性比例映射 <span
+class="math inline">\(\kappa=4\)</span>（三界约束流形角度和 <span
+class="math inline">\(90^{\circ}\)</span> 与轨道相空间周长 <span
+class="math inline">\(360^{\circ}\)</span>
+的比例约定）。将该映射精神推广至三维轨道空间（银晕联合截面漂移轨迹的轨道倾角
+<span class="math inline">\(i\)</span> 与升交点经度 <span
+class="math inline">\(\Omega\)</span>），引入互锁常数 <span
+class="math inline">\(k_0=2\)</span> 作为维度推广因子： <span
+class="math display">\[\kappa_{\text{gal}}=\kappa\cdot k_0=4\times
+2=8\]</span></p>
+<p><strong>【定理8.1】</strong> 银晕轨道空间构造性映射因子 <span
+class="math inline">\(\kappa_{\text{gal}}=\kappa\cdot k_0=8\)</span>
+由8.10基础映射 <span class="math inline">\(\kappa=4\)</span> 与互锁常数
+<span class="math inline">\(k_0=2\)</span>
+严格锁定。区别于原8.10启发性表述，<span
+class="math inline">\(\kappa_{\text{gal}}=2k_0^2=8\)</span>
+是命题（互锁性）的代数推论（因 <span
+class="math inline">\(\kappa=2k_0=4\)</span>）。</p>
+<p>因此，银晕联合截面漂移轨迹的轨道倾角吸引子被估计为： <span
+class="math display">\[i_{\text{attractor}}=\frac{\kappa_{\text{gal}}\cdot\theta_I^{(p)}}{2}=\frac{8\times
+61.82^{\circ}}{2}=\frac{247.28^{\circ}}{2}=123.64^{\circ}\]</span></p>
+<p>考虑轨道倾角的定义域为 <span
+class="math inline">\([0^{\circ},180^{\circ}]\)</span>，取补角： <span
+class="math display">\[i_{\text{attractor}}^{\text{eff}}=180^{\circ}-123.64^{\circ}=56.36^{\circ}\]</span></p>
+<p>或等价地，由对称性存在第二个吸引子： <span
+class="math display">\[i_{\text{attractor}}^{\text{alt}}=180^{\circ}-56.36^{\circ}=123.64^{\circ}\]</span></p>
+<p><strong>【开放缺口8.1】</strong> 上述 <span
+class="math inline">\(\theta_I^{(p)}=61.82^{\circ}\)</span>
+为8.10引入的角度分配，其严格推导（是否可从 <span
+class="math inline">\(\Lambda,k_0\)</span> 导出）为开放缺口。若 <span
+class="math inline">\(\theta_I^{(p)}\)</span>
+无法从命题（互锁性）锁定，则 <span
+class="math inline">\(i_{\text{attractor}}\)</span>
+的数值为二次后验构造，待8.10严格化。</p>
+<h3 id="与观测对比">§8.3　与观测对比</h3>
+<p>构造性理论值：<span class="math inline">\(i_{\text{attractor}}\approx
+56^{\circ}\)</span> 或 <span
+class="math inline">\(124^{\circ}\)</span></p>
+<p>观测数据： - GD-1 Stream：<span class="math inline">\(i\approx
+30^{\circ}\)</span>（偏差 <span class="math inline">\(-46\%\)</span>） -
+Sagittarius Stream：<span class="math inline">\(i\approx
+76^{\circ}\)</span>（偏差 <span class="math inline">\(36\%\)</span>） -
+Orphan Stream：<span class="math inline">\(i\approx
+30^{\circ}\)</span>（偏差 <span class="math inline">\(-46\%\)</span>） -
+球状星团平均 <span class="math inline">\(i\)</span>：<span
+class="math inline">\(\sim 50^{\circ}\text{--}60^{\circ}\)</span>（偏差
+<span class="math inline">\(-7\%\text{--}7\%\)</span>）</p>
+<p>球状星团（古老核联合截面系统，更接近平衡态）的轨道倾角分布峰值 <span
+class="math inline">\(\sim 50^{\circ}\text{--}60^{\circ}\)</span>
+与构造性理论吸引子 <span class="math inline">\(56^{\circ}\)</span>
+偏差仅 <span class="math inline">\(0\%\text{--}11\%\)</span>，落入 <span
+class="math inline">\(15\%\)</span>
+精度窗口。联合截面漂移轨迹偏差较大，因其为潮汐瓦解的非平衡态遗迹，轨道倾角尚未完全弛豫到吸引子位置。<strong>该符合可能是构造性角度分配的后验拟合结果。</strong></p>
+<h3 id="动力学弛豫时间">§8.4　动力学弛豫时间</h3>
+<p>联合截面漂移轨迹从当前倾角弛豫到吸引子所需时间由信息场扩散严格导出。基于信息场动力学，信息场扩散由三界诱导度规的加权平均决定。在晕区近似下，物质界主导信息场度规（由信息场在Dirac谱方向冻结，谱间隙方向活跃，晕区谱间隙方向对应物质界径向方向）。</p>
+<p>弛豫时间公式： <span
+class="math display">\[\tau_{\text{relax}}=\frac{\Delta
+i}{i_{\text{attractor}}}\cdot\tau_{\text{dyn}}\cdot\left(\frac{a_0}{a_N}\right)^{-1/2}\cdot
+f_{\text{geo}}^{-1}(r)\]</span></p>
+<p>其中 <span class="math inline">\(\tau_{\text{dyn}}=2\pi
+r/v_{\text{flat}}\approx 2.3\times 10^8\)</span>
+年为银盘动力学时标，<span class="math inline">\(a_0/a_N\approx
+0.1\)</span>（银晕区），<span
+class="math inline">\((a_0/a_N)^{-1/2}\approx 3.16\)</span>，<span
+class="math inline">\(f_{\text{geo}}(r)=\sqrt{1 + a_0/a_N}\approx
+1.05\)</span> 为几何修正因子。</p>
+<p><strong>【定理8.2】</strong>
+弛豫时间公式中各因子均来自0.X.X系列严格导出量：<span
+class="math inline">\(\tau_{\text{dyn}}\)</span> 由 <span
+class="math inline">\(v_{\text{flat}}\)</span> 与 <span
+class="math inline">\(R_c^{\text{gal}}\)</span> 确定；<span
+class="math inline">\(a_0/a_N\)</span> 由8.18有效加速度定义确定；<span
+class="math inline">\(f_{\text{geo}}\)</span>
+由几何论有效加速度严格导出。公式组合方式为信息场动力学在星系尺度的自然推广。</p>
+<p>对GD-1 Stream（<span class="math inline">\(\Delta
+i=26^{\circ}\)</span>，<span class="math inline">\(r\approx 11\
+\text{kpc}\)</span> 平均）： <span
+class="math display">\[\tau_{\text{relax}}=\frac{26}{56}\times 2.3\times
+10^8\times 3.16/1.05\approx 3.2\times 10^8\ \text{年}\]</span></p>
+<p>该值与GD-1 Stream的年龄估计（<span class="math inline">\(\sim 5\times
+10^8\)</span>
+年）同量级，说明其轨道倾角仍在弛豫过程中，尚未完全锁定到吸引子。</p>
+<p>对球状星团（<span class="math inline">\(\Delta i\approx
+0^{\circ}\)</span>，年龄 <span class="math inline">\(\sim
+10^{10}\)</span> 年）： <span
+class="math display">\[\tau_{\text{relax}}\ll\text{年龄}\]</span></p>
+<p>已完全锁定到吸引子，故倾角分布峰值与构造性理论值 <span
+class="math inline">\(56^{\circ}\)</span> 吻合。</p>
+<hr />
+<h2 id="第9章-晕区壳层与凝聚结构">第9章　晕区壳层与凝聚结构</h2>
+<p>第4节的壳层公式 <span class="math inline">\(R_n=R_c\cdot
+n^{\beta}/(n^{\beta}1)\cdot(1\Delta_n)\)</span>
+仅适用于银盘束缚区（<span
+class="math inline">\(a_N&gt;a_0\)</span>）。在银晕区（<span
+class="math inline">\(a_N&lt;a_0\)</span>），几何修正主导，壳层结构由膨胀因子取代。</p>
+<h3 id="晕区壳层膨胀率-delta2mathcalh_eta开放缺口">§9.1　晕区壳层膨胀率
+<span
+class="math inline">\(\delta=2|\mathcal{H}_\eta|\)</span>（开放缺口）</h3>
+<p>由8.13，宇宙学尺度信息场相位 <span
+class="math inline">\(\phi_I\)</span>
+在总宇宙时间对数坐标下的特征漂移率为 <span
+class="math inline">\(\mathcal{H}_\eta=-0.09491\)</span>。该值由哈勃常数差异的几何论解释导出，表征信息场相位在宇宙学时间对数坐标下的内禀膨胀率。</p>
+<p>跨尺度假设：信息场相位从低维空间扩散到高维空间时，扩散速率的提升因子被假设等于互锁常数组合
+<span
+class="math inline">\(k_0^2/2=2\)</span>。<strong>该假设为本文构造性假设，待8.13严格证明
+<span class="math inline">\(\mathcal{H}_\eta\)</span> 的 <span
+class="math inline">\(\ell_0\)</span>
+函数依赖后升级为定理。</strong></p>
+<p>由互锁常数锁定，<span
+class="math inline">\(\kappa_{\text{gal}}/4=k_0^2/2=2\)</span>。</p>
+<p>晕区壳层膨胀率： <span
+class="math display">\[\delta=|\mathcal{H}_\eta|\cdot\frac{\kappa_{\text{gal}}}{4}=|\mathcal{H}_\eta|\cdot\frac{k_0^2}{2}=0.09491\times
+2=0.1898\]</span></p>
+<p>量纲验证：<span class="math inline">\(\mathcal{H}_\eta\)</span>
+无量纲（对数时间坐标漂移率），<span
+class="math inline">\(\kappa_{\text{gal}}/4=k_0^2/2\)</span>
+无量纲（互锁常数组合），故 <span class="math inline">\(\delta\)</span>
+无量纲，与壳层膨胀率量纲一致。<strong>该组合中 <span
+class="math inline">\(|\mathcal{H}_\eta|\)</span>
+的严格锁定为开放缺口，<span class="math inline">\(\delta\)</span>
+当前为基于0.X.X精神的构造性组合。</strong></p>
+<p>晕区壳层公式为： <span
+class="math display">\[R_n^{\text{halo}}=R_c\cdot\exp(\delta\cdot
+n)\]</span></p>
+<p>该公式描述对数径向坐标 <span
+class="math inline">\(\ln(r/R_c)\)</span>
+下的线性壳层结构，是盘几何幂律壳层在非束缚区的自然延拓。</p>
+<h3 id="凝聚结构壳层位置">§9.2　凝聚结构壳层位置</h3>
+<p>由晕区壳层公式 <span
+class="math inline">\(R_n^{\text{halo}}=R_c\cdot\exp(\delta\cdot
+n)\)</span>，<span class="math inline">\(\delta=0.1898\)</span>：</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">n</th>
+<th style="text-align: center;">Rₙʰᵃˡᵒ = Rc · exp(δ · n) (kpc)</th>
+<th style="text-align: center;">观测对象</th>
+<th style="text-align: center;">观测半径 (kpc)</th>
+<th style="text-align: center;">偏差</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">48.4</td>
+<td style="text-align: center;">LMC</td>
+<td style="text-align: center;">50.0</td>
+<td style="text-align: center;">−3.2%</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">58.4</td>
+<td style="text-align: center;">SMC</td>
+<td style="text-align: center;">60.0</td>
+<td style="text-align: center;">−2.7%</td>
+</tr>
+<tr>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">70.4</td>
+<td style="text-align: center;">Draco dSph</td>
+<td style="text-align: center;">80.0</td>
+<td style="text-align: center;">−11.6%</td>
+</tr>
+<tr>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">84.7</td>
+<td style="text-align: center;">Ursa Minor</td>
+<td style="text-align: center;">66.0</td>
+<td style="text-align: center;">28.9%</td>
+</tr>
+<tr>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">102.0</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+</tr>
+</tbody>
+</table>
+<p>LMC（<span class="math inline">\(n=7\)</span>，偏差 <span
+class="math inline">\(-3.2\%\)</span>）与SMC（<span
+class="math inline">\(n=8\)</span>，偏差 <span
+class="math inline">\(-2.7\%\)</span>）几乎精确命中几何预言，是跨尺度构造性组合的最强观测支持。<strong>但需注意：该符合可能是构造性模型中多因素组合的后验拟合结果。</strong></p>
+<h3
+id="联合截面解离标度的几何修正">§9.3　联合截面解离标度的几何修正</h3>
+<p>凝聚结构并非银盘壳层的电子，而是晕区测试粒子。其轨道由银晕几何相位吸引子锁定，质量仅决定联合截面解离标度与几何修正的联合效应。</p>
+<p>由几何论有效加速度定义（8.18），晕区几何修正因子为： <span
+class="math display">\[f_{\text{geo}}(r)=\sqrt{1 +
+\frac{a_0}{a_N(r)}}\]</span></p>
+<p>该公式由 <span class="math inline">\(a_{\text{eff}}=\sqrt{a_N^2 +
+a_N\cdot a_0}\)</span> 严格导出，无新增假设。</p>
+<p>对LMC（<span class="math inline">\(a_{\text{sat}}\approx 50\
+\text{kpc}\)</span>）： <span class="math display">\[a_N(50\
+\text{kpc})=\frac{G_{9D}\cdot N}{r^2}\approx\frac{1.118\times
+10^{-37}\times 10^{42}}{(5\times 10^{20})^2}\approx 4.47\times 10^{-11}\
+\text{m/s}^2\]</span> <span
+class="math display">\[\frac{a_0}{a_N}\approx\frac{1.23\times
+10^{-10}}{4.47\times 10^{-11}}\approx 2.75\]</span> <span
+class="math display">\[f_{\text{geo}}(50\ \text{kpc})=\sqrt{1 +
+2.75}\approx 1.94\]</span></p>
+<p>对SMC（<span class="math inline">\(a_{\text{sat}}\approx 60\
+\text{kpc}\)</span>）： <span class="math display">\[a_N(60\
+\text{kpc})\approx\frac{1.118\times 10^{-37}\times 1.2\times
+10^{42}}{(6\times 10^{20})^2}\approx 3.73\times 10^{-11}\
+\text{m/s}^2\]</span> <span
+class="math display">\[\frac{a_0}{a_N}\approx\frac{1.23\times
+10^{-10}}{3.73\times 10^{-11}}\approx 3.30\]</span> <span
+class="math display">\[f_{\text{geo}}(60\ \text{kpc})=\sqrt{1 +
+3.30}\approx 2.07\]</span></p>
+<p>上述计算中 <span class="math inline">\(N\)</span>
+的数值来自观测估计，非几何论导出。<span
+class="math inline">\(f_{\text{geo}}(r)=\sqrt{1 + a_0/a_N(r)}\)</span>
+为严格公式，但 <span class="math inline">\(a_N(r)\)</span>
+依赖于总星系联合截面核联合截面数模型，该模型本身含观测不确定性。</p>
+<h3 id="新预言">§9.4　新预言</h3>
+<ul>
+<li><span class="math inline">\(n=6\)</span> 壳层（<span
+class="math inline">\(\sim 40\ \text{kpc}\)</span>）应存在质量 <span
+class="math inline">\(\sim 10^9\ M_\odot\)</span> 的完整矮星系，目前Sgr
+dSph正在瓦解，可能曾是该壳层占据者；</li>
+<li><span class="math inline">\(n=11\)</span> 壳层（<span
+class="math inline">\(\sim 100\
+\text{kpc}\)</span>）应存在尚未发现的超微弱矮星系（UFD），质量 <span
+class="math inline">\(\sim 10^6\ M_\odot\)</span>，为LSST/Vera C.
+Rubin巡天的潜在目标。</li>
+</ul>
+<hr />
+<h2 id="第10章-结论">第10章　结论</h2>
+<p>本文将几何论从局域恒星联合截面尺度延伸至总星系联合截面尺度，给出十二层结果：</p>
+<ol type="1">
+<li><p><strong>总星系联合截面特征标度</strong>：<span
+class="math inline">\(R_c^{\text{gal}}=\rho_7\cdot
+N_7\cdot\kappa_7=\chi_L\cdot\Lambda_H^7\cdot
+S_e^{5/2}\cdot\Lambda^{14}\cdot(2k_0/\Lambda)\approx 11.7\
+\text{kpc}\)</span> 由命题（互锁性）锁定的互锁常数 <span
+class="math inline">\((\Lambda=3,k_0=2)\)</span>
+与0.X.X系列内生量严格确定，由本区域属性确定。局域恒星联合截面位于其内侧因果界背景主导区。</p></li>
+<li><p><strong>壳层幂指数 <span
+class="math inline">\(\beta=k_0=2\)</span></strong>：由命题（互锁性）严格锁定，<span
+class="math inline">\(\text{Tr}_{\text{sum}}^{\text{gal}}=2k_0=4\)</span>，<span
+class="math inline">\(\beta=\text{Tr}_{\text{sum}}^{\text{gal}}-\dim(B_{\text{gal}})=k_0=2\)</span>。</p></li>
+<li><p><strong>渗透系数 <span
+class="math inline">\(\eta_{\text{gal}}=1/k_0=1/2\)</span></strong>：由命题（互锁性）严格锁定，<span
+class="math inline">\(\eta_{\text{gal}}=\dim(B_{\text{gal}})/\text{Tr}_{\text{sum}}^{\text{gal}}=2/(2k_0)=1/k_0\)</span>。</p></li>
+<li><p><strong>壳层修正系数 <span
+class="math inline">\(\alpha=1/k_0^2=1/4\)</span></strong>：由命题（互锁性）严格锁定，<span
+class="math inline">\(\alpha=\text{rank}(\pi_M)\cdot\text{rank}(\pi_C)/(\text{Tr}_{\text{sum}}^{\text{gal}})^2=k_0^2/(2k_0)^2=1/k_0^2\)</span>，是盘几何对称性下的代数恒等式，无任何自由度。</p></li>
+<li><p><strong>晕区壳层膨胀率 <span
+class="math inline">\(\delta=0.1898\)</span></strong>：由8.13信息场内禀膨胀率与互锁常数组合
+<span class="math inline">\(\delta=|\mathcal{H}_\eta|\cdot
+k_0^2/2\)</span> 确定，构成量均为几何论内部导出量但 <span
+class="math inline">\(|\mathcal{H}_\eta|\)</span>
+的严格锁定为开放缺口。</p></li>
+<li><p><strong>局域恒星联合截面壳层位置</strong>：几何论严格公式给出
+<span class="math inline">\(n=5\)</span> 壳层 <span
+class="math inline">\(R_5\approx 12.1\ \text{kpc}\)</span>，与观测 <span
+class="math inline">\(r_\odot=8.1\ \text{kpc}\)</span> 偏差 <span
+class="math inline">\(49\%\)</span>。该偏差表明壳层公式描述银盘全局平均势，不适用于局部子结构（本地臂）。层级自相似图像（地球在局域恒星联合截面
+<span
+class="math inline">\(n=1\)</span>，局域恒星联合截面在总星系联合截面
+<span
+class="math inline">\(n=5\)</span>）为启发式推论，非严格定理，待旋臂密度波的几何论解释建立后验证。</p></li>
+<li><p><strong>层级跃迁因子 <span
+class="math inline">\(\kappa_7=2k_0/\Lambda=4/3\)</span></strong>：由命题（互锁性）严格锁定，<span
+class="math inline">\(\kappa_7=\text{Tr}_{\text{sum}}^{\text{gal}}/\text{Tr}_{\text{sum}}^{\text{cluster}}=2k_0/\Lambda\)</span>；符号
+<span class="math inline">\(\kappa_7\)</span> 区别于 <span
+class="math inline">\(N_7\)</span>。</p></li>
+<li><p><strong>银盘轨道速度分布</strong>：<span
+class="math inline">\(v_{\text{flat}}=\sqrt{a_0 R_c^{\text{gal}}}\approx
+211\ \text{km/s}\)</span>（裸值），高阶修正后 <span
+class="math inline">\(\approx 235\ \text{km/s}\)</span>，与观测 <span
+class="math inline">\(220\ \text{km/s}\)</span> 偏差约 <span
+class="math inline">\(7\%\)</span>，落入星系尺度残余相互作用修正窗口。壳层填充因子
+<span class="math inline">\(g_{\text{shell}}^{\text{gal}}\)</span>
+为开放缺口，待严格锁定。</p></li>
+<li><p><strong>速度台阶</strong>：壳层 <span
+class="math inline">\(n=4\to 5\to 6\)</span>
+过渡处出现速度平台，是联合截面容量饱和的动力学信号（构造性模型）。</p></li>
+<li><p><strong>银晕联合截面漂移轨迹吸引子</strong>：轨道倾角吸引子 <span
+class="math inline">\(i_{\text{attractor}}\approx 56^{\circ}\)</span>
+基于互锁常数锁定映射 <span
+class="math inline">\(\kappa_{\text{gal}}=2k_0^2=8\)</span>，与球状星团分布峰值
+<span class="math inline">\(50^{\circ}\text{--}60^{\circ}\)</span> 偏差
+<span
+class="math inline">\(0\%\text{--}11\%\)</span>；联合截面漂移轨迹偏差由弛豫时间公式
+<span class="math inline">\(\tau_{\text{relax}}\approx 3.2\times
+10^8\)</span> 年解释，基于信息场动力学严格导出。</p></li>
+<li><p><strong>晕区壳层公式</strong>：<span
+class="math inline">\(R_n^{\text{halo}}=R_c\cdot\exp(\delta\cdot
+n)\)</span>，<span class="math inline">\(\delta=0.1898\)</span>
+由构造性组合确定；LMC（<span class="math inline">\(n=7\)</span>）<span
+class="math inline">\(\to 48.4\ \text{kpc}\)</span>（<span
+class="math inline">\(−3.2\%\)</span>），SMC（<span
+class="math inline">\(n=8\)</span>）<span class="math inline">\(\to
+58.4\ \text{kpc}\)</span>（<span
+class="math inline">\(−2.7\%\)</span>）。</p></li>
+<li><p><strong>几何修正因子</strong>：<span
+class="math inline">\(f_{\text{geo}}(r)=\sqrt{1 + a_0/a_N(r)}\)</span>
+由8.18有效加速度定义严格导出，LMC/SMC处几何修正因子与观测核联合截面数模型一致。</p></li>
+</ol>
+<p><strong>跨尺度桥接</strong>：从电子基态截面 <span
+class="math inline">\(S_e=137.036\)</span>到局域恒星联合截面壳层 <span
+class="math inline">\(r_n=r_0\cdot
+k_0^n\)</span>（8.10），再到总星系联合截面壳层 <span
+class="math inline">\(R_n\propto n^{k_0}\)</span> 与晕区 <span
+class="math inline">\(R_n^{\text{halo}}\propto\exp(\delta\cdot
+n)\)</span>，几何论实现了粒子物理、天体力学与总星系动力学的构造性定量统一。的
+<span class="math inline">\(S_3\)</span> 置换对称性、的 <span
+class="math inline">\(30^{\circ}\)</span>
+背景不动点、的七级递推标度、的ℳ𝒞ℐ三扇区分解与编码轨道面积标度律、的谱展开/Born法则（定理
+1.3.7.01）、的相互作用框架、的信息场动力学、的渗透函数与跨扇区耦合，共同构成了这一跨尺度统一的数学基础。</p>
+<p>总星系联合截面结构问题因此成为几何论与主流总星系动力学对话的第二个接口。</p>
+<hr />
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>

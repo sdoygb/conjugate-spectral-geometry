@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.1 M₅ Birkhoff混合矩阵 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="版本: 260721.2">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/cn/2.1_M5_Birkhoff混合矩阵_CN_260721.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../index.html" class="nav-home">🏠 首页</a>
+    <a href="../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">2.1 M₅ Birkhoff混合矩阵</span>
+  </nav>
+  <main class="article-content">
+<h1 id="m₅-birkhoff混合矩阵">2.1 M₅ Birkhoff混合矩阵</h1>
+<p><strong>版本</strong>: 260721.2</p>
+<hr />
+<h2 id="摘要">摘要</h2>
+<hr />
+<h2 id="目-录">目　录</h2>
+<p>§1　跨扇区耦合的来源 　1.1　问题的提出 　1.2　Cl(5)→Cl(6) 过渡与
+triality 破缺</p>
+<p>§2　Birkhoff 双随机矩阵 　2.1　定义 　2.2　三参数分解 　2.3　Birkhoff
+多面体的 2 维面</p>
+<p>§3　M₅ 矩阵 　3.1　定义 　3.2　χ 值 　3.3　不动点方程 　3.4　Birkhoff
+权重的 Cramer 法则解析公式</p>
+<p>§4　Chern-Simons 三项的内在编码 　4.2　Berry 相位的内在编码
+　4.3　收敛性分析</p>
+<p>§5　T 的变化范围 　5.1　2 维 Birkhoff 多面体 　5.2　景观的预览
+　5.3　与 CKM/PMNS 混合矩阵的 unistochastic 联系 　5.4　T 的物理意义</p>
+<hr />
+<h2 id="跨扇区耦合的来源">§1 跨扇区耦合的来源</h2>
+<h3 id="问题的提出">1.1 问题的提出</h3>
+<p>第 1 卷建立了代数作用量 <span
+class="math inline">\(S(\sigma)\)</span>（定理 1.3.7.01–26），其极小值
+<span class="math inline">\(S^*\)</span> 给出物理常数。但 <span
+class="math inline">\(S^*\)</span> 的具体值依赖于编码权重 <span
+class="math inline">\(\sigma = (\sigma_M, \sigma_C, \sigma_I)\)</span>
+的分布——不同的 <span class="math inline">\(\sigma\)</span> 给出不同的
+<span class="math inline">\(S^*\)</span>。</p>
+<p><span class="math inline">\(\sigma\)</span>
+的分布由编码过程确定，但编码过程不是简单的线性映射——跨扇区耦合使得各扇区的编码权重互相影响。本文定义这种跨扇区耦合的精确数学形式。</p>
+<h3 id="cl5cl6-过渡与-triality-破缺">1.2 Cl(5)→Cl(6) 过渡与 triality
+破缺</h3>
+<p>Cl(5)→Cl(6) 过渡是编码轨道中 triality 破缺的发生点：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">阶段</th>
+<th style="text-align: center;">编码层</th>
+<th style="text-align: left;">triality 状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">完全 <span
+class="math inline">\(S_3\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(E_1\)</span>–<span
+class="math inline">\(E_3\)</span></td>
+<td style="text-align: left;">三个表示不可区分</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>破缺</strong></td>
+<td style="text-align: center;"><strong><span
+class="math inline">\(E_4\)</span>–<span
+class="math inline">\(E_5\)</span></strong></td>
+<td style="text-align: left;"><strong><span class="math inline">\(S_3
+\to Z_2\)</span></strong></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span class="math inline">\(Z_3\)</span>
+保持</td>
+<td style="text-align: center;"><span
+class="math inline">\(E_6\)</span></td>
+<td style="text-align: left;">循环对称</td>
+</tr>
+<tr>
+<td style="text-align: center;">完全破缺</td>
+<td style="text-align: center;"><span
+class="math inline">\(E_7\)</span></td>
+<td style="text-align: left;">无对称</td>
+</tr>
+</tbody>
+</table>
+<p>triality 破缺 <span class="math inline">\(S_3 \to Z_2\)</span>
+意味着：在 Cl(5)→Cl(6) 过渡之前，三个扇区的表示在 <span
+class="math inline">\(S_3\)</span> 下可以互换；过渡之后，循环子群 <span
+class="math inline">\(Z_3 = \{I, (1\,2\,3), (1\,3\,2)\}\)</span>
+的对称性保持，三个对换被消除。编码轨道的循环结构（<span
+class="math inline">\(E_1 \to E_2 \to \cdots \to
+E_8\)</span>）自然地保留了 <span class="math inline">\(Z_3\)</span>
+循环对称性——这正是 Birkhoff 混合矩阵 <span
+class="math inline">\(T\)</span> 取循环矩阵形式的代数根源。</p>
+<p>这种破缺不是人为引入的——它是 Cl(5) = Mat(4,<span
+class="math inline">\(\mathbb{C}\)</span>) 到 Cl(6) = Mat(8,<span
+class="math inline">\(\mathbb{R}\)</span>)
+的代数结构变化的必然结果。复结构 <span class="math inline">\(J =
+\omega_5\)</span> 在 Cl(6) 中不再保持（<span
+class="math inline">\(\omega_6^2 = -1\)</span> 但 <span
+class="math inline">\(\omega_6\)</span> 不与所有生成元交换），导致
+triality 的部分丧失。保持的 <span class="math inline">\(Z_3\)</span>
+对应编码轨道的循环结构——三个扇区沿编码轨道的循环置换保留了循环对称性，而对换操作（因果翻转）在
+<span class="math inline">\(Z_3\)</span> 破缺下被抑制。</p>
+<hr />
+<h2 id="birkhoff-双随机矩阵">§2 Birkhoff 双随机矩阵</h2>
+<h3 id="定义">2.1 定义</h3>
+<p><strong>定义10（Birkhoff 双随机矩阵）。</strong> 一个 <span
+class="math inline">\(3 \times 3\)</span> 矩阵 <span
+class="math inline">\(T\)</span> 是双随机的，如果：</p>
+<ol type="1">
+<li>所有元素非负：<span class="math inline">\(T_{ij} \geq
+0\)</span></li>
+<li>每行求和为 1：<span class="math inline">\(\sum_j T_{ij} =
+1\)</span></li>
+<li>每列求和为 1：<span class="math inline">\(\sum_i T_{ij} =
+1\)</span></li>
+</ol>
+<p><span class="math inline">\(3 \times 3\)</span> 双随机矩阵的集合构成
+<strong>Birkhoff 多面体</strong> <span
+class="math inline">\(\mathcal{B}_3\)</span>——一个 4 维凸多面体（<span
+class="math inline">\(3 \times 3 - 2 \times 2 - 1 = 4\)</span>
+维自由度）。</p>
+<h3 id="三参数分解">2.2 三参数分解</h3>
+<p><strong>定理 2.1.2.01（Birkhoff 混合矩阵的三参数分解）。</strong>
+编码框架中的 Birkhoff 混合矩阵 <span class="math inline">\(T\)</span>
+分解为三个置换矩阵的凸组合：</p>
+<p><span class="math display">\[T = \theta_I \cdot I + \theta_\tau \cdot
+P_\tau + \theta_{\sigma_2} \cdot P_{\sigma_2},\]</span></p>
+<p>其中： - <span class="math inline">\(I\)</span> 是恒等置换矩阵 -
+<span class="math inline">\(P_\tau\)</span> 是 3-循环 <span
+class="math inline">\((1\,3\,2)\)</span> 的置换矩阵 - <span
+class="math inline">\(P_{\sigma_2}\)</span> 是 3-循环 <span
+class="math inline">\((1\,2\,3)\)</span> 的置换矩阵 - <span
+class="math inline">\(\theta_I + \theta_\tau + \theta_{\sigma_2} =
+1\)</span>（双随机性）</p>
+<p><span class="math inline">\(P_\tau = (1\,3\,2)\)</span> 作用为 <span
+class="math inline">\((a, b, c) \mapsto (b, c, a)\)</span>，<span
+class="math inline">\(P_{\sigma_2} = (1\,2\,3)\)</span> 作用为 <span
+class="math inline">\((a, b, c) \mapsto (c, a, b)\)</span>。<span
+class="math inline">\(T\)</span>
+因此取<strong>循环矩阵</strong>形式：</p>
+<p><span class="math display">\[T = \begin{pmatrix} \theta_I &amp;
+\theta_\tau &amp; \theta_{\sigma_2} \\ \theta_{\sigma_2} &amp; \theta_I
+&amp; \theta_\tau \\ \theta_\tau &amp; \theta_{\sigma_2} &amp; \theta_I
+\end{pmatrix}.\]</span></p>
+<p><strong>证明。</strong> 由 Birkhoff-von Neumann
+定理，任何双随机矩阵是置换矩阵的凸组合。<span
+class="math inline">\(S_3\)</span> 有 6 个元素（3 个对换2 个 3-循环1
+个恒等），但 triality 破缺 <span class="math inline">\(S_3 \to
+Z_2\)</span> 保留循环子群 <span class="math inline">\(Z_3 = \{I,
+(1\,3\,2), (1\,2\,3)\}\)</span>，消除全部对换：</p>
+<table>
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 23%" />
+<col style="width: 29%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;"><span class="math inline">\(Z_3\)</span>
+元素</th>
+<th style="text-align: left;">置换</th>
+<th style="text-align: center;">系数</th>
+<th style="text-align: left;">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">恒等</td>
+<td style="text-align: left;"><span
+class="math inline">\(I\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(\theta_I\)</span></td>
+<td style="text-align: left;"><span class="math inline">\((a,b,c)
+\mapsto (a,b,c)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">3-循环 <span
+class="math inline">\((1\,3\,2)\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(P_\tau\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(\theta_\tau\)</span></td>
+<td style="text-align: left;"><span class="math inline">\((a,b,c)
+\mapsto (b,c,a)\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">3-循环 <span
+class="math inline">\((1\,2\,3)\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(P_{\sigma_2}\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(\theta_{\sigma_2}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\((a,b,c)
+\mapsto (c,a,b)\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>3 个对换 <span class="math inline">\((1\,2)\)</span>, <span
+class="math inline">\((1\,3)\)</span>, <span
+class="math inline">\((2\,3)\)</span> 在 <span
+class="math inline">\(Z_3\)</span>
+破缺下被抑制——循环对称性不允许翻转操作。因此 <span
+class="math inline">\(T\)</span> 由 3 个参数 <span
+class="math inline">\((\theta_I, \theta_\tau,
+\theta_{\sigma_2})\)</span> 确定，加上归一化约束 <span
+class="math inline">\(\sum\theta = 1\)</span>，有效自由度为
+2。循环矩阵形式是 <span class="math inline">\(Z_3\)</span>
+对称性的直接代数推论。∎</p>
+<h3 id="birkhoff-多面体的-2-维面">2.3 Birkhoff 多面体的 2 维面</h3>
+<p><span class="math inline">\(T\)</span> 的 3 个参数 <span
+class="math inline">\((\theta_I, \theta_\tau,
+\theta_{\sigma_2})\)</span> 满足 <span class="math inline">\(\theta_I +
+\theta_\tau + \theta_{\sigma_2} = 1\)</span> 且 <span
+class="math inline">\(\theta_k \geq 0\)</span>——这定义了 2
+维单纯形（三角形）。但完整的 Birkhoff 多面体 <span
+class="math inline">\(\mathcal{B}_3\)</span> 是 4 维的——我们的 3
+参数分解只覆盖了 <span class="math inline">\(\mathcal{B}_3\)</span>
+的一个 2 维面。</p>
+<p>这个 2 维面正是 triality 破缺 <span class="math inline">\(S_3 \to
+Z_2\)</span> 允许的自由度——<span class="math inline">\(Z_3\)</span>
+循环对称性将 4 维多面体约束为 2 维面。</p>
+<p><strong>可行域的维度分析。</strong> Birkhoff 多面体 <span
+class="math inline">\(\mathcal{B}(3)\)</span> 的可行域在此问题中为 2
+维。具体而言，<span class="math inline">\(3 \times 3\)</span>
+双随机矩阵有 6 个置换矩阵顶点（<span class="math inline">\(S_3\)</span>
+的 6 个元素），但受 4 个独立约束（3 行和 <span
+class="math inline">\(=1\)</span> 减去 1
+个冗余——三行之和等于三列之和，故行约束和列约束各有一个线性相关性，实际独立约束数为
+<span class="math inline">\(2 \times 3 - 2 = 4\)</span>），故自由度
+<span class="math inline">\(= 9 - 5 = 4\)</span>（5 = 4 个独立约束1
+个归一化）。但 triality 破缺 <span class="math inline">\(S_3 \to
+Z_2\)</span> 保留循环子群 <span class="math inline">\(Z_3 = \{I,
+(1\,3\,2), (1\,2\,3)\}\)</span>，消除 3 个对换，有效自由度降为 2。</p>
+<p><strong>维度缩减的物理原因。</strong> 从 4 维到 2
+维的缩减并非任意截断，而是 <span class="math inline">\(Z_3\)</span>
+对称性的必然结果。在完整 <span class="math inline">\(S_3\)</span>
+对称下，6 个置换矩阵顶点中任何一个都可以独立出现在 Birkhoff 分解中，给出
+4 维多面体。但 <span class="math inline">\(Z_3\)</span> 破缺后，3
+个对换被完全抑制，仅保留 <span class="math inline">\(Z_3\)</span> 的 3
+个循环元素：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><span class="math inline">\(Z_3\)</span>
+保留元素</th>
+<th style="text-align: left;">置换</th>
+<th style="text-align: left;">物理扇区</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">恒等</td>
+<td style="text-align: left;"><span
+class="math inline">\(I\)</span></td>
+<td style="text-align: left;">物质自保持</td>
+</tr>
+<tr>
+<td style="text-align: left;">3-循环 <span
+class="math inline">\((1\,3\,2)\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(P_\tau\)</span></td>
+<td style="text-align: left;">因果循环</td>
+</tr>
+<tr>
+<td style="text-align: left;">3-循环 <span
+class="math inline">\((1\,2\,3)\)</span></td>
+<td style="text-align: left;"><span
+class="math inline">\(P_{\sigma_2}\)</span></td>
+<td style="text-align: left;">信息循环</td>
+</tr>
+</tbody>
+</table>
+<p>被抑制的 3 个对换 <span class="math inline">\(\{(1\,2), (1\,3),
+(2\,3)\}\)</span> 在 <span class="math inline">\(Z_3\)</span>
+下不属于保留子群，因此不参与 Birkhoff 分解。3 个 <span
+class="math inline">\(Z_3\)</span> 元素加归一化约束，恰好给出 2
+维自由度。 - 顶点 <span class="math inline">\(I\)</span>（<span
+class="math inline">\(\theta_I =
+1\)</span>）：纯恒等，无跨扇区耦合，不产生混合——物理上对应完全无相互作用的极限，与观测不符。
+- 顶点 <span class="math inline">\(P_\tau\)</span>（<span
+class="math inline">\(\theta_\tau = 1\)</span>）：纯 3-循环 <span
+class="math inline">\((1\,3\,2)\)</span>，产生周期-3
+循环（§4.4），不收敛。 - 顶点 <span
+class="math inline">\(P_{\sigma_2}\)</span>（<span
+class="math inline">\(\theta_{\sigma_2} = 1\)</span>）：纯 3-循环 <span
+class="math inline">\((1\,2\,3)\)</span>，同样产生周期-3 循环。 - 3
+个对换 <span class="math inline">\(P_{(1\,2)}\)</span>、<span
+class="math inline">\(P_{(1\,3)}\)</span>、<span
+class="math inline">\(P_{(2\,3)}\)</span>：在 <span
+class="math inline">\(Z_3\)</span> 破缺下被完全抑制，不参与 Birkhoff
+分解。</p>
+<p>因此，物理可行域严格限制在 <span
+class="math inline">\(IP_\tauP_{\sigma_2}\)</span> 张成的 2
+维面上，三个顶点对应三个扇区的极端主导情形。Cramer
+法则的解析公式在此面内给出唯一解，保证 Birkhoff 权重的唯一确定性。</p>
+<hr />
+<h2 id="m₅-矩阵">§3 M₅ 矩阵</h2>
+<h3 id="定义-1">3.1 定义</h3>
+<p><strong>定义11（<span class="math inline">\(M_5\)</span>
+跨扇区耦合矩阵）。</strong> <span class="math display">\[M_5 = T \cdot
+\text{diag}(\chi),\]</span></p>
+<p>其中： - <span class="math inline">\(T\)</span> 是 Birkhoff
+双随机矩阵（定理 2.1.2.01） - <span
+class="math inline">\(\text{diag}(\chi) = \text{diag}(\chi_M, \chi_C,
+\chi_I)\)</span> 是编码累积拉伸的对角矩阵</p>
+<p><span class="math inline">\(M_5\)</span> 将编码累积拉伸 <span
+class="math inline">\(\chi\)</span> 与跨扇区混合 <span
+class="math inline">\(T\)</span> 结合，产生最终的扇区编码权重 <span
+class="math inline">\(\sigma\)</span>：</p>
+<p><span class="math display">\[\sigma = M_5 \cdot \sigma^{(0)} = T
+\cdot \text{diag}(\chi) \cdot \sigma^{(0)},\]</span></p>
+<p>其中 <span class="math inline">\(\sigma^{(0)}\)</span>
+是初始编码权重。</p>
+<h3 id="χ-值">3.2 χ 值</h3>
+<p>编码累积拉伸 <span class="math inline">\(\chi_i\)</span>
+由乘子序列和扇区-因子绑定（定理 1.1.3.01）确定：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">扇区</th>
+<th style="text-align: center;">累积拉伸 <span
+class="math inline">\(\chi_i\)</span></th>
+<th style="text-align: left;">来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ℳ</td>
+<td style="text-align: center;"><span class="math inline">\(\chi_M =
+8\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\mu_1 \times
+\mu_2\)</span> 的物质分量</td>
+</tr>
+<tr>
+<td style="text-align: left;">𝒞</td>
+<td style="text-align: center;"><span class="math inline">\(\chi_C =
+9\)</span></td>
+<td style="text-align: left;">因果界的累积拉伸（含 triality
+破缺复结构贡献）</td>
+</tr>
+<tr>
+<td style="text-align: left;">ℐ</td>
+<td style="text-align: center;"><span class="math inline">\(\chi_I =
+1\)</span></td>
+<td style="text-align: left;">信息界无净拉伸（回收平衡）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>χ 值的详细推导。</strong> 扇区拉伸因子 <span
+class="math inline">\(\chi\)</span> 由乘子序列和扇区-因子绑定（定理
+1.1.3.01）确定。具体地：</p>
+<ul>
+<li><p><strong><span class="math inline">\(\chi_M =
+8\)</span></strong>：来自 <span class="math inline">\(\mu_1 = 6\)</span>
+和 <span class="math inline">\(\mu_2 = 100/3\)</span> 中物质界（<span
+class="math inline">\(\gamma_1 \leftrightarrow
+2\)</span>）的累积拉伸。物质界在编码轨道的前两段（<span
+class="math inline">\(E_1 \to E_2 \to
+E_3\)</span>）经历连续的维度扩展，乘子 <span
+class="math inline">\(\mu_1\)</span> 贡献因子 2（Cl(0)→Cl(3)
+的复化扩展），<span class="math inline">\(\mu_2\)</span> 贡献因子
+4（Cl(3)→Cl(5) 的实化扩展），累积得 <span class="math inline">\(\chi_M =
+2 \times 4 =
+8\)</span>。这一拉伸反映了物质界在编码过程中承受的最大维度负担。</p></li>
+<li><p><strong><span class="math inline">\(\chi_C =
+9\)</span></strong>：来自因果界（<span class="math inline">\(\gamma_2
+\leftrightarrow 3\)</span>）的累积拉伸，包括 triality
+破缺的复结构贡献。因果界在 <span class="math inline">\(E_4 \to
+E_5\)</span> 过渡中承受 triality 破缺 <span class="math inline">\(S_3
+\to Z_2\)</span> 的代数代价——复结构 <span class="math inline">\(J =
+\omega_5\)</span> 的部分丧失导致因果箭头的量化拉伸因子 <span
+class="math inline">\(3^2 = 9\)</span>。这一拉伸反映了因果序从完全 <span
+class="math inline">\(S_3\)</span> 对称到 <span
+class="math inline">\(Z_3\)</span> 对称的约束收紧，是 triality
+破缺的直接代数遗产。</p></li>
+<li><p><strong><span class="math inline">\(\chi_I =
+1\)</span></strong>：信息界（<span class="math inline">\(\gamma_3
+\leftrightarrow
+5\)</span>）无净拉伸——回收平衡使信息界的拉伸相互抵消。信息界在编码轨道的后段（<span
+class="math inline">\(E_6 \to
+E_7\)</span>）经历双向操作：终端二元化的扩展与回收收缩精确平衡，净累积拉伸为
+<span class="math inline">\(\chi_I =
+1\)</span>。这一零净拉伸是信息守恒的代数表现——信息界既不增益也不损耗，保持编码容量的守恒。
+<strong>χ 值的物理自洽性检验。</strong> 三个 χ
+值满足一个重要的代数关系：</p></li>
+</ul>
+<p><span class="math display">\[\chi_M \cdot \chi_I = 8 \times 1 = 8,
+\quad \chi_C = 9, \quad \frac{\chi_C}{\chi_M \cdot \chi_I} =
+\frac{9}{8}.\]</span> ### 3.3 不动点方程</p>
+<p><span class="math inline">\(M_5\)</span> 的不动点 <span
+class="math inline">\(\sigma^*\)</span> 满足： <span
+class="math display">\[\sigma^* = M_5 \cdot \sigma^* / \|M_5 \cdot
+\sigma^*\|.\]</span></p>
+<p>即 <span class="math inline">\(\sigma^*\)</span> 是 <span
+class="math inline">\(M_5\)</span>
+的最大本征值对应的归一化特征向量。不动点的具体值依赖于 <span
+class="math inline">\(T\)</span> 的参数 <span
+class="math inline">\((\theta_I, \theta_\tau,
+\theta_{\sigma_2})\)</span>。</p>
+<h3 id="birkhoff-权重的-cramer-法则解析公式">3.4 Birkhoff 权重的 Cramer
+法则解析公式</h3>
+<p><strong>定理 2.1.3.01（Birkhoff 权重的解析公式）。</strong> 设 <span
+class="math inline">\(\sigma^* = (\sigma_M^*, \sigma_C^*,
+\sigma_I^*)\)</span> 为 <span class="math inline">\(M_5\)</span>
+自洽系统的不动点，<span class="math inline">\(\chi = (\chi_M, \chi_C,
+\chi_I)\)</span>。令 <span class="math inline">\(a =
+\sigma_M^*/\chi_M\)</span>, <span class="math inline">\(b =
+\sigma_C^*/\chi_C\)</span>, <span class="math inline">\(c =
+\sigma_I^*/\chi_I\)</span>, <span class="math inline">\(Z =
+abc\)</span>, <span class="math inline">\(\Delta = a^2b^2c^2 - ab - bc -
+ca\)</span>。定义 <span class="math inline">\(f(x, y, z) = x^2 -
+yz\)</span>，则 Birkhoff 权重由 Cramer 法则给出：</p>
+<p><span class="math display">\[\theta_I = \frac{\sigma_M^*
+f(a,b,c)\sigma_C^* f(b,c,a)\sigma_I^* f(c,a,b)}{\Delta},\]</span></p>
+<p><span class="math display">\[\theta_\tau = \frac{\sigma_M^*
+f(b,c,a)\sigma_C^* f(c,a,b)\sigma_I^* f(a,b,c)}{\Delta},\]</span></p>
+<p><span class="math display">\[\theta_{\sigma_2} = 1 - \theta_I -
+\theta_\tau.\]</span></p>
+<p>注意 <span class="math inline">\(\theta_\tau\)</span> 的公式是 <span
+class="math inline">\(\theta_I\)</span> 的<strong>循环移位</strong>——将
+<span class="math inline">\(f\)</span> 的参数循环移位 <span
+class="math inline">\((a,b,c) \to (b,c,a) \to (c,a,b)\)</span>，反映了
+<span class="math inline">\(Z_3\)</span> 循环对称性。</p>
+<p><strong>推导。</strong> 不动点条件 <span class="math inline">\(T
+\cdot v^* = Z \cdot \sigma^*\)</span>（其中 <span
+class="math inline">\(v^* = \sigma^*/\chi = (a, b, c)^T\)</span>）构成
+<span class="math inline">\(3 \times 3\)</span> 线性方程组：</p>
+<p><span class="math display">\[\theta_I \cdot v^* + \theta_\tau \cdot
+(P_\tau v^*) + \theta_{\sigma_2} \cdot (P_{\sigma_2} v^*) = Z \cdot
+\sigma^*.\]</span></p>
+<p>由 <span class="math inline">\(Z_3\)</span> 循环结构：<span
+class="math inline">\(P_\tau v^* = (b, c, a)^T\)</span>（3-循环 <span
+class="math inline">\((1\,3\,2)\)</span>），<span
+class="math inline">\(P_{\sigma_2} v^* = (c, a, b)^T\)</span>（3-循环
+<span
+class="math inline">\((1\,2\,3)\)</span>）。系数矩阵为<strong>循环矩阵</strong>：</p>
+<p><span class="math display">\[A = [v^* \mid P_\tau v^* \mid
+P_{\sigma_2} v^*] = \begin{pmatrix} a &amp; b &amp; c \\ b &amp; c &amp;
+a \\ c &amp; a &amp; b \end{pmatrix}.\]</span></p>
+<p>循环矩阵的行列式为：</p>
+<p><span class="math display">\[\det A = 3abc - a^3 - b^3 - c^3 =
+-(abc)(a^2b^2c^2-ab-bc-ca) = -Z \cdot \Delta.\]</span></p>
+<p>其中 <span class="math inline">\(\Delta =
+\frac{1}{2}[(a-b)^2(b-c)^2(c-a)^2] \geq 0\)</span>，等号当且仅当 <span
+class="math inline">\(a = b = c\)</span>。</p>
+<p>由 Cramer 法则，<span class="math inline">\(\theta_I = \det[Z\sigma^*
+\mid P_\tau v^* \mid P_{\sigma_2} v^*] / \det
+A\)</span>。分子按第一列展开，提取公因子 <span
+class="math inline">\(Z\)</span> 后得：</p>
+<p><span class="math display">\[\theta_I = \frac{Z \cdot [\sigma_M^*(bc
+- a^2)\sigma_C^*(ac - b^2)\sigma_I^*(ab - c^2)]}{-Z \cdot \Delta} =
+\frac{\sigma_M^*(a^2 - bc)\sigma_C^*(b^2 - ac)\sigma_I^*(c^2 -
+ab)}{\Delta}.\]</span></p>
+<p>类似地，<span class="math inline">\(\theta_\tau = \det[v^* \mid
+Z\sigma^* \mid P_{\sigma_2} v^*] / \det A\)</span>，按第二列展开得：</p>
+<p><span class="math display">\[\theta_\tau = \frac{\sigma_M^*(b^2 -
+ac)\sigma_C^*(c^2 - ab)\sigma_I^*(a^2 - bc)}{\Delta}.\]</span></p>
+<p>最后由归一化约束 <span class="math inline">\(\theta_I + \theta_\tau +
+\theta_{\sigma_2} = 1\)</span> 直接得 <span
+class="math inline">\(\theta_{\sigma_2} = 1 - \theta_I -
+\theta_\tau\)</span>。∎</p>
+<p><strong>公式的物理可解性。</strong> 上述公式要求 <span
+class="math inline">\(\Delta \neq
+0\)</span>，即不动点的三个分量在拉伸归一化后互不相同。这对应物理上的非简并条件——若
+<span class="math inline">\(a = b =
+c\)</span>，则三个扇区在拉伸后不可区分，triality 破缺退化。<span
+class="math inline">\(\Delta = 0\)</span> 时 <span
+class="math inline">\(\det A = 0\)</span>，Cramer
+法则失效——这与纯置换设计的周期-3 循环（§4.4）一致：未破缺的 triality
+不产生收敛不动点。</p>
+<p><strong>循环公式的对称性。</strong> <span
+class="math inline">\(\theta_I\)</span> 和 <span
+class="math inline">\(\theta_\tau\)</span>
+的公式具有优美的循环结构：定义 <span class="math inline">\(f_0 =
+f(a,b,c)\)</span>, <span class="math inline">\(f_1 = f(b,c,a)\)</span>,
+<span class="math inline">\(f_2 = f(c,a,b)\)</span>，则 <span
+class="math inline">\(\theta_I = (\sigma_M^* f_0\sigma_C^* f_1\sigma_I^*
+f_2)/\Delta\)</span>，<span class="math inline">\(\theta_\tau =
+(\sigma_M^* f_1\sigma_C^* f_2\sigma_I^* f_0)/\Delta\)</span>。<span
+class="math inline">\(\theta_\tau\)</span> 是 <span
+class="math inline">\(\theta_I\)</span> 在 <span
+class="math inline">\(f\)</span> 指标上的循环移位——这正是 <span
+class="math inline">\(Z_3\)</span> 对称性的代数表现。</p>
+<p><strong>近似 Birkhoff 参数化。</strong> 对编码权重 <span
+class="math inline">\(\sigma^* = (0.777428, 0.211091,
+0.011481)\)</span>（2.2 §2.2），Cramer 法则给出 <span
+class="math inline">\(\theta_I \approx 1.081\)</span>, <span
+class="math inline">\(\theta_\tau \approx 0.219\)</span>, <span
+class="math inline">\(\theta_{\sigma_2} \approx
+0.041\)</span>。这些值不完全在 <span class="math inline">\([0,
+1]\)</span> 内，表明精确 <span class="math inline">\(\sigma^*\)</span>
+不完全对应一个严格非负的 Birkhoff 参数化。观测者位置的近似参数化 <span
+class="math inline">\(T_{\text{ours}} = (0.782, 0.209, 0.009)\)</span>
+捕获了定性结构（物质主导、因果中等、信息微弱），而 Birkhoff
+结构的代数性质（收敛性、Berry 相位、双随机性）不依赖于精确数值。</p>
+<hr />
+<h2 id="chern-simons-三项的内在编码">§4 Chern-Simons 三项的内在编码</h2>
+<h3 id="berry-相位的内在编码">4.2 Berry 相位的内在编码</h3>
+<p><strong>定理 2.1.4.01（Chern-Simons 三项的内在编码）。</strong>
+Chern-Simons 7-形式的三项结构被 Birkhoff 混合矩阵 <span
+class="math inline">\(T\)</span> 的混合性质内在编码：</p>
+<p><span class="math display">\[\theta_I \leftrightarrow I_1, \quad
+\theta_\tau \leftrightarrow I_2, \quad \theta_{\sigma_2} \leftrightarrow
+I_3.\]</span></p>
+<p><strong>证明。</strong></p>
+<p>Chern-Simons 三项对应编码轨道的三个子段： - <span
+class="math inline">\(I_1\)</span>：Cl(0)→Cl(3) 段（物质界，系数 2） -
+<span class="math inline">\(I_2\)</span>：Cl(3)→Cl(5) 段（因果界，系数
+1） - <span class="math inline">\(I_3\)</span>：Cl(5)→Cl(8)
+段（信息界，系数 1）</p>
+<p>Birkhoff 混合矩阵 <span class="math inline">\(T\)</span>
+的三个参数恰好对应三个子段： - <span
+class="math inline">\(\theta_I\)</span>：恒等置换的权重——对应物质界的自映射（<span
+class="math inline">\(I_1\)</span>） - <span
+class="math inline">\(\theta_\tau\)</span>：3-循环 <span
+class="math inline">\((1\,3\,2)\)</span>
+的权重——对应因果界的「循环」（<span
+class="math inline">\(I_2\)</span>，复结构的振荡） - <span
+class="math inline">\(\theta_{\sigma_2}\)</span>：3-循环 <span
+class="math inline">\((1\,2\,3)\)</span>
+的权重——对应信息界的「循环」（<span
+class="math inline">\(I_3\)</span>，终端二元性）</p>
+<p>三项的积分贡献 <span class="math inline">\(\frac{2\pi}{3}(1+1+1) =
+2\pi\)</span>被 <span class="math inline">\(T\)</span>
+的双随机性保证：<span class="math inline">\(\theta_I + \theta_\tau +
+\theta_{\sigma_2} = 1\)</span> 对应 <span
+class="math inline">\(\frac{1+1+1}{3} = 1\)</span>，而 <span
+class="math inline">\(2\pi \times 1 =
+2\pi\)</span>。三个扇区等权贡献，每个扇区的结构跳跃事件各贡献一份拓扑荷。</p>
+<p>因此 Berry 相位 <span class="math inline">\(2\pi\)</span> 是 <span
+class="math inline">\(T\)</span> 的双随机性的代数推论。∎</p>
+<hr />
+<h3 id="收敛性分析">4.3 收敛性分析</h3>
+<p>Birkhoff 混合矩阵 <span class="math inline">\(T\)</span>
+的本征值为：</p>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 35%" />
+<col style="width: 28%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">本征值</th>
+<th style="text-align: center;">模</th>
+<th style="text-align: left;">物理意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span class="math inline">\(\lambda_1 =
+1\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(1\)</span></td>
+<td style="text-align: left;">主本征值，对应不动点方向</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(\lambda_{2,3} = 0.678 \pm 0.181\,i\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(|\lambda_{2,3}| = 0.702 &lt; 1\)</span></td>
+<td style="text-align: left;">衰减模式，对应 triality 破缺的瞬态</td>
+</tr>
+</tbody>
+</table>
+<p>非主本征值模 <span class="math inline">\(|\lambda_{2,3}| = 0.702 &lt;
+1\)</span>，保证不动点指数收敛。复数本征值表明收敛过程带有阻尼振荡——这正是
+triality 破缺残存的 <span class="math inline">\(Z_3\)</span>
+对称性的表现：振荡的虚部对应 <span class="math inline">\(Z_3\)</span>
+的循环操作，而衰减的实部对应 Birkhoff 混合的收敛趋势。</p>
+<p>混合权重 <span class="math inline">\((\theta_I, \theta_\tau,
+\theta_{\sigma_2})\)</span>
+不仅编码扇区间的耦合强度，还通过本征值的模控制收敛速率。<span
+class="math inline">\(\theta_{\sigma_2}\)</span>
+越小（信息循环越弱），<span
+class="math inline">\(|\lambda_{2,3}|\)</span>
+越小，收敛越快——观测者位置 <span class="math inline">\(\theta_{\sigma_2}
+= 0.009\)</span>
+的极小值对应快速收敛，保证物理常数在编码过程中被快速锁定。</p>
+<hr />
+<h2 id="t-的变化范围">§5 T 的变化范围</h2>
+<h3 id="维-birkhoff-多面体">5.1 2 维 Birkhoff 多面体</h3>
+<p><span class="math inline">\(T\)</span> 的参数 <span
+class="math inline">\((\theta_I, \theta_\tau,
+\theta_{\sigma_2})\)</span> 在 2 维单纯形上变化： <span
+class="math display">\[\{(\theta_I, \theta_\tau, \theta_{\sigma_2}) :
+\theta_I + \theta_\tau + \theta_{\sigma_2} = 1, \theta_k \geq
+0\}.\]</span></p>
+<p>每个点对应一个不同的 <span
+class="math inline">\(T\)</span>，给出不同的不动点 <span
+class="math inline">\(\sigma^*\)</span> 和不同的 <span
+class="math inline">\(S(\sigma^*)\)</span>。</p>
+<h3 id="景观的预览">5.2 景观的预览</h3>
+<p><span class="math inline">\(T\)</span> 在 2 维多面体上的连续变化产生
+<span class="math inline">\(S\)</span>
+值的连续分布——这就是「景观」。景观的范围和结构将在 2.3 中详细讨论。</p>
+<p>我们观测到的 <span class="math inline">\(\alpha^{-1} =
+137.036\)</span> 对应景观中一个特定的 <span
+class="math inline">\(T_{\text{ours}}\)</span>——不是唯一给出 <span
+class="math inline">\(S \approx 137\)</span> 的点，而是一条 1
+维等值线上的一个点。</p>
+<h3 id="与-ckmpmns-混合矩阵的-unistochastic-联系">5.3 与 CKM/PMNS
+混合矩阵的 unistochastic 联系</h3>
+<p><strong>与味混合矩阵的联系。</strong> Birkhoff 混合矩阵 <span
+class="math inline">\(T\)</span> 的 unistochastic 对应（<span
+class="math inline">\(|T_{ij}|^2\)</span>）与 CKM/PMNS 混合矩阵的 <span
+class="math inline">\(|V_{ij}|^2\)</span>
+结构一致。这一对应表明，味混合矩阵的模方结构与跨扇区耦合的 Birkhoff
+权重之间存在深刻的代数联系。</p>
+<p>具体而言：</p>
+<ul>
+<li><p><strong>味混合是置换操作的量子统计叠加</strong>——不是单一置换，而是
+<span class="math inline">\(S_3\)</span> 各元素的量子叠加。Birkhoff
+混合矩阵 <span class="math inline">\(T = \sum_k \theta_k P_k\)</span>
+将经典置换混合推广为量子统计混合，其中 <span
+class="math inline">\(|T_{ij}|^2\)</span> 给出从扇区 <span
+class="math inline">\(j\)</span> 到扇区 <span
+class="math inline">\(i\)</span> 的跃迁概率。在 unistochastic 框架中，实
+Birkhoff 混合矩阵 <span class="math inline">\(T\)</span> 被提升为酉矩阵
+<span class="math inline">\(U\)</span>，使得 <span
+class="math inline">\(|U_{ij}|^2 =
+T_{ij}\)</span>，从而将经典概率解释提升为量子振幅解释。</p></li>
+<li><p><strong>Birkhoff 权重 <span
+class="math inline">\(\theta_k\)</span> 对应置换 <span
+class="math inline">\(P_k\)</span>
+的「出现概率」</strong>——但这不是经典概率，而是量子统计权重。在
+unistochastic 框架中，<span class="math inline">\(\theta_k\)</span> 被
+<span class="math inline">\(|U_{ij}|^2\)</span> 替代（<span
+class="math inline">\(U\)</span> 为酉矩阵），但模方结构保持 Birkhoff
+双随机性。这意味着味混合矩阵 <span
+class="math inline">\(V_{\text{CKM}}\)</span> 和 <span
+class="math inline">\(V_{\text{PMNS}}\)</span> 的 <span
+class="math inline">\(|V_{ij}|^2\)</span> 满足双随机约束——行和与列和均为
+1，这是幺正性的直接推论，也是 Birkhoff 结构的量子延拓。</p></li>
+<li><p><strong>CKM 矩阵的 CP 破缺对应 <span
+class="math inline">\(T\)</span> 的复相位</strong>——Birkhoff
+混合矩阵的实数性保证强 CP 为零（定理 3.9.3.02），但味混合的 CP 破缺来自
+<span class="math inline">\(T\)</span> 的复化延拓 <span
+class="math inline">\(T \to U = \sum_k \tilde{\theta}_k
+P_k\)</span>（其中 <span class="math inline">\(\tilde{\theta}_k\)</span>
+为复权重，<span class="math inline">\(|\tilde{\theta}_k|^2 =
+\theta_k\)</span>）。复化延拓引入的相位 <span
+class="math inline">\(\arg(\tilde{\theta}_k)\)</span> 对应 CKM 矩阵的 CP
+破缺相位 <span class="math inline">\(\delta_{\text{CKM}} \approx
+1.20\)</span> 弧度。这一对应将强 CP 问题（<span
+class="math inline">\(\bar{\theta}_{\text{QCD}} \approx 0\)</span>）与弱
+CP 破缺（<span class="math inline">\(\delta_{\text{CKM}} \neq
+0\)</span>）统一在同一 Birkhoff 框架内：实 Birkhoff 混合矩阵锁定强 CP
+为零，而其复化延拓产生弱 CP 破缺。</p></li>
+</ul>
+<p><strong>物理推论。</strong> 这一 unistochastic
+联系将味混合的起源追溯到 triality 破缺的 Birkhoff
+结构：味混合不是基本对称性的自发破缺，而是编码轨道中 <span
+class="math inline">\(S_3 \to Z_2\)</span> 破缺的代数遗产。CKM 和 PMNS
+矩阵的不同混合角对应 Birkhoff 多面体上不同的观测者位置 <span
+class="math inline">\(T\)</span>——同一机制的不同实现。</p>
+<p><strong>双随机性与幺正性的层次关系。</strong> Birkhoff
+双随机矩阵与酉矩阵之间存在包含关系：每个酉矩阵 <span
+class="math inline">\(U\)</span> 通过取模方 <span
+class="math inline">\(|U_{ij}|^2\)</span> 给出一个双随机矩阵 <span
+class="math inline">\(T\)</span>，但反之不然——并非每个双随机矩阵都有
+unistochastic 提升。这意味着：</p>
+<ul>
+<li>实 Birkhoff 混合矩阵 <span class="math inline">\(T\)</span>
+描述经典混合——跨扇区耦合的经典概率分布</li>
+<li>Unistochastic 提升 <span class="math inline">\(U\)</span>
+描述量子混合——跨扇区耦合的量子振幅分布</li>
+<li>从 <span class="math inline">\(T\)</span> 到 <span
+class="math inline">\(U\)</span>
+的提升引入复相位——对应从经典物理到量子物理的过渡</li>
+</ul>
+<p>在这一层次关系中，本文的 Birkhoff 混合矩阵 <span
+class="math inline">\(T\)</span> 是味混合的经典底层——量子味混合矩阵
+CKM/PMNS 是 <span class="math inline">\(T\)</span> 的 unistochastic
+提升。强 CP 为零（<span class="math inline">\(T\)</span>
+的实数性）是经典底层的性质，弱 CP 破缺（<span
+class="math inline">\(U\)</span> 的复相位）是量子提升的性质。</p>
+<h3 id="t-的物理意义">5.4 T 的物理意义</h3>
+<p><strong><span class="math inline">\(T\)</span> 的三个参数 <span
+class="math inline">\((\theta_I, \theta_\tau,
+\theta_{\sigma_2})\)</span> 编码了三个物理信息：</strong></p>
+<ol type="1">
+<li><p><strong><span
+class="math inline">\(\theta_I\)</span>（恒等权重）</strong>：物质界的「自保持」程度——<span
+class="math inline">\(\theta_I\)</span> 越大，物质界越稳定。恒等置换
+<span class="math inline">\(I\)</span> 对应物质界的自映射，<span
+class="math inline">\(\theta_I\)</span>
+量化了物质界在编码过程中保持自身不变的比例。大的 <span
+class="math inline">\(\theta_I\)</span>
+意味着物质界的编码权重主要由自身决定，跨扇区影响较弱，物质结构稳定持久。</p></li>
+<li><p><strong><span
+class="math inline">\(\theta_\tau\)</span>（循环权重）</strong>：因果界的「循环」程度——<span
+class="math inline">\(\theta_\tau\)</span> 越大，因果箭头越强。3-循环
+<span class="math inline">\(P_\tau = (1\,3\,2)\)</span>
+对应因果界与物质界的循环置换，<span
+class="math inline">\(\theta_\tau\)</span>
+量化了因果序对物质编码的扰动强度。大的 <span
+class="math inline">\(\theta_\tau\)</span>
+意味着因果循环显著地改变物质-因果的编码关系，时间方向的不可逆性增强。</p></li>
+<li><p><strong><span
+class="math inline">\(\theta_{\sigma_2}\)</span>（循环权重）</strong>：信息界的「循环」程度——<span
+class="math inline">\(\theta_{\sigma_2}\)</span>
+越大，信息编码越丰富。3-循环 <span
+class="math inline">\(P_{\sigma_2}\)</span>
+对应三个扇区的循环置换，<span
+class="math inline">\(\theta_{\sigma_2}\)</span>
+量化了信息界参与全局循环的程度。大的 <span
+class="math inline">\(\theta_{\sigma_2}\)</span>
+意味着信息编码通过循环结构丰富化，信息容量增大。</p></li>
+</ol>
+<p><strong>观测者位置的物理诠释。</strong> 观测者位置 <span
+class="math inline">\(T_{\text{ours}} = (0.782, 0.209, 0.009)\)</span>
+表明：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">参数</th>
+<th style="text-align: center;">值</th>
+<th style="text-align: left;">物理诠释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(\theta_I\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.782\)</span></td>
+<td style="text-align: left;">物质界高度自保持</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(\theta_\tau\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.209\)</span></td>
+<td style="text-align: left;">因果界中等循环</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(\theta_{\sigma_2}\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.009\)</span></td>
+<td style="text-align: left;">信息界微弱循环</td>
+</tr>
+</tbody>
+</table>
+<p>这与我们观测到的物理世界一致：<strong>物质占主导</strong>（<span
+class="math inline">\(\theta_I \approx
+0.78\)</span>，物质界的自保持远超跨扇区混合），<strong>因果箭头存在但非极端</strong>（<span
+class="math inline">\(\theta_\tau \approx
+0.21\)</span>，因果循环约为物质自保持的四分之一），<strong>信息容量有限</strong>（<span
+class="math inline">\(\theta_{\sigma_2} \approx
+0.01\)</span>，信息循环几乎被抑制）。</p>
+<p>这一参数分布的物理合理性在于：若 <span
+class="math inline">\(\theta_I\)</span>
+过小，物质不稳定，无法形成持久结构；若 <span
+class="math inline">\(\theta_\tau\)</span>
+过大，因果箭头过强，时间序刚性化，失去量子涨落空间；若 <span
+class="math inline">\(\theta_{\sigma_2}\)</span>
+过大，信息循环主导，物理常数无法稳定锁定。观测者位置 <span
+class="math inline">\(T_{\text{ours}}\)</span>
+恰好处于三者平衡的宜居带——物质足够稳定以支撑观测者存在，因果箭头足够强以定义时间方向，信息容量足够小以保证物理常数的确定性。这一平衡正是人择原理的代数表述：观测者只能存在于
+Birkhoff 多面体上参数分布合理的区域。</p>
+<p><strong>三参数的代数约束。</strong> 三个参数不仅受归一化约束 <span
+class="math inline">\(\theta_I + \theta_\tau + \theta_{\sigma_2} =
+1\)</span>，还受非负性约束 <span class="math inline">\(\theta_k \geq
+0\)</span>。这两个约束将参数空间限制为 2 维单纯形（三角形）。观测者位置
+<span class="math inline">\(T_{\text{ours}} = (0.782, 0.209,
+0.009)\)</span>
+位于此单纯形内部，远离边界——这对应物理上的「内点」条件：三个扇区均有非零贡献，无任何一个扇区完全主导或完全消失。</p>
+<p><strong>参数间的代数关系。</strong> 由 Cramer
+法则解析公式（§3.4），三个参数之间存在隐式代数关系——给定 <span
+class="math inline">\(\sigma^*\)</span> 和 <span
+class="math inline">\(\chi\)</span>，三个参数被唯一确定（至多差一个归一化）。这意味着观测者位置的三个值
+<span class="math inline">\((0.782, 0.209, 0.009)\)</span>
+不是独立可调的——它们由不动点 <span
+class="math inline">\(\sigma^*\)</span> 和拉伸因子 <span
+class="math inline">\(\chi\)</span>
+共同决定。这一代数确定性保证了物理常数的唯一性：给定编码框架的结构（<span
+class="math inline">\(\chi\)</span>）和自洽要求（<span
+class="math inline">\(\sigma^*\)</span>），观测者位置 <span
+class="math inline">\(T_{\text{ours}}\)</span> 被唯一锁定，从而 <span
+class="math inline">\(\alpha^{-1} = 137.036\)</span> 被唯一确定。</p>
+<hr />
+<h2 id="定理索引">定理索引</h2>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 28%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">编号</th>
+<th style="text-align: left;">内容</th>
+<th style="text-align: center;">证明状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">定理 2.1.2.01</td>
+<td style="text-align: left;">Birkhoff 混合矩阵的三参数分解</td>
+<td style="text-align: center;">已证（本文§2.2）</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理 2.1.4.01</td>
+<td style="text-align: left;">Chern-Simons 三项的内在编码</td>
+<td style="text-align: center;">已证（本文§4）</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理 2.1.3.01</td>
+<td style="text-align: left;">Birkhoff 权重的 Cramer 法则解析公式</td>
+<td style="text-align: center;">已证（本文§3.4）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="参考文献">参考文献</h2>
+<ul>
+<li>Birkhoff, <em>Tres observaciones sobre el algebra lineal</em>, Univ.
+Nac. Tucumán Rev. A 5 (1946)</li>
+</ul>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Higgs 呼吸模式 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="版本: 260722.2">
+<meta name="generator" content="GeometryAI Build Script">
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/cn/3.11_Higgs呼吸_CN_260722.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../index.html" class="nav-home">🏠 首页</a>
+    <a href="../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">Higgs 呼吸模式</span>
+  </nav>
+  <main class="article-content">
+<h1 id="higgs-呼吸模式">Higgs 呼吸模式</h1>
+<p><strong>版本</strong>: 260722.2</p>
+<hr />
+<h2 id="摘-要">摘　要</h2>
+<p>在ℳ𝒞ℐ三扇区参数空间的内禀几何中，Higgs 标量场被识别为 Birkhoff 不动点
+σ*
+处二阶结构行列式平方根的相对线性涨落——即参数空间的”呼吸模式”。其拉格朗日量完全由几何量导出：动能项来源于编码轨道像素梯度能量，势能项来源于谱间隙曲率恢复力。势能是凸的（<span
+class="math inline">\(2\lambda_1 &gt; 0\)</span>），Φ = 0
+是严格极小值——无需自发对称破缺。归一化因子 <span
+class="math inline">\(\mathcal{N}_\Sigma = \pi/\sqrt{8}\)</span> 由
+Gauss-Bonnet 拓扑与 Clifford 旋量结构严格锁定。Higgs 质量预言 <span
+class="math inline">\(m_H = 125.64\ \text{GeV}\)</span>，与实验值偏差
+<span class="math inline">\(0.23\%\)</span>。</p>
+<p><strong>关键词：</strong> Higgs 模式；呼吸模式；Birkhoff
+不动点；谱间隙；Gauss-Bonnet；Clifford 旋量归一化；无对称破缺</p>
+<hr />
+<h2 id="第1章-引言">第1章　引言</h2>
+<p>本文是几何论系列论文的第 3.11
+篇。该系列的基础框架（唯一公理δ、Clifford代数、编码轨道结构、Born法则、相互作用映射）已在共扼谱几何基础定理中建立。</p>
+<p><strong>核心定位</strong>：在 ℳ𝒞ℐ 三扇区参数空间的内禀几何中，Higgs
+标量场被识别为 Birkhoff 不动点 σ*
+处二阶结构行列式平方根的相对线性涨落——即参数空间的”呼吸模式”。其拉格朗日量完全由几何量导出：动能项来源于编码轨道像素梯度能量，势能项来源于谱间隙曲率恢复力。</p>
+<p><strong>关键依赖</strong>：本文直接依赖唯一公理δ → Clifford代数（定理
+10.12.2.01）→ Bott周期 δ⁸ = 2π → ℳ𝒞ℐ三扇区结构（定理 7.8.6.03）→
+Birkhoff不动点σ*（定理 2.3.7.02）→ Born法则（定理 1.3.4.01）。结构常数
+Λ=3、k₀=2、ΔΘ=5 由 {2,3,5} 互锁性锁定，圆满再现（定理
+2.3.7.01）建立自举封闭链条，参数由本区域属性确定。</p>
+<p><strong>核心结果</strong>：（一）Higgs
+场的几何识别——无需自发对称破缺；（二）动能项与势能项的几何导出，势能凸（2λ₁
+&gt; 0），Φ = 0 是严格极小值；（三）Higgs 质量预言 m_H = 125.64
+GeV，与实验值偏差 0.23%。</p>
+<hr />
+<h2 id="目-录">目　录</h2>
+<p>§1　几何设定 　1.1　ℳ𝒞ℐ三扇区参数空间 　1.2　二阶结构与局域坐标</p>
+<p>§2　呼吸模式的定义 　2.1　定义 　2.2　扇区结构约束自动保持
+　2.3　Hessian 整体缩放假设</p>
+<p>§3　几何拉格朗日量 　3.1　动能项——编码轨道像素梯度
+　3.2　势能项——谱间隙曲率恢复力 　3.3　完整拉格朗日量</p>
+<p>§4　与标准模型的结构对比</p>
+<p>§5　Higgs 质量预言 　5.1　归一化因子 <span
+class="math inline">\(\mathcal{N}_\Sigma\)</span> 的几何锁定
+　5.2　质量算符 　5.3　数值结果</p>
+<p>§6　<span class="math inline">\(m_H / m_W\)</span> 一致性</p>
+<p>§7　结论</p>
+<hr />
+<h2 id="几何设定">1　几何设定</h2>
+<h3 id="ℳ𝒞ℐ三扇区参数空间">1.1　ℳ𝒞ℐ三扇区参数空间</h3>
+<p>由唯一公理 δ 出发，经 Clifford 代数（定理 10.12.2.01）→ Bott 周期→
+七层截断 E₁…E₇，导出三扇区结构（定理 7.8.6.03）：</p>
+<ul>
+<li><strong>ℳ 扇区</strong>：Cl(3) ≅ ℍ ⊕ ℍ，S³(r_M) 球面几何，谱间隙
+<span class="math inline">\(\Delta\lambda_M = 2/r_M = 2\)</span>（定理
+1.6.3.01）</li>
+<li><strong>𝒞 扇区</strong>：Cl(5) 复结构</li>
+<li><strong>ℐ 扇区</strong>：Cl(7) ≅ Mat(8, ℝ) ⊕ Mat(8, ℝ)</li>
+</ul>
+<p>扇区结构约束：<span class="math inline">\(\theta_M + \theta_C +
+\theta_I = 90^\circ\)</span>，定义 2D 角度流形。</p>
+<p>代数作用量（定理 1.6.4.01）：</p>
+<p><span class="math display">\[S(\sigma) = \sum_{i=1}^3
+\frac{1}{\sin^2\theta_i} + \sum_{i&lt;j} \frac{1}{\sin\theta_i
+\sin\theta_j}\]</span></p>
+<p>Birkhoff 不动点 σ*（定理 2.3.7.02）：</p>
+<p><span class="math display">\[\theta_M^0 = 57.93^\circ,\quad
+\theta_C^0 = 26.16^\circ,\quad \theta_I^0 = 5.91^\circ\]</span></p>
+<p><span class="math display">\[S_0 = S(\sigma^*) =
+137.0000000009\]</span></p>
+<h3 id="二阶结构与局域坐标">1.2　二阶结构与局域坐标</h3>
+<p>在扇区参数空间上，以 Birkhoff 不动点 σ* 为原点引入局域坐标：</p>
+<p><span class="math display">\[\xi = \theta_I - \theta_I^0,\quad \eta =
+(\theta_I + \theta_C) - (\theta_I^0 + \theta_C^0)\]</span></p>
+<p>代数作用量在此邻域的二阶结构（Hessian）：</p>
+<p><span class="math display">\[H_0 = \begin{pmatrix} H_{\xi\xi} &amp;
+H_{\xi\eta} \\ H_{\eta\xi} &amp; H_{\eta\eta} \end{pmatrix}_{\sigma^*} =
+\begin{pmatrix} 58760.77 &amp; 2 \\ 2 &amp; 392.21 \end{pmatrix}\
+\text{rad}^{-2}\]</span></p>
+<p><span class="math display">\[\det H_0 = 2.3047 \times 10^7\
+\text{rad}^{-4}\]</span></p>
+<p>两个本征值：</p>
+<p><span class="math display">\[\lambda_2 = 58760.77\ \text{rad}^{-2}
+\quad (\text{Dirac 谱高能模方向}),\qquad \lambda_1 = 392.21\
+\text{rad}^{-2} \quad (\text{谱间隙方向})\]</span></p>
+<hr />
+<h2 id="呼吸模式的定义">2　呼吸模式的定义</h2>
+<h3 id="定义">2.1　定义</h3>
+<p><strong>定义 3.11.2.01（呼吸模式）</strong>：标量场 <span
+class="math inline">\(\Phi(x)\)</span> 定义为 Birkhoff 不动点 σ*
+处二阶结构行列式平方根的相对线性涨落：</p>
+<p><span class="math display">\[\frac{\sqrt{\det H(\Phi)} - \sqrt{\det
+H_0}}{\sqrt{\det H_0}} \equiv \frac{\Phi}{S_0}\]</span></p>
+<p>即：</p>
+<p><span class="math display">\[\sqrt{\det H(\Phi)} = \sqrt{\det H_0}
+\cdot \left(1 + \frac{\Phi}{S_0}\right)\]</span></p>
+<p><strong>几何意义</strong>：<span class="math inline">\(\sqrt{\det
+H}\)</span>
+是扇区参数空间的面积元密度。呼吸模式是面积元密度的均匀伸缩——参数空间在”呼吸”。</p>
+<h3 id="扇区结构约束自动保持">2.2　扇区结构约束自动保持</h3>
+<p>Φ 仅操作 Hessian 行列式，不直接改变扇区参数 <span
+class="math inline">\(\theta_M, \theta_C,
+\theta_I\)</span>。因此扇区结构约束 <span class="math inline">\(\theta_M
++ \theta_C + \theta_I = 90^\circ\)</span>
+自动保持。呼吸模式不破坏三扇区结构的完整性。</p>
+<h3 id="hessian-整体缩放假设">2.3　Hessian 整体缩放假设</h3>
+<p>呼吸模式下，Hessian 的最简响应是整体缩放：</p>
+<p><span class="math display">\[H_{ij}(\Phi) = H_{ij}^{(0)} \cdot
+\left(1+\frac{\Phi}{S_0}\right)\]</span></p>
+<p>两个本征值同比例缩放，保持本征方向不变。这是各向同性的最低阶近似，与呼吸模式作为”均匀膨胀”的几何图像一致。</p>
+<blockquote>
+<p><strong>假设层级</strong>：此条为构造性假设。以下依赖 <span
+class="math inline">\(H_{ij} \propto (1+\Phi/S_0)\)</span>
+的推导（三阶四阶势能项）均以此为前提。</p>
+</blockquote>
+<hr />
+<h2 id="几何拉格朗日量">3　几何拉格朗日量</h2>
+<h3 id="动能项编码轨道像素梯度">3.1　动能项——编码轨道像素梯度</h3>
+<p>信息界 ℐ 的 Cl(7) 结构给出 <span
+class="math inline">\(N_{\text{info}} \approx 9 \times 10^{22}\)</span>
+个编码像素。相邻像素的涨落差异产生构型熵代价。在连续极限下，像素间距
+<span class="math inline">\(a \to 0\)</span>，得到 2D 动能项：</p>
+<p><span class="math display">\[\Delta S_{\text{info}} \rightarrow
+\frac{1}{2} \int (\partial_\mu \Phi)^2 \, d\xi d\eta \quad (\mu = \xi,
+\eta)\]</span></p>
+<p>此为<strong>严格定理</strong>（定理 3.10.8.04）。向 4D 时空的扩展
+<span class="math inline">\(\mathcal{L}_{\text{kin}} =
+\frac{1}{2}(\partial_\mu \Phi)^2\)</span> 依赖 Clifford 约化 Cl(3) →
+Cl(3,1)，为条件性框架，非严格定理。</p>
+<h3 id="势能项谱间隙曲率恢复力">3.2　势能项——谱间隙曲率恢复力</h3>
+<h4 id="二阶质量项">3.2.1　二阶质量项</h4>
+<p>扇区参数空间的局部谐振子定理：谱间隙 <span
+class="math inline">\(\lambda_1\)</span> 是 Hamilton
+流在辛流形上的线性化频率。呼吸模式 Φ
+作为标量集体涨落，其恢复力由该几何弹性提供。</p>
+<p>在 2D
+参数空间上，势能密度定义为超额作用量在单位胞上的面积分。两个坐标方向的贡献叠加，交叉项
+<span class="math inline">\(H_{\xi\eta}\)</span> 在 Dirac
+谱高能模冻结极限下等效为额外的 <span
+class="math inline">\(\lambda_1\)</span> 量级贡献。总二阶系数为 <span
+class="math inline">\(2\lambda_1\)</span>：</p>
+<p><span class="math display">\[V^{(2)}(\Phi) = 2\lambda_1
+\Phi^2\]</span></p>
+<p>系数结构（正比于 <span
+class="math inline">\(\lambda_1\)</span>）为<strong>定理
+3.11.1.01（级）</strong>；因子 2 的具体数值含构造性估计。</p>
+<blockquote>
+<p><strong>注</strong>：拉格朗日量约定 <span
+class="math inline">\(\mathcal{L} = \frac{1}{2}(\partial\Phi)^2 -
+V(\Phi)\)</span>。对应 Klein-Gordon 质量平方 <span
+class="math inline">\(m_{\text{geo}}^2 =
+4\lambda_1\)</span>（几何单位）。</p>
+</blockquote>
+<h4 id="三阶与四阶自相互作用">3.2.2　三阶与四阶自相互作用</h4>
+<p>由 Hessian 整体缩放假设，势能的高阶项来自 Birkhoff
+混合矩阵标度的非线性反馈：</p>
+<p><span class="math display">\[\mathcal{L}_3 = -\frac{\lambda_1}{S_0}
+\Phi^3,\qquad \mathcal{L}_4 = -\frac{\lambda_1}{S_0^2}
+\Phi^4\]</span></p>
+<p>三阶项和四阶项均为<strong>构造性假设</strong>，依赖 Hessian
+整体缩放假设。四阶项保证 <span class="math inline">\(\Phi \to
+\infty\)</span> 时势能下有界。</p>
+<h3 id="完整拉格朗日量">3.3　完整拉格朗日量</h3>
+<p><span class="math display">\[\boxed{\mathcal{L}_\Phi =
+\frac{1}{2}(\partial_\mu \Phi)^2 - 2\lambda_1 \Phi^2 -
+\frac{\lambda_1}{S_0} \Phi^3 - \frac{\lambda_1}{S_0^2}
+\Phi^4}\]</span></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">项</th>
+<th>地位</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">动能项（2D）</td>
+<td><strong>严格定理</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">动能项（4D）</td>
+<td>条件性框架</td>
+</tr>
+<tr>
+<td style="text-align: left;">质量项 <span
+class="math inline">\(2\lambda_1\Phi^2\)</span></td>
+<td>系数结构定理因子 2 构造性估计</td>
+</tr>
+<tr>
+<td style="text-align: left;">三阶项</td>
+<td>构造性假设</td>
+</tr>
+<tr>
+<td style="text-align: left;">四阶项</td>
+<td>构造性假设</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="与标准模型的结构对比">4　与标准模型的结构对比</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">特征</th>
+<th style="text-align: left;">标准模型</th>
+<th style="text-align: left;">几何论</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">质量来源</td>
+<td style="text-align: left;">真空期望值 <span class="math inline">\(v =
+246\)</span> GeV</td>
+<td style="text-align: left;">谱间隙曲率恢复力 <span
+class="math inline">\(2\lambda_1\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">势能形状</td>
+<td style="text-align: left;">墨西哥帽（<span
+class="math inline">\(\mu^2 &lt; 0\)</span>）</td>
+<td style="text-align: left;">凸势能（<span
+class="math inline">\(2\lambda_1 &gt; 0\)</span>）</td>
+</tr>
+<tr>
+<td style="text-align: left;">真空</td>
+<td style="text-align: left;"><span
+class="math inline">\(\langle\Phi\rangle = v \neq 0\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\Phi =
+0\)</span> 为严格极小值</td>
+</tr>
+<tr>
+<td style="text-align: left;">对称性</td>
+<td style="text-align: left;">自发破缺 SU(2)×U(1) → U(1)</td>
+<td style="text-align: left;">无对称性需要破缺</td>
+</tr>
+<tr>
+<td style="text-align: left;">电弱相变</td>
+<td style="text-align: left;">一阶/crossover（依赖 <span
+class="math inline">\(m_H\)</span>）</td>
+<td style="text-align: left;">平滑 crossover（定理级）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>关键差异</strong>：标准模型需要真空不稳定性和自发对称破缺来产生质量。几何论中，<span
+class="math inline">\(2\lambda_1 &gt; 0\)</span> 且 <span
+class="math inline">\(\Phi = 0\)</span>
+已是凸势能的严格极小值——质量直接来源于参数空间的几何刚度，无需破缺机制。这是一个<strong>替代机制</strong>，而非对标准模型破缺机制的”几何解释”。</p>
+<hr />
+<h2 id="higgs-质量预言">5　Higgs 质量预言</h2>
+<h3 id="归一化因子-mathcaln_sigma-的几何锁定">5.1　归一化因子 <span
+class="math inline">\(\mathcal{N}_\Sigma\)</span> 的几何锁定</h3>
+<p><strong>定理 3.11.1.02（<span
+class="math inline">\(\mathcal{N}_\Sigma\)</span>
+的几何锁定）</strong>：扇区参数空间的归一化因子由三个独立几何量确定：</p>
+<ol type="1">
+<li><strong>Gauss-Bonnet 拓扑不变量</strong>：参数空间单点紧致化 <span
+class="math inline">\(\bar{\Sigma} \cong S^2\)</span>，<span
+class="math inline">\(\int_{S^2} K_G \, dA = 4\pi\)</span></li>
+<li><strong>欧拉示性数</strong>：<span class="math inline">\(\chi(S^2) =
+2\)</span></li>
+<li><strong>Clifford 内部旋量归一化</strong>：向 4D 约化时，<span
+class="math inline">\(d_{\text{int}} = 5\)</span> 个内部生成元贡献 <span
+class="math inline">\(\mathcal{N}_{\text{spinor}} = 2^{5/2} =
+4\sqrt{2}\)</span></li>
+</ol>
+<p>三者组合：</p>
+<p><span class="math display">\[\boxed{\mathcal{N}_\Sigma =
+\frac{\int_{S^2} K_G \, dA}{\chi(S^2) \cdot \mathcal{N}_{\text{spinor}}}
+= \frac{4\pi}{2 \cdot 4\sqrt{2}} = \frac{\pi}{2\sqrt{2}} =
+\frac{\pi}{\sqrt{8}} = 1.11072073\ldots}\]</span></p>
+<p>此推导仅使用 <span class="math inline">\(S^2\)</span>
+的拓扑（来自参数空间结构）、Cl(3) → Cl(3,1) 的代数结构（来自定理
+7.8.6.03）、以及紧致化流形上标量零模的标准归一化理论。<strong>不依赖
+<span class="math inline">\(m_H\)</span> 的实验值</strong>。</p>
+<h3 id="质量算符">5.2　质量算符</h3>
+<p>几何质量 <span class="math inline">\(m_{\text{geo}} =
+2\sqrt{\lambda_1}\ \text{rad}^{-1}\)</span>。经 Born 法则（定理
+1.3.4.01）映射为物理质量：</p>
+<p><span class="math display">\[m_H = \sqrt{2\lambda_1^{\text{eff}}}
+\cdot K \cdot \Psi_m^{\text{eff}} \cdot \mathcal{N}_\Sigma\]</span></p>
+<p>其中：</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">因子</th>
+<th style="text-align: right;">数值</th>
+<th style="text-align: left;">来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\sqrt{2\lambda_1^{\text{eff}}}\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(27.966\
+\text{rad}^{-1}\)</span></td>
+<td style="text-align: left;">有效谱间隙恢复力（<span
+class="math inline">\(\lambda_1^{\text{eff}} = 391.05\)</span>）</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(K\)</span></td>
+<td style="text-align: right;"><span
+class="math inline">\(839.759\)</span> keV</td>
+<td style="text-align: left;">质量算符 <span
+class="math inline">\(\hat{M}\)</span> 标度（3.1 §5，定理级）</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\Psi_m^{\text{eff}} = \sqrt{\lambda_1^{\text{eff}}
+\lambda_2^{\text{eff}}}\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(4816.51\
+\text{rad}^{-2}\)</span></td>
+<td style="text-align: left;">有效 Hessian 本征值几何平均</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{N}_\Sigma\)</span></td>
+<td style="text-align: right;"><span
+class="math inline">\(\pi/\sqrt{8}\)</span></td>
+<td style="text-align: left;">定理级（§5.1）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="数值结果">5.3　数值结果</h3>
+<p><span class="math display">\[m_H^{\text{eff}} = 27.966 \times
+839.759\ \text{keV} \times 4816.51 \times 1.11072 = 125.64\
+\text{GeV}\]</span></p>
+<p>实验值（PDG 2024）：<span class="math inline">\(m_H^{\text{exp}} =
+125.35 \pm 0.15\)</span> GeV。</p>
+<p><strong>偏差：<span
+class="math inline">\(0.23\%\)</span></strong>。</p>
+<p>裸值（<span class="math inline">\(\lambda_1 = 392.21\)</span>，<span
+class="math inline">\(\lambda_2 = 58760.77\)</span>，<span
+class="math inline">\(\Psi_m = 4800.68\)</span>）：<span
+class="math inline">\(m_H^{\text{bare}} = 125.41\)</span> GeV，偏差
+<span class="math inline">\(0.05\%\)</span>。</p>
+<hr />
+<h2 id="m_h-m_w-一致性">6　<span class="math inline">\(m_H /
+m_W\)</span> 一致性</h2>
+<p>由扇区结构框架，取 <span class="math inline">\(m_W = 80.59\)</span>
+GeV：</p>
+<p><span class="math display">\[\frac{m_H^{\text{eff}}}{m_W} =
+\frac{125.64}{80.59} = 1.559\]</span></p>
+<p>实验比值（PDG 2024）：<span class="math inline">\(125.35 / 80.369 =
+1.559\)</span>。此项一致性受益于 <span
+class="math inline">\(m_H\)</span> 和 <span
+class="math inline">\(m_W\)</span> 使用相同的 Born
+法则映射框架，是圆满再现在弱电扇区的自洽表现。</p>
+<hr />
+<h2 id="结论">7　结论</h2>
+<h3 id="定理级结果">定理级结果</h3>
+<ol type="1">
+<li><strong>呼吸模式定义</strong>：Φ 是 Hessian 行列式平方根在 Birkhoff
+不动点 σ* 处的相对线性涨落</li>
+<li><strong>扇区结构约束自动保持</strong>：Φ 不改变 <span
+class="math inline">\(\theta_M, \theta_C, \theta_I\)</span></li>
+<li><strong>2D
+动能项</strong>：由编码轨道像素编码与连续极限严格导出</li>
+<li><strong>质量项系数结构</strong>：<span class="math inline">\(V^{(2)}
+= 2\lambda_1 \Phi^2\)</span>，正比于谱间隙（因子 2 含构造性估计）</li>
+<li><strong>无自发对称破缺</strong>：势能凸，Φ = 0 是严格极小值</li>
+<li><strong>归一化因子</strong>：<span
+class="math inline">\(\mathcal{N}_\Sigma = \pi/\sqrt{8}\)</span>，由
+Gauss-Bonnet欧拉示性数Clifford 旋量归一化严格锁定</li>
+</ol>
+<h3 id="构造性假设">构造性假设</h3>
+<ul>
+<li>Hessian 整体缩放 <span class="math inline">\(H_{ij} \propto (1 +
+\Phi/S_0)\)</span></li>
+<li>势能三阶项 <span class="math inline">\(-\lambda_1 \Phi^3 /
+S_0\)</span></li>
+<li>势能四阶项 <span class="math inline">\(-\lambda_1 \Phi^4 /
+S_0^2\)</span></li>
+<li>4D 动能项 Clifford 约化</li>
+</ul>
+<h3 id="关键数值">关键数值</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">量</th>
+<th style="text-align: right;">数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(m_H^{\text{eff}}\)</span></td>
+<td style="text-align: right;">125.64 GeV</td>
+</tr>
+<tr>
+<td style="text-align: left;">与实验偏差</td>
+<td style="text-align: right;"><span
+class="math inline">\(0.23\%\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{N}_\Sigma\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\pi/\sqrt{8}
+= 1.11072\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(2\lambda_1^{\text{eff}}\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(782.10\
+\text{rad}^{-2}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(S_0\)</span></td>
+<td style="text-align: right;"><span
+class="math inline">\(137.0000000009\)</span></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="参考文献">参考文献</h2>
+<p>[1] 定理 10.12.2.01（Clifford 代数，由唯一公理 δ 导出）</p>
+<p>[2] 定理（Bott 周期 δ⁸ = 2π，七层截断 E₁…E₇）</p>
+<p>[3] 定理 7.8.6.03（ℳ𝒞ℐ三扇区，Cl(3) 半单分裂）</p>
+<p>[4] 定理（结构常数 Λ=3, k₀=2, ΔΘ=5）</p>
+<p>[5] 定理 2.3.7.02（Birkhoff 不动点 σ* → α⁻¹ ≈ 137.036）</p>
+<p>[6] 定理 1.6.3.01（谱间隙 <span class="math inline">\(\Delta\lambda_M
+= 2/r_M = 2\)</span>）</p>
+<p>[7] 定理 1.6.4.01（代数作用量 <span
+class="math inline">\(S(\sigma)\)</span>）</p>
+<p>[8] 定理 1.3.4.01（Born 法则）</p>
+<p>[9] 3.1 §5（质量算符 <span
+class="math inline">\(\hat{M}\)</span>）</p>
+<p>[10] PDG 2024 — Particle Data Group. Review of Particle Physics.
+Phys. Rev. D 110, 030001 (2024).</p>
+
+  </main>
+  <footer class="page-footer">
+    <p>© 2026 共扼谱几何 | Conjugate Spectral Geometry | <a href="../sitemap.xml">Sitemap</a></p>
+    <p class="build-info">Built: 2026-08-02 08:17:17</p>
+  </footer>
+</div>
+</body>
+</html>
