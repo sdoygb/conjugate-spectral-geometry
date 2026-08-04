@@ -1086,6 +1086,12 @@ def chat_completions():
         return openai_error("Missing or invalid 'messages' field", err_type="invalid_request_error", status=400)
     stream = data.get('stream', False)
 
+    # 子代理模式（AutoGen 等外部智能体调用）：跳过工具注入，直接文本回复
+    # 外部智能体有自己的多轮对话与角色分工，不需要中间层再触发自主工具循环
+    _is_subagent = request.headers.get('X-GAI-MODE', '') == 'subagent'
+    if _is_subagent:
+        logger.info(f"[SUBAGENT] 子代理模式：跳过工具注入，直接文本回复")
+
     # ===== 请求诊断日志 =====
     _debug_dir = os.path.dirname(os.path.abspath(__file__))
     try:
@@ -1583,7 +1589,7 @@ def chat_completions():
     # DeepSeek、OpenAI、Qwen、GLM 等主流模型均支持
     _model_lower = _selected_model.lower()
     _supports_tools = any(p in _model_lower for p in ['deepseek', 'gpt', 'qwen', 'glm', 'claude', 'gemini', 'chatglm', 'kimi', 'moonshot'])
-    if _supports_tools:
+    if _supports_tools and not _is_subagent:
         api_params["tools"] = ARTICLE_TOOLS
     else:
         logger.info(f"[ROUTE] 模型 {_selected_model} 可能不支持 function calling，跳过工具注入")
