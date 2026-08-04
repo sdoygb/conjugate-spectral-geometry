@@ -183,6 +183,35 @@ class MasterDatabase:
 
     # ==================== 候选公式提交 ====================
 
+    @staticmethod
+    def extract_article_number(formula_name: str, doc_text: str = "") -> str:
+        """
+        从公式名称/文档中提取文章系统的分层编号（双编号制之文章编号）。
+
+        文章编号格式（与文章原文对齐）：
+          - 分层编号: 定理0.9.2 / 定理0.3.1.01 / 定理3.11
+          - 连续编号: 定理167 / 定理51-52（索引区间）
+
+        优先级：公式名 > 文档（文档取首个匹配）。
+
+        Returns:
+            提取到的文章编号，无则返回 ""
+        """
+        import re
+        patterns = [
+            r'定理\s*(\d+(?:\.\d+)+)',   # 定理0.9.2 / 定理0.3.1.01
+            r'定理\s*(\d+-\d+)',          # 定理51-52（索引区间）
+            r'定理\s*(\d+)',               # 定理167
+        ]
+        for source in (formula_name, doc_text or ""):
+            if not source:
+                continue
+            for pat in patterns:
+                m = re.search(pat, source)
+                if m:
+                    return m.group(1)
+        return ""
+
     def submit_candidate(
         self,
         formula_name: str,
@@ -196,6 +225,7 @@ class MasterDatabase:
         priority_hint: bool = False,
         interlock_hint: Optional[List[str]] = None,
         interlock_reasoning: str = "",
+        article_number: str = "",
     ) -> str:
         """
         本地 Agent 提交候选公式到待验证队列。
@@ -261,6 +291,7 @@ class MasterDatabase:
                         "topology_class": topology_class,
                         "duplicate_of": existing_id,
                         "duplicate_similarity": str(round(best_similarity, 4)),
+                        "article_number": article_number or self.extract_article_number(formula_name, doc_text),
                     }
                     self._write(
                         self.pending_collection, 'add',
@@ -298,6 +329,8 @@ class MasterDatabase:
             "dependents_count": "0",  # 有多少pending公式依赖这个
             "interlock_hint": json.dumps(interlock_hint or [], ensure_ascii=False),
             "interlock_reasoning": interlock_reasoning or "",
+            # 双编号制：文章系统的分层编号（如 0.9.2 / 0.3.1.01），与文章对齐
+            "article_number": article_number or self.extract_article_number(formula_name, doc_text),
         }
 
         # 存储完整内容到 metadata 的 json 字段
@@ -595,6 +628,8 @@ class MasterDatabase:
             "original_submission": submission_id,
             # 拓扑分类（Berry相位锚点体系）
             "topology_class": pending["metadata"].get("topology_class", "A0"),
+            # 双编号制：主库永久编号 permanent_number(#N) + 文章分层编号 article_number
+            "article_number": pending["metadata"].get("article_number", ""),
             # Berry角度积累数据
             "berry_status": berry_status,
             "berry_phase": str(berry_phase),
@@ -681,6 +716,7 @@ class MasterDatabase:
             items.append({
                 "master_id": mid,
                 "permanent_number": int(meta.get("permanent_number", "0")) if meta.get("permanent_number") else 0,
+                "article_number": meta.get("article_number", ""),
                 "formula_name": meta.get("formula_name", ""),
                 "formula_type": meta.get("formula_type", ""),
                 "document": result["documents"][i],
@@ -716,6 +752,7 @@ class MasterDatabase:
             items.append({
                 "master_id": mid,
                 "formula_name": meta.get("formula_name", ""),
+                "article_number": meta.get("article_number", ""),
                 "document": results["documents"][0][i],
                 "distance": results["distances"][0][i],
             })
@@ -1323,6 +1360,61 @@ class MasterDatabase:
             "suspended_count": len(self.suspended_set),
             "embedding_ready": self._embedding_fn is not None,
         }
+
+    # ==================== 清库重置（重启模式） ====================
+
+    def reset_master_library(self, clear_pending: bool = False) -> Dict[str, Any]:
+        """
+        清空定理库并重置编号（重启主库AI时使用）。
+
+        双编号制规则：
+        - 主库编号 #N：自然数顺序，清库后从 #1 重新开始
+        - 文章编号 article_number：与文章系统对齐，由公式名/文档提取
+
+        Args:
+            clear_pending: 是否同时清空待验证队列（默认保留）
+
+        Returns:
+            {"success": bool, "cleared_master": int, "cleared_pending": int, "message": str}
+        """
+        cleared_master = 0
+        cleared_pending = 0
+        try:
+            # 1. 清空真理层（已验证公式）
+            if self.master_collection:
+                all_ids = self.master_collection.get(include=[])["ids"]
+                if all_ids:
+                    self._write(self.master_collection, 'delete', ids=all_ids)
+                cleared_master = len(all_ids)
+            # 2. 可选：清空待验证队列
+            if clear_pending and self.pending_collection:
+                all_pending = self.pending_collection.get(include=[])["ids"]
+                if all_pending:
+                    self._write(self.pending_collection, 'delete', ids=all_pending)
+                cleared_pending = len(all_pending)
+            # 3. 重置永久编号计数器 → 从 #1 重新开始
+            with open(self._seq_file, 'w') as f:
+                json.dump({"next_number": 1}, f)
+            # 4. 清空存疑集合
+            self.suspended_set.clear()
+            logger.info(
+                f"[MASTER-DB] 定理库已清空: master={cleared_master}, "
+                f"pending={cleared_pending}，编号从#1重新开始"
+            )
+            return {
+                "success": True,
+                "cleared_master": cleared_master,
+                "cleared_pending": cleared_pending,
+                "message": f"定理库已清空（{cleared_master}条），编号从#1重新开始",
+            }
+        except Exception as e:
+            logger.error(f"[MASTER-DB] 清空定理库失败: {e}")
+            return {
+                "success": False,
+                "cleared_master": 0,
+                "cleared_pending": 0,
+                "message": f"清空失败: {e}",
+            }
 
 
 class _SiliconFlowEmbedding:

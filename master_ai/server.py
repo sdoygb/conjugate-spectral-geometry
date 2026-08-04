@@ -491,6 +491,23 @@ def status():
     return jsonify(s)
 
 
+@app.route("/v1/master/reset", methods=["POST"])
+def reset_master():
+    """
+    清空定理库（重启模式）。
+
+    双编号制：清库后主库编号从 #1 重新开始。
+    默认只清空真理层（已验证公式），pending 队列保留；
+    传 {"clear_pending": true} 可同时清空待验证队列。
+    """
+    if not _check_auth():
+        return jsonify({"error": "unauthorized"}), 401
+    data = request.get_json(silent=True) or {}
+    clear_pending = bool(data.get("clear_pending", False))
+    result = master_db.reset_master_library(clear_pending=clear_pending)
+    return jsonify(result)
+
+
 @app.route("/v1/master/submit", methods=["POST"])
 def submit():
     """
@@ -534,6 +551,7 @@ def submit():
     priority_hint = data.get("priority_hint", False)  # 优先验证提示
     interlock_hint = data.get("interlock_hint", [])  # 子AI互锁提示
     interlock_reasoning = data.get("interlock_reasoning", "")  # 子AI互锁推导说明
+    article_number = data.get("article_number", "")  # 文章系统的分层编号（双编号制）
 
     if not formula_name or not formula_content:
         return jsonify({"error": "缺少 formula_name 或 formula_content"}), 400
@@ -550,6 +568,7 @@ def submit():
         priority_hint=priority_hint,
         interlock_hint=interlock_hint,
         interlock_reasoning=interlock_reasoning,
+        article_number=article_number,
     )
 
     # 检查提交后的实际状态（可能是duplicate）
@@ -755,6 +774,7 @@ def formula_detail(formula_id: str):
     return jsonify({
         "master_id": formula_id,
         "permanent_number": meta.get("permanent_number", ""),
+        "article_number": meta.get("article_number", ""),
         "formula_name": meta.get("formula_name", ""),
         "formula_type": meta.get("formula_type", ""),
         "document": result["documents"][0],

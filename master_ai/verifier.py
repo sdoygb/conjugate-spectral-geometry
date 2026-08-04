@@ -115,6 +115,7 @@ class MasterVerifier:
             return result
 
         formula_name = pending["metadata"].get("formula_name", "unnamed")
+        result["article_number"] = pending["metadata"].get("article_number", "")
         document = pending["document"]
         # 从文档中分离公式内容和推导链
         formula_content, derivation_chain = self._parse_document(document)
