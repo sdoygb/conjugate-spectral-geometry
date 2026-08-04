@@ -27,6 +27,8 @@ print(f"本轮入库: {len(admitted)} 条")
 # 文章路径映射：按文件名找
 art_map = {}
 for p in glob.glob('app/articles/**/*.md', recursive=True):
+    if '/archive/' in p or 'archive' in p.split('/'):
+        continue
     art_map[os.path.basename(p)] = p
 
 REF_PAT = re.compile(r'(定理|引理|命题|推论|公理|定义)\s*(\d+\.\d+\.\d+\.\d+)')

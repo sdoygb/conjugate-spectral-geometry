@@ -1,26 +1,42 @@
 #!/usr/bin/env python3
 """卷1-卷10 定理提取脚本（复用 article_scanner 的提取逻辑）
-输出: tools/theorem_candidates.json
+支持声明格式变体：行首、引用块(>)、方括号(【】)、表格行(|)、行中带标题加粗
+输出: tools/theorem_candidates_en.json
 """
 import os, re, json, glob
 
 ARTICLES_DIR = 'app/articles'
-OUT = 'tools/theorem_candidates.json'
+OUT = 'tools/theorem_candidates_en.json'
 
 # 提取正则（与 article_scanner.py 一致）
-BOLD_PATTERN = re.compile(
-    r'^\*\*(定理|命题|公理|引理|推论)\s*([\d\.]*)\s*(?:[（(]([^）)]*)[）)])?[。．.]?\*\*',
-    re.MULTILINE
-)
+TYPE_WORDS = r'(?:定理|命题|公理|引理|推论|定义|Theorem|Proposition|Axiom|Lemma|Corollary|Definition)'
+# 声明格式变体
+BOLD_PATTERNS = [
+    # 行首: **定理 1.1.1.01（标题）**
+    re.compile(r'^\*\*(' + TYPE_WORDS + r')\s*([\d\.]*)\s*(?:[（(](.+?)[）)])?[。．.]?\*\*', re.MULTILINE),
+    # 引用块: > **定理 10.17.6.01（标题）**
+    re.compile(r'^>\s*\*\*(' + TYPE_WORDS + r')\s*([\d\.]*)\s*(?:[（(](.+?)[）)])?[。．.]?\*\*', re.MULTILINE),
+    # 方括号: **【定理 7.11.3.01】（标题）**
+    re.compile(r'^\*\*【(' + TYPE_WORDS + r')\s*([\d\.]*)\s*】(?:[（(](.+?)[）)])?[。．.]?\*\*', re.MULTILINE),
+    # 表格行: | **定理 7.8.9.01。** |
+    re.compile(r'^\|\s*\*\*(' + TYPE_WORDS + r')\s*([\d\.]*)\s*(?:[（(](.+?)[）)])?[。．.]?\*\*', re.MULTILINE),
+    # 表格行无加粗: | 定理 0.1.2.01 | 描述 |
+    re.compile(r'^\|\s*(' + TYPE_WORDS + r')\s*([\d\.]+)\s*(?:[（(](.+?)[）)])?\s*\|', re.MULTILINE),
+    # 行中加粗声明（ASCII lookbehind 避免中文被当 \w；括号标题可选）:
+    # ...**定理 8.16.1.07（级）**... 或 | 描述 | **定理 7.8.9.01。** |
+    re.compile(r'(?<![A-Za-z0-9_])\*\*(' + TYPE_WORDS + r')\s*([\d\.]+)\s*(?:[（(](.+?)[）)]\s*)?[。．]?\*\*'),
+]
 HEAD_PATTERN = re.compile(
-    r'^(?:#{1,3})\s*(定理|命题|公理|引理|推论)\s*([\d\.]*)\s*(?:[（(]([^）)]*)[）)])?',
+    r'^(?:#{1,3})\s*(?:\d+(?:\.\d+)*\s*)?(' + TYPE_WORDS + r')\s*([\d\.]*)\s*(?:[（(](.+?)[）)])?',
     re.MULTILINE
 )
 
 def extract_from_md(text):
     """返回 [(type, number, title, content)]"""
     results = []
-    matches = list(BOLD_PATTERN.finditer(text))
+    matches = []
+    for pat in BOLD_PATTERNS:
+        matches += list(pat.finditer(text))
     matches += list(HEAD_PATTERN.finditer(text))
     matches.sort(key=lambda m: m.start())
     # 去重（同一位置的 bold 和 head 都匹配时取 bold）
@@ -32,7 +48,7 @@ def extract_from_md(text):
         seen_pos.add(m.start())
         dedup.append(m)
     for i, m in enumerate(dedup):
-        t, num, title = m.group(1), m.group(2).strip(), (m.group(3) or '').strip()
+        t, num, title = m.group(1), (m.group(2) or '').strip(), (m.group(3) or '').strip()
         end = dedup[i+1].start() if i+1 < len(dedup) else min(m.end() + 1500, len(text))
         content = text[m.end():end].strip()
         if len(content) > 1200:
@@ -45,7 +61,7 @@ def main():
     # 卷1-卷10：ZH 版在根目录（1.x~10.x），EN 版在 EN/N/
     zh_files = sorted(glob.glob(os.path.join(ARTICLES_DIR, '[1-9]*.md')) +
                       glob.glob(os.path.join(ARTICLES_DIR, '10*.md')))
-    en_dirs = [os.path.join(ARTICLES_DIR, 'EN', str(i)) for i in range(1, 11)]
+    en_dirs = [os.path.join(ARTICLES_DIR, 'EN', str(i)) for i in range(0, 12)]
     en_files = []
     for d in en_dirs:
         en_files += sorted(glob.glob(os.path.join(d, '*.md')))
