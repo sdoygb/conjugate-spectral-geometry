@@ -4,12 +4,14 @@ verifier.py — 主库AI验证引擎
 唯一入库判据：圆满定理（由主库AI的LLM直接判断）。
 
 验证流程：
-  候选公式 → Berry机械检测（快速通道）
-              ├─ n=3(上圆满) → 直接入库
-              └─ 其他 → LLM圆满定理判断
-                         ├─ 逻辑自洽 → 入库
-                         ├─ 依赖不足 → 等待补全
-                         └─ 不满足 → 驳回
+  候选公式 → Berry机械检测（仅记录，作为LLM参考）
+              ↓
+            §9.6 证伪条件检查（仅记录，作为LLM参考）
+              ↓
+            LLM圆满定理判断（唯一入库判据）
+              ├─ 圆满 → 入库
+              ├─ 依赖不足 → 等待补全
+              └─ 不满足 → 驳回
 """
 import os
 import json
@@ -87,10 +89,10 @@ class MasterVerifier:
 
         流程：
         1. 从待验证队列获取公式
-        2. Berry回路闭合检测
-        3. §9.6 证伪条件检查
-        4. 独立推导复现（LLM 从公理重新推导）
-        5. 全部通过 → 入库；任一失败 → 驳回
+        2. Berry回路闭合检测（仅记录，作为LLM判断的参考数据）
+        3. §9.6 证伪条件检查（仅记录，作为LLM判断的参考数据）
+        4. LLM圆满定理判断（唯一入库判据）：
+           圆满 → 入库；依赖不足 → 等待补全；不满足 → 驳回
 
         Returns:
             完整验证结果
@@ -245,67 +247,81 @@ class MasterVerifier:
 
         result["stages"]["berry_check"] = berry_dict
 
+        # ---- 阶段2: §9.6 证伪条件检查（仅记录，不作为入库门槛） ----
+        # 机械检查公式中出现的物理量数值（r_core/S_e/信息熵/相位行为）
+        # 是否与锁定常数一致。结果仅作为LLM圆满判断的参考，不直接拦截——
+        # 入库的唯一判据是LLM的圆满定理判断。
+        falsify_result = self.falsification_checker.run_all_checks(
+            formula_content=formula_content,
+            derivation_chain=derivation_chain,
+            berry_result=berry_dict,
+        )
+        result["stages"]["falsification"] = falsify_result
+        falsification_summary = ""
+        if not falsify_result.get("all_passed", True):
+            failed_checks = [
+                c for c in falsify_result.get("checks", [])
+                if not c.get("passed")
+            ]
+            falsification_summary = "；".join(
+                f"[{c.get('check_name')}] {c.get('detail', '')}"
+                for c in failed_checks
+            )
+            logger.info(
+                f"[VERIFIER] 证伪检查记录(不拦截): "
+                f"{falsify_result.get('rejection_reason', '')[:200]}"
+            )
+
         # ---- 圆满判据：唯一入库标准 ----
-        # 主库AI（LLM）是圆满定理的最终判官。
-        # Berry机械计算作为快速通道：如果机械检测到n=3上圆满，直接入库。
-        # 否则，由LLM读取完整文章内容，从数学本质上判断公式是否符合圆满定理。
-        if berry_result.is_consummated and berry_result.n_value >= 3:
-            # 快速通道：机械Berry检测到n=3上圆满，直接入库
+        # 主库AI（LLM）是圆满定理的唯一判官。
+        # Berry机械检测仅作记录与参考：机械检测只统计推导链文本中
+        # 角度序列对圆满态锚点的穿越次数，可被伪造的路径文本欺骗，
+        # 不能作为入库依据。所有公式统一由LLM从数学本质判断圆满性。
+        logger.info(
+            f"[VERIFIER] Berry机械检测记录(n={berry_result.n_value}, "
+            f"level={berry_result.consummation_level})，转交LLM判断圆满定理"
+        )
+        consummation_judgment = self._llm_judge_consummation(
+                formula_name=formula_name,
+                formula_content=formula_content,
+                derivation_chain=derivation_chain,
+                berry_dict=berry_dict,
+                external_anchors=external_anchors,
+                falsification_summary=falsification_summary,
+            )
+        result["stages"]["consummation_judgment"] = consummation_judgment
+
+        if consummation_judgment.get("should_promote"):
             result["passed"] = True
             result["action"] = "promoted"
             result["rejection_reason"] = ""
             result["used_anchors"] = []
-            result["judge_method"] = "berry_mechanical"
+            result["judge_method"] = "llm_consummation"
             logger.info(
-                f"[VERIFIER] 圆满判据通过(机械): Berry相位 {berry_result.berry_phase:.4f} rad "
-                f"= {berry_result.n_value}×2π ({berry_result.consummation_level})，直接入库"
+                f"[VERIFIER] 圆满判据通过(LLM): {formula_name} "
+                f"→ {consummation_judgment.get('consummation_level', '')}，入库"
+            )
+        elif consummation_judgment.get("is_dependency_gap"):
+            result["passed"] = False
+            result["action"] = "dependency_gap"
+            result["rejection_reason"] = consummation_judgment.get("reason", "依赖不足")
+            result["dependency_gap"] = {
+                "missing_dependencies": consummation_judgment.get("missing_dependencies", []),
+                "guidance": consummation_judgment.get("guidance", ""),
+            }
+            result["judge_method"] = "llm_consummation"
+            logger.info(
+                f"[VERIFIER] 圆满判据(LLM): {formula_name} → 依赖不足，等待补全"
             )
         else:
-            # LLM通道：让主库AI从数学本质上判断圆满定理
+            result["passed"] = False
+            result["action"] = "rejected"
+            result["rejection_reason"] = consummation_judgment.get("reason", "不满足圆满定理")
+            result["judge_method"] = "llm_consummation"
             logger.info(
-                f"[VERIFIER] Berry机械检测未通过(n={berry_result.n_value}, "
-                f"level={berry_result.consummation_level})，转交LLM判断圆满定理"
+                f"[VERIFIER] 圆满判据(LLM): {formula_name} → 驳回: "
+                f"{consummation_judgment.get('consummation_level', '未圆满')}"
             )
-            consummation_judgment = self._llm_judge_consummation(
-                    formula_name=formula_name,
-                    formula_content=formula_content,
-                    derivation_chain=derivation_chain,
-                    berry_dict=berry_dict,
-                    external_anchors=external_anchors,
-                )
-            result["stages"]["consummation_judgment"] = consummation_judgment
-
-            if consummation_judgment.get("should_promote"):
-                result["passed"] = True
-                result["action"] = "promoted"
-                result["rejection_reason"] = ""
-                result["used_anchors"] = []
-                result["judge_method"] = "llm_consummation"
-                logger.info(
-                    f"[VERIFIER] 圆满判据通过(LLM): {formula_name} "
-                    f"→ {consummation_judgment.get('consummation_level', '')}，入库"
-                )
-            elif consummation_judgment.get("is_dependency_gap"):
-                result["passed"] = False
-                result["action"] = "dependency_gap"
-                result["rejection_reason"] = consummation_judgment.get("reason", "依赖不足")
-                result["dependency_gap"] = {
-                    "missing_dependencies": consummation_judgment.get("missing_dependencies", []),
-                    "guidance": consummation_judgment.get("guidance", ""),
-                }
-                result["judge_method"] = "llm_consummation"
-                logger.info(
-                    f"[VERIFIER] 圆满判据(LLM): {formula_name} → 依赖不足，等待补全"
-                )
-            else:
-                result["passed"] = False
-                result["action"] = "rejected"
-                result["rejection_reason"] = consummation_judgment.get("reason", "不满足圆满定理")
-                result["judge_method"] = "llm_consummation"
-                logger.info(
-                    f"[VERIFIER] 圆满判据(LLM): {formula_name} → 驳回: "
-                    f"{consummation_judgment.get('consummation_level', '未圆满')}"
-                )
 
         self._finalize(result, start_time, submission_id)
         return result
@@ -359,8 +375,8 @@ class MasterVerifier:
                 if best_sim > 0.95:
                     # 高度相似——附加为替代证明（如果推导方法不同）
                     derivation_text = result.get("stages", {}).get(
-                        "independent_derivation", {}
-                    ).get("derivation", "")
+                        "consummation_judgment", {}
+                    ).get("reason", "")
                     method = self._extract_proof_method(derivation_text, formula_name)
 
                     proof_data = {
@@ -414,10 +430,13 @@ class MasterVerifier:
             result["master_id"] = master_id
 
             # ---- 依赖图：注册入库公式 ----
-            # 提取推导中引用的L3定理作为依赖
-            derivation_text = result.get("stages", {}).get(
-                "independent_derivation", {}
-            ).get("derivation", "")
+            # 提取LLM圆满判定中引用的L3定理作为依赖
+            judgment = result.get("stages", {}).get("consummation_judgment", {})
+            derivation_text = judgment.get("reason", "")
+            if judgment.get("missing_dependencies"):
+                derivation_text += "\n" + "\n".join(
+                    judgment.get("missing_dependencies", [])
+                )
             used_l3 = self._extract_l3_references(derivation_text)
 
             self.dep_graph.register_formula(
@@ -561,6 +580,7 @@ class MasterVerifier:
         derivation_chain: str,
         berry_dict: Dict[str, Any],
         external_anchors: List[str],
+        falsification_summary: str = "",
     ) -> Dict[str, Any]:
         """
         主库AI（LLM）直接判断公式是否符合圆满定理。
@@ -611,6 +631,15 @@ class MasterVerifier:
 【Berry相位机械检测数据】
 - 无角度数据：推导链中未发现 θ_M/θ_C/θ_I 格式的角度参数
 - 这不代表公式不圆满——角度参数可能以LaTeX、中文描述、隐含形式存在
+"""
+
+        # §9.6 证伪机械检查摘要（仅供参考）
+        falsification_note = ""
+        if falsification_summary:
+            falsification_note = f"""
+【§9.6证伪机械检查（仅供参考，不作为判据）】
+{falsification_summary}
+- 机械检查只能捕捉显式数值偏差，请以数学本质判断为准
 """
 
         # 外部锚点
@@ -664,6 +693,7 @@ class MasterVerifier:
 【推导链】
 {derivation_chain[:5000]}
 {berry_summary}
+{falsification_note}
 {anchor_text}
 
 请严格按照格式输出判断结果。"""
@@ -715,7 +745,11 @@ class MasterVerifier:
 
         # 提取是否入库
         promote_match = re.search(r'【是否入库】\s*(.+?)(?:\n|$)', llm_response)
-        should_promote = "是" in (promote_match.group(1) if promote_match else "")
+        verdict_text = (promote_match.group(1) if promote_match else "").strip()
+        # 只认明确肯定的"是"；"不是""是否""暂是"等含"是"的否定或模糊表述
+        # 一律不得判为入库
+        verdict = re.split(r'[，。,.;；（(]', verdict_text)[0].strip()
+        should_promote = verdict == "是"
 
         # 提取判定理由
         reason_match = re.search(r'【判定理由】\s*(.+?)(?=\n【|$)', llm_response, re.DOTALL)
@@ -937,6 +971,23 @@ class MasterVerifier:
         result["duration_seconds"] = round(time.time() - start_time, 2)
         return result
 
+    @staticmethod
+    def _has_negation_before(text: str, keyword: str, window: int = 6) -> bool:
+        """
+        检查 keyword 之前 window 个字符内是否出现否定词。
+
+        用于解析LLM的自然语言判定："不存在循环论证""无循环论证"
+        "并非闭环自洽" 中的否定词必须被识别，否则会把否定表述
+        误判为肯定（放水）或把肯定表述误判为否定（错杀）。
+        """
+        import re
+        negations = ("不", "无", "非", "未", "没", "否")
+        for m in re.finditer(re.escape(keyword), text):
+            prefix = text[max(0, m.start() - window):m.start()]
+            if any(w in prefix for w in negations):
+                return True
+        return False
+
     def _call_llm_for_cycle(self, system_prompt: str, user_prompt: str) -> Dict[str, Any]:
         """调用LLM进行闭环验证分析"""
         try:
@@ -955,8 +1006,14 @@ class MasterVerifier:
 
             analysis = response.choices[0].message.content
 
-            is_coherent = "闭环自洽" in analysis and "不自洽" not in analysis
-            has_circular = "循环论证" in analysis and "非" not in analysis.split("循环论证")[0][-5:]
+            is_coherent = (
+                "闭环自洽" in analysis
+                and not self._has_negation_before(analysis, "闭环自洽")
+            )
+            has_circular = (
+                "循环论证" in analysis
+                and not self._has_negation_before(analysis, "循环论证")
+            )
 
             logger.info(
                 f"[VERIFIER] 闭环LLM分析: coherent={is_coherent}, "
