@@ -42,6 +42,8 @@ class DependencyGraph:
         self._name_to_master: Dict[str, str] = {}
         # 历史重试记录
         self._retry_history: List[Dict] = []
+        # 主库真理层已知 master_id 集合（sync 时填充，用于校验 promoted 节点防幽灵）
+        self._known_master_ids: Set[str] = set()
         # 边来源记录：detect_cycles时填充，供detect_interlocks使用
         self._edge_sources: Dict[tuple, str] = {}
 
@@ -50,13 +52,11 @@ class DependencyGraph:
 
     def sync_with_master_db(self, master_collection) -> int:
         """
-        与真理库同步：将所有已入库真理注册到_name_to_master映射。
-
-        问题是：很多真理通过历史验证入库，但依赖图可能被重置或未持久化，
-        导致_name_to_master只有很少的条目。验证器查依赖时找不到已入库的定理，
-        误判为"依赖缺失"。
-
-        此方法在主库启动时调用，确保所有真理都注册到依赖图。
+        与真理库双向同步（主库为唯一权威，防止幽灵节点与映射漂移）：
+        1. 删除幽灵 promoted 节点（master_id 不在主库）与非规范节点（fid != master_id）
+        2. 补全缺失的主库真理节点
+        3. 重建 name_to_master（全名+简称，全部指向正式 master_id）
+        4. 填充 _known_master_ids（供 register/update 的 promoted 校验）
 
         Args:
             master_collection: ChromaDB的master_collection对象
@@ -65,44 +65,73 @@ class DependencyGraph:
             新增的映射数量
         """
         all_truth = master_collection.get(include=["metadatas"])
-        added = 0
+        auth: Dict[str, str] = {}
         for meta in all_truth["metadatas"]:
             name = meta.get("formula_name", "")
             master_id = meta.get("master_id", "")
             if not name or not master_id:
                 continue
+            auth[master_id] = name
+            self._known_master_ids.add(master_id)
 
-            # 注册全名
-            if name not in self._name_to_master:
-                self._name_to_master[name] = master_id
-                added += 1
+        # 1) 清理：删除幽灵 promoted 节点与非规范节点（以主库为唯一权威）
+        removed = 0
+        for fid in list(self._nodes.keys()):
+            node = self._nodes[fid]
+            if node.get("status") == "promoted":
+                mid = node.get("master_id", "")
+                if mid not in auth or fid != mid:
+                    del self._nodes[fid]
+                    removed += 1
 
-            # 注册简称（去掉括号部分）
-            short_name = name.split("（")[0].split("(")[0].strip()
-            if short_name and short_name not in self._name_to_master:
-                self._name_to_master[short_name] = master_id
-                added += 1
+        # 清理前备份（一旦发生清理，保留恢复点）
+        if removed and self.persist_path and os.path.exists(self.persist_path):
+            try:
+                import shutil
+                backup_dir = os.path.join(os.path.dirname(self.persist_path), "db_backups")
+                os.makedirs(backup_dir, exist_ok=True)
+                ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+                shutil.copy(
+                    self.persist_path,
+                    os.path.join(backup_dir, f"dependency_graph_{ts}_pre_cleanup.json"),
+                )
+            except Exception as e:
+                logger.warning(f"[DEP-GRAPH] 清理前备份失败: {e}")
 
-            # 同时确保节点也注册了
-            if master_id not in self._nodes:
-                self._nodes[master_id] = {
-                    "formula_id": master_id,
+        # 2) 补全缺失真理节点
+        added = 0
+        now = datetime.now().isoformat()
+        for mid, name in auth.items():
+            if mid not in self._nodes:
+                self._nodes[mid] = {
+                    "formula_id": mid,
                     "formula_name": name,
                     "status": "promoted",
                     "dependencies": [],
-                    "master_id": master_id,
-                    "updated_at": datetime.now().isoformat(),
+                    "master_id": mid,
+                    "updated_at": now,
                     "interlock_hint": [],
                     "interlock_reasoning": "",
                 }
+                added += 1
 
-        if added > 0:
-            self._rebuild_reverse()
-            self._save()
+        # 3) 重建 name_to_master（以主库为唯一权威，清除一切漂移映射）
+        self._name_to_master.clear()
+        for mid, name in auth.items():
+            self._name_to_master[name] = mid
+            short_name = name.split("（")[0].split("(")[0].strip()
+            if short_name and short_name not in self._name_to_master:
+                self._name_to_master[short_name] = mid
+
+        self._rebuild_reverse()
+        self._save()
+
+        if added or removed:
             logger.info(
-                f"[DEP-GRAPH] 与真理库同步完成: 新增 {added} 个名称映射, "
-                f"总计 {len(self._name_to_master)} 个映射, "
-                f"{len(self._nodes)} 个节点"
+                f"[DEP-GRAPH] 与真理库双向同步完成: 新增 {added} 节点, "
+                f"清理 {removed} 幽灵/非规范节点, "
+                f"映射 {len(self._name_to_master)} 个, "
+                f"节点 {len(self._nodes)} 个"
             )
 
         return added
@@ -148,13 +177,21 @@ class DependencyGraph:
             "interlock_reasoning": interlock_reasoning or "",
         }
 
-        # 如果已入库，注册名称映射
+        # 如果已入库，注册名称映射（校验 master_id 确在主库真理层，防幽灵节点）
         if status == "promoted" and master_id:
-            self._name_to_master[formula_name] = master_id
-            # 也注册简称（去掉括号部分）
-            short_name = formula_name.split("（")[0].split("(")[0].strip()
-            if short_name:
-                self._name_to_master[short_name] = master_id
+            if self._known_master_ids and master_id not in self._known_master_ids:
+                logger.warning(
+                    f"[DEP-GRAPH] promoted 校验失败: {formula_name} 的 master_id "
+                    f"{master_id} 不在主库真理层，降级为 pending"
+                )
+                status = "pending"
+                self._nodes[formula_id]["status"] = status
+            else:
+                self._name_to_master[formula_name] = master_id
+                # 也注册简称（去掉括号部分）
+                short_name = formula_name.split("（")[0].split("(")[0].strip()
+                if short_name:
+                    self._name_to_master[short_name] = master_id
 
         # 重建反向索引
         self._rebuild_reverse()
@@ -182,7 +219,14 @@ class DependencyGraph:
 
         if status == "promoted":
             name = self._nodes[formula_id].get("formula_name", "")
-            if master_id:
+            if master_id and self._known_master_ids and master_id not in self._known_master_ids:
+                logger.warning(
+                    f"[DEP-GRAPH] promoted 校验失败: {name} 的 master_id "
+                    f"{master_id} 不在主库真理层，保持原状态"
+                )
+                status = self._nodes[formula_id].get("status", "pending")
+                self._nodes[formula_id]["status"] = status
+            elif master_id:
                 self._name_to_master[name] = master_id
                 short_name = name.split("（")[0].split("(")[0].strip()
                 if short_name:
@@ -452,6 +496,8 @@ class DependencyGraph:
         node_ids = list(self._nodes.keys())
 
         for fid, node in self._nodes.items():
+            if node.get("status") == "rejected":
+                continue  # 已驳回提交的依赖声明不参与建边（防假环）
             deps = node.get("dependencies", [])
             for dep in deps:
                 dep_short = dep.split("（")[0].split("(")[0].strip().lower()
@@ -477,6 +523,8 @@ class DependencyGraph:
         # 纳入子AI互锁提示作为额外边
         # 如果子AI说公式A与公式B互锁，则建立A→B和B→A的双向边
         for fid, node in self._nodes.items():
+            if node.get("status") == "rejected":
+                continue  # 已驳回提交的互锁提示不参与建边（防假环）
             hints = node.get("interlock_hint", [])
             if not hints:
                 continue

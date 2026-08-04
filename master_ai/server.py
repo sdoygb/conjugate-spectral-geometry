@@ -62,8 +62,13 @@ def init_services():
 
     # 与真理库同步：确保所有已入库真理都注册到依赖图
     synced = verifier.dep_graph.sync_with_master_db(master_db.master_collection)
-    if synced > 0:
-        logger.info(f"[SERVER] 依赖图与真理库同步: 新增 {synced} 个映射")
+    summary = verifier.dep_graph.get_graph_summary()
+    logger.info(
+        f"[SERVER] 依赖图同步: 新增 {synced} 映射 | "
+        f"节点 {summary['total_nodes']} (promoted {summary['promoted']}, "
+        f"blocked {summary['blocked']}, rejected {summary['rejected']}) | "
+        f"映射 {summary['master_theorems']}"
+    )
 
     logger.info("[SERVER] 主库AI服务初始化完成")
 
@@ -556,6 +561,27 @@ def submit():
     if not formula_name or not formula_content:
         return jsonify({"error": "缺少 formula_name 或 formula_content"}), 400
 
+    # ---- 唯一判据强制：非公理公式必须携带圆满性证据 ----
+    # 与 master_db.submit_candidate 同步：Berry闭合自检或【依赖】+【共扼圆满】标注
+    if formula_type != "公理":
+        lv = local_verification or {}
+        has_berry_self_check = any(
+            k in lv for k in ("berry_phase", "n_value", "is_consummated")
+        )
+        has_consummation = (
+            ("【共扼圆满】" in derivation_chain) or has_berry_self_check
+        )
+        if "【依赖】" not in derivation_chain:
+            return jsonify({
+                "error": "依赖标识拒收：非公理公式必须提供上一级依赖标识（推导链中的【依赖】标注）",
+            }), 400
+        if not has_consummation:
+            return jsonify({
+                "error": "唯一判据拒收：非公理公式必须提供 local_verification"
+                         "（Berry闭合自检：berry_phase/n_value/is_consummated）"
+                         "或【共扼圆满】标注",
+            }), 400
+
     submission_id = master_db.submit_candidate(
         formula_name=formula_name,
         formula_content=formula_content,
@@ -705,8 +731,10 @@ def verify():
     submission_id = data.get("submission_id", "")
 
     if not submission_id:
-        # 自动取最早的待验证公式
-        pending_list = master_db.list_pending(limit=1)
+        # 自动取最早的待验证公式（仅取真正待验证的，跳过已处理/已归档）
+        pending_list = master_db.list_pending(limit=500)
+        pending_list = [p for p in pending_list if p.get("status") in ("pending", "processing", "waiting_dependencies")]
+        pending_list.sort(key=lambda p: p.get("submitted_at", ""))
         if not pending_list:
             return jsonify({"error": "没有待验证的公式"}), 404
         submission_id = pending_list[0]["submission_id"]
@@ -723,7 +751,7 @@ def pending():
 
     limit = int(request.args.get("limit", "500"))
     pending_list = master_db.list_pending(limit=limit)
-    still_pending = [p for p in pending_list if p.get("status") in ("pending", "processing", "waiting_dependencies", "alternative_proof")]
+    still_pending = [p for p in pending_list if p.get("status") in ("pending", "processing", "waiting_dependencies")]
     return jsonify({
         "pending": pending_list,
         "count": len(pending_list),
