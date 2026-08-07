@@ -563,13 +563,13 @@ The main site is a 1121-qubit platform (1024 data qubits plus measurement, no an
 **Theorem 26 (Window ladder).** On the 1024-qubit platform the four observable windows
 $\mathcal{W}_d = \{\theta : 10^{-3} \le c_d\theta^d \le 0.5\}$ are
 
-$$\mathcal{W}_4 = [0.017, 0.090], \qquad \mathcal{W}_8 = [0.049, 0.113], \qquad \mathcal{W}_{16} = [0.205, 0.311], \qquad \mathcal{W}_{32} = [0.457, 0.563],$$
+$$\mathcal{W}_4 = [0.017, 0.080], \qquad \mathcal{W}_8 = [0.049, 0.107], \qquad \mathcal{W}_{16} = [0.205, 0.302], \qquad \mathcal{W}_{32} = [0.457, 0.555],$$
 
-with gaps $[0.113, 0.205]$ and $[0.311, 0.457]$ between tiers $8/16$ and $16/32$, and overlap $[0.049, 0.090]$ between tiers $4/8$.
+with gaps $[0.107, 0.205]$ and $[0.302, 0.457]$ between tiers $8/16$ and $16/32$, and overlap $[0.049, 0.080]$ between tiers $4/8$.
 
 *Proof.* Substitute the closed-form $c_d$ of §8.1 into $10^{-3} \le c_d\theta^d \le 0.5$ and solve for $\theta$; the ladder structure (windows separated by gaps, low tiers overlapping) follows from the closed-form coefficients, not from fitting. ∎
 
-The ladder itself is a signature of the geometric prediction: the gaps are intervals where tiers $16/32$ still sit at baseline (below $10^{-3}$) while tiers $4/8$ have already saturated (above $0.5$) — a "double void" that cannot arise from a smooth fitted model. Recommended sampling points (with the sub-leading correction included) are five loss values per tier, e.g. for $d=4$: $\theta \in \{0.02, 0.03, 0.04, 0.05, 0.06\}$ giving $\mathrm{loss} \in [2\times10^{-3}, 2.1\times10^{-1}]$; the other tiers follow the same five-point design in their windows.
+The ladder itself is a signature of the geometric prediction: the gaps are intervals where tiers $16/32$ still sit at baseline (below $10^{-3}$) while tiers $4/8$ have already saturated (above $0.5$) — a "double void" that cannot arise from a smooth fitted model. Recommended sampling points (with the sub-leading correction included) are five loss values per tier, e.g. for $d=4$: $\theta \in \{0.02, 0.03, 0.04, 0.05, 0.06\}$ giving $\mathrm{loss} \in [2\times10^{-3}, 1.6\times10^{-1}]$; the other tiers follow the same five-point design in their windows.
 
 **Control of $\theta$.** Injection is a pure-type coherent rotation $R_x(\theta)$ about a fixed axis applied to every qubit with a single common angle. The common angle corresponds exactly to the branch amplitude $(\theta/2)^{2w}$ of the leading-order expansion (coefficient $2^{-2w_0}$), with no distribution-averaging factor. At the high end ($\theta \approx 0.5$, single-qubit rotations of order $30^\circ$) injection and noise are no longer separable — precisely the discriminating region: the geometric prediction demands exact $\theta^{32}$ scaling where a non-geometric model (e.g. independent bit-flip dominated $\theta^1$) would give slope 1–2.
 
