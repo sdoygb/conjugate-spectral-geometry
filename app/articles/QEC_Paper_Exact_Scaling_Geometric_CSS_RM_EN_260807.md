@@ -703,23 +703,40 @@ We have developed a verification framework and exact closed-form theory for the 
 
 [1] P. W. Shor, "Scheme for reducing decoherence in quantum computer memory," Phys. Rev. A **52**, R2493 (1995).
 [2] A. M. Steane, "Error correcting codes in quantum theory," Phys. Rev. Lett. **77**, 793 (1996).
-[3] A. R. Calderbank and P. W. Shor, "Good quantum error-correcting codes exist," Phys. Rev. A **54**, 1098 (1996).
-[4] D. Gottesman, "Stabilizer codes and quantum error correction," Phys. Rev. A **54**, 1862 (1997).
-[5] A. R. Calderbank, E. M. Rains, P. W. Shor, and N. J. A. Sloane, "Quantum error correction via codes over GF(4)," IEEE Trans. Inf. Theory **44**, 1369 (1998).
-[6] F. J. MacWilliams and N. J. A. Sloane, *The Theory of Error-Correcting Codes* (North-Holland, 1977).
-[7] I. S. Reed, "A class of multiple-error-correcting codes and the decoding scheme," IRE Trans. Inf. Theory **4**, 38 (1954).
-[8] D. E. Muller, "Application of Boolean algebra to switching circuit design and to error detection," IRE Trans. Electron. Comput. **3**, 6 (1954).
-[9] T. Kasami and N. Tokura, "On the weight structure of Reed–Muller codes," IEEE Trans. Inf. Theory **16**, 752 (1970).
-[10] E. Knill and R. Laflamme, "Theory of quantum error-correcting codes," Phys. Rev. A **55**, 900 (1997).
-[11] E. Knill, R. Laflamme, and W. H. Zurek, "Resilient quantum computation," Science **279**, 342 (1998).
-[12] A. G. Fowler, M. Mariantoni, J. M. Martinis, and A. N. Cleland, "Surface codes: Towards practical large-scale quantum computation," Phys. Rev. A **86**, 032324 (2012).
-[13] E. T. Campbell, B. M. Terhal, and C. Vuillot, "Roads towards fault-tolerant universal quantum computation," Nature **549**, 172 (2017).
-[14] S. Bravyi and A. Kitaev, "Universal quantum computation with ideal Clifford gates and noisy ancillas," Phys. Rev. A **71**, 022316 (2005).
+[3] P. Aliferis, D. Gottesman, and J. Preskill, "Quantum accuracy threshold for concatenated distance-3 codes," Quantum Inf. Comput. **6**, 97 (2006).
+[4] D. Aharonov and M. Ben-Or, "Fault-tolerant quantum computation with constant error rate," SIAM J. Comput. **38**, 1207 (2008).
+[5] J. J. Wallman and J. Emerson, "Noise tailoring for scalable quantum computation via randomized compiling," Phys. Rev. A **94**, 052325 (2016).
+[6] M. R. Geller and Z. Zhou, "Efficient error models for fault-tolerant architectures and the Pauli twirling approximation," Phys. Rev. A **88**, 012314 (2013).
+[7] A. R. Calderbank and P. W. Shor, "Good quantum error-correcting codes exist," Phys. Rev. A **54**, 1098 (1996).
+[8] D. Gottesman, "Stabilizer codes and quantum error correction," Phys. Rev. A **54**, 1862 (1997).
+[9] F. J. MacWilliams and N. J. A. Sloane, *The Theory of Error-Correcting Codes* (North-Holland, 1977).
+[10] I. S. Reed, "A class of multiple-error-correcting codes and the decoding scheme," IRE Trans. Inf. Theory **4**, 38 (1954).
+[11] D. E. Muller, "Application of Boolean algebra to switching circuit design and to error detection," IRE Trans. Electron. Comput. **3**, 6 (1954).
+[12] T. Kasami and N. Tokura, "On the weight structure of Reed–Muller codes," IEEE Trans. Inf. Theory **16**, 752 (1970).
+[13] S. Bravyi and A. Kitaev, "Universal quantum computation with ideal Clifford gates and noisy ancillas," Phys. Rev. A **71**, 022316 (2005).
+[14] E. T. Campbell, B. M. Terhal, and C. Vuillot, "Roads towards fault-tolerant universal quantum computation," Nature **549**, 172 (2017).
 [15] E. Dennis, A. Kitaev, A. Landahl, and J. Preskill, "Topological quantum memory," J. Math. Phys. **43**, 4452 (2002).
-[16] P. Aliferis, D. Gottesman, and J. Preskill, "Quantum accuracy threshold for concatenated distance-3 codes," Quantum Inf. Comput. **6**, 97 (2006).
-[17] P. Panteleev and G. Kalachev, "Quantum LDPC codes with almost linear minimum distance," IEEE Trans. Inf. Theory **68**, 213 (2022).
-[18] A. Leverrier and G. Zémor, "Quantum Tanner codes," in *Proc. 63rd IEEE FOCS* (2022), pp. 872–883.
-[19] A. M. Steane, "Quantum Reed–Muller codes," IEEE Trans. Inf. Theory **45**, 1701 (1999).
-[20] E. Knill, "Quantum computing with realistically noisy devices," Nature **434**, 39 (2005).
-[21] R. Raussendorf and J. Harrington, "Fault-tolerant quantum computation with high threshold in two dimensions," Phys. Rev. Lett. **98**, 190504 (2007).
-[22] Google Quantum AI and Collaborators, "Quantum error correction below the surface code threshold," Nature **625**, 74 (2024).
+[16] E. Knill, R. Laflamme, and W. H. Zurek, "Resilient quantum computation," Science **279**, 342 (1998).
+[17] J. Roffe, "Quantum error correction: an introductory guide," Contemp. Phys. **60**, 226 (2019).
+[18] B. Eastin and E. Knill, "Restrictions on transversal encoded quantum gate sets," Phys. Rev. Lett. **102**, 110502 (2009).
+[19] B. Zeng, A. Cross, and I. L. Chuang, "Transversality versus universality for additive quantum codes," IEEE Trans. Inf. Theory **57**, 6272 (2011).
+[20] S. Bravyi and J. Haah, "Magic state distillation with low overhead," Phys. Rev. A **86**, 052329 (2012).
+[21] E. T. Campbell and M. Howard, "Unified framework for magic state distillation," Phys. Rev. Lett. **118**, 060501 (2017).
+[22] J. Haah, M. B. Hastings, D. Poulin, and B. Wecker, "Magic state distillation with low space overhead and optimal asymptotic input count," Quantum **1**, 31 (2017).
+[23] A. R. Calderbank, E. M. Rains, P. W. Shor, and N. J. A. Sloane, "Quantum error correction via codes over GF(4)," IEEE Trans. Inf. Theory **44**, 1369 (1998).
+[24] A. M. Steane, "Quantum Reed–Muller codes," IEEE Trans. Inf. Theory **45**, 1701 (1999).
+[25] J. T. Anderson, G. Duclos-Cianci, and D. Poulin, "Fault-tolerant conversion between the Steane and Reed–Muller quantum codes," Phys. Rev. Lett. **113**, 080501 (2014).
+[26] E. Knill and R. Laflamme, "Theory of quantum error-correcting codes," Phys. Rev. A **55**, 900 (1997).
+[27] A. G. Fowler, M. Mariantoni, J. M. Martinis, and A. N. Cleland, "Surface codes: Towards practical large-scale quantum computation," Phys. Rev. A **86**, 032324 (2012).
+[28] R. Raussendorf and J. Harrington, "Fault-tolerant quantum computation with high threshold in two dimensions," Phys. Rev. Lett. **98**, 190504 (2007).
+[29] P. Panteleev and G. Kalachev, "Quantum LDPC codes with almost linear minimum distance," IEEE Trans. Inf. Theory **68**, 213 (2022).
+[30] A. Leverrier and G. Zémor, "Quantum Tanner codes," in *Proc. 63rd IEEE FOCS* (2022), pp. 872–883.
+[31] N. P. Breuckmann and J. N. Eberhardt, "Quantum low-density parity-check codes," PRX Quantum **2**, 040101 (2021).
+[32] S. Bravyi, D. Poulin, and B. Terhal, "Tradeoffs for reliable quantum information storage in 2D systems," Phys. Rev. Lett. **104**, 050503 (2010).
+[33] E. Knill, "Quantum computing with realistically noisy devices," Nature **434**, 39 (2005).
+[34] S. Bravyi, M. Englbrecht, R. König, and Y. Nirkhe, "Correcting coherent errors with surface codes," npj Quantum Inf. **4**, 55 (2018).
+[35] Google Quantum AI and Collaborators, "Quantum error correction below the surface code threshold," Nature **625**, 74 (2024).
+[36] Google Quantum AI, "Suppressing quantum errors by scaling a surface code logical qubit," Nature **614**, 676 (2023).
+[37] M. Krinner, N. Lacroix, A. Remm, et al., "Realizing repeated quantum error correction in a distance-three surface code," Nature **605**, 669 (2022).
+[38] E. Magesan, J. M. Gambetta, and J. Emerson, "Scalable and robust randomized benchmarking of quantum processes," Phys. Rev. Lett. **106**, 180504 (2011).
+[39] T. Proctor, K. Rudinger, K. Young, M. Sarovar, and R. Blume-Kohout, "What randomized benchmarking actually measures," Phys. Rev. Lett. **124**, 010505 (2020).
