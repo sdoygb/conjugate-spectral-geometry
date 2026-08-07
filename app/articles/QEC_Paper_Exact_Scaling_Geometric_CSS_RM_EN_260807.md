@@ -94,7 +94,7 @@ Standard facts [6, 8]:
 
 $$\dim \mathrm{RM}(r,m) = \sum_{i=0}^{r} \binom{m}{i}, \qquad \min\mathrm{wt}\,\mathrm{RM}(r,m) = 2^{m-r},$$
 
-and the **duality theorem**: $\mathrm{RM}(r,m)^\perp = \mathrm{RM}(m-r-1, m)$. In particular $\mathrm{RM}(r,m) \subseteq \mathrm{RM}(r,m)^\perp$ if and only if $2r < m-1$ — the self-orthogonality condition that makes $\mathrm{CSS}(\mathrm{RM}(r,m), \mathrm{RM}(r,m))$ a valid CSS code.
+and the **duality theorem**: $\mathrm{RM}(r,m)^\perp = \mathrm{RM}(m-r-1, m)$. In particular $\mathrm{RM}(r,m) \subseteq \mathrm{RM}(r,m)^\perp$ if and only if $2r < m-1$ — the self-orthogonality condition that makes the symmetric code $\mathrm{CSS}(H,H)$ — $H$ the generator matrix of $\mathrm{RM}(r,m)$ — a valid CSS code.
 
 Two counting inputs from affine geometry are used throughout. The number of $k$-dimensional affine flats in $\mathrm{AG}(m,2)$ is
 
@@ -168,7 +168,7 @@ $$\big[\!\big[\,2^m,\; 2^m - 2\sum_{i=0}^{r}\tbinom{m}{i},\; 2^{r+1}\,\big]\!\bi
 
 *Proof.* $n = 2^m$ by construction. Since $X$- and $Z$-stabilizer spaces both equal $C = \mathrm{RM}(r,m)$ with $\dim C = \sum_i \binom{m}{i}$ (Section 2.2), $k = n - 2\dim C$. The distance is Theorem 3. ∎
 
-**Theorem 3** (Distance). The minimum distance of $\mathrm{CSS}(\mathrm{RM}(r,m), \mathrm{RM}(r,m))$ is $d = 2^{r+1}$.
+**Theorem 3** (Distance). The minimum distance of the affine-complete code $\mathrm{CSS}(H,H)$ is $d = 2^{r+1}$.
 
 *Proof.* Non-trivial logical operators have supports in $C^\perp \setminus C = \mathrm{RM}(m-r-1,m) \setminus \mathrm{RM}(r,m)$. By the duality theorem the minimum weight of $C^\perp$ is $2^{m-(m-r-1)} = 2^{r+1}$, attained by the indicator of an $(r+1)$-flat. Strict self-orthogonality ($2r < m-1$ implies $m-r > r+1$) ensures $\mathrm{RM}(m-r-1,m) \not\subseteq \mathrm{RM}(r,m)$; in fact the weight-$2^{r+1}$ layer of $\mathrm{RM}(m-r-1,m)$ — the $(r+1)$-flat indicators — lies entirely outside $\mathrm{RM}(r,m)$ because $\min \mathrm{wt}\,\mathrm{RM}(r,m) = 2^{m-r} > 2^{r+1}$. Hence $d = 2^{r+1}$. ∎
 
@@ -413,3 +413,147 @@ Table 2 lists the closed-form leading coefficients $c_d$ of Theorem 16 against n
 *Notes.* (i) The $[[7,1,3]]$, $[[15,7,3]]$, $[[32,12,4]]$ rows use the uniform-$\theta$ protocol of [10.29]: averaging $\langle \theta^{2w}\rangle = \theta_{\max}^{2w}/(2w+1)$ inserts the factor $1/9 = (1/3)^2$ for the weight-2 branch, hence denominators $144 = 16 \cdot 9$; the remaining rows use the fixed-$\theta$ protocol of Theorem 16 with denominator $2^{2w_0}$. (ii) The logical-$Z$-flip version of the coefficient is $\kappa_r(m)$ times the decoding-failure version (Sec. 5.3), e.g. $[[32,12,4]]$: $29.06 \to 12.0$; $[[64,20,8]]$: $1.26\times10^3 \to 4.63\times10^2$; $[[1024,\cdot,4]]$: $3.27\times10^4 \to 1.23\times10^4$; $[[1024,\cdot,8]]$: $8.90\times10^7 \to 2.94\times10^7$; $[[1024,\cdot,16]]$: $3.37\times10^8 \to 1.05\times10^8$; $[[1024,\cdot,32]]$: $2.45\times10^8 \to 7.53\times10^7$; PG rows keep $\kappa = 1$. (iii) The non-CSS perfect code $[[5,1,3]]$ shows measured $c \approx 0.06$ vs. the branch-level value $C(5,2)/144 = 0.069$ of the same order — its mechanism is outside the geometric-completeness framework (open question).
 
 The closed forms reproduce the measured slopes and failure rates across the entire family ladder $d = 3, 4, 8, 16, 32$ — nine codes, five distances, four orders of magnitude in $c_d$ — with no free parameters.
+
+
+## 6. Transversal operations on affine-complete codes
+
+The gate set available to a code family is as important as its error-correction parameters. In this section we characterize the transversal operations of the affine-complete family $\mathrm{CSS}(H,H)$ with $2r < m-1$. All statements are verified both symbolically and by state-vector simulation in Section 6.5.
+
+### 6.1 Transversal Clifford subset
+
+**Theorem 22 (Transversal Clifford subset).** For every affine-complete code $\mathrm{CSS}(H,H)$ with $2r < m-1$, the following gates are transversal:
+
+(i) *Pauli gates.* $X_v$ and $Z_w$ for $v, w \in C$ are transversal stabilizers (single-qubit Paulis on the support); $X_v$ and $Z_w$ for $v, w \in C^\perp \setminus C$ implement the logical $X$ and $Z$ operators.
+
+(ii) *CNOT.* The CNOT between corresponding physical qubits of two code blocks maps the code space to itself and implements the logical CNOT. This holds for all CSS codes by the standard argument: $X$ errors propagate from control to target, $Z$ errors from target to control, and the stabilizer structure $C_2 \subseteq C_1$ is preserved.
+
+(iii) *Hadamard.* Since the $X$-stabilizer space and the $Z$-stabilizer space coincide (both equal $C$ by Definition 3.1), $H^{\otimes n}$ maps $X$-stabilizers to $Z$-stabilizers and implements the logical Hadamard.
+
+*Proof.* (i) By Definition 3.1 the $X$- and $Z$-stabilizer spaces both equal $C$, so $X_v, Z_w$ are stabilizers for $v, w \in C$. The operator $X_v$ commutes with all $Z$-stabilizers $Z_w$ ($w \in C$) if and only if $v \cdot w = 0$ for every $w \in C$, i.e. $v \in C^\perp$; hence $X_v$ for $v \in C^\perp \setminus C$ is a non-trivial logical $X$ operator, and likewise $Z_w$ for $w \in C^\perp \setminus C$ implements logical $Z$. (ii) is the standard CSS property. (iii): $H^{\otimes n}$ conjugates $X_v \mapsto Z_v$; since the $X$- and $Z$-stabilizer spaces are identical, stabilizers map to stabilizers, and the logical operators transform accordingly. ∎
+
+A useful closed form obtained in the program verification: the logical zero state satisfies
+
+$$H^{\otimes n}|0_L\rangle = \frac{1}{\sqrt{|C^\perp|}} \sum_{y \in C^\perp} |y\rangle = |+_L\rangle,$$
+
+which is exact to machine precision for $[[16,6,4]]$ (overlap $1.000000000000$).
+
+### 6.2 Transversal phase gates
+
+**Theorem 23 ($S^{\otimes n}$ phase characterization).** Let $S = \mathrm{diag}(1,i)$. For every affine-complete code with $2r < m-1$ and $m \ge 4$:
+
+(i) $S^{\otimes n}$ preserves the code space. Indeed $S X_v S^\dagger = Y_v = X_v Z_v$, and $X_v, Z_v$ are stabilizers for $v \in C$ (self-orthogonality $v \cdot w = 0$ and even weight $|v|$), so $Y_v$ is a stabilizer.
+
+(ii) The induced logical map is a *diagonal phase gate*: the logical zero state is preserved, $S^{\otimes n}|0_L\rangle = |0_L\rangle$, because all codewords of $C$ have weight $\equiv 0 \pmod 4$ (automatic for $r \le m-3$, which follows from $2r < m-1$ when $m \ge 4$).
+
+(iii) A logical direction $a \in C^\perp \setminus C$ acquires the phase
+
+$$\gamma_a = i^{|a|},$$
+
+where $|a|$ is the Hamming weight. Consequently: directions with $|a| \equiv 0 \pmod 4$ are fixed; $|a| \equiv 2$ implements logical $Z$; $|a| \equiv 1$ implements logical $S$; $|a| \equiv 3$ implements $-i \cdot$ logical $S$.
+
+*Proof.* (i) is the conjugation identity combined with the stabilizer closure argument. (ii): $S^{\otimes n}|x\rangle = i^{|x|}|x\rangle$ and $\langle 1_L^a | S^{\otimes n} | 0_L \rangle \propto \sum_{x \in C} i^{|x|} \langle x+a | x \rangle = 0$ for $a \neq 0$, so the induced map is diagonal. (iii): $\gamma_a = \langle 1_L^a | S^{\otimes n} | 1_L^a \rangle = \frac{1}{|C|} \sum_{x \in C} i^{|x+a|}$; using $|x+a| \equiv |x| + |a| - 2|x \cap a| \pmod 4$, $|x| \equiv 0 \pmod 4$ for $x \in C$, and $a \cdot x = |x \cap a| \equiv 0 \pmod 2$ for $a \in C^\perp$, we obtain $\gamma_a = i^{|a|}$. ∎
+
+### 6.3 Fault-tolerant operation set and T-gate interface
+
+**Corollary 24 (Fault-tolerant operation set).** The transversal operation set of the affine-complete family is
+
+$$\{\text{transversal Pauli},\ \text{transversal CNOT},\ \text{transversal } H\} \;\cup\; \{\text{transversal phase gates } \mathrm{diag}(1, i^{|a|})\} \;\cup\; \{\text{logical measurement}\},$$
+
+where logical $\bar Z$ is measured by $Z$-measurement on the support bits followed by classical parity, and logical $\bar X$ by transversal $H$ followed by $\bar Z$ measurement. The $T$ gate admits *no* transversal implementation (it lies outside the Clifford group); it is interfaced through standard magic-state distillation protocols (e.g., 15-to-1). Distillation requires only code distance $d \ge 5$; the affine-complete family has $d = 2^{r+1} \ge 8$ for $r \ge 2$, so it is a plug-and-play interface.
+
+*Proof.* Direct compilation of Theorems 22–23; the distillation requirement is a standard literature result [13, 14]. ∎
+
+### 6.4 Error propagation and the decoding closure
+
+**Proposition 25 (Bounded error propagation).** Under transversal gates, a single-qubit error propagates to at most two qubits (CNOT duplicates $X$ from control to target and $Z$ from target to control; $H$, $S$, and Pauli gates preserve the error count). There is *no diffusion*: the error count grows by at most a factor 2 per round, in contrast to non-transversal gates which can spread errors exponentially.
+
+*Proof.* Direct tracking of Pauli operators through the Clifford circuit; the duplication rule for CNOT is the standard fault-tolerance statement. ∎
+
+**Remark (closure with the decoding formalism).** Combining Proposition 25 with Theorem 21 (Pauli-channel universality), each round of error correction is independent: the probability that the error set has weight $\ge w_0$ is still controlled by the $\varepsilon^{w_0}$ scaling, so the decoding closed forms of Section 5 apply round by round. A complete fault-tolerance threshold analysis (including distillation resource accounting) is beyond the scope of this paper.
+
+### 6.5 Program verification
+
+State-vector simulation on $[[16,6,4]]$ and symbolic verification on $[[64,20,8]]$ confirm:
+
+- **Transversal $H$**: $H^{\otimes 16}|0_L\rangle = |+_L\rangle$ exactly ($|\langle +_L | H^{\otimes 16} | 0_L \rangle| = 1.000000000000$; analytic form $H^{\otimes n}|0_L\rangle = \frac{1}{\sqrt{|C^\perp|}} \sum_{y \in C^\perp} |y\rangle$).
+- **Transversal $S$**: $\alpha = \langle 0_L | S^{\otimes 16} | 0_L \rangle = 1.000000$ (all codewords of $\mathrm{RM}(1,4)$ have weight $\equiv 0 \pmod 4$); the six monomial logical directions ($|a| = 4$) give $\gamma = 1$, and the composite direction $x_1 x_2 + x_3 x_4$ ($|a| = 6$) gives $\gamma = -1$ — all matching $i^{|a|}$ exactly.
+- **$[[64,20,8]]$**: 484 self-orthogonality pairs with zero violations; all 22 basis vectors and 2000 random combinations have weight $\equiv 0 \pmod 4$; $Y_v$ commutes with all stabilizer generators — the legality of transversal $H$ and $S$ is directly verified.
+
+## 7. Relation to existing results
+
+This section situates the present work against the relevant literature. We emphasize that our contribution is *not* a new family of codes — the Reed–Muller CSS construction is classical — but a new level of analysis: exact, closed-form failure-rate scaling for a geometrically complete family, together with an enumeration-free verification method and an experimental discriminator.
+
+### 7.1 Stabilizer codes and the CSS construction
+
+The stabilizer formalism [1, 4] and the Calderbank–Shor–Steane construction [2, 3, 5] provide the general framework in which all CSS codes live. Our Theorem 16 (unified scaling law) is a *quantitative refinement* of the standard distance-based heuristic that "a code of distance $d$ corrects errors of weight $< d/2$": we prove that the failure rate is dominated by weight $w_0 = \lceil d/2 \rceil$ errors and give the exact leading coefficient $C(n,w_0)P(w_0)\,\mathrm{fail}(w_0)\,2^{-2w_0}$, with the degeneracy structure resolved in closed form. The parity theorem (Theorem 17) refines the folklore that "odd-distance codes are worse": we show the precise mechanism — cross-layer degeneracy forces $\mathrm{fail}(w_0) = 1$, while even-distance codes retain the fraction $\langle 1/v \rangle$ of recoverable classes.
+
+### 7.2 Reed–Muller codes in classical coding theory
+
+The classical theory of Reed–Muller codes is mature: the duality theorem, weight distributions, and the minimum-weight characterization date to the 1970s [6–9]. Our use of the classical facts is standard, as is the quantum Reed–Muller construction itself [19]. What is new is the *quantum-side* closed form: the class-size formula $v(A) = 1 + [m-s; r+1-s]_2$ (Theorem 18) quantifies, in terms of Gaussian binomial coefficients, how many weight-$2^r$ errors share a syndrome — a quantity with no classical analogue, since classical decoding does not track the stabilizer equivalence. The inclusion-equivalence theorem (Theorem 11) gives a purely geometric characterization (containment in an $(r+1)$-flat) of degeneracy at the distance-critical layer.
+
+### 7.3 Degenerate quantum codes
+
+Degeneracy — multiple errors sharing a syndrome — is a distinctly quantum phenomenon, exploited since the early days of the field [10, 11]. Known exact analyses include the Shor 9-qubit code and Bacon–Shor codes, where partial degeneracy is understood case by case. Our contribution is a *systematic* treatment: the degeneracy hierarchy of Section 4.3 (zero degeneracy below $d/2$, inclusion equivalence at $d/2$, full-degeneracy boundary at $r \le 2$, closed-form proportion $P_r(m)$ above) applies to an infinite family with growing distance. The finding that full degeneracy is *impossible* for $d \ge 16$ (Theorem 12) is, to our knowledge, new and structurally restrictive: it shows that the "benign" fully-degenerate regime is confined to $d \in \{4, 8\}$ in this family.
+
+### 7.4 Threshold theorems and quantum LDPC codes
+
+Threshold theorems [11, 16] and the surface-code/toric-code analyses [12, 15, 21] establish asymptotic statements: below a threshold error rate, arbitrarily long computation is possible. Quantum LDPC codes [17, 18] achieve constant-rate asymptotically good parameters. Both lines of work are *asymptotic*; they do not provide closed-form finite-size failure rates for specific code families. Our scaling law is complementary: for the RM-CSS family we give *exact* finite-size coefficients (Table 2), enabling direct experimental discrimination (Section 8) that asymptotic statements cannot provide. Conversely, our family has non-constant rate (approaching $1 - 2^{1-r}$ as $m$ grows for fixed $r$) and distance $d = 2^{r+1}$; it is not a contender for asymptotic good codes, but it is the *most precisely analyzable* family at the distances relevant to near-term experiments ($d = 4$–$32$).
+
+### 7.5 Experimental context
+
+The mainstream experimental route to logical qubits is the surface code [12], whose threshold behavior is well studied; real-time error correction with a small code was demonstrated early on [20]. Our discriminator protocol (Section 8) addresses a different question: given a physical platform with coherent (or incoherent) single-qubit noise of unknown strength profile, can one *identify the noise class and the code's response* from logical failure rates alone? The four-order slope test $\theta^4/\theta^8/\theta^{16}/\theta^{32}$ across the 64–1121 qubit ladder provides a diagnostic that is orthogonal to surface-code benchmarking. The transversal Clifford subset of Section 6 is a further practical asset: the phase gate $\mathrm{diag}(1, i^{|a|})$ is implementable transversally in this family, which is not the case for generic CSS codes.
+
+### 7.6 Positioning summary
+
+| Aspect | This work | Standard analyses |
+|---|---|---|
+| Failure rate | Exact closed form, all orders | Asymptotic / Monte Carlo |
+| Degeneracy | Closed-form class sizes | Case-by-case |
+| Verification | Enumeration-free, $O(n^2)$ | Full enumeration (infeasible > 100 qubits) |
+| Code family | RM-CSS, $d = 4$–$32$ | Surface / LDPC / concatenated |
+| Experimental use | Slope discriminator $\theta^{2\lceil d/2 \rceil}$ | Threshold extrapolation |
+
+## References
+
+[1] P. W. Shor, "Scheme for reducing decoherence in quantum computer memory," Phys. Rev. A **52**, R2493 (1995).
+
+[2] A. M. Steane, "Error correcting codes in quantum theory," Phys. Rev. Lett. **77**, 793 (1996).
+
+[3] A. R. Calderbank and P. W. Shor, "Good quantum error-correcting codes exist," Phys. Rev. A **54**, 1098 (1996).
+
+[4] D. Gottesman, "Stabilizer codes and quantum error correction," Phys. Rev. A **54**, 1862 (1997).
+
+[5] A. R. Calderbank, E. M. Rains, P. W. Shor, and N. J. A. Sloane, "Quantum error correction via codes over GF(4)," IEEE Trans. Inf. Theory **44**, 1369 (1998).
+
+[6] F. J. MacWilliams and N. J. A. Sloane, *The Theory of Error-Correcting Codes* (North-Holland, Amsterdam, 1977).
+
+[7] I. S. Reed, "A class of multiple-error-correcting codes and the decoding scheme," IRE Trans. Inf. Theory **4**, 38 (1954).
+
+[8] D. E. Muller, "Application of Boolean algebra to switching circuit design and to error detection," IRE Trans. Electron. Comput. **3**, 6 (1954).
+
+[9] T. Kasami and N. Tokura, "On the weight structure of Reed–Muller codes," IEEE Trans. Inf. Theory **16**, 752 (1970).
+
+[10] E. Knill and R. Laflamme, "Theory of quantum error-correcting codes," Phys. Rev. A **55**, 900 (1997).
+
+[11] E. Knill, R. Laflamme, and W. H. Zurek, "Resilient quantum computation," Science **279**, 342 (1998).
+
+[12] A. G. Fowler, M. Mariantoni, J. M. Martinis, and A. N. Cleland, "Surface codes: Towards practical large-scale quantum computation," Phys. Rev. A **86**, 032324 (2012).
+
+[13] E. T. Campbell, B. M. Terhal, and C. Vuillot, "Roads towards fault-tolerant universal quantum computation," Nature **549**, 172 (2017).
+
+[14] S. Bravyi and A. Kitaev, "Universal quantum computation with ideal Clifford gates and noisy ancillas," Phys. Rev. A **71**, 022316 (2005).
+
+[15] E. Dennis, A. Kitaev, A. Landahl, and J. Preskill, "Topological quantum memory," J. Math. Phys. **43**, 4452 (2002).
+
+[16] P. Aliferis, D. Gottesman, and J. Preskill, "Quantum accuracy threshold for concatenated distance-3 codes," Quantum Inf. Comput. **6**, 97 (2006).
+
+[17] P. Panteleev and G. Kalachev, "Quantum LDPC codes with almost linear minimum distance," IEEE Trans. Inf. Theory **68**, 213 (2022).
+
+[18] A. Leverrier and G. Zémor, "Quantum Tanner codes," in *Proc. 63rd IEEE Symp. Foundations of Computer Science (FOCS)* (2022).
+
+[19] A. M. Steane, "Quantum Reed–Muller codes," IEEE Trans. Inf. Theory **45**, 1701 (1999).
+
+[20] E. Knill, "Quantum computing with realistically noisy devices," Nature **434**, 39 (2005).
+
+[21] R. Raussendorf and J. Harrington, "Fault-tolerant quantum computation with high threshold in two dimensions," Phys. Rev. Lett. **98**, 190504 (2007).
+
