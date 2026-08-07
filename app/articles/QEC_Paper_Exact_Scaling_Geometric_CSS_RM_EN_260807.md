@@ -192,6 +192,10 @@ Table 1. Representative members of the affine-complete family.
 
 Note that the codes themselves are classical: Reed–Muller CSS codes have been studied since the early days of quantum error correction (the Steane code is $\mathrm{RM}(1,3)$). The contribution of the present work is not the codes but the *verification method and the closed-form structure*: enumeration-free certificates, the zero-degeneracy structure, and the logical-operator counting of Sections 3.3–3.4, which feed the exact failure-rate analysis of Section 4.
 
+![Figure 1: family parameters](figures/fig1_family_params.png)
+
+**Figure 1.** The affine-complete family at fixed $n = 1024$ ($m = 10$): logical dimension $k = 2^{10} - 2\dim\mathrm{RM}(r,10)$ (left axis) and distance $d = 2^{r+1}$ (right axis, logarithmic) versus $r$. The four members $[[1024,1002,4]]$, $[[1024,912,8]]$, $[[1024,672,16]]$, $[[1024,252,32]]$ share a single platform and noise environment; their distinct leading exponents $\theta^4, \theta^8, \theta^{16}, \theta^{32}$ are the basis of the experimental discriminator of Sec. 8 (open symbols: $r = 0$, $d = 2$).
+
 ### 3.3 Enumeration-free verification
 
 Full enumeration of error patterns is infeasible at $n = 1024$ (there are $\binom{1024}{2} \approx 5.2\times 10^5$ weight-2 patterns, but $\binom{1024}{4} \approx 4.6\times 10^{10}$ weight-4 patterns and $\binom{1024}{16} \sim 10^{33}$ at the leading layer of $[[1024,252,32]]$). The following structural theorems replace enumeration by $O(n^2)$ certificates.
@@ -546,6 +550,10 @@ where $\theta$ is the angle of an identical single-qubit coherent rotation $R_x(
 
 The leading exponent is $2w_0 = d$ ($d$ even, same-layer degeneracy). All four codes share one platform, hence one noise environment — the discriminating power comes from the *relative* ladder, which is insensitive to platform-dependent calibration constants.
 
+![Figure 2: scaling law](figures/fig2_scaling_law.png)
+
+**Figure 2.** Parameter-free prediction of the logical-$Z$-flip loss (Sec. 8.1): $\mathrm{loss}(\theta_{\max}) = c_d\,\theta_{\max}^{d}$ with the closed-form coefficients $c_d = \kappa_r(10)\,C(1024,w_0)\,P(w_0)\,\mathrm{fail}(w_0)\,2^{-2w_0}$ of the four 1024-qubit members. Solid segments mark the observable windows $10^{-3} \le \mathrm{loss} \le 0.5$ (Theorem 26); dashed extensions are the leading-order extrapolation outside the windows; dotted reference lines mark $\mathrm{loss} = 10^{-3}$ and $0.5$. Shaded bands are the two gaps $[0.107, 0.205]$ and $[0.302, 0.457]$, where the low tiers have already saturated while the high tiers still sit at baseline.
+
 ### 8.2 Platform–code matching (hard constraint)
 
 AG-complete codes have $k = 2^m - 2\dim\mathrm{RM}(r,m)$; the constraint $k \ge 1$ fixes which tiers are measurable on which platform:
@@ -572,6 +580,10 @@ $$\mathcal{W}_4 = [0.017, 0.080], \qquad \mathcal{W}_8 = [0.049, 0.107], \qquad 
 with gaps $[0.107, 0.205]$ and $[0.302, 0.457]$ between tiers $8/16$ and $16/32$, and overlap $[0.049, 0.080]$ between tiers $4/8$.
 
 *Proof.* Substitute the closed-form $c_d$ of §8.1 into $10^{-3} \le c_d\theta^d \le 0.5$ and solve for $\theta$; the ladder structure (windows separated by gaps, low tiers overlapping) follows from the closed-form coefficients, not from fitting. ∎
+
+![Figure 3: windows](figures/fig3_windows.png)
+
+**Figure 3.** The four observable windows $\mathcal{W}_d$ of Theorem 26 (solid bars): $\mathcal{W}_4 = [0.017, 0.080]$, $\mathcal{W}_8 = [0.049, 0.107]$, $\mathcal{W}_{16} = [0.205, 0.302]$, $\mathcal{W}_{32} = [0.457, 0.555]$, defined by $10^{-3} \le c_d\theta^d \le 0.5$. Gray bands are the gaps $[0.107, 0.205]$ and $[0.302, 0.457]$; the gold band is the overlap $[0.049, 0.080]$ of tiers 4 and 8, which provides an in-situ cross-check. Recommended five-point sampling inside each window is described in Sec. 8.3.
 
 The ladder itself is a signature of the geometric prediction: the gaps are intervals where tiers $16/32$ still sit at baseline (below $10^{-3}$) while tiers $4/8$ have already saturated (above $0.5$) — a "double void" that cannot arise from a smooth fitted model. Recommended sampling points (with the sub-leading correction included) are five loss values per tier, e.g. for $d=4$: $\theta \in \{0.02, 0.03, 0.04, 0.05, 0.06\}$ giving $\mathrm{loss} \in [2\times10^{-3}, 1.6\times10^{-1}]$; the other tiers follow the same five-point design in their windows.
 
