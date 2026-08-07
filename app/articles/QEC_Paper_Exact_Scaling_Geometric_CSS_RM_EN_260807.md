@@ -2,7 +2,11 @@
 
 **Author**: Ouyang Guobin
 
-**Affiliation**: Foshan, Shunde District, Guangdong Province, China
+**Affiliation**: Shunde District, Foshan, Guangdong Province, China
+
+**Email**: sdoygb@gmail.com
+
+**ORCID**: 0009-0006-0008-5894
 
 ---
 
