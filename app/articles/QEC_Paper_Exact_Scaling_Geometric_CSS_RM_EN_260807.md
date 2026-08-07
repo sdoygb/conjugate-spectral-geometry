@@ -336,9 +336,9 @@ with $C(n,w_0)$ the binomial coefficient, $P(w_0)$ the degeneracy proportion (Pr
 
 $$c_d = C(n,w_0)\,P(w_0)\,\mathrm{fail}(w_0)\,2^{-2w_0}.$$
 
-*Proof.* Theorems 12 and 13: layers below $w_0$ vanish; the leading term is the $w = w_0$ branch of the expansion with $(1 - \theta^2/4)^{n-w_0} = 1 + O(\theta^2)$. ∎
+*Proof.* Theorems 14 and 15: layers below $w_0$ vanish; the leading term is the $w = w_0$ branch of the expansion with $(1 - \theta^2/4)^{n-w_0} = 1 + O(\theta^2)$. ∎
 
-**Theorem 15 (Parity theorem for the failure rate).** In the setting of Theorem 14:
+**Theorem 17 (Parity theorem for the failure rate).** In the setting of Theorem 16:
 (i) if $d$ is odd, $\mathrm{fail}(w_0) = 1$ (cross-layer degeneracy: the partner has weight $d - w_0 < w_0$, minimal-weight decoding selects it with certainty, and the residual is a minimum-weight logical operator);
 (ii) if $d$ is even, $\mathrm{fail}(w_0) = 1 - \langle 1/v \rangle$, where $v$ runs over the degenerate class sizes at weight $w_0$ and $\langle \cdot \rangle$ is the class-size-weighted average.
 
@@ -346,13 +346,13 @@ $$c_d = C(n,w_0)\,P(w_0)\,\mathrm{fail}(w_0)\,2^{-2w_0}.$$
 
 For the affine-complete families the average $\langle 1/v \rangle$ is computable from the class-size closed form:
 
-**Theorem 16 (Class-size closed form).** For $CSS(RM(r,m))$, let $A$ be a $2^r$-subset of $AG(m,2)$ with affine span of dimension $s$ ($0 \le s \le r+1$). The size of the syndrome class of $\chi_A$ at weight $2^r$ is
+**Theorem 18 (Class-size closed form).** For $CSS(RM(r,m))$, let $A$ be a $2^r$-subset of $AG(m,2)$ with affine span of dimension $s$ ($0 \le s \le r+1$). The size of the syndrome class of $\chi_A$ at weight $2^r$ is
 
 $$v(A) = 1 + \left[\begin{smallmatrix}m-s\\ r+1-s\end{smallmatrix}\right]_2,$$
 
 the Gaussian binomial coefficient counting $(r+1-s)$-dimensional subspaces of the $(m-s)$-dimensional quotient $AG(m,2)/\mathrm{span}(A)$; the $+1$ counts $\chi_A$ itself.
 
-*Proof sketch.* By Theorem 10, partners of $\chi_A$ are the complements $P \setminus A$ over all $(r+1)$-flats $P \supset A$. Flats containing $A$ correspond bijectively to flats of the quotient $AG(m,2)/\mathrm{span}(A)$ of dimension $(r+1-s)$; their number is the Gaussian binomial $\left[\begin{smallmatrix}m-s\\ r+1-s\end{smallmatrix}\right]_2$. ∎
+*Proof sketch.* By Theorem 11, partners of $\chi_A$ are the complements $P \setminus A$ over all $(r+1)$-flats $P \supset A$. Flats containing $A$ correspond bijectively to flats of the quotient $AG(m,2)/\mathrm{span}(A)$ of dimension $(r+1-s)$; their number is the Gaussian binomial $\left[\begin{smallmatrix}m-s\\ r+1-s\end{smallmatrix}\right]_2$. ∎
 
 *Instances.* $r = 1$ ($d = 4$): any 2-subset has span $s = 1$, giving $v = 1 + \left[\begin{smallmatrix}m-1\\ 1\end{smallmatrix}\right]_2 = 2^{m-1}$: classes of size $2^{m-1}$ (e.g. $v = 16$ for $[[32,12,4]]$, matching the "465 pairs $= 31\times 15$" enumeration). $r = 2$ ($d = 8$): generic 4-subsets have $s = 3$, $v = 2$ (complement pairs — the 313,131 classes of $[[64,20,8]]$); coplanar 4-subsets have $s = 2$, $v = 2^{m-2}$ — the bimodal class structure $2$ / $2^{m-2}$. Consequently $\mathrm{fail}(4) = 1 - \langle 1/v\rangle = 0.507172131$ for $[[64,20,8]]$ (full enumeration: 322,245 of 635,376 weight-4 errors fail), matching the measured 50.7%.
 
@@ -360,7 +360,7 @@ the Gaussian binomial coefficient counting $(r+1-s)$-dimensional subspaces of th
 
 The layer $w_0 + 1$ produces the first subleading order. Its degeneracy is *cross-layer* with partners at weight $w_0 - 1$:
 
-**Proposition 11 (Weight-$(2^r+1)$ degeneracy).** For $CSS(RM(r,m))$, the proportion of weight-$(2^r+1)$ errors with a partner at weight $2^r - 1$ is
+**Proposition 19 (Weight-$(2^r+1)$ degeneracy).** For $CSS(RM(r,m))$, the proportion of weight-$(2^r+1)$ errors with a partner at weight $2^r - 1$ is
 
 $$P'_r(m) = \frac{\mathrm{flats}(m,r{+}1)\,\binom{2^{r+1}}{2^r{+}1}}{\binom{2^m}{2^r{+}1}},$$
 
@@ -368,11 +368,11 @@ with values $P'_2(6) = 0.08197$, $P'_2(7) = 0.0400$, $P'_2(8) = 0.01976$, $P'_2(
 
 *Proof sketch.* A partner $\chi_B$ of $\chi_{A'}$ ($|A'| = 2^r + 1$, $|B| = 2^r - 1$) requires $\chi_{A'} \oplus \chi_B \in C^{\perp}$ of weight $d$, i.e. the product is an $(r+1)$-flat indicator with $A' \sqcup B = P$. Since $|A'| = 2^r + 1$ exceeds the size of any $r$-flat, the span of $A'$ is automatically $r+1$; the count is the flat count times the choices of $A'$ inside $P$. ∎
 
-**Theorem 17 ($\theta^{d+2}$ next-to-leading order).** For an affine-complete code of even distance $d = 2^{r+1}$,
+**Theorem 20 ($\theta^{d+2}$ next-to-leading order).** For an affine-complete code of even distance $d = 2^{r+1}$,
 
 $$\mathrm{loss}(\theta) = c_d\,\theta^{d} + P'_r(m)\,\theta^{d+2} + o(\theta^{d+2}),$$
 
-where $c_d$ is the coefficient of Theorem 14 and $P'_r(m)$ is given by Prop. 11.
+where $c_d$ is the coefficient of Theorem 16 and $P'_r(m)$ is given by Prop. 19.
 
 *Proof sketch.* The weight-$(2^r+1)$ branch carries amplitude order $\theta^{2^r+1}$; on the degenerate fraction $P'_r(m)$ the minimal-weight decoder necessarily selects the weight-$(2^r - 1)$ partner (all lower weights are unique, and the partner class is the only match — the product with any weight-$\le 2^r$ error would have weight $d + 2 - 2|\cap|$ or $\ge 17$, absent from the $C^{\perp}$ weight spectrum, verified by 2000/2000 sampling for $[[256,70,16]]$). The residual is the flat indicator, a minimum-weight logical operator: certain failure, no $1/2$ factor. ∎
 
@@ -382,21 +382,21 @@ where $c_d$ is the coefficient of Theorem 14 and $P'_r(m)$ is given by Prop. 11.
 
 The entire framework extends from coherent rotations to arbitrary independent per-qubit Pauli channels with no change to the failure rates:
 
-**Theorem 18 (Pauli-channel universality).** Let the noise be an independent per-qubit Pauli channel with $X$-side error probability $\varepsilon$ (the probability that the error operator contains an $X$ or $Y$ component, i.e. flips the $X$-syndrome; $Z$ errors are invisible to the $X$-side). For a geometrically complete CSS code with minimal-weight decoding, the $X$-side decoding loss is
+**Theorem 21 (Pauli-channel universality).** Let the noise be an independent per-qubit Pauli channel with $X$-side error probability $\varepsilon$ (the probability that the error operator contains an $X$ or $Y$ component, i.e. flips the $X$-syndrome; $Z$ errors are invisible to the $X$-side). For a geometrically complete CSS code with minimal-weight decoding, the $X$-side decoding loss is
 
 $$\mathrm{loss}(\varepsilon) = \sum_{w \ge w_0} C(n,w)\,\varepsilon^{w}(1-\varepsilon)^{n-w}\,\mathrm{fail}(w) = C(n,w_0)\,\varepsilon^{w_0}\,P(w_0)\,\mathrm{fail}(w_0) + C(n,w_0{+}1)\,\mathrm{fail}(w_0{+}1)\,\varepsilon^{w_0+1} + o(\varepsilon^{w_0+1}),$$
 
-with the *same* $\mathrm{fail}(w)$ as in Theorem 13: the decoder is a deterministic function of syndrome and weight, and the channel is invisible to it. Indeed, the $X$-side action of $Y_i$ equals that of $X_i$ ($Y_i X_v = (-1)^{v_i} X_v Y_i$ flips the same $X$-syndrome bits), and $Z_i$ leaves the $X$-syndrome untouched.
+with the *same* $\mathrm{fail}(w)$ as in Theorem 15: the decoder is a deterministic function of syndrome and weight, and the channel is invisible to it. Indeed, the $X$-side action of $Y_i$ equals that of $X_i$ ($Y_i X_v = (-1)^{v_i} X_v Y_i$ flips the same $X$-syndrome bits), and $Z_i$ leaves the $X$-syndrome untouched.
 
 *Proof.* The set of $X$-active errors $\mathcal{A} = \{i : e_i \in \{X_i, Y_i\}\}$ is independent per qubit with $P(|\mathcal{A}| = w) = C(n,w)\varepsilon^w(1-\varepsilon)^{n-w}$; conditioned on $\mathcal{A}$, the syndrome equals that of a pure $X$ injection, so the failure probability is $\mathrm{fail}(w)$; sum over $w$. ∎
 
-**Channel constants.** The same formula covers all standard channels: coherent $\theta$-tilts have $\varepsilon = \sin^2(\theta/2)$ (Theorem 14 is the special case); depolarizing noise of rate $p$ has $\varepsilon = 2p/3$; phase damping (after Pauli twirl) has $\varepsilon = 0$ (pure $Z$); amplitude damping (after Pauli twirl) has $\varepsilon = \gamma/2$. *Boundary:* untwirled coherent non-Pauli processes (e.g. the raw amplitude-damping Kraus operator $K_1 = \sqrt{\gamma}|0\rangle\langle 1|$) respond probabilistically ($\pm 1$ with equal halves) rather than by deterministic syndrome flips, and fall outside the theorem; the standard Pauli-twirl experimental protocol brings them back inside.
+**Channel constants.** The same formula covers all standard channels: coherent $\theta$-tilts have $\varepsilon = \sin^2(\theta/2)$ (Theorem 16 is the special case); depolarizing noise of rate $p$ has $\varepsilon = 2p/3$; phase damping (after Pauli twirl) has $\varepsilon = 0$ (pure $Z$); amplitude damping (after Pauli twirl) has $\varepsilon = \gamma/2$. *Boundary:* untwirled coherent non-Pauli processes (e.g. the raw amplitude-damping Kraus operator $K_1 = \sqrt{\gamma}|0\rangle\langle 1|$) respond probabilistically ($\pm 1$ with equal halves) rather than by deterministic syndrome flips, and fall outside the theorem; the standard Pauli-twirl experimental protocol brings them back inside.
 
 *Verification* ($[[64,20,8]]$): (i) weight-4/5 layers with $X$/$Y$ mixtures (200,000 samples, equal halves) give failure rates exactly equal to pure-$X$ injection sample by sample; (ii) full enumeration gives $\mathrm{fail}(4) = 0.507172131$ (322,245/635,376) and $\mathrm{fail}(5) = 0.846994536$ (6,457,920/7,624,512); (iii) full depolarizing $p = 0.02$ (1,000,000 samples) gives measured loss $0.005944 \pm 0.000077$ vs. the closed form $\sum_{w\ge 4} C(64,w)(2p/3)^w(1-2p/3)^{64-w}\mathrm{fail}(w) = 0.005969$ (with $w \ge 6$ terms at $\mathrm{fail} \approx 0.85$ contributing $1.85\times10^{-4}$): agreement at $-0.33\sigma$.
 
 ### 5.5 Instantiation and verification
 
-Table 2 lists the closed-form leading coefficients $c_d$ of Theorem 14 against numerical measurements. The formula column is evaluated with $\mathrm{fail}(w_0)$ from Theorem 15, $P(w_0)$ from Prop. 10 (AG) or $1/3$ (PG), and $w_0 = \lceil d/2\rceil$.
+Table 2 lists the closed-form leading coefficients $c_d$ of Theorem 16 against numerical measurements. The formula column is evaluated with $\mathrm{fail}(w_0)$ from Theorem 17, $P(w_0)$ from Prop. 13 (AG) or $1/3$ (PG), and $w_0 = \lceil d/2\rceil$.
 
 | Code | $d$ | Leading order | Closed-form $c_d$ | Numerical/experimental | Source |
 |---|---|---|---|---|---|
@@ -404,12 +404,12 @@ Table 2 lists the closed-form leading coefficients $c_d$ of Theorem 14 against n
 | $[[15,7,3]]$ | 3 | $\theta^4$ | $\frac13 C(15,2)/144 = 0.2431$ | slope 3.99; $315/945 = 1/3$ ✓ | [10.29,10.31] |
 | $[[32,12,4]]$ | 4 | $\theta^4$ | $\frac{15}{16} C(32,2)/16 = 29.06$ | class size 16 (465 pairs $= 31\times15$) ✓ | [10.32] |
 | $[[64,20,8]]$ | 8 | $\theta^8$ | $0.5072\, C(64,4)/256 = 1.26\times10^{3}$ | fail 48.5%/50.7%; slope 7.96 ✓ | [10.31] |
-| $[[256,70,16]]$ | 16 | $\theta^{16}$ | $P_3(8)\cdot 0.5\, C(256,8)/2^{16} = 6.16\times10^{3}$ | $P_3(8) = 1.007\times10^{-4}$; measured $1.5\times10^{-4}$/ $1.2\times10^{-4}$ ✓ | [10.32,10.33] |
+| $[[256,70,16]]$ | 16 | $\theta^{16}$ | $P_3(8)\cdot 0.5\, C(256,8)/2^{16} = 3.15\times10^{5}$ | $P_3(8) = 1.007\times10^{-4}$; measured $1.5\times10^{-4}$/ $1.2\times10^{-4}$ ✓ | [10.32,10.33] |
 | $[[1024,1002,4]]$ | 4 | $\theta^4$ | $0.9980\, C(1024,2)/16 = 3.27\times10^{4}$ | rep. count 512; directional syndrome 1023 ✓ | [10.34] |
 | $[[1024,912,8]]$ | 8 | $\theta^8$ | $0.5005\, C(1024,4)/256 = 8.90\times10^{7}$ | weight-4 full degeneracy; weight-5 cross-layer $0.004887$ ✓ | [10.34] |
 | $[[1024,672,16]]$ | 16 | $\theta^{16}$ | $P_3(10)\,0.5\, C(1024,8)/2^{16} = 3.37\times10^{8}$ | weight-8 sampled $1.67\times10^{-6}$ ($0.9\sigma$) ✓ | [10.34] |
 | $[[1024,252,32]]$ | 32 | $\theta^{32}$ | $P_4(10)\,0.5\, C(1024,16)/2^{32} = 2.45\times10^{8}$ | $m=6$ sampling 333 vs $310\pm18$ ($1.3\sigma$) ✓ | [10.34] |
 
-*Notes.* (i) The $[[7,1,3]]$, $[[15,7,3]]$, $[[32,12,4]]$ rows use the uniform-$\theta$ protocol of [10.29]: averaging $\langle \theta^{2w}\rangle = \theta_{\max}^{2w}/(2w+1)$ inserts the factor $1/9 = (1/3)^2$ for the weight-2 branch, hence denominators $144 = 16 \cdot 9$; the remaining rows use the fixed-$\theta$ protocol of Theorem 14 with denominator $2^{2w_0}$. (ii) The logical-$Z$-flip version of the coefficient is $\kappa_r(m)$ times the decoding-failure version (Sec. 5.3), e.g. $[[32,12,4]]$: $29.06 \to 12.0$; $[[64,20,8]]$: $1.26\times10^3 \to 4.63\times10^2$; $[[1024,\cdot,4]]$: $3.27\times10^4 \to 1.23\times10^4$; $[[1024,\cdot,8]]$: $8.90\times10^7 \to 2.94\times10^7$; $[[1024,\cdot,16]]$: $3.37\times10^8 \to 1.05\times10^8$; $[[1024,\cdot,32]]$: $2.45\times10^8 \to 7.53\times10^7$; PG rows keep $\kappa = 1$. (iii) The non-CSS perfect code $[[5,1,3]]$ shows measured $c \approx 0.06$ vs. the branch-level value $C(5,2)/144 = 0.069$ of the same order — its mechanism is outside the geometric-completeness framework (open question).
+*Notes.* (i) The $[[7,1,3]]$, $[[15,7,3]]$, $[[32,12,4]]$ rows use the uniform-$\theta$ protocol of [10.29]: averaging $\langle \theta^{2w}\rangle = \theta_{\max}^{2w}/(2w+1)$ inserts the factor $1/9 = (1/3)^2$ for the weight-2 branch, hence denominators $144 = 16 \cdot 9$; the remaining rows use the fixed-$\theta$ protocol of Theorem 16 with denominator $2^{2w_0}$. (ii) The logical-$Z$-flip version of the coefficient is $\kappa_r(m)$ times the decoding-failure version (Sec. 5.3), e.g. $[[32,12,4]]$: $29.06 \to 12.0$; $[[64,20,8]]$: $1.26\times10^3 \to 4.63\times10^2$; $[[1024,\cdot,4]]$: $3.27\times10^4 \to 1.23\times10^4$; $[[1024,\cdot,8]]$: $8.90\times10^7 \to 2.94\times10^7$; $[[1024,\cdot,16]]$: $3.37\times10^8 \to 1.05\times10^8$; $[[1024,\cdot,32]]$: $2.45\times10^8 \to 7.53\times10^7$; PG rows keep $\kappa = 1$. (iii) The non-CSS perfect code $[[5,1,3]]$ shows measured $c \approx 0.06$ vs. the branch-level value $C(5,2)/144 = 0.069$ of the same order — its mechanism is outside the geometric-completeness framework (open question).
 
 The closed forms reproduce the measured slopes and failure rates across the entire family ladder $d = 3, 4, 8, 16, 32$ — nine codes, five distances, four orders of magnitude in $c_d$ — with no free parameters.
