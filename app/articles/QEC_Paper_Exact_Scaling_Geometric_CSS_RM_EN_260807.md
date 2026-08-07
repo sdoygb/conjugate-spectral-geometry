@@ -741,6 +741,8 @@ We have developed a verification framework and exact closed-form theory for the 
 
 **Acknowledgments.** The author thanks the maintainers of the exact branch-level verification programs whose certificates underpin the numerical results of Sections 3.5 and 5.5, and the developers of the open-source numerical tools used in the simulations.
 
+**Code availability.** The verification programs underlying the numerical results (exact enumeration of decoding-failure coefficients, state-vector simulations of coherent and incoherent noise, and transversal-gate checks) are available at https://doi.org/10.5281/zenodo.21843943.
+
 ## References
 
 [1] P. W. Shor, "Scheme for reducing decoherence in quantum computer memory," Phys. Rev. A **52**, R2493 (1995).
