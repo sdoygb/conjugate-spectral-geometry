@@ -70,9 +70,41 @@ The relation of this work to the existing literature is analyzed in detail in Se
 
 Section 2 collects the notation and the general framework: stabilizer formalism, CSS codes, Reed–Muller codes, the tilted noise model, and the definition of geometric completeness. Section 3 introduces the geometric families — the PG-complete codes (why $d = 3$ is locked) and the affine-complete codes (parameters, distance, enumeration-free verification, logical-operator counting, numerical verification). Section 4 develops the coherent-tilt formalism and the zero-loss structure: the detection closed form, the zero-loss theorem, and the degeneracy hierarchy (inclusion equivalence, the full-degeneracy boundary, and the closed-form degeneracy proportion). Section 5 states and proves the unified scaling law, the class-size and failure-rate closed forms, the next-to-leading order, and the Pauli-channel universality theorem, with instantiation on seven family members. Section 6 establishes the transversal operation set and the fault-tolerant interface to the $T$ gate. Section 7 compares with the existing literature. Section 8 presents the four-order experimental discriminator on a 64–1121 qubit platform, including the statistical criteria, the time budget, and the falsification conditions. Section 9 concludes.
 
+**How to read this paper.** Three tracks are provided for readers of different backgrounds. *Theory track* (structure and proofs): Section 2 → Section 3 → Section 5 (Theorems 15–18) → Section 6, with Section 4 as background. *Experiment track* (discriminator protocol): Section 1.3 → Section 2.3 → Sections 5.2–5.3 → Section 8; the proofs of Sections 3.3–3.4 and Section 6 may be skimmed. *First-contact track* (intuition first): Section 1 → Sections 2.2–2.3 → Section 4.2 → Section 5.2 → Section 8.1; the notation table at the head of Section 2 is the companion reference. The canonical worked example throughout the paper is the minimal member $[[16,6,4]]$ ($m = 4$, $r = 1$): it is introduced in Section 3.2, its zero-loss structure is exhibited in Section 4.2, its closed-form loss is derived in Section 5.2, its transversal gates are verified in Section 6.5, and it provides the smallest-scale discriminator test in Section 8.1.
+
 ---
 
 ## 2. Preliminaries
+
+**Notation.** The symbols used throughout are collected here for reference; each is defined again at first use.
+
+| Symbol | Meaning |
+|---|---|
+| $[[n,k,d]]$ | code parameters: $n$ physical qubits, $k$ logical qubits, distance $d$ |
+| $m$, $r$ | affine-geometry dimension ($\mathrm{AG}(m,2)$); Reed–Muller order, $2r < m-1$ |
+| $\mathrm{RM}(r,m)$ | Reed–Muller code of degree-$r$ polynomials, $\dim = \sum_{i\le r}\binom{m}{i}$, $\min\mathrm{wt} = 2^{m-r}$ |
+| $H$ | generator matrix of $\mathrm{RM}(r,m)$: evaluation rows of all monomials of degree $\le r$ |
+| $C$, $C^\perp$ | stabilizer space $\mathrm{rowspace}(H)$; dual code = logical space $L$ |
+| $\chi_A$ | error pattern supported on $A \subseteq \mathrm{AG}(m,2)$ |
+| $\mathrm{wt}(\cdot)$ | Hamming weight |
+| $\left[\begin{smallmatrix}m\\ k\end{smallmatrix}\right]_2$ | Gaussian binomial: number of $k$-dimensional subspaces of $\mathbb{F}_2^m$ |
+| $\mathrm{flats}(m,k)$ | number of $k$-dimensional affine flats in $\mathrm{AG}(m,2)$ |
+| $s$ | affine span dimension of a support $A$ |
+| $v(A)$ | syndrome-class size of $\chi_A$ at weight $2^r$ (Theorem 18) |
+| $w_0 = \lceil d/2 \rceil$ | leading loss layer |
+| $C(n,w)$ | binomial coefficient |
+| $P(w)$ | degeneracy fraction of the weight-$w$ layer |
+| $\mathrm{fail}(w)$ | decoding failure rate of the weight-$w$ layer |
+| $P'_r(m)$ | cross-layer degeneracy proportion at weight $2^r+1$ (Prop. 19) |
+| $\theta_i$, $\theta_{\max}$ | tilt angle of qubit $i$; its common upper bound, the single noise parameter |
+| $U(\theta_i)$ | coherent rotation $\cos(\theta_i/2)\,I + i\sin(\theta_i/2)\,E_i$ |
+| $\sin^2(\theta_i/2)$ | detection probability of a single-qubit injection (Prop. 8) |
+| $\mathrm{loss}(\theta)$ | expected infidelity after optimal (minimum-weight) decoding |
+| $c_d$ | leading coefficient of Theorem 16 |
+| $\kappa_r(m)$ | logical-$Z$-flip fraction (Sec. 5.3) |
+| $\varepsilon$ | $X$-side error probability of a general Pauli channel (Theorem 21) |
+| $\langle \cdot \rangle$ | average over the angle distribution, or class-size-weighted average (context) |
+| $|0_L\rangle$ | logical zero state |
 
 ### 2.1 Stabilizer formalism and CSS codes
 
@@ -192,6 +224,8 @@ Table 1. Representative members of the affine-complete family.
 
 Note that the codes themselves are classical: Reed–Muller CSS codes have been studied since the early days of quantum error correction (the Steane code is $\mathrm{RM}(1,3)$). The contribution of the present work is not the codes but the *verification method and the closed-form structure*: enumeration-free certificates, the zero-degeneracy structure, and the logical-operator counting of Sections 3.3–3.4, which feed the exact failure-rate analysis of Section 4.
 
+The smallest member of the family, $[[16,6,4]]$ ($m = 4$, $r = 1$), is not listed in Table 1: it satisfies the self-orthogonality condition ($2r = 2 < m - 1 = 3$) and, being small enough for full enumeration and state-vector simulation, serves as the canonical worked example throughout this paper (Sections 4.2, 5.2, 6.5, and 8.1).
+
 ![Figure 1: family parameters](figures/fig1_family_params.png)
 
 **Figure 1.** The affine-complete family at fixed $n = 1024$ ($m = 10$): logical dimension $k = 2^{10} - 2\dim\mathrm{RM}(r,10)$ (left axis) and distance $d = 2^{r+1}$ (right axis, logarithmic) versus $r$. The four members $[[1024,1002,4]]$, $[[1024,912,8]]$, $[[1024,672,16]]$, $[[1024,252,32]]$ share a single platform and noise environment; their distinct leading exponents $\theta^4, \theta^8, \theta^{16}, \theta^{32}$ are the basis of the experimental discriminator of Sec. 8 (open symbols: $r = 0$, $d = 2$).
@@ -271,6 +305,8 @@ The following structural result shows that coherent injections of weight below $
 **Corollary 10.** For the affine-complete code $[[64,20,8]]$ (Sec. 3), any injection on $\le 3$ qubits produces identically zero loss after optimal recovery. For comparison, the projective-geometric code $[[15,7,3]]$ already loses at weight 2: collinear pairs share the syndrome of a single-qubit error (Sec. 3.1), so the minimal-weight decoder applies a single-qubit correction and leaves a weight-3 logical residual with $\theta^4$ loss.
 
 The corollary quantifies "distance buys noise immunity": a $d=8$ code is perfectly immune to coherent disturbances on up to three qubits, whereas a $d=3$ code pays $\theta^4$ already for two-qubit joint disturbances.
+
+For the canonical minimal member $[[16,6,4]]$ ($m = 4$, $r = 1$), Theorem 9 guarantees identically zero loss for every single-qubit injection ($w = 1 < d/2 = 2$); the only measurable signature is the detection probability $\sin^2(\theta/2)$ of Prop. 8 — a 16-qubit laboratory check of the zero-loss structure before scaling to the larger members of Table 1.
 
 ### 4.3 Degeneracy hierarchy: inclusion equivalence and the full-degeneracy boundary
 
@@ -362,7 +398,11 @@ the Gaussian binomial coefficient counting $(r+1-s)$-dimensional subspaces of th
 
 *Proof sketch.* By Theorem 11, partners of $\chi_A$ are the complements $P \setminus A$ over all $(r+1)$-flats $P \supset A$. Flats containing $A$ correspond bijectively to flats of the quotient $AG(m,2)/\mathrm{span}(A)$ of dimension $(r+1-s)$; their number is the Gaussian binomial $\left[\begin{smallmatrix}m-s\\ r+1-s\end{smallmatrix}\right]_2$. ∎
 
-*Instances.* $r = 1$ ($d = 4$): any 2-subset has span $s = 1$, giving $v = 1 + \left[\begin{smallmatrix}m-1\\ 1\end{smallmatrix}\right]_2 = 2^{m-1}$: classes of size $2^{m-1}$ (e.g. $v = 16$ for $[[32,12,4]]$, matching the "465 pairs $= 31\times 15$" enumeration). $r = 2$ ($d = 8$): generic 4-subsets have $s = 3$, $v = 2$ (complement pairs — the 313,131 classes of $[[64,20,8]]$); coplanar 4-subsets have $s = 2$, $v = 2^{m-2}$ — the bimodal class structure $2$ / $2^{m-2}$. Consequently $\mathrm{fail}(4) = 1 - \langle 1/v\rangle = 0.507172131$ for $[[64,20,8]]$ (full enumeration: 322,245 of 635,376 weight-4 errors fail), matching the measured 50.7%.
+*Instances.* $r = 1$ ($d = 4$): any 2-subset has span $s = 1$, giving $v = 1 + \left[\begin{smallmatrix}m-1\\ 1\end{smallmatrix}\right]_2 = 2^{m-1}$: classes of size $2^{m-1}$ (e.g. $v = 16$ for $[[32,20,4]]$, matching the "465 pairs $= 31\times 15$" enumeration; $v = 8$ for the minimal member $[[16,6,4]]$ with $m = 4$). For $[[16,6,4]]$ the leading layer is fully degenerate with uniform class size 8, and Theorem 16 gives the closed form
+
+$$\mathrm{loss}(\theta) = C(16,2)\cdot\tfrac{7}{8}\cdot 2^{-4}\,\theta^4 + O(\theta^6) = \tfrac{105}{16}\,\theta^4 + O(\theta^6),$$
+
+i.e. a slope-4 loss with parameter-free coefficient $105/16 \approx 6.56$ — the smallest-scale instance of the discriminator of Section 8. $r = 2$ ($d = 8$): generic 4-subsets have $s = 3$, $v = 2$ (complement pairs — the 313,131 classes of $[[64,20,8]]$); coplanar 4-subsets have $s = 2$, $v = 2^{m-2}$ — the bimodal class structure $2$ / $2^{m-2}$. Consequently $\mathrm{fail}(4) = 1 - \langle 1/v\rangle = 0.507172131$ for $[[64,20,8]]$ (full enumeration: 322,245 of 635,376 weight-4 errors fail), matching the measured 50.7%.
 
 ### 5.3 Next-to-leading order: the $\theta^{d+2}$ term
 
@@ -414,7 +454,7 @@ Table 3 lists the closed-form leading coefficients $c_d$ of Theorem 16 against n
 |---|---|---|---|---|---|
 | $[[7,1,3]]$ | 3 | $\theta^4$ | $\frac13 C(7,2)/144 = 0.0486$ | slope 4.12; fit $c \approx 0.10$ (same order) | (this work) |
 | $[[15,7,3]]$ | 3 | $\theta^4$ | $\frac13 C(15,2)/144 = 0.2431$ | slope 3.99; $315/945 = 1/3$ ✓ | (this work) |
-| $[[32,12,4]]$ | 4 | $\theta^4$ | $\frac{15}{16} C(32,2)/16 = 29.06$ | class size 16 (465 pairs $= 31\times15$) ✓ | (this work) |
+| $[[32,20,4]]$ | 4 | $\theta^4$ | $\frac{15}{16} C(32,2)/16 = 29.06$ | class size 16 (465 pairs $= 31\times15$) ✓ | (this work) |
 | $[[64,20,8]]$ | 8 | $\theta^8$ | $0.5072\, C(64,4)/256 = 1.26\times10^{3}$ | fail 48.5%/50.7%; slope 7.96 ✓ | (this work) |
 | $[[256,70,16]]$ | 16 | $\theta^{16}$ | $P_3(8)\cdot 0.5\, C(256,8)/2^{16} = 3.15\times10^{5}$ | $P_3(8) = 1.007\times10^{-4}$; measured $1.5\times10^{-4}$/ $1.2\times10^{-4}$ ✓ | (this work) |
 | $[[1024,1002,4]]$ | 4 | $\theta^4$ | $0.9980\, C(1024,2)/16 = 3.27\times10^{4}$ | rep. count 512; directional syndrome 1023 ✓ | (this work) |
@@ -422,7 +462,7 @@ Table 3 lists the closed-form leading coefficients $c_d$ of Theorem 16 against n
 | $[[1024,672,16]]$ | 16 | $\theta^{16}$ | $P_3(10)\,0.5\, C(1024,8)/2^{16} = 3.37\times10^{8}$ | weight-8 sampled $1.67\times10^{-6}$ ($0.9\sigma$) ✓ | (this work) |
 | $[[1024,252,32]]$ | 32 | $\theta^{32}$ | $P_4(10)\,0.5\, C(1024,16)/2^{32} = 2.45\times10^{8}$ | $m=6$ sampling 333 vs $310\pm18$ ($1.3\sigma$) ✓ | (this work) |
 
-*Notes.* (i) The $[[7,1,3]]$, $[[15,7,3]]$, $[[32,12,4]]$ rows use the uniform-$\theta$ protocol of this work: averaging $\langle \theta^{2w}\rangle = \theta_{\max}^{2w}/(2w+1)$ inserts the factor $1/9 = (1/3)^2$ for the weight-2 branch, hence denominators $144 = 16 \cdot 9$; the remaining rows use the fixed-$\theta$ protocol of Theorem 16 with denominator $2^{2w_0}$. (ii) The logical-$Z$-flip version of the coefficient is $\kappa_r(m)$ times the decoding-failure version (Sec. 5.3), e.g. $[[32,12,4]]$: $29.06 \to 12.0$; $[[64,20,8]]$: $1.26\times10^3 \to 4.63\times10^2$; $[[1024,\cdot,4]]$: $3.27\times10^4 \to 1.23\times10^4$; $[[1024,\cdot,8]]$: $8.90\times10^7 \to 2.94\times10^7$; $[[1024,\cdot,16]]$: $3.37\times10^8 \to 1.05\times10^8$; $[[1024,\cdot,32]]$: $2.45\times10^8 \to 7.53\times10^7$; PG rows keep $\kappa = 1$. (iii) The non-CSS perfect code $[[5,1,3]]$ shows measured $c \approx 0.06$ vs. the branch-level value $C(5,2)/144 = 0.069$ of the same order — its mechanism is outside the geometric-completeness framework (open question).
+*Notes.* (i) The $[[7,1,3]]$, $[[15,7,3]]$, $[[32,20,4]]$ rows use the uniform-$\theta$ protocol of this work: averaging $\langle \theta^{2w}\rangle = \theta_{\max}^{2w}/(2w+1)$ inserts the factor $1/9 = (1/3)^2$ for the weight-2 branch, hence denominators $144 = 16 \cdot 9$; the remaining rows use the fixed-$\theta$ protocol of Theorem 16 with denominator $2^{2w_0}$. (ii) The logical-$Z$-flip version of the coefficient is $\kappa_r(m)$ times the decoding-failure version (Sec. 5.3), e.g. $[[32,12,4]]$: $29.06 \to 12.0$; $[[64,20,8]]$: $1.26\times10^3 \to 4.63\times10^2$; $[[1024,\cdot,4]]$: $3.27\times10^4 \to 1.23\times10^4$; $[[1024,\cdot,8]]$: $8.90\times10^7 \to 2.94\times10^7$; $[[1024,\cdot,16]]$: $3.37\times10^8 \to 1.05\times10^8$; $[[1024,\cdot,32]]$: $2.45\times10^8 \to 7.53\times10^7$; PG rows keep $\kappa = 1$. (iii) The non-CSS perfect code $[[5,1,3]]$ shows measured $c \approx 0.06$ vs. the branch-level value $C(5,2)/144 = 0.069$ of the same order — its mechanism is outside the geometric-completeness framework (open question).
 
 The closed forms reproduce the measured slopes and failure rates across the entire family ladder $d = 3, 4, 8, 16, 32$ — nine codes, five distances, four orders of magnitude in $c_d$ — with no free parameters.
 
@@ -538,6 +578,8 @@ $$\mathrm{loss}(\theta) = c_d\,\theta^d + o(\theta^d), \qquad d \in \{4, 8, 16, 
 where $\theta$ is the angle of an identical single-qubit coherent rotation $R_x(\theta)$ applied to every qubit (pure-type injection about a fixed axis; the experimental loss is the logical-$Z$-flip rate of Sec. 5.3).
 
 **Why the slope is a discriminant.** (a) Non-geometric heuristics (independent error models, typical-code behavior) cannot produce exact integer slopes with parameter-free coefficients; (b) the tier windows on the $\theta$ axis are *ladder-separated* by the closed forms of $c_d$, and the ladder (including its gaps) cannot be obtained by post-fitting; (c) the intercepts $\ln c_d$ are fully predicted, and any deviation directly inverts to the experimental value of $\kappa\,\mathrm{fail}(w_0)$, which combined with the closed form of $\kappa$ (Sec. 5.3) yields $\mathrm{fail}(w_0)$ and hence an *indirect measurement of the class size* $v$ (Theorem 17: $\mathrm{fail}(w_0) = 1 - \sum_s P(s)/\bigl(v(s)\,P(w_0)\bigr)$).
+
+**Smallest-scale test.** The same logic is testable at 16 qubits before engaging the 64–1121 qubit platform: the canonical member $[[16,6,4]]$ has slope 4 with the exact coefficient $105/16$ (Sec. 5.2), so its log–log intercept $\ln(105/16)$ is itself a parameter-free prediction — a desktop check of the discriminator.
 
 **Theoretical input** (closed forms for $m = 10$; $\ln c_d$ in the logical $Z$-flip version):
 
