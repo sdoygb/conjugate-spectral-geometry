@@ -1,0 +1,554 @@
+<h1>δ的代数化：Clifford代数</h1>
+<p><strong>版本</strong>: 260808</p>
+<hr />
+<h2>摘要</h2>
+<p>本文将 中的 <strong>ZH_FORMULA_23</strong> 在<strong>我们区域</strong>代数化。<strong>ZH_FORMULA_24</strong> 的迭代在编码轨道上产生候选参数；<strong>ZH_FORMULA_25</strong> 的互锁性（命题已证）使其满足圆满条件（Berry 相位闭合，定理已证），圆满后<strong>再现</strong>为 Bott 周期 8 的实 Clifford 代数结构。<strong>ZH_FORMULA_26</strong> 被实现为 Bott 步进算符，作用于实 Clifford 代数序列 <strong>ZH_FORMULA_27</strong>。</p>
+<p>本文给出 Clifford 代数前 8 项的分类表，并证明半单分裂和复结构涌现两个关键引理。</p>
+<hr />
+<h2>目　录</h2>
+<p>§1　δ 作为 Bott 步进算符
+　1.1　语义到代数的对应
+　1.2　Clifford 代数的定义
+　1.3　构造的逐步展开：从 <strong>ZH_FORMULA_28</strong> 到 <strong>ZH_FORMULA_29</strong> 到 <strong>ZH_FORMULA_30</strong>
+　1.4　分类表的逐步推导
+　1.5　体积元的一般公式
+　1.6　代数化的唯一性</p>
+<p>§2　关键引理
+　2.1　半单分裂
+　2.2　复结构涌现
+　2.3　终端二元性
+　2.4　三个引理的统一视角</p>
+<p>§3　编码轨道
+　3.1　编码轨道的逐步描述
+　3.2　编码轨道的代数「呼吸」</p>
+<p>§4　Bott 周期的预览
+　4.1　Bott 周期的代数机制
+　4.2　Bott 周期与三个结构常数</p>
+<hr />
+<h2>§1 δ 作为 Bott 步进算符</h2>
+<p><strong>定义 0.2.1.01（圆满再现：Clifford 代数化）。</strong> <strong>ZH_FORMULA_31</strong> 的迭代在编码轨道上产生候选参数。<strong>ZH_FORMULA_32</strong> 的互锁性（命题已证：乘积 <strong>ZH_FORMULA_33</strong>，满足互锁方程 <strong>ZH_FORMULA_34</strong>，可赋值给 <strong>ZH_FORMULA_35</strong> triality 轨道系数）使其在编码轨道上形成自洽闭合回路——Berry 相位闭合（定理已证）。圆满后，<strong>ZH_FORMULA_36</strong> <strong>再现</strong>为 Bott 周期 8 的实 Clifford 代数结构。<strong>ZH_FORMULA_37</strong> 被实现为 Bott 步进算符：</p>
+<p><strong>ZH_FORMULA_0</strong></p>
+<p>其中 <strong>ZH_FORMULA_38</strong> 从 <strong>ZH_FORMULA_39</strong> 通过添加新生成元 <strong>ZH_FORMULA_40</strong> 得到，满足
+<strong>ZH_FORMULA_1</strong></p>
+<h3>1.1 语义到代数的对应</h3>
+<blockquote>
+<p><strong>注。</strong> 下表的三层自指闭合↔代数对应是<strong>推导性</strong>的——由 0.1 §3.5 三层自指闭合定理给出严格的推导链，而非外加的语义预设。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">0.1 §3.5（三层自指闭合）</th>
+<th style="text-align: left;">推导链</th>
+<th style="text-align: left;">本文代数层</th>
+<th style="text-align: left;">推导依据（0.1 §3.5）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">抑制（δ¹ 产生第一区分）</td>
+<td style="text-align: left;">非幂等 ⇒ 仅有 <strong>ZH_FORMULA_41</strong> 满足「非幂等且非崩溃」</td>
+<td style="text-align: left;">生成元 <strong>ZH_FORMULA_42</strong>，<strong>ZH_FORMULA_43</strong></td>
+<td style="text-align: left;">引理 0.1.3.04：若 <strong>ZH_FORMULA_44</strong> 则幂等（反非幂等），若 <strong>ZH_FORMULA_45</strong> 则崩溃</td>
+</tr>
+<tr>
+<td style="text-align: left;">痕迹（δ² 记住区分）</td>
+<td style="text-align: left;">非交换 ⇒ 顺序被编码</td>
+<td style="text-align: left;">反交换 <strong>ZH_FORMULA_46</strong></td>
+<td style="text-align: left;">定理 0.1.3.05：δ³ 自指要求 δ² 的痕迹不可抹除 → 交换顺序必须产生可检测差异</td>
+</tr>
+<tr>
+<td style="text-align: left;">涌现（δ³ 自指闭合）</td>
+<td style="text-align: left;">自指 ⇒ 类型闭合 ⇒ 8 步拓扑回归</td>
+<td style="text-align: left;">Bott 周期 <strong>ZH_FORMULA_47</strong></td>
+<td style="text-align: left;">原理 0.1.3.06：三层之上无新语义维度 → 类型闭合在 δ⁸ 严格实现（0.3 验证）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>ZH_FORMULA_48</strong> 说「我是我，不是别的」（<strong>ZH_FORMULA_49</strong>），而 <strong>ZH_FORMULA_50</strong> 说「我的身份依赖于我和谁在一起」——关系的痕迹。<strong>Clifford 代数公理不是外加选择，而是三层自指闭合的必然代数表达。</strong></p>
+<p><strong>1.1.1 总作用量为零的代数表达</strong>。在 0.1 §2.3 中，S_total = 0 被确立为 δ 的非满射性的必然推论。在代数层，这对应三个扇区的编码贡献之和为零。在 Clifford 代数化的框架中，三个扇区对应编码轨道的三个子段：</p>
+<ul>
+<li>ℳ（物质）：Cl(0)→Cl(3)，累积维数扩展 2^0→2^3 = 8</li>
+<li>𝒞（因果）：Cl(3)→Cl(5)，累积维数扩展 2^3→2^5 = 32</li>
+<li>ℐ（信息）：Cl(5)→Cl(7)，累积维数扩展 2^5→2^7 = 128</li>
+</ul>
+<p>S_total = 0 在代数层的含义是：三扇区的编码贡献在 Bott 闭合前必须精确抵消。后续 0.5 将证明，这一约束是 {2,3,5} 为唯一自洽三元组的代数根源；0.9 将证明，α⁻¹ = 137 是 triality 破缺在零和约束下产生的残留泄漏。</p>
+<h3>1.2 Clifford 代数的定义</h3>
+<p><strong>ZH_FORMULA_51</strong> 是由生成元 <strong>ZH_FORMULA_52</strong> 生成的实结合代数，满足：
+<strong>ZH_FORMULA_2</strong></p>
+<p>前 8 个 <strong>ZH_FORMULA_53</strong> 的分类表：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>ZH_FORMULA_54</strong></th>
+<th style="text-align: left;"><strong>ZH_FORMULA_55</strong></th>
+<th style="text-align: center;">不可约表示维数 <strong>ZH_FORMULA_56</strong></th>
+<th style="text-align: left;">结构特征</th>
+<th style="text-align: left;">物理扇区（猜想）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_57</strong></td>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">可换体——无区分</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_58</strong></td>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">复数——首次区分</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_59</strong></td>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;">四元数——非交换</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_60</strong></td>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;"><strong>半单分裂</strong></td>
+<td style="text-align: left;">物质（猜想）</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_61</strong></td>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;">四元数矩阵</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_62</strong></td>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;"><strong>复结构涌现</strong></td>
+<td style="text-align: left;">因果（猜想）</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_63</strong></td>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;">实矩阵</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_64</strong></td>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;"><strong>终端二元性</strong></td>
+<td style="text-align: left;">信息（猜想）</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_65</strong></td>
+<td style="text-align: center;">16</td>
+<td style="text-align: left;">Bott 回归</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">这张表是整个体系的数学基础。每一行对应 <strong>ZH_FORMULA_66</strong> 的一次步进，每次步进都产生新的代数结构。</td>
+<td style="text-align: left;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<h3>1.3 构造的逐步展开：从 <strong>ZH_FORMULA_67</strong> 到 <strong>ZH_FORMULA_68</strong> 到 <strong>ZH_FORMULA_69</strong></h3>
+<p>分类表的每一行都是 <strong>ZH_FORMULA_70</strong> 的一次步进。下面给出前 3 步的详细构造，以展示「添加生成元」如何引发代数结构的质变。</p>
+<p><strong>步0：<strong>ZH_FORMULA_71</strong>。</strong> 没有生成元，<strong>ZH_FORMULA_72</strong> 就是一维的实数体 <strong>ZH_FORMULA_73</strong>。<strong>ZH_FORMULA_74</strong> 是可换的——所有元素相互交换。这是「无区分」的状态：没有任何 <strong>ZH_FORMULA_75</strong>，也就没有任何区分。</p>
+<p><strong>步1：<strong>ZH_FORMULA_76</strong>。</strong> <strong>ZH_FORMULA_77</strong> 添加生成元 <strong>ZH_FORMULA_78</strong>，满足 <strong>ZH_FORMULA_79</strong>。<strong>ZH_FORMULA_80</strong> 由 <strong>ZH_FORMULA_81</strong> 作为实向量空间张成，乘法由 <strong>ZH_FORMULA_82</strong> 完全确定。识别 <strong>ZH_FORMULA_83</strong>（虚单位），得到 <strong>ZH_FORMULA_84</strong>。这是「首次区分」：<strong>ZH_FORMULA_85</strong> 是一维的、可换的；<strong>ZH_FORMULA_86</strong> 是二维的、仍是可换的，但有了「虚方向」。<strong>ZH_FORMULA_87</strong> 是抑制的代数印记——<strong>ZH_FORMULA_88</strong> 否定了自己作为 <strong>ZH_FORMULA_89</strong> 的可能性。</p>
+<p><strong>步2：<strong>ZH_FORMULA_90</strong>。</strong> <strong>ZH_FORMULA_91</strong> 再添加生成元 <strong>ZH_FORMULA_92</strong>，满足 <strong>ZH_FORMULA_93</strong>、<strong>ZH_FORMULA_94</strong>。<strong>ZH_FORMULA_95</strong> 由 <strong>ZH_FORMULA_96</strong> 作为实向量空间张成。识别：
+<strong>ZH_FORMULA_3</strong>
+验证 Hamilton 关系 <strong>ZH_FORMULA_97</strong>：
+- <strong>ZH_FORMULA_98</strong> ✓
+- <strong>ZH_FORMULA_99</strong> ✓
+- <strong>ZH_FORMULA_100</strong> ✓
+- <strong>ZH_FORMULA_101</strong> ✓</p>
+<p>因此 <strong>ZH_FORMULA_102</strong>。<strong>ZH_FORMULA_103</strong> 不可换——<strong>ZH_FORMULA_104</strong>。反交换关系 <strong>ZH_FORMULA_105</strong> 是痕迹的代数印记——顺序被记住了。</p>
+<h3>1.4 分类表的逐步推导</h3>
+<p>从 <strong>ZH_FORMULA_106</strong> 出发，后续的 <strong>ZH_FORMULA_107</strong> 通过「张量积-扩张」递归确定。核心递归关系为：
+<strong>ZH_FORMULA_4</strong>
+<strong>ZH_FORMULA_5</strong></p>
+<p>但更直接的推导使用「中心-体积元」分析，下面给出每一步的同构判定：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>ZH_FORMULA_108</strong></th>
+<th style="text-align: left;">中心 <strong>ZH_FORMULA_109</strong></th>
+<th style="text-align: center;">体积元 <strong>ZH_FORMULA_110</strong></th>
+<th style="text-align: left;">同构判定</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_111</strong></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_112</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_113</strong></td>
+<td style="text-align: center;"><strong>ZH_FORMULA_114</strong></td>
+<td style="text-align: left;"><strong>ZH_FORMULA_115</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_116</strong></td>
+<td style="text-align: center;"><strong>ZH_FORMULA_117</strong></td>
+<td style="text-align: left;"><strong>ZH_FORMULA_118</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_119</strong>，<strong>ZH_FORMULA_120</strong></td>
+<td style="text-align: center;"><strong>ZH_FORMULA_121</strong></td>
+<td style="text-align: left;"><strong>ZH_FORMULA_122</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_123</strong></td>
+<td style="text-align: center;"><strong>ZH_FORMULA_124</strong></td>
+<td style="text-align: left;"><strong>ZH_FORMULA_125</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_126</strong>，<strong>ZH_FORMULA_127</strong></td>
+<td style="text-align: center;"><strong>ZH_FORMULA_128</strong></td>
+<td style="text-align: left;"><strong>ZH_FORMULA_129</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_130</strong></td>
+<td style="text-align: center;"><strong>ZH_FORMULA_131</strong></td>
+<td style="text-align: left;"><strong>ZH_FORMULA_132</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_133</strong>，<strong>ZH_FORMULA_134</strong></td>
+<td style="text-align: center;"><strong>ZH_FORMULA_135</strong></td>
+<td style="text-align: left;"><strong>ZH_FORMULA_136</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_137</strong></td>
+<td style="text-align: center;"><strong>ZH_FORMULA_138</strong></td>
+<td style="text-align: left;"><strong>ZH_FORMULA_139</strong></td>
+</tr>
+</tbody>
+</table>
+<p>中心维数的奇偶性是关键：当 <strong>ZH_FORMULA_140</strong> 为奇数时，体积元 <strong>ZH_FORMULA_141</strong> 落在中心中（与所有生成元交换），从而中心维数为 2，代数半单分解为两个直和项（或保持单代数但带复结构）；当 <strong>ZH_FORMULA_142</strong> 为偶数时，<strong>ZH_FORMULA_143</strong> 不在中心中，代数是单的（中心为 <strong>ZH_FORMULA_144</strong>）。</p>
+<h3>1.5 体积元的一般公式</h3>
+<p><strong>命题 0.2.1.02（体积元的平方）。</strong> 设 <strong>ZH_FORMULA_145</strong> 是 <strong>ZH_FORMULA_146</strong> 的体积元。则
+<strong>ZH_FORMULA_6</strong></p>
+<p><strong>证明。</strong> 计算 <strong>ZH_FORMULA_147</strong>。将第二个 <strong>ZH_FORMULA_148</strong> 中的 <strong>ZH_FORMULA_149</strong> 从右侧移到左侧，需要穿越 <strong>ZH_FORMULA_150</strong> 个生成元（<strong>ZH_FORMULA_151</strong>），每次穿越产生 <strong>ZH_FORMULA_152</strong>：
+<strong>ZH_FORMULA_7</strong>
+但更直接地，将 <strong>ZH_FORMULA_153</strong> 重排为 <strong>ZH_FORMULA_154</strong> 需要的总交换次数为 <strong>ZH_FORMULA_155</strong>（每个 <strong>ZH_FORMULA_156</strong> 需穿越 <strong>ZH_FORMULA_157</strong> 个其他生成元）。每次交换产生 <strong>ZH_FORMULA_158</strong>，且 <strong>ZH_FORMULA_159</strong>。因此：
+<strong>ZH_FORMULA_8</strong></p>
+<p>验证：
+- <strong>ZH_FORMULA_160</strong>：<strong>ZH_FORMULA_161</strong> ✓
+- <strong>ZH_FORMULA_162</strong>：<strong>ZH_FORMULA_163</strong> ✓
+- <strong>ZH_FORMULA_164</strong>：<strong>ZH_FORMULA_165</strong> ✓</p>
+<p>体积元的平方符号决定 <strong>ZH_FORMULA_166</strong> 是否分裂为直和：<strong>ZH_FORMULA_167</strong> 时，<strong>ZH_FORMULA_168</strong> 是对合（<strong>ZH_FORMULA_169</strong>），可以构造投影 <strong>ZH_FORMULA_170</strong>，从而代数分裂；<strong>ZH_FORMULA_171</strong> 时，<strong>ZH_FORMULA_172</strong> 充当复结构 <strong>ZH_FORMULA_173</strong>（<strong>ZH_FORMULA_174</strong>）。</p>
+<h3>1.6 代数化的唯一性</h3>
+<p>将 <strong>ZH_FORMULA_175</strong> 定义为「非平凡自映射」，具有三个语义性质：抑制、痕迹、涌现。本文 §1.1 将其代数化为 Clifford 代数。一个自然的问题是：这种代数化是否唯一？即，是否存在其他代数结构也满足这三个语义性质？</p>
+<blockquote>
+<p><strong>当前立场：</strong> 从 δ 到 Clifford 的桥梁<strong>已从动机性升级为推导性</strong>（0.1 §3.5 三层自指闭合定理）：</p>
+<ol>
+<li><strong>圆满再现</strong>：δ 产生候选参数 → {2,3,5} 互锁性（命题已证）→ Berry 相位闭合（定理已证）→ 圆满再现为 Clifford 代数。三个环节都是已证定理——<strong>不再依赖工作假设</strong>。</li>
+<li><strong>E₈ 桥接</strong>：圆满再现后，{2,3,5} 由 KO 理论 → 偶幺模格 → E₈ 的严格链确定。这是已证定理。</li>
+<li><strong>三层自指闭合（0.1 §3.5）</strong>：抑制痕迹涌现<strong>已从 δ 的迭代性质严格推导</strong>（引理 0.1.3.03：三元之下无闭合；定理 0.1.3.05：δ³ 实现自指；原理 0.1.3.06：三层之上无新语义维度）。Clifford 代数化是三层自指闭合的<strong>代数实现</strong>，而非外加的语义预设。</li>
+</ol>
+<p><strong>框架的逻辑结构因此为：</strong> δ（公理）→ [三层自指闭合：0.1 §3.5 已推导] → Clifford 代数化（本文 §1.1）→ [圆满再现：已证定理命题] → [E₈ 桥接：已证] → {2,3,5} → 谱展开 → S=137.036。<strong>框架中不再有依赖工作假设的环节</strong>——从 δ 到 S=137.036 的每一步都基于已证定理或标准数学。</p>
+</blockquote>
+<hr />
+<h2>§2 关键引理</h2>
+<h3>2.1 半单分裂</h3>
+<p><strong>引理 0.2.2.01（半单分裂）。</strong> <strong>ZH_FORMULA_176</strong> 是 Clifford 代数从单代数到半单代数的首次分裂。</p>
+<p><strong>证明（完整）。</strong></p>
+<p><strong>步骤1：计算 <strong>ZH_FORMULA_177</strong> 的中心。</strong> <strong>ZH_FORMULA_178</strong> 由 <strong>ZH_FORMULA_179</strong> 生成，基为 <strong>ZH_FORMULA_180</strong>，共 8 维。</p>
+<p>设 <strong>ZH_FORMULA_181</strong>。要求 <strong>ZH_FORMULA_182</strong> 与所有 <strong>ZH_FORMULA_183</strong> 交换。</p>
+<p>考虑 <strong>ZH_FORMULA_184</strong>。利用 <strong>ZH_FORMULA_185</strong>（<strong>ZH_FORMULA_186</strong>）：
+- <strong>ZH_FORMULA_187</strong>，故 <strong>ZH_FORMULA_188</strong> 不在中心（除非 <strong>ZH_FORMULA_189</strong>）。
+- <strong>ZH_FORMULA_190</strong>，故 <strong>ZH_FORMULA_191</strong>。
+- <strong>ZH_FORMULA_192</strong>，而 <strong>ZH_FORMULA_193</strong>，故 <strong>ZH_FORMULA_194</strong>。
+- 同理 <strong>ZH_FORMULA_195</strong>。
+- <strong>ZH_FORMULA_196</strong>，故 <strong>ZH_FORMULA_197</strong> 任意。
+- <strong>ZH_FORMULA_198</strong>... 但更简洁地：<strong>ZH_FORMULA_199</strong> 与 <strong>ZH_FORMULA_200</strong> 交换需穿越 2 个生成元（<strong>ZH_FORMULA_201</strong>），每次产生 <strong>ZH_FORMULA_202</strong>，共 <strong>ZH_FORMULA_203</strong>。故 <strong>ZH_FORMULA_204</strong>。</p>
+<p>因此 <strong>ZH_FORMULA_205</strong>，维数为 2。</p>
+<p><strong>步骤2：体积元的平方。</strong> <strong>ZH_FORMULA_206</strong>，由命题 0.2.1.02（体积元的平方）：
+<strong>ZH_FORMULA_9</strong></p>
+<p><strong>步骤3：构造投影算符。</strong> 由 <strong>ZH_FORMULA_207</strong>，定义：
+<strong>ZH_FORMULA_10</strong></p>
+<p>验证投影性质：
+- <strong>ZH_FORMULA_208</strong> ✓
+- <strong>ZH_FORMULA_209</strong> ✓
+- <strong>ZH_FORMULA_210</strong> ✓</p>
+<p><strong>步骤4：直和分解。</strong> <strong>ZH_FORMULA_211</strong>。每个直和项 <strong>ZH_FORMULA_212</strong> 是一个理想，且 <strong>ZH_FORMULA_213</strong> 的中心是 <strong>ZH_FORMULA_214</strong>，维数为 1，故每个直和项是中心为 <strong>ZH_FORMULA_215</strong> 的单代数。</p>
+<p><strong>步骤5：识别同构类型。</strong> <strong>ZH_FORMULA_216</strong>，故每个直和项维数为 4。4 维、中心为 <strong>ZH_FORMULA_217</strong> 的可除代数是 <strong>ZH_FORMULA_218</strong>（由 Frobenius 定理）。因此：
+<strong>ZH_FORMULA_11</strong></p>
+<p><strong>意义。</strong> 这是 <strong>ZH_FORMULA_219</strong> 迭代中第一次出现「二元分裂」——代数不再是一个整体，而是两个独立的「分支」。这种分裂在后续中将对应物质界 <strong>ZH_FORMULA_220</strong> 的涌现。</p>
+<h3>2.2 复结构涌现</h3>
+<p><strong>引理 0.2.2.02（复结构涌现）。</strong> <strong>ZH_FORMULA_221</strong> 是实 Clifford 代数中首个复矩阵代数。体积元 <strong>ZH_FORMULA_222</strong> 满足 <strong>ZH_FORMULA_223</strong> 且与所有生成元交换——<strong>ZH_FORMULA_224</strong> 充当复结构 <strong>ZH_FORMULA_225</strong>。</p>
+<p><strong>证明（完整）。</strong></p>
+<p><strong>步骤1：计算 <strong>ZH_FORMULA_226</strong>。</strong> 由命题 0.2.1.02（体积元的平方）：
+<strong>ZH_FORMULA_12</strong></p>
+<p>详细展开：<strong>ZH_FORMULA_227</strong>，<strong>ZH_FORMULA_228</strong>。</p>
+<p>将第二个因子的 <strong>ZH_FORMULA_229</strong> 移到最左：需穿越 <strong>ZH_FORMULA_230</strong>（4 次交换），产生 <strong>ZH_FORMULA_231</strong>。类似地，<strong>ZH_FORMULA_232</strong> 穿越 3 次（<strong>ZH_FORMULA_233</strong>），<strong>ZH_FORMULA_234</strong> 穿越 2 次，<strong>ZH_FORMULA_235</strong> 穿越 1 次，<strong>ZH_FORMULA_236</strong> 穿越 0 次。总交换次数 <strong>ZH_FORMULA_237</strong>。再加上 <strong>ZH_FORMULA_238</strong>：
+<strong>ZH_FORMULA_13</strong></p>
+<p><strong>步骤2：验证 <strong>ZH_FORMULA_239</strong> 与所有生成元交换。</strong> 对任意 <strong>ZH_FORMULA_240</strong>（<strong>ZH_FORMULA_241</strong>），<strong>ZH_FORMULA_242</strong> 需将 <strong>ZH_FORMULA_243</strong> 穿越其他 4 个生成元（<strong>ZH_FORMULA_244</strong> 中除 <strong>ZH_FORMULA_245</strong> 外的 4 个），每次产生 <strong>ZH_FORMULA_246</strong>：
+<strong>ZH_FORMULA_14</strong></p>
+<p>因此 <strong>ZH_FORMULA_247</strong> 与所有 <strong>ZH_FORMULA_248</strong> 交换，从而与整个 <strong>ZH_FORMULA_249</strong> 交换——<strong>ZH_FORMULA_250</strong>。</p>
+<p><strong>步骤3：构造复结构。</strong> 定义 <strong>ZH_FORMULA_251</strong>。则：
+- <strong>ZH_FORMULA_252</strong> ✓
+- <strong>ZH_FORMULA_253</strong> 与 <strong>ZH_FORMULA_254</strong> 的所有元素交换 ✓</p>
+<p><strong>ZH_FORMULA_255</strong> 满足复结构的两个公理（<strong>ZH_FORMULA_256</strong>、<strong>ZH_FORMULA_257</strong> 是代数自同态），因此 <strong>ZH_FORMULA_258</strong> 是 <strong>ZH_FORMULA_259</strong>-代数。</p>
+<p><strong>步骤4：确定矩阵代数类型。</strong> <strong>ZH_FORMULA_260</strong>。作为 <strong>ZH_FORMULA_261</strong>-代数，<strong>ZH_FORMULA_262</strong>。<strong>ZH_FORMULA_263</strong> 是单代数（中心为 <strong>ZH_FORMULA_264</strong>，但作为 <strong>ZH_FORMULA_265</strong>-代数中心为 <strong>ZH_FORMULA_266</strong>），故 <strong>ZH_FORMULA_267</strong>，其中 <strong>ZH_FORMULA_268</strong>，<strong>ZH_FORMULA_269</strong>：
+<strong>ZH_FORMULA_15</strong></p>
+<p><strong>意义。</strong> 复结构的涌现意味着因果界获得了「振荡」的能力——复数天然描述周期运动。<strong>ZH_FORMULA_270</strong> 将在 中从此引理导出。</p>
+<h3>2.3 终端二元性</h3>
+<p><strong>引理 0.2.2.03（终端二元性）。</strong> <strong>ZH_FORMULA_271</strong>。其中心维数为 2，产生不可消除的二元直和结构。</p>
+<p><strong>证明（完整）。</strong></p>
+<p><strong>步骤1：计算 <strong>ZH_FORMULA_272</strong>。</strong> 由命题 0.2.1.02（体积元的平方）：
+<strong>ZH_FORMULA_16</strong></p>
+<p>详细展开：<strong>ZH_FORMULA_273</strong>。总交换次数 <strong>ZH_FORMULA_274</strong>。<strong>ZH_FORMULA_275</strong>。故：
+<strong>ZH_FORMULA_17</strong></p>
+<p><strong>步骤2：验证 <strong>ZH_FORMULA_276</strong> 与所有生成元交换。</strong> 对任意 <strong>ZH_FORMULA_277</strong>（<strong>ZH_FORMULA_278</strong>），<strong>ZH_FORMULA_279</strong> 需穿越其他 6 个生成元：
+<strong>ZH_FORMULA_18</strong></p>
+<p>故 <strong>ZH_FORMULA_280</strong>，中心维数为 2。</p>
+<p><strong>步骤3：构造投影并分解。</strong> 由 <strong>ZH_FORMULA_281</strong>，与 <strong>ZH_FORMULA_282</strong> 同理构造 <strong>ZH_FORMULA_283</strong>，得到直和分解：
+<strong>ZH_FORMULA_19</strong></p>
+<p><strong>步骤4：识别同构类型。</strong> <strong>ZH_FORMULA_284</strong>，每个直和项维数为 64。每个直和项是中心为 <strong>ZH_FORMULA_285</strong> 的单代数。由 Artin-Wedderburn 定理，<strong>ZH_FORMULA_286</strong>，其中 <strong>ZH_FORMULA_287</strong>，<strong>ZH_FORMULA_288</strong>：
+<strong>ZH_FORMULA_20</strong></p>
+<p><strong>与 <strong>ZH_FORMULA_289</strong> 分裂的类比。</strong> <strong>ZH_FORMULA_290</strong> 的分裂与 <strong>ZH_FORMULA_291</strong> 完全平行——两者都是 <strong>ZH_FORMULA_292</strong> 导致的直和分解。但 <strong>ZH_FORMULA_293</strong> 的分裂发生在编码轨道的终端（第 7 步），而 <strong>ZH_FORMULA_294</strong> 的分裂发生在第 3 步。<strong>ZH_FORMULA_295</strong> 的分裂是「终端的」——它不能被后续步进消解，因为下一步（<strong>ZH_FORMULA_296</strong>）是 Bott 回归。</p>
+<p><strong>意义。</strong> 终端二元性 <strong>ZH_FORMULA_297</strong> 是编码轨道在第七层截断的代数原因。</p>
+<h3>2.4 三个引理的统一视角</h3>
+<p>三个引理 0.2.2.01–0.2.2.03（半单分裂、复结构涌现、终端二元性）有统一的结构根源——体积元 <strong>ZH_FORMULA_298</strong> 的平方符号：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>ZH_FORMULA_299</strong></th>
+<th style="text-align: center;"><strong>ZH_FORMULA_300</strong></th>
+<th style="text-align: left;">代数效应</th>
+<th style="text-align: left;">引理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;"><strong>ZH_FORMULA_301</strong></td>
+<td style="text-align: left;">投影 <strong>ZH_FORMULA_302</strong> → 直和分裂</td>
+<td style="text-align: left;">引理</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;"><strong>ZH_FORMULA_303</strong></td>
+<td style="text-align: left;">复结构 <strong>ZH_FORMULA_304</strong>，<strong>ZH_FORMULA_305</strong></td>
+<td style="text-align: left;">引理</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;"><strong>ZH_FORMULA_306</strong></td>
+<td style="text-align: left;">投影 <strong>ZH_FORMULA_307</strong> → 直和分裂</td>
+<td style="text-align: left;">引理</td>
+</tr>
+</tbody>
+</table>
+<p><strong>ZH_FORMULA_308</strong> 的符号序列（<strong>ZH_FORMULA_309</strong>）为 <strong>ZH_FORMULA_310</strong>，呈现 4 步周期——这是 Bott 8 周期的一半（另一半来自中心维数）。这一符号序列是三个结构常数涌现的代数根源。</p>
+<p><strong>2.4.1 零和约束与三个引理</strong>。三个引理（半单分裂、复结构涌现、终端二元性）不仅是代数结构的独立特征——它们通过 S_total = 0 互相约束。三扇区的编码贡献：</p>
+<ul>
+<li>ℳ：Cl(3) 的半单分裂 → 编码贡献 <strong>ZH_FORMULA_311</strong></li>
+<li>𝒞：Cl(5) 的复结构涌现 → 编码贡献 <strong>ZH_FORMULA_312</strong></li>
+<li>ℐ：Cl(7) 的终端二元性 → 编码贡献 <strong>ZH_FORMULA_313</strong></li>
+</ul>
+<p>满足 <strong>ZH_FORMULA_314</strong>。这意味着三个引理不是独立的——任何一个引理中编码贡献的变化必须被另外两个引理中的反向变化补偿。这就是「互扼」的代数含义：三个扇区的编码贡献互相锁定，总账为零。零和约束将在 0.5 中约束 {2,3,5} 为唯一自洽的三元组，在 0.9 中解释 α⁻¹ = 137 的泄漏机制。</p>
+<hr />
+<h2>§3 编码轨道</h2>
+<p><strong>ZH_FORMULA_315</strong> 作用于对象的 8 步轨道称为<strong>编码轨道</strong>：
+<strong>ZH_FORMULA_21</strong></p>
+<p>关键观察：</p>
+<ol>
+<li><strong>Cl(0) → Cl(3)</strong>：从无结构（<strong>ZH_FORMULA_316</strong>）到半单分裂（<strong>ZH_FORMULA_317</strong>）。前 3 步建立了物质界的代数基础。</li>
+<li><strong>Cl(3) → Cl(5)</strong>：从半单分裂到复结构涌现。中间 2 步建立了因果界的代数基础。</li>
+<li><strong>Cl(5) → Cl(7)</strong>：从复结构到终端二元性。后 2 步建立了信息界的代数基础。</li>
+<li><strong>Cl(7) → Cl(8)</strong>：从终端二元性到 Bott 回归。第 8 步是闭合步——但不是平凡闭合。</li>
+</ol>
+<p>这三段分割（3221=8）将在 中凝结为三个结构常数：<strong>ZH_FORMULA_318</strong>、<strong>ZH_FORMULA_319</strong>、<strong>ZH_FORMULA_320</strong>。</p>
+<h3>3.1 编码轨道的逐步描述</h3>
+<p>每一步 <strong>ZH_FORMULA_321</strong> 添加一个生成元，引发代数结构的特定变化。下面详细描述每一步添加的生成元及其物理意义：</p>
+<p><strong>步1（<strong>ZH_FORMULA_322</strong>）：添加 <strong>ZH_FORMULA_323</strong>，<strong>ZH_FORMULA_324</strong>。</strong>
+- 添加的生成元：<strong>ZH_FORMULA_325</strong>，<strong>ZH_FORMULA_326</strong>。
+- 代数效应：从 <strong>ZH_FORMULA_327</strong>（可换体）到 <strong>ZH_FORMULA_328</strong>（可换体，但有虚方向）。
+- 物理意义：首次区分——「有 vs 无」的二元性涌现。这是物质界的第 1 步。
+- 对应 0.1 §3.5（三层自指闭合）：抑制的代数推导——<strong>ZH_FORMULA_329</strong> 是 δ 非幂等性（引理 0.1.3.04）的代数印记。</p>
+<p><strong>步2（<strong>ZH_FORMULA_330</strong>）：添加 <strong>ZH_FORMULA_331</strong>，<strong>ZH_FORMULA_332</strong>。</strong>
+- 添加的生成元：<strong>ZH_FORMULA_333</strong>，<strong>ZH_FORMULA_334</strong>，<strong>ZH_FORMULA_335</strong>。
+- 代数效应：从 <strong>ZH_FORMULA_336</strong>（可换）到 <strong>ZH_FORMULA_337</strong>（不可换）。
+- 物理意义：痕迹的代数化——反交换关系意味着顺序被记住。物质界的第 2 步。
+- 对应 0.1 §3.5（三层自指闭合）：痕迹的代数推导——<strong>ZH_FORMULA_338</strong> 是 δ² 痕迹不可抹除（定理 0.1.3.05）的代数印记。</p>
+<p><strong>步3（<strong>ZH_FORMULA_339</strong>）：添加 <strong>ZH_FORMULA_340</strong>，<strong>ZH_FORMULA_341</strong>。</strong>
+- 添加的生成元：<strong>ZH_FORMULA_342</strong>，<strong>ZH_FORMULA_343</strong>，<strong>ZH_FORMULA_344</strong>（<strong>ZH_FORMULA_345</strong>）。
+- 代数效应：从 <strong>ZH_FORMULA_346</strong>（单代数）到 <strong>ZH_FORMULA_347</strong>（半单代数）——首次分裂。
+- 物理意义：物质界的终端——二元性涌现（两个直和项对应两种「物质基态」）。<strong>ZH_FORMULA_348</strong> 在此凝结。
+- 对应 0.1 §3.5（三层自指闭合）：涌现的代数推导——半单分裂是自指闭合（原理 0.1.3.06）后结构累积的首次质变。</p>
+<p><strong>步4（<strong>ZH_FORMULA_349</strong>）：添加 <strong>ZH_FORMULA_350</strong>，<strong>ZH_FORMULA_351</strong>。</strong>
+- 添加的生成元：<strong>ZH_FORMULA_352</strong>，<strong>ZH_FORMULA_353</strong>，<strong>ZH_FORMULA_354</strong>（<strong>ZH_FORMULA_355</strong>）。
+- 代数效应：从 <strong>ZH_FORMULA_356</strong>（半单）到 <strong>ZH_FORMULA_357</strong>（单）——分裂被「重新缝合」为矩阵代数。
+- 物理意义：因果界的第 1 步——半单分裂的二元性被「整合」为更高维的结构。</p>
+<p><strong>步5（<strong>ZH_FORMULA_358</strong>）：添加 <strong>ZH_FORMULA_359</strong>，<strong>ZH_FORMULA_360</strong>。</strong>
+- 添加的生成元：<strong>ZH_FORMULA_361</strong>，<strong>ZH_FORMULA_362</strong>。
+- 代数效应：从 <strong>ZH_FORMULA_363</strong>（实矩阵代数）到 <strong>ZH_FORMULA_364</strong>（复矩阵代数）——复结构涌现。
+- 物理意义：因果界的终端——复结构赋予「振荡」能力。<strong>ZH_FORMULA_365</strong> 在此凝结。
+- 对应 0.1 §3.5（三层自指闭合）：涌现的深化——复结构是自指闭合后因果维度（原理 0.1.3.06，ΔΘ=5）的代数实现。</p>
+<p><strong>步6（<strong>ZH_FORMULA_366</strong>）：添加 <strong>ZH_FORMULA_367</strong>，<strong>ZH_FORMULA_368</strong>。</strong>
+- 添加的生成元：<strong>ZH_FORMULA_369</strong>，<strong>ZH_FORMULA_370</strong>。
+- 代数效应：从 <strong>ZH_FORMULA_371</strong>（复矩阵）到 <strong>ZH_FORMULA_372</strong>（实矩阵）——复结构被「实化」。
+- 物理意义：信息界的第 1 步——复振荡被编码为实数据。</p>
+<p><strong>步7（<strong>ZH_FORMULA_373</strong>）：添加 <strong>ZH_FORMULA_374</strong>，<strong>ZH_FORMULA_375</strong>。</strong>
+- 添加的生成元：<strong>ZH_FORMULA_376</strong>，<strong>ZH_FORMULA_377</strong>。
+- 代数效应：从 <strong>ZH_FORMULA_378</strong>（单）到 <strong>ZH_FORMULA_379</strong>（半单）——终端二元性。
+- 物理意义：信息界的终端——编码轨道以二元分裂结束。<strong>ZH_FORMULA_380</strong> 在此凝结。
+- 对应 0.1 §3.5（三层自指闭合）：涌现的终端——终端二元性是自指闭合（原理 0.1.3.06，k₀=2）的代数封印。</p>
+<p><strong>步8（<strong>ZH_FORMULA_381</strong>，闭合步）：添加 <strong>ZH_FORMULA_382</strong>，<strong>ZH_FORMULA_383</strong>。</strong>
+- 添加的生成元：<strong>ZH_FORMULA_384</strong>，<strong>ZH_FORMULA_385</strong>。
+- 代数效应：从 <strong>ZH_FORMULA_386</strong>（半单）到 <strong>ZH_FORMULA_387</strong>（单）——二元性被「重新缝合」为 16 倍维数的单代数。
+- 物理意义：闭合步——Bott 回归。但这不是平凡回归：Berry 相位 <strong>ZH_FORMULA_388</strong>（证明）。</p>
+<h3>3.2 编码轨道的代数「呼吸」</h3>
+<p>编码轨道呈现出「分裂-缝合-分裂-缝合」的呼吸节奏：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">步</th>
+<th style="text-align: left;">代数</th>
+<th style="text-align: left;">类型</th>
+<th style="text-align: left;">节奏</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_389</strong></td>
+<td style="text-align: left;">单（可换）</td>
+<td style="text-align: left;">起点</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_390</strong></td>
+<td style="text-align: left;">单（可换）</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_391</strong></td>
+<td style="text-align: left;">单（不可换）</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_392</strong></td>
+<td style="text-align: left;"><strong>半单</strong></td>
+<td style="text-align: left;">分裂</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_393</strong></td>
+<td style="text-align: left;">单</td>
+<td style="text-align: left;">缝合</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_394</strong></td>
+<td style="text-align: left;">单</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_395</strong></td>
+<td style="text-align: left;">单</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_396</strong></td>
+<td style="text-align: left;"><strong>半单</strong></td>
+<td style="text-align: left;">分裂</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;"><strong>ZH_FORMULA_397</strong></td>
+<td style="text-align: left;">单</td>
+<td style="text-align: left;">缝合</td>
+</tr>
+</tbody>
+</table>
+<p>两次「分裂」（步 3、步 7）对应两个直和代数；两次「缝合」（步 4、步 8）将分裂重新整合为更高维的单代数。这一节奏是 <strong>ZH_FORMULA_398</strong> 迭代的内在节律，不是人为设计。</p>
+<hr />
+<h2>§4 Bott 周期的预览</h2>
+<p><strong>命题 0.2.4.01（Bott 周期）。</strong> <strong>ZH_FORMULA_399</strong>。</p>
+<p>这是 Bott 周期定理的直接推论。从 <strong>ZH_FORMULA_400</strong> 出发，<strong>ZH_FORMULA_401</strong> 迭代 8 步后到达 <strong>ZH_FORMULA_402</strong>——结构「回到原点」但扩大了 16 倍。</p>
+<p>关键问题：<strong>ZH_FORMULA_403</strong> 的闭合是平凡的吗？即 Berry 相位是否为零？答案是否定的——<strong>ZH_FORMULA_404</strong> 带回了 <strong>ZH_FORMULA_405</strong> 的拓扑相位。这一非平凡闭合是整个物理世界存在的根源。完整证明在 中给出。</p>
+<h3>4.1 Bott 周期的代数机制</h3>
+<p>Bott 周期 <strong>ZH_FORMULA_406</strong> 的代数机制可以从两个角度理解：</p>
+<p><strong>角度1：维数翻倍。</strong> <strong>ZH_FORMULA_407</strong>，<strong>ZH_FORMULA_408</strong>，而 <strong>ZH_FORMULA_409</strong>。维数匹配。但维数匹配只是必要条件，不保证同构。</p>
+<p><strong>角度2：周期性符号模式。</strong> 体积元平方 <strong>ZH_FORMULA_410</strong> 的符号序列（<strong>ZH_FORMULA_411</strong>）为：
+<strong>ZH_FORMULA_22</strong>
+这是 4 步周期（<strong>ZH_FORMULA_412</strong> 重复）。但代数结构的完整周期是 8 步——因为中心维数也有 2 步周期（奇数步中心维数 2，偶数步中心维数 1），两者的最小公倍数是 8。</p>
+<p><strong>角度3：表示维数序列。</strong> 不可约表示维数序列 <strong>ZH_FORMULA_413</strong> 在 <strong>ZH_FORMULA_414</strong> 时首次回到 <strong>ZH_FORMULA_415</strong> 的 16 倍——这是 Bott 周期的表示论印记。</p>
+<h3>4.2 Bott 周期与三个结构常数</h3>
+<p>Bott 周期 <strong>ZH_FORMULA_416</strong> 的 8 步循环中，三个结构常数对应三个「结构跳跃点」：</p>
+<ul>
+<li><strong>步 3</strong>（<strong>ZH_FORMULA_417</strong>）：首次半单分裂——从单代数到半单代数。</li>
+<li><strong>步 5</strong>（<strong>ZH_FORMULA_418</strong>）：首次复结构涌现——从实矩阵到复矩阵。</li>
+<li><strong>步 7</strong>（<strong>ZH_FORMULA_419</strong>）：终端二元性——编码轨道终端的半单分裂。</li>
+</ul>
+<p>这三个跳跃点不是任意的——它们由 <strong>ZH_FORMULA_420</strong> 的符号序列刚性确定（步 3 和步 7 是 <strong>ZH_FORMULA_421</strong> 导致的分裂，步 5 是 <strong>ZH_FORMULA_422</strong> 导致的复结构）。将详细证明三者的互锁性。</p>
+<hr />
+<h2>定理索引</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">编号</th>
+<th style="text-align: left;">内容</th>
+<th style="text-align: center;">证明状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">定理</td>
+<td style="text-align: left;">Bott 步进算符定义：<strong>ZH_FORMULA_423</strong></td>
+<td style="text-align: center;">定义</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理</td>
+<td style="text-align: left;">代数化推导性：δ → 三层自指闭合 → Clifford 代数</td>
+<td style="text-align: center;">已推导（0.1 §3.5 + 本文 §1.1, §1.6）</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理</td>
+<td style="text-align: left;">半单分裂引理：<strong>ZH_FORMULA_424</strong></td>
+<td style="text-align: center;">已证（本文§2.1）</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理</td>
+<td style="text-align: left;">复结构涌现引理：<strong>ZH_FORMULA_425</strong></td>
+<td style="text-align: center;">已证（本文§2.2）</td>
+</tr>
+<tr>
+<td style="text-align: center;">引理</td>
+<td style="text-align: left;">终端二元性：<strong>ZH_FORMULA_426</strong></td>
+<td style="text-align: center;">已证（本文§2.3）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>参考文献</h2>
+<ul>
+<li>Atiyah, Bott, Shapiro, <em>Clifford Modules</em>, Topology 3 (1964)</li>
+<li>Lawson, Michelsohn, <em>Spin Geometry</em>, Princeton University Press</li>
+<li>Frobenius, <em>Über lineare Substitutionen und bilineare Formen</em>, J. reine angew. Math. 84 (1878)</li>
+</ul>
