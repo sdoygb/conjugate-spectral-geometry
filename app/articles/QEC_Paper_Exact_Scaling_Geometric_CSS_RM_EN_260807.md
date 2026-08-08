@@ -448,19 +448,33 @@ with $\mathrm{fail}(w)$ the *unconditional* weight-$w$ decoding failure rate —
 
 ### 5.5 Instantiation and verification
 
-Table 3 lists the closed-form leading coefficients $c_d$ of Theorem 16 against numerical measurements. The formula column is evaluated with $\mathrm{fail}(w_0)$ from Theorem 17, $P(w_0)$ from Prop. 13 (AG) or $P(2) = 1$ (PG), and $w_0 = \lceil d/2\rceil$; the PG rows use the $|0_L\rangle$-encoding value $\mathrm{fail}(2) = 4/9$.
+Table 3 lists the closed-form leading coefficients $c_d$ of Theorem 16 and Table 4 the corresponding numerical measurements (all this work). The formula column is evaluated with $\mathrm{fail}(w_0)$ from Theorem 17, $P(w_0)$ from Prop. 13 (AG) or $P(2) = 1$ (PG), and $w_0 = \lceil d/2\rceil$; the PG rows use the $|0_L\rangle$-encoding value $\mathrm{fail}(2) = 4/9$.
 
-| Code | $d$ | Leading order | Closed-form $c_d$ | Numerical/experimental | Source |
-|---|---|---|---|---|---|
-| $[[7,1,3]]$ | 3 | $\theta^4$ | $\frac49 C(7,2)/144 = 0.0648$ | slope 4.12; fit $c \approx 0.065$ ✓ | (this work) |
-| $[[15,7,3]]$ | 3 | $\theta^4$ | $\frac49 C(15,2)/144 = 0.3241$ | slope 3.99 ✓; $420/945 = 4/9$ ✓; fit $c \approx 0.31$ ✓ | (this work) |
-| $[[32,20,4]]$ | 4 | $\theta^4$ | $\frac{15}{16} C(32,2)/16 = 29.06$ | class size 16 (465 pairs $= 31\times15$) ✓ | (this work) |
-| $[[64,20,8]]$ | 8 | $\theta^8$ | $0.5072\, C(64,4)/256 = 1.26\times10^{3}$ | fail 48.5%/50.7%; slope 7.96 ✓ | (this work) |
-| $[[256,70,16]]$ | 16 | $\theta^{16}$ | $P_3(8)\cdot 0.5\, C(256,8)/2^{16} = 3.15\times10^{5}$ | $P_3(8) = 1.007\times10^{-4}$; measured $1.5\times10^{-4}$/ $1.2\times10^{-4}$ ✓ | (this work) |
-| $[[1024,1002,4]]$ | 4 | $\theta^4$ | $0.9980\, C(1024,2)/16 = 3.27\times10^{4}$ | rep. count 512; directional syndrome 1023 ✓ | (this work) |
-| $[[1024,912,8]]$ | 8 | $\theta^8$ | $0.5005\, C(1024,4)/256 = 8.90\times10^{7}$ | weight-4 full degeneracy; weight-5 cross-layer $0.004887$ ✓ | (this work) |
-| $[[1024,672,16]]$ | 16 | $\theta^{16}$ | $P_3(10)\,0.5\, C(1024,8)/2^{16} = 3.37\times10^{8}$ | weight-8 sampled $1.67\times10^{-6}$ ($0.9\sigma$) ✓ | (this work) |
-| $[[1024,252,32]]$ | 32 | $\theta^{32}$ | $P_4(10)\,0.5\, C(1024,16)/2^{32} = 2.45\times10^{8}$ | $m=6$ sampling 333 vs $310\pm18$ ($1.3\sigma$) ✓ | (this work) |
+| Code              | $d$ | Leading order | Closed-form $c_d$                                      |
+| ------------------------------ | ------ | ---------------- | ------------------------------------------------ |
+| $[[7,1,3]]$       | 3   | $\theta^4$    | $\frac49 C(7,2)/144 = 0.0648$                          |
+| $[[15,7,3]]$      | 3   | $\theta^4$    | $\frac49 C(15,2)/144 = 0.3241$                         |
+| $[[32,20,4]]$     | 4   | $\theta^4$    | $\frac{15}{16} C(32,2)/16 = 29.06$                     |
+| $[[64,20,8]]$     | 8   | $\theta^8$    | $0.5072\, C(64,4)/256 = 1.26\times10^{3}$              |
+| $[[256,70,16]]$   | 16  | $\theta^{16}$ | $P_3(8)\cdot 0.5\, C(256,8)/2^{16} = 3.15\times10^{5}$ |
+| $[[1024,1002,4]]$ | 4   | $\theta^4$    | $0.9980\, C(1024,2)/16 = 3.27\times10^{4}$             |
+| $[[1024,912,8]]$  | 8   | $\theta^8$    | $0.5005\, C(1024,4)/256 = 8.90\times10^{7}$            |
+| $[[1024,672,16]]$ | 16  | $\theta^{16}$ | $P_3(10)\,0.5\, C(1024,8)/2^{16} = 3.37\times10^{8}$   |
+| $[[1024,252,32]]$ | 32  | $\theta^{32}$ | $P_4(10)\,0.5\, C(1024,16)/2^{32} = 2.45\times10^{8}$  |
+
+Table 4. Numerical verification of the closed forms of Table 3; ✓ marks agreement within statistical error.
+
+| Code              | $d$ | Numerical/experimental                                                           |
+| -------------------------------- | ------- | ------------------------------------------------------------- |
+| $[[7,1,3]]$       | 3   | slope 4.12; fit $c \approx 0.065$ ✓                                              |
+| $[[15,7,3]]$      | 3   | slope 3.99 ✓; $420/945 = 4/9$ ✓; fit $c \approx 0.31$ ✓                          |
+| $[[32,20,4]]$     | 4   | class size 16 (465 pairs $= 31\times15$) ✓                                       |
+| $[[64,20,8]]$     | 8   | fail 48.5%/50.7%; slope 7.96 ✓                                                   |
+| $[[256,70,16]]$   | 16  | $P_3(8) = 1.007\times10^{-4}$; measured $1.5\times10^{-4}$/ $1.2\times10^{-4}$ ✓ |
+| $[[1024,1002,4]]$ | 4   | rep. count 512; directional syndrome 1023 ✓                                      |
+| $[[1024,912,8]]$  | 8   | weight-4 full degeneracy; weight-5 cross-layer $0.004887$ ✓                      |
+| $[[1024,672,16]]$ | 16  | weight-8 sampled $1.67\times10^{-6}$ ($0.9\sigma$) ✓                             |
+| $[[1024,252,32]]$ | 32  | $m=6$ sampling 333 vs $310\pm18$ ($1.3\sigma$) ✓                                 |
 
 (i) The $[[7,1,3]]$ and $[[15,7,3]]$ rows use the uniform-$\theta$ protocol of this work: independent averaging of the tilt angles inserts $\prod_{i\in A}\langle\theta_i^2\rangle/4^w = (\theta_{\max}^2/12)^w$ for the weight-$w$ branch, hence the denominator $12^{w_0} = 144$ for $w_0 = 2$; the remaining rows use the fixed-$\theta$ protocol of Theorem 16 with denominator $2^{2w_0}$.
 
