@@ -80,31 +80,31 @@ Section 2 collects the notation and the general framework: stabilizer formalism,
 
 | Symbol | Meaning |
 |---|---|
-| $[[n,k,d]]$ | code parameters: $n$ physical qubits, $k$ logical qubits, distance $d$ |
-| $m$, $r$ | affine-geometry dimension ($\mathrm{AG}(m,2)$); Reed–Muller order, $2r < m-1$ |
-| $\mathrm{RM}(r,m)$ | Reed–Muller code of degree-$r$ polynomials, $\dim = \sum_{i\le r}\binom{m}{i}$, $\min\mathrm{wt} = 2^{m-r}$ |
-| $H$ | generator matrix of $\mathrm{RM}(r,m)$: evaluation rows of all monomials of degree $\le r$ |
-| $C$, $C^\perp$ | stabilizer space $\mathrm{rowspace}(H)$; dual code = logical space $L$ |
-| $\chi_A$ | error pattern supported on $A \subseteq \mathrm{AG}(m,2)$ |
-| $\mathrm{wt}(\cdot)$ | Hamming weight |
-| $\left[\begin{smallmatrix}m\\ k\end{smallmatrix}\right]_2$ | Gaussian binomial: number of $k$-dimensional subspaces of $\mathbb{F}_2^m$ |
-| $\mathrm{flats}(m,k)$ | number of $k$-dimensional affine flats in $\mathrm{AG}(m,2)$ |
-| $s$ | affine span dimension of a support $A$ |
-| $v(A)$ | syndrome-class size of $\chi_A$ at weight $2^r$ (Theorem 18) |
-| $w_0 = \lceil d/2 \rceil$ | leading loss layer |
-| $C(n,w)$ | binomial coefficient |
-| $P(w)$ | degeneracy fraction of the weight-$w$ layer |
-| $\mathrm{fail}(w)$ | decoding failure rate of the weight-$w$ layer |
-| $P'_r(m)$ | cross-layer degeneracy proportion at weight $2^r+1$ (Prop. 19) |
-| $\theta_i$, $\theta_{\max}$ | tilt angle of qubit $i$; its common upper bound, the single noise parameter |
-| $U(\theta_i)$ | coherent rotation $\cos(\theta_i/2)\,I + i\sin(\theta_i/2)\,E_i$ |
-| $\sin^2(\theta_i/2)$ | detection probability of a single-qubit injection (Prop. 8) |
-| $\mathrm{loss}(\theta)$ | expected infidelity after optimal (minimum-weight) decoding |
-| $c_d$ | leading coefficient of Theorem 16 |
-| $\kappa_r(m)$ | logical-$Z$-flip fraction (Sec. 5.3) |
-| $\varepsilon$ | $X$-side error probability of a general Pauli channel (Theorem 21) |
-| $\langle \cdot \rangle$ | average over the angle distribution, or class-size-weighted average (context) |
-| $|0_L\rangle$ | logical zero state |
+| [[n,k,d]] | code parameters: n physical qubits, k logical qubits, distance d |
+| m, r | affine-geometry dimension (AG(m,2)); Reed–Muller order, 2r < m-1 |
+| RM(r,m) | Reed–Muller code of degree-r polynomials, dim = ∑_{i≤ r}C(m, i), min wt = 2ᵐ⁻ʳ |
+| H | generator matrix of RM(r,m): evaluation rows of all monomials of degree ≤ r |
+| C, C⊥ | stabilizer space rowspace(H); dual code = logical space L |
+| χA | error pattern supported on A ⊆ AG(m,2) |
+| wt(·) | Hamming weight |
+| [m; k]₂ | Gaussian binomial: number of k-dimensional subspaces of 𝔽₂ᵐ |
+| flats(m,k) | number of k-dimensional affine flats in AG(m,2) |
+| s | affine span dimension of a support A |
+| v(A) | syndrome-class size of χA at weight 2ʳ (Theorem 18) |
+| w₀ = ⌈ d/2 ⌉ | leading loss layer |
+| C(n,w) | binomial coefficient |
+| P(w) | degeneracy fraction of the weight-w layer |
+| fail(w) | decoding failure rate of the weight-w layer |
+| P'ᵣ(m) | cross-layer degeneracy proportion at weight 2ʳ+1 (Prop. 19) |
+| θᵢ, θₘₐₓ | tilt angle of qubit i; its common upper bound, the single noise parameter |
+| U(θᵢ) | coherent rotation cos(θᵢ/2)\,I + isin(θᵢ/2)\,Eᵢ |
+| sin²(θᵢ/2) | detection probability of a single-qubit injection (Prop. 8) |
+| loss(θ) | expected infidelity after optimal (minimum-weight) decoding |
+| cd | leading coefficient of Theorem 16 |
+| κᵣ(m) | logical-Z-flip fraction (Sec. 5.3) |
+| ε | X-side error probability of a general Pauli channel (Theorem 21) |
+| ⟨ · ⟩ | average over the angle distribution, or class-size-weighted average (context) |
+| |0L⟩ | logical zero state |
 
 ### 2.1 Stabilizer formalism and CSS codes
 
@@ -210,15 +210,15 @@ $$\big[\!\big[\,2^m,\; 2^m - 2\sum_{i=0}^{r}\tbinom{m}{i},\; 2^{r+1}\,\big]\!\bi
 
 Representative members (with $\dim C = s$):
 
-| $r$, $m$ | parameters | $d$ | $\dim C$ |
+| r, m | parameters | d | dim C |
 |---|---|---|---|
-| 1, 5 | $[[32, 20, 4]]$ | 4 | 6 |
-| 1, 6 | $[[64, 50, 4]]$ | 4 | 7 |
-| 2, 6 | $[[64, 20, 8]]$ | 8 | 22 |
-| 2, 7 | $[[128, 70, 8]]$ | 8 | 29 |
-| 3, 8 | $[[256, 70, 16]]$ | 16 | 93 |
-| 3, 9 | $[[512, 252, 16]]$ | 16 | 130 |
-| 4, 10 | $[[1024, 252, 32]]$ | 32 | 386 |
+| 1, 5 | [[32, 20, 4]] | 4 | 6 |
+| 1, 6 | [[64, 50, 4]] | 4 | 7 |
+| 2, 6 | [[64, 20, 8]] | 8 | 22 |
+| 2, 7 | [[128, 70, 8]] | 8 | 29 |
+| 3, 8 | [[256, 70, 16]] | 16 | 93 |
+| 3, 9 | [[512, 252, 16]] | 16 | 130 |
+| 4, 10 | [[1024, 252, 32]] | 32 | 386 |
 
 Table 1. Representative members of the affine-complete family.
 
@@ -262,12 +262,12 @@ The enumeration-free certificates of Theorems 4–6 and the counting of Theorem 
 
 | code | (a) col. distinct | (b) weight-2 pairs | (c) 3000 samples | (d) cross-wt. deg. | (e) internal deg. | time |
 |---|---|---|---|---|---|---|
-| $[[32,20,4]]$ | ✓ | 496 ✓ | ✓ | 0/496 | 31 classes ($r=1$) | 0.11 s |
-| $[[64,20,8]]$ | ✓ | 2016 ✓ | ✓ | 0/2016 | 0 | 0.33 s |
-| $[[128,70,8]]$ | ✓ | 8128 ✓ | ✓ | 0/8128 | 0 | 0.43 s |
-| $[[256,70,16]]$ | ✓ | 32640 ✓ | ✓ | 0/32640 | 0 | 1.52 s |
-| $[[512,252,16]]$ | ✓ | 130816 ✓ | ✓ | 0/130816 | 0 | 2.46 s |
-| $[[1024,252,32]]$ | ✓ | 523776 ✓ | ✓ | 0/523776 | 0 | 8.78 s |
+| [[32,20,4]] | ✓ | 496 ✓ | ✓ | 0/496 | 31 classes (r=1) | 0.11 s |
+| [[64,20,8]] | ✓ | 2016 ✓ | ✓ | 0/2016 | 0 | 0.33 s |
+| [[128,70,8]] | ✓ | 8128 ✓ | ✓ | 0/8128 | 0 | 0.43 s |
+| [[256,70,16]] | ✓ | 32640 ✓ | ✓ | 0/32640 | 0 | 1.52 s |
+| [[512,252,16]] | ✓ | 130816 ✓ | ✓ | 0/130816 | 0 | 2.46 s |
+| [[1024,252,32]] | ✓ | 523776 ✓ | ✓ | 0/523776 | 0 | 8.78 s |
 
 Table 2. Verification results. (c) = random weight-3..$d-1$ syndrome sampling (3000 per code); (d) = cross-weight degeneracy count; (e) = internal (same-weight) degeneracy count at weight 2.
 
@@ -450,31 +450,31 @@ with $\mathrm{fail}(w)$ the *unconditional* weight-$w$ decoding failure rate —
 
 Table 3 lists the closed-form leading coefficients $c_d$ of Theorem 16 and Table 4 the corresponding numerical measurements (all this work). The formula column is evaluated with $\mathrm{fail}(w_0)$ from Theorem 17, $P(w_0)$ from Prop. 13 (AG) or $P(2) = 1$ (PG), and $w_0 = \lceil d/2\rceil$; the PG rows use the $|0_L\rangle$-encoding value $\mathrm{fail}(2) = 4/9$.
 
-| Code              | $d$ | Leading order | Closed-form $c_d$                                      |
+| Code | d | Leading order | Closed-form cd |
 | ------------------------------ | ------ | ---------------- | ------------------------------------------------ |
-| $[[7,1,3]]$       | 3   | $\theta^4$    | $\frac49 C(7,2)/144 = 0.0648$                          |
-| $[[15,7,3]]$      | 3   | $\theta^4$    | $\frac49 C(15,2)/144 = 0.3241$                         |
-| $[[32,20,4]]$     | 4   | $\theta^4$    | $\frac{15}{16} C(32,2)/16 = 29.06$                     |
-| $[[64,20,8]]$     | 8   | $\theta^8$    | $0.5072\, C(64,4)/256 = 1.26\times10^{3}$              |
-| $[[256,70,16]]$   | 16  | $\theta^{16}$ | $P_3(8)\cdot 0.5\, C(256,8)/2^{16} = 3.15\times10^{5}$ |
-| $[[1024,1002,4]]$ | 4   | $\theta^4$    | $0.9980\, C(1024,2)/16 = 3.27\times10^{4}$             |
-| $[[1024,912,8]]$  | 8   | $\theta^8$    | $0.5005\, C(1024,4)/256 = 8.90\times10^{7}$            |
-| $[[1024,672,16]]$ | 16  | $\theta^{16}$ | $P_3(10)\,0.5\, C(1024,8)/2^{16} = 3.37\times10^{8}$   |
-| $[[1024,252,32]]$ | 32  | $\theta^{32}$ | $P_4(10)\,0.5\, C(1024,16)/2^{32} = 2.45\times10^{8}$  |
+| [[7,1,3]] | 3 | θ⁴ | 4/9 C(7,2)/144 = 0.0648 |
+| [[15,7,3]] | 3 | θ⁴ | 4/9 C(15,2)/144 = 0.3241 |
+| [[32,20,4]] | 4 | θ⁴ | 15/16 C(32,2)/16 = 29.06 |
+| [[64,20,8]] | 8 | θ⁸ | 0.5072\, C(64,4)/256 = 1.26×10³ |
+| [[256,70,16]] | 16 | θ¹⁶ | P₃(8)· 0.5\, C(256,8)/2¹⁶ = 3.15×10⁵ |
+| [[1024,1002,4]] | 4 | θ⁴ | 0.9980\, C(1024,2)/16 = 3.27×10⁴ |
+| [[1024,912,8]] | 8 | θ⁸ | 0.5005\, C(1024,4)/256 = 8.90×10⁷ |
+| [[1024,672,16]] | 16 | θ¹⁶ | P₃(10)\,0.5\, C(1024,8)/2¹⁶ = 3.37×10⁸ |
+| [[1024,252,32]] | 32 | θ³² | P₄(10)\,0.5\, C(1024,16)/2³² = 2.45×10⁸ |
 
 Table 4. Numerical verification of the closed forms of Table 3; ✓ marks agreement within statistical error.
 
-| Code              | $d$ | Numerical/experimental                                                           |
+| Code | d | Numerical/experimental |
 | -------------------------------- | ------- | ------------------------------------------------------------- |
-| $[[7,1,3]]$       | 3   | slope 4.12; fit $c \approx 0.065$ ✓                                              |
-| $[[15,7,3]]$      | 3   | slope 3.99 ✓; $420/945 = 4/9$ ✓; fit $c \approx 0.31$ ✓                          |
-| $[[32,20,4]]$     | 4   | class size 16 (465 pairs $= 31\times15$) ✓                                       |
-| $[[64,20,8]]$     | 8   | fail 48.5%/50.7%; slope 7.96 ✓                                                   |
-| $[[256,70,16]]$   | 16  | $P_3(8) = 1.007\times10^{-4}$; measured $1.5\times10^{-4}$/ $1.2\times10^{-4}$ ✓ |
-| $[[1024,1002,4]]$ | 4   | rep. count 512; directional syndrome 1023 ✓                                      |
-| $[[1024,912,8]]$  | 8   | weight-4 full degeneracy; weight-5 cross-layer $0.004887$ ✓                      |
-| $[[1024,672,16]]$ | 16  | weight-8 sampled $1.67\times10^{-6}$ ($0.9\sigma$) ✓                             |
-| $[[1024,252,32]]$ | 32  | $m=6$ sampling 333 vs $310\pm18$ ($1.3\sigma$) ✓                                 |
+| [[7,1,3]] | 3 | slope 4.12; fit c ≈ 0.065 ✓ |
+| [[15,7,3]] | 3 | slope 3.99 ✓; 420/945 = 4/9 ✓; fit c ≈ 0.31 ✓ |
+| [[32,20,4]] | 4 | class size 16 (465 pairs = 31×15) ✓ |
+| [[64,20,8]] | 8 | fail 48.5%/50.7%; slope 7.96 ✓ |
+| [[256,70,16]] | 16 | P₃(8) = 1.007×10⁻⁴; measured 1.5×10⁻⁴/ 1.2×10⁻⁴ ✓ |
+| [[1024,1002,4]] | 4 | rep. count 512; directional syndrome 1023 ✓ |
+| [[1024,912,8]] | 8 | weight-4 full degeneracy; weight-5 cross-layer 0.004887 ✓ |
+| [[1024,672,16]] | 16 | weight-8 sampled 1.67×10⁻⁶ (0.9σ) ✓ |
+| [[1024,252,32]] | 32 | m=6 sampling 333 vs 310±18 (1.3σ) ✓ |
 
 (i) The $[[7,1,3]]$ and $[[15,7,3]]$ rows use the uniform-$\theta$ protocol of this work: independent averaging of the tilt angles inserts $\prod_{i\in A}\langle\theta_i^2\rangle/4^w = (\theta_{\max}^2/12)^w$ for the weight-$w$ branch, hence the denominator $12^{w_0} = 144$ for $w_0 = 2$; the remaining rows use the fixed-$\theta$ protocol of Theorem 16 with denominator $2^{2w_0}$.
 
@@ -575,9 +575,9 @@ The mainstream experimental route to logical qubits is the surface code [27], wh
 |---|---|---|
 | Failure rate | Exact closed form, all orders | Asymptotic / Monte Carlo |
 | Degeneracy | Closed-form class sizes | Case-by-case |
-| Verification | Enumeration-free, $O(n^2)$ | Full enumeration (infeasible > 100 qubits) |
-| Code family | RM-CSS, $d = 4$–$32$ | Surface / LDPC / concatenated |
-| Experimental use | Slope discriminator $\theta^{2\lceil d/2 \rceil}$ | Threshold extrapolation |
+| Verification | Enumeration-free, O(n²) | Full enumeration (infeasible > 100 qubits) |
+| Code family | RM-CSS, d = 4–32 | Surface / LDPC / concatenated |
+| Experimental use | Slope discriminator θ^{2⌈ d/2 ⌉} | Threshold extrapolation |
 
 ## 8. Experimental discrimination of the four-order scaling law
 
@@ -597,12 +597,12 @@ where $\theta$ is the angle of an identical single-qubit coherent rotation $R_x(
 
 **Theoretical input** (closed forms for $m = 10$; $\ln c_d$ in the logical $Z$-flip version):
 
-| Tier | Code | $d$ | $w_0$ | $\kappa_r(10)$ | $c_d$ (closed form $\times \kappa$) | $\ln c_d$ |
+| Tier | Code | d | w₀ | κᵣ(10) | cd (closed form × κ) | ln cd |
 |---|---|---|---|---|---|---|
-| $d{=}4$ | $[[1024,1002,4]]$ | 4 | 2 | 0.3761 | $0.9980\,C(1024,2)/16 \times 0.3761 = 1.23\times10^{4}$ | 9.417 |
-| $d{=}8$ | $[[1024,912,8]]$ | 8 | 4 | 0.3304 | $0.5005\,C(1024,4)/256 \times 0.3304 = 2.94\times10^{7}$ | 17.197 |
-| $d{=}16$ | $[[1024,672,16]]$ | 16 | 8 | 0.3122 | $1.514\times10^{-6}\cdot 0.5\,C(1024,8)/2^{16} \times 0.3122 = 1.05\times10^{8}$ | 18.470 |
-| $d{=}32$ | $[[1024,252,32]]$ | 32 | 16 | 0.3072 | $3.383\times10^{-17}\cdot 0.5\,C(1024,16)/2^{32} \times 0.3072 = 7.53\times10^{7}$ | 18.137 |
+| d{=}4 | [[1024,1002,4]] | 4 | 2 | 0.3761 | 0.9980\,C(1024,2)/16 × 0.3761 = 1.23×10⁴ | 9.417 |
+| d{=}8 | [[1024,912,8]] | 8 | 4 | 0.3304 | 0.5005\,C(1024,4)/256 × 0.3304 = 2.94×10⁷ | 17.197 |
+| d{=}16 | [[1024,672,16]] | 16 | 8 | 0.3122 | 1.514×10⁻⁶· 0.5\,C(1024,8)/2¹⁶ × 0.3122 = 1.05×10⁸ | 18.470 |
+| d{=}32 | [[1024,252,32]] | 32 | 16 | 0.3072 | 3.383×10⁻¹⁷· 0.5\,C(1024,16)/2³² × 0.3072 = 7.53×10⁷ | 18.137 |
 
 The leading exponent is $2w_0 = d$ ($d$ even, same-layer degeneracy). All four codes share one platform, hence one noise environment — the discriminating power comes from the *relative* ladder, which is insensitive to platform-dependent calibration constants.
 
@@ -616,10 +616,10 @@ AG-complete codes have $k = 2^m - 2\dim\mathrm{RM}(r,m)$; the constraint $k \ge 
 
 | Platform (qubits) | Measurable tiers | Instance codes | Comment |
 |---|---|---|---|
-| 64 | $d{=}4$, $d{=}8$ | $[[64,50,4]]$, $[[64,20,8]]$ | $m=6$; $[[64,20,8]]$ slope 7.96 verified by exact program |
-| 127–133 | $d{=}4$, $d{=}8$ | $[[128,112,4]]$, $[[128,70,8]]$ | $m=7$; $d{=}16$ unmeasurable ($r=3$: $k = 128 - 2\cdot64 = 0$) |
-| 256 | $d{=}16$ | $[[256,70,16]]$ | $m=8$ |
-| 512 | $d{=}16$ | $[[512,252,16]]$ | $m=9$ |
+| 64 | d{=}4, d{=}8 | [[64,50,4]], [[64,20,8]] | m=6; [[64,20,8]] slope 7.96 verified by exact program |
+| 127–133 | d{=}4, d{=}8 | [[128,112,4]], [[128,70,8]] | m=7; d{=}16 unmeasurable (r=3: k = 128 - 2·64 = 0) |
+| 256 | d{=}16 | [[256,70,16]] | m=8 |
+| 512 | d{=}16 | [[512,252,16]] | m=9 |
 | 1024–1121 | **all four tiers** | Table of §8.1 | same platform, same noise — the discriminant main site |
 
 The main site is a 1121-qubit platform (1024 data qubits plus measurement, no ancillas; §8.4). The 64/256-qubit platforms serve as cross-checks (shorter codes, shallower circuits, lower baselines). The 1121-qubit scale is within reach of current superconducting processors, whose flagship demonstrations have now passed the surface-code threshold on comparable architectures [35–37].
@@ -691,13 +691,13 @@ and $\sigma_d = 0.12$ for tier 32 at $N = 10^6$. The separation between adjacent
 
 At $N$ shots per point and a shot period of $\sim 5$ ms ($\sim 10^4$ CNOTs + injection + measurement), $N = 2\times10^5$ costs $\sim 1000$ s per point:
 
-| Item | Points | $N$ | Time |
+| Item | Points | N | Time |
 |---|---|---|---|
-| Main scan (17 points; $d{=}32$ low endpoints at $10^6$) | 17 | $2\times10^5$–$10^6$ | $\sim 5.2$ h |
-| Gap region (3 points) | 3 | $2\times10^5$ | $\sim 0.8$ h |
-| Control (random Pauli, 4 points) | 4 | $2\times10^5$ | $\sim 1.1$ h |
-| Calibration (RB/XEB/baseline) | — | — | $\sim 2$ h |
-| **Total** | | | **$\sim 9$–10 h (one platform-day)** |
+| Main scan (17 points; d{=}32 low endpoints at 10⁶) | 17 | 2×10⁵–10⁶ | ∼ 5.2 h |
+| Gap region (3 points) | 3 | 2×10⁵ | ∼ 0.8 h |
+| Control (random Pauli, 4 points) | 4 | 2×10⁵ | ∼ 1.1 h |
+| Calibration (RB/XEB/baseline) | — | — | ∼ 2 h |
+| **Total** | | | **∼ 9–10 h (one platform-day)** |
 
 On the 64/256-qubit backup platforms the circuits are shallower (shot period $\sim 0.5$–1 ms) and the budget halves.
 

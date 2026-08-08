@@ -331,11 +331,11 @@ Thus $S_3 \to Z_2$, with the three $Z_2$ subgroups mathematically equivalent ($S
 
 $S_3$ has three $Z_2$ subgroups, fully equivalent mathematically ($S_3$ automorphisms permute them freely):
 
-| $Z_2$ Subgroup | Stabilizes | Exchanges | Stable Sector | Leakage | $\alpha^{-1} \approx$ |
+| Z₂ Subgroup | Stabilizes | Exchanges | Stable Sector | Leakage | α⁻¹ ≈ |
 |:---|:---|:---|:---|:---|:---|
-| $Z_2^{(v)}$ | $8_v$ | $8_s \leftrightarrow 8_c$ | $\mathcal{M}$ ($\Lambda=3$) | $\Lambda^2 = 9$ | **137.036** |
-| $Z_2^{(s)}$ | $8_s$ | $8_v \leftrightarrow 8_c$ | $\mathcal{C}$ ($k_0=2$) | $k_0^2 = 4$ | **132.1** |
-| $Z_2^{(c)}$ | $8_c$ | $8_v \leftrightarrow 8_s$ | $\mathcal{I}$ ($\Delta\Theta=5$) | $\Delta\Theta^2 = 25$ | **153.0** |
+| Z₂⁽ᵛ⁾ | 8ᵥ | 8ₛ ↔ 8c | ℳ (Λ=3) | Λ² = 9 | **137.036** |
+| Z₂⁽ˢ⁾ | 8ₛ | 8ᵥ ↔ 8c | 𝒞 (k₀=2) | k₀² = 4 | **132.1** |
+| Z₂⁽ᶜ⁾ | 8c | 8ᵥ ↔ 8ₛ | ℐ (ΔΘ=5) | ΔΘ² = 25 | **153.0** |
 
 ### 5.4 Base Cardinality $B_0 = 137$
 
@@ -362,10 +362,10 @@ The structure constants $\{3, 2, 5\}$ satisfy multiple tiers of zero-sum identit
 
 | Cycle | Identity | Verification | Irreducible Term |
 |:--|:--|:--|:--|
-| **First Cycle (linear)** | $\Lambda + k_0 - \Delta\Theta = 0$ | $3+2-5=0$ ✓ | None |
-| **Second Cycle (quadratic)** | $\Lambda^2 - k_0^2 - \Delta\Theta = 0$ | $9-4-5=0$ ✓ | $\Lambda^2 = 9$ |
-| **Third Cycle (cubic)** | $\Lambda^3 - \Delta\Theta^2 - k_0 = 0$ | $27-25-2=0$ ✓ | $\Lambda^3 = 27$ |
-| **Fourth Cycle (cross)** | $\Lambda \times \Delta\Theta = 15$ (broken $S_{\text{total}}=0$) | $3 \times 5 = 15$ ✓ | $\Lambda \times \Delta\Theta = 15$ |
+| **First Cycle (linear)** | Λ + k₀ - ΔΘ = 0 | 3+2-5=0 ✓ | None |
+| **Second Cycle (quadratic)** | Λ² - k₀² - ΔΘ = 0 | 9-4-5=0 ✓ | Λ² = 9 |
+| **Third Cycle (cubic)** | Λ³ - ΔΘ² - k₀ = 0 | 27-25-2=0 ✓ | Λ³ = 27 |
+| **Fourth Cycle (cross)** | Λ × ΔΘ = 15 (broken Sₜₒₜₐₗ=0) | 3 × 5 = 15 ✓ | Λ × ΔΘ = 15 |
 
 Each identity is an exact algebraic constraint in the ideal equilibrium state ($S_{\text{total}} = 0$). After triality breaking, irreducible terms leak into physical observation. **The magnitude of each leaked term is forced by the numerical values of the structure constants** — no fitting, no freedom.
 
@@ -502,13 +502,13 @@ Sign propagation: $B_5$ retains the negative sign of $B_2$. Algebraically, Bott 
 
 | Term | Cycle | Formula | Value | Magnitude | Status |
 |:--|:--|:--|:--|:--|:--|
-| $B_0$ | Second | $2^7 + \Lambda^2$ | 137 | $10^2$ | Theorem (within-branch) |
-| $B_1$ | Third | $1/\Lambda^3$ | $1/27 \approx 0.037037$ | $10^{-2}$ | Theorem (within-branch) |
-| $B_2$ | Fourth | $-\Lambda \times \Delta\Theta / 14400$ | $-15/14400 \approx -0.0010417$ | $10^{-3}$ | Theorem (within-branch) |
-| $B_3$ | Interference | $(\Lambda/k_0)/(\Lambda^3 \cdot 14400)$ | $1/259200 \approx 3.86\times 10^{-6}$ | $10^{-6}$ | Theorem (within-branch) |
-| $B_4$ | Residual echo | $-\Delta\Theta \cdot (\Lambda/k_0)^2/14400^2$ | $-1/18432000 \approx -5.43\times 10^{-8}$ | $10^{-8}$ | Theorem (within-branch) |
-| $B_5$ | Second-order echo | $B_2/14400$ | $-1/13824000 \approx -7.23\times 10^{-8}$ | $10^{-8}$ | Theorem (within-branch) |
-| $B_6$ | Third-order echo | $B_3/14400$ | $\sim 2.7 \times 10^{-10}$ | $10^{-10}$ | Magnitude known, exact value pending |
+| B₀ | Second | 2⁷ + Λ² | 137 | 10² | Theorem (within-branch) |
+| B₁ | Third | 1/Λ³ | 1/27 ≈ 0.037037 | 10⁻² | Theorem (within-branch) |
+| B₂ | Fourth | -Λ × ΔΘ / 14400 | -15/14400 ≈ -0.0010417 | 10⁻³ | Theorem (within-branch) |
+| B₃ | Interference | (Λ/k₀)/(Λ³ · 14400) | 1/259200 ≈ 3.86× 10⁻⁶ | 10⁻⁶ | Theorem (within-branch) |
+| B₄ | Residual echo | -ΔΘ · (Λ/k₀)²/14400² | -1/18432000 ≈ -5.43× 10⁻⁸ | 10⁻⁸ | Theorem (within-branch) |
+| B₅ | Second-order echo | B₂/14400 | -1/13824000 ≈ -7.23× 10⁻⁸ | 10⁻⁸ | Theorem (within-branch) |
+| B₆ | Third-order echo | B₃/14400 | ∼ 2.7 × 10⁻¹⁰ | 10⁻¹⁰ | Magnitude known, exact value pending |
 
 #### 6.4.1 Truncation Error Upper Bound
 
@@ -518,13 +518,13 @@ $$|B_n| = \frac{|B_{n-3}|}{14400} = \frac{|B_{n-6}|}{14400^2} = \cdots$$
 
 Starting from $B_3 \approx 3.86 \times 10^{-6}$, the echo attenuation sequence is:
 
-| $n$ | $|B_n|$ | Cumulative (from $n=6$) |
+| n | |Bₙ| | Cumulative (from n=6) |
 |:--|:--|:--|
-| 6 | $2.68 \times 10^{-10}$ | $2.68 \times 10^{-10}$ |
-| 7 | $3.77 \times 10^{-12}$ | $2.72 \times 10^{-10}$ |
-| 8 | $2.61 \times 10^{-13}$ | $2.72 \times 10^{-10}$ |
-| 9 | $1.86 \times 10^{-14}$ | $2.72 \times 10^{-10}$ |
-| $\geq 6$ (sum) | — | $< 2.8 \times 10^{-10}$ |
+| 6 | 2.68 × 10⁻¹⁰ | 2.68 × 10⁻¹⁰ |
+| 7 | 3.77 × 10⁻¹² | 2.72 × 10⁻¹⁰ |
+| 8 | 2.61 × 10⁻¹³ | 2.72 × 10⁻¹⁰ |
+| 9 | 1.86 × 10⁻¹⁴ | 2.72 × 10⁻¹⁰ |
+| ≥ 6 (sum) | — | < 2.8 × 10⁻¹⁰ |
 
 The sign of each term is determined by echo propagation rules ($B_n = B_{n-3}/14400$ preserves the sign), with signs alternating. Regardless of signs, the **absolute upper bound on the truncation error** is rigorously given by the geometric series:
 
@@ -547,11 +547,11 @@ $$\begin{aligned}
 
 ### 7.2 Comparison with Experiment
 
-| Source | $\alpha^{-1}$ | Deviation from Theory |
+| Source | α⁻¹ | Deviation from Theory |
 |:--|:--|:--|
 | **This work (sixth order)** | **137.035 999 102** | — |
-| CODATA 2018 | 137.035 999 084 | $-1.8 \times 10^{-8}$ |
-| Morel et al. 2020 (atom interferometry) | 137.035 999 046 | $-5.6 \times 10^{-8}$ |
+| CODATA 2018 | 137.035 999 084 | -1.8 × 10⁻⁸ |
+| Morel et al. 2020 (atom interferometry) | 137.035 999 046 | -5.6 × 10⁻⁸ |
 
 The theoretical value agrees with CODATA 2018 within its $1\sigma$ uncertainty ($\pm 2.1 \times 10^{-8}$). The deviation $-1.8 \times 10^{-8}$ falls within the expected range of third-order echo corrections ($B_6 \sim 2.7 \times 10^{-10}$) and higher-order terms.
 
@@ -578,10 +578,10 @@ The derivation chain from $\delta$ to $\alpha^{-1}$ contains four branch points 
 
 | Junction | Type | Degrees of Freedom |
 |:--|:--|:--|
-| **Junction 1: Triality breaking $S_3 \to Z_2$** | Genuine branch choice | Three equivalent $Z_2$ subgroups |
-| **Junction 2: Exact value of $\sigma_0$** | Parametric degeneracy | Possibly unique or finitely degenerate |
-| **Junction 3: Observer position $T$** | Parametric offset | Same universe, different observation points |
-| **Pre-junction: $\delta \to \{2,3,5\}$** | Geometric necessity | **No freedom** |
+| **Junction 1: Triality breaking S₃ → Z₂** | Genuine branch choice | Three equivalent Z₂ subgroups |
+| **Junction 2: Exact value of σ₀** | Parametric degeneracy | Possibly unique or finitely degenerate |
+| **Junction 3: Observer position T** | Parametric offset | Same universe, different observation points |
+| **Pre-junction: δ → \{2,3,5\}** | Geometric necessity | **No freedom** |
 
 ### 8.2 The Necessity Zone: $\delta \to \{2,3,5\}$
 
@@ -589,13 +589,13 @@ Every step from the axiom $\delta$ to the set of structure constants $\{2,3,5\}$
 
 | Step | Forcing Source |
 |:--|:--|
-| $\delta$ non-idempotent, non-surjective | Axiom |
-| Three-layer self-referential closure | $\delta$ iteration + self-consistency |
-| $e_i^2 = -1$ | Minimal non-idempotent algebraic realization |
+| δ non-idempotent, non-surjective | Axiom |
+| Three-layer self-referential closure | δ iteration + self-consistency |
+| eᵢ² = -1 | Minimal non-idempotent algebraic realization |
 | Bott period = 8 | Atiyah–Bott–Shapiro (mathematical theorem) |
-| $E_8$ unique | Minkowski–Serre (mathematical theorem) |
-| $h = 30$ | Standard Lie theory ($240/8$) |
-| $\{2,3,5\}$ | Unique prime factorization $30 = 2 \times 3 \times 5$ + additive constraint $2+3=5$ |
+| E₈ unique | Minkowski–Serre (mathematical theorem) |
+| h = 30 | Standard Lie theory (240/8) |
+| \{2,3,5\} | Unique prime factorization 30 = 2 × 3 × 5 + additive constraint 2+3=5 |
 
 This segment contains **zero free choices**. Any universe that starts from $\delta$ and develops a Clifford algebraic structure necessarily arrives at $\{2,3,5\}$.
 
@@ -605,11 +605,11 @@ Triality breaking $S_3 \to Z_2$ is the sole genuine branch choice in the derivat
 
 **Physical consequences:**
 
-| Branch | $p$ | $B_0$ | $\alpha^{-1} \approx$ | Stable Sector |
+| Branch | p | B₀ | α⁻¹ ≈ | Stable Sector |
 |:--|:--|:--|:--|:--|
-| $Z_2^{(v)}$ | 3 | 137 | 137.036 | $\mathcal{M}$ (Matter) |
-| $Z_2^{(s)}$ | 2 | 132 | 132.1 | $\mathcal{C}$ (Causal) |
-| $Z_2^{(c)}$ | 5 | 153 | 153.0 | $\mathcal{I}$ (Information) |
+| Z₂⁽ᵛ⁾ | 3 | 137 | 137.036 | ℳ (Matter) |
+| Z₂⁽ˢ⁾ | 2 | 132 | 132.1 | 𝒞 (Causal) |
+| Z₂⁽ᶜ⁾ | 5 | 153 | 153.0 | ℐ (Information) |
 
 Our observed $\alpha^{-1} \approx 137.036$ corresponds to $Z_2^{(v)}$. This is the branch that stabilizes the Matter Sector — in the other two branches, $\mathcal{M}$ would participate in triality exchange, likely preventing stable matter structure and hence stable observers.
 
