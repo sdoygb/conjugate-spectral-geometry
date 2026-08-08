@@ -927,3 +927,191 @@ class DependencyGraph:
             )
         except Exception as e:
             logger.warning(f"[DEP-GRAPH] 加载失败: {e}")
+    # ==================== 依赖边补全（document → 边） ====================
+
+    def populate_edges_from_documents(self, master_collection) -> int:
+        """
+        从真理层 document 的【依赖】段解析依赖边，补全节点 dependencies。
+
+        主源原则：document【依赖】段是人写标注（定理入库时的权威依赖声明），
+        本方法把文本边注册进图（边信息从主源派生，不在图上手改）。
+
+        Returns:
+            新增的边（依赖项）数量
+        """
+        import re
+        res = master_collection.get(include=["metadatas", "documents"])
+        added = 0
+        now = datetime.now().isoformat()
+        for mid, m, doc in zip(res["ids"], res["metadatas"], res["documents"]):
+            name = m.get("formula_name", "")
+            if not name or mid not in self._nodes:
+                continue
+            deps = self._parse_deps_from_document(doc)
+            if deps:
+                old = set(self._nodes[mid].get("dependencies", []))
+                new = old | deps
+                if new != old:
+                    self._nodes[mid]["dependencies"] = sorted(new)
+                    self._nodes[mid]["updated_at"] = now
+                    added += len(new - old)
+        self._rebuild_reverse()
+        self._save()
+        logger.info(f"[DEP-GRAPH] 从 document 补全依赖边: 新增 {added} 条")
+        return added
+
+    def _parse_deps_from_document(self, doc: str) -> Set[str]:
+        """解析 document 的【依赖】段，返回依赖名集合（过滤外部经典/空标注）"""
+        import re
+        deps: Set[str] = set()
+        if "【依赖】" not in doc:
+            return deps
+        seg = doc.split("【依赖】")[-1].split("【来源】")[0].strip()
+        # 去掉 “无（标准格论经典定理）” 这类整体豁免标注
+        seg = re.sub(r"无[（(][^）)]*[）)]", "", seg)
+        for part in re.split(r"[、,，;；]", seg):
+            p = part.strip()
+            # 去掉 "#数字" 前缀（如 "#159（定理 ...）" → "定理 ..."）
+            p = re.sub(r'^#\d+\s*[（(]?', '', p)
+            p = p.rstrip('）)')
+            if not p:
+                continue
+            if "标准" in p or "经典" in p or "外部" in p:
+                # 外部经典定理：保留名字本体（如 “Birkhoff–von Neumann 定理”），
+                # 标注原因丢弃——这类边指向图外，但名字仍参与级联分析
+                p = p.split("（")[0].split("(")[0].strip()
+                if len(p) >= 3:
+                    deps.add(p)
+                continue
+            if len(p) >= 3:
+                deps.add(p)
+        return deps
+
+    # ==================== 级联影响分析 ====================
+
+    def cascade_impact(self, formula_id: str) -> Dict[str, Any]:
+        """
+        级联影响分析：删除/修改某条定理前，预测受影响集合。
+
+        直接依赖者（其依赖声明包含目标）→ BFS 传递闭包（间接受影响）。
+        用于审计/清理前模拟——本次删除 115 条的教训：
+        删除前先跑 cascade_impact，可提前预见依赖断裂。
+
+        Args:
+            formula_id: master_id 或公式名（支持模糊匹配）
+
+        Returns:
+            {
+                "target": {...},
+                "direct_dependents": [...],
+                "transitive_dependents": [...],
+                "all_affected": [...],
+            }
+        """
+        # 定位目标节点（master_id 或名称模糊匹配）
+        target_id = None
+        if formula_id in self._nodes:
+            target_id = formula_id
+        else:
+            q = formula_id.lower()
+            _TYPE_W = ["定理", "引理", "命题", "推论", "定义", "公理", "原理"]
+            q_norm = q
+            for w in _TYPE_W:
+                q_norm = q_norm.replace(w, "")
+            q_norm = q_norm.strip()
+            for fid, node in self._nodes.items():
+                name = node.get("formula_name", "").lower()
+                if not name:
+                    continue
+                if q in name:
+                    target_id = fid
+                    break
+                if len(q_norm) >= 4:
+                    name_norm = name
+                    for w in _TYPE_W:
+                        name_norm = name_norm.replace(w, "")
+                    if q_norm in name_norm or name_norm in q_norm:
+                        target_id = fid
+                        break
+        if not target_id:
+            return {
+                "error": f"目标 {formula_id} 不在依赖图中",
+                "target": None,
+                "all_affected": [],
+            }
+
+        target_name = self._nodes[target_id].get("formula_name", "")
+        t_short = target_name.split("（")[0].split("(")[0].strip().lower()
+        if len(t_short) < 3:
+            t_short = target_name.strip().lower()
+
+        _TYPE_WORDS = ["定理", "引理", "命题", "推论", "定义", "公理", "原理", "假设", "猜想"]
+
+        def _strip_type(s: str) -> str:
+            for w in _TYPE_WORDS:
+                s = s.replace(w, "")
+            return s
+
+        def _name_matches(dep: str, short: str) -> bool:
+            d_short = dep.split("（")[0].split("(")[0].strip().lower()
+            if len(d_short) < 3:
+                d_short = dep.strip().lower()
+            if len(short) >= 3 and short in d_short:
+                return True
+            if len(d_short) >= 3 and d_short in short:
+                return True
+            # 类型前缀剥离后按编号匹配（如 定理 0.2.2.01 vs 引理 0.2.2.01）
+            ds = _strip_type(d_short)
+            ss = _strip_type(short)
+            if len(ss) >= 4 and (ss in ds or ds in ss):
+                return True
+            return False
+
+        # 直接依赖者
+        direct = []
+        for fid, node in self._nodes.items():
+            if fid == target_id:
+                continue
+            for dep in node.get("dependencies", []):
+                if _name_matches(dep, t_short):
+                    direct.append(fid)
+                    break
+
+        # BFS 传递闭包
+        visited = set()
+        queue = deque(direct)
+        while queue:
+            fid = queue.popleft()
+            if fid in visited:
+                continue
+            visited.add(fid)
+            f_short = self._nodes[fid].get("formula_name", "").split("（")[0].split("(")[0].strip().lower()
+            if len(f_short) < 3:
+                f_short = self._nodes[fid].get("formula_name", "").strip().lower()
+            for oid, onode in self._nodes.items():
+                if oid == fid or oid == target_id or oid in visited or oid in queue:
+                    continue
+                for dep in onode.get("dependencies", []):
+                    if _name_matches(dep, f_short):
+                        queue.append(oid)
+                        break
+
+        def info(fid: str) -> Dict[str, Any]:
+            n = self._nodes[fid]
+            return {
+                "formula_id": fid,
+                "formula_name": n.get("formula_name", ""),
+                "status": n.get("status", ""),
+            }
+
+        transitive = [f for f in visited if f not in direct]
+        logger.info(
+            f"[DEP-GRAPH] 级联影响分析: {target_name} → "
+            f"直接 {len(direct)} 条, 传递 {len(transitive)} 条"
+        )
+        return {
+            "target": info(target_id),
+            "direct_dependents": [info(f) for f in direct],
+            "transitive_dependents": [info(f) for f in transitive],
+            "all_affected": [info(f) for f in (direct + transitive)],
+        }

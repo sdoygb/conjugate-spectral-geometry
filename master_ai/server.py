@@ -22,6 +22,7 @@ import sys
 import json
 import time
 import threading
+import re
 from typing import Dict, Any, List
 
 # 确保自身目录在 path 中
@@ -457,6 +458,54 @@ def stop_scheduler():
     logger.info("[SCHEDULER] 自动验证调度器已停止")
 
 
+def _check_submit_dependencies(db, derivation_chain: str, interlock_hint) -> str:
+    """
+    核对提交公式【依赖】标注的每个编号是否已在主库真理层。
+    互锁同批（interlock_hint 中的编号/名称）放行——互锁组内依赖同批判定。
+    返回错误信息；全部通过返回 None。
+    """
+    if "【依赖】" not in derivation_chain:
+        return None  # 唯一判据检查已处理缺失依赖的情况
+    idx = derivation_chain.find("【依赖】")
+    tail = derivation_chain[idx + len("【依赖】"):]
+    dep_section = tail.split("【")[0] if "【" in tail else tail
+
+    entries = [p.strip() for p in re.split(r'[、,，;\n]+', dep_section) if p.strip()]
+    if not entries:
+        return None
+
+    truth = db.get_truth_layer(limit=1000)
+    nums = {str(t.get("permanent_number", "") or "") for t in truth}
+    arts = {t.get("article_number", "") or "" for t in truth}
+    names = {t.get("formula_name", "") for t in truth}
+    interlock = [str(i) for i in (interlock_hint or [])]
+
+    missing = []
+    for e in entries:
+        ec = e.split("（")[0].split("(")[0].strip()
+        m_num = re.match(r'^#?(\d+)$', ec)
+        if m_num:
+            n = m_num.group(1)
+            if n in nums or any(n in i for i in interlock):
+                continue
+            missing.append(e)
+        elif re.match(r'^\d+(\.\d+)+$', ec):
+            if ec in arts or any(ec in i for i in interlock):
+                continue
+            missing.append(e)
+        elif e in names or ec in names or any(ec in i for i in interlock):
+            continue
+        else:
+            missing.append(e)
+
+    if missing:
+        return (
+            "依赖真实性检查未通过：以下依赖不在主库真理层"
+            "（也不在同批互锁组）: " + "、".join(missing[:8])
+        )
+    return None
+
+
 def _check_auth() -> bool:
     """检查请求认证"""
     auth = request.headers.get("Authorization", "")
@@ -581,6 +630,17 @@ def submit():
                          "（Berry闭合自检：berry_phase/n_value/is_consummated）"
                          "或【共扼圆满】标注",
             }), 400
+
+    # ---- 依赖真实性检查：核对【依赖】编号已在真理层（互锁同批放行）----
+    if formula_type != "公理":
+        dep_error = _check_submit_dependencies(
+            master_db, derivation_chain, interlock_hint
+        )
+        if dep_error:
+            logger.warning(
+                f"[SERVER] 依赖真实性检查未通过: {formula_name} | {dep_error[:120]}"
+            )
+            return jsonify({"error": dep_error}), 400
 
     submission_id = master_db.submit_candidate(
         formula_name=formula_name,

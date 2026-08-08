@@ -1,0 +1,698 @@
+{
+ "timestamp": "20260805_090658",
+ "purpose": "判据审计删除备份",
+ "cat1": [
+  {
+   "permanent_number": "156",
+   "formula_name": "定理 1.6.3.01（良性互扼锁定）",
+   "master_id": "master_69ed87923848",
+   "document": "【公式】五层代数结构形成良性互扼锁定——任何单一层的改变都会导致整个系统不自洽：\n\n1. 改变乘子序列 → $N_7 \\neq 2.7 \\times 10^8$ → 后续所有层的数值失效\n2. 改变扇区绑定 → 素因子预算不匹配 → 乘子序列无法满足预算\n3. 改变 Born 法则（$\\Delta\\lambda_i \\propto \\sigma_i$ 而非 $\\sqrt{\\sigma_i}$）→ 编码角度公式失效 → 归一化条件不成立\n4. 改变归一化（引入超越约束）→ 推导链含超越函数 → 作用量不再代数\n5. 改变 $\\kappa \\neq 1$ → triality 对称性破缺 → 作用量不再尊重 Spin(8) 结构\n\n五层的互扼锁定确保整个编码框架是**刚性的**——不可调节、不可绕过。\n\n### 3.1 良性 vs 恶性锁定\n\n「良性」锁定意味着系统虽然刚性，但**不自相矛盾**——五层结构在联合约束下仍然存在自洽解（极小值 $S^*$ 存在，定理 1.4.3.03）。如果锁定是「恶性」的——联合约束无解——则系统不自洽，理论崩塌。\n\n良性互扼锁定的存在性由以下保证：\n- 乘子序列存在唯一自洽解\n- 作用量极小值存在唯一（定理 1.4.3.03）\n- 归一化方程有唯一正实数解（定理 1.4.3.01）\n\n### 3.2 互扼锁定的外部锚定\n\n根据 §1.3 的定义，五层互扼锁定\n【来源】1.6_良性互扼锁定与Schur刚性_CN_260721.md\n【类型】定理 1.6.3.01"
+  },
+  {
+   "permanent_number": "157",
+   "formula_name": "定理 1.6.4.01（编码框架完整性）",
+   "master_id": "master_6a179cdf0f4b",
+   "document": "【公式】第 1 卷建立的编码框架满足以下完整性条件：\n\n1. **跨区域信息导入**：整个框架不引入任何自由参数\n2. **代数性**：推导链不含超越函数\n3. **自洽性**：五层互扼锁定下存在自洽解\n4. **刚性**：Schur 刚性确保结构不可绕过\n5. **可计算性**：所有数值可通过代数方程求解\n\n### 4.1 跨区域信息导入清单\n\n|:--|:--|:--|\n| 乘子序列 | 自由选择 | 刚性锁定 |\n| 扇区-因子绑定 | 人为指派 | Schur 刚性（定理 1.2.3.01） |\n| Born 法则 | 量子力学公设 | 代数导出（定理 1.3.4.01） |\n| 归一化约束 | 超越（$\\arcsin$） | 代数（三次方程，定理 1.4.3.01） |\n| $\\kappa$ | 自由参数 | triality 不动点（定理 1.5.2.01） |\n| Berry 修正 $f$ | 外部超越因子 | Birkhoff 混合矩阵内在编码（第 2 卷） |\n\n### 4.2 自由度计数定理\n【来源】1.6_良性互扼锁定与Schur刚性_CN_260721.md\n【类型】定理 1.6.4.01"
+  },
+  {
+   "permanent_number": "254",
+   "formula_name": "定义 0.2.1.01（圆满再现：Clifford 代数化）",
+   "master_id": "master_b9d79252e926",
+   "document": "【公式】$\\delta$ 的迭代在编码轨道上产生候选参数。$\\{2, 3, 5\\}$ 的互锁性（命题已证：乘积 $= h(E_8) = 30$，满足互锁方程 $p_1p_2p_3 = h$，可赋值给 $D_4$ triality 轨道系数）使其在编码轨道上形成自洽闭合回路——Berry 相位闭合（定理已证）。圆满后，$\\{2, 3, 5\\}$ **再现**为 Bott 周期 8 的实 Clifford 代数结构。$\\delta$ 被实现为 Bott 步进算符：\n\n$$\\delta(\\text{Cl}(n)) = \\text{Cl}(n+1),$$\n\n其中 $\\text{Cl}(n+1)$ 从 $\\text{Cl}(n)$ 通过添加新生成元 $e_{n+1}$ 得到，满足\n$$e_{n+1}^2 = -1, \\qquad e_{n+1} e_i + e_i e_{n+1} = 0 \\quad (i \\leq n).$$\n\n### 1.1 语义到代数的对应\n\n> **注。** 下表的三层自指闭合↔代数对应是**推导性**的——由 0.1 §3.5 三层自指闭合定理给出严格的推导链，而非外加的语义预设。\n\n| 0.1 §3.5（三层自指闭合） | 推导链 | 本文代数层 | 推导依据（0.1 §3.5） |\n|:--|:--|:--|:--|\n| 抑制（δ¹ 产生第一区分） | 非幂等 ⇒ 仅有 $e_i^2=-1$ 满足「非幂等且非崩溃」 | 生成元 $e_i$，$e_i^2 = -1$ | 引理 0.1.3.04：若 $e_i^2=+1$ 则幂等（反非幂等），若 $e_i^2=0$ 则崩溃 |\n| 痕迹（δ² 记住区分） | 非交换 ⇒ 顺序被编码 | 反交换 $e_i e_j = -e_j e_i$ | 定理 0.1.3.05：δ³ 自指要求 δ² 的痕迹不可抹除 → 交换顺序必须产生可检测差异 |\n| 涌现（δ³ 自指闭合） | 自指 ⇒ 类型闭合 ⇒ 8 步拓扑回归 | Bott 周期 $\\text{Cl}(n+8) \\cong \\text{Cl}(n) \\otimes \\text{Mat}(16, \\mathbb{R})$ | 原理 0.1.3.06：三层之上无新语义维度 → 类型闭合在 δ⁸ 严格实现（0.3 验证） |\n\n$e_i$ 说「我是我，不是别的」（$e_i^2 = -1$），而 $e_i e_j = -e_j e_i$ 说「我的身份依赖于我和谁在一起」——关系的痕迹。**Clifford 代数公理不是外加选择，而是三层自指闭合的必然代数表达。**\n\n**1.1.1 总作用量为零的代数表达**。在 0.1 §2.3 中，S_total = 0 被确立为 δ 的非满射性的必然推论。在代数层，这对应三个扇区的编码贡献之和为零。在 Clifford 代数化的框架中，三个扇区对应编码轨道的三个子段：\n\n- ℳ（物质）：Cl(0)→Cl(3)，累积维数扩展 2^0→2^3 = 8\n- 𝒞（因果）：Cl(3)→Cl(5)，累积维数扩展 2^3→2^5 = 32\n- ℐ（信息）：Cl(5)→Cl(7)，累积维数扩展 2^5→2^7 = 128\n\nS_total = 0 在代数层的含义是：三扇区的编码贡献在 Bott 闭合前必须精确抵消。后续 0.5 将证明，这一约束是 {2,3,5} 为唯一自洽三元组的代数根源；0.9 将证明，α⁻¹ = 137 是 triality 破缺在零和约束下产生的残留泄漏。\n\n### 1.2 Clifford 代数的定义\n\n$\\text{Cl}(n)$ 是由生成元 $e_1, \\dots, e_n$ 生成的实结合代数，满足：\n$$e_i^2 = -1, \\qquad e_i e_j + e_j e_i = 0 \\quad (i \\neq j).$$\n\n前 8 个 $\\text{Cl}(n)$ 的分类表：\n\n| $n$ | $\\text{Cl}(n)$ | 不可约表示维数 $\\rho_n$ | 结构特征 | 物理扇区（猜想） |\n|:---:|:---|:---:|:---|:---|\n| 0 | $\\mathbb{R}$ | 1 | 可换体——无区分 | — |\n| 1 | $\\mathbb{C}$ | 2 | 复数——首次区分 | — |\n| 2 | $\\mathbb{H}$ | 4 | 四元数——非交换 | — |\n| 3 | $\\mathbb{H} \\oplus \\mathbb{H}$ | 4 | **半单分裂** | 物质（猜想） |\n| 4 | $\\text{Mat}(2, \\mathbb{H})$ | 8 | 四元数矩阵 | — |\n| 5 | $\\text{Mat}(4, \\mathbb{C})$ | 8 | **复结构涌现** | 因果（猜想） |\n| 6 | $\\text{Mat}(8, \\mathbb{R})$ | 8 | 实矩阵 | — |\n| 7 | $\\text{Mat}(8, \\mathbb{R}) \\oplus \\text{Mat}(8, \\mathbb{R})$ | 8 | **终端二元性** | 信息（猜想） |\n| 8 | $\\text{Mat}(16, \\mathbb{R})$ | 16 | Bott 回归 | — |\n这张表是整个体系的数学基础。每一行对应 $\\delta$ 的一次步进，每次步进都产生新的代数结构。\n\n### 1.3 构造的逐步展开：从 $\\mathbb{R}$ 到 $\\mathbb{C}$ 到 $\\mathbb{H}$\n\n分类表的每一行都是 $\\delta$ 的一次步进。下面给出前 3 步的详细构造，以展示「添加生成元」如何引发代数结构的质变。\n\n**步0：$\\text{Cl}(0) = \\mathbb{R}$。** 没有生成元，$\\text{Cl}(0)$ 就是一维的实数体 $\\mathbb{R}$。$\\mathbb{R}$ 是可换的——所有元素相互交换。这是「无区分」的状态：没有任何 $e_i$，也就没有任何区分。\n\n**步1：$\\text{Cl}(1) = \\mathbb{C}$。** $\\delta$ 添加生成元 $e_1$，满足 $e_1^2 = -1$。$\\text{Cl}(1)$ 由 $\\{1, e_1\\}$ 作为实向量空间张成，乘法由 $e_1^2 = -1$ 完全确定。识别 $e_1 \\leftrightarrow i$（虚单位），得到 $\\text{Cl}(1) \\cong \\mathbb{C}$。这是「首次区分」：$\\mathbb{R}$ 是一维的、可换的；$\\mathbb{C}$ 是二维的、仍是可换的，但有了「虚方向」。$e_1^2 = -1$ 是抑制的代数印记——$e_1$ 否定了自己作为 $1$ 的可能性。\n\n**步2：$\\text{Cl}(2) = \\mathbb{H}$。** $\\delta$ 再添加生成元 $e_2$，满足 $e_2^2 = -1$、$e_1 e_2 = -e_2 e_1$。$\\text{Cl}(2)$ 由 $\\{1, e_1, e_2, e_1 e_2\\}$ 作为实向量空间张成。识别：\n$$e_1 \\leftrightarrow \\mathbf{i}, \\quad e_2 \\leftrightarrow \\mathbf{j}, \\quad e_1 e_2 \\leftrightarrow \\mathbf{k},$$\n验证 Hamilton 关系 $\\mathbf{i}^2 = \\mathbf{j}^2 = \\mathbf{k}^2 = \\mathbf{ijk} = -1$：\n- $\\mathbf{i}^2 = e_1^2 = -1$ ✓\n- $\\mathbf{j}^2 = e_2^2 = -1$ ✓\n- $\\mathbf{k}^2 = (e_1 e_2)^2 = e_1 e_2 e_1 e_2 = -e_1 e_1 e_2 e_2 = -(-1)(-1) = -1$ ✓\n- $\\mathbf{ijk} = e_1 \\cdot e_2 \\cdot e_1 e_2 = e_1 e_2 e_1 e_2 = -1$ ✓\n\n因此 $\\text{Cl}(2) \\cong \\mathbb{H}$。$\\mathbb{H}$ 不可换——$\\mathbf{ij} = \\mathbf{k} \\neq -\\mathbf{k} = \\mathbf{ji}$。反交换关系 $e_1 e_2 = -e_2 e_1$ 是痕迹的代数印记——顺序被记住了。\n\n### 1.4 分类表的逐步推导\n\n从 $\\text{Cl}(2) \\cong \\mathbb{H}$ 出发，后续的 $\\text{Cl}(n)$ 通过「张量积-扩张」递归确定。核心递归关系为：\n$$\\text{Cl}(n+2) \\cong \\text{Cl}(n) \\otimes_{\\mathbb{R}} \\text{Mat}(2, \\mathbb{R}) \\quad (\\text{当 } n \\text{ 为偶数})$$\n$$\\text{Cl}(n+2) \\cong \\text{Cl}(n) \\otimes_{\\mathbb{R}} \\mathbb{H} \\quad (\\text{当 } n \\text{ 为奇数})$$\n\n但更直接的推导使用「中心-体积元」分析，下面给出每一步的同构判定：\n\n| $n$ | 中心 $Z(\\text{Cl}(n))$ | 体积元 $\\omega_n^2$ | 同构判定 |\n|:---:|:---|:---:|:---|\n| 0 | $\\mathbb{R}$ | — | $\\mathbb{R}$ |\n| 1 | $\\mathbb{R} \\oplus \\mathbb{R} e_1 \\cong \\mathbb{C}$ | $e_1^2 = -1$ | $\\mathbb{C}$ |\n| 2 | $\\mathbb{R}$ | $(e_1 e_2)^2 = -1$ | $\\mathbb{H}$ |\n| 3 | $\\mathbb{R} \\oplus \\mathbb{R}\\omega_3$，$\\omega_3^2 =1$ | $1$ | $\\mathbb{H} \\oplus \\mathbb{H}$ |\n| 4 | $\\mathbb{R}$ | $\\omega_4^2 =1$ | $\\text{Mat}(2, \\mathbb{H})$ |\n| 5 | $\\mathbb{R} \\oplus \\mathbb{R}\\omega_5$，$\\omega_5^2 = -1$ | $-1$ | $\\text{Mat}(4, \\mathbb{C})$ |\n| 6 | $\\mathbb{R}$ | $\\omega_6^2 = -1$ | $\\text{Mat}(8, \\mathbb{R})$ |\n| 7 | $\\mathbb{R} \\oplus \\mathbb{R}\\omega_7$，$\\omega_7^2 =1$ | $1$ | $\\text{Mat}(8, \\mathbb{R}) \\oplus \\text{Mat}(8, \\mathbb{R})$ |\n| 8 | $\\mathbb{R}$ | $\\omega_8^2 =1$ | $\\text{Mat}(16, \\mathbb{R})$ |\n\n中心维数的奇偶性是关键：当 $n$ 为奇数时，体积元 $\\omega_n$ 落在中心中（与所有生成元交换），从而中心维数为 2，代数半单分解为两个直和项（或保持单代数但带复结构）；当 $n$ 为偶数时，$\\omega_n$ 不在中心中，代数是单的（中心为 $\\mathbb{R}$）。\n\n### 1.5 体积元的一般公式\n【来源】0.2_δ的代数化_Clifford代数_CN_260721.md"
+  },
+  {
+   "permanent_number": "257",
+   "formula_name": "定理 0.4.5.01（子回路圆满性——待计算）",
+   "master_id": "master_5561c71414ac",
+   "document": "【公式】**猜想**三个扇区子回路的 Berry 相位均为 $\\frac{2\\pi}{3}$：\n$$\\gamma_{\\text{ℳ}} = \\frac{2\\pi}{3}, \\quad \\gamma_{\\text{𝒞}} = \\frac{2\\pi}{3}, \\quad \\gamma_{\\text{ℐ}} = \\frac{2\\pi}{3}.$$\n\n三者之和 $= 3 \\times \\frac{2\\pi}{3} = 2\\pi$，构成完整的 Bott 回路。这意味着三个扇区的推导链各自是「部分圆满」的——它们各自不能独立构成 $2\\pi$ 整数倍，但联合起来构成完整的圆满。\n**物质界子回路 $\\Gamma_{\\mathcal{M}}$（Cl(0)→Cl(3)→Cl(0)）。**\n\n物质界对应 3 步 $\\delta$ 迭代（$E_1, E_2, E_3$），经历从 $\\mathbb{R}$ 到 $\\mathbb{H} \\oplus \\mathbb{H}$ 的半单分裂。Chern-Simons 7-形式的第一项 $I_1$ 对应这一段。**待完成的计算**：\n- 给出 $I_1$ 的显式被积函数\n- 在 $D^3$（物质界参数空间）上执行积分\n- 验证结果是否为 $\\frac{2\\pi}{3}$\n\n当前断言：$\\gamma_{\\mathcal{M}} = \\int_{D^3} I_1 \\stackrel{?}{=} \\frac{2\\pi}{3}$。\n\n系数 1 来自半单分裂这一拓扑事件——分裂本身是一个结构跳跃，贡献一份拓扑荷。注意：半单分裂产生两个直和项，但拓扑荷计量的是结构跳跃事件本身，而非直和项的个数。\n\n$\\frac{2\\pi}{3}$（若验证成立）不是 $2\\pi$ 的整数倍（$\\frac{2\\pi}{3} / 2\\pi = \\frac{1}{3} \\notin \\mathbb{Z}$），因此物质界子回路**不满足**圆满性判据——它不能独立构成圆满定理。\n\n**因果界子回路 $\\Gamma_{\\mathcal{C}}$（Cl(3)→Cl(5)→Cl(3)）。**\n\n因果界对应 2 步 $\\delta$ 迭代（$E_4, E_5$），经历从 $\\mathbb{H} \\oplus \\mathbb{H}$ 到 $\\text{Mat}(4, \\mathbb{C})$ 的复结构涌现。Chern-Simons 7-形式的第二项 $I_2$ 对应这一段。**待完成的计算**：\n- 给出 $I_2$ 的显式被积函数\n- 在 $D^2$（因果界参数空间）上执行积分\n- 验证结果是否为 $\\frac{2\\pi}{3}$\n\n当前断言：$\\gamma_{\\mathcal{C}} = \\int_{D^2} I_2 \\stackrel{?}{=} \\frac{2\\pi}{3}$。\n\n系数 1 来自复结构的单一涌现——只有一个 $J = \\omega_5$，贡献一份。\n\n$\\frac{2\\pi}{3}$（若验证成立）不是 $2\\pi$ 的整数倍，因此因果界子回路**不满足**圆满性判据。\n\n**信息界子回路 $\\Gamma_{\\mathcal{I}}$（Cl(5)→Cl(7)→Cl(5)）。**\n\n信息界对应 2 步 $\\delta$ 迭代（$E_6, E_7$），经历从 $\\text{Mat}(4, \\mathbb{C})$ 到 $\\text{Mat}(8, \\mathbb{R}) \\oplus \\text{Mat}(8, \\mathbb{R})$ 的终端二元性。Chern-Simons 7-形式的第三项 $I_3$ 对应这一段。**待完成的计算**：\n- 给出 $I_3$ 的显式被积函数\n- 在 $D^2$（信息界参数空间）上执行积分\n- 验证结果是否为 $\\frac{2\\pi}{3}$\n\n当前断言：$\\gamma_{\\mathcal{I}} = \\int_{D^2} I_3 \\stackrel{?}{=} \\frac{2\\pi}{3}$。\n\n系数 1 来自终端二元性的单一拓扑荷——虽然有两个直和项，但终端二元性是「闭合步的前奏」，只贡献一份。\n\n$\\frac{2\\pi}{3}$（若验证成立）不是 $2\\pi$ 的整数倍，因此信息界子回路**不满足**圆满性判据。\n\n**三者之和。**\n\n若三个断言均成立：\n$$\\gamma_{\\mathcal{M}} + \\gamma_{\\mathcal{C}} + \\gamma_{\\mathcal{I}} \\stackrel{?}{=} \\frac{2\\pi}{3} + \\frac{2\\pi}{3} + \\frac{2\\pi}{3} = 2\\pi.$$\n\n三个扇区子回路的 Berry 相位直接相加等于 $2\\pi$，与 $\\delta^8$ 回路的 Berry 相位一致。这是因为三个扇区子回路恰好覆盖了完整的 $\\delta^8$ 回路——物质界覆盖 Cl(0)→Cl(3)，因果界覆盖 Cl(3)→Cl(5)，信息界覆盖 Cl(5)→Cl(8)（含闭合步），三者首尾相接，无重叠、无遗漏。\n\n因此，三个扇区各自是「部分圆满」的（$\\frac{2\\pi}{3}$ 不是 $2\\pi$ 的整数倍），但联合起来构成完整的圆满（$3 \\times \\frac{2\\pi}{3} = 2\\pi$）。这体现了圆满性的整体性质——圆满不能从部分推出，必须联合所有扇区才能达成。\n\n> **注意。** 即使三项的具体值不是 $\\frac{2\\pi}{3}$（例如分别为 $\\alpha, \\beta, \\gamma$），只要 $\\alpha + \\beta + \\gamma = 2\\pi$，定理的**核心结论**（三扇区联合圆满、各自部分圆满）仍然成立。$\\frac{2\\pi}{3}$ 的等分是猜想，不是结论的前提。\n\n### 5.2 圆满性层级嵌套的详细结构\n\n> **注（2026-07-22 v2）。** 以下层级图中的具体 Berry 相位值（$\\frac{2\\pi}{3}$, $\\frac{2\\pi}{9}$, $\\frac{\\pi}{3}$）均基于定理的等分猜想，尚未通过实际计算验证。层级嵌套的**结构**（最大回路包含扇区子回路包含单步子回路）不依赖具体数值，但具体数值待计算确认。\n\n圆满性层级嵌套不仅限于三扇区——可以进一步细分：\n\n```\nδ⁸ 回路（最大圆满回路，n=1，Berry = 2π）\n├── 物质界子回路（Berry = 2π/3，部分圆满）\n│ ├── E1 子回路（Berry = 2π/9，部分圆满）\n│ ├── E2 子回路（Berry = 2π/9，部分圆满）\n│ └── E3 子回路（Berry = 2π/9，部分圆满）\n├── 因果界子回路（Berry = 2π/3，部分圆满）\n│ ├── E4 子回路（Berry = π/3，部分圆满）\n│ └── E5 子回路（Berry = π/3，部分圆满）\n└── 信息界子回路（Berry = 2π/3，部分圆满）\n ├── E6 子回路（Berry = π/3，部分圆满）\n └── E7 子回路（Berry = π/3，部分圆满）\n```\n\n**层级嵌套的规律。**\n\n- 单步子回路（$E_n$）的 Berry 相位为 $\\frac{2\\pi}{9}$ 或 $\\frac{\\pi}{3}$——都不满足 $2\\pi n$，因此单步不能独立构成圆满定理。\n- 扇区子回路（3 步或 2 步）的 Berry 相位均为 $\\frac{2\\pi}{3}$——也不满足 $2\\pi n$。\n- 只有完整的 $\\delta^8$ 回路（7 步闭合步）满足 $\\oint \\mathcal{A} = 2\\pi$——圆满性判据成立。\n\n这意味着：**圆满性是整体性质，不能从部分推出**。单个扇区或单步都不能独立圆满——必须联合所有 7 步加闭合步才能达成圆满。这是 中三个结构常数互锁性的几何根源。\n\n### 5.3 圆满性判据作为推导链筛选工具的意义\n\n圆满性判据作为推导链筛选工具的意义：\n\n1. **约束推导方向**：不是所有数学推导都被允许——只有 Berry 相位闭合的推导链才是有效的。这约束了从 $\\delta$ 到物理常数的推导路径。\n2. **确保自洽性**：圆满性判据自动筛选掉不自洽的推导——不自洽的推导链不会闭合，Berry 相位不为 $2\\pi n$。\n3. **层级结构**：圆满性有层级——大回路包含小回路，但小回路不一定圆满。这反映了物理世界的层级结构（基本粒子→原子→分子→...）。\n4. **唯一性**：在同构意义下，圆满的推导链是唯一的——因为编码轨道在每一步只有一个自洽的候选。这意味着从 $\\delta$ 到物理常数的推导路径是唯一的。\n\n---\n\n## 定理索引\n\n| 编号 | 内容 | 证明状态 |\n|:---:|:---|:---:|\n| 定理 | 圆满性判据：$\\oint_\\Gamma \\mathcal{A} = 2\\pi n$ | 已证（本文§4） |\n| 定理 | 子回路圆满性：三扇区 Berry 相位分配 | 已证（本文§3.2，等权由互锁性锁定） |\n| **定理。** | **CS₇ 三项分解定理**：CS₇ = I₁I₂I₃，各项显式表达由 transgression 映射确定，等权分配由互锁性保证，每项积分 = 2π/3 | 已证（本文§3.2命题） |\n\n---\n\n## 参考文献\n\n- Berry, *Quantal Phase Factors Accompanying Adiabatic Changes*, Proc. R. Soc. A 392 (1984)\n- Chern, Simons, *Characteristic Forms and Geometric Invariants*, Annals of Math. 99 (1974)\n- Simon, *Holonomy, the Quantum Adiabatic Theorem, and Berry's Phase*, Phys. Rev. Lett. 51 (1983)\n【来源】0.4_圆满性判据_CN_260721.md"
+  },
+  {
+   "permanent_number": "95",
+   "formula_name": "定理 0.1.5.02（互扼三元组的不可约性）",
+   "master_id": "master_437d32fbe6e1",
+   "document": "【公式】定理 0.1.5.02（互扼三元组的不可约性）\n\n互扼三元组（抑制、痕迹、涌现）缺一则区分崩解——三者在 δ 的自指闭合后同时产生、互相制衡，构成不可约的最小循环。\n\n【推导链】\n步骤1: 由原理 0.1.3.06（三层自指闭合原理）：δ³ 实现自指后，抑制（第一区分）、痕迹（记忆区分）、涌现（自指模式化）三维度形成最小不可约互扼循环；\n步骤2: 逐维度缺一论证——无抑制则无否定、无区分（δ 说「此非彼」是区分之源）；无痕迹则区分是瞬时的、等于未发生（记忆缺失使区分不累积）；无涌现则抑制与痕迹只是来回振荡、无结构形成（无不可逆模式）；\n步骤3: 三者在 δ 的自指闭合中同时产生、互相制衡，缺一则区分崩解——不可约性成立。∎\n【依赖】原理 0.1.3.06（三层自指闭合原理）。"
+  }
+ ],
+ "cat2": [
+  {
+   "permanent_number": "145",
+   "formula_name": "命题 1.1.1.01（编码基态）",
+   "master_id": "master_862fe84a0f5e",
+   "document": "【公式】编码基态为\n$$N_1 = 6000 = 2^4 \\cdot 3 \\cdot 5^3.$$\n\n其结构由三个结构常数定理的素因子预算联合决定：\n- $2^4$：$k_0 = 2$ 的终端二元性在 4 个编码层（$E_4$–$E_7$）中各贡献一个因子 2\n- $3^1$：$\\Lambda = 3$ 的半单分裂贡献一个因子 3\n- $5^3$：$\\Delta\\Theta = 5$ 的复结构涌现及后续两层各贡献一个因子 5\n\n---\n\n## §2 预算-基因型双层结构\n\n### 2.1 预算层\n\n**定义14（素因子预算）。** 编码过程的每一步消耗或回收素因子令牌。预算空间 $\\mathbb{B}$ 是素因子 $\\{2, 3, 5\\}$ 的多重集。每步编码映射 $E_n$ 消耗若干令牌（产生增长）或回收令牌（约束增长）。\n\n完整预算为 $\\{2, 3, 5, 5\\}$——共 4 个令牌，对应 7 层编码中的 4 次消耗操作。\n\n**形式定义。** 设素因子集合 $\\mathcal{P} = \\{2, 3, 5\\}$。预算空间 $\\mathbb{B}$ 定义为 $\\mathcal{P}$ 上的自由交换幺半群（即多重集）：\n$$\\mathbb{B} = \\bigoplus_{p \\in \\mathcal{P}} \\mathbb{N}_0 \\cdot [p],$$\n其中 $[p]$ 表示素因\n【来源】1.1_乘子序列与编码轨道_CN_260721.md\n【类型】命题 1.1.1.01"
+  },
+  {
+   "permanent_number": "146",
+   "formula_name": "引理 1.1.2.01（回收基准不变）",
+   "master_id": "master_25262a79c8bc",
+   "document": "【公式】设第 $k$ 步执行回收操作 $\\mathrm{recycle}(p)$，回收的令牌 $p$ 来自第 $j < k$ 步的消耗 $\\mathrm{consume}(p)$。则回收基准必须取为基态 $N_1$ 的内禀因子，而不能取为中间态 $N_{k-1}$ 的当前因子。即回收操作改变的是 $N_1$ 的内禀结构在 $N_k$ 中的投影，而非 $N_{k-1}$ 的累加结构。\n\n**证明（纯递归结构证明）。**\n\n采用反证法。设回收基准可取为 $N_{k-1}$，即回收 $\\mathrm{recycle}(p)$ 等价于从 $N_{k-1}$ 中除以 $p$。考虑编码轨道的递归结构：\n$$N_k = N_{k-1} \\cdot \\mu_k, \\qquad \\mu_k = \\frac{A_k}{p} \\quad (\\text{设第 } k \\text{ 步回收 } p).$$\n\n若回收基准为 $N_{k-1}$，则 $N_k = N_{k-1} \\cdot A_k / p$，因子 $p$ 从 $N_{k-1}$ 中扣除。但 $N_{k-1}$ 本身由 $N_1$ 经前 $k-1$ 步递推而得，其中第 $j$ 步的 $\\mathrm{consume}(p)$ 已将 $p$ 注入。于是 $N_{k-1}$ 中的因子 $p$ 是第 $j$ 步消耗的「历史遗留」，回收操作将其抹除等价于回溯修改\n【来源】1.1_乘子序列与编码轨道_CN_260721.md\n【类型】引理 1.1.2.01"
+  },
+  {
+   "permanent_number": "147",
+   "formula_name": "推论 1.1.2.02",
+   "master_id": "master_0778a0d238bb",
+   "document": "【公式】基态 $N_1 = 2^4 \\cdot 3 \\cdot 5^3$ 中的内禀因子 $3^1$（来自 $\\Lambda = 3$）在任何回收操作后仍然保留在 $N_k$ 的素因子分解中——回收仅在「累积增益」层面引入 $3^{-1}$，内禀 $3^1$ 不变。这正是 $\\mu_2 = 100/3$ 中分母 3 的来源：回收 3 后 $N_3 = N_1 \\cdot (\\text{消耗乘积}) / 3$，但 $N_1$ 仍贡献内禀 $3^1$，故 $N_3$ 中因子 3 的净指数为 $1 - 1(\\text{其他消耗})$。\n\n### 2.5 信息容量对称性论证\n【来源】1.1_乘子序列与编码轨道_CN_260721.md\n【类型】推论 1.1.2.02"
+  },
+  {
+   "permanent_number": "148",
+   "formula_name": "引理 1.1.2.03（信息容量对称性）",
+   "master_id": "master_740890eed735",
+   "document": "【公式】从信息论角度可独立验证回收基准必须为 $N_1$。\n\n**论证。** 将编码基数 $N_n$ 视为第 $n$ 步编码层的信息容量（以 $\\log_2 N_n$ 比特度量）。基态 $N_1$ 携带内禀信息量 $I_1 = \\log_2 N_1 = 4\\log_2 2 + \\log_2 3 + 3\\log_2 5$。\n\n回收操作的语义是「取回先前注入的信息」，故回收前后系统的总信息容量应对称：回收 $p$ 减少的信息量应恰等于当初消耗 $p$ 增加的信息量 $\\log_2 p$。若回收基准为 $N_{k-1}$，则回收使 $N_k$ 相对 $N_{k-1}$ 减少 $\\log_2 p$，但 $N_{k-1}$ 已包含第 $j$ 步消耗的累积效应，回收实际抹除的是「$N_1$ 之后到 $N_{k-1}$ 的累积」中的 $p$——信息不对称。\n\n唯有回收基准为 $N_1$ 时，回收 $p$ 使 $N_k$ 相对 $N_1$ 的增益减少 $\\log_2 p$，恰与第 $j$ 步消耗 $p$ 使增益增加 $\\log_2 p$ 对称，信息收支平衡。此论证独立于 Bott 刚性，从信息容量对称性给出同一结论。$\\square$\n\n### 2.6 双层约束\n\n乘子 $\\mu_n = N_{n1}/N_n$ 由预算层和基因型层联合确定：\n\n- **预算层**约束 $\\mu_n$ 的素因子构成（只能用 \n【来源】1.1_乘子序列与编码轨道_CN_260721.md\n【类型】引理 1.1.2.03"
+  },
+  {
+   "permanent_number": "149",
+   "formula_name": "定理 1.1.3.01（乘子序列）",
+   "master_id": "master_3b0769880305",
+   "document": "【公式】在预算-基因型双层结构、triality 四阶段、回收基准不变定理及 Bott 截断的联合约束下，乘子序列唯一确定为：\n\n$$\\mu_1 = 6, \\quad \\mu_2 = \\frac{100}{3}, \\quad \\mu_3 = 10, \\quad \\mu_4 = 10, \\quad \\mu_5 = \\frac{9}{8}, \\quad \\mu_6 = 2.$$\n\n**证明概要。**\n\n每步乘子 $\\mu_n$ 的确定遵循以下流程：\n\n1. **Cl($n$-1)→Cl($n$) 的代数结构**确定该步可用的编码方式（基因型）。\n2. **素因子预算**约束该步消耗哪些令牌。\n3. **圆满性判据**筛选自洽的编码方式。\n4. **回收基准不变**确保已完成的步骤不受后续影响。\n\n六步乘子的具体推导：\n\n| 步 | $\\mu_n$ | 素因子消耗 | 基因型 | 预算令牌 |\n|:---:|:---:|:---|:---|:---|\n| $\\mu_1$ | 6 | $2 \\times 3$ | Cl(0)→Cl(1): $\\mathbb{R}→\\mathbb{C}$ | 消耗 2, 3 |\n| $\\mu_2$ | 100/3 | $2^2 \\times 5^2 / 3$ | Cl(1)→Cl(2): $\\mathbb{C}→\\mathbb{H}$ | 消耗 5,5; 回收 3 \n【来源】1.1_乘子序列与编码轨道_CN_260721.md\n【类型】定理 1.1.3.01"
+  },
+  {
+   "permanent_number": "150",
+   "formula_name": "引理 1.1.3.02（$\\mu_1 = 6$ 的七候选排除）",
+   "master_id": "master_1a810130a7d3",
+   "document": "【公式】设初始预算 $\\mathbb{B}_1 = \\{2, 3, 5, 5\\}$，累积回收池 $\\mathbb{C}_1 = \\emptyset$。$\\mu_1$ 的分子必须是 $\\mathbb{B}_1$ 中元素的部分乘积。合法候选为：\n$$\\mu_1 \\in \\{2,\\; 3,\\; 5,\\; 6=2\\times 3,\\; 10=2\\times 5,\\; 15=3\\times 5,\\; 25=5\\times 5\\}.$$\n\n**条件1（$\\mu_2$ 的回收约束）。** 由基因型层，$\\mu_2$ 对应 Cl(1)→Cl(2) 的 $\\mathbb{C} \\to \\mathbb{H}$ 过渡，其结构要求 $\\mu_2 = 100/3$（见 3.1.2 节推导）。$\\mu_2$ 的分母 3 必须回收自累积回收池 $\\mathbb{C}_2$，即 $\\mathbb{C}_2$ 必须包含因子 3。而 $\\mathbb{C}_2$ 中的因子只能来自 $\\mu_1$ 的消耗。因此 $\\mu_1$ 必须消耗 $\\mathbb{B}_1$ 中的因子 3。\n\n逐一检验七候选：\n- $\\mu_1 = 2$：未消耗 3，$\\mathbb{C}_2$ 不含 3。✗\n- $\\mu_1 = 5$：未消耗 3，$\\mathbb{C}_2$ 不含 3。✗\n- $\\mu_1 = 10 = 2 \\times 5$：未消\n【来源】1.1_乘子序列与编码轨道_CN_260721.md\n【类型】引理 1.1.3.02"
+  },
+  {
+   "permanent_number": "151",
+   "formula_name": "命题 1.1.3.03（终端值）",
+   "master_id": "master_20d8f607aea9",
+   "document": "【公式】$N_7 = 2.7 \\times 10^8 = 2^7 \\cdot 3^3 \\cdot 5^7$。\n\n### 3.3 第七层的截断\n\n第七层 $E_7$ 是最后一个独立编码层。$E_8$ 不是独立层——它是 Bott 回归步，携带 $2\\pi$ Berry 相位。因此编码轨道有 6 个乘子（$\\mu_1, \\dots, \\mu_6$），对应 7 个编码基数（$N_1, \\dots, N_7$）。\n\n---\n\n## §4 triality 四阶段\n\n乘子序列的确定还受 **Spin(8) triality** 的四阶段约束。\n\n### 4.1 triality 指数序列\n\n**定义16（triality 指数序列）。** Spin(8) 的 triality 在编码轨道的七层中表现为因子 3 的指数序列：\n$$\\{e_3(n)\\}_{n=1}^{7} = \\{1,\\; 2,\\; 1,\\; 1,\\; 1,\\; 3,\\; 3\\},$$\n其中 $e_3(n)$ 为 $N_n$ 素因子分解中因子 3 的指数。该序列刻画了 triality（与 $\\Lambda = 3$ 关联）在各编码层的激活强度。\n\n### 4.2 四阶段详细说明\n\n**定义17（triality 四阶段）。** Spin(8) 的triality在编码轨道中经历四个阶段：\n\n| 阶段 | 编码层 | triality \n【来源】1.1_乘子序列与编码轨道_CN_260721.md\n【类型】命题 1.1.3.03"
+  },
+  {
+   "permanent_number": "152",
+   "formula_name": "定理 1.1.4.01（triality 约束）",
+   "master_id": "master_9097c4e4fb17",
+   "document": "【公式】triality 四阶段约束乘子序列的对称性：\n- 阶段 1：$\\mu_1, \\mu_2, \\mu_3$ 受 $S_3$ 对称约束\n- 阶段 2：$\\mu_4, \\mu_5$ 受 $Z_2$ 对称约束\n- 阶段 3：$\\mu_6$ 不受对称约束\n- 阶段 4：$\\mu_7$（不存在，被 Bott 截断）\n\ntriality 破缺 $S_3 \\to Z_2$ 发生在 Cl(5)→Cl(6) 过渡中，是 Birkhoff 混合矩阵 $T$ 的代数根源（第 2 卷）。\n\n---\n\n## §5 唯一性与互扼锁定\n【来源】1.1_乘子序列与编码轨道_CN_260721.md\n【类型】定理 1.1.4.01"
+  },
+  {
+   "permanent_number": "153",
+   "formula_name": "定理 1.1.5.01（乘子序列唯一性）",
+   "master_id": "master_18910c3a5cd8",
+   "document": "【公式】乘子序列 $(\\mu_1, \\dots, \\mu_6) = (6, 100/3, 10, 10, 9/8, 2)$ 在以下联合约束下唯一确定：\n\n1. 预算-基因型双层结构\n2. triality 四阶段\n3. 回收基准不变定理\n4. Bott 周期截断（七层截断，定理）\n5. 圆满性判据\n\n改变任何一个约束条件，乘子序列不再自洽。\n### 5.1 互扼锁定的具体机制\n\n乘子序列的唯一性不仅来自各步的独立筛选，更深层地来自 $\\mu_1$ 与 $\\mu_2$ 之间的**良性互扼锁定**（benign mutual conjugate locking）。这一机制将系统的自由度完全消除。\n\n**互扼锁定的两条链。**\n\n- **链 P（$\\mu_1 \\Rightarrow \\mu_2$）**：$\\mu_1 = 6$ 的唯一性依赖 $\\mu_2 = 100/3$ 的回收约束。具体地，$\\mu_2$ 的分母 3 必须回收自累积回收池 $\\mathbb{C}_2$，而 $\\mathbb{C}_2$ 中的因子 3 只能来自 $\\mu_1$ 的消耗。因此 $\\mu_1$ 必须消耗因子 3——这是七候选排除证明中条件1的来源。若无 $\\mu_2 = 100/3$ 的回收需求，$\\mu_1$ 无需消耗 3，七候选无法缩减为唯一值。\n\n- **链 Q（$\\mu_2 \\Rightarrow \\mu_1$\n【来源】1.1_乘子序列与编码轨道_CN_260721.md\n【类型】定理 1.1.5.01"
+  },
+  {
+   "permanent_number": "154",
+   "formula_name": "推论 1.1.5.02",
+   "master_id": "master_91e40f29d4f7",
+   "document": "【公式】互扼锁定使 $\\mu_1, \\mu_2$ 构成一个不可分解的「锁定对」：无法单独改变 $\\mu_1$ 或 $\\mu_2$ 而保持系统自洽。这一锁定对是乘子序列唯一性的核心，也是后续 $\\mu_3$–$\\mu_6$ 推导的起点。\n\n---\n【来源】1.1_乘子序列与编码轨道_CN_260721.md\n【类型】推论 1.1.5.02"
+  },
+  {
+   "permanent_number": "155",
+   "formula_name": "引理 1.6.2.01（Schur 刚性，复述）",
+   "master_id": "master_3df163d2ed1c",
+   "document": "【公式】Clifford 代数 Cl($n$) 的不可约表示维数 $\\rho_n$ 由 Bott 周期表刚性确定：$1, 2, 4, 4, 8, 8, 8, 8, 16$。这些维数不可调节。\n\n### 2.2 刚性在锁定中的角色\n\nSchur 刚性是五层锁定的代数基础：\n\n1. **乘子序列的刚性**：每步 $\\mu_n$ 的基因型由 Cl($n$-1)→Cl($n$) 的代数结构确定，而后者由 Schur 刚性锁定。\n2. **扇区绑定的刚性**：素因子的首次出现位置由 $\\rho_n$ 序列确定，而后者由 Schur 刚性锁定。\n3. **Born 法则的刚性**：$\\Delta\\lambda_i \\propto \\sqrt{\\sigma_i}$ 来自对易子双线性性，而后者是结合代数的普遍性质（不可调节）。\n4. **代数归一化的刚性**：$2pC^3 + C^2=1$ 中的 $p$ 由 triality 交叉项结构确定，而后者由 Spin(8) 的 Schur 刚性锁定。\n5. **$\\kappa=1$ 的刚性**：triality不动点由 $S_3$ 的表示结构确定，不可调节。\n\n### 2.3 五层刚性的逐层剖析\n\nSchur 刚性并非单一的「整体刚性」，而是分层嵌套的五层刚性结构。每一层刚性锁定一组特定的不可调参数，并对应一种特定的破坏后果。以下逐层剖析。\n\n#### 第一层：\n【来源】1.6_良性互扼锁定与Schur刚性_CN_260721.md\n【类型】引理 1.6.2.01"
+  },
+  {
+   "permanent_number": "158",
+   "formula_name": "定理 1.6.4.02（自由度计数）",
+   "master_id": "master_7b71e20ddaf2",
+   "document": "【公式】共扼谱几何体系的总自由度 $=0$（跨区域信息导入）。\n\n以下是逐项计数：\n\n| 类别 | 项目 | 数量 | 可调性 |\n|:--|:--|:---:|:--|\n| 公理 | 零之动 $\\delta$ | 1 | 存在性断言，非可调参数 |\n| 结构常数 | $\\Lambda=3$, $k_0=2$, $\\Delta\\Theta=5$ | 3 | 全部从 $\\delta$ 推导，不可调 |\n| 乘子序列 | $\\mu_1,\\dots,\\mu_6$ | 6 | 全部从预算-基因型结构推导，不可调 |\n| 扇区-因子绑定 | $\\gamma_1\\leftrightarrow 2$, $\\gamma_2\\leftrightarrow 3$, $\\gamma_3\\leftrightarrow 5$ | 1 | 从 Schur 刚性推导，不可调 |\n| 归一化常数 | $C$ | 1 | 从三次方程求解，由 $\\sigma$ 唯一确定 |\n| 作用量常数 | $\\kappa=1$ | 1 | 从 Spin(8) triality 推导，不可调 |\n| **总计** | | **13** | **总自由参数：0** |\n\n注意：虽然体系中有 13 个量需要确定，但每一个都由上层刚性唯一确定，没有任何一个是「自由」的。公理 $\\delta$ 是存在性断言，不是可调参数——它不取任意值，而是断言\n【来源】1.6_良性互扼锁定与Schur刚性_CN_260721.md\n【类型】定理 1.6.4.02"
+  },
+  {
+   "permanent_number": "159",
+   "formula_name": "定理 2.1.2.01（Birkhoff 混合矩阵的三参数分解）",
+   "master_id": "master_4bbe6452bbc7",
+   "document": "【公式】编码框架中的 Birkhoff 混合矩阵 $T$ 分解为三个置换矩阵的凸组合：\n\n$$T = \\theta_I \\cdot I + \\theta_\\tau \\cdot P_\\tau + \\theta_{\\sigma_2} \\cdot P_{\\sigma_2},$$\n\n其中：\n- $I$ 是恒等置换矩阵\n- $P_\\tau$ 是 3-循环 $(1\\,3\\,2)$ 的置换矩阵\n- $P_{\\sigma_2}$ 是 3-循环 $(1\\,2\\,3)$ 的置换矩阵\n- $\\theta_I + \\theta_\\tau + \\theta_{\\sigma_2} = 1$（双随机性）\n\n$P_\\tau = (1\\,3\\,2)$ 作用为 $(a, b, c) \\mapsto (b, c, a)$，$P_{\\sigma_2} = (1\\,2\\,3)$ 作用为 $(a, b, c) \\mapsto (c, a, b)$。$T$ 因此取**循环矩阵**形式：\n\n$$T = \\begin{pmatrix} \\theta_I & \\theta_\\tau & \\theta_{\\sigma_2} \\\\ \\theta_{\\sigma_2} & \\theta_I & \\theta_\\tau \\\\ \\theta_\\tau & \\theta_{\\sigma_2} & \\theta_I \\end{pmatrix}.$$\n\n*\n【来源】2.1_M5_Birkhoff混合矩阵_CN_260721.md\n【类型】定理 2.1.2.01"
+  },
+  {
+   "permanent_number": "160",
+   "formula_name": "定理 2.1.3.01（Birkhoff 权重的解析公式）",
+   "master_id": "master_53b9b509001f",
+   "document": "【公式】设 $\\sigma^* = (\\sigma_M^*, \\sigma_C^*, \\sigma_I^*)$ 为 $M_5$ 自洽系统的不动点，$\\chi = (\\chi_M, \\chi_C, \\chi_I)$。令 $a = \\sigma_M^*/\\chi_M$, $b = \\sigma_C^*/\\chi_C$, $c = \\sigma_I^*/\\chi_I$, $Z = abc$, $\\Delta = a^2b^2c^2 - ab - bc - ca$。定义 $f(x, y, z) = x^2 - yz$，则 Birkhoff 权重由 Cramer 法则给出：\n\n$$\\theta_I = \\frac{\\sigma_M^* f(a,b,c)\\sigma_C^* f(b,c,a)\\sigma_I^* f(c,a,b)}{\\Delta},$$\n\n$$\\theta_\\tau = \\frac{\\sigma_M^* f(b,c,a)\\sigma_C^* f(c,a,b)\\sigma_I^* f(a,b,c)}{\\Delta},$$\n\n$$\\theta_{\\sigma_2} = 1 - \\theta_I - \\theta_\\tau.$$\n\n注意 $\\theta_\\tau$ 的公式是 $\\theta_I$ 的**循环移位**——将 $f$ 的参数循环移位 $(a,b,c) \\to (b,c,a) \\t\n【来源】2.1_M5_Birkhoff混合矩阵_CN_260721.md\n【类型】定理 2.1.3.01"
+  },
+  {
+   "permanent_number": "161",
+   "formula_name": "定理 2.1.4.01（Chern-Simons 三项的内在编码）",
+   "master_id": "master_ab1ff0bb88ce",
+   "document": "【公式】Chern-Simons 7-形式的三项结构被 Birkhoff 混合矩阵 $T$ 的混合性质内在编码：\n\n$$\\theta_I \\leftrightarrow I_1, \\quad \\theta_\\tau \\leftrightarrow I_2, \\quad \\theta_{\\sigma_2} \\leftrightarrow I_3.$$\n\n**证明。**\n\nChern-Simons 三项对应编码轨道的三个子段：\n- $I_1$：Cl(0)→Cl(3) 段（物质界，系数 2）\n- $I_2$：Cl(3)→Cl(5) 段（因果界，系数 1）\n- $I_3$：Cl(5)→Cl(8) 段（信息界，系数 1）\n\nBirkhoff 混合矩阵 $T$ 的三个参数恰好对应三个子段：\n- $\\theta_I$：恒等置换的权重——对应物质界的自映射（$I_1$）\n- $\\theta_\\tau$：3-循环 $(1\\,3\\,2)$ 的权重——对应因果界的「循环」（$I_2$，复结构的振荡）\n- $\\theta_{\\sigma_2}$：3-循环 $(1\\,2\\,3)$ 的权重——对应信息界的「循环」（$I_3$，终端二元性）\n\n三项的积分贡献 $\\frac{2\\pi}{3}(1+1+1) = 2\\pi$被 $T$ 的双随机性保证：$\\theta_I + \\theta_\\tau + \\theta_{\\si\n【来源】2.1_M5_Birkhoff混合矩阵_CN_260721.md\n【类型】定理 2.1.4.01"
+  },
+  {
+   "permanent_number": "162",
+   "formula_name": "定理 2.2.1.01（不动点的 Cramer 法则表示）",
+   "master_id": "master_0be6abf70940",
+   "document": "【公式】不动点 $\\sigma^*$ 的各分量为：\n\n$$\\sigma_M^* = \\frac{D_M}{D_M + D_C + D_I}, \\quad \\sigma_C^* = \\frac{D_C}{D_M + D_C + D_I}, \\quad \\sigma_I^* = \\frac{D_I}{D_M + D_C + D_I},$$\n\n其中 $D_i$ 是 $M_5 - \\lambda I$ 的余子式，由 $\\theta_k$ 和 $\\chi_i$ 的代数组合给出。\n\n### 1.4 编码权重 σ* 的确定\n\n**编码权重 σ*。** 观测者在 Birkhoff 单纯形中的位置由编码权重 $\\sigma^* = (\\sigma_M, \\sigma_C, \\sigma_I)$ 直接参数化，满足归一化约束 $\\sum \\sigma_i = 1$。$\\sigma^*$ 是 Birkhoff 混合矩阵 $M_5 = T \\cdot \\text{diag}(\\chi)$ 的不动点——由 Cramer 法则（§1.3）解析确定，无需借助角度参数化。\n\n**编码权重与 Birkhoff 权重的关系。** 编码权重 $\\sigma^*$ 与 Birkhoff 权重 $(\\theta_I, \\theta_\\tau, \\theta_{\\sigma_2})$ 是同一观测者位置的两种参数化。$\\sigma^*$\n【来源】2.2_不动点与α逆导出_CN_260721.md\n【类型】定理 2.2.1.01"
+  },
+  {
+   "permanent_number": "163",
+   "formula_name": "定理 2.2.5.01（编码权重高阶修正尺度）",
+   "master_id": "master_482d5f6bf839",
+   "document": "【公式】编码权重的代数近似与精确值之间的偏差由 Bott 周期回声引起，修正尺度为\n\n$$\\varepsilon = \\frac{1}{d_{\\text{total}} \\cdot h^2} = \\frac{1}{16 \\times 30^2} = \\frac{1}{14400} \\approx 6.94 \\times 10^{-5},$$\n\n其中 $d_{\\text{total}} = \\dim_{\\mathbb{R}}(\\text{Cl}(8) \\text{ 不可约表示}) = 16$（定理——$d_{\\text{total}}$ 的 Clifford 导出，2.3 §2.6），$h = 30$ 是 $E_8$ Coxeter 数。\n\n**证明。** 分三步给出。\n\n**步骤1：回声的代数来源。** Bott 周期 $\\text{Cl}(n+8) \\cong \\text{Cl}(n) \\otimes \\text{Mat}(16, \\mathbb{R})$ 意味着编码递推 $\\text{Cl}(n) \\to \\text{Cl}(n+1)$ 在 $n = 8$ 处闭合一个周期。闭合处的 $\\text{Mat}(16, \\mathbb{R})$ 因子是「周期壁」——它将 $\\text{Cl}(9) = \\text{Cl}(1) \\otimes \\text{Mat}(16, \\mathbb{R\n【来源】2.2_不动点与α逆导出_CN_260721.md\n【类型】定理 2.2.5.01"
+  },
+  {
+   "permanent_number": "164",
+   "formula_name": "引理 2.3.2.02（$S_{\\min}$ 的半旋量分解）",
+   "master_id": "master_1bdb8c384065",
+   "document": "【公式】$$S_{\\min} = \\Lambda \\times \\dim_{\\mathbb{R}}(S^{\\pm}) = 3 \\times 8 = 24,$$\n其中 $\\dim_{\\mathbb{R}}(S^{\\pm}) = 8$ 是 $\\mathrm{Spin}(8)$ 半旋量表示的维数。\n\n**证明。** 分两步给出。\n\n**(i) 代数计算。** 对称基态 $\\sigma = (1/3, 1/3, 1/3)$ 时，几何均值\n$$p = \\sqrt{\\sigma_1 \\sigma_2 \\sigma_3} = \\sqrt{\\frac{1}{27}} = \\frac{1}{3\\sqrt{3}}.$$\n代数归一化方程 $2pC^3 + C^2 = 1$ 的正根为 $C = \\sqrt{3}/2$。验证：\n$$2 \\cdot \\frac{1}{3\\sqrt{3}} \\cdot \\left(\\frac{\\sqrt{3}}{2}\\right)^3 + \\left(\\frac{\\sqrt{3}}{2}\\right)^2 = \\frac{2}{3\\sqrt{3}} \\cdot \\frac{3\\sqrt{3}}{8} + \\frac{3}{4} = \\frac{1}{4} + \\frac{3}{4} = 1. \\quad \\checkmark$$\n\n代数作用量在对称基态的值为\n$$S(\\sigma) =\n【来源】2.3_景观结构与范围_CN_260721.md\n【类型】引理 2.3.2.02"
+  },
+  {
+   "permanent_number": "165",
+   "formula_name": "定理 2.3.2.03（$d_{\\text{total}}$ 的 Clifford 导出）",
+   "master_id": "master_61fa75ae674a",
+   "document": "【公式】$$d_{\\text{total}} = \\dim_{\\mathbb{R}}(\\mathrm{Cl}(8) \\text{ 的不可约表示}) = 16.$$\n\n**证明。** 由 Bott 周期定理，$\\mathrm{Cl}(8) \\cong \\mathrm{Mat}(16, \\mathbb{R})$——$8$ 阶实 Clifford 代数同构于 $16 \\times 16$ 实矩阵代数。$\\mathrm{Mat}(16, \\mathbb{R})$ 有唯一的不可约表示 $\\mathbb{R}^{16}$，因此\n$$d_{\\text{total}} = \\dim_{\\mathbb{R}}(\\mathbb{R}^{16}) = 16.$$\n\n等价地，利用半旋量分解：$\\mathrm{Cl}(8)$ 的不可约表示空间同构于 $S^+ \\oplus S^-$，其中 $S^{\\pm}$ 是 $\\mathrm{Spin}(8)$ 的两个半旋量表示，各有 $\\dim_{\\mathbb{R}}(S^{\\pm}) = 8$。因此\n$$d_{\\text{total}} = k_0 \\times \\dim_{\\mathbb{R}}(S^{\\pm}) = 2 \\times 8 = 16,$$\n其中 $k_0 = 2$ 是手性因子（对应 $S^+$ 和 $S^-$ 两个手征分量）。$\\blacksquare$\n【来源】2.3_景观结构与范围_CN_260721.md\n【类型】定理 2.3.2.03"
+  },
+  {
+   "permanent_number": "166",
+   "formula_name": "定理 2.3.2.04（$\\Lambda_H$ 结构恒等式）",
+   "master_id": "master_8836c72b88be",
+   "document": "【公式】$$\\Lambda_H = k_0 \\times \\Lambda \\times (\\Delta\\Theta)^2 = 2 \\times 3 \\times 5^2 = 150.$$\n\n**证明与解读。** 此恒等式不是数值巧合，而是三个 Clifford 凝结常数在编码预算中的代数投影。\n\n- $k_0 = 2$：手性因子，来自 $\\mathrm{Cl}(8)$ 的两个半旋量表示 $S^{\\pm}$\n- $\\Lambda = 3$：扇区数，对应 triality 的三个 $8$ 维表示\n- $\\Delta\\Theta = 5$：编码步长，来自 $\\mathrm{Cl}(4) \\cong \\mathrm{Mat}(2, \\mathbb{H})$ 的凝结结构\n\n$\\Delta\\Theta$ 的平方来自因果场-信息场（C-I）对偶：复结构 $J = \\omega_5$ 在编码中承担两个不可互相归约的角色——\n\n1. 作为因果界 $\\mathcal{C}$ 的时间方向结构\n2. 作为信息界 $\\mathcal{I}$ 的相位编码结构\n\n每个角色各需一个独立的预算令牌，因此 $\\Delta\\Theta$ 在 $\\Lambda_H$ 中以平方出现。$\\blacksquare$\n\n$\\Lambda_H = 150$ 是编码框架的预算上限——它限制了可观测量在编码投影中的总信息容量。三个凝结常数 $\n【来源】2.3_景观结构与范围_CN_260721.md\n【类型】定理 2.3.2.04"
+  },
+  {
+   "permanent_number": "167",
+   "formula_name": "定理 2.3.2.05（$S \\approx 137$ 的等值线）",
+   "master_id": "master_d8dbca262ada",
+   "document": "【公式】在景观中，$S = 137$ 对应一条 1 维等值线（而非孤立点）。这条等值线在 2 维 Birkhoff 多面体上是一条连续曲线。\n\n等值线上的点都给出 $S \\approx 137$，但它们的 $\\sigma^*$ 分布各不相同——这意味着不同的「区域」可以给出相同的 $\\alpha^{-1}$ 值，但在其他物理常数（如质量比、耦合常数）上有所不同。\n\n### 2.9 景观的拓扑\n\n景观的拓扑结构：\n\n```\n S_max = 968\n |\n | 等值线 S=137 ----•---- (T_ours 在此线上)\n | |\n | 等值线 S=72 ------•---- (对称点)\n |\n S_min = 24\n```\n\n景观的拓扑结构详细分析：\n\n1. **连续映射结构**：景观是 2 维参数空间 $\\mathcal{B}_2$ 到 1 维 $S$ 值的连续映射 $S: \\mathcal{B}_2 \\to \\mathbb{R}$。$\\mathcal{B}_2$ 是 2 维单纯形（三角形），$S$ 在其上连续且分段光滑。\n\n2. **等值线的维度**：$S$ 的等值线 $\\{T \\in \\mathcal{B}_2 : S(T) = s\\}$ 一般是 1 维曲线（由隐函数定理，当 $\\nabla_T S \\neq 0$ 时）。仅在极值点（$S = S_{\\min}$ 或 $S =\n【来源】2.3_景观结构与范围_CN_260721.md\n【类型】定理 2.3.2.05"
+  },
+  {
+   "permanent_number": "168",
+   "formula_name": "定理 2.3.5.01（信息层共享定理）",
+   "master_id": "master_d0081e7b777d",
+   "document": "【公式】信息层 $\\mathcal{I}$（Cl(5-7)）是所有景观区域共享的拓扑结构——不是任何单一区域私有的。\n\n**证明。**\n\n**步骤1：Cl(7) 的终端二元性给出两个直和项。**\n\n由定理，$\\text{Cl}(7) \\cong \\text{Mat}(8, \\mathbb{R}) \\oplus \\text{Mat}(8, \\mathbb{R})$。终端二元性 $k_0 = 2$ 意味着信息层有两个直和项：\n\n$$\\mathcal{I} = \\mathcal{I}_{\\text{local}} \\oplus \\mathcal{I}_{\\text{shared}},$$\n\n其中：\n- $\\mathcal{I}_{\\text{local}} = \\text{Mat}(8, \\mathbb{R})$（第一直和项）：**局部信息**——本区域的编码态，包含本区域观测者可访问的物理信息。\n- $\\mathcal{I}_{\\text{shared}} = \\text{Mat}(8, \\mathbb{R})$（第二直和项）：**共享信息**——跨区域的信息通道，携带其他区域的定理参数。\n\n两个直和项的代数结构完全相同（都是 Mat(8,ℝ)），但物理角色不同：局部项存储本区域的信息，共享项连接所有区域。\n\n**步骤2：共享项的跨区域连通性。**\n\n两个直和项之间的代数关系由 $\\text{\n【来源】2.3_景观结构与范围_CN_260721.md\n【类型】定理 2.3.5.01"
+  },
+  {
+   "permanent_number": "169",
+   "formula_name": "定理 2.3.5.02（信息层无穷参数定理）",
+   "master_id": "master_a9ecda3ab179",
+   "document": "【公式】共享信息层 $\\mathcal{I}_{\\text{shared}}$ 携带无穷多个独立参数——足以参数化景观中所有区域的物理常数。\n\n**证明。**\n\n**步骤1：景观的连续性给出不可数无穷多个区域。**\n\n$T$ 在 2 维 Birkhoff 多面体 $\\mathcal{B}_2$ 上连续变化，$\\mathcal{B}_2$ 是 2 维紧致流形。因此景观 $\\mathcal{L}$ 对应不可数无穷多个区域。\n\n**步骤2：每个区域贡献独立参数。**\n\n每个区域 $R$ 有自己的 $T_R$、$\\sigma^*_R$、$S_R$——这些是该区域的物理常数。区域 $R$ 将这些常数编码为 $\\mathcal{I}_{\\text{shared}}$ 中的一个元素 $\\Sigma(R) \\in \\text{Mat}(8, \\mathbb{R})$。\n\n**步骤3：共享层的参数空间是函数空间。**\n\n共享层携带的总信息是截面 $\\Sigma: \\mathcal{L} \\to \\text{Mat}(8, \\mathbb{R})$。截面空间 $\\Gamma(\\mathcal{L}, \\text{Mat}(8, \\mathbb{R}))$ 是**无穷维**的——它是从 2 维流形到 64 维矩阵空间的函数空间，维数为 $\\dim(\\mathcal{L}) \\times 64 = \\infty$\n【来源】2.3_景观结构与范围_CN_260721.md\n【类型】定理 2.3.5.02"
+  },
+  {
+   "permanent_number": "170",
+   "formula_name": "定理 2.3.5.03（跨区域信息导入定理）",
+   "master_id": "master_895afdaa657b",
+   "document": "【公式】本区域的 Birkhoff 混合矩阵 $T_{\\text{ours}}$ 由共享信息层 $\\mathcal{I}_{\\text{shared}}$ 导入——不是由本区域的 $\\alpha^{-1}$ 观测值校准。因此 $\\alpha^{-1} = 137.036$ 是 $T_{\\text{ours}}$ 的**输出**，不是 $T_{\\text{ours}}$ 的**输入**。循环论证被打破。\n\n**证明。**\n\n**步骤1：$T_{\\text{ours}}$ 的来源。**\n\n$T_{\\text{ours}}$ 是本区域 Birkhoff 混合矩阵的具体值。在单区域视角下，$T_{\\text{ours}}$ 似乎需要本区域的 $\\alpha^{-1}$ 来校准——这是循环论证。\n\n但在多区域视角下，$T_{\\text{ours}}$ 由共享信息层导入：\n\n$$T_{\\text{ours}} = \\Phi\\left(\\mathcal{I}_{\\text{shared}}^{\\text{total}}\\right),$$\n\n其中 $\\Phi: \\mathcal{I}_{\\text{shared}} \\to \\mathcal{B}_2$ 是信息解码映射——将共享层的信息解码为本区域的 $T$ 矩阵。$\\mathcal{I}_{\\text{shared}}^{\\text{total}}$ \n【来源】2.3_景观结构与范围_CN_260721.md\n【类型】定理 2.3.5.03"
+  },
+  {
+   "permanent_number": "171",
+   "formula_name": "定理 2.3.6.01（景观自然测度）",
+   "master_id": "master_ce71af9167d2",
+   "document": "【公式】景观 $\\mathcal{L}$ 上的自然测度是 Birkhoff 多面体 $\\mathcal{B}_2$ 上的 **Jeffreys prior**（Fisher 信息度量的体积形式）：\n\n$$\\mu(T) = \\frac{1}{\\pi\\sqrt{\\theta_{\\mathcal{M}} \\theta_{\\mathcal{C}} \\theta_{\\mathcal{I}}}},$$\n\n其中 $(\\theta_{\\mathcal{M}}, \\theta_{\\mathcal{C}}, \\theta_{\\mathcal{I}})$ 是 Birkhoff 参数，满足 $\\sum \\theta_k = 1$。此测度等价于 **Dirichlet$(1/2, 1/2, 1/2)$** 分布。\n\n**证明。** 分三步给出唯一性。\n\n**步骤1：$\\mathcal{B}_2$ 是统计流形。** Birkhoff 多面体 $\\mathcal{B}_2$ 是双随机矩阵的空间，每个 $T \\in \\mathcal{B}_2$ 定义一个概率分布。因此 $\\mathcal{B}_2$ 是统计流形，具有 Fisher 信息度量：\n\n$$g_{ij} = \\sum_k \\frac{1}{\\theta_k} \\frac{\\partial \\theta_k}{\\partial \\theta_i} \\frac{\\p\n【来源】2.3_景观结构与范围_CN_260721.md\n【类型】定理 2.3.6.01"
+  },
+  {
+   "permanent_number": "172",
+   "formula_name": "命题 2.3.6.02（高斯-Born-Dirichlet 连接）",
+   "master_id": "master_c3cab2560848",
+   "document": "【公式】设 $Z_1, Z_2, Z_3$ 是独立的标准正态随机变量（$\\sim N(0,1)$）。令 $x_i = Z_i^2$，$\\sigma_i = x_i / \\sum_j x_j$。则 $(\\sigma_1, \\sigma_2, \\sigma_3) \\sim \\text{Dirichlet}(1/2, 1/2, 1/2)$。\n\n**证明。** $Z_i^2 \\sim \\chi^2_1 = \\text{Gamma}(1/2, 2)$。独立 Gamma 变量的归一化服从 Dirichlet 分布：$(x_1/\\sum x_j, x_2/\\sum x_j, x_3/\\sum x_j) \\sim \\text{Dirichlet}(1/2, 1/2, 1/2)$。$\\square$\n\n**物理意义。** Clifford 代数 $\\text{Cl}(n)$ 的生成元 $e_i$ 在旋量表示中具有高斯分布——这是 Clifford 代数的标准性质（旋量空间上的自然测度是高斯的）。Born 法则 $\\sigma_i = |\\text{amplitude}_i|^2 / \\sum |\\text{amplitude}_j|^2$ 将高斯振幅映射到概率分布。因此：\n\n$$\\boxed{\\text{Clifford 高斯振幅} \\xrightarrow{\\text{Born 法则}} \\text{Di\n【来源】2.3_景观结构与范围_CN_260721.md\n【类型】命题 2.3.6.02"
+  },
+  {
+   "permanent_number": "173",
+   "formula_name": "定理 2.3.7.01（圆满再现定理）",
+   "master_id": "master_0e6e47eca8fa",
+   "document": "【公式】$\\delta$ 的迭代在编码轨道上产生候选参数。当且仅当参数组 $(p_1, p_2, p_3)$ 满足**圆满条件**时，参数组**再现**为代数构型。\n\n圆满条件包含：\n1. **互锁性**（命题已证）：$p_1 \\cdot p_2 \\cdot p_3 = h$，其中 $h$ 是某个紧 Lie 格的 Coxeter 数；$(p_1, p_2, p_3)$ 可赋值给该格的triality轨道系数；三者满足互锁方程\n2. **Berry 相位闭合**（定理已证）：互锁参数组在编码轨道上形成自洽闭合回路，$\\oint_\\Gamma \\mathcal{A} = 2\\pi n$\n3. **再现**：圆满后参数组再现于三层——信息层存储、因果层建立关系、物理层激活为结构常数\n\n$\\{2, 3, 5\\}$ 不是任意选取的输入——它是 $h(E_8) = 30$ 在 triality 分解下的唯一素数赋值。E₈ 的 Coxeter 数 $h(E_8) = 30$ 由根系统唯一确定（定理E）。30 的素数分解为 $2 \\times 3 \\times 5$。在 $D_4$ triality 作用下，三个素数因子分别赋值给三个扇区：$\\Lambda = 3$（扇区数），$k_0 = 2$（手性因子，来自 $S^+ \\oplus S^-$ 分裂），$\\Delta\\Theta = 5$（编码步长，来自\n【来源】2.3_景观结构与范围_CN_260721.md\n【类型】定理 2.3.7.01"
+  },
+  {
+   "permanent_number": "174",
+   "formula_name": "定理 2.3.7.02（-2（T 值产生定理）",
+   "master_id": "master_7ae793ab3493",
+   "document": "【公式】共扼参数圆满再现后，$D_4$ triality群 $S_3$ 产生 $T$ 值。$T_{\\text{ours}}$ 是其中对应恒等置换（或某个被 $E_8$ 破缺后选择的特定置换）的确定值。\n\n**证明。**\n\n**步骤1：triality置换。** $D_4$ triality群 $S_3 = \\{e, (MC), (MI), (CI), (MCI), (MIC)\\}$ 对三个扇区的结构常数赋值做置换。恒等置换 $e$ 给出 $(\\Lambda \\to \\mathcal{M}, \\Delta\\Theta \\to \\mathcal{C}, k_0 \\to \\mathcal{I})$；其他置换改变赋值方式。\n\n**步骤2：我们区域的 T 确定。** 恒等置换 $e$ 给出 $T_{\\text{ours}}$——这是我们区域的确定输出。编码权重的代数结构（2.2 §1.4）给出 $T_{\\text{ours}}$ 的零阶近似；Bott 回声修正（2.2 §5）给出精确值。$T_{\\text{ours}} \\to \\sigma^* \\to S = 137.036$ 是确定性谱展开。\n\n**步骤3：其他 T 值的数量——开放问题。** $S_3$ 的其他置换是否给出合法的 $T$（经 $E_8$ 破缺筛选后）取决于 Bott 中心邻域的详细扰动理论——特别是 σ* 修正中的因果界因子 $\n【来源】2.3_景观结构与范围_CN_260721.md\n【类型】定理 2.3.7.02"
+  },
+  {
+   "permanent_number": "175",
+   "formula_name": "定理 2.3.7.03（参数占位定理）",
+   "master_id": "master_781f2f9df6be",
+   "document": "【公式】景观 $\\mathcal{L}$ 中，每组参数（构型离散 $T$）**至多被一个区域占据**。一旦区域 $R$ 形成并获得参数组（构型 $C_R$, $T_R$），不存在其他区域 $R' \\neq R$ 使得 $(C_{R'}, T_{R'}) = (C_R, T_R)$。\n\n**证明。** 分三步给出。\n\n**步骤1：共享信息层作为参数注册表。** 由定理I，共享信息层 $\\mathcal{I}_{\\text{shared}} = \\text{Mat}(8, \\mathbb{R})$ 是所有区域共享的信息通道。每个区域 $R$ 形成时，将其参数组（构型签名 $\\Sigma_C(R)$离散 $T$ 值 $\\Sigma_T(R)$）写入 $\\mathcal{I}_{\\text{shared}}$。$\\text{Mat}(8, \\mathbb{R})$ 的 64 维实矩阵代数扮演参数注册表的角色。\n\n**步骤2：签名的排他性。** $\\text{Mat}(8, \\mathbb{R})$ 的非交换乘法结构保证了签名的排他性。设两个区域 $R_1 \\neq R_2$ 试图占据同一参数组。则 $\\Sigma(R_1) = \\Sigma(R_2)$——两个不同区域在共享信息层中写入完全相同的矩阵。但非交换代数结构阻止了这一点：两个不同区域的信息写入操作必须通过 $\\text{Mat}(8, \\\n【来源】2.3_景观结构与范围_CN_260721.md\n【类型】定理 2.3.7.03"
+  },
+  {
+   "permanent_number": "176",
+   "formula_name": "引理 2.5.2.01（小涨落近似）",
+   "master_id": "master_f7a04391a9a2",
+   "document": "【公式】对于小涨落 $\\delta\\theta_\\mathcal{I} \\ll 1$：\n\n$$\\delta_0 = |\\delta\\theta_\\mathcal{I}| \\cdot \\cot\\theta_\\mathcal{I} + O(\\delta\\theta_\\mathcal{I}^2)$$\n\n**证明**（纯微积分，无需任何物理假设）：\n\n$$\\sin(\\theta_\\mathcal{I} + \\delta\\theta_\\mathcal{I}) = \\sin\\theta_\\mathcal{I}\\cos\\delta\\theta_\\mathcal{I} + \\cos\\theta_\\mathcal{I}\\sin\\delta\\theta_\\mathcal{I}$$\n\n$\\cos\\delta\\theta_\\mathcal{I} \\approx 1$, $\\sin\\delta\\theta_\\mathcal{I} \\approx \\delta\\theta_\\mathcal{I}$：\n\n$$\\Delta\\sin\\theta_\\mathcal{I} \\approx \\cos\\theta_\\mathcal{I} \\cdot \\delta\\theta_\\mathcal{I}$$\n\n$$\\delta_0 = \\frac{|\\cos\\theta_\\mathcal{I} \\cdot \\delta\\theta_\\m\n【来源】2.5_软模零点宽度的谱几何定理_CN_260722.md\n【类型】引理 2.5.2.01"
+  },
+  {
+   "permanent_number": "177",
+   "formula_name": "推论 5.2（一般点形式）",
+   "master_id": "master_627f19c5a11b",
+   "document": "【公式】在 $\\Sigma$ 上任意点 $(\\theta_\\mathcal{M}, \\theta_\\mathcal{C}, \\theta_\\mathcal{I})$，若软模主要沿 $\\theta_\\mathcal{I}$ 方向（即 $|v_\\mathcal{I}| \\approx 1$），则：\n\n$$\\delta_0^{\\text{single}}(\\theta_\\mathcal{I}, \\lambda_1) \\approx \\frac{\\cot\\theta_\\mathcal{I}}{\\sqrt{2}\\,\\lambda_1^{1/4}}$$\n\n这是 9.1（超导几何理论）§8.5 所用公式的纯几何形式——$\\cot\\theta_\\mathcal{I}$ 是 $\\Sigma$ 上的坐标函数，$\\lambda_1$ 是 $\\Sigma$ 上的谱函数，两者皆是 $\\Sigma$ 的几何量。\n【来源】2.5_软模零点宽度的谱几何定理_CN_260722.md\n【类型】推论 5.2"
+  },
+  {
+   "permanent_number": "178",
+   "formula_name": "定理 2.6.2.02（Clifford 区域的选择）",
+   "master_id": "master_da74d0e9f497",
+   "document": "【公式】我们区域选择 Clifford 代数（Bott 周期 8），是因为它是唯一满足圆满条件的代数实现——Berry 相位 $\\oint_\\Gamma \\mathcal{A} = 2\\pi$。\n\n**证明思路**（详见证 0.3-0.4）：Bott 周期 8 给出 $\\delta^8$ 回路，其 Berry 相位由 Chern-Simons 7-形式的三项积分给出：\n\n$$\\gamma_{\\text{Berry}}(\\delta^8) = \\int_{D^8} \\text{CS}_7 = \\int_{D^8} (I_1 + I_2 + I_3) = 2\\pi$$\n\n其中 $I_1$（物质界 ℳ，Cl(0)→Cl(3)）、$I_2$（因果界 𝒞，Cl(3)→Cl(5)）、$I_3$（信息界 ℐ，Cl(5)→Cl(8)）各贡献 $2\\pi/3$。∎\n\n**演化论解读**：Clifford 代数是被\"选中\"的，不是被\"推导\"的——在景观上可能有多个代数实现满足圆满条件（对应不同的区域类型），我们区域选择了 Clifford 代数。这是本区域的演化历史，不是逻辑必然。\n\n---\n\n## §3 区域的身份证：{2,3,5} 互锁\n\n### 3.1 Bott 周期 8 → E₈ → h = 30\n\n选择了 Clifford 代数（Bott 周期 8）之后，结构常数 $\\{2,3,5\\}$ 的涌现遵循\n【来源】2.6_区域的生命周期_CN_260729.md\n【类型】定理 2.6.2.02"
+  },
+  {
+   "permanent_number": "179",
+   "formula_name": "定理 2.6.3.01（互锁不可逆性）",
+   "master_id": "master_0607a0515861",
+   "document": "【公式】{2,3,5} 互锁一旦达成，就不可拆解。\n\n**证明。** 你不能单独改变 $\\Lambda=3$ 而保持 $k_0=2$ 和 $\\Delta\\Theta=5$ 不变——因为乘积约束 $\\Lambda \\cdot k_0 \\cdot \\Delta\\Theta = 30$ 会被破坏。你也不能用 $1 \\times 6 \\times 5$ 替换 $2 \\times 3 \\times 5$——因为 6 不是素数，无法赋值给 triality 轨道。∎\n\n**演化论解读**：这是演化中的\"不可逆锁定\"（irreversible lock-in）。一旦某个成功组合形成，它就固化了——不是因为它\"逻辑上必然\"，而是因为改变任何一个都会破坏整体，而整体破坏意味着结构崩解。这就是为什么我们区域的参数是 2, 3, 5 而不是其他——不是因为其他组合\"不可能\"，而是因为其他组合\"活不下来\"。\n\n---\n\n## §4 区域的参数：T 矩阵的产生\n\n### 4.1 圆满再现产生 Clifford 构型\n【来源】2.6_区域的生命周期_CN_260729.md\n【类型】定理 2.6.3.01"
+  },
+  {
+   "permanent_number": "180",
+   "formula_name": "定理 3.1.1.01（螺旋性分裂定理）",
+   "master_id": "master_dffc9ef0c3a3",
+   "document": "【公式】物质界的左手和右手螺旋性由 Cl(3) 的半单分裂唯一确定，不引入额外参数。\n\n**证明。** $\\omega_3^2 =1$ 是 Clifford 代数的刚性性质——$\\omega_3$ 的符号不可调节。投影 $P_{\\pm}$ 是 $\\omega_3$ 的代数函数，不存在连续参数来改变分裂方式。因此螺旋性分裂是代数刚性的。∎\n\n### 1.4 不可约表示\n\nCl(3) 的不可约表示维数 $\\rho_3 = 4$，但半单分裂将其分为两个 2 维表示：\n\n$$\\rho_3^{(+)} = 2, \\quad \\rho_3^{(-)} = 2.$$\n\n这两个 2 维表示对应 Weyl 旋量——左手和右手 Weyl 旋量各 2 个分量。这是物质界作为「最小完整旋量载体」的代数根据：Cl(3) 是编码轨道上第一个同时容纳左、右手 Weyl 旋量的 Clifford 代数。\n\n---\n\n## §2 法向几何\n\n### 2.1 S³ 球面\n\n物质界的法向几何由三维球面 $S^3(r_M)$ 描述：\n\n$$S^3(r_M) = \\{(x_1, x_2, x_3, x_4) \\in \\mathbb{R}^4 : x_1^2 + x_2^2 + x_3^2 + x_4^2 = r_M^2\\}.$$\n\n$S^3$ 是紧致、单连通、具有常曲率 $6/r_M^2$ 的流形。在共扼谱几何中，$S^3$ 不是\n【来源】3.1_ℳ场法向几何结构_CN_260721.md\n【类型】定理 3.1.1.01"
+  },
+  {
+   "permanent_number": "181",
+   "formula_name": "命题 3.1.2.01（法向-代数对应）",
+   "master_id": "master_4982dcd10e1b",
+   "document": "【公式】法向 Clifford 乘子 $\\hat{n}_{\\text{Cl}}$ 与体积元 $\\omega_3$ 在旋量表示下共轭：\n\n$$\\hat{n}_{\\text{Cl}} = U^{-1} \\omega_3 U,$$\n\n其中 $U$ 是 $\\text{Cl}(4) \\to \\text{Cl}(3)$ 的限制映射。因此，几何上的法向投影与代数上的半单分裂是同一结构的两种描述。\n\n### 2.3 半径的锁定\n\n物质界的半径 $r_M$ 由互锁常数锁定。三个扇区的半径比为：\n\n$$r_M : r_C : r_I = 1 : \\frac{1}{\\sqrt{3}} : \\frac{1}{\\sqrt{6}}.$$\n\n这一比例由三个结构常数 $\\Lambda = 3$、$\\Delta\\Theta = 5$、$k_0 = 2$ 联合确定——不可调节。\n【来源】3.1_ℳ场法向几何结构_CN_260721.md\n【类型】命题 3.1.2.01"
+  },
+  {
+   "permanent_number": "182",
+   "formula_name": "定理 3.1.2.02（半径锁定定理）",
+   "master_id": "master_6260b1dd2961",
+   "document": "【公式】三个扇区的半径比 $r_M : r_C : r_I = 1 : 1/\\sqrt{3} : 1/\\sqrt{6}$ 由互锁常数唯一确定。\n\n**证明。**\n\n- $r_M = 1$（归一化基准）\n- $r_C = 1/\\sqrt{\\Lambda} = 1/\\sqrt{3}$（$\\Lambda = 3$ 的半单分裂使因果界半径缩小 $\\sqrt{3}$ 倍）\n- $r_I = 1/\\sqrt{\\Lambda k_0} = 1/\\sqrt{3 \\times 2} = 1/\\sqrt{6}$（信息界的半径由 $\\Lambda$ 和 $k_0$ 联合确定）\n\n比例的精确值由 Bott 周期表中各步的不可约表示维数增长率确定。∎\n\n> **注（半径比与 χ 的关系）**：半径比 $r_M:r_C:r_I = 1:1/\\sqrt{3}:1/\\sqrt{6}$ 由结构常数 $\\Lambda=3$、$k_0=2$ 确定，与累积拉伸因子 $\\chi=(8,9,1)$ 是不同的几何量。$\\chi$ 描述编码轨道上各扇区的「累积拉伸」（来自 Bott 周期步数与不可约表示维数的乘积），而半径比描述各扇区法向球面 $S^3$ 的「紧凑度」（来自半单分裂的步数）。两者通过 $M_5 = T \\cdot \\text{diag}(\\chi)$ 的不动点间接关联——$\\chi$ 影响 Birkhoff 混合后的终端\n【来源】3.1_ℳ场法向几何结构_CN_260721.md\n【类型】定理 3.1.2.02"
+  },
+  {
+   "permanent_number": "183",
+   "formula_name": "定理 3.1.3.01（物质界谱间隙）",
+   "master_id": "master_1ac71ec88af5",
+   "document": "【公式】物质界的基态谱间隙为：\n\n$$\\Delta\\lambda_M = |\\lambda_0^+ - \\lambda_0^-| = \\frac{2}{r_M} = 2.$$\n\n由 Born 法则（定理 1.3.4.01），这与编码权重 $\\sigma_M$ 的关系为：\n\n$$\\Delta\\lambda_M \\propto \\sqrt{\\sigma_M}.$$\n\n**证明。** Dirac 算子 $\\mathcal{D}_M$ 在 $S^3(r_M)$ 上的谱由球面调和分析完全确定。基态由 $n = 0$ 的 Weyl 旋量给出，本征值为 $\\pm 1/r_M$。间隙 $2/r_M$ 是 Cl(3) 不可约表示的最小「能量差」，反映半单分裂将左、右手旋量分离为两个独立能级。间隙的非零性是物质界具有质量的几何前提。∎\n\n### 3.4 谱的对称性与螺旋性\n\n谱 $\\lambda_n = \\pm (n+1)/r_M$ 的正负对称性对应螺旋性翻转：$\\lambda_n^+$ 对应右手 Weyl 旋量，$\\lambda_n^-$ 对应左手 Weyl 旋量。当物质界与因果界解耦（$\\theta_\\tau \\to 0$）时，正负谱严格对称，质量本征态是螺旋性本征态——质量为零。\n\n当 ℳ-𝒞 耦合开启（$\\theta_\\tau \\neq 0$）时，triality 3-循环 $\\tau$ 混合左右螺旋\n【来源】3.1_ℳ场法向几何结构_CN_260721.md\n【类型】定理 3.1.3.01"
+  },
+  {
+   "permanent_number": "184",
+   "formula_name": "定理 3.6.2.01（光子零质量定理）",
+   "master_id": "master_28e4fb5de397",
+   "document": "【公式】光子质量严格为零：\n\n$$m_\\gamma = 0.$$\n\n这是编码框架的代数必然——光子对应主本征值 $\\lambda_1 = 1$ 的不动点模式，不参与呼吸振荡，因此不获得质量。\n\n**证明。**\n\n**步骤1：质量来自呼吸模式。** 粒子的质量由 $M_5$ 的非主本征值 $\\lambda_{2,3}$ 的呼吸修正产生（定理 3.2.4.01<!-- 45：孤立的数字，疑似定理编号截断残留，需补全 -->）。主本征值 $\\lambda_1 = 1$ 不产生呼吸修正——它是不动点本身。\n\n**步骤2：光子对应主本征值。** 光子是 ℳ 扇区自耦合的量子——对应 $T$ 的恒等分量 $\\theta_I \\cdot I$。恒等分量的本征值恰好是主本征值 $\\lambda_1 = 1$。\n\n**步骤3：主本征值不获得质量。** 主本征值 $\\lambda_1 = 1$ 满足 $T v^* = v^*$（不动点方程）。不动点模式不参与 $\\lambda_{2,3}$ 的呼吸振荡，因此不获得呼吸修正产生的质量。\n\n因此 $m_\\gamma = 0$。∎\n\n### 2.1 与规范对称性的关系\n\n在标准模型中，光子零质量由 $U(1)$ 规范对称性保证。在共扼谱几何中，光子零质量由编码框架的代数结构保证——不需要引入规范对称性作为公设。\n\n$U(1)$ 规范对称性是光子零质量的**充分条件*\n【来源】3.6_光子零质量定理_CN_260721.md\n【类型】定理 3.6.2.01"
+  },
+  {
+   "permanent_number": "185",
+   "formula_name": "命题 3.6.2.02（规范对称性的代数涌现）",
+   "master_id": "master_7aa4e878f9a1",
+   "document": "【公式】$U(1)$ 规范对称性从 Birkhoff 混合矩阵恒等分量 $\\theta_I \\cdot I$ 的相位自由中涌现——它不是公设，而是代数结构的结果。\n\n这一命题的重要意义：规范对称性不是「基本原理」，而是编码框架的「涌现性质」。如果编码框架的代数结构改变（例如 $\\theta_I = 0$），规范对称性将消失——但共扼谱几何的刚性保证了 $\\theta_I \\neq 0$。\n\n### 2.3 普适性\n\n光子零质量定理是**普适的**——它不依赖于景观中的位置。无论 $T_{\\text{ours}}$ 取什么值，主本征值 $\\lambda_1 = 1$ 始终存在，光子始终零质量。\n\n这意味着：在景观中的**所有**世界（$S \\in [24, 968]$），光子质量都为零。这是编码框架的刚性预言。\n\n### 2.4 普适性的代数证明\n\n普适性的代数证明：\n\n**步骤1：主本征值的存在性。** 任何双随机矩阵 $T$ 都有主本征值 $\\lambda_1 = 1$（Perron-Frobenius 定理）。这是双随机性的刚性结果——不可调节。\n\n**步骤2：光子与主本征值的绑定。** 光子作为 ℳ 自耦合的量子，始终对应主本征值——这一绑定由编码框架的代数结构确定，与景观位置无关。\n\n**步骤3：零质量的必然性。** 由定理 3.6.2.01，主本征值对应零质量。因此光子在所有景观\n【来源】3.6_光子零质量定理_CN_260721.md\n【类型】命题 3.6.2.02"
+  },
+  {
+   "permanent_number": "186",
+   "formula_name": "命题 3.6.3.01（光子作为 Goldstone 模式）",
+   "master_id": "master_2e3602d80253",
+   "document": "【公式】光子是 ℳ 扇区自耦合对称性 $\\theta_I \\cdot I$ 的 Goldstone 模式——它是这一对称性「不可破缺」的几何表现。\n\n**证明。**\n\n**步骤1：对称性的识别。** ℳ 扇区的自耦合 $\\theta_I \\cdot I$ 具有 $U(1)$ 相位对称性（命题 1.1.1.01）。这一对称性是「整体」的——它在编码空间的所有点同时成立。\n\n**步骤2：对称性的不可破缺性。** 由于 $\\theta_I \\approx 0.782$ 是 Birkhoff 混合矩阵的最大权重，且 $\\theta_I \\neq 0$ 由双随机性刚性保证，$U(1)$ 相位对称性不可破缺——没有「破缺参数」可以使其破缺。\n\n**步骤3：Goldstone 模式的涌现。** 不可破缺的连续对称性对应一个零质量激发——这就是光子。光子是 $U(1)$ 相位对称性的 Goldstone 模式，但由于对称性不破缺，光子不是「破缺的产物」，而是「对称性的守护者」。\n\n这一证明给出了光子作为 Goldstone 模式的代数形式——与传统 Goldstone 定理不同，但数学结构相似。∎\n\n### 3.3 与传统 Goldstone 定理的比较\n\n| 性质 | 传统 Goldstone 定理 | 共扼谱几何的光子 |\n|:---|:---|:---|\n| 对称性类型 | 连续全局对称性 | $U\n【来源】3.6_光子零质量定理_CN_260721.md\n【类型】命题 3.6.3.01"
+  },
+  {
+   "permanent_number": "187",
+   "formula_name": "推论 3.7.1.01（真空标记条件）",
+   "master_id": "master_ec23f9012334",
+   "document": "【公式】总宇宙作用量 $S_{\\text{total}} = 0$，由 Bott 周期 $\\delta^8 = 2\\pi$ 在真空极限处严格导出。\n\n本文直接使用上述全部结论。\n\n**圆满再现（定理 2.3.7.01）**：ℳ𝒞ℐ扇区间 Birkhoff 混合（定理 2.3.7.02）的 $\\mathcal{M}$-$\\mathcal{C}$ 耦合结构（参数 $w$，连接物质界与因果界）对应电磁相互作用。该圆满再现的必然伴生两个几何模：\n\n1. **物质界ℳ基态激发**：$\\mathcal{M}$ 扇区在谱间隙 $\\lambda_1$ 下的基态激发，静止能量 $E_{\\mathcal{M}}\\approx 511\\,\\mathrm{keV}$，识别为**电子**；\n2. **因果界𝒞零锥结构**：$\\mathcal{C}$ 扇区在 Bott 周期边界极限下的零锥结构，传播速度 $c$，识别为**光子**。\n\n两者共享同一个 $S_e=137.035...$（Birkhoff 混合矩阵 $M_5$（定理 2.3.7.02）不动点 $\\sigma^*$ 输出 $\\alpha^{-1}$）和同一个 $w$，构成不可分割的电磁几何实体。信息界 ℐ 不映射到独立粒子，仅作为电磁耦合的复结构通道。\n\nBirkhoff 不动点 $\\sigma^*$ 邻域基准构型（$S_0 = 137.000000000\n【来源】3.7_氢原子超精细结构_CN_260722.md\n【类型】推论 3.7.1.01"
+  },
+  {
+   "permanent_number": "188",
+   "formula_name": "引理 3.7.1.02（信息界ℐ冻结）",
+   "master_id": "master_5e01b1c81569",
+   "document": "【公式】信息界方向（$\\xi$）被 Dirac 谱高能模式 $\\lambda_2$ 冻结，有效动力学沿 $\\eta$ 方向展开。\n\n*证明概要.* Birkhoff 混合矩阵的本征值为 $\\lambda_1 = 392.21$ 和 $\\lambda_2 = 58760.77$。比值 $\\lambda_2/\\lambda_1 \\approx 150$ 表明信息界方向的恢复力是物质-因果方向的 150 倍。在微扰展开中，$\\xi$ 方向的涨落振幅正比于 $1/\\sqrt{\\lambda_2}$，远小于 $\\eta$ 方向的 $1/\\sqrt{\\lambda_1}$。因此信息界方向在低能有效理论中被冻结，动力学沿 $\\eta$ 方向展开。∎\n\nBirkhoff 不动点 $\\sigma^*$ 不是 $\\eta$ 方向的极值点（$\\partial S/\\partial \\eta|_0 \\neq 0$），电子基态才是束缚问题的合适参考点。\n\n---\n\n## §1.4　编码轨道结构\n\n信息界ℐ冻结导致扇区参数空间上的全部层级编码被压缩到二维活跃子流形 $\\Sigma_\\eta$ 上。面积标度律 $A_{n1} = N_{n1} \\cdot A_n$，分形维数 $D_f = 2.000$（编码轨道层级定理），编码面密度 $\\rho = N_1/A_1$ 恒定。\n\n编码轨道像素 $A_1 = S_e \\sq\n【来源】3.7_氢原子超精细结构_CN_260722.md\n【类型】引理 3.7.1.02"
+  },
+  {
+   "permanent_number": "189",
+   "formula_name": "引理 3.7.1.03（紧致性）",
+   "master_id": "master_3d8e79b13cb5",
+   "document": "【公式】$\\Sigma_\\eta$ 总面积有限：\n\n$$A_{\\text{total}} = A_1 \\cdot \\prod_{k=1}^{7} N_k < \\infty$$\n\n*证明概要.* 由编码轨道层级定理，七层截断的面积标度律为 $A_{n1} = N_{n1} \\cdot A_n$。由于 $N_k$ 为有限正整数（由信息界ℐ冻结引理保证），且截断级数为有限七层，总面积 $A_{\\text{total}}$ 为有限值。这是本文分立能级几何推导的基础——有限面积意味着分立的能级谱。∎\n\n---\n\n## §1.5　Birkhoff 不动点 $\\sigma^*$ 邻域与有效度规\n\n定理 2.3.7.02（Birkhoff 混合矩阵 $M_5$ 不动点处二阶结构）发现：扇区参数空间不是平直的，而是非对称弯曲结构。Birkhoff 不动点 $\\sigma^*$（电子基态）位于不动点 $\\sigma^*$ 邻域，向 $\\theta_M$ 减小方向（中微子区）是陡峭悬崖，坡度 $\\approx 4\\times 10^5$；向 $\\theta_C$ 增大方向坡度 $\\approx 723$；向 $\\theta_I$ 增大方向坡度 $\\approx 3.2$。\n\n坡度修正统一函数（3.1 §5.4）：\n\n$$\\frac{\\Delta F}{F} = \\gamma \\cdot \\frac{\\lambd\n【来源】3.7_氢原子超精细结构_CN_260722.md\n【类型】引理 3.7.1.03"
+  },
+  {
+   "permanent_number": "190",
+   "formula_name": "定理 3.7.2.01（自旋 1/2 的拓扑必然性）",
+   "master_id": "master_18f64b5d573c",
+   "document": "【公式】在几何论中，电子的内部自由度由 SU(2) 旋量表示描述。电子必然携带自旋 1/2，该结论源于 SO(3) 的万有覆盖群结构及 Clifford 代数模的最低维非平凡表示，是**物质界ℳ的谱间隙基态内禀属性**。\n\n*证明.* 我们分四步完成证明。\n\n**步骤 1：ℳ 扇区的等距群。** ℳ 扇区为三维欧氏空间 $E^3$，其等距群为 SO(3)。由推论 9.1.2.08，$\\pi_1(\\mathrm{SO}(3)) = \\mathbb{Z}_2$。\n\n**步骤 2：表示的分类。** SO(3) 的表示分为两类：\n- 单值表示（玻色子）：旋转 $2\\pi$ 给出 $1$，维度为奇数（$1, 3, 5, \\ldots$）\n- 双值表示（费米子）：旋转 $2\\pi$ 给出 $-1$，维度为偶数（$2, 4, 6, \\ldots$）\n\n该分类来源于覆盖映射 $\\mathrm{SU}(2) \\to \\mathrm{SO}(3)$ 的核 $\\mathbb{Z}_2$：单值表示是 SO(3) 的真表示（通过 $\\mathbb{Z}_2$ 核平凡化），双值表示是 SU(2) 的表示但非 SO(3) 的真表示。\n\n**步骤 3：最低维非平凡表示。** SU(2) 的不可约表示由自旋量子数 $s = 0, 1/2, 1, 3/2, \\ldots$ 标记，维数为 $2s + 1$。定理 10.12.2\n【来源】3.7_氢原子超精细结构_CN_260722.md\n【类型】定理 3.7.2.01"
+  },
+  {
+   "permanent_number": "191",
+   "formula_name": "定理 3.7.3.01（$\\eta$ 作为物质界径向坐标的严格对应）",
+   "master_id": "master_0b0170beb446",
+   "document": "【公式】由扇区参数约束 $\\theta_M + \\theta_C + \\theta_I = 90^\\circ$（由 $\\{2,3,5\\}$ 互锁性与圆满条件（定理 2.3.7.01）确定）及 ℳ𝒞ℐ三扇区分解（Cl(3) 半单分裂，定理 7.8.6.03），有\n\n$$\\eta = (\\theta_I + \\theta_C) - (\\theta_I^0 + \\theta_C^0) = \\theta_M^0 - \\theta_M$$\n\n因此 $\\eta$ 严格对应于物质界 $\\mathcal{M} \\cong M^3$ 的径向坐标偏移。诱导度规\n\n$$ds^2 = \\lambda_1 \\, d\\eta^2 + \\eta^2(d\\theta^2 + \\sin^2\\theta \\, d\\varphi^2)$$\n\n中，角向部分 $\\eta^2(d\\theta^2 + \\sin^2\\theta \\, d\\varphi^2)$ 是 $\\mathcal{M}$ 上由 $\\mathrm{SO}(3)$ 等距群唯一确定的标准球面度规，其中 $\\eta$ 通过 Born 法则映射 $\\chi_L$ 映射为物理径向坐标 $r_{\\text{phys}} = \\chi_L \\cdot \\eta$。\n\n*证明.* 由扇区参数约束（$\\{2,3,5\\}$ 互锁性与圆满条件确定）：\n\n$$\\theta_M + \\thet\n【来源】3.7_氢原子超精细结构_CN_260722.md\n【类型】定理 3.7.3.01"
+  },
+  {
+   "permanent_number": "192",
+   "formula_name": "引理 3.7.4.01（$\\Delta S_{\\text{overlap}}$ 的量纲分析）",
+   "master_id": "master_646d3222d65f",
+   "document": "【公式】由三条约束，超精细作用量修正的形式为：\n\n$$\\Delta S_{\\text{overlap}} = f_{\\text{geo}} \\cdot \\frac{\\sin\\theta_I^0 \\cdot \\sin\\theta_I^{p,\\text{eff}}}{S_e \\cdot S_p}$$\n\n其中 $f_{\\text{geo}}$ 是纯几何因子，由联合扇区参数空间内禀结构决定；$\\sin\\theta_I^{p,\\text{eff}}$ 是质子对超精细耦合的有效信息界投影。\n\n*证明.* 由约束 1，$\\Delta S_{\\text{overlap}}$ 正比于电子和质子的信息界投影之积（两者同时为零时耦合消失）。由约束 2，分子仅含 $\\sin\\theta_I$ 因子（$\\mathcal{I}$ 扇区是圆满再现的复结构通道）。由约束 3，分母为 $S_e \\cdot S_p$（代数刚度归一化）。比例常数 $f_{\\text{geo}}$ 由联合扇区参数空间的几何结构确定。∎\n\n---\n\n## §4.2　质子构型的几何来源：ℳ𝒞ℐ三扇区联合\n\n质子是 uud 三夸克束缚态。其几何构型由 ℳ𝒞ℐ三扇区联合（Cl(3) 半单分裂，定理 7.8.6.03）框架结构性输出。本节将该框架应用于 N=3，并在 $\\theta_M^p \\to 0$ 极限下导出刚性约束关系。\n\n### §4.2.1　\n【来源】3.7_氢原子超精细结构_CN_260722.md\n【类型】引理 3.7.4.01"
+  },
+  {
+   "permanent_number": "193",
+   "formula_name": "命题 3.7.4.02（强耦合扇区下的 $\\theta_M \\to 0$ 驱动）",
+   "master_id": "master_a9d3cf559172",
+   "document": "【公式】在强耦合扇区模式（区别于电磁耦合的 ℳ𝒞ℐ扇区间 Birkhoff 混合）下，N=3 联合变分 $\\delta S_3 = 0$ 将三个夸克推向 $\\theta_M \\to 0$ 的悬崖构型。\n\n*论证（研究框架）。* 分三步。\n\n**步骤 1：交叉耦合的信息界ℐ刚度。** 对 N=2（氘核），定理 7.8.6.03 已证明信息界方向（$\\theta_I$）的交叉耦合贡献极大的相对运动刚度（$\\approx 4440$），主导两体动力学。对 N=3，$S_{uu}$ 和 $S_{ud}$ 中的 $\\theta_I$ 方向交叉耦合产生更强的复刚度，将三个夸克的 $\\theta_I$ 角锁定在接近 $90^\\circ$ 的值。\n\n**步骤 2：扇区参数约束的连锁效应。** $\\theta_I$ 被锁在近 $90^\\circ$ 后，由扇区参数约束 $\\theta_M + \\theta_C + \\theta_I = 90^\\circ$，得 $\\theta_M + \\theta_C \\approx 0^\\circ$。由于 $\\theta_M, \\theta_C > 0$，两者必须同时趋近于 0——即夸克构型被推向非对称弯曲结构的悬崖边缘。\n\n**步骤 3：$1/\\sin^2\\theta_M$ 项的正反馈。** 在 $\\theta_M \\to 0$ 极限下，代数作用量中 $1/\\sin^2\\t\n【来源】3.7_氢原子超精细结构_CN_260722.md\n【类型】命题 3.7.4.02"
+  },
+  {
+   "permanent_number": "194",
+   "formula_name": "定理 3.7.4.03（$\\theta_M^p \\to 0$ 极限下的构型刚性）",
+   "master_id": "master_3b91514063c2",
+   "document": "【公式】当 $\\theta_M^p \\ll 1$ 时，质子的几何作用量 $S_p$ 与物质界角 $\\theta_M^p$ 的关系由主导项严格锁定：\n\n$$S_p \\approx \\frac{1}{\\sin^2\\theta_M^p}$$\n\n其中 $S_p$ 是 ℳ𝒞ℐ三扇区联合质心模式的有效单粒子作用量（对外耦合的代数刚度），与物理质量的关系由质量算符 $\\hat{M}$（3.1 §5）给出 $m_p = k \\cdot S_p$（$k = 3728.94\\,\\text{eV}$，电磁特征能量，3.1 §5）。\n\n*证明.* 分四步。\n\n**步骤 1：质心-相对分解。** 对 ℳ𝒞ℐ三扇区联合，引入质心坐标和两个相对坐标。在 $\\theta_M \\to 0$ 极限下，类似于 N=2 中 $H_{\\text{mix}} = 0$ 的分块对角化（定理 7.8.6.03），质心运动与相对运动近似解耦。质心模式的有效作用量 $S_p$ 由三个夸克的单粒子项平均给出：\n\n$$S_p = S(\\theta^{\\text{cm}}), \\quad \\theta^{\\text{cm}} \\approx \\frac{2\\theta^u + \\theta^d}{3}$$\n\n当 $\\theta_M^u \\approx \\theta_M^d \\approx \\theta_M^p$ 时（由 u 夸克全同性和强耦合对称\n【来源】3.7_氢原子超精细结构_CN_260722.md\n【类型】定理 3.7.4.03"
+  },
+  {
+   "permanent_number": "195",
+   "formula_name": "定理 3.7.4.04（$\\theta_M \\to 0$ 极限的编码权重 $\\sigma$ 投影）",
+   "master_id": "master_01de4ae203b8",
+   "document": "【公式】当物质界角 $\\theta_M \\to 0$ 时，扇区参数约束 $\\theta_M + \\theta_C + \\theta_I = 90^\\circ$ 给出 $\\theta_C + \\theta_I \\approx 90^\\circ$，因此信息界ℐ的有效耦合投影为编码权重 $\\sigma$ 对应的面积元 $\\sin\\theta_C \\cdot \\sin\\theta_I$，而非单一场 $\\sin\\theta_I$。\n\n*证明.* 我们分三步完成证明。\n\n**步骤 1：$\\theta_M \\to 0$ 极限下的角度关系。** 由扇区参数约束（$\\{2,3,5\\}$ 互锁性）：\n\n$$\\theta_M + \\theta_C + \\theta_I = 90^\\circ$$\n\n当 $\\theta_M \\to 0$ 时：\n\n$$\\theta_C + \\theta_I = 90^\\circ - \\theta_M \\approx 90^\\circ$$\n\n因此：\n\n$$\\sin\\theta_C = \\sin(90^\\circ - \\theta_M - \\theta_I) \\approx \\cos\\theta_I$$\n\n**步骤 2：编码权重 $\\sigma$ 投影的推导。** 严格数学推论：\n\n$$\\sin\\theta_C \\cdot \\sin\\theta_I = \\sin\\theta_I \\cdo\n【来源】3.7_氢原子超精细结构_CN_260722.md\n【类型】定理 3.7.4.04"
+  },
+  {
+   "permanent_number": "196",
+   "formula_name": "引理 3.7.4.05（$4/\\pi$ 的 Dirac 谱渐近展开平行继承）",
+   "master_id": "master_575d41253518",
+   "document": "【公式】超精细耦合公式中的因子 $4/\\pi$ 并非独立假设，也非从 $G_L$ 的\"挪用\"——它与 $G_L$ 中的 $4/\\pi$ 共享同一来源，即 Dirac 谱渐近展开系数 $a_0 = (4\\pi)^{-1}$ 经 Wodzicki 留数归一化后的输出。两者是**平行继承**关系，由 $\\theta_M \\to 0$ 极限下 C-I 平面编码权重 $\\sigma$ 与扇区参数空间二维面积元之间的微分同胚保证。\n\n*证明.* 分五步。\n\n**步骤 1：$4/\\pi$ 在 $G_L$ 中的原始来源。** Born 法则（定理 1.3.4.01）的 Dirac 谱系数恒等式证明：在扇区参数空间（紧化同胚于 $S^2$，由定理 7.8.6.03 保证）上，二维 Laplace 算子的 Dirac 谱渐近展开为：\n\n$$K(t; x, x) \\sim \\frac{1}{4\\pi t} \\sum_{k=0}^\\infty a_k(x) t^k$$\n\n其中 $a_0 = (4\\pi)^{-1}$ 是二维面积元的谱特征系数。经 Wodzicki 留数归一化（定理 1.3.4.01），该系数与纤维积分的角度部分（$S^1$ 贡献因子 $2\\pi$）联合，产生净因子 $4/\\pi$——这是 $G_L$ 公式中 $4/\\pi$ 的唯一\n$$G_L = \\frac{4}{\\pi} \\cdot \\frac\n【来源】3.7_氢原子超精细结构_CN_260722.md\n【类型】引理 3.7.4.05"
+  },
+  {
+   "permanent_number": "197",
+   "formula_name": "推论 3.7.4.07（$\\theta_M \\to 0$ 极限的普适编码权重 $\\sigma$ 投影）",
+   "master_id": "master_33af94d78f20",
+   "document": "【公式】满足 $\\theta_M \\ll 1$ 的几何约束构型，其信息界ℐ有效耦合投影必为 C-I 平面编码权重 $\\sigma$ 对应的面积元 $\\sin\\theta_C \\cdot \\sin\\theta_I$，而非单一场 $\\sin\\theta_I$。\n\n---\n\n# 第5章　同位素超精细结构\n\n## §5.1　两体几何约化质量定理\n【来源】3.7_氢原子超精细结构_CN_260722.md\n【类型】推论 3.7.4.07"
+  },
+  {
+   "permanent_number": "198",
+   "formula_name": "定理 3.7.5.01（两体几何约化质量定理）",
+   "master_id": "master_e911ca4a458b",
+   "document": "【公式】由粒子 1（作用量 $S_1$，质量 $m_1 = kS_1$）和粒子 2（作用量 $S_2$，质量 $m_2 = kS_2$）组成的两体束缚系统，其相对运动的有效惯性由联合扇区参数空间的几何分块结构给出：\n\n$$S_{\\text{red}} = \\frac{S_1 S_2}{S_1 + S_2 + \\Delta S_W}$$\n\n其中 $\\Delta S_W$ 为跨粒子信息界ℐ耦合 $W_{12}$ 的修正项（量纲为作用量）。当 $S_2 \\gg S_1$ 且耦合极弱时，$\\Delta S_W \\ll S_1 + S_2$，退化到标准约化形式：\n\n$$S_{\\text{red}} \\approx \\frac{S_1 S_2}{S_1 + S_2}$$\n\n对应的物理几何约化质量：\n\n$$\\mu_{\\text{geo}} = k \\cdot S_{\\text{red}} = \\frac{m_1 m_2}{m_1 + m_2}$$\n\n*证明.* 我们分三步完成证明。\n\n**步骤 1：联合作用量与相对坐标。** 联合变分原理（定理 7.8.6.03）给出：\n\n$$S_{\\text{joint}} = S_1(\\theta_M^1, \\theta_C^1, \\theta_I^1) + S_2(\\theta_M^2, \\theta_C^2, \\theta_I^2) + W_{12}$$\n\n引入\n【来源】3.7_氢原子超精细结构_CN_260722.md\n【类型】定理 3.7.5.01"
+  },
+  {
+   "permanent_number": "199",
+   "formula_name": "定理 3.12.1.01（代数作用量公式，定理26）",
+   "master_id": "master_846e6d586702",
+   "document": "【公式】：在扇区参数空间上，代数作用量\n$$S(\\sigma)=\\sum_{i=1}^3 \\frac{1}{\\sin^2\\theta_i} + \\sum_{i<j} \\frac{1}{\\sin\\theta_i\\sin\\theta_j}$$\n严格凸，值域 $[24, \\infty)$，最小值 $24$ 在 $\\theta_0=(30^\\circ,30^\\circ,30^\\circ)$ 取得。\n【来源】3.12_量子力学数学结构_CN_260722.md\n【类型】定理 3.12.1.01"
+  },
+  {
+   "permanent_number": "200",
+   "formula_name": "命题 3.12.3.01（信息界ℐ的遍历性与量子统计诠释）",
+   "master_id": "master_1b5db44bd7e0",
+   "document": "【公式】：信息界ℐ密度 $\\rho$ 在因果时间 $\\tau$ 下的演化由面积守恒约束的哈密顿流驱动。由信息界ℐ的遍历性（Cl(7)结构，定理10）：对几乎处处的初始条件，时间平均等于系综平均：\n\n$$\\lim_{T\\to\\infty} \\frac{1}{T} \\int_0^T \\rho(\\xi(t),\\eta(t))\\,\\mathrm{d}t = \\int_{\\text{扇区参数空间}} \\rho(\\xi,\\eta)\\,\\mathrm{d}A = 1.$$\n【来源】3.12_量子力学数学结构_CN_260722.md\n【类型】命题 3.12.3.01"
+  },
+  {
+   "permanent_number": "201",
+   "formula_name": "推论 3.12.3.02（Born法则）",
+   "master_id": "master_a2008e53849d",
+   "document": "【公式】：经Cl(7)复结构作用后的波函数满足\n\n$$\\lim_{T\\to\\infty} \\frac{1}{T} \\int_0^T |\\Psi(\\xi(t),\\eta(t))|^2\\,\\mathrm{d}t = \\int_{\\text{扇区参数空间}} |\\Psi(\\xi,\\eta)|^2\\,\\mathrm{d}A = 1.$$\n\n因此 $|\\Psi|^2=\\rho$ 作为概率密度的诠释**不是诠释假设**——它是信息界ℐ的遍历性（Cl(7)结构）在紧致扇区参数空间上的严格数学结果。\n\n> **来源标注**：遍历性论证受信息界ℐ的Cl(7)结构启发。本文的遍历性仅依赖因果时间 $\\tau$ 的单调性和扇区参数空间的紧致性。\n\n**细粒度说明**：遍历性给出了时间平均→系综平均的收敛，但量子力学的\"单次测量给出随机结果\"还需额外论证——系综平均的数学存在性与单次实现的概率解释之间的桥梁，涉及量子测量理论。本文在此仅建立几何框架下的 Born 规则等价物，测量的完整理论超出当前范围。\n\n---\n\n## 第4章　几何演化方程\n\n> **本章来源标注**：几何演化方程是本文的核心构造。因果时间 $\\tau$ 的单参数李群结构由ℳ𝒞ℐ三扇区结构（定理 7.8.6.03）建立；信息界ℐ的扩散方程由信息界ℐ的Cl(7)结构建立。Cl(7)复结构代入扩散方程得到薛定谔型方程是本文独立发展的。\n\n### §\n【来源】3.12_量子力学数学结构_CN_260722.md\n【类型】推论 3.12.3.02"
+  },
+  {
+   "permanent_number": "202",
+   "formula_name": "命题 3.12.4.01（几何演化方程）",
+   "master_id": "master_4b611835bfc8",
+   "document": "【公式】：将信息界ℐ的Cl(7)复结构 $\\Psi = \\sqrt{\\rho}\\,e^{i\\phi_I}$ 代入扩散方程。分别提取幅度和相位方程：\n\n**幅度方程**：\n$$\\partial_\\tau(\\ln\\sqrt{\\rho}) = \\frac{1}{4\\lambda_1^{\\text{eff}}}\\left[\\frac{\\partial_\\eta^2\\rho}{\\rho} - \\frac{1}{2}\\left(\\frac{\\partial_\\eta\\rho}{\\rho}\\right)^2\\right]$$\n\n**相位方程（Hamilton-Jacobi型）**：\n$$\\partial_\\tau\\phi_I = -\\frac{1}{2\\lambda_1^{\\text{eff}}}\\left[(\\partial_\\eta\\phi_I)^2 + \\frac{\\partial_\\eta\\rho}{\\rho}\\cdot\\partial_\\eta\\phi_I\\right]$$\n\n两方程在Birkhoff不动点σ*邻域的线性近似下合并。线性近似条件为：\n\n$$\\boxed{\\partial_\\eta^2\\phi_I \\ll (\\partial_\\eta\\phi_I)^2}$$\n\n在此条件下，幅度和相位的耦合项可分离，联立后得到：\n\n$$\\boxed{i \\frac{\\partial\\Psi}{\\p\n【来源】3.12_量子力学数学结构_CN_260722.md\n【类型】命题 3.12.4.01"
+  },
+  {
+   "permanent_number": "203",
+   "formula_name": "命题 3.12.4.02（Birkhoff不动点σ*邻域线性近似验证）",
+   "master_id": "master_491c0f054880",
+   "document": "【公式】在 Birkhoff不动点σ* $(\\theta_M^0,\\theta_C^0,\\theta_I^0)=(57.93^\\circ,26.16^\\circ,5.91^\\circ)$ 的 $\\eta$ 方向邻域内，线性近似条件 $\\partial_\\eta^2\\phi_I \\ll (\\partial_\\eta\\phi_I)^2$ 严格成立。\n\n**证明：**\n\n**(1)** 信息界ℐ相位 $\\phi_I = (\\pi/45^\\circ)\\cdot\\theta_I$。在ℳ𝒞ℐ三扇区结构约束 $\\theta_M + \\theta_C + \\theta_I = 90^\\circ$ 上，$\\theta_I$ 沿谱间隙方向 $\\eta$ 的变化由代数作用量 $S(\\sigma)$ 在Birkhoff不动点σ*处的 Birkhoff混合矩阵决定。谱间隙本征矢 $\\mathbf{v}_\\eta$ 对应本征值 $\\lambda_1^{\\text{eff}}=391.05\\ \\mathrm{rad}^{-2}$。\n\n**(2)** 沿 $\\eta$ 方向，一阶导数由谱间隙本征矢在信息界ℐ的投影分量 $p_I = \\mathbf{v}_\\eta|_{\\mathcal{I}}$ 确定。在Birkhoff不动点σ*附近，由扇区参数空间的局部坐标展开：\n$$\\partial_\\eta\\theta_I = p_\n【来源】3.12_量子力学数学结构_CN_260722.md\n【类型】命题 3.12.4.02"
+  },
+  {
+   "permanent_number": "204",
+   "formula_name": "命题 3.12.5.01（球谐函数作为几何本征函数）",
+   "master_id": "master_8c04549d6aff",
+   "document": "【公式】：$S^3(r_M)$ 上的标量函数可按其 $\\mathrm{SO}(3)$ 轨道角动量展开。在编码轨道在ℳ扇区的投影 $\\cong S^2$ 上的投影给出标准球谐函数 $Y_l^m$：\n\n$$L^2 Y_l^m = l(l+1) Y_l^m, \\quad L_z Y_l^m = m Y_l^m,$$\n\n其中 $l=0,1,2,\\ldots$，$m\\in\\{-l,-l+1,\\ldots,l\\}$。\n\n**几何推导**：\n\n**(1) 扇区参数空间的自然变量分离。** 物质界ℳ的 $S^3(r_M)$ 可参数化为\n\n$$S^3 = \\{(\\chi,\\vartheta,\\varphi) \\mid 0\\leq\\chi\\leq\\pi,\\ 0\\leq\\vartheta\\leq\\pi,\\ 0\\leq\\varphi<2\\pi\\},$$\n\n度规 $\\mathrm{d}s^2 = \\mathrm{d}\\chi^2 + \\sin^2\\chi(\\mathrm{d}\\vartheta^2 + \\sin^2\\vartheta\\,\\mathrm{d}\\varphi^2)$。在 $\\chi = \\pi/2$（赤道截面）处，$S^3(r_M)$ 收缩为 $S^2$，这正是编码轨道在ℳ扇区的投影的空间部分。\n\n**(2) Laplace-Beltrami算子的角向部分。** $S^3(r_M)$ 上的 Laplac\n【来源】3.12_量子力学数学结构_CN_260722.md\n【类型】命题 3.12.5.01"
+  },
+  {
+   "permanent_number": "205",
+   "formula_name": "命题 3.12.5.02（径向方程的几何来源）",
+   "master_id": "master_56fe313a9314",
+   "document": "【公式】：物质界ℳ上信息界ℐ密度的径向部分满足\n\n$$\\left[-\\frac{1}{\\sin^2\\chi}\\frac{\\partial}{\\partial\\chi}\\left(\\sin^2\\chi\\frac{\\partial}{\\partial\\chi}\\right) + \\frac{l(l+1)}{\\sin^2\\chi}\\right] R_{nl}(\\chi) = E_{nl} R_{nl}(\\chi).$$\n\n**推导**：信息界ℐ密度 $\\Psi$ 在物质界ℳ的 $S^3(r_M)$ 上满足源于扩散方程的定态方程（第4章演化方程的定态版本）。在球坐标分离 $\\Psi(\\chi,\\vartheta,\\varphi) = R(\\chi)Y_l^m(\\vartheta,\\varphi)$ 后，角向贡献 $l(l+1)$ 进入径向方程的离心势项。离心势 $\\propto 1/\\sin^2\\chi$ 在 $\\chi\\to 0,\\pi$（极点）处发散，自然约束波函数在极点处正则——这正是轨道角动量在短距离处产生排斥芯的几何根源。\n\n**编码轨道约束的角色**：扇区参数空间固定在 $\\chi=\\pi/2$ 处。在此截面上，$\\sin\\chi=1$，径向方程退化为：\n\n$$\\left[-\\partial_\\chi^2 + l(l+1)\\right] R_{nl}(\\pi/2) = E_{nl} R\n【来源】3.12_量子力学数学结构_CN_260722.md\n【类型】命题 3.12.5.02"
+  },
+  {
+   "permanent_number": "206",
+   "formula_name": "命题 3.12.6.02（最小非平凡表示）",
+   "master_id": "master_e06e5acb22eb",
+   "document": "【公式】：$\\mathrm{SU}(2)$ 的不可约表示由半整数 $j=0,1/2,1,\\ldots$ 标记。$j=0$ 为平凡表示（标量场），无内部自旋自由度。信息界ℐ的Cl(7)复结构 $\\Psi$ 是复值场（非实标量场），因此 $j=0$ 不适用。最小的非平凡表示为 $j=1/2$（二维旋量表示）。\n\n在此意义上，信息界ℐ在物质界ℳ上的传播**自然承载**自旋 $1/2$ 的表示结构——这不是从外部强制，而是 $S^3(r_M)$ 拓扑与信息界ℐ的Cl(7)复结构的联合推论。\n\n\n### §6.3　$ j\\geq 1 $ 的条件性排除\n\n上述\"最小非平凡表示\"论证未排除 $j\\geq 1$。以下三约束将 $j\\geq 1$ 排除推进至条件性封闭。\n\n**约束一（编码轨道在ℳ扇区的投影维数）**：信息界ℐ的动力学定义在编码轨道在ℳ扇区的投影 $\\cong S^2$ 上。$S^2\\cong\\mathrm{SU}(2)/\\mathrm{U}(1)$ 上的齐性旋量丛由 $\\mathrm{U}(1)$ 权重标记——权重 $\\pm 1/2$ 对应旋量丛（$j=1/2$ 的承载空间），权重 $\\pm 1,\\pm 3/2,\\ldots$ 对应更高阶齐性丛，其截面空间维数为 $2j+1$。对于基本场（非复合），信息界ℐ在Cl(7)复结构作用后为单分量复函数 $\\Psi=\\sqrt{\\rho}e^{i\\\n【来源】3.12_量子力学数学结构_CN_260722.md\n【类型】命题 3.12.6.02"
+  },
+  {
+   "permanent_number": "207",
+   "formula_name": "命题 3.12.8.01（正交性）",
+   "master_id": "master_4f350baba8d9",
+   "document": "【公式】。投影算子族 $\\{\\hat{P}_k\\}$ 满足近似正交性：\n\n$$\\hat{P}_j\\hat{P}_k^\\dagger \\approx \\delta_{jk}O(\\Delta\\xi_{\\text{pixel}}^2),$$\n\n其中 $\\Delta\\xi_{\\text{pixel}} \\approx \\sqrt{4\\pi/N_1} \\approx 0.046$ rad 为像素角尺度。\n\n*推导*。$S^3$ 上两个zonal调和函数的内积为 $\\int_{S^3} (\\hat{a}_j\\cdot\\hat{x})(\\hat{a}_k\\cdot\\hat{x})\\,\\mathrm{d}\\mu = \\frac{1}{4}\\hat{a}_j\\cdot\\hat{a}_k$。对于 $N_1=6000$ 个近似均匀分布的像素方向，$\\hat{a}_j\\cdot\\hat{a}_k = O(1/\\sqrt{N_1})$ 当 $j\\neq k$。∎\n\n> **来源**：zonal调和函数在10.13 §4.1中被用于定义读数方向。本文将其系统化为投影算子族，并补充正交性证明。\n\n### §8.2　单次测量结果的几何定义\n【来源】3.12_量子力学数学结构_CN_260722.md\n【类型】命题 3.12.8.01"
+  },
+  {
+   "permanent_number": "208",
+   "formula_name": "命题 3.12.8.02（单次测量——截面投影）",
+   "master_id": "master_b80469879be0",
+   "document": "【公式】。在扇区参数空间上，信息界ℐ密度 $\\Psi$ 在像素方向 $\\hat{a}_k$ 上的单次测量结果 $m_k \\in \\{1,-1\\}$ 定义为\n\n$$\\boxed{m_k = \\operatorname{sgn}\\left(\\operatorname{Re} \\hat{P}_k\\Psi\\right) = \\operatorname{sgn}\\left(\\int_{S^3} (\\hat{a}_k\\cdot\\hat{x})\\,|\\Psi(\\xi)|\\cos\\phi_I(\\xi)\\,\\mathrm{d}\\mu(\\xi)\\right)}$$\n\n该定义的几何含义：信息界ℐ密度在方向 $\\hat{a}_k$ 上的投影符号——信息界ℐ的Cl(7)复结构相位 $\\phi_I$ 在 $\\hat{a}_k$ 上的投影取正或负。\n\n**与10.13 的关系**。10.13 §4.1 定义2\"几何测量对应\"将此作为\"物理映射层约定\"——即\"将量子力学的测量规则翻译为几何语言的映射层约定\"。本文的提升在于：**有了§3.3的遍历论证后**，该映射不再是外部约定——$|\\Psi|^2$ 作为概率密度的地位已被信息界ℐ的遍历性（Cl(7)结构）确立，$\\operatorname{sgn}$ 投影符号的统计分布自然地服从Born法则。测量公设从\"诠释假设\"降级为\"几何投影的统计结果\"。\n\n### §8.3　B\n【来源】3.12_量子力学数学结构_CN_260722.md\n【类型】命题 3.12.8.02"
+  },
+  {
+   "permanent_number": "209",
+   "formula_name": "命题 3.12.8.03（测量统计的遍历闭合）",
+   "master_id": "master_3825c06b78ae",
+   "document": "【公式】。设 $\\{\\hat{a}_k\\}$ 为编码轨道像素方向集。在因果时间 $\\tau$ 的长时间极限下，信息界ℐ密度在方向 $\\hat{a}_k$ 上测得 $1$ 的频率为\n\n$$\\boxed{\\lim_{T\\to\\infty} \\frac{\\#\\{t\\in[0,T]: m_k(t)=1\\}}{T} = \\int_{S^3} |\\hat{P}_k\\Psi|^2\\,\\mathrm{d}\\mu = |\\langle Z_k|\\Psi\\rangle|^2}$$\n\n*推导纲要*。（1）由命题 3.1，$m_k = \\operatorname{sgn}(\\operatorname{Re}\\hat{P}_k\\Psi)$。（2）由§3.3信息界ℐ的遍历性（Cl(7)结构），$\\Psi$ 在扇区参数空间上的时间平均等于系综平均。（3）对于zonal调和函数的投影，系综平均给出 $|\\langle Z_k|\\Psi\\rangle|^2$——这正是标准量子力学的Born法则。（4）该推导在紧致扇区参数空间上仅依赖因果时间 $\\tau$ 的单调性和紧致性。∎\n\n> **闭合声明**：§7.2标注的\"量子测量公设（投影公设、波包塌缩）\"缺口在本章封闭。Born法则从信息界ℐ的遍历性导出（已封闭于§3.3），单次测量从zonal投影定义（本节），两者联合给出完整的测量理论。\n\n### §8.4　波包塌缩的几何\n【来源】3.12_量子力学数学结构_CN_260722.md\n【类型】命题 3.12.8.03"
+  },
+  {
+   "permanent_number": "210",
+   "formula_name": "命题 3.12.8.04（塌缩即截面投影）",
+   "master_id": "master_5bb7000289dd",
+   "document": "【公式】。波包塌缩在共扼谱几何中不是动力学过程，而是信息界ℐ密度在低维扇区参数空间上的投影约束：\n\n$$\\Psi_{\\text{before}} \\in L^2(\\text{信息界ℐ}, \\mathbb{C}) \\quad \\xrightarrow{\\text{投影到扇区参数空间}} \\quad \\Psi_{\\text{after}} = \\hat{P}_k\\Psi \\in \\mathbb{C}$$\n\n**几何图景**：编码轨道是信息界ℐ的高维信息在三维物理时空中的低维投影界面。扇区参数空间进一步将编码轨道限制为二维子流形。信息界ℐ密度的演化是确定性的（扩散方程），但当我们在扇区参数空间上\"读取\"信息时——即执行投影 $\\hat{P}_k$——维度骤降导致信息丢失。丢失的信息表现为随机性，保留的信息表现为确定的投影结果 $m_k = \\pm 1$。\n\n这解释了为什么\"测量\"会改变系统状态：不是神秘的塌缩，而是我们在低维截面上读取高维信息时，只能获取投影分量——就像三维物体在二维屏幕上的投影取决于观察角度，改变测量方向 $\\hat{a}_k$ 会改变投影结果。\n\n\n---\n\n## 第9章　多粒子态与全同粒子统计\n\n> **本章状态**：封闭本文§7.2标注的\"多粒子态（张量积结构）\"和\"全同粒子统计（玻色费米）\"两个缺口。\n\n### §9.1　$N$ 粒子构型空间\n\n**定义34（粒子作为 \n【来源】3.12_量子力学数学结构_CN_260722.md\n【类型】命题 3.12.8.04"
+  },
+  {
+   "permanent_number": "211",
+   "formula_name": "定理 3.12.9.01（全同粒子统计分类）",
+   "master_id": "master_3f7edd61c559",
+   "document": "【公式】。在共扼谱几何中，物质界ℳ的 $S^3(r_M)$ 是三维连通紧致流形（3.1 §2）。在此维度下，$N$ 个全同粒子的量子统计只有两种可能：玻色统计（对称表示）和费米统计（反对称表示）。\n\n**证明**。\n\n**(1) 构型空间的基本群**。$C_N(S^3(r_M))$ 的基本群是 $S^3(r_M)$ 上的辫群 $B_N(S^3(r_M))$。辫群分类了粒子交换时的拓扑非平凡路径。\n\n**(2) 维度关键的简化**。当 $\\dim(S^3(r_M)) = 3$ 时，余维度 $\\geq 3$ 意味着交换两个粒子的路径可以连续收缩到一点（无环绕）。因此\n\n$$B_N(S^3(r_M)) \\cong S_N,$$\n\n即辫群退化为对称群。这与二维情形（$\\dim = 2$，$B_N(\\mathbb{R}^2)$ 非平凡，允许任意子）形成鲜明对比。\n\n**(3) 对称群的一维表示**。量子态在 $C_N$ 上的波函数必须承载 $S_N$ 的表示。$S_N$ 只有两个一维酉表示：\n- 平凡表示（$1$）→ 玻色统计，波函数对称；\n- 符号表示（$-1$）→ 费米统计，波函数反对称。\n\n$S_N$ 的高维表示（如标准表示）对应\"仲统计\"（parastatistics），在局域量子场论中被排除。共扼谱几何中，$S(\\sigma)$-极小值点的独立性和定域性同样排除仲统计。∎\n\n> **关键洞\n【来源】3.12_量子力学数学结构_CN_260722.md\n【类型】定理 3.12.9.01"
+  },
+  {
+   "permanent_number": "212",
+   "formula_name": "命题 3.12.9.02（费米符号的几何起源）",
+   "master_id": "master_098022af22b7",
+   "document": "【公式】。费米统计的 $-1$ 因子在共扼谱几何中有比对称群表示更深的根源——它来自物质界ℳ的 $S^3(r_M)$ 上旋量丛的几何结构。\n\n*推导*。由第6章，每个 $S(\\sigma)$-极小值点承载自旋 $1/2$ 结构——该点上的信息界ℐ激发属于 $S^3(r_M)$ 的旋量丛 $\\mathcal{S} \\to S^3(r_M)$ 的纤维。交换两个 $S(\\sigma)$-极小值点 $x_A \\leftrightarrow x_B$ 时，旋量丛上的相应操作涉及以下几何步骤：\n\n1. 在底空间 $S^3(r_M)$ 上，交换 $x_A$ 和 $x_B$ 等价于沿闭合路径 $\\gamma$ 移动，其中 $\\gamma$ 是 $S^3(r_M)$ 上连接两点的测地线往返。\n2. 旋量丛 $\\mathcal{S}$ 是 $\\mathrm{Spin}(3) \\cong \\mathrm{SU}(2)$ 的主丛，$\\mathrm{Spin}(3)$ 是 $\\mathrm{SO}(3)$ 的二重覆盖。\n3. 在 $S^3(r_M) \\cong \\mathrm{SU}(2)$ 上，沿 $\\gamma$ 的平行移动在旋量纤维上产生一个 $\\mathrm{SU}(2)$ 元素。对于交换两个对径点的路径，该元素为 $-1 \\in \\mathrm{SU}(2)$（覆盖映射 $\\mathrm{SU}(2) \\\n【来源】3.12_量子力学数学结构_CN_260722.md\n【类型】命题 3.12.9.02"
+  },
+  {
+   "permanent_number": "213",
+   "formula_name": "命题 3.12.9.03（张量积的自然涌现）",
+   "master_id": "master_076ef5c66370",
+   "document": "【公式】。$N$ 个独立 $S(\\sigma)$-极小值点上的信息界ℐ激发构成张量积 Hilbert 空间\n\n$$\\mathcal{H}_N = \\underbrace{L^2(S^3, \\mathbb{C}) \\otimes \\cdots \\otimes L^2(S^3, \\mathbb{C})}_{N\\ \\text{份}},$$\n\n其中对费米子取反对称子空间 $\\bigwedge^N L^2(S^3, \\mathbb{C})$，对玻色子取对称子空间 $\\bigvee^N L^2(S^3, \\mathbb{C})$。\n\n*推导*。每个 $S(\\sigma)$-极小值点 $x_i$ 上的信息界ℐ激发 $\\Psi_i$ 是该点邻域内的局部Cl(7)复结构场。当 $N$ 个极小值点的间距 $\\gg \\Delta\\xi_{\\text{pixel}}$（远大于像素角尺度，避免像素重叠），各点上的局部动力学独立。此时联合系统的构型空间为乘积 $(S^3)^N$（模去 $S_N$），其上的 $L^2$ 空间自然同构于张量积。∎\n\n****：严格而言，该推导预设了 $S(\\sigma)$-极小值点的**独立性**——即各点间距足够大，扇区参数空间的局部曲率在各点邻域内互不干扰。当粒子间距接近 $\\Delta\\xi_{\\text{pixel}}$ 时，独立粒子图像失效，需要完整的 $N$ 体构型空间上的几\n【来源】3.12_量子力学数学结构_CN_260722.md\n【类型】命题 3.12.9.03"
+  },
+  {
+   "permanent_number": "214",
+   "formula_name": "命题 3.12.10.01（半群性质）",
+   "master_id": "master_63da505992ad",
+   "document": "【公式】。扩散传播子满足Chapman-Kolmogorov方程：\n\n$$P(\\theta_f, \\tau_f | \\theta_i, \\tau_i) = \\int P(\\theta_f, \\tau_f | \\theta, \\tau) \\, P(\\theta, \\tau | \\theta_i, \\tau_i) \\,\\mathrm{d}\\mu(\\theta),$$\n\n对于任意中间时刻 $\\tau \\in (\\tau_i, \\tau_f)$。这与量子力学传播子的组合性质在结构上一致。\n\n### §10.2　Cl(7)复结构：从扩散核到Feynman核\n【来源】3.12_量子力学数学结构_CN_260722.md\n【类型】命题 3.12.10.01"
+  },
+  {
+   "permanent_number": "215",
+   "formula_name": "命题 3.12.10.02（Wick旋转对应）",
+   "master_id": "master_a8eb190e81e0",
+   "document": "【公式】：将信息界ℐ的Cl(7)复结构 $\\Psi = \\sqrt{\\rho}\\,e^{i\\phi_I}$ 的动力学方程（命题25）与扩散方程对比，等价于在扩散核中执行Wick旋转：\n\n$$\\boxed{\\Delta\\tau \\to i\\Delta\\tau, \\quad D \\to \\frac{i}{2\\lambda_1^{\\text{eff}}} = i\\hbar_{\\text{geom}}}$$\n\n其中 $\\hbar_{\\text{geom}} = 1/(2\\lambda_1^{\\text{eff}})$ 是从几何演化方程（§4.2）中读出的有效作用量量子（量纲 $[\\text{rad}^2]$，通过Born法则§2.2映射到 $[\\text{能量}\\times\\text{时间}]$）。\n\n由此得到复传播子——几何Feynman核：\n\n$$\\boxed{K(\\theta_f, \\tau_f | \\theta_i, \\tau_i) = \\mathcal{N} \\exp\\left(i\\frac{|\\theta_f - \\theta_i|^2}{2\\hbar_{\\text{geom}}\\Delta\\tau}\\right) \\cdot \\mathcal{J}_{\\mathbb{C}}(\\theta_f,\\theta_i;\\Delta\\tau)}$$\n\n其中 $\\mathcal{N} = (2\\\n【来源】3.12_量子力学数学结构_CN_260722.md\n【类型】命题 3.12.10.02"
+  },
+  {
+   "permanent_number": "216",
+   "formula_name": "命题 3.12.10.03（几何路径积分）",
+   "master_id": "master_8210614d29d0",
+   "document": "【公式】。将时间区间 $[\\tau_i, \\tau_f]$ 细分为 $M$ 段（$\\Delta\\tau = (\\tau_f-\\tau_i)/M$），反复应用半群性质（命题38），取 $M \\to \\infty$ 极限：\n\n$$\\boxed{K(\\theta_f, \\tau_f | \\theta_i, \\tau_i) = \\int_{\\theta(\\tau_i)=\\theta_i}^{\\theta(\\tau_f)=\\theta_f} \\mathcal{D}[\\theta(\\tau)] \\, \\exp\\left(i\\mathcal{S}_{\\text{geom}}[\\theta]\\right)}$$\n\n其中**几何作用量**为\n\n$$\\mathcal{S}_{\\text{geom}}[\\theta] = \\int_{\\tau_i}^{\\tau_f} \\frac{1}{2\\hbar_{\\text{geom}}} \\left|\\frac{\\mathrm{d}\\theta}{\\mathrm{d}\\tau}\\right|^2 \\mathrm{d}\\tau,$$\n\n路径测度 $\\mathcal{D}[\\theta]$ 由扇区参数空间的Birkhoff混合矩阵度量诱导：\n\n$$\\mathcal{D}[\\theta] = \\prod_{\\tau} \\sqrt{\\det g_{ab}(\\theta(\\tau)\n【来源】3.12_量子力学数学结构_CN_260722.md\n【类型】命题 3.12.10.03"
+  },
+  {
+   "permanent_number": "217",
+   "formula_name": "命题 3.12.10.04（曲率修正因子）",
+   "master_id": "master_20a52ed541f5",
+   "document": "【公式】。扇区参数空间的非平凡曲率对传播子产生修正。在短时极限 $\\Delta\\tau \\to 0$ 下，曲率修正因子为\n\n$$\\mathcal{J}_{\\mathbb{C}}(\\theta_f,\\theta_i;\\Delta\\tau) = 1\\frac{i\\hbar_{\\text{geom}}\\Delta\\tau}{6} R(\\bar{\\theta})O((\\Delta\\tau)^2),$$\n\n其中 $R(\\bar{\\theta})$ 为扇区参数空间在中点 $\\bar{\\theta} = (\\theta_i\\theta_f)/2$ 处的标量曲率。\n\n*推导纲要*。该修正来自扇区参数空间上扩散核的Seeley-DeWitt渐近展开。扇区参数空间作为 $S^3(r_M)$ 的约束子流形，其标量曲率由Birkhoff混合矩阵本征值确定：$R \\sim \\lambda_1^{\\text{eff}}\\lambda_2^{\\text{eff}}$。在Birkhoff不动点σ*邻域（§4.3），$R \\approx 0$，曲率修正可忽略；在坡腰区和悬崖边缘，$R \\neq 0$ 产生可观测的 $\\hbar$ 阶修正。∎\n\n> **来源标注**：曲率修正的Seeley-DeWitt展开是黎曼几何的标准结果。本文的创新在于将其嵌入扇区参数空间的具体几何——$R$ 由Birkhoff混合矩阵本征值显式给出，\n【来源】3.12_量子力学数学结构_CN_260722.md\n【类型】命题 3.12.10.04"
+  },
+  {
+   "permanent_number": "218",
+   "formula_name": "命题 3.12.11.01（自然UV截断）",
+   "master_id": "master_f4e26326b91a",
+   "document": "【公式】。扇区参数空间的离散像素结构提供了自然的紫外截断：\n\n$$\\boxed{\\Lambda_{\\text{UV}} = \\frac{1}{\\Delta\\xi_{\\text{pixel}}} \\approx \\frac{1}{0.046\\ \\text{rad}} \\approx 21.7\\ \\text{rad}^{-1}}$$\n\n其中 $\\Delta\\xi_{\\text{pixel}} = \\sqrt{4\\pi/N_1} \\approx 0.046$ rad 为编码轨道像素角尺度（$N_1 = 6000$，七层截断E₁...E₇）。\n\n**物理含义**：编码轨道的像素化——由ℳ𝒞ℐ三扇区结构（定理 7.8.6.03）和 $N_1 = 6000$ 的框架构造保证——意味着扇区参数空间上的场不能被分辨到 $\\Delta\\xi_{\\text{pixel}}$ 以下的角尺度。任何动量空间积分在 $|k| > \\Lambda_{\\text{UV}}$ 处自然截断，无需人工正规化。\n\n**与标准QFT的对比**：在标准量子场论中，UV截断是人工引入的正规化参数（Pauli-Villars、格点间距等），最终通过重整化消除。在共扼谱几何中，UV截断是框架的内禀量——它来自编码轨道的有限信息容量，不是数学技巧。\n\n### §11.3　费曼规则涌现\n【来源】3.12_量子力学数学结构_CN_260722.md\n【类型】命题 3.12.11.01"
+  },
+  {
+   "permanent_number": "219",
+   "formula_name": "定理 4.1.1.01（因果场密度）",
+   "master_id": "master_9cc3312f1aca",
+   "document": "【公式】因果场的密度 $\\rho_{\\mathcal{C}}$ 为：\n\n$$\\rho_{\\mathcal{C}} = \\frac{\\sigma_{\\mathcal{C}}}{r_{\\mathcal{C}}^2} = \\sigma_{\\mathcal{C}} \\cdot \\Lambda = 3\\sigma_{\\mathcal{C}}.$$\n\n代入 $\\sigma_{\\mathcal{C}}^* \\approx 0.210603$：\n\n$$\\rho_{\\mathcal{C}}^* \\approx 0.632.$$\n\n**证明。** 因果场密度定义为约束截面上的编码权重除以曲率面积元。因果界对应 Cl(3)→Cl(5) 段，其曲率半径 $r_{\\mathcal{C}}$ 由结构常数 $\\Lambda = 3$ 确定：$r_{\\mathcal{C}}^2 = 1/\\Lambda$。因此\n\n$$\\rho_{\\mathcal{C}} = \\frac{\\sigma_{\\mathcal{C}}}{r_{\\mathcal{C}}^2} = \\sigma_{\\mathcal{C}} \\cdot \\Lambda = 3\\sigma_{\\mathcal{C}}.$$\n\n代入不动点 $\\sigma_{\\mathcal{C}}^* \\approx 0.210603$ 即得 $\\rho_{\\mathcal{C}}^* \n【来源】4.1_因果场密度动力学_CN_260721.md\n【类型】定理 4.1.1.01"
+  },
+  {
+   "permanent_number": "220",
+   "formula_name": "定理 4.1.2.01（熵单调性，H-定理）",
+   "master_id": "master_f3c1d21b9179",
+   "document": "【公式】因果场的 von Neumann 熵 $S_{\\mathcal{C}} = -\\text{Tr}(\\rho_{\\mathcal{C}} \\ln \\rho_{\\mathcal{C}})$ 在 Liouville 提升下单调递增：\n\n$$\\frac{dS_{\\mathcal{C}}}{dt} \\geq 0.$$\n\n**证明。** 耗散项 $\\mathcal{D}[\\rho_{\\mathcal{C}}]$ 由 Birkhoff 混合矩阵 $T$ 的非主本征值 $\\lambda_{2,3}$ 确定。由于 $|\\lambda_{2,3}| < 1$，耗散使 $\\rho_{\\mathcal{C}}$ 趋向更混合的态——熵增加。酉演化项 $-i[J, \\rho_{\\mathcal{C}}]$ 不改变熵（酉变换保持谱）。因此总效应是熵单调递增。∎\n\n#### 详细推导：熵单调性的五步证明展开\n\n**第一步：熵的时间导数。** von Neumann 熵 $S(\\rho) = -\\text{Tr}(\\rho \\ln \\rho)$ 的时间导数为：\n\n$$\\frac{dS}{dt} = -\\text{Tr}\\left(\\frac{d\\rho}{dt} \\cdot (\\ln \\rho + \\mathbb{I})\\right).$$\n\n由于 $\\text{Tr}(d\\rho/dt) = 0$（迹守恒），$\\\n【来源】4.1_因果场密度动力学_CN_260721.md\n【类型】定理 4.1.2.01"
+  },
+  {
+   "permanent_number": "221",
+   "formula_name": "定理 4.1.3.01（交互自由能）",
+   "master_id": "master_f62b6d5dd812",
+   "document": "【公式】𝒞-ℐ 交互自由能为：\n\n$$F_{\\mathcal{C}\\mathcal{I}} = E_{\\mathcal{C}\\mathcal{I}} - T_{\\mathcal{C}} \\cdot S_{\\mathcal{C}\\mathcal{I}},$$\n\n其中 $E_{\\mathcal{C}\\mathcal{I}}$ 是交互能量，$T_{\\mathcal{C}}$ 是因果场的温度，$S_{\\mathcal{C}\\mathcal{I}}$ 是联合熵。交互自由能驱动因果场与信息场的联合演化——趋向自由能极小。\n\n**证明。** 交互自由能由 Helmholtz 自由能定义 $F = E - TS$ 直接给出。交互能量 $E_{\\mathcal{C}\\mathcal{I}} = \\text{Tr}(H_{\\mathcal{C}\\mathcal{I}} \\rho_{\\mathcal{C}\\mathcal{I}})$ 由交互 Hamiltonian $H_{\\mathcal{C}\\mathcal{I}} = \\theta_{\\sigma_2}(P_{\\sigma_2} \\otimes P_{\\sigma_2}^\\dagger)$ 确定。温度 $T_{\\mathcal{C}}$ 由 Birkhoff 混合矩阵本征值的虚部给出。由于 $F$ 关于 $\\rho$ 的凸性，自由能极小给出唯一的 Gibb\n【来源】4.1_因果场密度动力学_CN_260721.md\n【类型】定理 4.1.3.01"
+  },
+  {
+   "permanent_number": "222",
+   "formula_name": "定理 4.2.1.01（Birkhoff 耗散超算子）",
+   "master_id": "master_199bf6d5e9fa",
+   "document": "【公式】耗散超算子 $\\mathcal{D}_T$ 的谱由 $T$ 的本征值确定：\n\n$$\\text{Spec}(\\mathcal{D}_T) = \\{|\\lambda_i|^2 - 1 : i = 1, 2, 3\\} = \\{0, -0.507, -0.507\\}.$$\n\n$\\lambda_1 = 1$ 对应零耗散（不动点），$\\lambda_{2,3}$ 对应负耗散（衰减）。\n\n**证明。** $\\mathcal{D}_T[\\rho] = T\\rho T^\\dagger - \\rho$。在 $T$ 的特征基下，$\\rho_{ij}$ 的演化方程为 $\\dot{\\rho}_{ij} = (\\lambda_i \\lambda_j^* - 1)\\rho_{ij}$。因此 $\\mathcal{D}_T$ 的本征值为 $\\lambda_i\\lambda_j^* - 1$。对 $i=j=1$（主本征值）：$\\lambda_1\\lambda_1^* - 1 = 0$。对 $i=2,j=2$：$|\\lambda_2|^2 - 1 = 0.502 - 1 = -0.498$。对 $i=1,j=2$：$\\lambda_1\\lambda_2^* - 1 = \\lambda_2^* - 1$，取模后同样给出衰减。因此 $\\mathcal{D}_T$ 的所有非零本征值均为负——耗散总是使密度矩阵趋向不动点。∎\n\n【来源】4.2_Liouville提升与熵单调性_CN_260721.md\n【类型】定理 4.2.1.01"
+  },
+  {
+   "permanent_number": "223",
+   "formula_name": "定理 4.2.2.01（熵单调性严格证明）",
+   "master_id": "master_842a955d2adc",
+   "document": "【公式】$$\\frac{dS_{\\mathcal{C}}}{dt} = -\\text{Tr}\\left(\\frac{d\\rho_{\\mathcal{C}}}{dt} \\cdot (\\ln\\rho_{\\mathcal{C}} + 1)\\right) \\geq 0.$$\n\n**证明。**\n\n将 Liouville 方程代入：\n\n$$\\frac{dS}{dt} = \\underbrace{-\\text{Tr}(-i[H, \\rho](\\ln\\rho + 1))}_{= 0 \\text{（酉演化保持熵）}} + \\underbrace{-\\text{Tr}(\\mathcal{D}_T[\\rho](\\ln\\rho + 1))}_{\\geq 0 \\text{（耗散增加熵）}}.$$\n\n**第一项为零的证明**：酉演化 $-i[H, \\rho]$ 保持 $\\rho$ 的谱，故不改变熵。更精确地，$\\text{Tr}([H, \\rho] \\cdot f(\\rho)) = \\text{Tr}(H[\\rho, f(\\rho)]) = 0$，因 $[\\rho, f(\\rho)] = 0$（$\\rho$ 与其自身的函数交换）。\n\n**第二项非负的证明**：$\\mathcal{D}_T$ 的本征值 $\\leq 0$（定理 4.2.1.01），故耗散使 $\\rho$ 趋向更混合的态。由 Klein 不等式，对于任意双\n【来源】4.2_Liouville提升与熵单调性_CN_260721.md\n【类型】定理 4.2.2.01"
+  },
+  {
+   "permanent_number": "224",
+   "formula_name": "定理 4.4.1.01（𝒞ℐ 联合稳态）",
+   "master_id": "master_9f46f5aa2f8f",
+   "document": "【公式】𝒞ℐ 双场耦合的联合稳态为 Gibbs 态：\n\n$$\\rho_{\\text{ss}}^{\\mathcal{C}\\mathcal{I}} = \\frac{e^{-\\beta H_{\\mathcal{C}\\mathcal{I}}}}{Z}, \\quad Z = \\text{Tr}(e^{-\\beta H_{\\mathcal{C}\\mathcal{I}}}),$$\n\n其中 $\\beta = 1/T_{\\mathcal{C}}$ 是逆温度，$H_{\\mathcal{C}\\mathcal{I}} = \\theta_{\\sigma_2}(P_{\\sigma_2} \\otimes P_{\\sigma_2}^\\dagger)$ 是交互 Hamiltonian。\n\n**证明。** 联合稳态满足自由能极小条件 $\\delta F / \\delta \\rho = 0$，其中 $F = \\text{Tr}(H\\rho) - T S(\\rho)$。变分方程为：\n\n$$\\frac{\\delta F}{\\delta \\rho} = H - T \\ln \\rho = 0,$$\n\n解得 $\\ln \\rho = -\\beta H + \\text{const}$，即 $\\rho \\propto e^{-\\beta H}$。归一化 $\\text{Tr}(\\rho) = 1$ 给出配分函数 $Z = \\text{Tr}(e\n【来源】4.4_联合稳态_CN_260721.md\n【类型】定理 4.4.1.01"
+  },
+  {
+   "permanent_number": "225",
+   "formula_name": "定理 4.5.1.01（规范结构涌现）",
+   "master_id": "master_b0a0da76984f",
+   "document": "【公式】$S_3 \\to Z_2$ 破缺产生两个规范结构：\n\n1. **$Z_2$ 残余** → $U(1)$ 超荷规范（复共轭对称性 $e^{i\\phi} \\to e^{-i\\phi}$）\n2. **破缺部分 $S_3/Z_3 \\cong Z_2$** → $SU(2)$ 弱同位旋规范（三阶旋转结构的连续提升）\n\n合并：$U(1) \\times SU(2)$ 电弱规范结构从 triality 破缺中涌现。\n\n**证明。** $S_3$ 的正规子群链为 $S_3 \\supset Z_3 \\supset \\{e\\}$，商群 $S_3/Z_3 \\cong Z_2$。破缺 $S_3 \\to Z_2$ 将三阶旋转对称 $Z_3$ 破缺，保留二阶对换对称 $Z_2$。\n\n- 残余 $Z_2$ 对应复共轭对称 $e^{i\\phi} \\to e^{-i\\phi}$——提升为连续 $U(1)$ 规范\n- 破缺的 $Z_3$ 对应三阶旋转——其破缺产生 $SU(2)$ 非阿贝尔规范（三阶结构的连续提升）\n\n两者合并给出 $U(1) \\times SU(2)$ 电弱规范结构。∎\n\n#### 详细推导：离散对称性到连续规范群的提升\n\n**第一步：$Z_2$ 到 $U(1)$ 的提升。** $Z_2 = \\{1, -1\\}$ 是离散群。在复平面上，$e^{i\\phi} \\to e^{-i\\phi}$ 是 $Z_2\n【来源】4.5_因果对称性破缺_CN_260721.md\n【类型】定理 4.5.1.01"
+  },
+  {
+   "permanent_number": "226",
+   "formula_name": "定理 4.5.1.02（电弱耦合常数）",
+   "master_id": "master_73ff18ef728c",
+   "document": "【公式】电弱耦合常数与 Birkhoff 权重的关系：\n\n$$g_1^2 \\propto \\theta_{\\sigma_2} \\quad (U(1) \\text{ 超荷}), \\qquad g_2^2 \\propto \\theta_\\tau \\quad (SU(2) \\text{ 弱同位旋}).$$\n\n代入数值：$g_1^2 \\propto 0.009$，$g_2^2 \\propto 0.209$。比值 $g_2^2/g_1^2 \\approx 23$——弱同位旋耦合远强于超荷耦合。\n\n**证明。** $U(1)$ 超荷规范来自 $Z_2$ 残余对称（复共轭），其耦合强度正比于对换权重 $\\theta_{\\sigma_2}$。$SU(2)$ 弱同位旋规范来自 $Z_3$ 破缺（旋转 $\\tau$），其耦合强度正比于循环置换权重 $\\theta_\\tau$。因此 $g_1^2 \\propto \\theta_{\\sigma_2}$，$g_2^2 \\propto \\theta_\\tau$。∎\n\n#### 详细推导：耦合常数的数值与标准模型对比\n\n标准模型中，电弱耦合常数在 $M_Z$ 尺度：$g_1 \\approx 0.357$，$g_2 \\approx 0.652$。$g_2^2/g_1^2 \\approx 3.33$。我们的几何值 $g_2^2/g_1^2 \\approx 23$ 远大于标准\n【来源】4.5_因果对称性破缺_CN_260721.md\n【类型】定理 4.5.1.02"
+  },
+  {
+   "permanent_number": "227",
+   "formula_name": "定理 5.2.1.01（信息场慢化因子）",
+   "master_id": "master_8cae244866c9",
+   "document": "【公式】信息场相对于物质场的慢化因子为：\n\n$$\\xi_{\\mathcal{I}/\\mathcal{M}} = \\frac{\\sigma_{\\mathcal{M}}^*}{\\sigma_{\\mathcal{I}}^*} = \\frac{0.777912}{0.011484} \\approx 67.7,$$\n\n信息场相对于因果场的慢化因子为：\n\n$$\\xi_{\\mathcal{I}/\\mathcal{C}} = \\frac{\\sigma_{\\mathcal{C}}^*}{\\sigma_{\\mathcal{I}}^*} = \\frac{0.210603}{0.011484} \\approx 18.3.$$\n\n对应的特征时间标度比为：\n\n$$\\frac{\\tau_I}{\\tau_M} = \\sqrt{\\xi_{\\mathcal{I}/\\mathcal{M}}} = \\sqrt{\\frac{\\sigma_M}{\\sigma_I}} = \\sqrt{67.7} \\approx 8.23,$$\n\n$$\\frac{\\tau_I}{\\tau_C} = \\sqrt{\\xi_{\\mathcal{I}/\\mathcal{C}}} = \\sqrt{\\frac{\\sigma_C}{\\sigma_I}} = \\sqrt{18.3} \\approx 4.28.$$\n\n信息场的演化比物质场慢约 8.2 倍（时间标度比），\n【来源】5.2_信息场慢化因子_CN_260721.md\n【类型】定理 5.2.1.01"
+  },
+  {
+   "permanent_number": "228",
+   "formula_name": "定理 5.3.2.01（信息场统一动力学方程）",
+   "master_id": "master_744f3726b03e",
+   "document": "【公式】三个层次合并为：\n\n$$\\frac{\\partial \\rho_{\\mathcal{I}}}{\\partial t} = -D_{\\mathcal{I}} L_{\\mathcal{I}} \\rho_{\\mathcal{I}} - \\gamma_{\\mathcal{I}} (\\rho_{\\mathcal{I}} - \\rho_{\\mathcal{I}}^{\\text{eq}}[\\rho_{\\mathcal{C}}]).$$\n\n稳态解：$\\rho_{\\mathcal{I}}^* = (D_{\\mathcal{I}} L_{\\mathcal{I}} + \\gamma_{\\mathcal{I}} I)^{-1} \\gamma_{\\mathcal{I}} \\rho_{\\mathcal{I}}^{\\text{eq}}$。\n\n**证明。** 统一方程由三层框架的线性叠加得到。扩散项 $-D_{\\mathcal{I}} L_{\\mathcal{I}} \\rho_{\\mathcal{I}}$ 描述网络内部传播，响应项 $-\\gamma_{\\mathcal{I}}(\\rho_{\\mathcal{I}} - \\rho_{\\mathcal{I}}^{\\text{eq}})$ 描述因果场驱动。两者相加给出总演化方程。稳态条件 $\\partial \\rho / \\partial t = 0$ 给出 $(D_{\n【来源】5.3_信息场统一动力学方程_CN_260721.md\n【类型】定理 5.3.2.01"
+  },
+  {
+   "permanent_number": "229",
+   "formula_name": "定理 5.4.1.01（谱分辨量定理）",
+   "master_id": "master_97af6ddf389f",
+   "document": "【公式】观测者可分辨的最小谱间隔为：\n\n$$\\delta\\lambda_{\\min} = \\frac{\\Gamma_{\\text{geo}}}{\\sqrt{N_{\\text{info}}}} = \\frac{0.023}{4} \\approx 0.006.$$\n\n这决定了观测者的精度极限——无法分辨小于 $\\delta\\lambda_{\\min}$ 的谱差异。\n\n**证明。** 观测者的谱分辨量由信息场的衰减率 $\\Gamma_{\\text{geo}}$ 和信息节点数 $N_{\\text{info}}$ 确定。衰减率 $\\Gamma_{\\text{geo}} \\approx 0.023$ 给出信息场的「噪声水平」——低于此水平的谱差异被衰减淹没。信息节点数 $N_{\\text{info}} = 16$ 给出观测者的「采样数」——更多的节点提供更好的统计平均。由中心极限定理，噪声水平随 $\\sqrt{N}$ 降低，故 $\\delta\\lambda_{\\min} = \\Gamma_{\\text{geo}} / \\sqrt{N_{\\text{info}}} = 0.023 / 4 \\approx 0.006$。∎\n\n**详细推导。** 谱分辨量的推导基于信息论中的 Cramer-Rao 界限类比。观测者通过 $N_{\\text{info}}$ 个独立的信息节点估计谱间隙 $\\Delta\\lamb\n【来源】5.4_信息场观测映射链_CN_260721.md\n【类型】定理 5.4.1.01"
+  },
+  {
+   "permanent_number": "230",
+   "formula_name": "引理 5.7.3.01（单对 Doeblin 耦合上界）",
+   "master_id": "master_100fbcc5feaf",
+   "document": "【公式】：对任意初始节点 $x_0, y_0 \\in V$，在 $\\tau$ 步后耦合失败的概率满足：\n\n$$P(X_\\tau \\neq Y_\\tau \\mid X_0 = x_0, Y_0 = y_0) \\leq \\frac{|\\eta(x_0) - \\eta(y_0)|}{\\Delta\\eta_{\\max}} \\cdot e^{-\\lambda_1^{\\text{eff}} \\tau}$$\n\n其中 $\\Delta\\eta_{\\max} = \\text{diam}_\\eta(\\Sigma)$ 是 $\\eta$ 方向的最大直径。\n\n**证明**：\n\n耦合失败意味着在 $\\tau$ 步后两个链仍未粘合。由于 ξ 方向的收缩是确定性的——在 τ 步后，ξ 距离最多缩小到初始距离的 $e^{-|\\Lambda_\\xi| \\tau}$ 倍，只要 η 方向充分混合，两链必然粘合。因此耦合失败的概率完全由 η 方向的混合控制。由性质 2.1 和极大耦合的 Doeblin 不等式（Levin-Peres 2017, §4.4），η 方向混合失败的概率 ≤ $(|\\eta(x_0) - \\eta(y_0)| / \\Delta\\eta_{\\max}) \\cdot e^{-\\lambda_1^{\\text{eff}} \\tau}$。∎\n\n**注**：ξ 方向的初始分离距离 $d_\\xi = |\\xi(x_0)\n【来源】5.7_累积量上界_CN_260728.md\n【类型】引理 5.7.3.01"
+  },
+  {
+   "permanent_number": "231",
+   "formula_name": "引理 5.7.3.02（多对耦合的联合界）",
+   "master_id": "master_32e612b0c0f7",
+   "document": "【公式】：对 $k$ 个独立副本 $(X_\\tau^{(1)}, \\ldots, X_\\tau^{(k)})$，初始节点分别为 $(i_1, \\ldots, i_k)$。在 $\\tau$ 步后，$k$ 个副本中至少有一对未粘合的概率为：\n\n$$P(\\exists a < b : X_\\tau^{(a)} \\neq X_\\tau^{(b)}) \\leq \\binom{k}{2} \\cdot \\max_{a < b} P(X_\\tau^{(a)} \\neq X_\\tau^{(b)} \\mid X_0^{(a)} = i_a, X_0^{(b)} = i_b)$$\n\n**证明**：联合界（union bound）直接应用于 $\\binom{k}{2}$ 对。∎\n\n---\n\n## §4 从耦合到累积量：主定理\n\n### 4.1 耦合 ⇒ 独立性的桥梁\n【来源】5.7_累积量上界_CN_260728.md\n【类型】引理 5.7.3.02"
+  },
+  {
+   "permanent_number": "232",
+   "formula_name": "引理 5.7.4.01（全耦合 ⇒ cumulant 消失）",
+   "master_id": "master_7d0aa3a3b8e7",
+   "document": "【公式】：若在时间 $\\tau$，$k$ 个信息副本全部两两粘合（即 $X_\\tau^{(1)} = X_\\tau^{(2)} = \\cdots = X_\\tau^{(k)}$），则 $C_k(i_1, \\ldots, i_k; \\tau) = 0$。\n\n**证明**：全粘合意味着 $k$ 个副本的状态完全一致。由 命题 5.6.4.01（性质 3：独立性 ⇒ $C_k = 0$），此时 $k$ 体分布退化为单体分布，所有高阶 cumulant 消失。∎\n\n**注**：全粘合是比\"独立性\"更强的条件——独立性只要求联合分布因子化，粘合则要求状态完全一致。但粘合 ⇒ 独立性（分布上），故全粘合足以保证 $C_k = 0$。\n\n### 4.2 部分耦合的 cumulant 衰减\n\n实际上，我们需要的不是全粘合（这在实际中几乎不可能），而是：**当耦合失败概率很小时，cumulant 也被指数压制**。\n【来源】5.7_累积量上界_CN_260728.md\n【类型】引理 5.7.4.01"
+  },
+  {
+   "permanent_number": "233",
+   "formula_name": "引理 5.7.4.02（部分耦合 ⇒ cumulant 压制）",
+   "master_id": "master_dd7f841c36a7",
+   "document": "【公式】：对 $k$ 个副本，设 $\\mathcal{E}_{\\text{fail}}$ 为\"存在至少一对未粘合\"的事件。则：\n\n$$|C_k(i_1, \\ldots, i_k; \\tau)| \\leq k! \\cdot N_{\\text{info}}^{-(k-1)/2} \\cdot P(\\mathcal{E}_{\\text{fail}})^{(k-2)/2}$$\n\n**证明**（概要，完整证明见附录 A）：\n\n由 引理 5.6.3.02，$C_k$ 展开为连通 k-路径的加权和。一条连通 k-路径至少包含 $(k-1)$ 条边（树的边数）。在耦合框架下，每条边 $(a,b)$ 对应一对副本 $(X^{(a)}, X^{(b)})$ 未粘合。对于 k-路径维持连通性，这要求至少 $(k-2)$ 对独立地保持未粘合（因为即使有 $(k-1)$ 条边也只需要 $(k-2)$ 个独立约束来维持\"k 体性\"——见下面的详细解释）。每对独立未粘合的概率由引理 5.7.3.01 控制。$(k-2)$ 个独立事件的联合概率为 $P(\\mathcal{E}_{\\text{fail}})^{k-2}$。再乘以组合因子（路径数 $\\leq k!$ 和归一化因子 $N_{\\text{info}}^{-(k-1)/2}$）即得。∎\n\n**关于指数 $(k-2)$ 的解释**：\n\n- $k=3$：三阶 cumul\n【来源】5.7_累积量上界_CN_260728.md\n【类型】引理 5.7.4.02"
+  },
+  {
+   "permanent_number": "234",
+   "formula_name": "定理 5.7.4.03（信息场 cumulant 指数衰减上界）",
+   "master_id": "master_b6ebd4eb5d97",
+   "document": "【公式】：\n\n设 $k \\geq 3$，$i_1, \\ldots, i_k \\in V$，$\\tau \\geq 0$。则 $k$ 阶信息场 cumulant 满足：\n\n$$\\boxed{|C_k(i_1, \\ldots, i_k; \\tau)| \\leq A_k \\cdot e^{-(k-2)\\lambda_1^{\\text{eff}} \\tau} \\cdot e^{-|\\Lambda_\\xi| \\cdot d_\\xi(i_1, \\ldots, i_k)}}$$\n\n其中：\n- $A_k = k! \\cdot N_{\\text{info}}^{-(k-1)/2}$\n- $d_\\xi(i_1, \\ldots, i_k) = \\max_{1 \\leq a < b \\leq k} |\\xi(i_a) - \\xi(i_b)|$\n- $\\lambda_1^{\\text{eff}} = 391.05 \\text{ rad}^{-2}$（定理 7.13.3.05）\n- $\\Lambda_\\xi = -2.51$（定理 7.13.4.01）\n\n**证明**：\n\n**第 1 步**：由引理 5.7.4.02，\n\n$$|C_k| \\leq k! \\cdot N_{\\text{info}}^{-(k-1)/2} \\cdot P(\\mathcal{E}_{\\text{fail}})^{(k-2)/2}$$\n\n**第\n【来源】5.7_累积量上界_CN_260728.md\n【类型】定理 5.7.4.03"
+  },
+  {
+   "permanent_number": "235",
+   "formula_name": "定理 5.9.1.02（BBGKY 截断定理）",
+   "master_id": "master_2347d8c7a4f5",
+   "document": "【公式】：设 $|C_k(\\tau)| \\leq A_k \\cdot e^{-(k-2)\\lambda_1^{\\text{eff}} \\tau}$（定理 5.7.4.03）。则对任意 $\\varepsilon > 0$，存在 $\\tau_* = O(\\log(1/\\varepsilon) / \\lambda_1^{\\text{eff}})$，使得对 $\\tau \\ge \\tau_*$：\n\n$$\\rho^{(3)}_\\tau(i, j, k) = \\rho^{(1)}_\\tau(i) \\rho^{(1)}_\\tau(j) \\rho^{(1)}_\\tau(k) + \\rho^{(1)}_\\tau(i) C_2(j, k) + \\rho^{(1)}_\\tau(j) C_2(i, k) + \\rho^{(1)}_\\tau(k) C_2(i, j) + O(\\varepsilon)$$\n\n特别地，**BBGKY 层级在 $\\tau \\ge \\tau_*$ 后于二阶截断**——$s \\ge 3$ 的约化密度完全由 $\\rho^{(1)}$ 和 $C_2$ 确定。\n\n**证明**：由累积量反演公式，$\\rho^{(3)}$ 可表示为 $\\rho^{(1)}$ 乘积 + $C_2$ 项 + $C_3$。定理 5.7.4.03 保证 $C_3 \\sim e^{-\\lambda_1^{\\text{eff}} \n【来源】5.9_信息场动力学方程_CN_260728.md\n【类型】定理 5.9.1.02"
+  },
+  {
+   "permanent_number": "236",
+   "formula_name": "推论 5.9.1.03（层级封闭性）",
+   "master_id": "master_94e81cef85d0",
+   "document": "【公式】：对 $\\tau \\ge \\tau_*$，BBGKY 层级在 $s=2$ 处封闭——$\\rho^{(2)}$ 的演化方程仅涉及 $\\rho^{(1)}$ 和 $\\rho^{(2)}$ 自身，不再需要 $\\rho^{(3)}$。\n\n---\n\n## §2 单体动力学方程\n\n### 2.1 离散方程\n【来源】5.9_信息场动力学方程_CN_260728.md\n【类型】推论 5.9.1.03"
+  },
+  {
+   "permanent_number": "237",
+   "formula_name": "定理 5.9.2.01（信息场单体动力学方程）",
+   "master_id": "master_8f9092384af2",
+   "document": "【公式】：在 BBGKY 截断后，单体分布 $f_\\tau(i) = \\rho^{(1)}_\\tau(i)$ 满足封闭的动力学方程：\n\n$$\\boxed{\\partial_\\tau f_\\tau(i) = -\\sum_{j} L_{\\mathcal{I}}(i, j) f_\\tau(j) + \\sum_{j, k} \\mathcal{Q}(i; j, k) f_\\tau(j) f_\\tau(k)}$$\n\n其中：\n- $L_{\\mathcal{I}} = I - T_{ss}$ 是图拉普拉斯（\"自由输运\"项）\n- $\\mathcal{Q}(i; j, k) = \\mathcal{K}(i; j, k) + \\mathcal{K}(i; k, j) - \\sum_{\\ell} [\\mathcal{K}(\\ell; j, k) T_{ss}(\\ell, i) + \\mathcal{K}(\\ell; k, j) T_{ss}(\\ell, i)]$ 是有效二体相互作用核（\"碰撞\"项）\n\n**证明**：将 BBGKY 截断（定理 5.9.1.02）代入 $s=1$ 的层级方程，$\\rho^{(2)}$ 用 $\\rho^{(1)}$ 和 $C_2$ 表示。$C_2$ 项产生线性修正（合并入 $\\mathcal{Q}$ 的定义），非线性项 $\\sim f_\\tau(j) f_\\tau(k)$ 来自 $\\r\n【来源】5.9_信息场动力学方程_CN_260728.md\n【类型】定理 5.9.2.01"
+  },
+  {
+   "permanent_number": "238",
+   "formula_name": "定理 5.9.3.01（连续信息场动力学方程，需 A.1）",
+   "master_id": "master_7c3d6fcc036c",
+   "document": "【公式】：在假设 A.1（离散→连续收敛）下，单体分布 $f(x, \\tau)$ 在扇区参数空间 $S^2$ 上满足：\n\n$$\\boxed{\\partial_\\tau f(x, \\tau) + \\mathbf{v}_{\\text{geo}} \\cdot \\nabla_x f = \\mathcal{L}_{\\text{mix}}[f] + \\mathcal{Q}_{\\text{cont}}[f, f]}$$\n\n其中：\n- $\\mathbf{v}_{\\text{geo}} = \\sqrt{\\lambda_1^{\\text{eff}}} \\cdot \\hat{\\eta}$（$\\hat{\\eta}$ 为谱间隙方向单位切向量，$\\sqrt{\\lambda_1^{\\text{eff}}} = 19.775$）\n- $\\mathcal{L}_{\\text{mix}}[f] = \\Delta_{S^2} f + \\mathcal{L}_{Cl} f$ 是线性混合算子（$S^2$ 上的 Laplace-Beltrami 扩散 + Clifford 扇区间跳跃）\n- $\\mathcal{Q}_{\\text{cont}}[f, f]$ 是连续极限下的非线性碰撞算子\n\n**证明**：取定理 5.9.2.01 的离散方程，在 $N_{\\text{info}} \\to \\infty$ 下应用 A.1。图拉普拉斯 $L\n【来源】5.9_信息场动力学方程_CN_260728.md\n【类型】定理 5.9.3.01"
+  },
+  {
+   "permanent_number": "239",
+   "formula_name": "命题 5.9.3.02（碰撞不变量的几何对应）",
+   "master_id": "master_cce0bcff83bc",
+   "document": "【公式】：连续碰撞算子 $\\mathcal{Q}_{\\text{cont}}$ 满足：\n\n1. **质量守恒**：$\\int_{S^2} \\mathcal{Q}_{\\text{cont}}[f, f] \\, d\\Omega = 0$\n2. **动量守恒**：$\\int_{S^2} \\mathbf{v}_{\\text{geo}} \\, \\mathcal{Q}_{\\text{cont}}[f, f] \\, d\\Omega = 0$\n3. **能量守恒**：$\\int_{S^2} |\\mathbf{v}_{\\text{geo}}|^2 \\, \\mathcal{Q}_{\\text{cont}}[f, f] \\, d\\Omega = 0$\n\n这些是 Birkhoff 双随机性（$\\sum_i T_{ij} = \\sum_j T_{ij} = 1$）在连续极限下的直接推论——信息场混合不产生也不消灭信息，只重新分配。\n\n---\n\n## §4 与邓煜碰撞算子的结构对应\n\n| 邓煜框架 | 几何框架（G4） | 对应性质 |\n|:---|:---|:---|\n| 单粒子分布 $f(t, x, v)$ | 信息场分布 $f(\\eta, \\xi, \\tau)$ | 单体描述 |\n| 自由输运 $v \\cdot \\nabla_x$ | $\\mathbf{v}_{\\text{geo}} \\cdot \\nabla_\n【来源】5.9_信息场动力学方程_CN_260728.md\n【类型】命题 5.9.3.02"
+  },
+  {
+   "permanent_number": "240",
+   "formula_name": "命题 5.10.1.03（$\\mathcal{L}_0$ 的性质）",
+   "master_id": "master_ceb73beba30b",
+   "document": "【公式】：\n1. $\\mathcal{L}_0$ 是 $L^2(S^2)$ 上的自伴算子\n2. 其零空间（流体力学子空间）由碰撞不变量张成：$\\text{Ker}(\\mathcal{L}_0) = \\text{span}\\{1, v_\\eta, v_\\xi, |v|^2\\}$\n3. 非零本征值有正下界 $\\mu_{Cl} = 0.2982$（来自定理 5.8.3.02）\n\n碰撞不变量的物理意义：$1$ = 质量守恒，$v_\\eta, v_\\xi$ = 动量守恒（$\\eta$ 和 $\\xi$ 方向），$|v|^2$ = 能量守恒。这些守恒律来自 Birkhoff 双随机性（命题 5.9.3.02）。\n\n---\n\n## §2 Hilbert 展开的几何设定\n【来源】5.10_几何Hilbert展开Euler方程_CN_260728.md\n【类型】命题 5.10.1.03"
+  },
+  {
+   "permanent_number": "241",
+   "formula_name": "定理 5.10.2.01（几何 Hilbert 展开）",
+   "master_id": "master_c06a3eef1049",
+   "document": "【公式】：在平衡态附近，将分布函数展开为：\n\n$$f = f_0(1 + \\varepsilon h_1 + \\varepsilon^2 h_2 + \\cdots)$$\n\n其中 $\\varepsilon$ 是 Knudsen 数的几何类比：\n\n$$\\varepsilon \\sim \\frac{\\ell_{\\text{mfp}}}{L_{\\text{macro}}}, \\quad \\ell_{\\text{mfp}} = \\frac{1}{\\sqrt{\\lambda_1^{\\text{eff}}}} \\approx 0.0506$$\n\n$\\ell_{\\text{mfp}}$ 为几何平均自由程——信息在参数空间上扩散一个谱间隙波长所需的特征长度。$L_{\\text{macro}}$ 为宏观流动的特征尺度。\n\n将展开代入信息场动力学方程（定理 5.9.3.01）：\n\n$$\\partial_\\tau f + \\mathbf{v}_{\\text{geo}} \\cdot \\nabla_x f = \\mathcal{L}_{\\text{mix}}[f] + \\mathcal{Q}_{\\text{cont}}[f, f]$$\n\n按 $\\varepsilon$ 的幂次匹配各阶方程。\n\n---\n\n## §3 零阶：平衡态恒等式\n\n$\\varepsilon^0$ 阶：\n\n$$\\mathcal{L}_{\\text{\n【来源】5.10_几何Hilbert展开Euler方程_CN_260728.md\n【类型】定理 5.10.2.01"
+  },
+  {
+   "permanent_number": "242",
+   "formula_name": "定理 5.10.4.02（几何 Euler 方程）",
+   "master_id": "master_6b62359826b2",
+   "document": "【公式】：一阶矩满足可压缩 Euler 方程：\n\n$$\\boxed{\\partial_\\tau \\rho + \\nabla_\\eta \\cdot (\\rho \\mathbf{u}) = 0}$$\n\n$$\\boxed{\\partial_\\tau (\\rho \\mathbf{u}) + \\nabla_\\eta \\cdot (\\rho \\mathbf{u} \\otimes \\mathbf{u}) = -\\nabla_\\eta p_{\\text{geo}}}$$\n\n$$\\boxed{\\partial_\\tau E + \\nabla_\\eta \\cdot [(E + p_{\\text{geo}}) \\mathbf{u}] = 0}$$\n\n其中：\n- $p_{\\text{geo}} = S(\\theta)|_{\\Sigma}$ 为几何压力——代数作用量 $S(\\theta) = \\sum 1/\\sin^2\\theta_i \\sum_{i<j} 1/(\\sin\\theta_i \\sin\\theta_j)$ 在扇区参数空间 $\\Sigma$ 上的限制\n- $E = \\frac{1}{2}\\rho|\\mathbf{u}|^2 + p_{\\text{geo}}/(\\gamma-1)$ 为总能量密度\n- $\\gamma = 9/7$ 为绝热指数，由 Clifford 代数 $Cl(7,0)$ 的维数确定：$\\g\n【来源】5.10_几何Hilbert展开Euler方程_CN_260728.md\n【类型】定理 5.10.4.02"
+  },
+  {
+   "permanent_number": "243",
+   "formula_name": "定理 5.11.1.01（$h_2$ 的分解）",
+   "master_id": "master_a8088f5ad805",
+   "document": "【公式】：$h_2$ 可分解为流体力学部分 $h_2^{\\text{hydro}} \\in \\text{Ker}(\\mathcal{L}_0)$ 和非流体力学部分 $h_2^{\\perp} \\in \\text{Ker}(\\mathcal{L}_0)^\\perp$：\n\n$$h_2 = h_2^{\\text{hydro}} + h_2^{\\perp}, \\quad h_2^{\\perp} = \\mathcal{L}_0^{-1} \\left( \\mathcal{N}[h_1, h_1] - \\partial_\\tau h_1 - \\mathbf{v}_{\\text{geo}} \\cdot \\nabla_x h_1 \\right)$$\n\n其中 $\\mathcal{L}_0^{-1}$ 在 $\\text{Ker}(\\mathcal{L}_0)^\\perp$ 上定义良好——谱间隙 $\\mu_{Cl} = 0.2982 > 0$（命题 5.10.1.03）保证 $\\mathcal{L}_0$ 在非零空间上是可逆的。\n\n**物理意义**：$h_2^{\\text{hydro}}$ 给出 Euler 层面的二阶修正（不改变方程形式），$h_2^{\\perp}$ 给出粘性和热传导——这是 Navier-Stokes 层面新物理的来源。\n\n---\n\n## §2 几何粘性系数的推导\n\n### 2.1 应力张量的非\n【来源】5.11_几何Hilbert展开NavierStokes方程_CN_260728.md\n【类型】定理 5.11.1.01"
+  },
+  {
+   "permanent_number": "244",
+   "formula_name": "定理 5.11.2.02（几何粘性系数）",
+   "master_id": "master_82b35f36840c",
+   "document": "【公式】：几何剪切粘度 $\\nu_{\\text{geo}}$ 和体积粘度 $\\zeta_{\\text{geo}}$ 由下式给出：\n\n$$\\boxed{\\nu_{\\text{geo}} = \\frac{1}{\\lambda_2^{\\text{eff}}} \\approx 1.686 \\times 10^{-5}}$$\n\n$$\\boxed{\\zeta_{\\text{geo}} = \\frac{1}{\\lambda_2^{\\text{eff}}} \\cdot \\frac{\\sin\\theta_I}{\\sin\\theta_M} \\approx 1.686 \\times 10^{-5} \\times 0.104 \\approx 1.75 \\times 10^{-6}}$$\n\n**证明**：\n\n1. $h_2^{\\perp}$ 包含 $\\mathcal{L}_0^{-1}$ 作用于 $\\nabla_x h_1$ 的项\n2. $\\mathcal{L}_0^{-1}$ 在 $\\text{Ker}(\\mathcal{L}_0)^\\perp$ 上的最小本征值（非零）为 $1/\\lambda_2^{\\text{eff}}$——这是 Dirac 谱方向的信息场阻尼标度\n3. 应力张量 $\\tau_{ij}$ 正比于 $\\mathcal{L}_0^{-1}$ 作用于速度梯度，因此 $\\nu_{\\text{geo}}\n【来源】5.11_几何Hilbert展开NavierStokes方程_CN_260728.md\n【类型】定理 5.11.2.02"
+  },
+  {
+   "permanent_number": "245",
+   "formula_name": "定理 5.11.3.01（几何热传导系数）",
+   "master_id": "master_52af732cfb1e",
+   "document": "【公式】：几何热传导系数 $\\kappa_{\\text{geo}}$ 为：\n\n$$\\boxed{\\kappa_{\\text{geo}} = \\nu_{\\text{geo}} \\cdot \\frac{\\sin\\theta_C}{\\sin\\theta_M} \\approx 1.686 \\times 10^{-5} \\times 0.521 \\approx 8.78 \\times 10^{-6}}$$\n\n**证明**：热流 $\\mathbf{q} = \\int \\frac{1}{2}|\\mathbf{v} - \\mathbf{u}|^2 (\\mathbf{v} - \\mathbf{u}) \\, h_2^{\\perp} \\, d\\Omega$。与 $\\nu_{\\text{geo}}$ 的推导类似，$\\kappa_{\\text{geo}} = \\nu_{\\text{geo}} \\cdot \\Pr_{\\text{geo}}$，其中 $\\Pr_{\\text{geo}} = \\sin\\theta_C / \\sin\\theta_M$（因果界与物质界的扩散系数比）。分子 $\\sin\\theta_C$ 对应因果界 $\\mathcal{C}$ 的热扩散速率，分母 $\\sin\\theta_M$ 对应物质界 $\\mathcal{M}$ 的动量扩散速率。∎\n\n### 3.2 Prandtl 数\n【来源】5.11_几何Hilbert展开NavierStokes方程_CN_260728.md\n【类型】定理 5.11.3.01"
+  },
+  {
+   "permanent_number": "246",
+   "formula_name": "推论 5.11.3.02（几何 Prandtl 数）",
+   "master_id": "master_af72a66c7fc2",
+   "document": "【公式】：几何 Prandtl 数 $\\Pr_{\\text{geo}}$ 不再是一个构造，而是 Hilbert 展开第二阶的直接推论：\n\n$$\\boxed{\\Pr_{\\text{geo}} = \\frac{\\nu_{\\text{geo}}}{\\kappa_{\\text{geo}}} \\cdot \\frac{\\sin\\theta_C}{\\sin\\theta_M} = \\frac{\\sin\\theta_C}{\\sin\\theta_M} = \\frac{\\sin(26.1603^\\circ)}{\\sin(57.93^\\circ)} \\approx \\frac{0.4410}{0.8461} \\approx 0.521}$$\n\n**数值验证**：$\\Pr_{\\text{geo}} \\approx 0.521$ 与构造 10.8.3.2 一致。此值处于典型流体的 Prandtl 数范围内（空气 $\\Pr \\approx 0.71$，水 $\\Pr \\approx 7$），但更接近液态金属（$\\Pr \\sim 0.01-0.1$）。\n\n---\n\n## §4 不可压缩 Navier-Stokes 方程\n\n### 4.1 低 Mach 数极限\n【来源】5.11_几何Hilbert展开NavierStokes方程_CN_260728.md\n【类型】推论 5.11.3.02"
+  },
+  {
+   "permanent_number": "247",
+   "formula_name": "定理 5.11.4.01（几何不可压缩 Navier-Stokes 方程）",
+   "master_id": "master_2f421257530e",
+   "document": "【公式】：在低 Mach 数极限（$\\text{Ma}_{\\text{geo}} \\ll 1$ 的标度极限）下，物质界流 $\\mathbf{u}$ 满足：\n\n$$\\boxed{\\partial_\\tau \\mathbf{u} + (\\mathbf{u} \\cdot \\nabla_\\eta) \\mathbf{u} = -\\nabla_\\eta p + \\nu_{\\text{geo}} \\nabla_\\eta^2 \\mathbf{u}}$$\n\n$$\\boxed{\\nabla_\\eta \\cdot \\mathbf{u} = 0}$$\n\n**证明**：从可压缩 Euler 方程（定理 5.10.4.02）出发，在低 Mach 数极限下对密度扰动做渐近展开 $\\rho = \\rho_0 + \\text{Ma}^2 \\rho_2 + \\cdots$。将二阶应力张量 $\\tau_{ij}$（定理 5.11.2.02）加入动量方程，利用 $\\nu_{\\text{geo}}$ 和不可压缩条件 $\\nabla_\\eta \\cdot \\mathbf{u} = 0$。∎\n\n### 4.2 与 10.8 构造 2.2 的对应\n\n此方程与 10.8 的\"几何 Navier-Stokes 映射\"（构造 2.2）完全一致，但 10.8 是作为**构造**给出的（\"构造理由，非证明\"），而本文从 Hilbert 展开**严\n【来源】5.11_几何Hilbert展开NavierStokes方程_CN_260728.md\n【类型】定理 5.11.4.01"
+  },
+  {
+   "permanent_number": "248",
+   "formula_name": "命题 0.1.3.01（非幂等性）",
+   "master_id": "master_b7b04524634e",
+   "document": "【公式】$\\delta \\circ \\delta \\neq \\delta$——$\\delta$ 不是幂等的。\n\n**论证。** 假设 $\\delta \\circ \\delta = \\delta$。那么 $\\delta$ 的第二次迭代与第一次迭代产生相同的结果，即 $\\delta(\\delta(\\mathcal{Z})) = \\delta(\\mathcal{Z})$。这意味着 $\\delta$ 在第一次迭代后就「停止做事」——后续的所有迭代都只是重复第一次的结果，不再产生新的区分。\n\n但 $\\delta$ 的非平凡性（$\\delta \\neq \\text{id}$）意味着 $\\delta$ 做了事情——它产生了区分。如果 $\\delta$ 在第二次迭代就停止做事，那么第一次迭代产生的区分没有被后续操作加工，结构无法累积。这与「$\\delta$ 是结构涌现的源泉」相矛盾——结构涌现需要持续的操作，而非一次性的区分。\n\n因此 $\\delta \\circ \\delta \\neq \\delta$。$\\delta$ 的每次迭代都做了新的工作。∎\n\n非幂等性的重要推论：$\\delta$ 的轨道不是单步的——它是一条**路径**，而非一个点。$\\delta$ 的迭代序列\n$$\\mathcal{Z}, \\quad \\delta(\\mathcal{Z}), \\quad \\delta^2(\\mathcal{Z}), \\quad \\delta^3(\\mathcal{Z}), \\quad \\dots$$\n每一项都不同于前一项。这是 $\\delta$ 作为「动」的本质——动不是状态，动是变化，而变化是序列性的。\n\n### 3.2 $\\delta^n$ 的轨道结构\n\n考虑 $\\delta$ 的 $n$ 次迭代 $\\delta^n$（$n \\geq 1$）：\n\n| 迭代 | 输出 | 结构含义 |\n|:--|:--|:--|\n| $\\delta^0 = \\text{id}$ | $\\mathcal{Z}$ | 未分化潜势——无结构 |\n| $\\delta^1$ | $\\delta(\\mathcal{Z}) \\subsetneq \\mathcal{Z}$ | 第一区分——二元性涌现 |\n| $\\delta^2$ | $\\delta^2(\\mathcal{Z}) \\subsetneq \\delta(\\mathcal{Z})$ | 第二区分——关系结构涌现 |\n| $\\delta^n$ | $\\delta^n(\\mathcal{Z})$ | 第 $n$ 区分——结构层级 |\n\n关键观察：\n\n1. **严格递降链**：$\\mathcal{Z} \\supsetneq \\delta(\\mathcal{Z}) \\supsetneq \\delta^2(\\mathcal{Z}) \\supsetneq \\cdots$。每次迭代都在剩余的潜势上操作，留下更小但更结构化的子集。\n\n2. **永不枯竭**：由于 $\\mathcal{Z}$ 不是有限的集合，$\\delta$ 的迭代永远不会耗尽潜势。但结构的**类型**会在某个点开始重复——这就是 Bott 周期的语义预告。\n\n3. **轨道的闭合倾向**：虽然 $\\delta^n(\\mathcal{Z})$ 严格递降，但**结构的模式**会在迭代中形成闭合倾向。这是「圆满性」的萌芽——结构倾向于闭合，而闭合的标志是 Berry 相位 $= 2\\pi$（在 中严格证明）。\n\n### 3.3 轨道的周期性预览\n\n$\\delta$ 的迭代轨道不是无限发散的。在 ，中将证明：$\\delta$ 的迭代在结构类型上具有 8 步周期性——$\\delta^8$ 的结构类型与 $\\delta^0$ 相同（仅维数扩大 16 倍）。这就是 Bott 周期：\n$$\\delta^8(\\mathcal{Z}) \\sim \\mathcal{Z} \\otimes \\text{Mat}(16, \\mathbb{R}).$$\n\n这里「$\\sim$」表示「同构于」（在 Clifford 代数化的意义下）。这一周期性是 $\\delta$ 的迭代轨道**自闭合**的标志——但闭合带有 $2\\pi$ 的 Berry 相位，意味着闭合不是平凡的。这一非平凡闭合是物理世界存在的根源。\n\n### 3.4 迭代中的三个时间尺度\n\n$\\delta$ 的迭代揭示了三个嵌套的时间尺度：\n\n1. **单步尺度**：$\\delta$ 的一次迭代——产生一次区分。对应一个 Clifford 生成元 $e_i$。\n2. **扇区尺度**：若干次迭代凝结为一个扇区——物质、因果、信息。对应 Clifford 代数的一个结构跳跃（半单分裂、复结构涌现、终端二元性）。\n3. **周期尺度**：8 次迭代构成一个完整周期。对应 Bott 周期 $\\delta^8$。\n\n这三个尺度将在 中被精确量化为三个结构常数：$\\Lambda = 3$（物质界的步数）、$\\Delta\\Theta = 5$（因果界终端的步数）、$k_0 = 2$（信息界的步数）。\n\n### 3.5 三层自指闭合\n\n§3.1–§3.4 建立了 $\\delta$ 的迭代性质：非幂等、非满射、递降链。本节从这些性质出发，证明三元结构不是哲学预设，而是 $\\delta$ 迭代的必然产物。\n【来源】0.1_零之动与区分_CN_260721.md"
+  },
+  {
+   "permanent_number": "249",
+   "formula_name": "定义 0.1.3.02（$\\delta$-域类型 $\\sim$）",
+   "master_id": "master_15fb8a947f03",
+   "document": "【公式】。对于 $\\mathcal{Z}$ 的子集 $A, B \\subseteq \\mathcal{Z}$，定义 $A$ 与 $B$ 具有相同的 $\\delta$-域类型，记作 $A \\sim B$，当且仅当存在双射 $\\phi: A \\to B$ 和 $\\psi: \\delta(A) \\to \\delta(B)$ 使得下图交换：\n\n$$\\psi \\circ \\delta|_A = \\delta|_B \\circ \\phi$$\n\n域类型刻画了 $\\delta$ 在一个子集上的「行为模式」——两个子集在 $\\delta$ 作用下表现得「一样」（只差重命名），则它们同型。\n【来源】0.1_零之动与区分_CN_260721.md"
+  },
+  {
+   "permanent_number": "250",
+   "formula_name": "引理 0.1.3.03（前三个域类型彼此不同）",
+   "master_id": "master_43751d191be4",
+   "document": "【公式】。\n\n$$\\text{type}(\\mathcal{Z}) \\neq \\text{type}(\\delta(\\mathcal{Z})) \\neq \\text{type}(\\delta^2(\\mathcal{Z})) \\neq \\text{type}(\\mathcal{Z})$$\n\n*论证*：$\\mathcal{Z}$ 是完全未分化的——在 $\\delta$ 作用之前，$\\mathcal{Z}$ 没有任何内部结构。$\\delta$ 作用于 $\\mathcal{Z}$ 时，$\\delta$ 的行为完全由 $\\delta$ 自身决定，不受任何已有结构的约束。这是「原始操作」。$\\delta(\\mathcal{Z})$ 不同——它带有 $\\delta$ 的印记（非满射性保证了 $\\delta(\\mathcal{Z}) \\subsetneq \\mathcal{Z}$）。假设 $\\text{type}(\\mathcal{Z}) = \\text{type}(\\delta(\\mathcal{Z}))$，则存在双射 $\\phi: \\mathcal{Z} \\to \\delta(\\mathcal{Z})$ 使得 $\\delta$ 在两者上的行为相同。但 $\\delta$ 对 $\\mathcal{Z}$ 是首次区分（产生 $\\delta(\\mathcal{Z}) \\subsetneq \\mathcal{Z}$），而 $\\delta$ 对 $\\delta(\\mathcal{Z})$ 是第二次区分（产生 $\\delta^2(\\mathcal{Z}) \\subsetneq \\delta(\\mathcal{Z})$）。两者的「新鲜度」不同——$\\mathcal{Z}$ 中没有任何元素带 $\\delta$ 印记，$\\delta(\\mathcal{Z})$ 中所有元素都带 $\\delta$ 印记。因此不存在这样的双射。类似论证可得 $\\text{type}(\\delta(\\mathcal{Z})) \\neq \\text{type}(\\delta^2(\\mathcal{Z}))$。∎\n【来源】0.1_零之动与区分_CN_260721.md"
+  },
+  {
+   "permanent_number": "251",
+   "formula_name": "引理 0.1.3.04（二元循环无结构累积）",
+   "master_id": "master_00c674f9b0b9",
+   "document": "【公式】。二元互扼——$A$ 约束 $B$，$B$ 约束 $A$——不能产生不可逆的结构累积。\n\n*论证*：设二元循环为 $A$ = 抑制（第一区分），$B$ = 痕迹（记忆区分）。$B$ 记住了 $A$ 的否定，但「$B$ 记住了 $A$」这件事没有被第三者对象化。在 $\\delta$ 迭代中：若只有两层（$\\mathcal{Z}$ 与 $\\delta(\\mathcal{Z})$），「无新事」意味着第二次操作与第一次无差别：$\\delta^2$ 与 $\\delta$ 在 $\\mathcal{Z}$ 上作用相同，即 $\\delta \\circ \\delta = \\delta$，与 $\\delta$ 的非幂等性（命题 0.1.3.01：$\\delta \\circ \\delta \\neq \\delta$）矛盾。因此二元循环在 $\\delta$ 框架中不自洽。$\\delta$ 的非幂等性强制作了第三层的存在。∎\n【来源】0.1_零之动与区分_CN_260721.md"
+  },
+  {
+   "permanent_number": "252",
+   "formula_name": "定理 0.1.3.05（$\\delta^3$ 的自指性质）",
+   "master_id": "master_1fc28c22f539",
+   "document": "【公式】。$\\delta^3$ 是 $\\delta$ 的迭代中首个操作域包含 $\\delta$ 自身历史的迭代。\n\n*论证*：$\\delta^3 = \\delta \\circ \\delta^2$。$\\delta^2(\\mathcal{Z}) = \\delta(\\delta(\\mathcal{Z}))$，其内部区分——$\\delta(\\mathcal{Z}) \\setminus \\delta^2(\\mathcal{Z})$（第一次被触及但第二次未被再触及的「纯粹痕迹」）和 $\\delta^2(\\mathcal{Z}) \\setminus \\delta^3(\\mathcal{Z})$（第二次新触及的）——完全由 $\\delta$ 的前两次操作定义。$\\delta$ 作用于 $\\delta^2(\\mathcal{Z})$ 时，操作行为受到 $\\delta^2(\\mathcal{Z})$ 内部结构的约束——而这个结构是 $\\delta$ 自身的历史编码。这就是自指的数学含义：$\\delta^3$ 的操作域是 $\\delta$ 自身前两次操作的完整记录，$\\delta$ 在此处无法假装这是第一次——印记影响 $\\delta$ 的行为。$\\delta^1$ 和 $\\delta^2$ 的操作域（$\\mathcal{Z}$ 和 $\\delta(\\mathcal{Z})$）不包含 $\\delta$ 的完整历史，因此 $\\delta^3$ 是首个实现自指的迭代。∎\n\n**原理 0.1.3.06（三层自指闭合原理）**。$\\delta^3$ 实现自指后，三个维度——第一区分（抑制）、记忆区分（痕迹）、自指模式化（涌现）——形成最小不可约互扼循环。$\\delta$ 的后续迭代（$\\delta^4, \\delta^5, \\ldots$）不引入新的语义维度；它们在三个已有维度的框架内产生更精细的结构，最终在 $\\delta^8$ 实现拓扑闭合（Bott 周期，Berry 相位 $= 2\\pi$，由 0.3 严格证明）。\n\n**三层自指闭合与零和约束**。三层自指闭合不仅是语义维度的不可约性——它蕴含一个深刻的守恒律：三个维度在 $\\delta$ 的内部重新分配编码贡献，但总作用量始终为零。具体地，设 $S_1, S_2, S_3$ 分别为抑制、痕迹、涌现对应的编码作用量（在代数化后对应 $S_\\mathcal{M}, S_\\mathcal{C}, S_\\mathcal{I}$），则：\n\n$$\\boxed{S_1 + S_2 + S_3 = 0}$$\n\n这是 §2.3 中总作用量为零在三层自指闭合中的具体表达。三个维度互相制衡的数学含义正是：任何一个维度的正贡献必须被另外两个维度的负贡献精确抵消。后续迭代（$\\delta^4$ 到 $\\delta^8$）在保持此零和约束的前提下在三个扇区内产生更精细的结构——零和约束是贯穿整个编码轨道的刚性边界条件。\n\n*状态标注*：本原理的「三元之下无闭合」（引理 0.1.3.04）和「$\\delta^3$ 实现自指」（定理 0.1.3.05）已从 $\\delta$ 的迭代性质严格证明。「三元之上无新语义维度」的结构类型闭合——$\\text{type}(\\delta^3(\\mathcal{Z})) \\sim \\text{type}(\\mathcal{Z})$——在纯 $\\delta$ 层为方向性断言，其严格的拓扑验证需要 KO 理论不变量，由 0.3（Bott 周期）完成。此处陈述为**结构原理**，后续代数层提供定理级验证。\n\n三层自指闭合赋予了 §4 的三元内在结构以推导性基础——它不再是「我们观察到 $\\delta$ 有三个侧面」，而是「我们证明了 $\\delta$ 的迭代必然在第三步产生自指闭合，因此三元结构是推导结果，而非哲学预设」。\n\n---\n\n## §4 $\\delta$ 的三元内在结构\n\n由 §3.5 三层自指闭合定理，$\\delta$ 的迭代在第三步实现自指，三元结构——抑制、痕迹、涌现——作为必然结果展开。它们不是独立的，而是**一个操作在自指闭合后的三个不可分割的侧面**——它们同时产生，互相制衡：\n\n| 维度 | 含义 | 为什么不可约 |\n|:--|:--|:--|\n| **抑制** | $\\delta$ 说「此非彼」——否定 | 没有否定就没有区分 |\n| **痕迹** | 区分被记住——否则下一刻又要重新区分 | 没有痕迹，区分是瞬时的，等于没发生 |\n| **涌现** | 累积的区分形成不可逆的模式 | 没有涌现，抑制和痕迹只是来回振荡 |\n\n### 4.1 抑制\n\n抑制是 $\\delta$ 的否定面。$\\delta(\\mathcal{Z}) \\neq \\mathcal{Z}$ 中的 $\\neq$ 就是抑制——它说「这不是那」。没有这个否定，就没有区分，一切都停留在 $\\mathcal{Z}$ 中。\n\n抑制不是「破坏」——$\\mathcal{Z}$ 不会被破坏。抑制是「划定界限」：在未分化中划出一条线，线的两边不再相同。\n\n### 4.2 痕迹\n\n痕迹是 $\\delta$ 的记忆面。如果区分发生了但不被记住，下一刻 $\\delta$ 又要从 $\\mathcal{Z}$ 重新开始——那等于什么也没发生。痕迹意味着：前一步的区分影响后一步的行为。\n\n$\\delta$ 的迭代性——$\\delta \\circ \\delta \\circ \\delta \\cdots$——正是痕迹的数学表达。每一步 $\\delta$ 都在前一步的基础上操作，而不是从零开始。\n\n### 4.3 涌现\n\n涌现是 $\\delta$ 的模式面。单次区分只是二元性（此彼），但 $\\delta$ 的持续迭代累积出不可逆的模式——结构。涌现不是「从 $\\delta$ 外部注入的新东西」，而是「$\\delta$ 迭代的累积效应」。\n\n关键：涌现是不可逆的。一旦模式形成，它约束后续的 $\\delta$ 操作——不是所有区分都被允许，只有与已有模式自洽的区分才能存活。这就是**自洽性筛选**的萌芽。\n\n### 4.4 三元结构的数学化预览\n\n抑制-痕迹-涌现的语义三元组在 中将获得精确的代数对应。这里给出预览：\n\n| 语义三元组 | 代数对应 | 数学含义 |\n|:--|:--|:--|\n| **抑制**（否定） | $e_i^2 = -1$ | 生成元否定自身——回到自身时带负号 |\n| **痕迹**（记忆区分） | $e_i e_j = -e_j e_i$（$i \\neq j$） | 顺序被记住——交换产生负号 |\n| **涌现**（模式闭合） | $\\text{Cl}(n+8) \\cong \\text{Cl}(n) \\otimes \\text{Mat}(16, \\mathbb{R})$ | Bott 周期——结构模式 8 步复归 |\n\n这一对应的逻辑如下：\n\n- **抑制对应 $e_i^2 = -1$**：抑制是「此非彼」的否定。在代数中，$e_i$ 与自身相乘得到 $-1$——这是「$e_i$ 否定了自己作为 $1$ 的可能性」的代数印记。$e_i$ 是它自己的否定者——这与抑制的「划定界限」语义一致。\n\n- **痕迹对应反交换 $e_i e_j = -e_j e_i$**：痕迹是「前一步的区分影响后一步」。在代数中，$e_i e_j$ 与 $e_j e_i$ 差一个负号——这意味着「先 $i$ 后 $j$」与「先 $j$ 后 $i$」产生不同的结果。顺序被记住了——这就是痕迹。\n\n- **涌现对应 Bott 周期**：涌现是「累积的模式闭合」。在代数中，$\\text{Cl}(n)$ 的结构在 $n \\to n+8$ 时复归（只乘以 $\\text{Mat}(16, \\mathbb{R})$）——这是模式闭合的代数印记。但闭合不平凡（Berry 相位 $= 2\\pi$），与涌现的「不可逆性」一致。\n\n这一对应从 §3.5 三层自指闭合定理获得了推导性基础——三元结构不再是哲学预设，而是从 $\\delta$ 的非幂等性和迭代性质严格推导的结构必然性。三元语义为选择 Clifford 代数提供了概念框架，代数化是实现而非预设。\n\n---\n\n## §5 互扼平衡\n\n抑制-痕迹-涌现不是先后发生的。它们是**同时的**——区分、记忆区分、模式浮现，是同一个事件的三张面孔。\n【来源】0.1_零之动与区分_CN_260721.md"
+  },
+  {
+   "permanent_number": "253",
+   "formula_name": "定义 0.1.5.01（互扼）",
+   "master_id": "master_a7c50e290fc1",
+   "document": "【公式】三个维度互相制衡、互相成全的状态称为**互扼**：\n- 抑制恰好被痕迹记住（否则抑制无效）\n- 痕迹恰好被涌现模式化（否则痕迹只是死记）\n- 涌现恰好被抑制约束（否则涌现无界膨胀）\n\n三者缺一则区分崩解：\n- 无抑制 → 无区分 → $\\delta$ 平凡\n- 无痕迹 → 区分瞬时 → 无累积\n- 无涌现 → 来回振荡 → 无结构\n\n**互扼平衡的标志是闭合**：回路回到自身。当 $\\delta$ 迭代足够多次后，如果回路能闭合——回到出发点但带回了累积的模式——则互扼平衡达成。**闭合 = 圆满。**\n\n互扼平衡的数学表达是总作用量为零：\n\n$$\\boxed{S_\\mathcal{M} + S_\\mathcal{C} + S_\\mathcal{I} = 0}$$\n\n这不是一个外加的约束——它是 $\\delta$ 作为非满射自映射的内在属性（§2.3）。抑制产生正贡献（否定消耗自由能），痕迹记录负贡献（记忆是能量释放），涌现的模式闭合回到零——三者的编码贡献在零和约束下互相锁定。零不是「什么都没有」，零是**完美平衡**——三个扇区在编码轨道上的所有活动，总账精确为零。这正是「零之动」的终极含义：从零出发，终于零，但中间经历了所有可能的区分。\n\n这是圆满性的**语义层**概念——此时它还只是一个定性判断：「闭合了就是圆满的」。在 中，这将获得精确的数学表达：Berry 相位 $= 2\\pi$。\n\n### 5.1 互扼平衡的数学化预览\n\n互扼平衡在后续文章中将获得严格的数学化：\n\n| 互扼维度 | 数学化 | 出现位置 |\n|:--|:--|:--|\n| 抑制 ↔ 痕迹 | $e_i^2 = -1$ ↔ $e_i e_j = -e_j e_i$ | |\n| 痕迹 ↔ 涌现 | 反交换关系累积为代数结构 | |\n| 涌现 ↔ 抑制 | Bott 周期被体积元 $\\omega_n$ 的符号锁定 | |\n| 闭合 = 圆满 | $\\oint_\\Gamma \\mathcal{A} = 2\\pi n$ | |\n\n「互扼」在代数层具体化为：\n\n- **抑制被痕迹记住**：$e_i^2 = -1$ 是抑制的印记，而 $e_i e_j = -e_j e_i$ 让这个印记在 $e_j$ 出现时仍然成立——后续生成元不破坏前者的「否定」性质。\n- **痕迹被涌现模式化**：反交换关系在多个生成元累积后形成 Clifford 代数的整体结构——结构本身就是痕迹的模式化。\n- **涌现被抑制约束**：Bott 周期 $\\delta^8$ 不允许代数结构无限膨胀——它在 8 步后回到原点（扩大 16 倍）。这种「回归」就是抑制对涌现的约束。\n- **闭合达成圆满**：$\\delta^8$ 的 Berry 相位 $= 2\\pi$ 是互扼平衡达成的数学标志。\n\n### 5.2 互扼与共扼的区分\n\n「互扼」与「共扼」是两个相关但不同的概念：\n\n- **互扼**（mutual conjugation）：三个维度（抑制-痕迹-涌现）在 $\\delta$ 内部的相互制衡。这是 的语义概念。\n- **共扼**（co-conjugation）：三个结构常数（$\\Lambda, \\Delta\\Theta, k_0$）在 Bott 周期表中的相互锁定。这是 的代数概念。\n\n两者是同一思想在不同层次的表达：互扼是语义层的共扼，共扼是代数层的互扼。从互扼到共扼的桥梁由 的代数化和 的 Bott 周期共同搭建。\n\n---\n\n## §6 从语义到代数的桥梁\n\n本文从唯一公理出发，通过 $\\delta$ 的迭代性质（§3），推导出了三层自指闭合（§3.5）：\n\n```\n零之动 → δ 迭代 → 三层自指闭合（抑制·痕迹·涌现 互扼锁定）→ 闭合=圆满\n```\n\n三层自指闭合不是一个外加的哲学预设——它是从 $\\delta$ 的非幂等性和迭代性质严格推导的（§3.5 定理 0.1.3.05、原理 0.1.3.06）。下一步将这个结构**代数实现**：$\\delta$ 被实现为 Clifford 代数的 Bott 步进算符，抑制对应生成元的平方为负（$e_i^2 = -1$，由非幂等性推导），痕迹对应反交换（$e_i e_j = -e_j e_i$，由记忆区分顺序推导），涌现对应 Bott 周期。圆满性从结构原理变为 Berry 相位 $= 2\\pi$ 的精确判据（0.3 严格证明）。\n\n### 6.1 桥梁的构建步骤\n\n从语义到代数的桥梁不是一次性的翻译——它分四步构建：\n\n**步骤1：$\\delta$ 的代数化**。$\\delta$ 被实现为 Bott 步进算符——作用于实 Clifford 代数序列 $\\{\\text{Cl}(n)\\}_{n \\in \\mathbb{Z}_8}$ 的自函子。$\\delta(\\text{Cl}(n)) = \\text{Cl}(n+1)$，其中 $\\text{Cl}(n+1)$ 通过添加新生成元 $e_{n+1}$（满足 $e_{n+1}^2 = -1$、$e_{n+1} e_i + e_i e_{n+1} = 0$）得到。\n\n**步骤2：三元结构的代数推导**。由 0.1 §3.5 三层自指闭合定理：抑制（$\\delta^1$ 产生第一区分）→ $e_1$，其平方 $e_1^2 = -1$ 是 $\\delta$ 非幂等性的代数表达（其他选项 $+1$ 导致幂等、$0$ 导致崩溃）；痕迹（$\\delta^2$ 记住区分）→ $e_2$，$e_1 e_2 = -e_2 e_1$ 是「顺序被记忆」的代数表达（交换则痕迹失效）；涌现（$\\delta^3$ 自指闭合）→ $e_3$ 完成 Cl(3) 的半单分裂，是自指闭合的代数印记。三元结构从 $\\delta$ 迭代推导而来，Clifford 代数公理不是外加选择，而是必然推论。此推导在 0.2 §1.1 中完整展开。\n\n**步骤3：Bott 周期的证明**。$\\delta^8(\\text{Cl}(n)) = \\text{Cl}(n+8) \\cong \\text{Cl}(n) \\otimes \\text{Mat}(16, \\mathbb{R})$。$\\delta$ 的迭代在 8 步后结构复归——这是涌现的代数印记。\n\n**步骤4：圆满性的精确化**。$\\delta^8$ 回路的 Berry 相位 $= 2\\pi$——这是互扼平衡达成（闭合）的精确数学标志。圆满性判据从「闭合了就是圆满的」变为 $\\oint_\\Gamma \\mathcal{A} = 2\\pi n$。\n\n### 6.2 桥梁的哲学意义\n\n有了 §3.5 三层自指闭合定理，从语义到代数的桥梁不再是两个独立层之间的「翻译」——它是同一结构在不同精度下的**连续展现**。\n\n- **δ 迭代层**（§3）：$\\delta$ 的非幂等性和非满射性直接蕴含三层自指闭合。三元互扼锁定是 $\\delta$ 内在性质的必然结果。\n- **代数实现层**（0.2）：三层结构的代数表达恰好是 Clifford 代数 Cl(3)。$e_i^2 = -1$（抑制的代数印记）、$e_i e_j = -e_j e_i$（痕迹的代数印记）、Cl(3) 的半单分裂（涌现的代数印记）——这三个公理不是外加的，而是从 $\\delta$ 的性质推导出来的。\n- **拓扑闭合层**（0.3）：Bott 周期 $\\delta^8$ 闭合、Berry 相位 $= 2\\pi$ 是三层自指闭合在代数-拓扑层的精确验证。\n\n桥梁不是从「哲学」到「数学」的跳跃——它是从「结构原理」到「代数实现」到「拓扑验证」的逐步精确化。三层自指闭合是这一连续体的起点——它同时是结构原理（语义）和推导结果（数学），不再需要「语义层」和「代数层」的二分。\n\n### 6.3 下一篇文章的衔接\n\n将从本文的语义图景出发，构建 $\\delta$ 的代数实现。具体而言：\n\n- §1 定义 Bott 步进算符（$\\delta$ 的代数化）。\n- §1.1 建立语义-代数对应表（本文 §3.5 三层自指闭合将在此严格代数化）。\n- §2 证明三个关键引理（半单分裂、复结构涌现、终端二元性）——这三个引理是互扼三元组在代数层的精确实现。\n- §3 描述编码轨道——$\\delta$ 的迭代在代数层的具体路径。\n- §4 预览 Bott 周期——涌现的代数印记（在 中严格证明）。\n\n---\n\n## 定理索引\n\n| 编号 | 内容 | 证明状态 |\n|:---:|:---|:---:|\n| 定理 0.1.2.01 | $\\delta$ 的非平凡性：$\\delta(\\mathcal{Z}) \\neq \\mathcal{Z}$ 是第一区分的必然产物 | 公理直接推论 |\n| 命题 0.1.3.01 | $\\delta$ 的非幂等性：$\\delta \\circ \\delta \\neq \\delta$ | 严格证明 |\n| 引理 0.1.3.03 | 前三个域类型彼此不同：$\\text{type}(\\mathcal{Z}) \\neq \\text{type}(\\delta(\\mathcal{Z})) \\neq \\text{type}(\\delta^2(\\mathcal{Z}))$ | 严格证明（依赖非幂等性） |\n| 引理 0.1.3.04 | 二元循环无结构累积 | 严格证明（依赖非幂等性） |\n| 定理 0.1.3.05 | $\\delta^3$ 的自指性质：$\\delta^3$ 是首个操作域包含 $\\delta$ 自身历史的迭代 | 严格证明 |\n| 原理 0.1.3.06 | 三层自指闭合原理：三元互扼循环形成，后续迭代不引入新语义维度 | 部分严格（三元之下已证），类型闭合由 0.3 验证 |\n| 定理 0.1.5.02 | 互扼三元组的不可约性：抑制、痕迹、涌现缺一则区分崩解 | 逻辑论证（§3.5 为推导基础） |\n\n---\n\n## 参考文献\n\n- Atiyah, Bott, Shapiro, *Clifford Modules*, Topology 3 (1964)\n- Lawson, Michelsohn, *Spin Geometry*, Princeton University Press\n- Berry, *Quantal Phase Factors Accompanying Adiabatic Changes*, Proc. R. Soc. A 392 (1984)\n【来源】0.1_零之动与区分_CN_260721.md"
+  },
+  {
+   "permanent_number": "255",
+   "formula_name": "命题 0.2.1.02（体积元的平方）",
+   "master_id": "master_c4b781698a16",
+   "document": "【公式】设 $\\omega_n = e_1 e_2 \\cdots e_n$ 是 $\\text{Cl}(n)$ 的体积元。则\n$$\\omega_n^2 = (-1)^{n(n+1)/2}.$$\n\n**证明。** 计算 $\\omega_n^2 = (e_1 e_2 \\cdots e_n)(e_1 e_2 \\cdots e_n)$。将第二个 $\\omega_n$ 中的 $e_1$ 从右侧移到左侧，需要穿越 $n-1$ 个生成元（$e_n, \\dots, e_2$），每次穿越产生 $-1$：\n$$e_1 \\cdot e_1 = (-1)^{n-1} e_1 \\cdot e_1 \\cdot (\\text{其余})$$\n但更直接地，将 $\\omega_n^2$ 重排为 $\\prod_{i=1}^{n} e_i^2$ 需要的总交换次数为 $n(n-1)/2$（每个 $e_i$ 需穿越 $n-i$ 个其他生成元）。每次交换产生 $-1$，且 $\\prod e_i^2 = (-1)^n$。因此：\n$$\\omega_n^2 = (-1)^{n(n-1)/2} \\cdot (-1)^n = (-1)^{n(n-1)/2 + n} = (-1)^{n(n+1)/2}. \\quad \\square$$\n\n验证：\n- $n=3$：$(-1)^{3 \\cdot 4/2} = (-1)^6 =1$ ✓\n- $n=5$：$(-1)^{5 \\cdot 6/2} = (-1)^{15} = -1$ ✓\n- $n=7$：$(-1)^{7 \\cdot 8/2} = (-1)^{28} =1$ ✓\n\n体积元的平方符号决定 $\\text{Cl}(n)$ 是否分裂为直和：$\\omega_n^2 =1$ 时，$\\omega_n$ 是对合（$\\omega_n^2 = 1$），可以构造投影 $P_{\\pm} = (1 \\pm \\omega_n)/2$，从而代数分裂；$\\omega_n^2 = -1$ 时，$\\omega_n$ 充当复结构 $J$（$J^2 = -1$）。\n\n### 1.6 代数化的唯一性\n\n将 $\\delta$ 定义为「非平凡自映射」，具有三个语义性质：抑制、痕迹、涌现。本文 §1.1 将其代数化为 Clifford 代数。一个自然的问题是：这种代数化是否唯一？即，是否存在其他代数结构也满足这三个语义性质？\n> **当前立场：** 从 δ 到 Clifford 的桥梁**已从动机性升级为推导性**（0.1 §3.5 三层自指闭合定理）：\n>\n> 1. **圆满再现**：δ 产生候选参数 → {2,3,5} 互锁性（命题已证）→ Berry 相位闭合（定理已证）→ 圆满再现为 Clifford 代数。三个环节都是已证定理——**不再依赖工作假设**。\n> 2. **E₈ 桥接**：圆满再现后，{2,3,5} 由 KO 理论 → 偶幺模格 → E₈ 的严格链确定。这是已证定理。\n> 3. **三层自指闭合（0.1 §3.5）**：抑制痕迹涌现**已从 δ 的迭代性质严格推导**（引理 0.1.3.03：三元之下无闭合；定理 0.1.3.05：δ³ 实现自指；原理 0.1.3.06：三层之上无新语义维度）。Clifford 代数化是三层自指闭合的**代数实现**，而非外加的语义预设。\n>\n> **框架的逻辑结构因此为：** δ（公理）→ [三层自指闭合：0.1 §3.5 已推导] → Clifford 代数化（本文 §1.1）→ [圆满再现：已证定理命题] → [E₈ 桥接：已证] → {2,3,5} → 谱展开 → S=137.036。**框架中不再有依赖工作假设的环节**——从 δ 到 S=137.036 的每一步都基于已证定理或标准数学。\n\n---\n\n## §2 关键引理\n\n### 2.1 半单分裂\n【来源】0.2_δ的代数化_Clifford代数_CN_260721.md"
+  },
+  {
+   "permanent_number": "256",
+   "formula_name": "命题 0.2.4.01（Bott 周期）",
+   "master_id": "master_0cd85998b0d3",
+   "document": "【公式】$\\delta^8(\\text{Cl}(n)) = \\text{Cl}(n+8) \\cong \\text{Cl}(n) \\otimes \\text{Mat}(16, \\mathbb{R})$。\n\n这是 Bott 周期定理的直接推论。从 $\\text{Cl}(0) \\cong \\mathbb{R}$ 出发，$\\delta$ 迭代 8 步后到达 $\\text{Cl}(8) \\cong \\text{Mat}(16, \\mathbb{R}) = \\mathbb{R} \\otimes \\text{Mat}(16, \\mathbb{R})$——结构「回到原点」但扩大了 16 倍。\n\n关键问题：$\\delta^8$ 的闭合是平凡的吗？即 Berry 相位是否为零？答案是否定的——$\\delta^8$ 带回了 $2\\pi$ 的拓扑相位。这一非平凡闭合是整个物理世界存在的根源。完整证明在 中给出。\n\n### 4.1 Bott 周期的代数机制\n\nBott 周期 $\\text{Cl}(n+8) \\cong \\text{Cl}(n) \\otimes \\text{Mat}(16, \\mathbb{R})$ 的代数机制可以从两个角度理解：\n\n**角度1：维数翻倍。** $\\dim \\text{Cl}(n) = 2^n$，$\\dim \\text{Cl}(n+8) = 2^{n+8} = 256 \\cdot 2^n$，而 $\\dim(\\text{Cl}(n) \\otimes \\text{Mat}(16, \\mathbb{R})) = 2^n \\cdot 256 = 256 \\cdot 2^n$。维数匹配。但维数匹配只是必要条件，不保证同构。\n\n**角度2：周期性符号模式。** 体积元平方 $\\omega_n^2 = (-1)^{n(n+1)/2}$ 的符号序列（$n = 0, 1, \\dots$）为：\n$$1, -1, -1, 1, 1, -1, -1, 1, 1, -1, -1, 1, \\dots$$\n这是 4 步周期（$1, -1, -1，1$ 重复）。但代数结构的完整周期是 8 步——因为中心维数也有 2 步周期（奇数步中心维数 2，偶数步中心维数 1），两者的最小公倍数是 8。\n\n**角度3：表示维数序列。** 不可约表示维数序列 $\\rho_n = 1, 2, 4, 4, 8, 8, 8, 8, 16, 16, 32, \\dots$ 在 $n = 8$ 时首次回到 $\\rho_0 = 1$ 的 16 倍——这是 Bott 周期的表示论印记。\n\n### 4.2 Bott 周期与三个结构常数\n\nBott 周期 $\\delta^8$ 的 8 步循环中，三个结构常数对应三个「结构跳跃点」：\n\n- **步 3**（$\\Lambda = 3$）：首次半单分裂——从单代数到半单代数。\n- **步 5**（$\\Delta\\Theta = 5$）：首次复结构涌现——从实矩阵到复矩阵。\n- **步 7**（$k_0 = 2$）：终端二元性——编码轨道终端的半单分裂。\n\n这三个跳跃点不是任意的——它们由 $\\omega_n^2$ 的符号序列刚性确定（步 3 和步 7 是 $\\omega_n^2 =1$ 导致的分裂，步 5 是 $\\omega_n^2 = -1$ 导致的复结构）。将详细证明三者的互锁性。\n\n---\n\n## 定理索引\n\n| 编号 | 内容 | 证明状态 |\n|:---:|:---|:---:|\n| 定理 | Bott 步进算符定义：$\\delta(\\text{Cl}(n)) = \\text{Cl}(n+1)$ | 定义 |\n| 定理 | 代数化推导性：δ → 三层自指闭合 → Clifford 代数 | 已推导（0.1 §3.5 + 本文 §1.1, §1.6） |\n| 定理 | 半单分裂引理：$\\text{Cl}(3) \\cong \\mathbb{H} \\oplus \\mathbb{H}$ | 已证（本文§2.1） |\n| 定理 | 复结构涌现引理：$\\text{Cl}(5) \\cong \\text{Mat}(4, \\mathbb{C})$ | 已证（本文§2.2） |\n| 引理 | 终端二元性：$\\text{Cl}(7) \\cong \\text{Mat}(8, \\mathbb{R}) \\oplus \\text{Mat}(8, \\mathbb{R})$ | 已证（本文§2.3） |\n\n---\n\n## 参考文献\n\n- Atiyah, Bott, Shapiro, *Clifford Modules*, Topology 3 (1964)\n- Lawson, Michelsohn, *Spin Geometry*, Princeton University Press\n- Frobenius, *Über lineare Substitutionen und bilineare Formen*, J. reine angew. Math. 84 (1878)\n【来源】0.2_δ的代数化_Clifford代数_CN_260721.md"
+  },
+  {
+   "permanent_number": "258",
+   "formula_name": "定理 0.9.4.01（编码累积拉伸）",
+   "master_id": "master_38a56c954f7b",
+   "document": "【公式】。在七层编码轨道中，三层对应三扇区：\n\n| 扇区 | 编码层 | 代数范围 | $\\dim_\\mathbb{R}$ 扩展 |\n|:--|:--|:--|:--|\n| ℳ（物质） | $E_1, E_2, E_3$ | $\\text{Cl}(0) \\to \\text{Cl}(3)$ | $1 \\to 8$ |\n| 𝒞（因果） | $E_4, E_5$ | $\\text{Cl}(3) \\to \\text{Cl}(5)$ | $8 \\to 32$ |\n| ℐ（信息） | $E_6, E_7$ | $\\text{Cl}(5) \\to \\text{Cl}(7)$ | $32 \\to 128$ |\n\n各扇区的编码累积拉伸 $\\chi_i$ 由乘子序列的扇区分量确定：\n\n$$\\chi_M = 8,\\quad \\chi_C = 9,\\quad \\chi_I = 1$$\n\n### 4.2 $\\chi_C = 9 = 3^2$ 的根源\n\n$\\chi_C = 9$ 来自乘子序列的第五个乘子 $\\mu_5 = 9/8$。$\\mu_5$ 作用于编码层 $E_5 \\to E_6$ 的过渡——即 $\\text{Cl}(5) \\to \\text{Cl}(6)$。\n\n$\\text{Cl}(5) \\to \\text{Cl}(6)$ 的过渡是因果扇区（𝒞）与信息扇区（ℐ）的边界。$\\text{Cl}(6) \\cong \\text{Mat}(8, \\mathbb{R})$ 是 $\\text{Spin}(8)$ 的 Clifford 代数——正是在这一步，$\\text{Spin}(8)$ 的 triality（外自同构群 $S_3$，置换三个 8 维表示 $8_v, 8_s, 8_c$）首次成为代数结构的有效对称性。因果扇区将 triality 结构从 $\\text{Cl}(3)$ 传递到这一边界，但编码轨道的循环结构（$Z_3$ 循环对称）和复结构的部分丧失（$\\text{Cl}(5) \\to \\text{Cl}(6)$ 中 $\\omega_5$ 不再与所有生成元交换）导致 triality 破缺 $S_3 \\to Z_2$。\n\n**$\\chi_C = 9 = 3^2$ 是 triality 破缺 $S_3 \\to Z_2$ 的代数代价。**\n\n具体来说：\n\n- $\\text{Spin}(8)$ 的 triality 外自同构群 $S_3$（阶 6）置换三个 8 维表示 $8_v, 8_s, 8_c$。在 $\\text{Cl}(5) \\to \\text{Cl}(6)$ 过渡中，复结构 $\\omega_5$ 的中心性丧失，三个表示不再等价——$S_3$ 破缺为 $Z_2$（仅保留 $8_v \\leftrightarrow 8_s$ 的对换，$8_c$ 被固定为信息扇区方向）。\n- 陪集 $|S_3|/|Z_2| = 6/2 = 3$。此因子恰好等于结构常数 $\\Lambda = 3$——两者重合并非巧合：$\\Lambda = 3$ 编码了 ℳ 扇区在 triality 破缺中的突出地位（$8_v$ 被固定为 ℳ 方向，$8_s$ 和 $8_c$ 在 $Z_2$ 下交换）。\n- 平方 $3^2$ 来自因果扇区在编码轨道中的双重角色：$E_4 \\to E_5$（$\\text{Cl}(3) \\to \\text{Cl}(5)$）将 triality 结构传递到边界，$E_5 \\to E_6$（$\\text{Cl}(5) \\to \\text{Cl}(6)$）是 triality 实际破缺的位置。因果扇区跨越破缺点的两侧，使破缺代价以 $\\Lambda^2 = 9$ 的二次形式进入编码累积拉伸——这一二次性在 2.1 的 pullback 加权不动点方程中以 $\\chi_C$ 的平方耦合项出现，此处是其几何根源。\n\n这个 $3^2$ 不以 $\\text{Cl}(5)$ 的维数（$2^5 = 32$）或 $\\text{Cl}(6)$ 的维数（$2^6 = 64$）的形式出现——它是独立于维数扩展的\"扭力\"，编码了因果扇区在 Bott 周期中经历的代数破缺。\n\n### 4.3 编码累积拉伸 vs 维数扩展\n\n关键区分：\n\n| | 维数扩展 | 编码累积拉伸 $\\chi$ |\n|:--|:--|:--|\n| ℳ | $1 \\to 8$（因子 8） | $\\chi_M = 8$（与维数扩展一致） |\n| 𝒞 | $8 \\to 32$（因子 4） | $\\chi_C = 9 \\neq 4$（包含 triality 破缺代价） |\n| ℐ | $32 \\to 128$（因子 4） | $\\chi_I = 1$（编码在 Cl(7) 终端二元性中平衡，无净拉伸） |\n\n物质扇区的维数扩展与编码累积拉伸一致（8 = 8）——因为 Cl(0) → Cl(3) 的过渡不涉及 triality 破缺。因果扇区是唯一经历 triality 破缺的扇区，其编码累积拉伸（9）超过纯维数扩展（4）。信息扇区的编码在终端二元性中自我平衡，累积拉伸为 1（无净贡献）。\n\n---\n\n## §5 第一圈到第二圈的过渡：S_total = 0 的打破与加法的必然性\n\n### 5.1 第一圈：完美平衡与零泄漏\n\n第一圈零和恒等式（§2.2）是：\n\n$$\\Lambda + k_0 - \\Delta\\Theta = 0$$\n\n代入结构常数：$3 + 2 - 5 = 0$。这是 $S_{\\text{total}} = 0$（0.1 §2.3）在结构常数上的线性投影——三扇区 ℳ、𝒞、ℐ 的编码贡献在结构常数一级精确抵消。\n\n**第一圈的几何图像**：在理想封闭系统中，δ 的七层迭代完全在 Clifford 代数内部进行。$E_1$ 到 $E_7$ 的编码操作将所有的区分模式写入 $\\text{Cl}(7)$ 的 128 维容器中。$\\text{Cl}(7)$ 的每个基元素对应一个编码自由度，三扇区对这些自由度的贡献在 $S_{\\text{total}} = 0$ 的约束下精确抵消。**128 维的容器本身不贡献净作用量——它被三扇区\"吸收\"了。**\n\n第一圈的关键特征：**无泄漏**。系统在此层级是封闭的，$S_{\\text{total}} = 0$ 精确成立。没有任何编码自由度逃逸到物理观测中。\n\n### 5.2 从第一圈到第二圈：triality 破缺引入不可约项——分化点\n\n第二圈零和恒等式（§2.2）是：\n\n$$\\Lambda^2 - k_0^2 - \\Delta\\Theta = 0$$\n\n代入：$9 - 4 - 5 = 0$。\n\n**这个恒等式不是第一圈的简单平方**。对比第一圈和第二圈：\n\n$$\\begin{aligned}\n\\text{第一圈（线性）:}&\\quad \\Lambda + k_0 - \\Delta\\Theta = 0 \\quad\\Rightarrow\\quad 3 + 2 - 5 = 0 \\\\[4pt]\n\\text{第二圈（二次）:}&\\quad \\Lambda^2 - k_0^2 - \\Delta\\Theta = 0 \\quad\\Rightarrow\\quad 9 - 4 - 5 = 0\n\\end{aligned}$$\n\n第二圈中 $\\Delta\\Theta = 5$ 保持一次（不是 $5^2 = 25$），而 $\\Lambda^2 = 9$ 和 $k_0^2 = 4$ 都是二次。这个不对称性不是随意的——它来自 triality 破缺 $S_3 \\to Z_2$ 的几何选择。\n\n**为什么是 $\\Lambda$ 被平方？** Triality 破缺 $S_3 \\to Z_2$ 发生在 $\\text{Cl}(5) \\to \\text{Cl}(6)$ 的过渡中（§4.2）。$S_3$ 的三个置换方向中，一个被固定为 ℐ 扇区方向（$8_c$），两个保留 $Z_2$ 对换（$8_v \\leftrightarrow 8_s$）。$\\Lambda = 3$ 编码了 ℳ 扇区（绑定 $8_v$）在破缺中的突出地位——它是三个方向中唯一需要\"平方\"来弥合一次零和与二次零和之间差距的项。$k_0 = 2$ 的平方 $k_0^2 = 4$ 来自因果扇区的自洽闭合条件，而 $\\Delta\\Theta = 5$ 作为信息扇区的拓扑方向保持一次——因为信息扇区不在 triality 破缺的直接影响范围内。\n\n**分化机制**：$S_3$（阶 6）有 3 个不同的 Z₂ 子群，分别由三个对换 (12)、(13)、(23) 生成。每个 Z₂ 子群赋予 triality 破缺 $S_3 \\to Z_2$ 一种不同的方向：\n\n| Z₂ 选择 | 被固定的扇区方向 | 保留 Z₂ 对换的两个方向 | 我们对 α⁻¹ 的预期 |\n|:--|:--|:--|:--|\n| (12) 分支 | 方向 3 | 方向 1 ↔ 方向 2 | 一个分支 |\n| (13) 分支 | 方向 2 | 方向 1 ↔ 方向 3 | 另一个分支 |\n| (23) 分支（我们区域） | 方向 1 = ℳ | 方向 2 ↔ 方向 3 | 基数 137 |\n\n三种选择在群论上完全等价——$S_3$ 的 3 个 Z₂ 子群彼此共轭。但它们在物理上不等价，因为三个方向（ℳ、𝒞、ℐ）在编码轨道中扮演不同的角色。我们区域的选择是 ℳ 扇区被固定（绑定 $\\Lambda$），ℐ 扇区不参与 Z₂ 对换（绑定 $\\Delta\\Theta$），𝒞 扇区（绑定 $k_0$）与 ℐ 扇区保留 Z₂ 对换。这个选择给出 $\\Lambda^2 = 9$ 作为不可约项。\n\n**其他分支会有不同的 $\\alpha^{-1}$ 基数**——这是 triality 破缺作为分化点的本质含义。137 不是所有区域的普遍必然，而是我们区域的特定分支选择。\n\n**关键观察**：第二圈恒等式中的 $\\Lambda^2 = 9$ 是一个**不可约项**——它不能从第一圈线性恒等式中线性组合出来。$\\Lambda^2$ 在线性层面没有对应物——它是 triality 破缺在二次自洽性层级中引入的**独立代数自由度**。\n\n### 5.3 泄漏的数学机制：从零和内部的不可约项到外部泄漏\n\n第一圈无泄漏，因为 $\\Lambda + k_0 - \\Delta\\Theta = 0$ 中的所有项都是结构常数本身——它们在三扇区零和中被完全吸收。**这是所有区域共享的平衡态。**\n\n第二圈出现了 $\\Lambda^2 = 9$——一个在线性层面没有对应物的不可约项。在理想平衡态中，第二圈恒等式 $\\Lambda^2 - k_0^2 - \\Delta\\Theta = 0$ 也应为零（自洽性要求），但 triality 破缺使 $\\Lambda^2 = 9$ 成为一个**不可消除的残留**：它满足了第二圈恒等式（$9-4-5=0$），但无法被第一圈的线性零和吸收机制抵消。\n\n**泄漏的精确定义（分支内）**：$\\Lambda^2 = 9$ 是 triality 破缺在第二圈零和恒等式中引入的不可约项。在 $S_{\\text{total}} = 0$ 的理想平衡态中，这个不可约项被三扇区在更高阶的编码操作中吸收。但 triality 破缺破坏了吸收机制——$\\mathcal{C}$ 扇区在跨越 $\\text{Cl}(5) \\to \\text{Cl}(6)$ 时失去了 $S_3$ 中的 $Z_3$ 循环对称，使得 $\\Lambda^2 = 9$ 无法被三扇区完全抵消。**在我们区域选择的 Z₂ 分支下，它泄漏到物理观测中**，表现为 $\\alpha^{-1}$ 基数中的 $+9$ 项。**其他分支（选择不同的 Z₂ 子群）会有不同的泄漏值。**\n\n### 5.4 为什么是加法？——容器与泄漏的不可交换性\n\n现在可以严格回答\"为什么 $128 + 9$ 而不是 $128 \\times 9$\"。\n\n**$2^7 = 128$ 是第一圈自由度**：$\\text{Cl}(7)$ 的代数维数。在 $S_{\\text{total}} = 0$ 下，容器中的 128 个自由度被三扇区精确抵消——它们属于\"被吸收的静态编码容量\"。第一圈零和恒等式 $\\Lambda + k_0 - \\Delta\\Theta = 0$ 保证了这种吸收。\n\n**$\\Lambda^2 = 9$ 是第二圈自由度**：triality 破缺的不可约残留。它不在第一圈零和恒等式的描述范围内——它只在第二圈恒等式 $\\Lambda^2 - k_0^2 - \\Delta\\Theta = 0$ 中才出现。这 9 个自由度是\"破缺产生的动态残留\"——它们不能被第一圈的三扇区吸收机制覆盖。\n\n**加法的数学理由**：两个自由度集合是**不相交的**。第一圈的 128 维被三扇区吸收（$S_{\\text{total}} = 0$），第二圈的 9 维是吸收机制失效后的残留。它们不是在同一个编码空间中\"相乘\"的关系——它们属于不同的自洽性层级（第一圈 vs 第二圈），对应不同的零和恒等式。由于它们来自不同的零和层级，且度量的是编码空间的不同维度（静态容量 vs 动态残留），它们必须以加法组合。\n\n**反证法**：如果 128 和 9 相乘，得到 $128 \\times 9 = 1152$——这既不是 137，也与 2.2 从不动点 $\\sigma^*$ 纯代数计算的 $S(\\sigma^*) \\approx 137.036$ 完全矛盾。加法是唯一与框架自洽的选择。\n\n**独立验证**：$S(\\sigma^*)$ 的整数部分恰好为 137，与 $128+9$ 一致。这不是巧合——$S(\\sigma^*)$ 是从编码轨道的不动点方程纯代数计算的，完全不涉及\"容器+泄漏\"的几何论证。两者的吻合是独立验证。\n\n### 5.5 定理陈述\n【来源】0.9_基数137_Bott终端与因果扭力_CN_260729.md"
+  }
+ ]
+}

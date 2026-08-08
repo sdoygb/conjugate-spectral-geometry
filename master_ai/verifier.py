@@ -67,19 +67,12 @@ class MasterVerifier:
         )
 
     def _init_llm(self):
-        """初始化 LLM 客户端（用于独立推导复现）"""
-        if not GAI_API_KEY:
-            logger.warning("[VERIFIER] GAI_API_KEY 未配置，独立推导复现不可用")
-            return
-        try:
-            import openai
-            self._llm_client = openai.OpenAI(
-                api_key=GAI_API_KEY,
-                base_url=GAI_BASE_URL,
-            )
-            logger.info(f"[VERIFIER] LLM 客户端就绪: {MASTER_VERIFY_MODEL}")
-        except Exception as e:
-            logger.error(f"[VERIFIER] LLM 初始化失败: {e}")
+        """LLM 已退役（2026-08-05）：入库判据移交子AI执行，不再初始化 LLM 客户端。
+
+        保留函数签名与 self._llm_client 属性，防止遗留调用点报错。
+        """
+        self._llm_client = None
+        return
 
     # ==================== 主验证入口 ====================
 
@@ -273,56 +266,35 @@ class MasterVerifier:
                 f"{falsify_result.get('rejection_reason', '')[:200]}"
             )
 
-        # ---- 圆满判据：唯一入库标准 ----
-        # 主库AI（LLM）是圆满定理的唯一判官。
-        # Berry机械检测仅作记录与参考：机械检测只统计推导链文本中
-        # 角度序列对圆满态锚点的穿越次数，可被伪造的路径文本欺骗，
-        # 不能作为入库依据。所有公式统一由LLM从数学本质判断圆满性。
-        logger.info(
-            f"[VERIFIER] Berry机械检测记录(n={berry_result.n_value}, "
-            f"level={berry_result.consummation_level})，转交LLM判断圆满定理"
+        # ---- 程序化依赖核对（子AI判定前置检查）----
+        dep_check = self._check_dependencies_programmatic(
+            pending, derivation_chain
         )
-        consummation_judgment = self._llm_judge_consummation(
-                formula_name=formula_name,
-                formula_content=formula_content,
-                derivation_chain=derivation_chain,
-                berry_dict=berry_dict,
-                external_anchors=external_anchors,
-                falsification_summary=falsification_summary,
-            )
-        result["stages"]["consummation_judgment"] = consummation_judgment
+        result["stages"]["dependency_check"] = dep_check
+        logger.info(
+            f"[VERIFIER] 依赖核对: 满足{len(dep_check.get('satisfied', []))}个, "
+            f"缺失{len(dep_check.get('missing', []))}个, "
+            f"互锁同批{len(dep_check.get('interlock_deps', []))}个"
+        )
 
-        if consummation_judgment.get("should_promote"):
-            result["passed"] = True
-            result["action"] = "promoted"
-            result["rejection_reason"] = ""
-            result["used_anchors"] = []
-            result["judge_method"] = "llm_consummation"
-            logger.info(
-                f"[VERIFIER] 圆满判据通过(LLM): {formula_name} "
-                f"→ {consummation_judgment.get('consummation_level', '')}，入库"
-            )
-        elif consummation_judgment.get("is_dependency_gap"):
-            result["passed"] = False
-            result["action"] = "dependency_gap"
-            result["rejection_reason"] = consummation_judgment.get("reason", "依赖不足")
-            result["dependency_gap"] = {
-                "missing_dependencies": consummation_judgment.get("missing_dependencies", []),
-                "guidance": consummation_judgment.get("guidance", ""),
-            }
-            result["judge_method"] = "llm_consummation"
-            logger.info(
-                f"[VERIFIER] 圆满判据(LLM): {formula_name} → 依赖不足，等待补全"
-            )
-        else:
-            result["passed"] = False
-            result["action"] = "rejected"
-            result["rejection_reason"] = consummation_judgment.get("reason", "不满足圆满定理")
-            result["judge_method"] = "llm_consummation"
-            logger.info(
-                f"[VERIFIER] 圆满判据(LLM): {formula_name} → 驳回: "
-                f"{consummation_judgment.get('consummation_level', '未圆满')}"
-            )
+        # ---- 挂起等待子AI判定 ----
+        # LLM 已退役（2026-08-05）：圆满判据由子AI执行。
+        #   判据（固化协议，子AI无权放宽）：
+        #     A0 类（局部代数命题）：推导链逐步骤自洽 + 依赖闭合 → 圆满
+        #     A1 类（整体拓扑命题）：Berry 相位 2π 闭环 + 依赖闭合 → 圆满
+        # 机械检测（Berry/证伪）与依赖核对结果作为判定材料，随公式挂起。
+        verification_result_json = json.dumps(result, ensure_ascii=False, default=str)
+        self.master_db._update_pending_status(
+            submission_id,
+            "awaiting_child_judge",
+            verification_result=verification_result_json,
+        )
+        result["passed"] = False
+        result["action"] = "awaiting_child_judge"
+        result["judge_method"] = "child_ai"
+        logger.info(
+            f"[VERIFIER] 挂起等待子AI判定: {formula_name} (id={submission_id})"
+        )
 
         self._finalize(result, start_time, submission_id)
         return result
@@ -339,6 +311,18 @@ class MasterVerifier:
 
         # 提前获取pending数据（passed和rejected分支都需要）
         pending = self.master_db.get_pending(submission_id)
+
+        if result.get("action") == "awaiting_child_judge":
+            # 挂起等待子AI判定：仅记录状态，不驳回、不入库
+            self.master_db._update_pending_status(
+                submission_id, "awaiting_child_judge",
+                verification_result=verification_result_json,
+            )
+            _pname = (pending.get("metadata", {}).get("formula_name", "") if pending else "") or formula_name
+            logger.info(
+                f"[VERIFIER] 判定挂起: {_pname} (id={submission_id})"
+            )
+            return
 
         # 提取子AI互锁提示（所有分支都需要，提前定义）
         interlock_hint_list = []
@@ -439,6 +423,12 @@ class MasterVerifier:
                     judgment.get("missing_dependencies", [])
                 )
             used_l3 = self._extract_l3_references(derivation_text)
+
+            # 实时同步依赖图与真理层（防 promoted 校验使用过期快照误降级）
+            try:
+                self.dep_graph.sync_with_master_db(self.master_db.master_collection)
+            except Exception as e:
+                logger.warning(f"[VERIFIER] 依赖图同步失败: {e}")
 
             self.dep_graph.register_formula(
                 formula_id=submission_id,
@@ -571,6 +561,250 @@ class MasterVerifier:
 
     def _detect_unverified_concepts(self, derivation_chain: str, formula_content: str) -> List[str]:
         return []
+
+    # ==================== 程序化依赖核对 ====================
+
+    def _check_dependencies_programmatic(
+        self,
+        pending: Dict[str, Any],
+        derivation_chain: str,
+    ) -> Dict[str, Any]:
+        """
+        程序化核对推导链【依赖】标注的每个编号是否已在真理层。
+
+        依赖标识支持三种格式：
+          #N            — 永久编号（如 #159）
+          0.7.2.01      — 文章编号（分层编号）
+          定理名          — 公式全名/简称
+
+        同批互锁（interlock_hint 中的编号/名称）视为"互锁组内依赖"，
+        放行但单独列出——要求互锁组同批判定。
+
+        Returns:
+            {
+                "checked": bool,
+                "all_satisfied": bool,
+                "satisfied": [...],
+                "missing": [...],
+                "interlock_deps": [...],
+            }
+        """
+        import re
+        result = {
+            "checked": True,
+            "all_satisfied": True,
+            "satisfied": [],
+            "missing": [],
+            "interlock_deps": [],
+        }
+
+        # 提取【依赖】标注段
+        text = derivation_chain or ""
+        dep_section = ""
+        m = re.search(r'【依赖】\s*(.+?)(?=\n\s*\n|\n【|\Z)', text, re.DOTALL)
+        if m:
+            dep_section = m.group(1)
+        if not dep_section and "【依赖】" in text:
+            idx = text.find("【依赖】")
+            tail = text[idx + len("【依赖】"):]
+            dep_section = tail.split("【")[0] if "【" in tail else tail
+        if not dep_section:
+            result["checked"] = False
+            result["all_satisfied"] = False
+            result["missing"] = ["推导链未提供【依赖】标注"]
+            return result
+
+        # 解析条目
+        entries = []
+        for part in re.split(r'[、,，;\n]+', dep_section):
+            part = part.strip().strip("-•·").strip()
+            if part and part not in entries:
+                entries.append(part)
+
+        # 同批互锁（interlock_hint）
+        interlock_names = []
+        ih_str = pending["metadata"].get("interlock_hint", "")
+        if ih_str:
+            try:
+                interlock_names = json.loads(ih_str) if isinstance(ih_str, str) else ih_str
+            except Exception:
+                interlock_names = []
+
+        # 真理层全集
+        truth = self.master_db.get_truth_layer(limit=1000)
+        num_to_name = {}
+        art_to_name = {}
+        name_set = set()
+        for t in truth:
+            pn = str(t.get("permanent_number", "") or "")
+            if pn:
+                num_to_name[pn] = t.get("formula_name", "")
+            an = t.get("article_number", "") or ""
+            if an:
+                art_to_name[an] = t.get("formula_name", "")
+            fn = t.get("formula_name", "")
+            if fn:
+                name_set.add(fn)
+
+        for e in entries:
+            e_clean = e.split("（")[0].split("(")[0].strip()
+            # #N 永久编号
+            m_num = re.match(r'^#?(\d+)$', e_clean)
+            if m_num:
+                n = m_num.group(1)
+                if n in num_to_name:
+                    result["satisfied"].append(e)
+                    continue
+                if any(n in (i or "") for i in interlock_names):
+                    result["interlock_deps"].append(e)
+                    continue
+                result["missing"].append(e)
+                result["all_satisfied"] = False
+                continue
+            # 文章编号（纯数字点分）
+            if re.match(r'^\d+(\.\d+)+$', e_clean):
+                if e_clean in art_to_name:
+                    result["satisfied"].append(e)
+                    continue
+                if any(e_clean in (i or "") for i in interlock_names):
+                    result["interlock_deps"].append(e)
+                    continue
+                result["missing"].append(e)
+                result["all_satisfied"] = False
+                continue
+            # 名称匹配
+            if e in name_set or e_clean in name_set:
+                result["satisfied"].append(e)
+                continue
+            if any(e_clean in (i or "") for i in interlock_names):
+                result["interlock_deps"].append(e)
+                continue
+            result["missing"].append(e)
+            result["all_satisfied"] = False
+
+        return result
+
+    # ==================== 子AI判定入口 ====================
+
+    def child_judge(
+        self,
+        submission_id: str,
+        verdict: str,
+        consummation_level: str = "",
+        reason: str = "",
+        judge: str = "child_ai",
+    ) -> Dict[str, Any]:
+        """
+        子AI判定入口（LLM 退役后的唯一入库判据执行者）。
+
+        verdict:
+            promote        — 圆满，入库
+            reject         — 不圆满，驳回
+            dependency_gap — 依赖不足，等待补全
+
+        判定全程落盘 child_judgements.jsonl（append-only），供人工复核。
+        """
+        pending = self.master_db.get_pending(submission_id)
+        if not pending:
+            return {"error": f"候选公式不存在: {submission_id}", "action": "error"}
+
+        formula_name = pending["metadata"].get("formula_name", "unnamed")
+        start_time = time.time()
+
+        # ---- 判定记录落盘 ----
+        record = {
+            "submission_id": submission_id,
+            "formula_name": formula_name,
+            "article_number": pending["metadata"].get("article_number", ""),
+            "verdict": verdict,
+            "consummation_level": consummation_level,
+            "reason": reason,
+            "judge": judge,
+            "judged_at": datetime.now().isoformat(),
+        }
+        self._log_child_judgement(record)
+
+        # 恢复挂起时的机械检查结果
+        base_result = {"passed": False, "action": "", "stages": {}, "judge_method": "child_ai"}
+        vr_str = pending["metadata"].get("verification_result", "")
+        if vr_str:
+            try:
+                vr = json.loads(vr_str) if isinstance(vr_str, str) else vr_str
+                base_result["stages"] = vr.get("stages", {})
+                base_result["article_number"] = vr.get("article_number", "")
+            except Exception:
+                pass
+
+        if verdict == "promote":
+            result = dict(base_result)
+            result.update({
+                "passed": True,
+                "action": "promoted",
+                "rejection_reason": "",
+                "used_anchors": [],
+                "judge_method": "child_ai",
+                "consummation_level": consummation_level,
+                "stages": dict(base_result["stages"]),
+            })
+            result["stages"]["consummation_judgment"] = {
+                "should_promote": True,
+                "consummation_level": consummation_level,
+                "reason": reason,
+                "judge": judge,
+                "judge_method": "child_ai",
+            }
+            logger.info(
+                f"[VERIFIER] 子AI判定: {formula_name} → 圆满({consummation_level})，入库"
+            )
+        elif verdict == "reject":
+            result = dict(base_result)
+            result.update({
+                "passed": False,
+                "action": "rejected",
+                "rejection_reason": reason or "不满足圆满判据（子AI判定）",
+                "judge_method": "child_ai",
+            })
+            result["stages"]["consummation_judgment"] = {
+                "should_promote": False,
+                "consummation_level": consummation_level or "未圆满",
+                "reason": reason,
+                "judge": judge,
+            }
+            logger.info(
+                f"[VERIFIER] 子AI判定: {formula_name} → 驳回: {str(reason)[:80]}"
+            )
+        elif verdict == "dependency_gap":
+            result = dict(base_result)
+            result.update({
+                "passed": False,
+                "action": "dependency_gap",
+                "rejection_reason": reason or "依赖不足",
+                "dependency_gap": {
+                    "missing_dependencies": [d for d in (reason or "").split("、") if d.strip()],
+                    "guidance": "等待缺失依赖入库后重新判定",
+                },
+                "judge_method": "child_ai",
+            })
+            logger.info(
+                f"[VERIFIER] 子AI判定: {formula_name} → 依赖不足，等待补全"
+            )
+        else:
+            return {"error": f"未知判定: {verdict}", "action": "error"}
+
+        self._finalize(result, start_time, submission_id)
+        return result
+
+    def _log_child_judgement(self, record: Dict):
+        """判定记录落盘（append-only）"""
+        log_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "child_judgements.jsonl",
+        )
+        try:
+            with open(log_path, "a", encoding="utf-8") as f:
+                f.write(json.dumps(record, ensure_ascii=False) + "\n")
+        except Exception as e:
+            logger.error(f"[VERIFIER] 判定记录落盘失败: {e}")
 
     # ==================== LLM圆满定理判断 ====================
 

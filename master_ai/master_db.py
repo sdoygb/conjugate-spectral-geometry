@@ -75,6 +75,27 @@ class MasterDatabase:
 
     def _init_seq(self):
         """初始化永久编号计数器。为已有公式补编号。"""
+        # 启动校正：无论 seq 文件是否存在，先扫描 chroma 实际最大编号。
+        # 防止 seq 文件被重置/恢复导致永久编号重复分配。
+        all_truth = self.master_collection.get(include=["metadatas"]) if self.master_collection else {"ids": [], "metadatas": []}
+        _max_num = 0
+        for _meta in all_truth.get("metadatas", []):
+            _num = _meta.get("permanent_number")
+            if _num is not None:
+                try:
+                    _n = int(_num)
+                    if _n > _max_num:
+                        _max_num = _n
+                except (ValueError, TypeError):
+                    pass
+        if os.path.exists(self._seq_file):
+            with open(self._seq_file, 'r') as f:
+                _data = json.load(f)
+            if int(_data.get("next_number", 1)) <= _max_num:
+                _data["next_number"] = _max_num + 1
+                with open(self._seq_file, 'w') as f:
+                    json.dump(_data, f)
+                logger.info(f"[MASTER-DB] 永久编号计数器校正: next={_data['next_number']} (检测到 max=#{_max_num})")
         if not os.path.exists(self._seq_file):
             # 首次启动：扫描已有公式，按verified_at排序分配编号
             all_truth = self.master_collection.get(include=["metadatas"]) if self.master_collection else {"ids": [], "metadatas": []}
@@ -616,9 +637,22 @@ class MasterDatabase:
         berry_n = berry_data.get("n_value", 0)
         berry_status = berry_data.get("status", "no_angle_data")
 
+        # 永久编号分配（防重复防御）：若编号已被占用则跳过
+        _pn = self._next_seq()
+        _guard = 0
+        while _guard < 1000:
+            _taken = self.master_collection.get(where={"permanent_number": str(_pn)}, include=[])["ids"]
+            if not _taken:
+                break
+            _pn = self._next_seq()
+            _guard += 1
+        if _guard >= 1000:
+            logger.error(f"[MASTER-DB] 永久编号分配失败（1000次冲突）: {formula_name}")
+            return ""
+
         master_metadata = {
             "master_id": master_id,
-            "permanent_number": str(self._next_seq()),  # 永久编号，一入库不回收
+            "permanent_number": str(_pn),  # 永久编号，一入库不回收（含冲突防御）
             "formula_name": formula_name,
             "formula_type": pending["metadata"].get("formula_type", ""),  # 定理/引理/命题/公理/推论
             "source_agent": pending["metadata"].get("source_agent", ""),

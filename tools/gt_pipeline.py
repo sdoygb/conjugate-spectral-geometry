@@ -28,9 +28,20 @@ os.makedirs(LOGS, exist_ok=True)
 # ---------- 配置（修改需用户确认） ----------
 TYPE_WORDS = r'(?:定理|命题|公理|引理|推论)'           # 入库类型词
 TYPE_WORDS_REF = r'(?:定理|命题|公理|引理|推论|定义)'  # 依赖检查识别全部声明（含定义）
-INCLUDE_DEFINITIONS = False  # 定义类入库开关（默认关，待用户决定）
+INCLUDE_DEFINITIONS = False  # 定义类入库开关。用户决定(2026-08-05)：定义类不入库——定义是公式封装，其内部公式以公式/定理形式入库
 NUMBER_RE = r'(\d+\.\d+\.\d+\.\d+)'                  # 全数字编号，禁止字母后缀
 NUMBER_FULL = re.compile(r'^\d+\.\d+\.\d+\.\d+$')
+
+# 定义→内核公式映射（用户决定 2026-08-05：定义不入库，定义是公式封装，其内部公式以公式/定理形式入库）
+# 引用定义的依赖经此映射传递闭合：内核公式须已在主库（或递归经其他定义传递到主库公式）。
+# 主库判据实证（2.6.2.01 驳回，2026-08-05）：纯集合/结构定义无 (θ_M,θ_C,θ_I) 闭环，不能作为圆满公式入库，
+# 故拆解的正确形态是"定义→内核公式映射"而非"定义→定理转述"。
+DEF_CLOSURE = {
+    '2.6.2.01': ['0.1.1.01', '0.3.1.01'],   # 景观：δ迭代结构 + Bott周期分类
+    '2.6.1.01': ['2.1.2.01', '0.5.0.01', '0.5.1.01', '0.5.1.02', '0.5.1.03', '2.3.5.01', '2.3.5.02'],  # 区域：B₂分解 + E₈桥接 + 结构常数 + 信息层
+    '2.6.1.02': ['2.6.1.01'],               # 宇宙：区域概念（递归传递）
+    '2.6.1.03': ['2.6.1.01', '2.3.5.03', '2.2.1.01'],  # 本区域：区域 + 跨区域导入 + 不动点Cramer
+}
 
 # 本地判据已知驳回（非纯几何/非定理/数值扫描），入库时直接跳过并记录原因
 KNOWN_REJECTED = {
@@ -119,6 +130,25 @@ def audit():
             declared_types.setdefault(n, t.get(n, ''))
     report = {'ts': datetime.datetime.now().isoformat(timespec='seconds'),
               'master_total': len(master_nums), 'items': {}}
+
+    def def_core_in_master(def_num, _seen=None):
+        """定义编号的内核公式是否已在主库（递归传递：定义→定义→公式）"""
+        if def_num not in DEF_CLOSURE:
+            return False  # 未拆解：依赖保持开放
+        _seen = _seen or set()
+        if def_num in _seen:
+            return False
+        _seen.add(def_num)
+        for c in DEF_CLOSURE[def_num]:
+            if c in master_nums:
+                continue
+            if declared_types.get(c) == '定义':
+                if not def_core_in_master(c, _seen):
+                    return False
+            else:
+                return False
+        return True
+
     for num in sorted(master_nums, key=lambda s: [int(x) for x in s.split('.')]):
         src = declared.get(num, [])
         deps = set()
@@ -127,15 +157,22 @@ def audit():
         deps -= {num}
         missing = sorted(d for d in deps if d not in master_nums)
         ghosts = [d for d in missing if d not in declared]       # 无声明（笔误）
-        pendable = [d for d in missing if d in declared]         # 有声明可补
+        pendable = [d for d in missing if d in declared and declared_types.get(d) != '定义']  # 有声明可补（非定义类）
+        defdeps = [d for d in missing if declared_types.get(d) == '定义']  # 定义封装依赖：定义不入库，内核公式（DEF_CLOSURE）在主库即闭合
+        def_closed = [d for d in defdeps if def_core_in_master(d)]
+        def_open = [d for d in defdeps if d not in def_closed]
         rejected = [d for d in missing if d in KNOWN_REJECTED]   # 已驳回
+        real_missing = [d for d in missing if d not in def_closed]
         report['items'][num] = {
             'src': src,
             'deps': sorted(deps),
-            'closed': not missing,
+            'closed': not real_missing,
             'missing': missing,
             'ghost': ghosts,
             'pendable': pendable,
+            'def_deps': defdeps,
+            'def_closed': def_closed,
+            'def_open': def_open,
             'rejected': rejected,
         }
     report['ghost_total'] = sorted(set(
@@ -144,14 +181,23 @@ def audit():
     report['pendable_total'] = sorted(set(
         p for v in report['items'].values() for p in v['pendable']),
         key=lambda s: [int(x) for x in s.split('.')])
+    report['def_total'] = sorted(set(
+        p for v in report['items'].values() for p in v['def_deps']),
+        key=lambda s: [int(x) for x in s.split('.')])
+    report['def_open_total'] = sorted(set(
+        p for v in report['items'].values() for p in v['def_open']),
+        key=lambda s: [int(x) for x in s.split('.')])
     open(os.path.join(REPORTS, 'master_dep_audit.json'), 'w', encoding='utf-8').write(
         json.dumps(report, ensure_ascii=False, indent=1))
     closed = sum(1 for v in report['items'].values() if v['closed'])
     log('audit', {'master_total': len(master_nums), 'closed': closed,
                   'pendable_refs': len(report['pendable_total']),
+                  'def_open_refs': len(report['def_open_total']),
                   'ghost_refs': len(report['ghost_total'])})
     print(f'主库 {len(master_nums)} 条：依赖闭合 {closed} 条；'
-          f'可补依赖编号 {len(report["pendable_total"])} 个；笔误幽灵编号 {len(report["ghost_total"])} 个')
+          f'可补依赖编号 {len(report["pendable_total"])} 个；'
+          f'定义封装依赖 {len(report["def_total"])} 个（已拆解闭合 {len(report["def_total"]) - len(report["def_open_total"])}，未拆解 {len(report["def_open_total"])}）；'
+          f'笔误幽灵编号 {len(report["ghost_total"])} 个')
     unclosed = [n for n, v in report['items'].items() if not v['closed']]
     print('未闭合：', ', '.join(unclosed) if unclosed else '无')
 
