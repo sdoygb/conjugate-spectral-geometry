@@ -402,7 +402,7 @@ $$\text{Total Recoverable Information} = \left(\frac{1}{3}\right)^3 = \frac{1}{2
 
 By precision-cost duality (the principle of independent allocation of coding budgets), 1 unit of precision loss requires exactly 1 unit of coding budget to compensate. The three-layer cumulative coding cost increment is therefore exactly $1/27$. This is not a tunable parameter — it is the inescapable algebraic legacy of the $Z_3$ coding structure.
 
-*Status.* This term has been elevated to a within-branch theorem. The $Z_3$ coding argument has rigorous representation-theoretic support from Spin(8) triality — the degeneracy factor $|Z_3| = 3 = \Lambda$ is uniquely determined by the 3-cycle subgroup of triality. Precision-cost duality is rigorously given by the trace identity of the coding operations $\varepsilon_n^\dagger \circ \varepsilon_n$ and $\varepsilon_n \circ \varepsilon_n^\dagger$ (see 0.9 §7.7). The fixed-point calculation $S(\sigma_0) \approx 137.037 = 137 + 1/27$ provides independent numerical verification.
+*Status.* This term has been elevated to a within-branch theorem. The $Z_3$ coding argument has rigorous representation-theoretic support from Spin(8) triality — the degeneracy factor $|Z_3| = 3 = \Lambda$ is uniquely determined by the 3-cycle subgroup of triality. Precision-cost duality is rigorously given by the trace identity of the coding operations $\varepsilon_n^\dagger \circ \varepsilon_n$ and $\varepsilon_n \circ \varepsilon_n^\dagger$. The fixed-point calculation $S(\sigma_0) \approx 137.037 = 137 + 1/27$ provides independent numerical verification.
 
 #### 6.3.3 $B_2 = -15/14400$ (Fourth Cycle: Bott Echo)
 
@@ -632,7 +632,7 @@ We cannot geometrically prove that $Z_2^{(v)}$ *must* be selected. But we can sa
 The derivation chain from $\delta$ to $\alpha^{-1}$ has the following proof status:
 
 - **Theorem**: $B_0 = 137$ (within-branch), $B_2 = -15/14400$, $B_3 = 1/259200$, $B_4$, $B_5$
-- **Theorem**: $B_1 = 1/27$ (Coding Inverse Deviation — full proof completed in 0.9 §7.7, with rigorous support from Spin(8) triality and precision-cost duality)
+- **Theorem**: $B_1 = 1/27$ (Coding Inverse Deviation — derived in §6.3.2, with rigorous support from Spin(8) triality and precision-cost duality)
 - **Open**: Uniqueness of $\sigma_0$ (Junction 2), exact values of $B_6$ and higher-order terms
 
 ### 9.2 Comparison with Other Approaches
