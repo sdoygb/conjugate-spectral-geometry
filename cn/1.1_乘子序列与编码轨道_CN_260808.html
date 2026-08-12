@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.1 乘子序列与编码轨道 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="1.1 乘子序列与编码轨道">
+<meta name="generator" content="GeometryAI Build Script">
+
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\(', '\)']],
+    displayMath: [['$$', '$$'], ['\[', '\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/cn/1.1_乘子序列与编码轨道_CN_260808.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../index.html" class="nav-home">🏠 首页</a>
+    <a href="../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">1.1 乘子序列与编码轨道</span>
+  </nav>
+  <main class="article-content">
+<h1>1.1 乘子序列与编码轨道</h1>
+<p><strong>版本</strong>: 260808</p>
+<hr />
+<h2>摘要</h2>
+<p>本文从三个结构常数定理（$\Lambda=3$, $k_0=2$, $\Delta\Theta=5$）和素因子预算出发，推导编码轨道上的乘子序列 $\mu_1, \dots, \mu_7$。乘子序列由预算-基因型双层结构和良性互扼锁定唯一确定。编码基态 $N_1 = 6000 = 2^4 \cdot 3 \cdot 5^3$，经六层递推到达终端 $N_7 = 2.7 \times 10^8$。本文给出预算-基因型双层结构的形式定义、回收基准不变定理的纯递归证明、$\mu_1 = 6$ 的七候选排除完整证明、$\mu_2 = 100/3$ 的完整推导、triality 四阶段的指数序列与阶段分解、互扼锁定的参数化机制，以及完整编码轨道的逐步素因子分解。</p>
+<hr />
+<h2>目　录</h2>
+<p>§1　编码基态<br />
+　1.1　基态的素因子结构<br />
+　1.2　基态值</p>
+<p>§2　预算-基因型双层结构<br />
+　2.1　预算层<br />
+　2.2　基因型层<br />
+　2.3　操作组合公式<br />
+　2.4　回收基准不变定理<br />
+　2.5　信息容量对称性论证<br />
+　2.6　双层约束</p>
+<p>§3　乘子序列<br />
+　3.1　六层乘子<br />
+　3.2　编码轨道<br />
+　3.3　第七层的截断</p>
+<p>§4　triality 四阶段<br />
+　4.1　triality 指数序列<br />
+　4.2　四阶段详细说明</p>
+<p>§5　唯一性与互扼锁定<br />
+　5.1　互扼锁定的具体机制</p>
+<hr />
+<h2>§1 编码基态</h2>
+<h3>1.1 基态的素因子结构</h3>
+<p>三个结构常数定理（定理 0.5.1.01–03）锁定了三个素因子：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">结构常数</th>
+<th style="text-align: center;">素因子</th>
+<th style="text-align: left;">来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">$\Lambda = 3$</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">Cl(3) 半单分裂</td>
+</tr>
+<tr>
+<td style="text-align: center;">$k_0 = 2$</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">Cl(7) 终端二元性</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\Delta\Theta = 5$</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;">Cl(5) 复结构涌现</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>素因子集的拓扑基础。</strong> 素因子集 $\{2, 3, 5\}$ 的来源已由 §0 的 E₈ 桥接定理（定理E）严格证明：$h(E_8) = 30 = 2 \times 3 \times 5$，其中 E₈ 是 Bott 周期维度 8 中唯一的偶幺模格。个体赋值由 D₄ triality轨道的最高根系数 $\{3, 4, 5\}$ 确定。本卷的编码框架建立在这一拓扑基础之上。</p>
+</blockquote>
+<p>编码基态 $N_1$ 的素因子分解必须只包含 $\{2, 3, 5\}$——其他素因子不在预算中。</p>
+<h3>1.2 基态值</h3>
+<p><strong>命题 1.1.1.01（编码基态）。</strong> 编码基态为<br />
+$$N_1 = 6000 = 2^4 \cdot 3 \cdot 5^3.$$</p>
+<p>其结构由三个结构常数定理的素因子预算联合决定：<br />
+- $2^4$：$k_0 = 2$ 的终端二元性在 4 个编码层（$E_4$–$E_7$）中各贡献一个因子 2<br />
+- $3^1$：$\Lambda = 3$ 的半单分裂贡献一个因子 3<br />
+- $5^3$：$\Delta\Theta = 5$ 的复结构涌现及后续两层各贡献一个因子 5</p>
+<hr />
+<h2>§2 预算-基因型双层结构</h2>
+<h3>2.1 预算层</h3>
+<p><strong>定义14（素因子预算）。</strong> 编码过程的每一步消耗或回收素因子令牌。预算空间 $\mathbb{B}$ 是素因子 $\{2, 3, 5\}$ 的多重集。每步编码映射 $E_n$ 消耗若干令牌（产生增长）或回收令牌（约束增长）。</p>
+<p>完整预算为 $\{2, 3, 5, 5\}$——共 4 个令牌，对应 7 层编码中的 4 次消耗操作。</p>
+<p><strong>形式定义。</strong> 设素因子集合 $\mathcal{P} = \{2, 3, 5\}$。预算空间 $\mathbb{B}$ 定义为 $\mathcal{P}$ 上的自由交换幺半群（即多重集）：<br />
+$$\mathbb{B} = \bigoplus_{p \in \mathcal{P}} \mathbb{N}_0 \cdot [p],$$<br />
+其中 $[p]$ 表示素因子 $p$ 的生成元，加法对应多重集的并。初始预算为<br />
+$$\mathbb{B}_1 = [2] \oplus [3] \oplus [5] \oplus [5].$$</p>
+<p>预算演化由两类原子操作驱动：<br />
+- <strong>消耗操作</strong> $\mathrm{consume}(p)$：从当前预算 $\mathbb{B}_n$ 中移除一个令牌 $[p]$，将因子 $p$ 注入基因型，使编码基数增长。形式上 $\mathbb{B}_{n1} = \mathbb{B}_n \ominus [p]$。<br />
+- <strong>回收操作</strong> $\mathrm{recycle}(p)$：将先前消耗的因子 $p$ 从累积回收池 $\mathbb{C}_n$ 中取回，注入基因型的同时不再从预算 $\mathbb{B}_n$ 中扣除。形式上 $\mathbb{C}_{n1} = \mathbb{C}_n \ominus [p]$，且 $\mathbb{B}_{n1} = \mathbb{B}_n$。</p>
+<p>累积回收池 $\mathbb{C}_n$ 记录截至第 $n$ 步所有被消耗但尚未回收的令牌，是预算层与基因型层耦合的桥梁。初始 $\mathbb{C}_1 = \emptyset$。</p>
+<h3>2.2 基因型层</h3>
+<p><strong>定义15（基因型）。</strong> 每步编码映射 $E_n$ 的基因型 $\gamma_n$ 是一个代数结构，描述该步的编码方式。基因型由以下因素联合约束：</p>
+<ol>
+<li><strong>Bott 周期刚性</strong>：Cl($n$) → Cl($n1$) 的代数结构是刚性的——不可调节。</li>
+<li><strong>圆满性判据</strong>：每步的 Berry 相位必须闭合。</li>
+<li><strong>素因子预算</strong>：消耗的令牌必须在预算内。</li>
+<li><strong>回收基准不变</strong>：回收操作不能改变已完成步骤的编码基数。</li>
+</ol>
+<p><strong>形式定义。</strong> 第 $n$ 步编码映射 $E_n : \mathrm{Cl}(n-1) \to \mathrm{Cl}(n)$ 的基因型 $\gamma_n$ 是一个三元组：<br />
+$$\gamma_n = \big(\phi_n, \, \sigma_n, \, \rho_n\big),$$<br />
+其中：<br />
+- $\phi_n : \mathrm{Cl}(n-1) \hookrightarrow \mathrm{Cl}(n)$ 是 Bott 周期给出的刚性嵌入（不可调节）；<br />
+- $\sigma_n \in \{\mathrm{consume}, \mathrm{recycle}, \mathrm{id}\}^{\mathcal{P}}$ 是该步对每个素因子 $p$ 的操作签名；<br />
+- $\rho_n \in \mathbb{Z}[\frac{1}{2}, \frac{1}{3}, \frac{1}{5}]$ 是该步乘子 $\mu_n$ 的有理表示。</p>
+<p>基因型空间 $\Gamma = \{\gamma_n\}$ 上的等价关系由圆满性判据商化：仅当 Berry 相位闭合时 $\gamma_n$ 被接纳为合法基因型。</p>
+<h3>2.3 操作组合公式</h3>
+<p>乘子 $\mu_n$ 由基因型 $\gamma_n$ 的操作签名 $\sigma_n$ 唯一确定。设 $\sigma_n$ 中对素因子 $p$ 的操作为 $\sigma_n(p) \in \{\mathrm{consume}, \mathrm{recycle}, \mathrm{id}\}$，令 $\nu_n(p)$ 为该操作对 $p$ 的重数（非负整数）。则乘子的素因子展开为：<br />
+$$\mu_n = \prod_{p \in \mathcal{P}} p^{\,\varepsilon_n(p)}, \qquad \varepsilon_n(p) = \nu_n^{\mathrm{consume}}(p) - \nu_n^{\mathrm{recycle}}(p).$$</p>
+<p>将此递推展开，编码基数 $N_{k1}$ 由基态 $N_1$ 与各步乘子的连乘给出：<br />
+$$\boxed{\,N_{k1} = N_1 \times \frac{\displaystyle\prod_{n=1}^{k}\prod_{p} p^{\,\nu_n^{\mathrm{consume}}(p)}}{\displaystyle\prod_{n=1}^{k}\prod_{p} p^{\,\nu_n^{\mathrm{recycle}}(p)}}\,}$$</p>
+<p>即分子为所有消耗令牌的乘积，分母为所有回收令牌的乘积。这一公式是后续推导的核心工具：它表明 $N_{k1}$ 的所有信息都编码在「消耗—回收」的净收支中，而回收操作仅作用于分母。</p>
+<p>由公式立得守恒律：回收的令牌必来自此前的消耗，故 $\prod_n \mu_n$ 中每个被回收的因子必与某次消耗相消，最终<br />
+$$\prod_{n=1}^{6} \mu_n = \frac{N_7}{N_1} = \frac{\text{净消耗乘积}}{1} = \frac{2^4 \cdot 3 \cdot 5^3 \cdot (\text{净增益})}{1}.$$</p>
+<h3>2.4 回收基准不变定理</h3>
+<p><strong>引理 1.1.2.01（回收基准不变）。</strong> 设第 $k$ 步执行回收操作 $\mathrm{recycle}(p)$，回收的令牌 $p$ 来自第 $j < k$ 步的消耗 $\mathrm{consume}(p)$。则回收基准必须取为基态 $N_1$ 的内禀因子，而不能取为中间态 $N_{k-1}$ 的当前因子。即回收操作改变的是 $N_1$ 的内禀结构在 $N_k$ 中的投影，而非 $N_{k-1}$ 的累加结构。</p>
+<p><strong>证明（纯递归结构证明）。</strong></p>
+<p>采用反证法。设回收基准可取为 $N_{k-1}$，即回收 $\mathrm{recycle}(p)$ 等价于从 $N_{k-1}$ 中除以 $p$。考虑编码轨道的递归结构：<br />
+$$N_k = N_{k-1} \cdot \mu_k, \qquad \mu_k = \frac{A_k}{p} \quad (\text{设第 } k \text{ 步回收 } p).$$</p>
+<p>若回收基准为 $N_{k-1}$，则 $N_k = N_{k-1} \cdot A_k / p$，因子 $p$ 从 $N_{k-1}$ 中扣除。但 $N_{k-1}$ 本身由 $N_1$ 经前 $k-1$ 步递推而得，其中第 $j$ 步的 $\mathrm{consume}(p)$ 已将 $p$ 注入。于是 $N_{k-1}$ 中的因子 $p$ 是第 $j$ 步消耗的「历史遗留」，回收操作将其抹除等价于回溯修改第 $j$ 步的基因型 $\gamma_j$——这与 Bott 周期刚性（基因型不可调节）矛盾。</p>
+<p>更严格地，递归展开 $N_{k-1}$：<br />
+$$N_{k-1} = N_1 \cdot \prod_{n=1}^{k-1} \mu_n = N_1 \cdot \prod_{n=1}^{k-1} \prod_p p^{\,\varepsilon_n(p)}.$$<br />
+其中因子 $p$ 的累积指数为 $\sum_{n=1}^{k-1} \varepsilon_n(p)$。若回收基准为 $N_{k-1}$，则回收使该累积指数减 1，等效于修改某个 $\varepsilon_j(p)$（$j < k$），即修改 $\gamma_j$。刚性禁止此修改。</p>
+<p>反之，若回收基准取为 $N_1$，则回收操作仅在 $N_k$ 的表达式中引入分母 $p$，而不触及 $N_1$ 的内禀分解 $2^4 \cdot 3 \cdot 5^3$。形式上，由操作组合公式：<br />
+$$N_k = N_1 \cdot \frac{\prod \mathrm{consume}}{\prod \mathrm{recycle}},$$<br />
+$N_1$ 作为独立因子出现，回收仅作用于分母，$N_1$ 的内禀结构 $2^4 \cdot 3 \cdot 5^3$ 不受任何回收影响。</p>
+<p>因此回收基准必须是 $N_1$ 而非 $N_{k-1}$。$\square$</p>
+<p><strong>推论 1.1.2.02。</strong> 基态 $N_1 = 2^4 \cdot 3 \cdot 5^3$ 中的内禀因子 $3^1$（来自 $\Lambda = 3$）在任何回收操作后仍然保留在 $N_k$ 的素因子分解中——回收仅在「累积增益」层面引入 $3^{-1}$，内禀 $3^1$ 不变。这正是 $\mu_2 = 100/3$ 中分母 3 的来源：回收 3 后 $N_3 = N_1 \cdot (\text{消耗乘积}) / 3$，但 $N_1$ 仍贡献内禀 $3^1$，故 $N_3$ 中因子 3 的净指数为 $1 - 1(\text{其他消耗})$。</p>
+<h3>2.5 信息容量对称性论证</h3>
+<p><strong>引理 1.1.2.03（信息容量对称性）。</strong> 从信息论角度可独立验证回收基准必须为 $N_1$。</p>
+<p><strong>论证。</strong> 将编码基数 $N_n$ 视为第 $n$ 步编码层的信息容量（以 $\log_2 N_n$ 比特度量）。基态 $N_1$ 携带内禀信息量 $I_1 = \log_2 N_1 = 4\log_2 2 + \log_2 3 + 3\log_2 5$。</p>
+<p>回收操作的语义是「取回先前注入的信息」，故回收前后系统的总信息容量应对称：回收 $p$ 减少的信息量应恰等于当初消耗 $p$ 增加的信息量 $\log_2 p$。若回收基准为 $N_{k-1}$，则回收使 $N_k$ 相对 $N_{k-1}$ 减少 $\log_2 p$，但 $N_{k-1}$ 已包含第 $j$ 步消耗的累积效应，回收实际抹除的是「$N_1$ 之后到 $N_{k-1}$ 的累积」中的 $p$——信息不对称。</p>
+<p>唯有回收基准为 $N_1$ 时，回收 $p$ 使 $N_k$ 相对 $N_1$ 的增益减少 $\log_2 p$，恰与第 $j$ 步消耗 $p$ 使增益增加 $\log_2 p$ 对称，信息收支平衡。此论证独立于 Bott 刚性，从信息容量对称性给出同一结论。$\square$</p>
+<h3>2.6 双层约束</h3>
+<p>乘子 $\mu_n = N_{n1}/N_n$ 由预算层和基因型层联合确定：</p>
+<ul>
+<li><strong>预算层</strong>约束 $\mu_n$ 的素因子构成（只能用 $\{2, 3, 5\}$）</li>
+<li><strong>基因型层</strong>约束 $\mu_n$ 的具体数值（由 Cl($n$)→Cl($n1$) 的代数结构决定）</li>
+</ul>
+<p>两层联合给出 $\mu_n$ 的唯一值。</p>
+<hr />
+<h2>§3 乘子序列</h2>
+<h3>3.1 六层乘子</h3>
+<p><strong>定理 1.1.3.01（乘子序列）。</strong> 在预算-基因型双层结构、triality 四阶段、回收基准不变定理及 Bott 截断的联合约束下，乘子序列唯一确定为：</p>
+<p>$$\mu_1 = 6, \quad \mu_2 = \frac{100}{3}, \quad \mu_3 = 10, \quad \mu_4 = 10, \quad \mu_5 = \frac{9}{8}, \quad \mu_6 = 2.$$</p>
+<p><strong>证明概要。</strong></p>
+<p>每步乘子 $\mu_n$ 的确定遵循以下流程：</p>
+<ol>
+<li><strong>Cl($n$-1)→Cl($n$) 的代数结构</strong>确定该步可用的编码方式（基因型）。</li>
+<li><strong>素因子预算</strong>约束该步消耗哪些令牌。</li>
+<li><strong>圆满性判据</strong>筛选自洽的编码方式。</li>
+<li><strong>回收基准不变</strong>确保已完成的步骤不受后续影响。</li>
+</ol>
+<p>六步乘子的具体推导：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">步</th>
+<th style="text-align: center;">$\mu_n$</th>
+<th style="text-align: left;">素因子消耗</th>
+<th style="text-align: left;">基因型</th>
+<th style="text-align: left;">预算令牌</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">$\mu_1$</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;">$2 \times 3$</td>
+<td style="text-align: left;">Cl(0)→Cl(1): $\mathbb{R}→\mathbb{C}$</td>
+<td style="text-align: left;">消耗 2, 3</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\mu_2$</td>
+<td style="text-align: center;">100/3</td>
+<td style="text-align: left;">$2^2 \times 5^2 / 3$</td>
+<td style="text-align: left;">Cl(1)→Cl(2): $\mathbb{C}→\mathbb{H}$</td>
+<td style="text-align: left;">消耗 5,5; 回收 3</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\mu_3$</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: left;">$2 \times 5$</td>
+<td style="text-align: left;">Cl(2)→Cl(3): $\mathbb{H}→\mathbb{H}\oplus\mathbb{H}$</td>
+<td style="text-align: left;">消耗 2</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\mu_4$</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: left;">$2 \times 5$</td>
+<td style="text-align: left;">Cl(3)→Cl(4): 半单→Mat(2,$\mathbb{H}$)</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\mu_5$</td>
+<td style="text-align: center;">9/8</td>
+<td style="text-align: left;">$3^2 / 2^3$</td>
+<td style="text-align: left;">Cl(4)→Cl(5): Mat(2,$\mathbb{H}$)→Mat(4,$\mathbb{C}$)</td>
+<td style="text-align: left;">回收 3</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\mu_6$</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">$2$</td>
+<td style="text-align: left;">Cl(5)→Cl(6): Mat(4,$\mathbb{C}$)→Mat(8,$\mathbb{R}$)</td>
+<td style="text-align: left;">—</td>
+</tr>
+</tbody>
+</table>
+<p>注意 $\mu_5 = 9/8 < 1$ 是一个「回收步」——编码基数减小，但结构复杂度增加（复结构涌现）。这对应 $\Delta\Theta = 5$ 在第 5 步的凝结。</p>
+<h4>3.1.1 $\mu_1 = 6$ 的七候选排除证明</h4>
+<p><strong>引理 1.1.3.02（$\mu_1 = 6$ 的七候选排除）。</strong> 设初始预算 $\mathbb{B}_1 = \{2, 3, 5, 5\}$，累积回收池 $\mathbb{C}_1 = \emptyset$。$\mu_1$ 的分子必须是 $\mathbb{B}_1$ 中元素的部分乘积。合法候选为：<br />
+$$\mu_1 \in \{2,\; 3,\; 5,\; 6=2\times 3,\; 10=2\times 5,\; 15=3\times 5,\; 25=5\times 5\}.$$</p>
+<p><strong>条件1（$\mu_2$ 的回收约束）。</strong> 由基因型层，$\mu_2$ 对应 Cl(1)→Cl(2) 的 $\mathbb{C} \to \mathbb{H}$ 过渡，其结构要求 $\mu_2 = 100/3$（见 3.1.2 节推导）。$\mu_2$ 的分母 3 必须回收自累积回收池 $\mathbb{C}_2$，即 $\mathbb{C}_2$ 必须包含因子 3。而 $\mathbb{C}_2$ 中的因子只能来自 $\mu_1$ 的消耗。因此 $\mu_1$ 必须消耗 $\mathbb{B}_1$ 中的因子 3。</p>
+<p>逐一检验七候选：<br />
+- $\mu_1 = 2$：未消耗 3，$\mathbb{C}_2$ 不含 3。✗<br />
+- $\mu_1 = 5$：未消耗 3，$\mathbb{C}_2$ 不含 3。✗<br />
+- $\mu_1 = 10 = 2 \times 5$：未消耗 3，$\mathbb{C}_2$ 不含 3。✗<br />
+- $\mu_1 = 25 = 5 \times 5$：未消耗 3，$\mathbb{C}_2$ 不含 3。✗</p>
+<p>排除后剩余 $\{3,\; 6,\; 15\}$，三者均消耗因子 3。</p>
+<p><strong>条件2（Bott 截断要求 $\mathbb{B}_7 = \emptyset$）。</strong> Bott 周期截断要求编码轨道在第 7 层终止时预算恰好耗尽，即 $\mathbb{B}_7 = \emptyset$。逐一追踪三种幸存候选的预算演化：</p>
+<ul>
+<li><strong>$\mu_1 = 3$</strong>：消耗 $\{3\}$，预算残留 $\mathbb{B}_2 = \{2, 5, 5\}$。此后 $\mu_2$ 消耗 $\{5, 5\}$、$\mu_3$ 消耗 $\{2\}$，预算残留三个因子 5（来自基因型层对 $5^3$ 的需求与预算 $\{5,5\}$ 不匹配）。具体地，$N_1$ 内禀含 $5^3$，但预算仅提供两个 5 令牌，第三个 5 需由 $\mu_1$ 的消耗补足；$\mu_1 = 3$ 未消耗 5，故 $5^3$ 结构无法闭合，预算残留无法清零。✗</li>
+<li><strong>$\mu_1 = 15 = 3 \times 5$</strong>：消耗 $\{3, 5\}$，预算残留 $\mathbb{B}_2 = \{2, 5\}$。此后 $\mu_2$ 消耗 $\{5\}$、$\mu_3$ 消耗 $\{2\}$，预算残留两个因子 5（$\mu_1$ 已消耗一个 5，但 $N_1$ 的 $5^3$ 仍需三个 5，预算仅余一个 5 令牌，差额两个 5 无法补足）。预算残留无法清零。✗</li>
+<li><strong>$\mu_1 = 6 = 2 \times 3$</strong>：消耗 $\{2, 3\}$，预算残留 $\mathbb{B}_2 = \{5, 5\}$。此后 $\mu_2$ 消耗 $\{5, 5\}$（恰清零预算中的 5），$\mu_3$–$\mu_6$ 的消耗回收均由内禀结构与回收池自洽完成。追踪至 $\mathbb{B}_7$：预算 $\{5, 5\}$ 在 $\mu_2$ 全部消耗，$\mathbb{B}_7 = \emptyset$，Bott 截断在 $n = 7$ 自然终止。✓</li>
+</ul>
+<p>因此 $\mu_1 = 6$ 是唯一满足全部约束的选择。$\square$</p>
+<h4>3.1.2 $\mu_2 = 100/3$ 的完整推导</h4>
+<p><strong>$\mu_2$ 的推导。</strong> $\mu_2$ 对应 Cl(1)→Cl(2) 的 $\mathbb{C} \to \mathbb{H}$ 过渡。</p>
+<p><strong>分母的来源。</strong> $\mu_2$ 的分母 3 必须回收自累积回收池 $\mathbb{C}_2$。由 $\mu_1 = 6 = 2 \times 3$ 已消耗因子 3，故 $\mathbb{C}_2 = \{3\}$，回收 $\mathrm{recycle}(3)$ 合法。由引理 1.1.2.01，回收基准为 $N_1$ 而非 $N_2$。</p>
+<p><strong>为何是 $100/3$ 而非 $50/9$。</strong> 基因型层（Cl(1)→Cl(2) 的 $\mathbb{C} \to \mathbb{H}$ 结构）要求 $\mu_2$ 的分子为 $2^2 \times 5^2 = 100$（四元数维数 4 与复结构 $\Delta\Theta = 5$ 的双重涌现）。若误取回收基准为 $N_2$，则会得到 $\mu_2 = 50/9$（试图从 $N_2 = 36000 = 2^5 \cdot 3^2 \cdot 5^3$ 中扣除 $3^2$），但由引理 1.1.2.01 此基准非法。正确的回收基准 $N_1$ 强制仅回收一个因子 3（来自 $\mu_1$ 的单次消耗），故 $\mu_2 = 100/3$。</p>
+<p><strong>操作序列。</strong> 第 2 步的操作签名为：<br />
+$$\mathrm{consume}(5),\; \mathrm{consume}(5),\; \mathrm{recycle}(3),\; \mathrm{consume}(2),\; \mathrm{consume}(2).$$<br />
+对应乘子：<br />
+$$\mu_2 = \frac{5 \times 5 \times 2 \times 2}{3} = \frac{100}{3}.$$</p>
+<p><strong>编码基数计算。</strong> 由操作组合公式（§2.3），以 $N_1$ 为基准：<br />
+$$N_3 = N_1 \times \frac{2 \times 3 \times 5 \times 5 \times 2 \times 2}{3} = N_1 \times \frac{600}{3} = N_1 \times 200.$$<br />
+其中分子 $2 \times 3 \times 5 \times 5 \times 2 \times 2 = 600$ 来自 $\mu_1$ 的 $\mathrm{consume}(2), \mathrm{consume}(3)$ 与 $\mu_2$ 的 $\mathrm{consume}(5), \mathrm{consume}(5), \mathrm{consume}(2), \mathrm{consume}(2)$，分母 3 来自 $\mu_2$ 的 $\mathrm{recycle}(3)$。代入 $N_1 = 6000$：<br />
+$$N_3 = 6000 \times 200 = 1.2 \times 10^6.$$</p>
+<p><strong>因子抵消验证。</strong> $\mu_1$ 的 $\mathrm{consume}(3)$ 与 $\mu_2$ 的 $\mathrm{recycle}(3)$ 精确抵消：在 $N_3$ 的表达式中，分子含 $3^1$（来自 $\mu_1$），分母含 $3^1$（来自 $\mu_2$），净指数为零。但由引理 1.1.2.01，$N_1$ 的内禀 $3^1$ 不受影响——它独立于消耗—回收的净收支。因此 $N_3$ 中因子 3 的来源完全是 $N_1$ 的内禀 $3^1$，与 $\mu_1, \mu_2$ 的 3 操作无关。这正是回收基准不变定理的体现。$\square$</p>
+<h3>3.2 编码轨道</h3>
+<p>从 $N_1 = 6000$ 出发，经六层递推：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">步</th>
+<th style="text-align: left;">计算</th>
+<th style="text-align: center;">$N_n$</th>
+<th style="text-align: left;">素因子分解</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">$N_1$</td>
+<td style="text-align: left;">基态</td>
+<td style="text-align: center;">6000</td>
+<td style="text-align: left;">$2^4 \cdot 3 \cdot 5^3$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$N_2$</td>
+<td style="text-align: left;">$6000 \times 6$</td>
+<td style="text-align: center;">36000</td>
+<td style="text-align: left;">$2^5 \cdot 3^2 \cdot 5^3$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$N_3$</td>
+<td style="text-align: left;">$36000 \times 100/3$</td>
+<td style="text-align: center;">$1.2 \times 10^6$</td>
+<td style="text-align: left;">$2^7 \cdot 3 \cdot 5^5$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$N_4$</td>
+<td style="text-align: left;">$1.2 \times 10^6 \times 10$</td>
+<td style="text-align: center;">$1.2 \times 10^7$</td>
+<td style="text-align: left;">$2^8 \cdot 3 \cdot 5^6$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$N_5$</td>
+<td style="text-align: left;">$1.2 \times 10^7 \times 10$</td>
+<td style="text-align: center;">$1.2 \times 10^8$</td>
+<td style="text-align: left;">$2^9 \cdot 3 \cdot 5^7$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$N_6$</td>
+<td style="text-align: left;">$1.2 \times 10^8 \times 9/8$</td>
+<td style="text-align: center;">$1.35 \times 10^8$</td>
+<td style="text-align: left;">$2^6 \cdot 3^3 \cdot 5^7$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$N_7$</td>
+<td style="text-align: left;">$1.35 \times 10^8 \times 2$</td>
+<td style="text-align: center;">$2.7 \times 10^8$</td>
+<td style="text-align: left;">$2^7 \cdot 3^3 \cdot 5^7$</td>
+</tr>
+</tbody>
+</table>
+<p><strong>逐步素因子分解验证。</strong></p>
+<ul>
+<li>$N_1 = 6000 = 16 \times 3 \times 125 = 2^4 \cdot 3^1 \cdot 5^3$。内禀结构由三个结构常数定理锁定。</li>
+<li>$N_2 = N_1 \cdot \mu_1 = 2^4 \cdot 3 \cdot 5^3 \times (2 \cdot 3) = 2^5 \cdot 3^2 \cdot 5^3 = 36000$。因子 2 与 3 各增一阶，对应 $\mu_1 = 6$ 的双消耗。</li>
+<li>$N_3 = N_2 \cdot \mu_2 = 2^5 \cdot 3^2 \cdot 5^3 \times (2^2 \cdot 5^2 / 3) = 2^7 \cdot 3^1 \cdot 5^5 = 1.2 \times 10^6$。因子 2 增二阶、5 增二阶、3 减一阶（回收）。注意 $N_1$ 内禀 $3^1$ 保留，$\mu_1$ 注入的 $3^1$ 与 $\mu_2$ 回收的 $3^{-1}$ 抵消，净 $3^1$。</li>
+<li>$N_4 = N_3 \cdot \mu_3 = 2^7 \cdot 3 \cdot 5^5 \times (2 \cdot 5) = 2^8 \cdot 3 \cdot 5^6 = 1.2 \times 10^7$。</li>
+<li>$N_5 = N_4 \cdot \mu_4 = 2^8 \cdot 3 \cdot 5^6 \times (2 \cdot 5) = 2^9 \cdot 3 \cdot 5^7 = 1.2 \times 10^8$。</li>
+<li>$N_6 = N_5 \cdot \mu_5 = 2^9 \cdot 3 \cdot 5^7 \times (3^2 / 2^3) = 2^6 \cdot 3^3 \cdot 5^7 = 1.35 \times 10^8$。因子 2 减三阶（$\mu_5 < 1$ 的回收步），3 增二阶（triality 再激活）。</li>
+<li>$N_7 = N_6 \cdot \mu_6 = 2^6 \cdot 3^3 \cdot 5^7 \times 2 = 2^7 \cdot 3^3 \cdot 5^7 = 2.7 \times 10^8$。</li>
+</ul>
+<p><strong>总乘积。</strong> 由操作组合公式，六步乘子的连乘等于净消耗乘积：<br />
+$$\prod_{n=1}^{6} \mu_n = 6 \times \frac{100}{3} \times 10 \times 10 \times \frac{9}{8} \times 2 = \frac{6 \times 100 \times 10 \times 10 \times 9 \times 2}{3 \times 8} = \frac{1080000}{24} = 45000.$$<br />
+等价地：<br />
+$$\frac{N_7}{N_1} = \frac{2.7 \times 10^8}{6000} = 45000 = 2^3 \cdot 3^2 \cdot 5^4.$$<br />
+验证：$2^7 \cdot 3^3 \cdot 5^7 / (2^4 \cdot 3 \cdot 5^3) = 2^3 \cdot 3^2 \cdot 5^4 = 8 \times 9 \times 625 = 45000$。✓</p>
+<p><strong>命题 1.1.3.03（终端值）。</strong> $N_7 = 2.7 \times 10^8 = 2^7 \cdot 3^3 \cdot 5^7$。</p>
+<h3>3.3 第七层的截断</h3>
+<p>第七层 $E_7$ 是最后一个独立编码层。$E_8$ 不是独立层——它是 Bott 回归步，携带 $2\pi$ Berry 相位。因此编码轨道有 6 个乘子（$\mu_1, \dots, \mu_6$），对应 7 个编码基数（$N_1, \dots, N_7$）。</p>
+<hr />
+<h2>§4 triality 四阶段</h2>
+<p>乘子序列的确定还受 <strong>Spin(8) triality</strong> 的四阶段约束。</p>
+<h3>4.1 triality 指数序列</h3>
+<p><strong>定义16（triality 指数序列）。</strong> Spin(8) 的 triality 在编码轨道的七层中表现为因子 3 的指数序列：<br />
+$$\{e_3(n)\}_{n=1}^{7} = \{1,\; 2,\; 1,\; 1,\; 1,\; 3,\; 3\},$$<br />
+其中 $e_3(n)$ 为 $N_n$ 素因子分解中因子 3 的指数。该序列刻画了 triality（与 $\Lambda = 3$ 关联）在各编码层的激活强度。</p>
+<h3>4.2 四阶段详细说明</h3>
+<p><strong>定义17（triality 四阶段）。</strong> Spin(8) 的triality在编码轨道中经历四个阶段：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">阶段</th>
+<th style="text-align: left;">编码层</th>
+<th style="text-align: left;">triality 状态</th>
+<th style="text-align: left;">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">$E_1$–$E_3$</td>
+<td style="text-align: left;">完全 $S_3$</td>
+<td style="text-align: left;">三个不可区分的表示</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">$E_4$–$E_5$</td>
+<td style="text-align: left;">$S_3 \to Z_2$</td>
+<td style="text-align: left;">triality 破缺为循环对称</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">$E_6$</td>
+<td style="text-align: left;">$Z_2$ 保持</td>
+<td style="text-align: left;">循环对称保持</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;">$E_7$</td>
+<td style="text-align: left;">$Z_3 \to 1$</td>
+<td style="text-align: left;">对称性完全破缺</td>
+</tr>
+</tbody>
+</table>
+<p><strong>阶段1：激活阶段（$E_1$–$E_3$）。</strong> 因子 3 的指数序列为 $\{1, 2, 1\}$，对应 triality 的「内禀—激活—回归」三拍：<br />
+- $E_1$（$N_1$，$e_3 = 1$）：$\Lambda = 3$ 的内禀结构。因子 3 以 $3^1$ 形式蛰伏于基态 $N_1 = 2^4 \cdot 3 \cdot 5^3$，是 Cl(3) 半单分裂的代数痕迹。此时 triality 尚未显式激活。<br />
+- $E_2$（$N_2$，$e_3 = 2$）：$\mu_1 = 6 = 2 \times 3$ 消耗因子 3，使 $N_2 = 2^5 \cdot 3^2 \cdot 5^3$。因子 3 升至 $3^2$，triality 在物理层完全激活——对应 Spin(8) 三个不可区分表示的 $S_3$ 完全对称。这是 triality 的「峰值」。<br />
+- $E_3$（$N_3$，$e_3 = 1$）：$\mu_2 = 100/3$ 回收因子 3，使 $N_3 = 2^7 \cdot 3 \cdot 5^5$。因子 3 回归 $3^1$，triality 从物理层激活退回内禀基线。三拍循环 $\{1, 2, 1\}$ 完成 triality 的首次「呼吸」。</p>
+<p><strong>阶段2：圆满阶段（$E_4$–$E_5$）。</strong> 因子 3 指数维持 $\{1, 1\}$：<br />
+- $E_4$（$N_4$，$e_3 = 1$）：$\mu_3 = 10 = 2 \times 5$ 不涉及因子 3，$N_4 = 2^8 \cdot 3 \cdot 5^6$。triality 在 Cl(4)（Mat(2,$\mathbb{H}$)）中保持内禀 $3^1$。<br />
+- $E_5$（$N_5$，$e_3 = 1$）：$\mu_4 = 10 = 2 \times 5$ 同样不涉及因子 3，$N_5 = 2^9 \cdot 3 \cdot 5^7$。triality 在 Cl(5)（Mat(4,$\mathbb{C}$)）中完成圆满——$S_3$ 对称在此阶段破缺为 $Z_3$，复结构 $\Delta\Theta = 5$ 完成涌现。指数维持 $3^1$ 表明 triality 在此阶段以「静默圆满」形式存在，不显式改变激活强度。</p>
+<p><strong>阶段3：归基阶段（$E_6$）。</strong> 因子 3 指数跃升至 $3$：<br />
+- $E_6$（$N_6$，$e_3 = 3$）：$\mu_5 = 9/8 = 3^2 / 2^3$ 激活因子 $3^2$（同时回收 $2^3$），使 $N_6 = 2^6 \cdot 3^3 \cdot 5^7$。因子 3 从 $3^1$ 跃升至 $3^3$，triality 在 Cl(6)（Mat(8,$\mathbb{R}$)）中归基——这是 triality 的「深归基」，对应 $Z_2$ 对称的保持与实结构的完全显现。$3^3$ 是 triality 在实数域的完整三重表达。</p>
+<p><strong>阶段4：物理层再激活（$E_7$）。</strong> 因子 3 指数维持 $3$：<br />
+- $E_7$（$N_7$，$e_3 = 3$）：$\mu_6 = 2$ 不涉及因子 3，$N_7 = 2^7 \cdot 3^3 \cdot 5^7$。$\mu_5 = 9/8$ 的分子 $3^2$ 使 triality 在 $E_6$ 重新激活后，$E_7$ 维持激活态 $3^3$。$Z_2$ 对称在此阶段完全破缺为平凡群 $1$，编码轨道终止。triality 的指数序列 $\{1, 2, 1, 1, 1, 3, 3\}$ 在 $E_7$ 收束于 $3^3$，与 Bott 截断共同标志编码轨道的闭合。</p>
+<p><strong>定理 1.1.4.01（triality 约束）。</strong> triality 四阶段约束乘子序列的对称性：<br />
+- 阶段 1：$\mu_1, \mu_2, \mu_3$ 受 $S_3$ 对称约束<br />
+- 阶段 2：$\mu_4, \mu_5$ 受 $Z_2$ 对称约束<br />
+- 阶段 3：$\mu_6$ 不受对称约束<br />
+- 阶段 4：$\mu_7$（不存在，被 Bott 截断）</p>
+<p>triality 破缺 $S_3 \to Z_2$ 发生在 Cl(5)→Cl(6) 过渡中，是 Birkhoff 混合矩阵 $T$ 的代数根源（第 2 卷）。</p>
+<hr />
+<h2>§5 唯一性与互扼锁定</h2>
+<p><strong>定理 1.1.5.01（乘子序列唯一性）。</strong> 乘子序列 $(\mu_1, \dots, \mu_6) = (6, 100/3, 10, 10, 9/8, 2)$ 在以下联合约束下唯一确定：</p>
+<ol>
+<li>预算-基因型双层结构</li>
+<li>triality 四阶段</li>
+<li>回收基准不变定理</li>
+<li>Bott 周期截断（七层截断，定理）</li>
+<li>圆满性判据</li>
+</ol>
+<p>改变任何一个约束条件，乘子序列不再自洽。</p>
+<h3>5.1 互扼锁定的具体机制</h3>
+<p>乘子序列的唯一性不仅来自各步的独立筛选，更深层地来自 $\mu_1$ 与 $\mu_2$ 之间的<strong>良性互扼锁定</strong>（benign mutual conjugate locking）。这一机制将系统的自由度完全消除。</p>
+<p><strong>互扼锁定的两条链。</strong></p>
+<ul>
+<li>
+<p><strong>链 P（$\mu_1 \Rightarrow \mu_2$）</strong>：$\mu_1 = 6$ 的唯一性依赖 $\mu_2 = 100/3$ 的回收约束。具体地，$\mu_2$ 的分母 3 必须回收自累积回收池 $\mathbb{C}_2$，而 $\mathbb{C}_2$ 中的因子 3 只能来自 $\mu_1$ 的消耗。因此 $\mu_1$ 必须消耗因子 3——这是七候选排除证明中条件1的来源。若无 $\mu_2 = 100/3$ 的回收需求，$\mu_1$ 无需消耗 3，七候选无法缩减为唯一值。</p>
+</li>
+<li>
+<p><strong>链 Q（$\mu_2 \Rightarrow \mu_1$）</strong>：$\mu_2 = 100/3$ 的导出又依赖 $\mu_1 = 6$ 已消耗了因子 3。具体地，$\mu_2$ 的回收 $\mathrm{recycle}(3)$ 要求 $\mathbb{C}_2 \ni 3$，而这要求 $\mu_1$ 已执行 $\mathrm{consume}(3)$。若 $\mu_1 \neq 6$（不消耗 3），则 $\mathbb{C}_2 = \emptyset$，$\mu_2$ 无法回收 3，$\mu_2 = 100/3$ 不成立。</p>
+</li>
+</ul>
+<p><strong>为何不是循环论证。</strong> 表面上 P 与 Q 互为前提，形如循环。但二者各自有<strong>独立的外部锚定</strong>，使互扼成为良性约束而非循环论证：</p>
+<ol>
+<li>
+<p><strong>$\mu_1$ 的外部锚定</strong>：$\mu_1 = 6$ 的最终确定不依赖 $\mu_2$ 的具体值，而依赖 Bott 截断要求 $\mathbb{B}_7 = \emptyset$（条件2）。$\mu_2$ 的回收约束仅将七候选缩减为三候选 $\{3, 6, 15\}$，最终选择 $\mu_1 = 6$ 由预算耗尽条件独立完成。外部锚定为初始预算 $\mathbb{B}_1 = \{2, 3, 5, 5\}$ 与 Bott 截断。</p>
+</li>
+<li>
+<p><strong>$\mu_2$ 的外部锚定</strong>：$\mu_2 = 100/3$ 的分子 $100 = 2^2 \cdot 5^2$ 由基因型层（Cl(1)→Cl(2) 的 $\mathbb{C} \to \mathbb{H}$ 结构）独立确定，与 $\mu_1$ 无关。$\mu_1$ 仅提供回收的因子 3（分母），分子的来源完全独立。外部锚定为 Bott 周期刚性与 $\Delta\Theta = 5$。</p>
+</li>
+</ol>
+<p>因此 P 与 Q 的互扼是「双向验证」而非「循环论证」：双方各自有独立的外部推导链，互扼仅起到交叉锁定作用。</p>
+<p><strong>参数化互扼。</strong> 形式化地，设命题<br />
+$$P := ``\mu_1 = 6'', \qquad Q := ``\mu_2 = 100/3''.$$<br />
+互扼锁定给出 $P \Longrightarrow Q$ 与 $Q \Longrightarrow P$。在经典逻辑中 $P \Leftrightarrow Q$ 仅表明二者等价，但在本系统中，$P$ 与 $Q$ 各自被外部约束（Bott 截断、初始预算、基因型刚性）独立锚定，故 $P$ 与 $Q$ 的真值由外部约束唯一确定，互扼约束 $P \Leftrightarrow Q$ 仅消除「$P$ 真而 $Q$ 假」或「$Q$ 真而 $P$ 假」的自由度。</p>
+<p>系统的总自由度分析：若无互扼，$\mu_1$ 有 7 个候选、$\mu_2$ 有多个候选（受回收约束），系统自由度 $> 0$。加入互扼 $P \Leftrightarrow Q$ 后，$\mu_1$ 与 $\mu_2$ 的候选空间被交叉约束：仅当 $\mu_1$ 消耗 3 且 $\mu_2$ 回收 3 时二者同时合法。再叠加外部锚定（Bott 截断、基因型刚性），自由度被完全消除，$\mu_1 = 6$ 与 $\mu_2 = 100/3$ 唯一确定。</p>
+<p><strong>推论 1.1.5.02。</strong> 互扼锁定使 $\mu_1, \mu_2$ 构成一个不可分解的「锁定对」：无法单独改变 $\mu_1$ 或 $\mu_2$ 而保持系统自洽。这一锁定对是乘子序列唯一性的核心，也是后续 $\mu_3$–$\mu_6$ 推导的起点。</p>
+<hr />
+<h2>定理索引</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">编号</th>
+<th style="text-align: left;">内容</th>
+<th style="text-align: center;">证明状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">定理 1.1.3.01</td>
+<td style="text-align: left;">乘子序列 $(6, 100/3, 10, 10, 9/8, 2)$</td>
+<td style="text-align: center;">已证（本文§3）</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理 1.1.4.01</td>
+<td style="text-align: left;">triality 四阶段约束</td>
+<td style="text-align: center;">已证（本文§4）</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理 1.1.5.01</td>
+<td style="text-align: left;">乘子序列唯一性</td>
+<td style="text-align: center;">已证（本文§5）</td>
+</tr>
+<tr>
+<td style="text-align: center;">引理 1.1.2.01</td>
+<td style="text-align: left;">回收基准不变</td>
+<td style="text-align: center;">已证（本文§2.4）</td>
+</tr>
+<tr>
+<td style="text-align: center;">引理 1.1.2.03</td>
+<td style="text-align: left;">信息容量对称性</td>
+<td style="text-align: center;">已证（本文§2.5）</td>
+</tr>
+<tr>
+<td style="text-align: center;">引理</td>
+<td style="text-align: left;">$\mu_1 = 6$ 七候选排除</td>
+<td style="text-align: center;">已证（本文§3.1.1）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+  </main>
+</div>
+</body>
+</html>

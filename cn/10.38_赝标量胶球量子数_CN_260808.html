@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10.38 赝标量胶球量子数 0⁻⁺ 的几何来源 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="10.38 赝标量胶球量子数 0⁻⁺ 的几何来源">
+<meta name="generator" content="GeometryAI Build Script">
+
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\(', '\)']],
+    displayMath: [['$$', '$$'], ['\[', '\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/cn/10.38_赝标量胶球量子数_CN_260808.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../index.html" class="nav-home">🏠 首页</a>
+    <a href="../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">10.38 赝标量胶球量子数 0⁻⁺ 的几何来源</span>
+  </nav>
+  <main class="article-content">
+<h1>10.38 赝标量胶球量子数 0⁻⁺ 的几何来源</h1>
+<p><strong>版本</strong>: 260808</p>
+<p><strong>状态</strong>: 未提交主库。依赖主库定理 #295、#307、#267、定理 7.1.1.01（#285）、定理 7.8.6.03，以及文章 6.6（Σ时空涌现）、7.10（强CP消解）、7.9（夸克禁闭）、10.37（纯色闭合构型稳定性）。本文含一处明确标注的探索性假设（假设 2.1）。</p>
+<hr />
+<h2>摘要</h2>
+<p>文章 10.37 已证明：胶球（纯色闭合构型 $G = \sum_a\lambda_a\otimes\lambda_a$）作为 SU(3) 单态在框架内代数稳定地存在。本文回答第二个问题：<strong>为什么这个色单态的量子数是 $0^{-+}$（赝标量胶球，X(2370)）</strong>。</p>
+<p>论证核心：赝标量胶球的最低维算符 $O = \mathrm{Tr}(G_{\mu\nu}\tilde{G}^{\mu\nu})$ 的量子数由三个独立结构决定——(i) $J=0$：全缩并（无自由洛伦兹指标）；(ii) $P=-$：含 4 维体积元 $\varepsilon_{\mu\nu\rho\sigma}$（赝张量）；(iii) $C=+$：迹缩并（电荷共轭不变）。这三者在框架中各有几何对应：色单态缩并 = 文章 10.37 的 Killing 收缩 $G$；体积元的赝标量性 = Clifford 体积元（$\omega_3 = \gamma_1\gamma_2\gamma_3$ 在 $\mathrm{Cl}(3)_\mathbb{C} \cong \mathrm{Mat}(4,\mathbb{C})$ 中扮演手征元，$\omega_5$ 已是框架的复结构 $J$）；辛形式的体积元投影（定理 7.8.6.03）已建立"体积元 → 时空结构"的桥梁。</p>
+<p><strong>主要结果</strong>：<br />
+- <strong>定理 X2.1</strong>：胶球态 $O = \mathrm{Tr}(G\tilde{G})$ 的量子数 $J^{PC} = 0^{-+}$ 由色单态缩并（$C=+$）、全缩并（$J=0$）、体积元缩并（$P=-$）三要素确定——与 X(2370) 一致；<br />
+- <strong>推论 X2.2（缩并张量宇称规则）</strong>：胶球的宇称 = 色单态缩并张量的宇称——标量胶球 $0^{++}$（算符 $\mathrm{Tr}(G^2)$，无体积元）与赝标量胶球 $0^{-+}$（算符 $\mathrm{Tr}(G\tilde{G})$，含体积元）在框架语言中的区分 = 是否含体积元缩并；<br />
+- 与 triality 锁定（#307）自洽：真空 $\bar\theta = 0$（CP 偶基态）与赝标量胶球（CP 奇激发态）不矛盾——胶球态是 $\bar\theta$ 项算符 $O$ 的激发模式，其 CP 奇性由体积元缩并决定，与真空的 CP 偶性分属不同层次。</p>
+<p><strong>诚实边界</strong>：假设 2.1（时空体积元 $\varepsilon_{\mu\nu\rho\sigma}$ 与 Clifford 体积元层的显式对应）是探索性的——文章库已建立"辛形式 = 体积元投影"（定理 7.8.6.03）与"复结构 $J = \omega_5$"（7.1 §1.3），但 $\varepsilon$ 张量 ↔ 框架体积元的完整对应尚未建成。质量次序（$0^{++}$ 轻于 $0^{-+}$）未推出，属第三条路径。</p>
+<hr />
+<h2>目　录</h2>
+<p>§1　问题：0⁻⁺ 从哪来<br />
+　1.1　X(2370) 的量子数<br />
+　1.2　框架已有的结构</p>
+<p>§2　算符识别：O = Tr(G·G̃)<br />
+　2.1　赝标量胶球的最低维算符<br />
+　2.2　框架中已有的位置：θ̄ 项</p>
+<p>§3　体积元与宇称<br />
+　3.1　Clifford 体积元的赝标量性<br />
+　3.2　框架中的体积元先例<br />
+　3.3　假设 2.1（ε ↔ 体积元层）</p>
+<p>§4　定理 X2.1：0⁻⁺ 的三步推导<br />
+　4.1　步骤 1：J = 0（全缩并）<br />
+　4.2　步骤 2：P = −（体积元缩并）<br />
+　4.3　步骤 3：C = +（迹缩并）<br />
+　4.4　证明汇总</p>
+<p>§5　推论：缩并张量宇称规则<br />
+　5.1　0⁺⁺ 与 0⁻⁺ 的框架区分<br />
+　5.2　与 triality 锁定的自洽性<br />
+　5.3　对混合态的预期</p>
+<p>§6　诚实边界<br />
+　6.1　假设 2.1 的开放地位<br />
+　6.2　未推出的内容<br />
+　6.3　与 X1 的关系及下一步</p>
+<p>定理索引</p>
+<p>引用</p>
+<hr />
+<h2>§1 问题：0⁻⁺ 从哪来</h2>
+<h3>1.1 X(2370) 的量子数</h3>
+<p>BESIII 合作组确认的 X(2370) 具有量子数 $J^{PC} = 0^{-+}$：自旋零、宇称负、电荷共轭正。在 QCD 中，这是<strong>赝标量胶球</strong>——纯胶子束缚态的最低维算符为</p>
+<p>$$O = \mathrm{Tr}(G_{\mu\nu}\tilde{G}^{\mu\nu}), \qquad \tilde{G}^{\mu\nu} = \tfrac{1}{2}\varepsilon^{\mu\nu\rho\sigma}G_{\rho\sigma},$$</p>
+<p>其中 $G_{\mu\nu} = G^a_{\mu\nu}\lambda_a/2$ 是 SU(3) 场强，$\tilde{G}$ 是霍奇对偶场强。</p>
+<p>探索稿 X1 已证明色单态组合 $G = \sum_a\lambda_a\otimes\lambda_a$（Killing 收缩，$8\otimes 8 \to 1$）在框架内代数稳定地存在。本文的任务：<strong>从框架的结构推出 $0^{-+}$，即解释 $J=0$、$P=-$、$C=+$ 三个量子数各来自框架的哪个几何结构</strong>。</p>
+<h3>1.2 框架已有的结构</h3>
+<p>三条既有结果直接相关：</p>
+<ol>
+<li>
+<p><strong>色单态缩并</strong>（X1，定理 X1.2）：$G = \sum_a\lambda_a\otimes\lambda_a$ 是唯一（Killing 型）的 $8\otimes 8$ 单态，扇区权重等权 $w(G) = (8,8,8)$，驻留 $\theta_0 = (30°,30°,30°)$ 全局极小。<strong>这是 $O$ 的色部分</strong>（$\delta_{ab}$ 缩并）——给出 $C=+$（迹缩并在电荷共轭下不变）。</p>
+</li>
+<li>
+<p><strong>体积元在框架中的先例</strong>：<br />
+   - 辛形式来自 Clifford 代数体积元投影（定理 7.8.6.03，6.6 §1.1）：$\omega = d\xi\wedge d\eta$——<strong>体积元已经产生时空结构</strong>；<br />
+   - 复结构 $J = \omega_5$（Cl(5) 的伪标量）涌现并破坏 triality（定理 7.1.1.01 的 §1.3）：$J|_V = i$，$J|_{S^+} = -i$，$J|_{S^-} = i$——<strong>伪标量体积元已是手征性（轴性）的根源</strong>；<br />
+   - 强CP参数 $\bar\theta$ 的 triality 锁定（#307）：$\bar\theta \in \{0, \pi\}$——<strong>框架已处理含 $\varepsilon_{\mu\nu\rho\sigma}$ 的赝标量密度算符 $\mathrm{Tr}(G\tilde{G})$</strong>（7.10 §1.1）。</p>
+</li>
+<li>
+<p><strong>Cl(3) 的手征结构</strong>：$\mathrm{Cl}(3)\otimes\mathbb{C} \cong \mathrm{Mat}(4,\mathbb{C})$（定理 7.1.1.01），体积元 $\omega_3 = \gamma_1\gamma_2\gamma_3$ 满足 $\omega_3^2 = -1$，$\{\omega_3, \gamma_i\} = 0$（$i=1,2,3$）——$\omega_3$ 是 $\mathrm{Mat}(4,\mathbb{C})$ 中的手征元（$\gamma_5$ 类），$(1 \pm i\omega_3)/2$ 给出手征投影。</p>
+</li>
+</ol>
+<hr />
+<h2>§2 算符识别：O = Tr(G·G̃)</h2>
+<h3>2.1 赝标量胶球的最低维算符</h3>
+<p>赝标量胶球（$0^{-+}$）的最低维规范不变算符是 $O = \mathrm{Tr}(G_{\mu\nu}\tilde{G}^{\mu\nu})$。三个量子数的结构来源：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">量子数</th>
+<th style="text-align: center;">值</th>
+<th style="text-align: left;">结构来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">$J$</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: left;">所有洛伦兹指标（$\mu,\nu,\rho,\sigma$）全部缩并，无自由指标</td>
+</tr>
+<tr>
+<td style="text-align: center;">$P$</td>
+<td style="text-align: center;">$-$</td>
+<td style="text-align: left;">含 4 维 Levi-Civita 张量 $\varepsilon_{\mu\nu\rho\sigma}$（赝张量，空间反射下变号）</td>
+</tr>
+<tr>
+<td style="text-align: center;">$C$</td>
+<td style="text-align: center;">$+$</td>
+<td style="text-align: left;">色迹缩并 $\delta_{ab}$（或 $\mathrm{Tr}$）；电荷共轭下 $G \to -G^T$，迹不变</td>
+</tr>
+</tbody>
+</table>
+<p>对比：标量胶球（$0^{++}$）的最低维算符 $\mathrm{Tr}(G_{\mu\nu}G^{\mu\nu})$ 只含度规缩并 $\eta_{\mu\rho}\eta_{\nu\sigma}$（无 $\varepsilon$）——宇称正。</p>
+<p><strong>观察</strong>：两个算符的色结构相同（都是色单态迹缩并），<strong>唯一区别是时空缩并张量</strong>：$\eta\eta$（P 偶）vs $\varepsilon$（P 奇）。胶球的宇称 = 缩并张量的宇称。</p>
+<h3>2.2 框架中已有的位置：θ̄ 项</h3>
+<p>$O = \mathrm{Tr}(G\tilde{G})$ 在框架中不是一个陌生对象——它就是强CP参数 $\bar\theta$ 项中的赝标量密度（7.10 §1.1）：</p>
+<p>$$\mathcal{L}_\theta = \bar\theta\cdot\frac{g_s^2}{32\pi^2}\mathrm{Tr}(G_{\mu\nu}\tilde{G}^{\mu\nu}).$$</p>
+<p>框架已处理这个算符的两个层面：<br />
+- <strong>真空层面</strong>：$\bar\theta \in \{0,\pi\}$ 由 triality 锁定（#307），$\bar\theta = 0$ 由 Birkhoff 行列式实数性确定（定理 7.1）；<br />
+- <strong>激发层面</strong>（本文）：$O$ 作为算符的激发模式 $O|0\rangle$ 携带量子数 $0^{-+}$——即赝标量胶球。</p>
+<p><strong>关键认识</strong>：赝标量胶球不是框架外的对象，而是 $\bar\theta$ 项算符的量子化激发。框架对 $\bar\theta$ 的处理（7.10、#307）已隐含对 $O$ 的承认；本文把 $O$ 的量子数结构与框架的几何结构显式对应。</p>
+<hr />
+<h2>§3 体积元与宇称</h2>
+<h3>3.1 Clifford 体积元的赝标量性</h3>
+<p>Clifford 代数标准事实：体积元是赝标量。对 $\mathrm{Cl}(3)$：</p>
+<p>$$\omega_3 = \gamma_1\gamma_2\gamma_3, \qquad \omega_3^2 = -1, \qquad \{\omega_3, \gamma_i\} = 0.$$</p>
+<p>在空间反射 $P$（$\gamma_i \to -\gamma_i$）下：</p>
+<p>$$P: \omega_3 \to (-\gamma_1)(-\gamma_2)(-\gamma_3) = -\gamma_1\gamma_2\gamma_3 = -\omega_3.$$</p>
+<p>体积元在反射下变号——<strong>赝标量性</strong>。霍奇对偶 $*X = \omega_3 X$（左乘体积元）将 k-形式映射到 (3−k)-形式，且宇称翻转。对 $\mathrm{Cl}(1,3)$（时空），体积元 $\omega_4 = \gamma_0\gamma_1\gamma_2\gamma_3$ 同样是赝标量，对应 $\varepsilon_{\mu\nu\rho\sigma}$。</p>
+<h3>3.2 框架中的体积元先例</h3>
+<p>框架已两次使用体积元的赝标量性：</p>
+<ol>
+<li><strong>辛形式</strong>（定理 7.8.6.03，6.6 §1.1）：$\Sigma$ 上的辛形式 $\omega = d\xi\wedge d\eta$ 来自 Clifford 代数体积元的投影——<strong>体积元 → 时空结构</strong>的桥梁已经建立；</li>
+<li><strong>复结构</strong>（定理 7.1.1.01 §1.3）：$J = \omega_5$（Cl(5) 伪标量）是复结构（$J^2 = -1$），在三个 8 维表示上取 $i, -i, i$——<strong>伪标量体积元 = 手征性（轴性）的根源</strong>已确立；$J$ 的涌现破坏 triality 的 $S_3$，保留 $Z_2$。</li>
+</ol>
+<p>这两个先例说明：框架中"体积元"不是外来概念，而是结构性的——它产生辛结构（时空的几何）与手征结构（粒子物理的轴性）。</p>
+<h3>3.3 假设 2.1（ε ↔ 体积元层）</h3>
+<p><strong>假设 2.1（探索性）</strong>：时空体积元 $\varepsilon_{\mu\nu\rho\sigma}$（$P$ 奇性来源）对应框架的 Clifford 体积元层——具体地，4 维时空的 $\varepsilon_{\mu\nu\rho\sigma}$ 与 $\mathrm{Cl}(5)$ 伪标量 $\omega_5$（或其在 $\Sigma \to \mathbb{R}^{3,1}$ 投影下的辛形式 $\omega = d\xi\wedge d\eta$，定理 7.8.6.03）同源。</p>
+<p>依据：<br />
+1. 定理 7.8.6.03：辛形式 = 体积元投影——时空结构的宇称性质继承自体积元；<br />
+2. 定理 7.1.1.01 §1.3：$J = \omega_5$ 已是框架的复结构/轴性根源；<br />
+3. Clifford 标准事实：所有维数的体积元均为赝标量（反射下变号），$\varepsilon_{\mu\nu\rho\sigma}$ 与 $\omega_4$ 同构。</p>
+<p>这一假设<strong>未</strong>在文章库中显式建立（6.6 的辛形式是"投影"桥梁，未展开 $\varepsilon$ 张量的完整对应）——本文将其作为探索性假设，其严格化属后续工作。</p>
+<hr />
+<h2>§4 定理 X2.1：0⁻⁺ 的三步推导</h2>
+<p><strong>定理 X2.1（赝标量胶球的量子数）</strong>。设 $O = \mathrm{Tr}(G_{\mu\nu}\tilde{G}^{\mu\nu})$ 为胶球最低维算符，其色单态缩并为探索稿 X1 的 Killing 收缩 $G = \sum_a\lambda_a\otimes\lambda_a$（定理 X1.2）。则 $O$ 的量子数 $J^{PC} = 0^{-+}$：$J=0$（全缩并）、$P=-$（体积元缩并）、$C=+$（迹缩并）。</p>
+<p><strong>证明</strong>：</p>
+<p><strong>步骤 1（$J = 0$：全缩并）</strong>。$O$ 的所有洛伦兹指标成对缩并：$\mu$ 与 $\nu$（$G_{\mu\nu}$ 内部）、$\rho$ 与 $\sigma$（$\tilde{G}^{\rho\sigma}$ 内部）、以及 $\varepsilon^{\mu\nu\rho\sigma}$ 的四指标——无自由洛伦兹指标 ⇒ 洛伦兹标量 ⇒ $J = 0$。色指标由 $\mathrm{Tr}$（= $\delta_{ab}$ 缩并）饱和，即 X1 的 Killing 收缩 $G$（定理 X1.2 (i)）。$\square$</p>
+<p><strong>步骤 2（$P = -$：体积元缩并）</strong>。$\varepsilon^{\mu\nu\rho\sigma}$ 是赝张量：空间反射下 $\varepsilon^{\mu\nu\rho\sigma} \to -\varepsilon^{\mu\nu\rho\sigma}$（Levi-Civita 符号在右手系约定下反射变号）。由假设 2.1，$\varepsilon$ 的赝张量性与 Clifford 体积元的赝标量性同源（§3.1：$\omega_3$、$\omega_5$ 在反射下变号）。因此 $\tilde{G} = \tfrac{1}{2}\varepsilon G$ 是赝张量场，$O = \mathrm{Tr}(G\tilde{G})$ 在 $P$ 下：</p>
+<p>$$P: O \to \mathrm{Tr}((-G)(-\tilde{G})) = -\mathrm{Tr}(G\tilde{G}) = -O,$$</p>
+<p>故 $P = -$。$\square$</p>
+<p><strong>步骤 3（$C = +$：迹缩并）</strong>。电荷共轭下规范场强 $G^a_{\mu\nu} \to -G^{a\,T}_{\mu\nu}$（伴随表示转置）。则：</p>
+<p>$$C: O \to \mathrm{Tr}\big((-G^T)(-\tilde{G}^T)\big) = \mathrm{Tr}(G^T\tilde{G}^T) = \mathrm{Tr}(G\tilde{G}) = O,$$</p>
+<p>（矩阵转置不改变迹），故 $C = +$。色单态缩并本身（$\delta_{ab}$，X1 的 $G$）在 $C$ 下不变。$\square$</p>
+<p><strong>步骤 4（汇总）</strong>。$J^{PC} = (0)(-)(+) = 0^{-+}$——与 X(2370) 的量子数一致。∎</p>
+<p><strong>证明要点</strong>：三个量子数各绑定一个独立几何结构——$J=0$ ↔ 全缩并（色单态 $G$ + 时空全缩并）；$P=-$ ↔ 体积元（$\varepsilon$ ↔ $\omega$ 层，假设 2.1）；$C=+$ ↔ 迹缩并（Killing 收缩的电荷共轭不变性）。</p>
+<hr />
+<h2>§5 推论：缩并张量宇称规则</h2>
+<h3>5.1 0⁺⁺ 与 0⁻⁺ 的框架区分</h3>
+<p><strong>推论 X2.2（缩并张量宇称规则）</strong>。胶球的宇称等于色单态缩并张量的宇称：标量胶球（算符 $\mathrm{Tr}(G^2)$，度规缩并 $\eta\eta$）$P = +$；赝标量胶球（算符 $\mathrm{Tr}(G\tilde{G})$，体积元缩并 $\varepsilon$）$P = -$。</p>
+<p>证明：$O_{++} = \mathrm{Tr}(G_{\mu\nu}G^{\mu\nu})$ 在 $P$ 下 $G \to -G$，$\eta\eta$ 不变：$O_{++} \to \mathrm{Tr}((-G)(-G)) = O_{++}$（$P=+$）；$O_{-+}$ 由定理 X2.1 步骤 2：$P=-$。∎</p>
+<p><strong>物理内容</strong>：两种胶球共享色单态结构（都是 $8\otimes 8 \to 1$ 的 Killing 收缩，定理 X1.2 的唯一性），区别仅在时空缩并张量。框架语言：<strong>胶球的宇称 = 缩并中是否含体积元</strong>。这与实验图景一致——标量胶球候选 f₀(1500)/f₀(1710)（$0^{++}$）与赝标量胶球 X(2370)（$0^{-+}$）是同一色单态结构的两种时空实现。</p>
+<h3>5.2 与 triality 锁定的自洽性</h3>
+<p>真空的 CP 性质（#307：$\bar\theta \in \{0,\pi\}$，锁定为 0）与胶球态的 CP 奇性不矛盾：</p>
+<ul>
+<li>真空 $|0\rangle$：$\bar\theta = 0$，CP 偶（$\langle 0|O|0\rangle = 0$——真空期望值为零，因为 $O$ 是 CP 奇算符而真空 CP 偶）；</li>
+<li>激发态 $O|0\rangle$：CP 奇（$P(O|0\rangle) = -O|0\rangle$），即赝标量胶球。</li>
+</ul>
+<p>事实上，$O$ 的 CP 奇性与 $\bar\theta = 0$ 的真空是<strong>互相一致的</strong>：CP 偶真空对 CP 奇算符的期望值为零，这正是不存在 CP 破缺（$\bar\theta = 0$）的算符语言表述。赝标量胶球的存在不引入 CP 破缺——它是 CP 奇激发，与 CP 偶真空正交。</p>
+<h3>5.3 对混合态的预期</h3>
+<p>实验确认 X(2370) 是"胶球主导"而非纯胶球——胶球与 $q\bar{q}$ 介子（如 $\eta'$ 类）混合。框架语言：混合 = 色单态结构（X1 的 $G$）与物质单态（#295 的 $T$、$\varepsilon$）之间的耦合。混合幅度在框架中对应什么——$\theta_0$ 极小值附近的混合模式（$G$ 与 $T$ 都是 $\theta_0$ 构型）——是一个开放问题（§6.2）。</p>
+<hr />
+<h2>§6 诚实边界</h2>
+<h3>6.1 假设 2.1 的开放地位</h3>
+<p>假设 2.1（$\varepsilon_{\mu\nu\rho\sigma}$ ↔ Clifford 体积元层）是本文的主要探索性环节。文章库已确立的支撑：辛形式 = 体积元投影（定理 7.8.6.03）、复结构 $J = \omega_5$（7.1 §1.3）、$\bar\theta$ 项的赝标量密度（7.10）。但 $\varepsilon$ 张量 ↔ 框架体积元的<strong>完整显式对应</strong>（含 $\Sigma \to \mathbb{R}^{3,1}$ 投影下的指标结构）尚未建成——这与 6.6 §8.2 标注的最高优先级缺口（$\Sigma \leftrightarrow \mathbb{R}^{3,1}$ 对偶映射）是同一个缺口。</p>
+<p><strong>严格化路径</strong>：在 6.6 的投影机制（$\eta \to$ 时间，$\xi \to$ 空间）下，构造 $\varepsilon$ 的显式表达——$\varepsilon$ 的 4 指标结构应从快慢模展开（3 空间 + 1 时间）的体元涌现。</p>
+<h3>6.2 未推出的内容</h3>
+<ol>
+<li><strong>质量次序</strong>：实验上 $0^{++}$（~1.5–1.7 GeV）轻于 $0^{-+}$（2.37 GeV）。框架的推论 X2.2 只给出量子数区分，未给出质量次序——"体积元缩并的额外拓扑代价"是定性猜想，定量推导属第三条路径；</li>
+<li><strong>混合幅度</strong>：X(2370) 的"胶球主导"成分比例（与 $q\bar{q}$ 的混合）未推出；</li>
+<li><strong>衰变模式</strong>：$\pi^+\pi^-\eta'$ 等衰变通道的框架推导未做。</li>
+</ol>
+<h3>6.3 与 10.37 的关系及下一步</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">路径</th>
+<th style="text-align: left;">探索稿</th>
+<th style="text-align: left;">状态</th>
+<th style="text-align: left;">结论</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">存在性/稳定性</td>
+<td style="text-align: left;">10.37</td>
+<td style="text-align: left;">✅ 完成</td>
+<td style="text-align: left;">$G$ 色单态代数稳定（定理 X1.2、引理 X1.3）</td>
+</tr>
+<tr>
+<td style="text-align: left;">量子数 $0^{-+}$</td>
+<td style="text-align: left;">10.38（本文）</td>
+<td style="text-align: left;">⚠️ 含假设 2.1</td>
+<td style="text-align: left;">$J^{PC} = 0^{-+}$ 三要素推导（定理 X2.1）</td>
+</tr>
+<tr>
+<td style="text-align: left;">质量 2.37 GeV</td>
+<td style="text-align: left;">待写</td>
+<td style="text-align: left;">❌</td>
+<td style="text-align: left;">$f_{\text{纯色}}$ 的具体形式 + 质量次序</td>
+</tr>
+</tbody>
+</table>
+<p><strong>下一步选项</strong>：<br />
+- <strong>A2. 严格化假设 2.1</strong>：在 6.6 投影机制下构造 $\varepsilon$ 的显式表达（攻本文最薄弱环节）；<br />
+- <strong>C. 质量路径</strong>：$m_g = m_0 \cdot f_{\text{纯色}}(\ldots)$ 的具体形式，尝试导出 2.37 GeV 与质量次序 $0^{++} < 0^{-+}$；<br />
+- <strong>D. 混合幅度</strong>：$G$ 与 $T$ 的 $\theta_0$ 邻域混合模式。</p>
+<hr />
+<h2>定理索引</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">编号</th>
+<th style="text-align: left;">内容</th>
+<th style="text-align: center;">证明状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">定理 X2.1</td>
+<td style="text-align: left;">赝标量胶球量子数 $J^{PC} = 0^{-+}$：全缩并（$J=0$）、体积元缩并（$P=-$）、迹缩并（$C=+$）</td>
+<td style="text-align: center;">已证（本文 §4），依赖假设 2.1（步骤 2）</td>
+</tr>
+<tr>
+<td style="text-align: left;">推论 X2.2</td>
+<td style="text-align: left;">缩并张量宇称规则：胶球宇称 = 缩并张量宇称（$\eta\eta \Rightarrow P=+$，$\varepsilon \Rightarrow P=-$）</td>
+<td style="text-align: center;">已证（本文 §5.1）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>引用</h2>
+<ul>
+<li>
+<h1>295 定理 3.3.2.01（色单态定理）：单态张量 $T$、$\varepsilon$，$\theta_0$ 全局极小</h1>
+</li>
+<li>
+<h1>307 定理 7.11.2.07（强CP triality 锁定）：$\bar\theta \in \{0, \pi\}$</h1>
+</li>
+<li>
+<h1>267 定理 3.12.1.01（代数作用量公式）：$S(\theta)$ 严格凸，$S_{\min} = 24$ 于 $\theta_0$</h1>
+</li>
+<li>
+<h1>285 定理 7.1.1.01（规范群 Clifford 根源）：$\mathrm{Cl}(3)_\mathbb{C} \cong \mathrm{Mat}(4,\mathbb{C})$，$J = \omega_5$ 复结构，triality 破缺</h1>
+</li>
+<li>定理 7.8.6.03（辛形式）：$\omega = d\xi\wedge d\eta$ 来自 Clifford 体积元投影</li>
+<li>定理 7.1（强CP消解定理）：$\bar\theta = 0$（7.10 §1.3）</li>
+<li>10.37（纯色闭合构型稳定性）：定理 X1.2（$G$ 的显式构造）、引理 X1.3（普适性）</li>
+<li>QCD 标准结果：赝标量胶球最低维算符 $\mathrm{Tr}(G\tilde{G})$，量子数 $0^{-+}$（实验：BESIII，X(2370)，2026-08-06 宣布）</li>
+</ul>
+  </main>
+</div>
+</body>
+</html>

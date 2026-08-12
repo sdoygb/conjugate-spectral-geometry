@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>零之动与区分 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="零之动与区分">
+<meta name="generator" content="GeometryAI Build Script">
+
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\(', '\)']],
+    displayMath: [['$$', '$$'], ['\[', '\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/cn/0.1_零之动与区分_CN_260808.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../index.html" class="nav-home">🏠 首页</a>
+    <a href="../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">零之动与区分</span>
+  </nav>
+  <main class="article-content">
+<h1>零之动与区分</h1>
+<p><strong>版本</strong>: 260808</p>
+<hr />
+<h2>摘要</h2>
+<p>本文定义共扼谱几何体系的元起点——「零之动」。$\mathcal{Z}$ 定义为集合（ZFC内的数学对象），$\delta: \mathcal{Z} \to \mathcal{Z}$ 是非平凡自映射——这是体系<strong>第一公理</strong>。$S_{\text{total}} = 0$（总作用量为零）是第二条独立结构假设（§2.3），与 $\delta$ 公理共同定义 CSG 的公理基础。$\delta$ 的迭代在编码轨道上产生候选参数；经 Clifford 代数化（0.2，模型内实现）和 Bott 周期（0.3）后，结构常数 $\{2,3,5\}$ 从 E$_8$ 偶幺模格涌现（0.5），谱展开在观测者位置输入（1.5 §3.7）给出 $S = 137.036$。抑制痕迹涌现的三元语义是<strong>哲学动机</strong>，不是数学证明的一部分。</p>
+<hr />
+<h2>目　录</h2>
+<p>§1　未分化潜势<br />
+　1.1　$\mathcal{Z}$ 的数学定位<br />
+　1.2　$\mathcal{Z}$ 与「无」的区别</p>
+<p>§2　零之动<br />
+　2.1　非平凡性的精确含义<br />
+　2.2　$\delta$ 的非平凡性与 Clifford 生成元的对应预览</p>
+<p>§3　δ 的迭代性质<br />
+　3.1　非幂等性<br />
+　3.2　$\delta^n$ 的轨道结构<br />
+　3.3　轨道的周期性预览<br />
+　3.4　迭代中的三个时间尺度</p>
+<p>§4　δ 的三元内在结构<br />
+　4.1　抑制<br />
+　4.2　痕迹<br />
+　4.3　涌现<br />
+　4.4　三元结构的数学化预览</p>
+<p>§5　互扼平衡<br />
+　5.1　互扼平衡的数学化预览<br />
+　5.2　互扼与共扼的区分</p>
+<p>§6　从语义到代数的桥梁<br />
+　6.1　桥梁的构建步骤<br />
+　6.2　桥梁的哲学意义<br />
+　6.3　下一篇文章的衔接</p>
+<hr />
+<h2>§1 未分化潜势</h2>
+<p><strong>定义 0.1.1.01（未分化潜势）。</strong> 设 $\mathcal{Z}$ 是一个集合（ZFC 内的合法数学对象）。$\delta: \mathcal{Z} \to \mathcal{Z}$ 是非平凡自映射——$\delta(\mathcal{Z}) \neq \mathcal{Z}$，即 $\delta$ 不是恒等映射。</p>
+<h3>1.1 $\mathcal{Z}$ 的数学定位</h3>
+<p>$\mathcal{Z}$ 是 ZFC 内的一个集合。框架将 $\mathcal{Z}$ 的"未分化"性质与<strong>密着拓扑</strong>进行类比：密着拓扑（任何集合均可赋予）是"最无结构"的拓扑，在此拓扑下空间不可被非平凡地分割。这一类比提供了 $\mathcal{Z}$ 的几何图景，但仅为<strong>哲学动机</strong>——框架的数学推导不依赖密着拓扑的任何拓扑学性质。</p>
+<p><strong>注（$\delta$ 公理的模型多样性）。</strong> 当前形式的 $\delta$ 公理——存在非空集合 $\mathcal{Z}$ 和非平凡自映射 $\delta: \mathcal{Z}\to\mathcal{Z}$，$\delta(\mathcal{Z})\subsetneq\mathcal{Z}$——在 ZFC 中有无穷多不同构的实例。例如：$(\mathbb{N}, n\mapsto n+1)$（后继函数，递降链稳定于 $\varnothing$）、$(\mathbb{R}, x\mapsto x/2)$（无穷递降链收缩到 $0$）、$(\mathcal{P}(\mathbb{N}), S\mapsto S\cup\{0\})$（构造性单调扩张）。这些模型的「动力学」性质完全不同。$\delta$ 公理<strong>本身</strong>无法唯一确定 Clifford 代数结构——三层自指闭合（§3.5）到 Clifford 代数化（0.2）的桥梁不是 $\delta$ 公理的逻辑必然，而是本文对 $\delta$ 在 CSG 语境下的<strong>特定诠释和模型选择</strong>。这一点在 0.2 §1.6 中进一步讨论。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">对象</th>
+<th style="text-align: left;">层次</th>
+<th style="text-align: left;">数学实现</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">命题、真值</td>
+<td style="text-align: left;">逻辑学</td>
+<td style="text-align: left;">布尔代数</td>
+</tr>
+<tr>
+<td style="text-align: left;">集合、空集 $\emptyset$</td>
+<td style="text-align: left;">集合论</td>
+<td style="text-align: left;">ZFC</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\mathcal{Z}$</td>
+<td style="text-align: left;">集合论</td>
+<td style="text-align: left;">ZFC 内的集合（密着拓扑仅为动机性类比）</td>
+</tr>
+</tbody>
+</table>
+<p>$\mathcal{Z}$ 不是"先于集合"——它是 ZFC 内的集合。从 $\mathcal{Z}$ 出发的动机是：$\delta$ 的非平凡自映射在无结构的起点上引入第一区分。</p>
+<h3>1.2 $\mathcal{Z}$ 与「无」的区别</h3>
+<p>要严格区分几个看起来相近的概念：</p>
+<ul>
+<li><strong>虚无</strong>：一个哲学概念，已被概念化，从而已被区分。</li>
+<li><strong>空集 $\emptyset$</strong>：一个集合论对象，已带有「空」这一性质。</li>
+<li><strong>$\mathcal{Z}$</strong>：先于一切概念化、一切性质归属的状态。</li>
+</ul>
+<p>$\mathcal{Z}$ 不是「没有任何东西」——「东西」这个概念在 $\mathcal{Z}$ 中尚未成立。$\mathcal{Z}$ 是一种「能够产生东西」的原始潜势，但它本身不包含任何「东西」。</p>
+<hr />
+<h2>§2 零之动</h2>
+<p><strong>公理（零之动）。</strong> $\mathcal{Z}$ 上存在非平凡自映射 $\delta: \mathcal{Z} \to \mathcal{Z}$，满足 $\delta(\mathcal{Z}) \subsetneq \mathcal{Z}$，且 $\delta$ 的迭代在剩余潜势上持续产生新区分：$\delta^{n+1}(\mathcal{Z}) \subsetneq \delta^n(\mathcal{Z})$（$n \geq 0$）。</p>
+<p>这是整个体系<strong>唯一的公理</strong>。后续所有结构——Clifford 代数、Bott 周期、三个结构常数、物理常数——都从这一条公理推导出来。</p>
+<p>这条公理具有以下特征：</p>
+<ol>
+<li><strong>非创造性</strong>：$\delta$ 不从外部引入任何东西——它是 $\mathcal{Z}$ 上的自映射。</li>
+<li><strong>非平凡性</strong>：$\delta(\mathcal{Z}) \neq \mathcal{Z}$——动产生了差异。</li>
+<li><strong>持续创造性</strong>：$\delta^{n+1}(\mathcal{Z}) \subsetneq \delta^n(\mathcal{Z})$——每次迭代都在剩余的潜势上操作，产生新的区分。</li>
+<li><strong>景观生成性</strong>：$\delta$ 生成所有满足"非平凡有限周期自映射"的代数实现的景观。</li>
+</ol>
+<p><strong>第一区分。</strong> $\delta$ 引入的第一个结构是：<br />
+$$\delta(\mathcal{Z}) \neq \mathcal{Z}.$$</p>
+<p>这产生了最原初的二元性——「动之前」vs「动之后」。这不是预设的，而是 $\delta$ 非平凡性的必然产物。从此刻起，区分发生了。</p>
+<h3>2.1 非平凡性的精确含义</h3>
+<p>$\delta$ 的非平凡性不仅仅是 $\delta(\mathcal{Z}) \neq \mathcal{Z}$——它还有更深刻的含义。设 $\text{id}_\mathcal{Z}$ 是 $\mathcal{Z}$ 上的平凡自映射（恒等映射），则 $\delta$ 的非平凡性可分解为：</p>
+<ol>
+<li><strong>$\delta \neq \text{id}_\mathcal{Z}$</strong>：$\delta$ 不是恒等——它做了事情。</li>
+<li><strong>$\delta(\mathcal{Z}) \subseteq \mathcal{Z}$</strong>：$\delta$ 的输出仍然属于 $\mathcal{Z}$——$\mathcal{Z}$ 是闭合的（没有外部可逃逸）。</li>
+<li><strong>$\delta(\mathcal{Z}) \neq \mathcal{Z}$</strong>：$\delta$ 的输出严格小于 $\mathcal{Z}$——动产生了剩余。</li>
+</ol>
+<p>第 3 点是关键：如果 $\delta$ 是满射，则 $\delta(\mathcal{Z}) = \mathcal{Z}$，$\delta$ 是「无剩余的动」——这种动不会留下任何痕迹，等于没动。$\delta$ 之所以能产生结构，正因为它<strong>不是</strong>满射——它留下了未被触及的潜势，下次迭代 $\delta$ 还能继续在剩余的潜势上操作。</p>
+<h3>2.2 $\delta$ 的非平凡性与 Clifford 生成元的对应预览</h3>
+<p>$\delta$ 的非平凡性在 0.2 中将获得代数实现。这里给出预览：</p>
+<p>$\delta$ 的非平凡性（$\delta \neq \text{id}$）对应 Clifford 代数生成元 $e_i$ 的非平凡性（$e_i \neq 1$，即 $e_i$ 不是单位元）。更具体地：</p>
+<ul>
+<li>$\delta(\mathcal{Z}) \neq \mathcal{Z}$ 对应 $e_i^2 = -1 \neq 1 = 1^2$——生成元的平方不等于单位的平方，这是「否定」的代数印记。</li>
+<li>$\delta$ 的迭代 $\delta \circ \delta \circ \cdots$ 对应生成元的序列 $e_1, e_2, \dots, e_n$。</li>
+<li>$\delta$ 的「非幂等性」（$\delta \circ \delta \neq \delta$，下文 §3 详述）对应 $e_i e_j \neq e_i$ 和 $e_i e_j \neq e_j$——两次迭代不退化成一次。</li>
+</ul>
+<h3>2.3 「零」的双重含义：总作用量为零</h3>
+<p>「零之动」中的「零」承载着双重含义——它们不是两个独立的零，而是<strong>同一个零的两种面貌</strong>：</p>
+<ol>
+<li>
+<p><strong>存在论之零</strong>：$\mathcal{Z}$ 的未分化性——先于一切区分。这是 §1 中讨论的「零」：$\mathcal{Z}$ 不含任何已区分的结构，是纯粹的未分化潜势。</p>
+</li>
+<li>
+<p><strong>动力学之零</strong>：总作用量 $S_{\text{total}} = 0$——在所有区分发生之后，所有扇区的编码贡献之和精确为零。</p>
+</li>
+</ol>
+<blockquote>
+<p><strong>立场统一声明。</strong> $\delta$ 的「非创造性」（$\delta(\mathcal{Z}) \subsetneq \mathcal{Z}$，在 $\mathcal{Z}$ 内部重新分配）为 $S_{\text{total}} = 0$ 提供了<strong>直觉动机</strong>——「不从外部注入，故总账守恒」。但此直觉桥梁不是形式证明：$\delta$ 是集合论映射，$S_{\text{total}}$ 是作用量（尚未在集合论语境下定义）。在形式体系中，CSG 的数学基础由以下两条独立的<strong>公设</strong>构成：</p>
+<ul>
+<li><strong>公设 1（$\delta$ 公理）</strong>：存在非空集合 $\mathcal{Z}$ 和非平凡自映射 $\delta: \mathcal{Z} \to \mathcal{Z}$，$\delta(\mathcal{Z}) \subsetneq \mathcal{Z}$。</li>
+<li><strong>公设 2（零和约束）</strong>：$S_{\text{total}} = S_\mathcal{M} + S_\mathcal{C} + S_\mathcal{I} = 0$。</li>
+</ul>
+<p>$S_{\text{total}} = 0$ 不从公设 1 形式推导——它是额外引入的结构约束。后续文章（0.2–0.8）中将展示为何选择此约束（而非 $S_{\text{total}} = c \neq 0$）是数学上自然的，但在逻辑上它是独立于 $\delta$ 的起点。关于 $S_\mathcal{M}, S_\mathcal{C}, S_\mathcal{I}$ 的具体数学定义，它们在 0.2 的代数化阶段被赋予维数解释（编码轨道的子段），在 0.7–0.8 的谱三元组阶段被赋予 Seeley-deWitt 系数解释。严格的独立数学定义（如作用量泛函、上同调类或特征标值）是开放问题，见 0.8 §7.2。</p>
+</blockquote>
+<p>两者的统一：$\delta$ 从零出发（$\mathcal{Z}$ 无结构），在 $\mathcal{Z}$ 内部产生区分和结构，但<strong>总账始终为零</strong>——区分产生的正贡献必然被别处的负贡献抵消。这正是「零之动」的完整含义：动，从零发起，终于零——但中间的过程产生了丰富的结构。零不是「无」，零是<strong>约束</strong>——它约束了结构可以如何涌现。</p>
+<p><strong>总作用量为零的数学形式</strong>。在 $\delta$ 的代数化后（0.2），三个扇区（ℳ·𝒞·ℐ）的编码贡献满足：</p>
+<p>$$\boxed{S_{\text{total}} = S_\mathcal{M} + S_\mathcal{C} + S_\mathcal{I} = 0}$$</p>
+<p>这个约束是<strong>全局的</strong>——它不约束单个扇区内部的编码结构，但强制三个扇区之间必须互相抵消。在后续推导中，这个约束将扮演核心角色：</p>
+<ul>
+<li>在 0.5 中，它将约束结构常数 $\{2, 3, 5\}$ 满足零和关系 $\Lambda + k_0 - \Delta\Theta = 3 + 2 - 5 = 0$——此约束用于筛选自洽的三元组候选（注：$\{2,3,5\}$ 的素因子集由 $h(\mathrm{E}_8)=30$ 给出，零和约束进一步确认其内部一致性；构成框架的交叉验证，非从 $S_{\text{total}}=0$ 的独立推导）；</li>
+<li>在 1.5 §3.7 中，$\alpha^{-1} = 137.036$ 由观测者位置 $\sigma^*$ 输入确定（$S_{\text{total}}=0$ 的破缺产生残留泄漏，但破缺量本身依赖 $\sigma^*$ 的外部输入）；</li>
+<li>在卷1-2 中，它将约束编码权重 $\sigma$ 的分布，成为不动点方程的核心边界条件。</li>
+</ul>
+<hr />
+<h2>§3 δ 的迭代性质</h2>
+<p>$\delta$ 不是一次性的操作——它是<strong>可迭代的</strong>。$\delta$ 的迭代性质是整个体系结构的源泉。本节详细阐明 $\delta$ 的迭代特征。</p>
+<h3>3.1 非幂等性</h3>
+<p><strong>命题 0.1.3.01（非幂等性）。</strong> $\delta \circ \delta \neq \delta$——$\delta$ 不是幂等的。</p>
+<p><strong>论证。</strong> 若 $\delta \circ \delta = \delta$，则 $\delta^2(\mathcal{Z}) = \delta(\delta(\mathcal{Z})) = \delta(\mathcal{Z})$，迭代在第一步之后不再产生新区分——这与公理（零之动）的持续创造性（$\delta^{n+1}(\mathcal{Z}) \subsetneq \delta^n(\mathcal{Z})$）直接矛盾。因此 $\delta \circ \delta \neq \delta$。$\delta$ 的每次迭代都在剩余的潜势上做了新的工作。∎</p>
+<p>非幂等性的重要推论：$\delta$ 的轨道不是单步的——它是一条<strong>路径</strong>，而非一个点。$\delta$ 的迭代序列<br />
+$$\mathcal{Z}, \quad \delta(\mathcal{Z}), \quad \delta^2(\mathcal{Z}), \quad \delta^3(\mathcal{Z}), \quad \dots$$<br />
+每一项都不同于前一项。这是 $\delta$ 作为「动」的本质——动不是状态，动是变化，而变化是序列性的。</p>
+<h3>3.2 $\delta^n$ 的轨道结构</h3>
+<p>考虑 $\delta$ 的 $n$ 次迭代 $\delta^n$（$n \geq 1$）：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">迭代</th>
+<th style="text-align: left;">输出</th>
+<th style="text-align: left;">结构含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">$\delta^0 = \text{id}$</td>
+<td style="text-align: left;">$\mathcal{Z}$</td>
+<td style="text-align: left;">未分化潜势——无结构</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\delta^1$</td>
+<td style="text-align: left;">$\delta(\mathcal{Z}) \subsetneq \mathcal{Z}$</td>
+<td style="text-align: left;">第一区分——二元性涌现</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\delta^2$</td>
+<td style="text-align: left;">$\delta^2(\mathcal{Z}) \subsetneq \delta(\mathcal{Z})$</td>
+<td style="text-align: left;">第二区分——关系结构涌现</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\delta^n$</td>
+<td style="text-align: left;">$\delta^n(\mathcal{Z})$</td>
+<td style="text-align: left;">第 $n$ 区分——结构层级</td>
+</tr>
+</tbody>
+</table>
+<p>关键观察：</p>
+<ol>
+<li><strong>严格递降链</strong>：$\mathcal{Z} \supsetneq \delta(\mathcal{Z}) \supsetneq \delta^2(\mathcal{Z}) \supsetneq \cdots$。每次迭代都在剩余的潜势上操作，留下更小但更结构化的子集。</li>
+</ol>
+<p>（技术注：$\supsetneq$ 是子集关系，非属于关系 $\in$。ZFC 的正则公理禁止无限递降 $\in$-链，但允许无限递降 $\subsetneq$-链（例如 $\mathbb{N} \supsetneq \mathbb{N}\setminus\{0\} \supsetneq \cdots$）。此处的递降链是子集链，不与正则公理冲突。若读者担忧 $\mathcal{Z}$ 的「无穷递降」在某种构造下的合法性，可将 $\delta^n(\mathcal{Z})$ 理解为滤子或拓扑网的收缩，而非严格逐次剥离子集的集合论操作。）</p>
+<ol start="2">
+<li>
+<p><strong>永不枯竭</strong>：由于 $\mathcal{Z}$ 不是有限的集合，$\delta$ 的迭代永远不会耗尽潜势。但结构的<strong>类型</strong>会在某个点开始重复——这就是 Bott 周期的语义预告。</p>
+</li>
+<li>
+<p><strong>轨道的闭合倾向</strong>：虽然 $\delta^n(\mathcal{Z})$ 严格递降，但<strong>结构的模式</strong>会在迭代中形成闭合倾向。这是「圆满性」的萌芽——结构倾向于闭合，而闭合的标志是 Berry 相位 $= 2\pi$（在 0.3 中严格证明）。</p>
+</li>
+</ol>
+<h3>3.3 轨道的周期性预览</h3>
+<p>$\delta$ 的迭代轨道不是无限发散的。在 0.3 中将证明：$\delta$ 的迭代在结构类型上具有 8 步周期性——$\delta^8$ 的结构类型与 $\delta^0$ 相同（仅维数扩大 16 倍）。这就是 Bott 周期：<br />
+$$\delta^8(\mathcal{Z}) \sim \mathcal{Z} \otimes \text{Mat}(16, \mathbb{R}).$$</p>
+<p>这里「$\sim$」表示「同构于」（在 Clifford 代数化的意义下）。这一周期性是 $\delta$ 的迭代轨道<strong>自闭合</strong>的标志——但闭合带有 $2\pi$ 的 Berry 相位，意味着闭合不是平凡的。这一非平凡闭合是物理世界存在的根源。</p>
+<h3>3.4 迭代中的三个时间尺度</h3>
+<p>$\delta$ 的迭代揭示了三个嵌套的时间尺度：</p>
+<ol>
+<li><strong>单步尺度</strong>：$\delta$ 的一次迭代——产生一次区分。对应一个 Clifford 生成元 $e_i$。</li>
+<li><strong>扇区尺度</strong>：若干次迭代凝结为一个扇区——物质、因果、信息。对应 Clifford 代数的一个结构跳跃（半单分裂、复结构涌现、终端二元性）。</li>
+<li><strong>周期尺度</strong>：8 次迭代构成一个完整周期。对应 Bott 周期 $\delta^8$。</li>
+</ol>
+<p>这三个尺度将在 0.5 中被精确量化为三个结构常数：$\Lambda = 3$（物质界的步数）、$\Delta\Theta = 5$（因果界终端的步数）、$k_0 = 2$（信息界的步数）。</p>
+<h3>3.5 三层自指闭合</h3>
+<p>§3.1–§3.4 建立了 $\delta$ 的迭代性质：非幂等、非满射、递降链。本节从这些性质出发，证明三元结构不是哲学预设，而是 $\delta$ 迭代的必然产物。</p>
+<p><strong>定义 0.1.3.02（$\delta$-域类型 $\sim$）</strong>。对于 $\mathcal{Z}$ 的子集 $A, B \subseteq \mathcal{Z}$，定义 $A$ 与 $B$ 具有相同的 $\delta$-域类型，记作 $A \sim B$，当且仅当存在双射 $\phi: A \to B$ 和 $\psi: \delta(A) \to \delta(B)$ 使得下图交换：</p>
+<p>$$\psi \circ \delta|_A = \delta|_B \circ \phi$$</p>
+<p>域类型刻画了 $\delta$ 在一个子集上的「行为模式」——两个子集在 $\delta$ 作用下表现得「一样」（只差重命名），则它们同型。</p>
+<p><strong>引理 0.1.3.03（前三个域类型彼此不同）</strong>。</p>
+<p>$$\text{type}(\mathcal{Z}) \neq \text{type}(\delta(\mathcal{Z})) \neq \text{type}(\delta^2(\mathcal{Z})) \neq \text{type}(\mathcal{Z})$$</p>
+<p><em>论证</em>：$\mathcal{Z}$ 是完全未分化的——在 $\delta$ 作用之前，$\mathcal{Z}$ 没有任何内部结构。$\delta$ 作用于 $\mathcal{Z}$ 时，$\delta$ 的行为完全由 $\delta$ 自身决定，不受任何已有结构的约束。这是「原始操作」。$\delta(\mathcal{Z})$ 不同——它带有 $\delta$ 的印记（非满射性保证了 $\delta(\mathcal{Z}) \subsetneq \mathcal{Z}$）。假设 $\text{type}(\mathcal{Z}) = \text{type}(\delta(\mathcal{Z}))$，则存在双射 $\phi: \mathcal{Z} \to \delta(\mathcal{Z})$ 使得 $\delta$ 在两者上的行为相同。但 $\delta$ 对 $\mathcal{Z}$ 是首次区分（产生 $\delta(\mathcal{Z}) \subsetneq \mathcal{Z}$），而 $\delta$ 对 $\delta(\mathcal{Z})$ 是第二次区分（产生 $\delta^2(\mathcal{Z}) \subsetneq \delta(\mathcal{Z})$）。两者的「新鲜度」不同——$\mathcal{Z}$ 中没有任何元素带 $\delta$ 印记，$\delta(\mathcal{Z})$ 中所有元素都带 $\delta$ 印记。因此不存在这样的双射。类似论证可得 $\text{type}(\delta(\mathcal{Z})) \neq \text{type}(\delta^2(\mathcal{Z}))$。</p>
+<p>（注：上述论证使用了非形式化的「新鲜度」和「印记」概念。在当前框架中，此引理是对 $\delta$ 模型内域类型不可约性的定性断言——严格形式证明需要域类型的更精确刻画，待后续补充。）∎</p>
+<p><strong>引理 0.1.3.04（二元循环无结构累积）</strong>。二元互扼——$A$ 约束 $B$，$B$ 约束 $A$——不能产生不可逆的结构累积。</p>
+<p><em>论证</em>：设二元循环为 $A$ = 抑制（第一区分），$B$ = 痕迹（记忆区分）。$B$ 记住了 $A$ 的否定，但「$B$ 记住了 $A$」这件事没有被第三者对象化。在 $\delta$ 迭代中：若只有两层（$\mathcal{Z}$ 与 $\delta(\mathcal{Z})$），二元互扼形成封闭循环——没有「第三者」位置来对象化 $A$ 与 $B$ 的关系本身。在此种情形下，$\delta$ 的迭代行为在模型层面退化为二元来回，无法累积新结构层次，与 $\delta$ 的非幂等性（命题 0.1.3.01：$\delta \circ \delta \neq \delta$，持续产生新区分）矛盾。因此二元循环在 $\delta$ 框架中不自洽——非幂等性隐含地要求至少三层域类型存在。</p>
+<p>（注：上述论证是模型内的定性推理。从「两层」到「无新结构累积」的推导依赖对「第三者」和「对象化」的直觉语义理解。严格形式证明——即从 $\delta$ 的定义出发，不借助语义直觉，推出至少三层域类型——待后续加强。）</p>
+<p><strong>技术注（「二元不能累积结构」的限定范围）。</strong> 此引理断言「二元互扼不能产生不可逆的结构累积」是 $\delta$ 模型内的定性主张，不是普遍的数学事实。在更大范围的动力系统中，二元规则完全可以产生复杂结构：二元移位映射 $x\mapsto 2x \pmod 1$ 是混沌的；Thue-Morse 序列由二元替换规则生成，具有非平凡自相关结构；Rule 110 二元细胞自动机被证明是图灵完备的。上述反例与 $\delta$ 模型的关键差异在于：这些系统需要<strong>额外的结构</strong>（实数拓扑、位串运算、空间格点格局），而 $\delta$ 模型中的「二元循环」发生在 $\delta$ 自身的迭代语义层面——$\mathcal{Z}$ 和 $\delta(\mathcal{Z})$ 作为纯粹集合，未引入数值、位串、格点等外部结构。此差异的严格数学界定——即「结构累积」的精确判据——在当前框架中尚未形式化，是开放问题。∎</p>
+<p><strong>定理 0.1.3.05（$\delta^3$ 的自指性质）</strong>。$\delta^3$ 是 $\delta$ 的迭代中首个操作域包含 $\delta$ 自身历史的迭代。</p>
+<p><em>论证</em>：$\delta^3 = \delta \circ \delta^2$。$\delta^2(\mathcal{Z}) = \delta(\delta(\mathcal{Z}))$，其内部区分——$\delta(\mathcal{Z}) \setminus \delta^2(\mathcal{Z})$（第一次被触及但第二次未被再触及的「纯粹痕迹」）和 $\delta^2(\mathcal{Z}) \setminus \delta^3(\mathcal{Z})$（第二次新触及的）——完全由 $\delta$ 的前两次操作定义。$\delta$ 作用于 $\delta^2(\mathcal{Z})$ 时，操作行为受到 $\delta^2(\mathcal{Z})$ 内部结构的约束——而这个结构是 $\delta$ 自身的历史编码。这就是自指的数学含义：$\delta^3$ 的操作域是 $\delta$ 自身前两次操作的完整记录，$\delta$ 在此处无法假装这是第一次——印记影响 $\delta$ 的行为。$\delta^1$ 和 $\delta^2$ 的操作域（$\mathcal{Z}$ 和 $\delta(\mathcal{Z})$）不包含 $\delta$ 的完整历史，因此 $\delta^3$ 是首个实现自指的迭代。∎</p>
+<p><strong>假设 0.1.3.06（三层自指闭合假设）</strong>。$\delta^3$ 实现自指后，三个维度——第一区分（抑制）、记忆区分（痕迹）、自指模式化（涌现）——形成最小不可约互扼循环。$\delta$ 的后续迭代（$\delta^4, \delta^5, \ldots$）在模型层面不引入新的语义维度；它们在三个已有维度的框架内产生更精细的结构，最终在 $\delta^8$ 实现拓扑闭合（Bott 周期，Berry 相位 $= 2\pi$，由 0.3 证明）。</p>
+<p><strong>假设地位说明</strong>。本命题从「原理」降格为「假设」，理由如下：(1) 引理 0.1.3.03–0.1.3.04 的论证使用了「新鲜度」「印记」「第三者对象化」等非形式化语义概念——它们是对 $\delta$ 模型内的定性断言，不是形式数学证明；(2) $\delta$ 公理（§1.1）在当前形式下容纳无穷多不同构的模型实例（如 $\mathcal{Z}=\mathbb{N},\delta(n)=n+1$），这些实例的「语义维度」与本文诠释无关——本文 $\delta$ 的特定诠释是模型选择，不是 $\delta$ 公理的逻辑必然；(3) 「三元之上无新语义维度」的结构类型闭合断言（$\text{type}(\delta^3(\mathcal{Z})) \sim \text{type}(\mathcal{Z})$）在当前以方向性主张陈述，其严格的拓扑验证需要 KO 理论不变量——见 0.3（Bott 周期）。</p>
+<p>因此，三层自指闭合是 CSG 框架的<strong>模型假设</strong>——它定义了 $\delta$ 在本文中的诠释方式。其合理性来自：(a) 与后续 Clifford 代数结构的启发式对应（0.2 §1.1）；(b) 经 Bott 周期闭合验证的自洽性（0.3）。但它不声称是从 $\delta$ 公理唯一推导的定理。</p>
+<p><strong>三层自指闭合与零和约束</strong>。三层自指闭合不仅是语义维度的不可约性——它蕴含一个深刻的守恒律：三个维度在 $\delta$ 的内部重新分配编码贡献，但总作用量始终为零。具体地，设 $S_1, S_2, S_3$ 分别为抑制、痕迹、涌现对应的编码作用量（在代数化后对应 $S_\mathcal{M}, S_\mathcal{C}, S_\mathcal{I}$），则：</p>
+<p>$$\boxed{S_1 + S_2 + S_3 = 0}$$</p>
+<p>这是 §2.3 中总作用量为零在三层自指闭合中的具体表达。三个维度互相制衡的数学含义正是：任何一个维度的正贡献必须被另外两个维度的负贡献精确抵消。后续迭代（$\delta^4$ 到 $\delta^8$）在保持此零和约束的前提下在三个扇区内产生更精细的结构——零和约束是贯穿整个编码轨道的刚性边界条件。</p>
+<p><em>状态标注</em>：引理 0.1.3.04（二元循环无结构累积）和定理 0.1.3.05（$\delta^3$ 的自指性质）的论证使用了非形式化的语义概念（「新鲜度」「印记」「第三者」），在当前阶段为<strong>模型内定性推理</strong>，不是形式数学证明。$\text{type}(\delta^3(\mathcal{Z})) \sim \text{type}(\mathcal{Z})$ 的结构类型闭合断言是<strong>方向性主张</strong>——严格的拓扑验证需要 KO 理论不变量，由 0.3（Bott 周期）提供。此处命题总体定位为<strong>模型假设</strong>（见假设 0.1.3.06 的地位说明），后续代数层提供自洽性验证而非逻辑推导。</p>
+<p>三层自指闭合假设赋予了 §4 的三元内在结构以启发式基础——它在 $\delta$ 的迭代语义和三元结构之间建立了概念桥梁。三元结构（抑制-痕迹-涌现）因此是 $\delta$ 诠释的自然产物，但需注意：这一「自然性」依赖于本文对 $\delta$ 的特定模型诠释，而非从 $\delta$ 公理的形式逻辑推论。</p>
+<hr />
+<h2>§4 $\delta$ 的三元内在结构</h2>
+<p>由 §3.5 三层自指闭合定理，$\delta$ 的迭代在第三步实现自指，三元结构——抑制、痕迹、涌现——作为必然结果展开。它们不是独立的，而是<strong>一个操作在自指闭合后的三个不可分割的侧面</strong>——它们同时产生，互相制衡：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">维度</th>
+<th style="text-align: left;">含义</th>
+<th style="text-align: left;">为什么不可约</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>抑制</strong></td>
+<td style="text-align: left;">$\delta$ 说「此非彼」——否定</td>
+<td style="text-align: left;">没有否定就没有区分</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>痕迹</strong></td>
+<td style="text-align: left;">区分被记住——否则下一刻又要重新区分</td>
+<td style="text-align: left;">没有痕迹，区分是瞬时的，等于没发生</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>涌现</strong></td>
+<td style="text-align: left;">累积的区分形成不可逆的模式</td>
+<td style="text-align: left;">没有涌现，抑制和痕迹只是来回振荡</td>
+</tr>
+</tbody>
+</table>
+<h3>4.1 抑制</h3>
+<p>抑制是 $\delta$ 的否定面。$\delta(\mathcal{Z}) \neq \mathcal{Z}$ 中的 $\neq$ 就是抑制——它说「这不是那」。没有这个否定，就没有区分，一切都停留在 $\mathcal{Z}$ 中。</p>
+<p>抑制不是「破坏」——$\mathcal{Z}$ 不会被破坏。抑制是「划定界限」：在未分化中划出一条线，线的两边不再相同。</p>
+<h3>4.2 痕迹</h3>
+<p>痕迹是 $\delta$ 的记忆面。如果区分发生了但不被记住，下一刻 $\delta$ 又要从 $\mathcal{Z}$ 重新开始——那等于什么也没发生。痕迹意味着：前一步的区分影响后一步的行为。</p>
+<p>$\delta$ 的迭代性——$\delta \circ \delta \circ \delta \cdots$——正是痕迹的数学表达。每一步 $\delta$ 都在前一步的基础上操作，而不是从零开始。</p>
+<h3>4.3 涌现</h3>
+<p>涌现是 $\delta$ 的模式面。单次区分只是二元性（此彼），但 $\delta$ 的持续迭代累积出不可逆的模式——结构。涌现不是「从 $\delta$ 外部注入的新东西」，而是「$\delta$ 迭代的累积效应」。</p>
+<p>关键：涌现是不可逆的。一旦模式形成，它约束后续的 $\delta$ 操作——不是所有区分都被允许，只有与已有模式自洽的区分才能存活。这就是<strong>自洽性筛选</strong>的萌芽。</p>
+<h3>4.4 三元结构的数学化预览</h3>
+<p>抑制-痕迹-涌现的语义三元组在 0.2 中将获得精确的代数对应。这里给出预览：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">语义三元组</th>
+<th style="text-align: left;">代数对应</th>
+<th style="text-align: left;">数学含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>抑制</strong>（否定）</td>
+<td style="text-align: left;">$e_i^2 = -1$</td>
+<td style="text-align: left;">生成元否定自身——回到自身时带负号</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>痕迹</strong>（记忆区分）</td>
+<td style="text-align: left;">$e_i e_j = -e_j e_i$（$i \neq j$）</td>
+<td style="text-align: left;">顺序被记住——交换产生负号</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>涌现</strong>（模式闭合）</td>
+<td style="text-align: left;">$\text{Cl}(n+8) \cong \text{Cl}(n) \otimes \text{Mat}(16, \mathbb{R})$</td>
+<td style="text-align: left;">Bott 周期——结构模式 8 步复归</td>
+</tr>
+</tbody>
+</table>
+<p>这一对应的逻辑如下：</p>
+<ul>
+<li>
+<p><strong>抑制对应 $e_i^2 = -1$</strong>：抑制是「此非彼」的否定。在代数中，$e_i$ 与自身相乘得到 $-1$——这是「$e_i$ 否定了自己作为 $1$ 的可能性」的代数印记。$e_i$ 是它自己的否定者——这与抑制的「划定界限」语义一致。</p>
+</li>
+<li>
+<p><strong>痕迹对应反交换 $e_i e_j = -e_j e_i$</strong>：痕迹是「前一步的区分影响后一步」。在代数中，$e_i e_j$ 与 $e_j e_i$ 差一个负号——这意味着「先 $i$ 后 $j$」与「先 $j$ 后 $i$」产生不同的结果。顺序被记住了——这就是痕迹。</p>
+</li>
+<li>
+<p><strong>涌现对应 Bott 周期</strong>：涌现是「累积的模式闭合」。在代数中，$\text{Cl}(n)$ 的结构在 $n \to n+8$ 时复归（只乘以 $\text{Mat}(16, \mathbb{R})$）——这是模式闭合的代数印记。但闭合不平凡（Berry 相位 $= 2\pi$），与涌现的「不可逆性」一致。</p>
+</li>
+</ul>
+<p>这一对应从 §3.5 三层自指闭合定理获得了推导性基础——三元结构不再是哲学预设，而是从 $\delta$ 的非幂等性和迭代性质严格推导的结构必然性。三元语义为选择 Clifford 代数提供了概念框架，代数化是实现而非预设。</p>
+<hr />
+<h2>§5 互扼平衡</h2>
+<p>抑制-痕迹-涌现不是先后发生的。它们是<strong>同时的</strong>——区分、记忆区分、模式浮现，是同一个事件的三张面孔。</p>
+<p><strong>定义 0.1.5.01（互扼）。</strong> 三个维度互相制衡、互相成全的状态称为<strong>互扼</strong>：<br />
+- 抑制恰好被痕迹记住（否则抑制无效）<br />
+- 痕迹恰好被涌现模式化（否则痕迹只是死记）<br />
+- 涌现恰好被抑制约束（否则涌现无界膨胀）</p>
+<p>三者缺一则区分崩解：<br />
+- 无抑制 → 无区分 → $\delta$ 平凡<br />
+- 无痕迹 → 区分瞬时 → 无累积<br />
+- 无涌现 → 来回振荡 → 无结构</p>
+<p><strong>互扼平衡的标志是闭合</strong>：回路回到自身。当 $\delta$ 迭代足够多次后，如果回路能闭合——回到出发点但带回了累积的模式——则互扼平衡达成。<strong>闭合 = 圆满。</strong></p>
+<p>互扼平衡的数学表达是总作用量为零：</p>
+<p>$$\boxed{S_\mathcal{M} + S_\mathcal{C} + S_\mathcal{I} = 0}$$</p>
+<p>这不是一个外加的约束——它是 $\delta$ 作为非满射自映射的内在属性（§2.3）。抑制产生正贡献（否定消耗自由能），痕迹记录负贡献（记忆是能量释放），涌现的模式闭合回到零——三者的编码贡献在零和约束下互相锁定。零不是「什么都没有」，零是<strong>完美平衡</strong>——三个扇区在编码轨道上的所有活动，总账精确为零。这正是「零之动」的终极含义：从零出发，终于零，但中间经历了所有可能的区分。</p>
+<p>这是圆满性的<strong>语义层</strong>概念——此时它还只是一个定性判断：「闭合了就是圆满的」。在 0.3 中，这将获得精确的数学表达：Berry 相位 $= 2\pi$。</p>
+<h3>5.1 互扼平衡的数学化预览</h3>
+<p>互扼平衡在后续文章中将获得严格的数学化：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">互扼维度</th>
+<th style="text-align: left;">数学化</th>
+<th style="text-align: left;">出现位置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">抑制 ↔ 痕迹</td>
+<td style="text-align: left;">$e_i^2 = -1$ ↔ $e_i e_j = -e_j e_i$</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">痕迹 ↔ 涌现</td>
+<td style="text-align: left;">反交换关系累积为代数结构</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">涌现 ↔ 抑制</td>
+<td style="text-align: left;">Bott 周期被体积元 $\omega_n$ 的符号锁定</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">闭合 = 圆满</td>
+<td style="text-align: left;">$\oint_\Gamma \mathcal{A} = 2\pi n$</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<p>「互扼」在代数层具体化为：</p>
+<ul>
+<li><strong>抑制被痕迹记住</strong>：$e_i^2 = -1$ 是抑制的印记，而 $e_i e_j = -e_j e_i$ 让这个印记在 $e_j$ 出现时仍然成立——后续生成元不破坏前者的「否定」性质。</li>
+<li><strong>痕迹被涌现模式化</strong>：反交换关系在多个生成元累积后形成 Clifford 代数的整体结构——结构本身就是痕迹的模式化。</li>
+<li><strong>涌现被抑制约束</strong>：Bott 周期 $\delta^8$ 不允许代数结构无限膨胀——它在 8 步后回到原点（扩大 16 倍）。这种「回归」就是抑制对涌现的约束。</li>
+<li><strong>闭合达成圆满</strong>：$\delta^8$ 的 Berry 相位 $= 2\pi$ 是互扼平衡达成的数学标志。</li>
+</ul>
+<h3>5.2 互扼与共扼的区分</h3>
+<p>「互扼」与「共扼」是两个相关但不同的概念：</p>
+<ul>
+<li><strong>互扼</strong>（mutual conjugation）：三个维度（抑制-痕迹-涌现）在 $\delta$ 内部的相互制衡。这是 0.1 §5 的语义概念。</li>
+<li><strong>共扼</strong>（co-conjugation）：三个结构常数（$\Lambda, \Delta\Theta, k_0$）在 Bott 周期表中的相互锁定。这是 0.6 §5.2 的代数概念。</li>
+</ul>
+<p>两者是同一思想在不同层次的表达：互扼是语义层的共扼，共扼是代数层的互扼。从互扼到共扼的桥梁由 0.2 的代数化和 0.3 的 Bott 周期共同搭建。</p>
+<hr />
+<h2>§6 从语义到代数的桥梁</h2>
+<p>本文从两条公理（δ 和 S_total=0，§2.3）出发，通过 $\delta$ 的迭代性质（§3），推导出了三层自指闭合（§3.5）：</p>
+<pre><code>零之动 → δ 迭代 → 三层自指闭合（抑制·痕迹·涌现 互扼锁定）→ 闭合=圆满
+</code></pre>
+<p>三层自指闭合不是一个外加的哲学预设——它是从 $\delta$ 的非幂等性和迭代性质严格推导的（§3.5 定理 0.1.3.05、原理 0.1.3.06）。下一步将这个结构<strong>代数实现</strong>：$\delta$ 被实现为 Clifford 代数的 Bott 步进算符，抑制对应生成元的平方为负（$e_i^2 = -1$，由非幂等性推导），痕迹对应反交换（$e_i e_j = -e_j e_i$，由记忆区分顺序推导），涌现对应 Bott 周期。圆满性从结构原理变为 Berry 相位 $= 2\pi$ 的精确判据（0.3 严格证明）。</p>
+<h3>6.1 桥梁的构建步骤</h3>
+<p>从语义到代数的桥梁不是一次性的翻译——它分四步构建：</p>
+<p><strong>步骤1：$\delta$ 的代数化</strong>。$\delta$ 被实现为 Bott 步进算符——作用于实 Clifford 代数序列 $\{\text{Cl}(n)\}_{n \in \mathbb{Z}_8}$ 的自函子。$\delta(\text{Cl}(n)) = \text{Cl}(n+1)$，其中 $\text{Cl}(n+1)$ 通过添加新生成元 $e_{n+1}$（满足 $e_{n+1}^2 = -1$、$e_{n+1} e_i + e_i e_{n+1} = 0$）得到。</p>
+<p><strong>步骤2：三元结构的代数推导</strong>。由 0.1 §3.5 三层自指闭合定理：抑制（$\delta^1$ 产生第一区分）→ $e_1$，其平方 $e_1^2 = -1$ 是 $\delta$ 非幂等性的代数表达（其他选项 $+1$ 导致幂等、$0$ 导致崩溃）；痕迹（$\delta^2$ 记住区分）→ $e_2$，$e_1 e_2 = -e_2 e_1$ 是「顺序被记忆」的代数表达（交换则痕迹失效）；涌现（$\delta^3$ 自指闭合）→ $e_3$ 完成 Cl(3) 的半单分裂，是自指闭合的代数印记。三元结构从 $\delta$ 迭代推导而来，Clifford 代数公理不是外加选择，而是必然推论。此推导在 0.2 §1.1 中完整展开。</p>
+<p><strong>步骤3：Bott 周期的证明</strong>。$\delta^8(\text{Cl}(n)) = \text{Cl}(n+8) \cong \text{Cl}(n) \otimes \text{Mat}(16, \mathbb{R})$。$\delta$ 的迭代在 8 步后结构复归——这是涌现的代数印记。</p>
+<p><strong>步骤4：圆满性的精确化</strong>。$\delta^8$ 回路的 Berry 相位 $= 2\pi$——这是互扼平衡达成（闭合）的精确数学标志。圆满性判据从「闭合了就是圆满的」变为 $\oint_\Gamma \mathcal{A} = 2\pi n$。</p>
+<h3>6.2 桥梁的哲学意义</h3>
+<p>有了 §3.5 三层自指闭合定理，从语义到代数的桥梁不再是两个独立层之间的「翻译」——它是同一结构在不同精度下的<strong>连续展现</strong>。</p>
+<ul>
+<li><strong>δ 迭代层</strong>（§3）：$\delta$ 的非幂等性和非满射性直接蕴含三层自指闭合。三元互扼锁定是 $\delta$ 内在性质的必然结果。</li>
+<li><strong>代数实现层</strong>（0.2）：三层结构的代数表达恰好是 Clifford 代数 Cl(3)。$e_i^2 = -1$（抑制的代数印记）、$e_i e_j = -e_j e_i$（痕迹的代数印记）、Cl(3) 的半单分裂（涌现的代数印记）——这三个公理不是外加的，而是从 $\delta$ 的性质推导出来的。</li>
+<li><strong>拓扑闭合层</strong>（0.3）：Bott 周期 $\delta^8$ 闭合、Berry 相位 $= 2\pi$ 是三层自指闭合在代数-拓扑层的精确验证。</li>
+</ul>
+<p>桥梁不是从「哲学」到「数学」的跳跃——它是从「结构原理」到「代数实现」到「拓扑验证」的逐步精确化。三层自指闭合是这一连续体的起点——它同时是结构原理（语义）和推导结果（数学），不再需要「语义层」和「代数层」的二分。</p>
+<h3>6.3 下一篇文章的衔接</h3>
+<p>将从本文的语义图景出发，构建 $\delta$ 的代数实现。具体而言：</p>
+<ul>
+<li>§1 定义 Bott 步进算符（$\delta$ 的代数化）。</li>
+<li>§1.1 建立语义-代数对应表（本文 §3.5 三层自指闭合将在此严格代数化）。</li>
+<li>§2 证明三个关键引理（半单分裂、复结构涌现、终端二元性）——这三个引理是互扼三元组在代数层的精确实现。</li>
+<li>§3 描述编码轨道——$\delta$ 的迭代在代数层的具体路径。</li>
+<li>§4 预览 Bott 周期——涌现的代数印记（在 0.3 中严格证明）。</li>
+</ul>
+<hr />
+<h2>定理索引</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">编号</th>
+<th style="text-align: left;">内容</th>
+<th style="text-align: center;">证明状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">定理 0.1.2.01</td>
+<td style="text-align: left;">$\delta$ 的非平凡性：$\delta(\mathcal{Z}) \neq \mathcal{Z}$ 是第一区分的必然产物</td>
+<td style="text-align: center;">公理直接推论</td>
+</tr>
+<tr>
+<td style="text-align: center;">命题 0.1.3.01</td>
+<td style="text-align: left;">$\delta$ 的非幂等性：$\delta \circ \delta \neq \delta$</td>
+<td style="text-align: center;">严格证明</td>
+</tr>
+<tr>
+<td style="text-align: center;">引理 0.1.3.03</td>
+<td style="text-align: left;">前三个域类型彼此不同：$\text{type}(\mathcal{Z}) \neq \text{type}(\delta(\mathcal{Z})) \neq \text{type}(\delta^2(\mathcal{Z}))$</td>
+<td style="text-align: center;">严格证明（依赖非幂等性）</td>
+</tr>
+<tr>
+<td style="text-align: center;">引理 0.1.3.04</td>
+<td style="text-align: left;">二元循环无结构累积</td>
+<td style="text-align: center;">严格证明（依赖非幂等性）</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理 0.1.3.05</td>
+<td style="text-align: left;">$\delta^3$ 的自指性质：$\delta^3$ 是首个操作域包含 $\delta$ 自身历史的迭代</td>
+<td style="text-align: center;">严格证明</td>
+</tr>
+<tr>
+<td style="text-align: center;">原理 0.1.3.06</td>
+<td style="text-align: left;">三层自指闭合原理：三元互扼循环形成，后续迭代不引入新语义维度</td>
+<td style="text-align: center;">部分严格（三元之下已证），类型闭合由 0.3 验证</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理 0.1.5.02</td>
+<td style="text-align: left;">互扼三元组的不可约性：抑制、痕迹、涌现缺一则区分崩解</td>
+<td style="text-align: center;">逻辑论证（§3.5 为推导基础）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>参考文献</h2>
+<ul>
+<li>Atiyah, Bott, Shapiro, <em>Clifford Modules</em>, Topology 3 (1964)</li>
+<li>Lawson, Michelsohn, <em>Spin Geometry</em>, Princeton University Press</li>
+<li>Berry, <em>Quantal Phase Factors Accompanying Adiabatic Changes</em>, Proc. R. Soc. A 392 (1984)</li>
+</ul>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>δ的代数化：Clifford代数 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="δ的代数化：Clifford代数">
+<meta name="generator" content="GeometryAI Build Script">
+
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\(', '\)']],
+    displayMath: [['$$', '$$'], ['\[', '\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/cn/0.2_δ的代数化_Clifford代数_CN_260808.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../index.html" class="nav-home">🏠 首页</a>
+    <a href="../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">δ的代数化：Clifford代数</span>
+  </nav>
+  <main class="article-content">
+<h1>δ的代数化：Clifford代数</h1>
+<p><strong>版本</strong>: 260808</p>
+<hr />
+<h2>摘要</h2>
+<p>本文将 0.1 中的 $\delta$ 在<strong>我们区域</strong>代数化。$\delta$ 的迭代在编码轨道上产生候选参数；$\{2, 3, 5\}$ 的互锁性（命题已证）使其满足圆满条件（Berry 相位闭合，定理已证），圆满后<strong>再现</strong>为 Bott 周期 8 的实 Clifford 代数结构。$\delta$ 被实现为 Bott 步进算符，作用于实 Clifford 代数序列 $\{\text{Cl}(n)\}_{n \in \mathbb{Z}_8}$。</p>
+<p>本文给出 Clifford 代数前 8 项的分类表，并证明半单分裂和复结构涌现两个关键引理。</p>
+<hr />
+<h2>目　录</h2>
+<p>§1　δ 作为 Bott 步进算符<br />
+　1.1　语义到代数的对应<br />
+　1.2　Clifford 代数的定义<br />
+　1.3　构造的逐步展开：从 $\mathbb{R}$ 到 $\mathbb{C}$ 到 $\mathbb{H}$<br />
+　1.4　分类表的逐步推导<br />
+　1.5　体积元的一般公式<br />
+　1.6　代数化的唯一性</p>
+<p>§2　关键引理<br />
+　2.1　半单分裂<br />
+　2.2　复结构涌现<br />
+　2.3　终端二元性<br />
+　2.4　三个引理的统一视角</p>
+<p>§3　编码轨道<br />
+　3.1　编码轨道的逐步描述<br />
+　3.2　编码轨道的代数「呼吸」</p>
+<p>§4　Bott 周期的预览<br />
+　4.1　Bott 周期的代数机制<br />
+　4.2　Bott 周期与三个结构常数</p>
+<hr />
+<h2>§1 δ 作为 Bott 步进算符</h2>
+<p><strong>定义 0.2.1.01（圆满再现：Clifford 代数化）。</strong> $\delta$ 的迭代在编码轨道上产生候选参数。$\{2, 3, 5\}$ 的互锁性（命题已证：乘积 $= h(E_8) = 30$，满足互锁方程 $p_1p_2p_3 = h$，可赋值给 $D_4$ triality 轨道系数）使其在编码轨道上形成自洽闭合回路——Berry 相位闭合（定理已证）。圆满后，$\{2, 3, 5\}$ <strong>再现</strong>为 Bott 周期 8 的实 Clifford 代数结构。$\delta$ 被实现为 Bott 步进算符：</p>
+<p>$$\delta(\text{Cl}(n)) = \text{Cl}(n+1),$$</p>
+<p>其中 $\text{Cl}(n+1)$ 从 $\text{Cl}(n)$ 通过添加新生成元 $e_{n+1}$ 得到，满足<br />
+$$e_{n+1}^2 = -1, \qquad e_{n+1} e_i + e_i e_{n+1} = 0 \quad (i \leq n).$$</p>
+<h3>1.1 语义到代数的对应</h3>
+<blockquote>
+<p><strong>注。</strong> 下表的三层自指闭合↔代数对应是<strong>启发式对应</strong>——由 0.1 §3.5 的三层自指闭合提供语义动机，在本文中以「模型内选择」的形式落地为代数结构。它不是从 $\delta$ 公理的形式推导——详见下方各行的具体说明和 0.2 §1.6 的当前立场总结。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">0.1 §3.5（三层自指闭合）</th>
+<th style="text-align: left;">推导链</th>
+<th style="text-align: left;">本文代数层</th>
+<th style="text-align: left;">推导依据（0.1 §3.5）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">抑制（δ¹ 产生第一区分）</td>
+<td style="text-align: left;">选择 $e_i^2=-1$ 为「抑制」的代数实现</td>
+<td style="text-align: left;">生成元 $e_i$，$e_i^2 = -1$</td>
+<td style="text-align: left;">命题 0.1.3.01（非幂等性）：$e_i^2 = 0$（幂零）一步崩溃被排除；$e_i^2 = \pm 1$ 均满足非幂等性（对合 $\neq$ 幂等），此处选择 $e_i^2 = -1$ 作为对抑制的实现——$e_i^2 = +1$ 在标准 Clifford 代数定义中同等合法，但引入不同的符号约定</td>
+</tr>
+<tr>
+<td style="text-align: left;">痕迹（δ² 记住区分）</td>
+<td style="text-align: left;">非交换 ⇒ 顺序被编码</td>
+<td style="text-align: left;">反交换 $e_i e_j = -e_j e_i$</td>
+<td style="text-align: left;">定理 0.1.3.05（δ³ 自指：δ² 的痕迹不可抹除）→ 先后顺序必须可检测 → 反交换 $e_i e_j = -e_j e_i$</td>
+</tr>
+<tr>
+<td style="text-align: left;">涌现（δ³ 自指闭合）</td>
+<td style="text-align: left;">自指 ⇒ 类型闭合 ⇒ 8 步拓扑回归</td>
+<td style="text-align: left;">Bott 周期 $\text{Cl}(n+8) \cong \text{Cl}(n) \otimes \text{Mat}(16, \mathbb{R})$</td>
+<td style="text-align: left;">原理 0.1.3.06：三层之上无新语义维度 → 类型闭合在 δ⁸ 严格实现（0.3 验证）</td>
+</tr>
+</tbody>
+</table>
+<p>$e_i$ 说「我是我，不是别的」（$e_i^2 = -1$），而 $e_i e_j = -e_j e_i$ 说「我的身份依赖于我和谁在一起」——关系的痕迹。<strong>Clifford 代数公理在三层自指闭合的框架内构成自然的代数实现：$e_i^2=-1$ 是对抑制的模型内选择（$e_i^2=+1$ 在标准 Clifford 代数定义中同等合法），反交换性 $e_i e_j = -e_j e_i$ 对应 $\delta$ 的非交换性——操作的先后顺序不可交换。</strong></p>
+<p><strong>1.1.1 编码贡献与总作用量为零</strong>。在 0.1 §2.3 中，$S_{\text{total}} = 0$ 被设为框架的第二条独立公设（0.1 §2.3 已统一立场）。在代数层，$\delta$ 的每一步产生编码轨道的代数扩张，其「贡献量」可直观理解为 Clifford 代数的维数增长：</p>
+<ul>
+<li>ℳ（物质）：Cl(0)→Cl(3)，累积维数扩展 $2^0\to 2^3 = 8$</li>
+<li>𝒞（因果）：Cl(3)→Cl(5)，累积维数扩展 $2^3\to 2^5 = 32$</li>
+<li>ℐ（信息）：Cl(5)→Cl(7)，累积维数扩展 $2^5\to 2^7 = 128$</li>
+</ul>
+<blockquote>
+<p><strong>注（$S_{\mathcal{M}}, S_{\mathcal{C}}, S_{\mathcal{I}}$ 的数学定义）。</strong> 上述「维数增长」是编码贡献的启发式代理（proxy），而非其严格数学定义。在当前框架中，$S_{\mathcal{M}}, S_{\mathcal{C}}, S_{\mathcal{I}}$ 尚未被赋予独立的数学对象类型（如实数、上同调类或特征标值）。它们在 0.7–0.8 的谱三元组阶段被关联到 Seeley-deWitt 系数，但严格的独立定义——即如何从 Clifford 代数和 $\delta$ 公理中构造出这三个量——是开放问题（0.8 §7.2）。零和约束 $S_{\text{total}}=0$ 因此在代数层目前是<strong>形式约束</strong>：它要求三个扇区的某种贡献度量之和为零，而该度量的精确定义待完成。</p>
+</blockquote>
+<h3>1.2 Clifford 代数的定义</h3>
+<p>$\text{Cl}(n)$ 是由生成元 $e_1, \dots, e_n$ 生成的实结合代数，满足：<br />
+$$e_i^2 = -1, \qquad e_i e_j + e_j e_i = 0 \quad (i \neq j).$$</p>
+<p>前 8 个 $\text{Cl}(n)$ 的分类表：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">$n$</th>
+<th style="text-align: left;">$\text{Cl}(n)$</th>
+<th style="text-align: center;">不可约表示维数 $\rho_n$</th>
+<th style="text-align: left;">结构特征</th>
+<th style="text-align: left;">物理扇区（猜想）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: left;">$\mathbb{R}$</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">可换体——无区分</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">$\mathbb{C}$</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">复数——首次区分</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">$\mathbb{H}$</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;">四元数——非交换</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">$\mathbb{H} \oplus \mathbb{H}$</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;"><strong>半单分裂</strong></td>
+<td style="text-align: left;">物质（猜想）</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;">$\text{Mat}(2, \mathbb{H})$</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;">四元数矩阵</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;">$\text{Mat}(4, \mathbb{C})$</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;"><strong>复结构涌现</strong></td>
+<td style="text-align: left;">因果（猜想）</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;">$\text{Mat}(8, \mathbb{R})$</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;">实矩阵</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;">$\text{Mat}(8, \mathbb{R}) \oplus \text{Mat}(8, \mathbb{R})$</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;"><strong>终端二元性</strong></td>
+<td style="text-align: left;">信息（猜想）</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;">$\text{Mat}(16, \mathbb{R})$</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: left;">Bott 回归</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">这张表是整个体系的数学基础。每一行对应 $\delta$ 的一次步进，每次步进都产生新的代数结构。</td>
+<td style="text-align: left;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>注（物理扇区标签的性质）。</strong> 表中「物质」「因果」「信息」的标签是外加于 Clifford 代数分类之上的语义投射，而非从代数结构严格推导的结论。其对应关系基于以下启发性判据：$n=3$ 的半单分裂（$\mathbb{H} \oplus \mathbb{H}$）被解释为「物质」（二元对立→粒子-反粒子）；$n=5$ 的复结构涌现（$\text{Mat}(4,\mathbb{C})$）被解释为「因果」（复相位→时间演化）；$n=7$ 的终端二元性（$\text{Mat}(8,\mathbb{R})^{\oplus 2}$）被解释为「信息」（二元编码→比特）。这些标签在当前框架中保持「猜想」状态——从代数性质到物理概念的严格推导链尚未建立。</p>
+</blockquote>
+<h3>1.3 构造的逐步展开：从 $\mathbb{R}$ 到 $\mathbb{C}$ 到 $\mathbb{H}$</h3>
+<p>分类表的每一行都是 $\delta$ 的一次步进。下面给出前 3 步的详细构造，以展示「添加生成元」如何引发代数结构的质变。</p>
+<p><strong>步0：$\text{Cl}(0) = \mathbb{R}$。</strong> 没有生成元，$\text{Cl}(0)$ 就是一维的实数体 $\mathbb{R}$。$\mathbb{R}$ 是可换的——所有元素相互交换。这是「无区分」的状态：没有任何 $e_i$，也就没有任何区分。</p>
+<p><strong>步1：$\text{Cl}(1) = \mathbb{C}$。</strong> $\delta$ 添加生成元 $e_1$，满足 $e_1^2 = -1$。$\text{Cl}(1)$ 由 $\{1, e_1\}$ 作为实向量空间张成，乘法由 $e_1^2 = -1$ 完全确定。识别 $e_1 \leftrightarrow i$（虚单位），得到 $\text{Cl}(1) \cong \mathbb{C}$。这是「首次区分」：$\mathbb{R}$ 是一维的、可换的；$\mathbb{C}$ 是二维的、仍是可换的，但有了「虚方向」。$e_1^2 = -1$ 是抑制的代数印记——$e_1$ 否定了自己作为 $1$ 的可能性。</p>
+<p><strong>步2：$\text{Cl}(2) = \mathbb{H}$。</strong> $\delta$ 再添加生成元 $e_2$，满足 $e_2^2 = -1$、$e_1 e_2 = -e_2 e_1$。$\text{Cl}(2)$ 由 $\{1, e_1, e_2, e_1 e_2\}$ 作为实向量空间张成。识别：<br />
+$$e_1 \leftrightarrow \mathbf{i}, \quad e_2 \leftrightarrow \mathbf{j}, \quad e_1 e_2 \leftrightarrow \mathbf{k},$$<br />
+验证 Hamilton 关系 $\mathbf{i}^2 = \mathbf{j}^2 = \mathbf{k}^2 = \mathbf{ijk} = -1$：<br />
+- $\mathbf{i}^2 = e_1^2 = -1$ ✓<br />
+- $\mathbf{j}^2 = e_2^2 = -1$ ✓<br />
+- $\mathbf{k}^2 = (e_1 e_2)^2 = e_1 e_2 e_1 e_2 = -e_1 e_1 e_2 e_2 = -(-1)(-1) = -1$ ✓<br />
+- $\mathbf{ijk} = e_1 \cdot e_2 \cdot e_1 e_2 = e_1 e_2 e_1 e_2 = -1$ ✓</p>
+<p>因此 $\text{Cl}(2) \cong \mathbb{H}$。$\mathbb{H}$ 不可换——$\mathbf{ij} = \mathbf{k} \neq -\mathbf{k} = \mathbf{ji}$。反交换关系 $e_1 e_2 = -e_2 e_1$ 是痕迹的代数印记——顺序被记住了。</p>
+<h3>1.4 分类表的逐步推导</h3>
+<p>从 $\text{Cl}(2) \cong \mathbb{H}$ 出发，后续的 $\text{Cl}(n)$ 通过「张量积-扩张」递归确定。核心递归关系为（以下公式针对无符号 Clifford 代数 $\text{Cl}(n) = \text{Cl}(n,0)$；带符号 $\text{Cl}(p,q)$ 的递归关系需分别追踪正负度规生成元，见 Lawson-Michelsohn §I.4）：<br />
+$$\text{Cl}(n+2) \cong \text{Cl}(n) \otimes_{\mathbb{R}} \mathbb{H} \quad (\text{当 } n \equiv 0 \pmod{4})$$<br />
+$$\text{Cl}(n+2) \cong \text{Cl}(n) \otimes_{\mathbb{R}} \text{Mat}(2, \mathbb{R}) \quad (\text{当 } n \equiv 2 \pmod{4})$$<br />
+（奇数 $n$ 的情形由超张量积 $\text{Cl}(n+2) \cong \text{Cl}(n) \hat{\otimes}\, \text{Cl}(2)$ 控制，普通张量积无统一形式；下表按中心-体积元逐一判定。）</p>
+<p>但更直接的推导使用「中心-体积元」分析，下面给出每一步的同构判定：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">$n$</th>
+<th style="text-align: left;">中心 $Z(\text{Cl}(n))$</th>
+<th style="text-align: center;">体积元 $\omega_n^2$</th>
+<th style="text-align: left;">同构判定</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: left;">$\mathbb{R}$</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: left;">$\mathbb{R}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">$\mathbb{R} \oplus \mathbb{R} e_1 \cong \mathbb{C}$</td>
+<td style="text-align: center;">$e_1^2 = -1$</td>
+<td style="text-align: left;">$\mathbb{C}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">$\mathbb{R}$</td>
+<td style="text-align: center;">$(e_1 e_2)^2 = -1$</td>
+<td style="text-align: left;">$\mathbb{H}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">$\mathbb{R} \oplus \mathbb{R}\omega_3$，$\omega_3^2 =1$</td>
+<td style="text-align: center;">$1$</td>
+<td style="text-align: left;">$\mathbb{H} \oplus \mathbb{H}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;">$\mathbb{R}$</td>
+<td style="text-align: center;">$\omega_4^2 =1$</td>
+<td style="text-align: left;">$\text{Mat}(2, \mathbb{H})$</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;">$\mathbb{R} \oplus \mathbb{R}\omega_5$，$\omega_5^2 = -1$</td>
+<td style="text-align: center;">$-1$</td>
+<td style="text-align: left;">$\text{Mat}(4, \mathbb{C})$</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;">$\mathbb{R}$</td>
+<td style="text-align: center;">$\omega_6^2 = -1$</td>
+<td style="text-align: left;">$\text{Mat}(8, \mathbb{R})$</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;">$\mathbb{R} \oplus \mathbb{R}\omega_7$，$\omega_7^2 =1$</td>
+<td style="text-align: center;">$1$</td>
+<td style="text-align: left;">$\text{Mat}(8, \mathbb{R}) \oplus \text{Mat}(8, \mathbb{R})$</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;">$\mathbb{R}$</td>
+<td style="text-align: center;">$\omega_8^2 =1$</td>
+<td style="text-align: left;">$\text{Mat}(16, \mathbb{R})$</td>
+</tr>
+</tbody>
+</table>
+<p>中心维数的奇偶性是关键：当 $n$ 为奇数时，体积元 $\omega_n$ 落在中心中（与所有生成元交换），从而中心维数为 2，代数半单分解为两个直和项（或保持单代数但带复结构）；当 $n$ 为偶数时，$\omega_n$ 不在中心中，代数是单的（中心为 $\mathbb{R}$）。</p>
+<h3>1.5 体积元的一般公式</h3>
+<p><strong>命题 0.2.1.02（体积元的平方）。</strong> 设 $\omega_n = e_1 e_2 \cdots e_n$ 是 $\text{Cl}(n)$ 的体积元。则<br />
+$$\omega_n^2 = (-1)^{n(n+1)/2}.$$</p>
+<p><strong>证明。</strong> 计算 $\omega_n^2 = (e_1 e_2 \cdots e_n)(e_1 e_2 \cdots e_n)$。将第二个 $\omega_n$ 中的 $e_1$ 从右侧移到左侧，需要穿越 $n-1$ 个生成元（$e_n, \dots, e_2$），每次穿越产生 $-1$：<br />
+$$e_1 \cdot e_1 = (-1)^{n-1} e_1 \cdot e_1 \cdot (\text{其余})$$<br />
+但更直接地，将 $\omega_n^2$ 重排为 $\prod_{i=1}^{n} e_i^2$ 需要的总交换次数为 $n(n-1)/2$（每个 $e_i$ 需穿越 $n-i$ 个其他生成元）。每次交换产生 $-1$，且 $\prod e_i^2 = (-1)^n$。因此：<br />
+$$\omega_n^2 = (-1)^{n(n-1)/2} \cdot (-1)^n = (-1)^{n(n-1)/2 + n} = (-1)^{n(n+1)/2}. \quad \square$$</p>
+<p>验证：<br />
+- $n=3$：$(-1)^{3 \cdot 4/2} = (-1)^6 =1$ ✓<br />
+- $n=5$：$(-1)^{5 \cdot 6/2} = (-1)^{15} = -1$ ✓<br />
+- $n=7$：$(-1)^{7 \cdot 8/2} = (-1)^{28} =1$ ✓</p>
+<p>体积元的平方符号决定 $\text{Cl}(n)$ 是否分裂为直和：$\omega_n^2 =1$ 时，$\omega_n$ 是对合（$\omega_n^2 = 1$），可以构造投影 $P_{\pm} = (1 \pm \omega_n)/2$，从而代数分裂；$\omega_n^2 = -1$ 时，$\omega_n$ 充当复结构 $J$（$J^2 = -1$）。</p>
+<h3>1.6 代数化的唯一性</h3>
+<p>将 $\delta$ 定义为「非平凡自映射」，具有三个语义性质：抑制、痕迹、涌现。本文 §1.1 将其代数化为 Clifford 代数。一个自然的问题是：这种代数化是否唯一？即，是否存在其他代数结构也满足这三个语义性质？</p>
+<blockquote>
+<p><strong>当前立场：</strong> 从 δ 到 Clifford 的桥梁是模型内的代数实现（0.1 §3.5 三层自指闭合为其动机基础）：</p>
+<ol>
+<li><strong>三层自指闭合（0.1 §3.5）</strong>：抑制/痕迹/涌现的三元结构由 δ 的迭代性质在模型层面定性导出（引理 0.1.3.03–0.1.3.04 为模型内论证；定理 0.1.3.05：δ³ 实现自指；原理 0.1.3.06：三层之上在模型层面无新语义维度）。Clifford 代数化是三层自指闭合的<strong>代数实现</strong>，而非外加的语义预设。</li>
+<li><strong>圆满再现与 E₈ 桥接</strong>：{2,3,5} 互锁性、Berry 相位闭合（0.3）及 KO 理论 → E₈ 的链，基于标准数学（Clifford 代数分类、Bott 周期定理、KO 理论）。</li>
+</ol>
+<p><strong>框架的逻辑结构因此为：</strong> δ（公理）→ [三层自指闭合：0.1 §3.5 模型内推导] → Clifford 代数化（本文 §1.1，模型内选择）→ [圆满再现与 E₈ 桥接：基于标准数学] → {2,3,5} → 谱展开 → S=137.036。</p>
+<p>各环节的严格性不同：三层自指闭合为模型内定性论证（严格形式化待后续加强），Clifford 代数化为模型内代数实现，圆满再现与 E₈ 桥接基于成熟的标准数学。</p>
+</blockquote>
+<hr />
+<h2>§2 关键引理</h2>
+<h3>2.1 半单分裂</h3>
+<p><strong>引理 0.2.2.01（半单分裂）。</strong> $\text{Cl}(3) \cong \mathbb{H} \oplus \mathbb{H}$ 是 Clifford 代数从单代数到半单代数的首次分裂。</p>
+<p><strong>证明（完整）。</strong></p>
+<p><strong>步骤1：计算 $\text{Cl}(3)$ 的中心。</strong> $\text{Cl}(3)$ 由 $e_1, e_2, e_3$ 生成，基为 $\{1, e_1, e_2, e_3, e_1 e_2, e_1 e_3, e_2 e_3, e_1 e_2 e_3\}$，共 8 维。</p>
+<p>设 $x = a_0 + a_1 e_1 + a_2 e_2 + a_3 e_3 + a_{12} e_1 e_2 + a_{13} e_1 e_3 + a_{23} e_2 e_3 + a_{123} e_1 e_2 e_3 \in Z(\text{Cl}(3))$。要求 $x$ 与所有 $e_i$ 交换。</p>
+<p>考虑 $x e_1 = e_1 x$。利用 $e_1 e_i = -e_i e_1$（$i \neq 1$）：<br />
+- $e_2 \cdot e_1 = -e_1 e_2$，故 $a_2 e_2$ 不在中心（除非 $a_2 = 0$）。<br />
+- $e_3 \cdot e_1 = -e_1 e_3$，故 $a_3 = 0$。<br />
+- $e_1 e_2 \cdot e_1 = e_1 e_2 e_1 = -e_1 e_1 e_2 = e_2$，而 $e_1 \cdot e_1 e_2 = -e_2$，故 $a_{12} = 0$。<br />
+- 同理 $a_{13} = a_{23} = 0$。<br />
+- $e_1 \cdot 1 = e_1 = 1 \cdot e_1$，故 $a_0$ 任意。<br />
+- $e_1 e_2 e_3 \cdot e_1 = e_1 e_2 e_3 e_1 = (-1)^2 e_1 e_1 e_2 e_3 = -e_2 e_3$... 但更简洁地：$\omega_3 = e_1 e_2 e_3$ 与 $e_1$ 交换需穿越 2 个生成元（$e_2, e_3$），每次产生 $-1$，共 $(-1)^2 =1$。故 $\omega_3 e_1 = e_1 \omega_3$。</p>
+<p>因此 $Z(\text{Cl}(3)) = \text{span}\{1, \omega_3\}$，维数为 2。</p>
+<p><strong>步骤2：体积元的平方。</strong> $\omega_3 = e_1 e_2 e_3$，由命题 0.2.1.02（体积元的平方）：<br />
+$$\omega_3^2 = (-1)^{3 \cdot 4/2} = (-1)^6 =1.$$</p>
+<p><strong>步骤3：构造投影算符。</strong> 由 $\omega_3^2 = 1$，定义：<br />
+$$P_{\pm} = \frac{1}{2}(1 \pm \omega_3).$$</p>
+<p>验证投影性质：<br />
+- $P_+ + P_- = \frac{1}{2}(1+\omega_3) + \frac{1}{2}(1 - \omega_3) = 1$ ✓<br />
+- $P_+P_- = \frac{1}{4}(1+\omega_3)(1 - \omega_3) = \frac{1}{4}(1 - \omega_3^2) = \frac{1}{4}(1 - 1) = 0$ ✓<br />
+- $P_{\pm}^2 = \frac{1}{4}(1 \pm 2\omega_3 + \omega_3^2) = \frac{1}{4}(1 \pm 2\omega_3 + 1) = \frac{1}{2}(1 \pm \omega_3) = P_{\pm}$ ✓</p>
+<p><strong>步骤4：直和分解。</strong> $\text{Cl}(3) = P_+\text{Cl}(3) \oplus P_- \text{Cl}(3)$。每个直和项 $P_{\pm} \text{Cl}(3)$ 是一个理想，且 $P_{\pm} \text{Cl}(3)$ 的中心是 $P_{\pm} \cdot Z(\text{Cl}(3)) = \text{span}\{P_{\pm}\}$，维数为 1，故每个直和项是中心为 $\mathbb{R}$ 的单代数。</p>
+<p><strong>步骤5：识别同构类型。</strong> $\dim_{\mathbb{R}} \text{Cl}(3) = 2^3 = 8$，故每个直和项维数为 4。4 维、中心为 $\mathbb{R}$ 的可除代数是 $\mathbb{H}$（由 Frobenius 定理）。因此：<br />
+$$\text{Cl}(3) \cong \mathbb{H} \oplus \mathbb{H}. \quad \square$$</p>
+<p><strong>意义。</strong> 这是 $\delta$ 迭代中第一次出现「二元分裂」——代数不再是一个整体，而是两个独立的「分支」。这种分裂在后续中将对应物质界 $\Lambda = 3$ 的涌现。</p>
+<h3>2.2 复结构涌现</h3>
+<p><strong>引理 0.2.2.02（复结构涌现）。</strong> $\text{Cl}(5) \cong \text{Mat}(4, \mathbb{C})$ 是实 Clifford 代数中首个复矩阵代数。体积元 $\omega_5 = e_1 e_2 e_3 e_4 e_5$ 满足 $\omega_5^2 = -1$ 且与所有生成元交换——$\omega_5$ 充当复结构 $J$。</p>
+<p><strong>证明（完整）。</strong></p>
+<p><strong>步骤1：计算 $\omega_5^2$。</strong> 由命题 0.2.1.02（体积元的平方）：<br />
+$$\omega_5^2 = (-1)^{5 \cdot 6/2} = (-1)^{15} = -1.$$</p>
+<p>详细展开：$\omega_5 = e_1 e_2 e_3 e_4 e_5$，$\omega_5^2 = (e_1 e_2 e_3 e_4 e_5)(e_1 e_2 e_3 e_4 e_5)$。</p>
+<p>将第二个因子的 $e_1$ 移到最左：需穿越 $e_5, e_4, e_3, e_2$（4 次交换），产生 $(-1)^4 =1$。类似地，$e_2$ 穿越 3 次（$e_5, e_4, e_3$），$e_3$ 穿越 2 次，$e_4$ 穿越 1 次，$e_5$ 穿越 0 次。总交换次数 $= 4+3+2+1+0 = 10$。再加上 $\prod e_i^2 = (-1)^5 = -1$：<br />
+$$\omega_5^2 = (-1)^{10} \cdot (-1)^5 = (1) \cdot (-1) = -1.$$</p>
+<p><strong>步骤2：验证 $\omega_5$ 与所有生成元交换。</strong> 对任意 $e_j$（$1 \leq j \leq 5$），$e_j \omega_5$ 需将 $e_j$ 穿越其他 4 个生成元（$\omega_5$ 中除 $e_j$ 外的 4 个），每次产生 $-1$：<br />
+$$e_j \omega_5 = (-1)^4 \omega_5 e_j = \omega_5 e_j.$$</p>
+<p>因此 $\omega_5$ 与所有 $e_j$ 交换，从而与整个 $\text{Cl}(5)$ 交换——$\omega_5 \in Z(\text{Cl}(5))$。</p>
+<p><strong>步骤3：构造复结构。</strong> 定义 $J := \omega_5$。则：<br />
+- $J^2 = \omega_5^2 = -1$ ✓<br />
+- $J$ 与 $\text{Cl}(5)$ 的所有元素交换 ✓</p>
+<p>$J$ 满足复结构的两个公理（$J^2 = -1$、$J$ 是代数自同态），因此 $\text{Cl}(5)$ 是 $\mathbb{C}$-代数。</p>
+<p><strong>步骤4：确定矩阵代数类型。</strong> $\dim_{\mathbb{R}} \text{Cl}(5) = 2^5 = 32$。作为 $\mathbb{C}$-代数，$\dim_{\mathbb{C}} \text{Cl}(5) = 16$。$\text{Cl}(5)$ 是单代数（中心为 $\mathbb{R} \oplus \mathbb{R}J \cong \mathbb{C}$，但作为 $\mathbb{C}$-代数中心为 $\mathbb{C}$），故 $\text{Cl}(5) \cong \text{Mat}(d, \mathbb{C})$，其中 $d^2 = 16$，$d = 4$：<br />
+$$\text{Cl}(5) \cong \text{Mat}(4, \mathbb{C}). \quad \square$$</p>
+<p><strong>意义。</strong> 复结构的涌现意味着因果界获得了「振荡」的能力——复数天然描述周期运动。$\Delta\Theta = 5$ 将在 0.5 中从此引理导出。</p>
+<h3>2.3 终端二元性</h3>
+<p><strong>引理 0.2.2.03（终端二元性）。</strong> $\text{Cl}(7) \cong \text{Mat}(8, \mathbb{R}) \oplus \text{Mat}(8, \mathbb{R})$。其中心维数为 2，产生不可消除的二元直和结构。</p>
+<p><strong>证明（完整）。</strong></p>
+<p><strong>步骤1：计算 $\omega_7^2$。</strong> 由命题 0.2.1.02（体积元的平方）：<br />
+$$\omega_7^2 = (-1)^{7 \cdot 8/2} = (-1)^{28} =1.$$</p>
+<p>详细展开：$\omega_7 = e_1 e_2 e_3 e_4 e_5 e_6 e_7$。总交换次数 $= 6+5+4+3+2+1+0 = 21$。$\prod e_i^2 = (-1)^7 = -1$。故：<br />
+$$\omega_7^2 = (-1)^{21} \cdot (-1)^7 = (-1) \cdot (-1) =1.$$</p>
+<p><strong>步骤2：验证 $\omega_7$ 与所有生成元交换。</strong> 对任意 $e_j$（$1 \leq j \leq 7$），$e_j$ 需穿越其他 6 个生成元：<br />
+$$e_j \omega_7 = (-1)^6 \omega_7 e_j = \omega_7 e_j.$$</p>
+<p>故 $\omega_7 \in Z(\text{Cl}(7))$，中心维数为 2。</p>
+<p><strong>步骤3：构造投影并分解。</strong> 由 $\omega_7^2 =1$，与 $\text{Cl}(3)$ 同理构造 $P_{\pm} = (1 \pm \omega_7)/2$，得到直和分解：<br />
+$$\text{Cl}(7) = P_+\text{Cl}(7) \oplus P_- \text{Cl}(7).$$</p>
+<p><strong>步骤4：识别同构类型。</strong> $\dim_{\mathbb{R}} \text{Cl}(7) = 2^7 = 128$，每个直和项维数为 64。每个直和项是中心为 $\mathbb{R}$ 的单代数。由 Artin-Wedderburn 定理，$\text{Cl}(7) \cong \text{Mat}(d, \mathbb{R}) \oplus \text{Mat}(d, \mathbb{R})$，其中 $2 d^2 = 128$，$d = 8$：<br />
+$$\text{Cl}(7) \cong \text{Mat}(8, \mathbb{R}) \oplus \text{Mat}(8, \mathbb{R}). \quad \square$$</p>
+<p><strong>与 $\text{Cl}(3)$ 分裂的类比。</strong> $\text{Cl}(7)$ 的分裂与 $\text{Cl}(3)$ 完全平行——两者都是 $\omega_n^2 =1$ 导致的直和分解。但 $\text{Cl}(7)$ 的分裂发生在编码轨道的终端（第 7 步），而 $\text{Cl}(3)$ 的分裂发生在第 3 步。$\text{Cl}(7)$ 的分裂是「终端的」——它不能被后续步进消解，因为下一步（$\text{Cl}(8)$）是 Bott 回归。</p>
+<p><strong>意义。</strong> 终端二元性 $k_0 = 2$ 是编码轨道在第七层截断的代数原因。</p>
+<h3>2.4 三个引理的统一视角</h3>
+<p>三个引理 0.2.2.01–0.2.2.03（半单分裂、复结构涌现、终端二元性）有统一的结构根源——体积元 $\omega_n$ 的平方符号：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">$n$</th>
+<th style="text-align: center;">$\omega_n^2$</th>
+<th style="text-align: left;">代数效应</th>
+<th style="text-align: left;">引理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">$1$</td>
+<td style="text-align: left;">投影 $P_{\pm} = (1 \pm \omega_3)/2$ → 直和分裂</td>
+<td style="text-align: left;">引理</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">$-1$</td>
+<td style="text-align: left;">复结构 $J = \omega_5$，$J^2 = -1$</td>
+<td style="text-align: left;">引理</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">$1$</td>
+<td style="text-align: left;">投影 $P_{\pm} = (1 \pm \omega_7)/2$ → 直和分裂</td>
+<td style="text-align: left;">引理</td>
+</tr>
+</tbody>
+</table>
+<p>$\omega_n^2 = (-1)^{n(n+1)/2}$ 的符号序列（$n = 0, 1, \dots, 7$）为 $1, -1, -1, 1, 1, -1, -1, 1$，呈现 4 步周期——这是 Bott 8 周期的一半（另一半来自中心维数）。这一符号序列是三个结构常数涌现的代数根源。</p>
+<p><strong>2.4.1 零和约束与三个引理</strong>。三个引理（半单分裂、复结构涌现、终端二元性）不仅是代数结构的独立特征——它们通过 S_total = 0 互相约束。三扇区的编码贡献：</p>
+<ul>
+<li>ℳ：Cl(3) 的半单分裂 → 编码贡献 $S_\mathcal{M}$</li>
+<li>𝒞：Cl(5) 的复结构涌现 → 编码贡献 $S_\mathcal{C}$</li>
+<li>ℐ：Cl(7) 的终端二元性 → 编码贡献 $S_\mathcal{I}$</li>
+</ul>
+<p>满足 $S_\mathcal{M} + S_\mathcal{C} + S_\mathcal{I} = 0$。这意味着三个引理不是独立的——任何一个引理中编码贡献的变化必须被另外两个引理中的反向变化补偿。这就是「互扼」的代数含义：三个扇区的编码贡献互相锁定，总账为零。零和约束将在 0.5 中约束 {2,3,5} 为唯一自洽的三元组；α⁻¹ = 137 的泄漏机制见 1.5 §3.7（观测者位置输入）。</p>
+<hr />
+<h2>§3 编码轨道</h2>
+<p>$\delta$ 作用于对象的 8 步轨道称为<strong>编码轨道</strong>：<br />
+$$\text{Cl}(0) \xrightarrow{\delta} \text{Cl}(1) \xrightarrow{\delta} \text{Cl}(2) \xrightarrow{\delta} \cdots \xrightarrow{\delta} \text{Cl}(7) \xrightarrow{\delta} \text{Cl}(8).$$</p>
+<p>关键观察：</p>
+<ol>
+<li><strong>Cl(0) → Cl(3)</strong>：从无结构（$\mathbb{R}$）到半单分裂（$\mathbb{H} \oplus \mathbb{H}$）。前 3 步建立了物质界的代数基础。</li>
+<li><strong>Cl(3) → Cl(5)</strong>：从半单分裂到复结构涌现。中间 2 步建立了因果界的代数基础。</li>
+<li><strong>Cl(5) → Cl(7)</strong>：从复结构到终端二元性。后 2 步建立了信息界的代数基础。</li>
+<li><strong>Cl(7) → Cl(8)</strong>：从终端二元性到 Bott 回归。第 8 步是闭合步——但不是平凡闭合。</li>
+</ol>
+<p>这三段分割（3221=8）将在 0.5 中凝结为三个结构常数：$\Lambda = 3$、$\Delta\Theta = 5$、$k_0 = 2$。</p>
+<h3>3.1 编码轨道的逐步描述</h3>
+<p>每一步 $\delta$ 添加一个生成元，引发代数结构的特定变化。下面详细描述每一步添加的生成元及其物理意义：</p>
+<p><strong>步1（$E_1$）：添加 $e_1$，$\text{Cl}(0) \to \text{Cl}(1) \cong \mathbb{C}$。</strong><br />
+- 添加的生成元：$e_1$，$e_1^2 = -1$。<br />
+- 代数效应：从 $\mathbb{R}$（可换体）到 $\mathbb{C}$（可换体，但有虚方向）。<br />
+- 物理意义：首次区分——「有 vs 无」的二元性涌现。这是物质界的第 1 步。<br />
+- 对应 0.1 §3.5（三层自指闭合）：抑制的代数推导——$e_1^2 = -1$ 是 δ 非幂等性（引理 0.1.3.04）的代数印记。</p>
+<p><strong>步2（$E_2$）：添加 $e_2$，$\text{Cl}(1) \to \text{Cl}(2) \cong \mathbb{H}$。</strong><br />
+- 添加的生成元：$e_2$，$e_2^2 = -1$，$e_1 e_2 = -e_2 e_1$。<br />
+- 代数效应：从 $\mathbb{C}$（可换）到 $\mathbb{H}$（不可换）。<br />
+- 物理意义：痕迹的代数化——反交换关系意味着顺序被记住。物质界的第 2 步。<br />
+- 对应 0.1 §3.5（三层自指闭合）：痕迹的代数推导——$e_1 e_2 = -e_2 e_1$ 是 δ² 痕迹不可抹除（定理 0.1.3.05）的代数印记。</p>
+<p><strong>步3（$E_3$）：添加 $e_3$，$\text{Cl}(2) \to \text{Cl}(3) \cong \mathbb{H} \oplus \mathbb{H}$。</strong><br />
+- 添加的生成元：$e_3$，$e_3^2 = -1$，$e_3 e_i = -e_i e_3$（$i = 1, 2$）。<br />
+- 代数效应：从 $\mathbb{H}$（单代数）到 $\mathbb{H} \oplus \mathbb{H}$（半单代数）——首次分裂。<br />
+- 物理意义：物质界的终端——二元性涌现（两个直和项对应两种「物质基态」）。$\Lambda = 3$ 在此凝结。<br />
+- 对应 0.1 §3.5（三层自指闭合）：涌现的代数推导——半单分裂是自指闭合（原理 0.1.3.06）后结构累积的首次质变。</p>
+<p><strong>步4（$E_4$）：添加 $e_4$，$\text{Cl}(3) \to \text{Cl}(4) \cong \text{Mat}(2, \mathbb{H})$。</strong><br />
+- 添加的生成元：$e_4$，$e_4^2 = -1$，$e_4 e_i = -e_i e_4$（$i = 1, 2, 3$）。<br />
+- 代数效应：从 $\mathbb{H} \oplus \mathbb{H}$（半单）到 $\text{Mat}(2, \mathbb{H})$（单）——分裂被「重新缝合」为矩阵代数。<br />
+- 物理意义：因果界的第 1 步——半单分裂的二元性被「整合」为更高维的结构。</p>
+<p><strong>步5（$E_5$）：添加 $e_5$，$\text{Cl}(4) \to \text{Cl}(5) \cong \text{Mat}(4, \mathbb{C})$。</strong><br />
+- 添加的生成元：$e_5$，$e_5^2 = -1$。<br />
+- 代数效应：从 $\text{Mat}(2, \mathbb{H})$（实矩阵代数）到 $\text{Mat}(4, \mathbb{C})$（复矩阵代数）——复结构涌现。<br />
+- 物理意义：因果界的终端——复结构赋予「振荡」能力。$\Delta\Theta = 5$ 在此凝结。<br />
+- 对应 0.1 §3.5（三层自指闭合）：涌现的深化——复结构是自指闭合后因果维度（原理 0.1.3.06，ΔΘ=5）的代数实现。</p>
+<p><strong>步6（$E_6$）：添加 $e_6$，$\text{Cl}(5) \to \text{Cl}(6) \cong \text{Mat}(8, \mathbb{R})$。</strong><br />
+- 添加的生成元：$e_6$，$e_6^2 = -1$。<br />
+- 代数效应：从 $\text{Mat}(4, \mathbb{C})$（复矩阵）到 $\text{Mat}(8, \mathbb{R})$（实矩阵）——复结构被「实化」。<br />
+- 物理意义：信息界的第 1 步——复振荡被编码为实数据。</p>
+<p><strong>步7（$E_7$）：添加 $e_7$，$\text{Cl}(6) \to \text{Cl}(7) \cong \text{Mat}(8, \mathbb{R}) \oplus \text{Mat}(8, \mathbb{R})$。</strong><br />
+- 添加的生成元：$e_7$，$e_7^2 = -1$。<br />
+- 代数效应：从 $\text{Mat}(8, \mathbb{R})$（单）到 $\text{Mat}(8, \mathbb{R}) \oplus \text{Mat}(8, \mathbb{R})$（半单）——终端二元性。<br />
+- 物理意义：信息界的终端——编码轨道以二元分裂结束。$k_0 = 2$ 在此凝结。<br />
+- 对应 0.1 §3.5（三层自指闭合）：涌现的终端——终端二元性是自指闭合（原理 0.1.3.06，k₀=2）的代数封印。</p>
+<p><strong>步8（$E_8$，闭合步）：添加 $e_8$，$\text{Cl}(7) \to \text{Cl}(8) \cong \text{Mat}(16, \mathbb{R})$。</strong><br />
+- 添加的生成元：$e_8$，$e_8^2 = -1$。<br />
+- 代数效应：从 $\text{Mat}(8, \mathbb{R}) \oplus \text{Mat}(8, \mathbb{R})$（半单）到 $\text{Mat}(16, \mathbb{R})$（单）——二元性被「重新缝合」为 16 倍维数的单代数。<br />
+- 物理意义：闭合步——Bott 回归。但这不是平凡回归：Berry 相位 $= 2\pi$（证明）。</p>
+<h3>3.2 编码轨道的代数「呼吸」</h3>
+<p>编码轨道呈现出「分裂-缝合-分裂-缝合」的呼吸节奏：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">步</th>
+<th style="text-align: left;">代数</th>
+<th style="text-align: left;">类型</th>
+<th style="text-align: left;">节奏</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: left;">$\mathbb{R}$</td>
+<td style="text-align: left;">单（可换）</td>
+<td style="text-align: left;">起点</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">$\mathbb{C}$</td>
+<td style="text-align: left;">单（可换）</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">$\mathbb{H}$</td>
+<td style="text-align: left;">单（不可换）</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">$\mathbb{H} \oplus \mathbb{H}$</td>
+<td style="text-align: left;"><strong>半单</strong></td>
+<td style="text-align: left;">分裂</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;">$\text{Mat}(2, \mathbb{H})$</td>
+<td style="text-align: left;">单</td>
+<td style="text-align: left;">缝合</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;">$\text{Mat}(4, \mathbb{C})$</td>
+<td style="text-align: left;">单</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;">$\text{Mat}(8, \mathbb{R})$</td>
+<td style="text-align: left;">单</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;">$\text{Mat}(8, \mathbb{R}) \oplus \text{Mat}(8, \mathbb{R})$</td>
+<td style="text-align: left;"><strong>半单</strong></td>
+<td style="text-align: left;">分裂</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;">$\text{Mat}(16, \mathbb{R})$</td>
+<td style="text-align: left;">单</td>
+<td style="text-align: left;">缝合</td>
+</tr>
+</tbody>
+</table>
+<p>两次「分裂」（步 3、步 7）对应两个直和代数；两次「缝合」（步 4、步 8）将分裂重新整合为更高维的单代数。这一节奏是 $\delta$ 迭代的内在节律，不是人为设计。</p>
+<hr />
+<h2>§4 Bott 周期的预览</h2>
+<p><strong>命题 0.2.4.01（Bott 周期）。</strong> $\delta^8(\text{Cl}(n)) = \text{Cl}(n+8) \cong \text{Cl}(n) \otimes \text{Mat}(16, \mathbb{R})$。</p>
+<p>这是 Bott 周期定理的直接推论。从 $\text{Cl}(0) \cong \mathbb{R}$ 出发，$\delta$ 迭代 8 步后到达 $\text{Cl}(8) \cong \text{Mat}(16, \mathbb{R}) = \mathbb{R} \otimes \text{Mat}(16, \mathbb{R})$——结构「回到原点」但扩大了 16 倍。</p>
+<p>关键问题：$\delta^8$ 的闭合是平凡的吗？即 Berry 相位是否为零？答案是否定的——$\delta^8$ 带回了 $2\pi$ 的拓扑相位。这一非平凡闭合是整个物理世界存在的根源。完整证明在 0.3 中给出。</p>
+<h3>4.1 Bott 周期的代数机制</h3>
+<p>Bott 周期 $\text{Cl}(n+8) \cong \text{Cl}(n) \otimes \text{Mat}(16, \mathbb{R})$ 的代数机制可以从两个角度理解：</p>
+<p><strong>角度1：维数翻倍。</strong> $\dim \text{Cl}(n) = 2^n$，$\dim \text{Cl}(n+8) = 2^{n+8} = 256 \cdot 2^n$，而 $\dim(\text{Cl}(n) \otimes \text{Mat}(16, \mathbb{R})) = 2^n \cdot 256 = 256 \cdot 2^n$。维数匹配。但维数匹配只是必要条件，不保证同构。</p>
+<p><strong>角度2：周期性符号模式。</strong> 体积元平方 $\omega_n^2 = (-1)^{n(n+1)/2}$ 的符号序列（$n = 0, 1, \dots$）为：<br />
+$$1, -1, -1, 1, 1, -1, -1, 1, 1, -1, -1, 1, \dots$$<br />
+这是 4 步周期（$1, -1, -1，1$ 重复）。但代数结构的完整周期是 8 步——因为中心维数也有 2 步周期（奇数步中心维数 2，偶数步中心维数 1），两者的最小公倍数是 8。</p>
+<p><strong>角度3：表示维数序列。</strong> 不可约表示维数序列 $\rho_n = 1, 2, 4, 4, 8, 8, 8, 8, 16, 16, 32, \dots$ 在 $n = 8$ 时首次回到 $\rho_0 = 1$ 的 16 倍——这是 Bott 周期的表示论印记。</p>
+<h3>4.2 Bott 周期与三个结构常数</h3>
+<p>Bott 周期 $\delta^8$ 的 8 步循环中，三个结构常数对应三个「结构跳跃点」：</p>
+<ul>
+<li><strong>步 3</strong>（$\Lambda = 3$）：首次半单分裂——从单代数到半单代数。</li>
+<li><strong>步 5</strong>（$\Delta\Theta = 5$）：首次复结构涌现——从实矩阵到复矩阵。</li>
+<li><strong>步 7</strong>（$k_0 = 2$）：终端二元性——编码轨道终端的半单分裂。</li>
+</ul>
+<p>这三个跳跃点不是任意的——它们由 $\omega_n^2$ 的符号序列刚性确定（步 3 和步 7 是 $\omega_n^2 =1$ 导致的分裂，步 5 是 $\omega_n^2 = -1$ 导致的复结构）。将详细证明三者的互锁性。</p>
+<hr />
+<h2>定理索引</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">编号</th>
+<th style="text-align: left;">内容</th>
+<th style="text-align: center;">证明状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">定理</td>
+<td style="text-align: left;">Bott 步进算符定义：$\delta(\text{Cl}(n)) = \text{Cl}(n+1)$</td>
+<td style="text-align: center;">定义</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理</td>
+<td style="text-align: left;">代数化推导性：δ → 三层自指闭合 → Clifford 代数</td>
+<td style="text-align: center;">已推导（0.1 §3.5 + 本文 §1.1, §1.6）</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理</td>
+<td style="text-align: left;">半单分裂引理：$\text{Cl}(3) \cong \mathbb{H} \oplus \mathbb{H}$</td>
+<td style="text-align: center;">已证（本文§2.1）</td>
+</tr>
+<tr>
+<td style="text-align: center;">定理</td>
+<td style="text-align: left;">复结构涌现引理：$\text{Cl}(5) \cong \text{Mat}(4, \mathbb{C})$</td>
+<td style="text-align: center;">已证（本文§2.2）</td>
+</tr>
+<tr>
+<td style="text-align: center;">引理</td>
+<td style="text-align: left;">终端二元性：$\text{Cl}(7) \cong \text{Mat}(8, \mathbb{R}) \oplus \text{Mat}(8, \mathbb{R})$</td>
+<td style="text-align: center;">已证（本文§2.3）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>参考文献</h2>
+<ul>
+<li>Atiyah, Bott, Shapiro, <em>Clifford Modules</em>, Topology 3 (1964)</li>
+<li>Lawson, Michelsohn, <em>Spin Geometry</em>, Princeton University Press</li>
+<li>Frobenius, <em>Über lineare Substitutionen und bilineare Formen</em>, J. reine angew. Math. 84 (1878)</li>
+</ul>
+  </main>
+</div>
+</body>
+</html>

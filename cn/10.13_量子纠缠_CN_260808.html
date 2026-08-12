@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10.13 量子纠缠 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="10.13 量子纠缠">
+<meta name="generator" content="GeometryAI Build Script">
+
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\(', '\)']],
+    displayMath: [['$$', '$$'], ['\[', '\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/cn/10.13_量子纠缠_CN_260808.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../index.html" class="nav-home">🏠 首页</a>
+    <a href="../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">10.13 量子纠缠</span>
+  </nav>
+  <main class="article-content">
+<h1>10.13 量子纠缠</h1>
+<p><strong>编号</strong>：10.13 | <strong>日期</strong>：260808 | <strong>系列</strong>：应用 | <strong>语言</strong>：CN</p>
+<hr />
+<h2>目　录</h2>
+<h2>第1章　引言</h2>
+<p>本文是几何论系列论文的第 10.13 篇。该系列的基础框架（框架两条公理（δ 和 S_total=0，0.1）、Clifford代数、编码轨道结构、Born法则、相互作用映射）已在共扼谱几何基础定理中建立。</p>
+<p><strong>核心定位</strong>：本文在编码轨道像素结构框架下重建量子纠缠理论。建立纠缠的几何定义——两个 S-极小值在 Σ_η 上由 ℐ-扇区冻结与 ℳ-扇区反直径锁定实现几何最大纠缠。以圆满再现为唯一物理映射输入。</p>
+<p><strong>关键依赖</strong>：本文直接依赖框架两条公理（δ 和 S_total=0，0.1） → 编码轨道像素定理 → ℐ-扇区冻结 → ℳ-扇区反直径锁定 → 圆满再现。结构常数由 {2,3,5} 在 E₈ 桥接与 Bott 周期表中锁定，圆满再现（定理 2.3.7.01）建立自举封闭。</p>
+<p><strong>核心结果</strong>：（一）纠缠的几何定义与纠缠弦的严格构造；（二）二能级定理——几何最大纠缠对的低能非平庸激发空间恰好为 2 维；（三）关联函数 C(a,b)=-a·b 的导出与 CHSH 组合上确界 2√2（Tsirelson 定理）。</p>
+<hr />
+<p>§1　编码轨道像素定理<br />
+　1.0　命题（互锁性）约束声明<br />
+　1.1　几何扇区参数空间上的信息场<br />
+　1.2　Dirac谱方向与特征方程<br />
+　1.3　最小可分辨角<br />
+　1.4　ℳ𝒞ℐ三扇区工具层衔接</p>
+<p>§2　纠缠的几何定义<br />
+　2.1　$S$-极小值与粒子<br />
+　2.2　纠缠弦的严格定义</p>
+<p>§3　二能级定理</p>
+<p>§4　关联函数定理<br />
+　4.1　读数方向与测量结果<br />
+　4.2　关联函数</p>
+<p>§5　CHSH 组合与经典极限<br />
+　5.1　测量设置的几何化<br />
+　5.2　经典极限定理</p>
+<p>§6　Tsirelson 定理<br />
+　6.1　非定域关联的保持<br />
+　6.2　为什么是 $2\sqrt{2}$</p>
+<p>§7　结论</p>
+<hr />
+<h1>摘　要</h1>
+<p>在编码轨道像素结构框架下重建量子纠缠理论。建立纠缠的几何定义——两个S-极小值在Σ_η上由ℐ-扇区冻结与ℳ-扇区反直径锁定实现几何最大纠缠；证明二能级定理——几何最大纠缠对的低能非平庸激发空间恰好为2维；在物理映射约定下导出关联函数 $C(\vec{a},\vec{b})=-\vec{a}\cdot\vec{b}$；证明CHSH组合上确界为 $2\sqrt{2}$。以圆满再现为唯一物理映射输入。</p>
+<h1>一、编码轨道像素定理</h1>
+<h2>1.0 命题（互锁性）约束声明</h2>
+<p>本章涉及的以下结构受命题（互锁性）（定理 1.3.4.01；定理 1.1.5.01）约束：</p>
+<ul>
+<li><strong>ℐ-扇区冻结</strong>（定义 2.2 条件 1）：对应九素中信息界三素 $(e_7,e_8,e_9)$ 的Dirac谱方向冻结——$\lambda_2^{\text{eff}}$ 主导的高刚度方向将信息界素压制为常数背景；</li>
+<li><strong>Bott 周期截断</strong>（推论 1.1.2.02）：$n_{\text{eff}}\le 7$ 的截断是命题（互锁性）中 $N_{\text{eff}}=7$的像素层级表现；</li>
+<li><strong>谱间隙方向与Dirac谱方向分离</strong> $\lambda_2^{\text{eff}}/\lambda_1^{\text{eff}}=151.7$：对应命题（互锁性）的刚度比，锁定量纲映射的尺度分离；</li>
+<li><strong>三分解标架</strong> $\{e_1,\dots,e_9\}$ 中 $\{e_1,e_2,e_3\}$ 对应 ℳ-扇区，$\{e_4,e_5,e_6\}$ 对应 𝒞-扇区，$\{e_7,e_8,e_9\}$ 对应 ℐ-扇区，其一阶条件 $[[D,a],Jb^*J^{-1}]=0$ 在 ℳ-扇区限制为谱间隙方向 $\lambda_1^{\text{eff}}$、在 $𝒞\oplusℐ$ 扇区限制为Dirac谱方向 $\lambda_2^{\text{eff}}$（定理 1.3.4.01）。</li>
+</ul>
+<h2>1.1 几何扇区参数空间上的信息场</h2>
+<p>由 3.7（编码轨道层级定理），几何扇区参数空间 $\Sigma_\eta\subset\Sigma$ 为二维活跃子流形，其 Hausdorff 维数 $D_f=2.000$。由 1.4 §2，$\Sigma_\eta$ 的切丛存在三分解</p>
+<p>$$T\Sigma=\mathcal{M}\oplus\mathcal{C}\oplus\mathcal{I},$$</p>
+<p>且Born归一化条件（1.4 §3.3） $\theta_M+\theta_C+\theta_I=\pi/2$ 成立。</p>
+<p><strong>定义 1.1（信息场方程）</strong>　$\Sigma_\eta$ 上的信息场 $\Psi$ 由 定理 10.11.1.01（局部谐振子定理）的 Hamiltonian 导出。在几何单位（$\hbar=1$）下，定态信息场满足：</p>
+<p>$$\left[-\frac{1}{2}\Delta_{\Sigma_\eta} + \frac{1}{2}\lambda_1^{\text{eff}}\eta^2 + \frac{1}{2}\lambda_2^{\text{eff}}\xi^2\right]\Psi = E\Psi,$$</p>
+<p>其中 $\Delta_{\Sigma_\eta}$ 为 $\Sigma_\eta$ 的 Laplace-Beltrami 算子，$\lambda_1^{\text{eff}}=391.05\ \text{rad}^{-2}$ 为有效谱间隙方向，$\lambda_2^{\text{eff}}=59324.3\ \text{rad}^{-2}$ 为有效Dirac谱方向（0.8 §3.1；定理 6.2）。该方程由 定理 10.11.1.01 严格保证：在辛流形 $(\mathcal{P}_\eta,\omega)$ 的 Darboux 邻域内，Hamiltonian $H=S(\theta)-S_3$ 的二次展开内禀导出 ℐ-扇区与 ℳ-𝒞 子空间的谐振子结构。</p>
+<p><em>几何合法性说明</em>：定义 1.1 与 定理 10.11.1.01 的区别在于：定理 10.11.1.01 给出的是局部 Darboux 邻域内的近似 Hamiltonian $\hat{H} \approx -\frac{\hbar^2}{2}\Delta_{\Sigma_\eta} + \frac{1}{2}\lambda_1\eta^2 + \frac{1}{2}\lambda_2\xi^2$（几何单位 $\hbar=1$）；定义 1.1 将其提升为 $\Sigma_\eta$ 上的全局定态方程。在 ℐ-扇区冻结近似（见下文 §1.2）下，ℐ 与 ℳ-𝒞 近似解耦，信息场方程在 ℐ-方向约化为谐振子方程。</p>
+<h2>1.2 Dirac谱方向与特征方程</h2>
+<p>由 定理 0.8.3.01，截面 Birkhoff混合矩阵 的Dirac谱方向本征值经跨扇区耦合修正后为</p>
+<p>$$\lambda_2^{\text{eff}}=59324.3\ \mathrm{rad}^{-2}.$$</p>
+<p>在 ℐ-扇区的一维近似下（由Born归一化条件（1.4 §3.3）及 定理 0.8.3.01 的 $(\xi,\eta)$ 解耦结构，$H_{\xi\eta}\approx0$，ℐ 方向与 ℳ-𝒞 子空间近似解耦至二阶；信息场 $\Psi_{\mathcal{I}}$ 满足谐振子方程：</p>
+<p>$$\left(-\frac{\mathrm{d}^2}{\mathrm{d}\xi^2} + \lambda_2^{\text{eff}}\xi^2\right)\phi_n = \mu_n\phi_n,\quad \xi\in\mathcal{I},$$</p>
+<p>其中 $\mu_n = (2n+1)\sqrt{\lambda_2^{\text{eff}}}$ 为谐振子本征值。</p>
+<p><strong>命题 10.13.1.01（像素正交基）</strong>　上述谐振子方程的归一化解 $\{\phi_n\}_{n=0}^{\infty}$ 构成 $L^2(\mathcal{I})$ 的完备正交基，基态为</p>
+<p>$$\phi_0(\xi)=\left(\frac{\sqrt{\lambda_2^{\text{eff}}}}{\pi}\right)^{1/4}\exp\left(-\frac{\sqrt{\lambda_2^{\text{eff}}}}{2}\xi^2\right),$$</p>
+<p>第 $n$ 激发态为 $\phi_n(\xi)=H_n((\lambda_2^{\text{eff}})^{1/4}\xi)\,\phi_0(\xi)$，其中 $H_n$ 为 Hermite 多项式。</p>
+<p><em>证明.</em> 方程为标准谐振子型（$m=1$, $\omega=\sqrt{\lambda_2^{\text{eff}}}$），由 Sturm-Liouville 理论直接得到正交完备性。基态形式由 $\phi_0''/\phi_0=\lambda_2^{\text{eff}}\xi^2-\sqrt{\lambda_2^{\text{eff}}}$ 及归一化 $\int|\phi_0|^2\mathrm{d}\xi=1$ 确定。该解形式由 定理 10.11.1.01 从局部辛结构线性化唯一确定，几何论提供参数 $\lambda_2^{\text{eff}}$ 的 Birkhoff混合矩阵 来源（经跨扇区耦合修正，定理 6.2）。∎</p>
+<p><strong>注 1.1</strong>：此处修正了本文 本文中 $(-\mathrm{d}^2/\mathrm{d}\xi^2+\lambda_2)\phi_n=\mu_n\phi_n$ 的错误形式。该形式混淆了谐振子势 $\lambda_2\xi^2$ 与常数势 $\lambda_2$，与给出的基态解 $\phi_0\propto\exp(-\sqrt{\lambda_2}\xi^2/2)$ 不一致。正确形式为谐振子方程，基态宽度由 $\lambda_2^{-1/4}$ 控制。</p>
+<p><strong>推论 10.13.1.02（Bott 周期截断）</strong>　虽然数学形式为无穷维 Hermite 基，但物理有效激发受 定理七层截断定理约束：物质界可解析信息层级严格限于 $n_{\text{eff}}\le 7$，高阶模式 $n>7$ 被 Bott 周期 $8$ 截断禁闭。该截断是命题（互锁性）中 $N_{\text{eff}}=7$（定理 1.3.4.01）在像素层级的直接表现。因此像素编码的有效自由度为有限维。</p>
+<h2>1.3 最小可分辨角</h2>
+<p><strong>定义 1.2（像素）</strong>　$\Sigma_\eta$ 上的一个像素是信息场在 ℐ-扇区的单个特征函数 $\phi_n$ 所占据的有效支撑集。</p>
+<p><strong>构造性定义 1.3（最小分辨角）</strong>　两个相邻像素在 ℐ-扇区的最小可分辨角由基态 $\phi_0$ 的特征宽度定义：</p>
+<p>$$\Delta\xi_{\min}=2(\lambda_2^{\text{eff}})^{-1/4}.$$</p>
+<p><em>构造说明.</em> 基态 $\phi_0$ 的半高全宽（FWHM）为 $2\sqrt{\ln2}\,(\lambda_2^{\text{eff}})^{-1/4}$。作为操作性定义，取两倍特征宽度 $2(\lambda_2^{\text{eff}})^{-1/4}$ 为最小可分辨角，使得 $\phi_0(\xi-\Delta\xi_{\min}/2)$ 与 $\phi_0(\xi+\Delta\xi_{\min}/2)$ 的支撑集在 $1/e$ 峰值处恰好错开。该定义是构造性假设，概念上借用 Rayleigh 判据的类比精神；严格化需从 Sturm-Liouville 正交基的信息论分辨极限独立导出。当前状态标注为"几何类比构造"。</p>
+<p>代入数值：<br />
+$$\Delta\xi_{\min}=2\times(59324.3)^{-1/4}=2\times0.06406=0.1281\ \mathrm{rad}.$$</p>
+<p><em>比较</em>： 本文使用错误公式 $\pi/(2\sqrt{\lambda_2})\approx6.48\times10^{-3}$ rad，原因是信息场方程的形式错误（常数势而非谐振子势）导致对像素尺度的低估。谐振子基态宽度 $\lambda_2^{-1/4}$ 远大于 $\lambda_2^{-1/2}$ 尺度。</p>
+<p><strong>推论 10.13.1.03（量子化）</strong>　$\lambda_2^{\text{eff}}$ 的有限性使 ℐ-扇区角度以谐振子能级量子化。若 $\lambda_2^{\text{eff}}\to\infty$，则 $\Delta\xi_{\min}\to0$，像素编码趋于连续。</p>
+<h2>1.4 ℳ𝒞ℐ三扇区工具层衔接</h2>
+<p>本节使用的 $\chi_L$、$\hbar$、$K$ 等有量纲常数由 谱展开/Born法则（定理 1.3.4.01）的ℳ𝒞ℐ三扇区框架导出（定理 1.3.4.01–3.5）：</p>
+<ul>
+<li>$\chi_L$ 的谱来源为 ℳ-扇区 Wodzicki 留数（定理 1.3.4.01，$C_J$ 待定）；</li>
+<li>$K$ 的谱来源为 ℳ-扇区 Dixmier 迹（定理 1.3.4.01，$C_m$ 待定）；</li>
+<li>$\hbar$ 的谱来源为 9 维热核谱不对称项（定理 1.3.4.01/3.5）。</li>
+</ul>
+<p>本文的像素量子化（谐振子基）是 ℐ-扇区冻结近似下的简化处理。在完整的ℳ𝒞ℐ三扇区框架中，像素应由 $M(a)$ 上 Dirac 算子 $D$ 的本征旋量在 $\Sigma_\eta$ 上的限制给出，对应 Toeplitz 量子化的自然连续。当前 Hermite 基构造是该连续量子化的 ℐ-冻结极限近似，严格化待后续工作。</p>
+<h1>二、纠缠的几何定义</h1>
+<h2>2.1　$S$-极小值与粒子</h2>
+<p>由 定理，$\Sigma_\eta$ 上的局域凹陷（$S$ 的孤立极小值点）对应稳定粒子态。电子基态对应 $S_e=137.035999084$（1.5 §3.7，观测者位置输入）。</p>
+<p><strong>圆满再现声明</strong>　本文的纠缠理论严格建立在圆满再现之上：所有读数方向与测量映射均通过 ℳ-𝒞 腰边耦合（电磁扇区）实现，必然伴生有质量源模（电子，$E_{\mathcal{M}}\approx511\ \text{keV}$）与无质量传播模（光子，速度 $c$），两者共享同一耦合常数 $S_e=137.035999084$；ℐ 扇区不映射独立粒子，仅作为信息相位通道。圆满再现为唯一锚定映射，$c=299792458\ \text{m/s}$ 为其传播模零锥结构固定点（公设 1.1）。</p>
+<p><strong>定义 2.1（关联测地线）</strong>　设 $p_A,p_B\in\Sigma_\eta$ 为两个 $S$-极小值。连接 $p_A,p_B$ 的曲线 $\gamma_{AB}:[0,1]\to\Sigma_\eta$ 称为关联测地线，若 $\gamma_{AB}$ 在 ℳ-扇区的投影为测地线，且在 ℐ-扇区的投影为常数。</p>
+<p><strong>定义 2.2（几何最大纠缠）</strong>　两个 $S$-极小值 $p_A,p_B$ 称为<strong>几何最大纠缠</strong>，若其关联测地线 $\gamma_{AB}$ 满足：</p>
+<ol>
+<li><strong>ℐ-扇区冻结</strong>：$\xi_A=\xi_B$，即 $\gamma_{AB}$ 在 ℐ 的投影为单点；</li>
+<li><strong>ℳ-扇区反直径锁定</strong>：$\gamma_{AB}$ 在 ℳ-扇区 $S^3$ 上的投影为闭测地线（大圆），且 $p_A,p_B$ 位于该大圆的对径点。</li>
+</ol>
+<p>该构型的变分稳定性由以下几何结构共同保证：</p>
+<p><strong>(i) 命题（互锁性）约束</strong>（定理 1.3.4.01）：一阶条件 $[[D,a],Jb^*J^{-1}]=0$ 在 ℐ-扇区施加Dirac谱方向冻结，$\lambda_2^{\text{eff}}$ 的高刚度使 ℐ-方向的偏离被强力压制，从而 $\xi_A=\xi_B$ 是稳定条件；</p>
+<p><strong>(ii) 跨扇区耦合结构</strong>（定理 4.2/4.3）：渗透矩阵 $\Phi$ 与跨扇区耦合 $H^W=[[2w,w'-2w],[w'-2w,2w]]$（腰边 $w=885$，底边 $w'=-2.444$）构成 ℳ-𝒞-ℐ ℳ𝒞ℐ三扇区的代数约束；</p>
+<p><strong>(iii) 弱耦合条件</strong>：信息界块关联参数 $\gamma=H_{CI}/\sqrt{H_{CC}\cdot H_{II}}=0.0928\ll1$ 确保因果场与信息场弱耦合，使对径点在约束下提升为稳定极值。</p>
+<p>定义 2.2 是几何最大纠缠的<strong>工作定义</strong>，其与量子力学中"最大纠缠态"的对应是物理映射层的约定（见 §4 关联函数），不作为几何论内禀定理。</p>
+<p><em>几何解释</em>　条件 1 由 ℐ-扇区谐振子结构保证：两个像素若在 ℐ-扇区分离 $\Delta\xi<\Delta\xi_{\min}$，其信息场在 $L^2$ 意义下近似不可分辨。几何最大纠缠要求 $\Delta\xi=0$，即共享同一 ℐ-扇区像素。条件 2 由 $S_{\text{total}}=0$ 的极小作用量原理及上述跨扇区耦合结构导出：在 ℳ-扇区 $S^3$ 上，连接两点的极值曲线为测地线；对径点在 ℐ-冻结与腰边耦合的联合约束下成为稳定极值。</p>
+<h2>2.2　纠缠弦的严格定义</h2>
+<p><strong>定义 2.3（几何纠缠弦）</strong>　几何最大纠缠对 $(p_A,p_B)$ 的<strong>几何纠缠弦</strong> $\mathcal{E}_{AB}$ 是关联测地线 $\gamma_{AB}$ 在 $\Sigma_\eta$ 中的像，配备由 $S_{\text{total}}=0$ 导出的诱导联络 $\nabla^{\mathcal{I}}$。</p>
+<p><strong>命题 10.13.2.01（几何纠缠弦的长度）</strong>　几何纠缠弦 $\mathcal{E}_{AB}$ 的几何长度 $L(\mathcal{E}_{AB})$ 由 ℳ-扇区 $S^3$ 的测地距离决定：</p>
+<p>$$L(\mathcal{E}_{AB})=\pi R_{\mathcal{M}},$$</p>
+<p>其中 $R_{\mathcal{M}}$ 为 ℳ-扇区有效曲率半径。$R_{\mathcal{M}}$ 与 $\lambda_1^{\text{eff}}$ 的识别 $R_{\mathcal{M}}^{-2}=\lambda_1^{\text{eff}}/2$ 是本文的工作假设——$\lambda_1^{\text{eff}}=391.05\ \text{rad}^{-2}$ 是有效谱间隙方向 Birkhoff混合矩阵 本征值（量纲 $\text{rad}^{-2}$），将其识别为 $S^3$ 的截面曲率需要额外几何论证（$S^3(r)$ 的标量曲率为 $6/r^2$，截面曲率为 $1/r^2$）。该识别尚未在 0.X.X 中严格证明，当前标注为"几何对应假设"。</p>
+<p>代入 $\lambda_1^{\text{eff}}=391.05\ \text{rad}^{-2}$：<br />
+$$R_{\mathcal{M}}=\sqrt{\frac{2}{391.05}}=0.07151\ \text{rad},\quad L(\mathcal{E}_{AB})=\pi R_{\mathcal{M}}=0.2247\ \text{rad}.$$</p>
+<p>该长度与 $\Sigma_\eta$ 嵌入的三维空间距离无关。∎</p>
+<h1>三、二能级考虑几何最大纠缠对 $(p_A,p_B)$ 在 $\Sigma_\eta$ 上的联合信息场 $\Psi_{AB}$。由 定理，谱间隙方向 $\lambda_1^{\text{eff}}=391.05\ \text{rad}^{-2}$ 控制 ℳ-扇区的扩散尺度。</h1>
+<p><strong>定理 10.13.3.01（二能级定理）</strong>　设 $p_A,p_B$ 的 ℳ-扇区测地距离 $d_{\mathcal{M}}(p_A,p_B)<\pi/\sqrt{\lambda_1^{\text{eff}}}$。则联合信息场 $\Psi_{AB}$ 的低能非平庸激发空间（扣除联合信息场常数基态质心模式后，能量低于 $2\lambda_1^{\text{eff}}$ 的相对激发空间）恰好为 2 维，由 ℳ-扇区第一 zonal 调和函数的两个反相位分支张成。</p>
+<p><em>证明.</em> 由 1.4 §2，ℳ-扇区对应 $S^3$ 因子。$S^3$ 的 Laplace-Beltrami 算子本征值为 $\ell(\ell+2)/R_{\mathcal{M}}^2$（$\ell=0,1,2,\ldots$），其中 $\ell=0$ 为常数基态，$\ell=1$ 为 4 重简并的第一激发态，本征值为 $3\lambda_1^{\text{eff}}/2$；$\ell=2$ 本征值为 $4\lambda_1^{\text{eff}}$。</p>
+<p>由Born归一化条件（1.4 §3.3） $\theta_M+\theta_C+\theta_I=\pi/2$ 和 $\Sigma_\eta$ 的二维约束，ℳ-扇区在 $\Sigma_\eta$ 上的有效投影由 投影映射 $P_{\mathcal{M}}:\mathcal{M}\to\Sigma_\eta$ 实现。在命题（互锁性）约束（定理 1.3.4.01）下，三分解标架 $\{e_1,\dots,e_9\}$ 的一阶条件使 ℳ-扇区（$e_1,e_2,e_3$）的切空间在 $\Sigma_\eta$ 的二维切平面上投影的秩为 2。因此 4 重简并部分破缺，仅保留 2 个与 $\Sigma_\eta$ 切空间适配的 zonal 模式，记为 $\Phi_+,\Phi_-$，满足 $\Phi_-(\vec{x})=\Phi_+(-\vec{x})$（对径反相）。</p>
+<p>$\ell=0$ 常数基态对应联合信息场的整体相位质心自由度，在纠缠对的相对坐标描述中被冻结扣除（该扣除的几何机制与Born归一化条件（1.4 §3.3）兼容：质心运动对应 $\theta_M$ 的整体平移，在 ℐ-冻结条件下不贡献相对相位）；剩余 $\ell=1$ 第一激发态在投影映射的秩-2 限制下保留 2 维。低能截断阈值 $2\lambda_1^{\text{eff}}$ 位于 $\ell=1$ 本征值 $3\lambda_1^{\text{eff}}/2$ 与 $\ell=2$ 本征值 $4\lambda_1^{\text{eff}}$ 之间，故非平庸激发空间维数为 2。∎</p>
+<p><strong>物理映射注释</strong>：该 2 维空间在物理映射层对应于量子比特的状态空间。几何论不独立预言量子力学的测量后状态演化，仅提供状态的几何描述。</p>
+<p><strong>定义 3.2（信息基态）</strong>　记二能级空间的正交基为 $\varepsilon_1,\varepsilon_2$，满足</p>
+<p>$$\varepsilon_1(\vec{x})=\Phi_+(\vec{x}),\quad \varepsilon_2(\vec{x})=\Phi_-(\vec{x})=\Phi_+(-\vec{x}),$$</p>
+<p>其中 $\vec{x}$ 为 ℳ-扇区 $S^3$ 上的坐标。</p>
+<h1>四、关联函数定理</h1>
+<h2>4.1　读数方向与测量结果</h2>
+<p><strong>定义 4.1（读数方向）</strong>　在 ℳ-扇区 $S^3$ 上选择一个单位向量 $\vec{a}$（即 $S^3\subset\mathbb{R}^4$ 中的点），称为读数方向。</p>
+<p><strong>定义 4.2（几何测量对应——物理映射层约定）</strong>　作为<strong>物理映射约定</strong>，信息场 $\Psi$ 在读数方向 $\vec{a}$ 上的测量结果 $m(\vec{a})$ 定义为 $\Psi$ 在 $\vec{a}$ 处 zonal 投影的符号：</p>
+<p>$$m(\vec{a})=\operatorname{sgn}\left(\int_{S^3}\Psi(\vec{x})Z_{\vec{a}}(\vec{x})\mathrm{d}\mu\right)\in\{1,-1\},$$</p>
+<p>其中 $Z_{\vec{a}}(\vec{x})=\vec{a}\cdot\vec{x}$ 为第一 zonal 调和函数。该定义与标准量子力学中自旋测量结果的对应是衔接层的假设，不作为几何论内禀定义。</p>
+<p><em>注</em>　由定理 3.1，低能激发 $\Psi=c_1\varepsilon_1+c_2\varepsilon_2$，其在 $Z_{\vec{a}}$ 上的投影为 $c_1\vec{a}\cdot\vec{x}+c_2\vec{a}\cdot\vec{x}_-$，符号由系数比决定。</p>
+<h2>4.2　关联函数</h2>
+<p><strong>定义 4.3（关联函数）</strong>　对于几何最大纠缠对 $(p_A,p_B)$，设 $\vec{a}$ 为 $p_A$ 的读数方向，$\vec{b}$ 为 $p_B$ 的读数方向。关联函数 $C(\vec{a},\vec{b})$ 定义为测量结果乘积在信息场系综下的几何平均：</p>
+<p>$$C(\vec{a},\vec{b})=\big\langle m_A(\vec{a})m_B(\vec{b})\big\rangle_{\Sigma},$$</p>
+<p>其中 $\langle\cdot\rangle_{\Sigma}$ 为由几何纠缠弦的诱导联络 $\nabla^{\mathcal{I}}$ 与 $\Sigma_\eta$ 的辛结构 $(\mathcal{P}_\eta,\omega)$（6.6）自然定义的信息场系综平均。</p>
+<p><strong>映射层命题 4.1（关联函数）</strong>　对于几何最大纠缠对，在以下物理映射约定下：</p>
+<blockquote>
+<p><strong>约定 A（反直径反相）</strong>：$p_B$ 的 ℳ-坐标 $\vec{x}_B=-\vec{x}_A$，故 $m_B(\vec{b})=-m_A(\vec{b})$；</p>
+<p><strong>约定 B（Born法则对应）</strong>：在 $\Sigma_\eta$ 的自然辛测度下，同一凹陷对两个读数方向的单次响应满足 $\langle m_A(\vec{a})m_A(\vec{b})\rangle_{\Sigma}=\vec{a}\cdot\vec{b}$。该等式是 $S^3$ 调和函数在系综平均下的几何性质；在物理映射中对应量子力学的 Born法则。该对应<strong>不是</strong>从框架两条公理（δ 和 S_total=0，0.1）推导的定理，而是将量子力学的测量规则翻译为几何语言的映射层约定。</p>
+</blockquote>
+<p>有</p>
+<p>$$C(\vec{a},\vec{b})=-\vec{a}\cdot\vec{b}=-\cos\theta_{ab},$$</p>
+<p>其中 $\theta_{ab}$ 为 $\vec{a},\vec{b}$ 在 ℳ-扇区 $S^3$ 上的测地夹角。</p>
+<p><em>推导.</em> 由约定 A，$m_B(\vec{b})=-m_A(\vec{b})$。由约定 B，$\langle m_A(\vec{a})m_A(\vec{b})\rangle_{\Sigma}=\vec{a}\cdot\vec{b}$。故</p>
+<p>$$C(\vec{a},\vec{b})=\big\langle m_A(\vec{a})(-m_A(\vec{b}))\big\rangle_{\Sigma}=-\vec{a}\cdot\vec{b}.$$</p>
+<p>∎</p>
+<p><strong><em>*：命题 4.1 的结论 $C(\vec{a},\vec{b})=-\vec{a}\cdot\vec{b}$ 在数学形式上等价于量子力学中自旋单态的关联函数，但这是</em>*在接受了约定 A 和约定 B 之后的推导结果</strong>。约定 A 的几何基础（反直径锁定 → 反相）相对牢靠（由定义 2.2 保证）；约定 B 是物理映射的核心桥梁，其严格性等价于"从框架两条公理（δ 和 S_total=0，0.1）推导 Born法则"——这是几何论的开放核心问题之一。因此命题 4.1 的地位是<strong>映射层命题</strong>，而非几何论内禀定理。</p>
+<h1>五、CHSH 组合与经典极限</h1>
+<h2>5.1　测量设置的几何化</h2>
+<p><strong>定义 5.1（CHSH 配置）</strong>　在 ℳ-扇区 $S^3$ 上选取四个读数方向：</p>
+<ul>
+<li>粒子 $A$：$\vec{a}_1,\vec{a}_2$</li>
+<li>粒子 $B$：$\vec{b}_1,\vec{b}_2$</li>
+</ul>
+<p><strong>定义 5.2（CHSH 组合）</strong></p>
+<p>$$S_{\text{CHSH}}=C(\vec{a}_1,\vec{b}_1)+C(\vec{a}_1,\vec{b}_2)+C(\vec{a}_2,\vec{b}_1)-C(\vec{a}_2,\vec{b}_2).$$</p>
+<h2>5.2　经典极限定理</h2>
+<p><strong>定理 10.13.5.01（经典极限）</strong>　考虑假想的极限情形 $\lambda_2^{\text{eff}}\to\infty$，此时 ℐ-扇区完全紧致化。该极限不代表实际物理（几何论中 $\lambda_2^{\text{eff}}=59324.3$ 为固定常数，定理 6.2），仅作为思想实验用于对比经典关联与量子关联的差异。在此极限下，信息场定域化，CHSH 组合代数上限为 $2$。</p>
+<p><em>证明.</em> $\lambda_2^{\text{eff}}\to\infty$ 时，由构造性定义 1.3，ℐ-扇区像素无限密集（$\Delta\xi_{\min}\to0$），信息场完全定域化。几何纠缠弦 $\mathcal{E}_{AB}$ 的 ℐ-冻结解除，$p_A,p_B$ 的 ℳ-扇区完全解耦。因此 $m_A(\vec{a})$ 仅依赖于 $p_A$ 的局部几何，$m_B(\vec{b})$ 仅依赖于 $p_B$ 的局部几何，二者在极限下近似独立。代入定义 5.2：</p>
+<p>$$|S_{\text{CHSH}}|\le |m_B(\vec{b}_1)m_B(\vec{b}_2)||m_B(\vec{b}_1)-m_B(\vec{b}_2)|=2.$$</p>
+<p>该定理不依赖于贝尔不等式，仅为几何极限下的代数推论。∎</p>
+<p><em>注</em>　此上限 $2$ 是 $\lambda_2^{\text{eff}}\to\infty$ 时因子化的纯代数推论，无需贝尔原始推导中的隐变量分布假设。</p>
+<h1>六、Tsirelson 定理</h1>
+<h2>6.1　非定域关联的保持</h2>
+<p><strong>定理 10.13.6.01（Tsirelson Bound）</strong>　在 $\lambda_2^{\text{eff}}$ 有限的离散编码下（即 ℐ-扇区冻结有效），在接受命题 4.1 关联映射的条件下，CHSH 组合满足</p>
+<p>$$|S_{\text{CHSH}}|\le 2\sqrt{2}.$$</p>
+<p>上确界 $2\sqrt{2}$ 可被以下配置达到：</p>
+<p>$$\vec{b}_1\perp\vec{b}_2,\quad \vec{a}_1=\frac{\vec{b}_1+\vec{b}_2}{|\vec{b}_1+\vec{b}_2|},\quad \vec{a}_2=\frac{\vec{b}_1-\vec{b}_2}{|\vec{b}_1-\vec{b}_2|}.$$</p>
+<p><em>证明.</em> 由命题 4.1，$C(\vec{a},\vec{b})=-\vec{a}\cdot\vec{b}$。代入定义 5.2：</p>
+<p>$$S_{\text{CHSH}}=-\vec{a}_1\cdot(\vec{b}_1+\vec{b}_2)-\vec{a}_2\cdot(\vec{b}_1-\vec{b}_2).$$</p>
+<p>由 Cauchy-Schwarz 不等式：</p>
+<p>$$|S_{\text{CHSH}}|\le|\vec{a}_1||\vec{b}_1+\vec{b}_2|+|\vec{a}_2||\vec{b}_1-\vec{b}_2|=|\vec{b}_1+\vec{b}_2|+|\vec{b}_1-\vec{b}_2|,$$</p>
+<p>设 $\vec{b}_1\cdot\vec{b}_2=\cos\theta$，则 $|\vec{b}_1+\vec{b}_2|=2\cos(\theta/2)$，$|\vec{b}_1-\vec{b}_2|=2\sin(\theta/2)$。因此</p>
+<p>$$|S_{\text{CHSH}}|\le 2\cos(\theta/2)+2\sin(\theta/2)\le 2\sqrt{2},$$</p>
+<p>取等条件为 $\theta=\pi/2$（即 $\vec{b}_1\perp\vec{b}_2$）且 $\vec{a}_1\parallel(\vec{b}_1+\vec{b}_2)$，$\vec{a}_2\parallel(\vec{b}_1-\vec{b}_2)$。此时 $|S_{\text{CHSH}}|=2\sqrt{2}$。∎</p>
+<h2>6.2　为什么是 $2\sqrt{2}$</h2>
+<p><strong>结构注释 6.2</strong>　$2\sqrt{2}=\sqrt{8}$ 与 ℳ-扇区读数平面的 2 维性直接相关。数值上 $\sqrt{8}$ 的出现与 0.2 中 $Cl(9)$ 的 even 子代数 $Cl^0(9)\cong Cl(8)$ 内含 $\text{Spin}(8)$ triality 的八维结构存在潜在对应（0.2）。Tsirelson 上确界由 ℳ-扇区 2 维欧氏几何中的 Cauchy-Schwarz 优化严格锁定，其深层代数根源与ℳ𝒞ℐ三扇区 $T\Sigma=\mathcal{M}\oplus\mathcal{C}\oplus\mathcal{I}$ 的整体结构及 $Cl(8)$ 的 8 维 Clifford 代数的关联为开放问题，待后续文章探讨。</p>
+<h1>七、结论</h1>
+<p>（1）<strong>像素定理</strong>：编码轨道像素由 ℐ-扇区谐振子特征函数定义（命题 1.1），最小分辨角 $\Delta\xi_{\min}=2(\lambda_2^{\text{eff}})^{-1/4}=0.1281$ rad 是基于谐振子基态特征宽度的构造性定义（构造性定义 1.3），严格化需从 Sturm-Liouville 正交基的信息论分辨极限导出。本文修正了 本文中信息场方程的形式错误（常数势 → 谐振子势）。Bott 周期截断保证有效像素自由度有限（$n_{\text{eff}}\le7$）。命题（互锁性）约束（定理 1.3.4.01）是 ℐ-扇区冻结与 Bott 截断的深层几何来源。</p>
+<p>（2）<strong>纠缠定义</strong>：几何最大纠缠是 $\Sigma_\eta$ 上两个 $S$-极小值在 ℐ-扇区冻结、在 ℳ-扇区反直径锁定的几何构型。变分稳定性由命题（互锁性）约束（定理 1.3.4.01）、跨扇区耦合结构（定理 4.2/4.3：腰边 $w=885$，底边 $w'=-2.444$）与弱耦合参数 $\gamma=0.0928$ 联合保证。几何纠缠弦长度 $L(\mathcal{E}_{AB})=\pi R_{\mathcal{M}}=0.2247$ rad（使用有效谱间隙方向 $\lambda_1^{\text{eff}}=391.05$）。</p>
+<p>（3）<strong>二能级定理</strong>：几何最大纠缠对的低能非平庸激发空间恰好 2 维，由 $S^3$ 第一 zonal 调和函数的两个反相位分支张成，"量子比特"是几何谱刚性的产物（物理映射层对应）。$\ell=0$ 常数基态在相对坐标描述中冻结扣除。</p>
+<p>（4）<strong>关联函数</strong>：在接受反直径反相（约定 A，由定义 2.2 保证）与 Born法则对应（约定 B，物理映射约定）的条件下，$C(\vec{a},\vec{b})=-\vec{a}\cdot\vec{b}$。命题 4.1 是映射层命题而非几何论内禀定理。</p>
+<p>（5）<strong>经典极限</strong>：$\lambda_2^{\text{eff}}\to\infty$ 假想极限下信息场定域化，CHSH 组合上限 $2$ 是因子化的代数恒等式。</p>
+<p>（6）<strong>Tsirelson 定理</strong>：在接受命题 4.1 关联映射的条件下，$|S_{\text{CHSH}}|\le2\sqrt{2}$ 由 ℳ-扇区 2 维欧氏几何中的 Cauchy-Schwarz 优化严格锁定。数值 $2\sqrt{2}=\sqrt{8}$ 与 $Cl(8)$ 的代数结构存在潜在对应。</p>
+<p>（7）<strong>闭环状态</strong>：本文第 1–6 章在 0.0.X圆满再现的闭包内完成，未引入命题（互锁性）与框架两条公理（δ 和 S_total=0，0.1）之外的独立假设。约定 A 由定义 2.2 几何构型保证；约定 B 是物理映射层的外部对应，标注为开放核心问题。</p>
+<h1>附录 A：内生常数表</h1>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">常数</th>
+<th style="text-align: left;">数值</th>
+<th style="text-align: left;">几何来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">$S_e$</td>
+<td style="text-align: left;">$1.37035999084\times10^2$</td>
+<td style="text-align: left;">圆满再现几何本征量（1.5 §3.7，观测者位置输入）</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\lambda_1^{\text{eff}}$</td>
+<td style="text-align: left;">$3.9105\times10^2\ \text{rad}^{-2}$</td>
+<td style="text-align: left;">有效谱间隙方向（定理 6.2）</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\lambda_2^{\text{eff}}$</td>
+<td style="text-align: left;">$5.93243\times10^4\ \text{rad}^{-2}$</td>
+<td style="text-align: left;">有效Dirac谱方向（定理 6.2）</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\lambda_2^{\text{eff}}/\lambda_1^{\text{eff}}$</td>
+<td style="text-align: left;">$1.517\times10^2$</td>
+<td style="text-align: left;">有效谱间隙方向与Dirac谱方向比（命题（互锁性）刚度比，定理 1.3.4.01）</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\Delta\xi_{\min}$</td>
+<td style="text-align: left;">$2(\lambda_2^{\text{eff}})^{-1/4}=0.1281\ \text{rad}$</td>
+<td style="text-align: left;">像素最小分辨角（构造性定义 1.3）</td>
+</tr>
+<tr>
+<td style="text-align: left;">$R_{\mathcal{M}}$</td>
+<td style="text-align: left;">$\sqrt{2/\lambda_1^{\text{eff}}}=0.07151\ \text{rad}$</td>
+<td style="text-align: left;">ℳ-扇区有效曲率半径（工作假设）</td>
+</tr>
+<tr>
+<td style="text-align: left;">$L(\mathcal{E}_{AB})$</td>
+<td style="text-align: left;">$\pi R_{\mathcal{M}}=0.2247\ \text{rad}$</td>
+<td style="text-align: left;">几何纠缠弦长度（命题 2.1）</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\chi_L$</td>
+<td style="text-align: left;">$1.5092231080\times10^{-10}\ \text{m}$</td>
+<td style="text-align: left;">长度映射因子（定理 1.3.4.01）</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\hbar$</td>
+<td style="text-align: left;">$6.5821195675\times10^{-16}\ \text{eV}\cdot\text{s}$</td>
+<td style="text-align: left;">谱展开/Born法则（定理 1.3.4.01）导出</td>
+</tr>
+<tr>
+<td style="text-align: left;">$K$</td>
+<td style="text-align: left;">$839.758793\ \text{keV}$</td>
+<td style="text-align: left;">质量量子（定理 1.3.4.01）</td>
+</tr>
+<tr>
+<td style="text-align: left;">$m_e$</td>
+<td style="text-align: left;">$510.99895\ \text{keV}/c^2$</td>
+<td style="text-align: left;">电子质量（3.10）</td>
+</tr>
+<tr>
+<td style="text-align: left;">$w$</td>
+<td style="text-align: left;">$885$</td>
+<td style="text-align: left;">腰边耦合（定理 4.3）</td>
+</tr>
+<tr>
+<td style="text-align: left;">$w'$</td>
+<td style="text-align: left;">$-2.444$</td>
+<td style="text-align: left;">底边耦合（定理 4.3）</td>
+</tr>
+<tr>
+<td style="text-align: left;">$\gamma$</td>
+<td style="text-align: left;">$0.0928$</td>
+<td style="text-align: left;">块关联参数</td>
+</tr>
+<tr>
+<td style="text-align: left;">$S_{\text{CHSH}}$（经典极限）</td>
+<td style="text-align: left;">$2$</td>
+<td style="text-align: left;">经典极限定理（§5.2，假想极限）</td>
+</tr>
+<tr>
+<td style="text-align: left;">$S_{\text{CHSH}}$（量子）</td>
+<td style="text-align: left;">$2\sqrt{2}\approx2.828427$</td>
+<td style="text-align: left;">Tsirelson 定理（§6.1，接受约定 AB）</td>
+</tr>
+</tbody>
+</table>
+  </main>
+</div>
+</body>
+</html>

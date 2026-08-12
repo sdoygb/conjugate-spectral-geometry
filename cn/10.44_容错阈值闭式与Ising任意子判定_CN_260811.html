@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10.44 容错阈值的组合闭式与 δ⁸ 编织的 Ising 型判定 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="10.44 容错阈值的组合闭式与 δ⁸ 编织的 Ising 型判定">
+<meta name="generator" content="GeometryAI Build Script">
+
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\(', '\)']],
+    displayMath: [['$$', '$$'], ['\[', '\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/cn/10.44_容错阈值闭式与Ising任意子判定_CN_260811.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../index.html" class="nav-home">🏠 首页</a>
+    <a href="../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">10.44 容错阈值的组合闭式与 δ⁸ 编织的 Ising 型判定</span>
+  </nav>
+  <main class="article-content">
+<h1>10.44 容错阈值的组合闭式与 δ⁸ 编织的 Ising 型判定</h1>
+<p><strong>编号</strong>：10.44 | <strong>日期</strong>：260811 | <strong>系列</strong>：应用（信息层→拓扑量子计算） | <strong>语言</strong>：CN | <strong>性质</strong>：探索稿</p>
+<hr />
+<h2>摘　要</h2>
+<p>10.43 的 Cl(8) 拓扑量子计算方案留下三个开放问题：容错阈值缺失、O3（δ⁸ 编织的任意子类型）、O5（七层截断的严格证明）。本文推进前两个：</p>
+<p>在 10.29 预言四的“权重 2 共线结构”基础上，证明（§2.2，引定理 10.28.1.02）方向完备码 $[[2^m-1, 2^m-1-2m, 3]]$（一切 $m\ge3$）的权重 2 Pauli 错误中，恰有 $\eta = 1/3$ 与单比特同 syndrome 且被查表恢复误转为逻辑算符，程序枚举 $m=3..8$ 精确一致。<br />
+$$p_{\mathrm{th}} = \frac{6}{n(n-1)}: \qquad [[7,1,3]]\to\frac{1}{7}\approx14.3\%,\quad [[15,7,3]]\to\frac{1}{35}\approx2.9\%.$$<br />
+结合 $\kappa\approx151.7$ 冻结 ℐ 扇区（测量/稳定子层）的论证，理想纠错假设在几何框架内有内在依据，上述闭式即为有效拼接阈值——高于 surface code 的 $\sim1\%$ 约一个数量级。</p>
+<p><strong>方向二（O3 解答：Ising 型）</strong>：由 KO 分类链 $KO^{-8}(\mathrm{pt})=\mathbb{Z}$（Bott 生成元）$\to$ Kitaev D 类 $\to$ $p+ip$ 超导体 $\to$ Majorana 零模（10.43 §2.2 对应表已建立），判定 δ⁸ 回路携带 <strong>Ising 型（Majorana 型）任意子统计</strong>（$\sigma\times\sigma = 1+\psi$），非 Fibonacci 型。代数验证：δ 是 Cl(8) Majorana 的 8-循环置换 $=7$ 个相邻对换，单次交换相位 $e^{\pm i\pi/4}$（Ivanov 2001），δ⁸ 净相位 $14\pi \equiv 0 \pmod{2\pi}$，与定理 0.3.2.01 的 Berry 相位 $2\pi$ 一致。推论：Ising 型非通用（Freedman–Kitaev–Larsen–Wang）$\Rightarrow$ $T$ 门必须魔法态蒸馏 $\Rightarrow$ 10.43 §5 的七层蒸馏架构<strong>不是可选项而是必然</strong>——框架自洽性闭环。</p>
+<p>全部数值结果来自程序全枚举/解析枚举（§4 验证记录，脚本 <code>geo_qec/verify_threshold_anyon.py</code>）。</p>
+<hr />
+<h2>目　录</h2>
+<p>§1　引言：10.43 开放问题的推进<br />
+§2　容错阈值的组合闭式<br />
+§3　δ⁸ 编织的 Ising 型判定<br />
+§4　数值验证记录<br />
+§5　新的开放问题<br />
+参考</p>
+<hr />
+<h1>一、引言：10.43 开放问题的推进</h1>
+<p>10.43 建立了 Cl(8) 拓扑量子计算的四层主张：KO 八重分类（§2）、三扇区架构（§3）、δ⁸ 代数编织（§4）、七层蒸馏（§5）。其 §8 列出十个开放问题，其中两个直接决定方案的可行性：</p>
+<ul>
+<li><strong>容错阈值</strong>（10.43 未编号，隐含于 §6 实验路线）：θ⁴ 标度律（10.29 预言一）给出了单轮纠错的损失标度，但"多大物理错误率下逻辑错误率可被任意压低"（容错阈值的标准定义）始终缺失——没有阈值，方案无法与 surface code（$p_{\mathrm{th}}\approx1\%$）定量对比。</li>
+<li><strong>O3（任意子类型）</strong>：δ⁸ 回路的 Berry 相位 $=2\pi$（定理 0.3.2.01），但其统计是 Ising 型还是 Fibonacci 型未知。此判定决定架构：Fibonacci 型可直接编织通用门（无需蒸馏），Ising 型则必须蒸馏 $T$ 门。</li>
+</ul>
+<p>本文分别给出：阈值的组合闭式（§2，程序验证）与 Ising 型判定（§3，证据链 + 代数验证）。两条结论相互印证——Ising 型非通用使蒸馏成为必然，而蒸馏的成功率预算恰由阈值闭式控制。</p>
+<hr />
+<h1>二、容错阈值的组合闭式</h1>
+<h2>2.1 问题定位：从 θ⁴ 标度律到拼接压缩</h2>
+<p>10.29 预言一：独立相干旋转噪声下，最优纠错后损失 $L = c\,\theta_{\max}^4 + O(\theta_{\max}^6)$（程序斜率 4.04/4.12/4.14）。其机制为<strong>恢复干涉</strong>：权重 2 成分经恢复映射后残留权重 3 逻辑类，损失主导项为权重 2 成分模方（$\theta^4$）乘干涉系数。</p>
+<p>将相干噪声语言（$\theta$）换算为 Pauli 错误率语言（$p$）：单比特旋转注入 $U(\theta)$ 的 Pauli 错误概率 $p = \sin^2(\theta/2) \approx \theta^2/4$。则 $\theta^4 \propto p^2$——<strong>单轮纠错把物理错误率二次压缩</strong>：$p_L = A\,p^2$。拼接（concatenation）后 $p_{L+1} = A\,p_L^2$，收敛条件 $p < 1/A$ 即阈值。</p>
+<p>问题归结为：组合压缩系数 $A$ 由什么决定？10.29 预言四给出结构性线索：方向完备码的所有权重 2 错误均为共线型（$PG(m-1,2)$ 列异或封闭），其中与单比特同 syndrome 的比例 $\eta$ 决定 $A$。</p>
+<h2>2.2 误恢复比例 η 与压缩系数（定理）</h2>
+<p><strong>定义 10.44.2.01</strong>（误恢复）：设 $[[n,k,3]]$ 码以单比特查表恢复（表覆盖全部单比特错误）。权重 2 Pauli 错误 $E$ 若与某单比特 $Q$ 同 syndrome，则恢复算符 $R = Q$，残留 $E_{\mathrm{res}} = Q\cdot E$。若 $E_{\mathrm{res}}$ 为逻辑算符（与全部生成元对易且不在稳定子群），称 $E$ 被<strong>误恢复</strong>为逻辑错误。记<br />
+$$\eta = \frac{\#\{\text{被误恢复的权重 2 Pauli}\}}{\#\{\text{全部权重 2 Pauli}\}} = \frac{\#\{\text{被误恢复}\}}{9\,C(n,2)}.$$</p>
+<p><strong>定理 10.44.2.01</strong>（η 闭式）：方向完备码 $[[2^m-1, 2^m-1-2m, 3]]$（$m\ge3$：$[[7,1,3]]$、$[[15,7,3]]$、$[[31,21,3]]$、$[[63,51,3]]$、$[[127,113,3]]$、…）的误恢复比例<br />
+$$\eta = \frac{1}{3} \qquad (\text{一切 }m\ge3).$$<br />
+非 CSS 循环码 $[[5,1,3]]$ 为特例 $\eta = 1$（§4 表 1）。</p>
+<p><strong>证明</strong>：完备方向码为自对偶 CSS 码（$H_X=H_Z=H_m$，定理 10.28.1.02），$H_m$ 的列恰为 $D_m=\mathbb{F}_2^m\setminus\{0\}$ 的全部元素；syndrome 映射 $E\mapsto(c(E),d(E))\in\mathbb{F}_2^{2m}$ 中，$c(S)=\sum_{a\in S}h_a$（$h_a$ 为第 $a$ 列，$\mathbb{F}_2$ 和）。</p>
+<p>（i）<strong>纯型三误恢复</strong>。对位置对 $\{a,b\}$，$c=a+b\in D_m$ 为共线第三点（任意 $a\neq b$ 唯一确定，命题 10.28.1.03）。$X_aX_b$ 与 $X_c$ 同 syndrome：$c(\{a,b\})=h_a+h_b=h_c$。残留 $X_aX_bX_c$ 为权重 3 $X$ 型<strong>逻辑算符</strong>——由定理 10.28.1.02(iv)（$Z$ 换 $X$，自对偶对称）：与全部稳定子对易（行泛函 $f$ 的反交换次数 $f\cdot(a+b+c)=0$），且不在稳定子群（非零 $X$ 稳定子权重 $2^{m-1}\ge4>3$）。同理 $Z_aZ_b$ 与 $Z_c$ 同 syndrome，残留 $Z$ 型逻辑算符；$Y_aY_b$ 的 syndrome $(h_a+h_b,h_a+h_b)=(h_c,h_c)$ 与 $Y_c$ 相同，残留 $X_aX_bX_c\cdot Z_aZ_bZ_c$ 为 $Y$ 型逻辑算符。此三型均被误恢复（定义 10.44.2.01）。</p>
+<p>（ii）<strong>混合型六排除</strong>。混合型 $E\in\{X_aZ_b,\,X_aY_b,\,Y_aZ_b,\,Z_aX_b,\,Y_aX_b,\,Z_aY_b\}$（$a\neq b$）的 syndrome 分别具形 $(h_a,h_b)$、$(h_a+h_b,h_b)$、$(h_a,h_a+h_b)$ 及 $a\leftrightarrow b$ 对称者。因 $h_a,h_b,h_a+h_b$ 两两不同（列两两不同，定理 10.28.1.02(iii)；$h_a+h_b=0\iff a=b$），任一混合型 syndrome 均不等于单比特 $X_q/Z_q/Y_q$ 的 $(h_q,0)/(0,h_q)/(h_q,h_q)$——与任何单比特不同 syndrome，不误恢复。</p>
+<p>（iii）<strong>计数</strong>。误恢复错误恰为全部共线位置对的纯型三型：每位置对 $\{a,b\}$ 唯一确定 $c=a+b$（命题 10.28.1.03 的 $PG(m-1,2)$ 直线 $\{a,b,a+b\}$，线数 $L_m=(2^m-1)(2^{m-1}-1)/3$，每线 3 对），共 $3\cdot L_m=3\,C(n,2)$ 个；总权重 2 Pauli 数 $9\,C(n,2)$。故<br />
+$$\eta=\frac{3\,C(n,2)}{9\,C(n,2)}=\frac{1}{3}\qquad(\text{一切 }m\ge3).\quad\blacksquare$$<br />
+程序验证：$m=3..6$ 全枚举（§4 表 1）与 $m=7,8$ 独立枚举（§4）与闭式精确一致，混合型计数为零。$[[5,1,3]]$ 非方向完备系列（循环码），$\eta=1$ 为特例（§4 表 1）。</p>
+<p><strong>推论 10.44.2.01</strong>（压缩系数）：独立 Pauli 噪声（每比特错误率 $p$，X/Y/Z 各 $p/3$）下单轮最优纠错的逻辑错误率主项<br />
+$$p_L(p) = \eta\,C(n,2)\,p^2\,(1-p)^{n-2} + O(p^3), \qquad A = \eta\,C(n,2) = \frac{n(n-1)}{6}.$$<br />
+（$(1-p)^{n-2}$ 因子来自其余 $n-2$ 比特无错误；解析枚举验证 §4 表 2。）</p>
+<h2>2.3 拼接阈值闭式（定理）</h2>
+<p><strong>定理 10.44.2.02</strong>（拼接阈值闭式）：以 $[[n,k,3]]$ 方向完备码（$\eta=1/3$）为拼接单元，每层拼接 $p_{L+1} = A\,p_L^2$，则逻辑错误率可任意压低的物理错误率上界为<br />
+$$p_{\mathrm{th}} = \frac{1}{A} = \frac{6}{n(n-1)}: \qquad
+\begin{array}{c|c|c}
+n & \text{码} & p_{\mathrm{th}} \\ \hline
+5 & [[5,1,3]]\ (\eta=1) & 0.100\ (10\%) \\
+7 & [[7,1,3]] & 0.1429\ (1/7) \\
+15 & [[15,7,3]] & 0.0286\ (1/35) \\
+31 & [[31,21,3]] & 0.00645\ (1/155) \\
+63 & [[63,51,3]] & 0.00154\ (1/651)
+\end{array}$$<br />
+<strong>最优拼接单元为 $[[7,1,3]]$</strong>（Steane 码）：$p_{\mathrm{th}} = 1/7 \approx 14.3\%$。$n$ 增大时 $C(n,2)$ 使误恢复位置数二次增长，阈值单调下降——方向完备系列的保护优势在<strong>小码拼接</strong>而非大码本身。</p>
+<p><strong>证明（验证性质）</strong>：收敛判据 $p_L < p \iff A\,p(1-p)^{n-2} < 1$；数值序列（§4 表 3）显示 $p_0 < p_{\mathrm{th}}$ 时四次拼接内指数压缩，$p_0 = p_{\mathrm{th}}$ 时临界（不动点 $p_* = 1/A$），$p_0 > p_{\mathrm{th}}$ 时发散。程序验证（解析枚举，权重 ≤4）。</p>
+<h2>2.4 κ 冻结：理想纠错假设的内在依据</h2>
+<p>标准阈值定理的保守版本计入测量错误、门错误与辅助比特错误。在共扼谱几何框架中，这些项被刚度分离<strong>结构性压制</strong>：</p>
+<ol>
+<li><strong>测量层 = ℐ 扇区</strong>（10.43 §3.1 表：ℐ 扇区承担稳定子约束、syndrome 测量与读出）；</li>
+<li><strong>κ 冻结</strong>（定理 10.27.1.04，10.43 §3.2）：$\kappa = \lambda_2^{\mathrm{eff}}/\lambda_1^{\mathrm{eff}} \approx 151.7$，ℐ 扇区泄漏 $\theta_I = \theta_M^\kappa$——对 $\theta_M = 10^{-3}$，$\theta_I \sim 10^{-455}$，测量层错误率 $p_m \sim p^\kappa$ 可忽略；</li>
+<li>故几何框架下"理想 syndrome 测量"是<strong>有效近似而非理想化假设</strong>，§2.3 的闭式即物理阈值。</li>
+</ol>
+<p>对比 surface code：$p_{\mathrm{th}} \approx 1\%$（实测值，计入测量与门错误）。本框架 $[[7,1,3]]$ 拼接 $p_{\mathrm{th}} \approx 14.3\%$——高一个数量级。<strong>须诚实标注</strong>：14.3% 是"κ 冻结理想测量"下的有效阈值；若 κ 失效（$\kappa\to1$），需回退到含测量错误的标准阈值推导，此时闭式退化为上界。</p>
+<h2>2.5 可实验预言</h2>
+<blockquote>
+<p><strong>预言 A（阈值标度）</strong>：在 5–7 比特量子处理器上制备 $[[5,1,3]]$ 或 $[[7,1,3]]$ 逻辑态，注入每比特独立 Pauli 噪声（错误率 $p$ 扫描），单轮最优纠错后逻辑错误率应满足 $p_L = A\,p^2(1-p)^{n-2} + O(p^3)$，$A = 10$（五比特）或 $7$（Steane）。log-log 斜率 $=2$（非 1、非 3），$p=0.01$ 处 $p_L \approx 7\times10^{-4}$。</p>
+<p><strong>预言 B（η 比例）</strong>：权重 2 双比特旋转注入的 syndrome 分布中，与单比特同 syndrome 的比例恰为 $1/3$（$[[7,1,3]]$ 与 $[[15,7,3]]$；$[[5,1,3]]$ 为 $1$）——10.29 预言四的直接推广，15 比特平台（IBM 127 档位）可测。</p>
+<p><strong>预言 C（拼接压缩）</strong>：以 $[[7,1,3]]$ 为单元两级拼接，$p_0 = 0.05$ 时二级逻辑错误率应降至 $\sim2\times10^{-3}$（表 3 序列）——若实测显著偏离（如仅 $\sim10^{-2}$ 量级），则 η 闭式或 κ 冻结失效。</p>
+</blockquote>
+<hr />
+<h1>三、δ⁸ 编织的 Ising 型判定</h1>
+<h2>3.1 判定标准：Ising 型 vs Fibonacci 型</h2>
+<p>拓扑量子计算的通用性取决于任意子统计的融合规则：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">类型</th>
+<th style="text-align: left;">融合规则</th>
+<th style="text-align: left;">量子维数</th>
+<th style="text-align: left;">通用性</th>
+<th style="text-align: left;">门实现</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Ising（Majorana 型）</td>
+<td style="text-align: left;">$\sigma\times\sigma = 1+\psi$</td>
+<td style="text-align: left;">$d_\sigma = \sqrt2$</td>
+<td style="text-align: left;"><strong>非通用</strong>（FKLW 2002）</td>
+<td style="text-align: left;">仅 Clifford；$T$ 门需蒸馏</td>
+</tr>
+<tr>
+<td style="text-align: left;">Fibonacci 型</td>
+<td style="text-align: left;">$\tau\times\tau = 1+\tau$</td>
+<td style="text-align: left;">$d_\tau = \varphi \approx 1.618$</td>
+<td style="text-align: left;">通用（Freedman–Larsen–Wang）</td>
+<td style="text-align: left;">全部门可编织</td>
+</tr>
+</tbody>
+</table>
+<p>判定 δ⁸ 回路属于哪一类，需两条独立证据：(i) 拓扑荷分类（KO 不变量）对应哪类物理系统；(ii) 代数结构（Majorana 循环置换）的交换相位特征。</p>
+<h2>3.2 证据链一：KO 分类 → p+ip 超导体 → Ising</h2>
+<p>10.43 §2.2 已建立 KO 周期表与 Kitaev 分类的对应（Atiyah–Bott–Shapiro 构造）：</p>
+<ul>
+<li>定理 0.3.2.01：δ⁸ 回路的 Berry 相位 $=2\pi$，携带 Bott 生成元 $\beta = 1 \in KO^{-8}(\mathrm{pt}) = \mathbb{Z}$；</li>
+<li>10.43 §2.2 表：$n \equiv 0 \pmod{8}$（即 KO⁻⁸）↔ Kitaev <strong>D 类</strong>（无对称性超导）↔ $p+ip$ 超导体 ↔ Chern 数保护（整数不变量）；</li>
+<li>物理已知结果（Read–Green 2000；Ivanov 2001）：$p+ip$ 超导涡旋束缚 <strong>Majorana 零模</strong>，Majorana 模的编织产生 <strong>Ising 型任意子统计</strong>（$\sigma\times\sigma = 1+\psi$，R 矩阵 $e^{\pm i\pi/8}$）。</li>
+</ul>
+<p>故 δ⁸ 回路的拓扑荷类型（$\mathbb{Z}$ 类 Bott 生成元）在物理实现上对应 Ising 型统计。<strong>范畴注记</strong>（沿用 10.43 §2.2）：此对应是分类层面的对应（KO 与 Kitaev 同源于 Clifford 8-周期），非同一数学对象——但 Ising 判定的关键（Majorana 零模编织）由 δ 的代数结构独立支持（证据链二），不依赖该注记。</p>
+<h2>3.3 证据链二：δ 的 Majorana 交换相位（代数验证）</h2>
+<p>10.43 §4.4 已数值验证：δ 是 Cl(8) 的 8 个 Majorana 算符 $\gamma_1\ldots\gamma_8$ 的循环置换 $\gamma_i \to \gamma_{i+1}$（模 8），δ⁸ 严格闭合（5/5 随机 stabilizer 态，Berry 相位 $2\pi$）。</p>
+<p>补充代数事实（§4 Part C）：</p>
+<ol>
+<li><strong>循环置换分解</strong>：8-循环 $(1\,2\,3\,4\,5\,6\,7\,8)$ 分解为 $7$ 个相邻对换（奇置换）：$(1\,2)(2\,3)(3\,4)(4\,5)(5\,6)(6\,7)(7\,8)$；</li>
+<li><strong>Majorana 交换相位</strong>（Ivanov 2001）：交换两个 Majorana 模给出几何相位 $e^{\pm i\pi/4}$——这是 Ising 型统计的代数指纹（Fibonacci 型无此结构）；</li>
+<li><strong>δ 的净相位</strong>：$7\times\frac{\pi}{4} = \frac{7\pi}{4} \equiv -\frac{\pi}{4} \pmod{2\pi}$；</li>
+<li><strong>δ⁸ 的净相位</strong>：$56\times\frac{\pi}{4} = 14\pi \equiv 0 \pmod{2\pi}$——与定理 0.3.2.01 的 Berry 相位 $2\pi$ <strong>精确一致</strong>（程序校验 mod 2π 残余 $<10^{-15}$）。</li>
+</ol>
+<p><strong>判定 10.44.3.01</strong>（Ising 型）：δ⁸ 回路对应 <strong>Ising 型（Majorana 型）任意子统计</strong>：<br />
+$$\sigma\times\sigma = 1+\psi,$$<br />
+证据强度：<strong>强证据（方案级）</strong>——由 KO 分类对应（3.2）、Majorana 交换相位（3.3）与 δ⁸ 相位闭合（3.3）三重独立支持；严格"从 Berry 曲率直接推导融合矩阵"的证明留作开放问题（§5 O2）。</p>
+<p><strong>排除 Fibonacci 的论证</strong>：Fibonacci 融合空间维度按 Fibonacci 数增长（$F_n$，渐近 $\varphi^n$），而 Cl(8) Majorana 配对结构（每 qubit 两 Majorana，$n$ qubit 为 $2n$ 个 Majorana）给出的融合空间为 2 的幂维（$2^n$）——Majorana 统计特征，与 $\varphi$ 幂的 Fibonacci 结构不相容。此外 Fibonacci 型任意子不源自自由费米子（Majorana）系统，与 KO⁻⁸ 的 D 类（自由费米子）分类直接冲突。</p>
+<h2>3.4 推论：蒸馏必然性与框架自洽</h2>
+<p><strong>推论 10.44.3.01</strong>（蒸馏必然性）：Ising 型统计非通用（Freedman–Kitaev–Larsen–Wang 2002：Ising 型只能实现 Clifford 门），故 $T$ 门（$\pi/8$）<strong>必须</strong>通过魔法态蒸馏实现——10.43 §5 的七层蒸馏方案（猜想 4）不是可选架构，而是 Ising 型统计下的逻辑必然。</p>
+<p><strong>框架自洽性闭环</strong>：<br />
+- 10.43 §5.2 的七层蒸馏（$L_{\max}=7$）与 Ising 非通用性兼容（蒸馏仍是必要的）；<br />
+- 蒸馏的每层成功率预算由 §2 阈值闭式控制（$p < p_{\mathrm{th}} = 1/7$ 时拼接收敛）；<br />
+- 10.43 §6 实验 B（δ⁸ 相位测量）同时检验 Ising 判定：若 Ramsey 干涉在 δ⁸ 处观测到净相位 $0 \pmod{2\pi}$ 且中间步骤呈现 $\pm\pi/4$ 台阶，则 Ising 判定获实验支持；若观测到黄金比相关的相位结构（$\varphi$ 幂），则需重新审视 KO 对应。</p>
+<h2>3.5 与主流任意子方案的对比</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">维度</th>
+<th style="text-align: left;">Ising（本方案）</th>
+<th style="text-align: left;">Fibonacci</th>
+<th style="text-align: left;">surface code</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">数学来源</td>
+<td style="text-align: left;">Cl(8) Majorana 循环置换 + KO⁻⁸=ℤ</td>
+<td style="text-align: left;">SU(2)₃ Chern–Simons</td>
+<td style="text-align: left;">$\mathbb{Z}_2$ 规范场</td>
+</tr>
+<tr>
+<td style="text-align: left;">融合规则</td>
+<td style="text-align: left;">$\sigma\times\sigma=1+\psi$</td>
+<td style="text-align: left;">$\tau\times\tau=1+\tau$</td>
+<td style="text-align: left;">阿贝尔（$\mathbb{Z}_2$）</td>
+</tr>
+<tr>
+<td style="text-align: left;">通用性</td>
+<td style="text-align: left;">非通用（蒸馏必要）</td>
+<td style="text-align: left;">通用（编织完备）</td>
+<td style="text-align: left;">非通用（蒸馏必要）</td>
+</tr>
+<tr>
+<td style="text-align: left;">非 Clifford 门</td>
+<td style="text-align: left;">七层蒸馏（10.43 §5）</td>
+<td style="text-align: left;">直接编织</td>
+<td style="text-align: left;">蒸馏</td>
+</tr>
+<tr>
+<td style="text-align: left;">硬件对应</td>
+<td style="text-align: left;">超导/离子阱 CSS 码</td>
+<td style="text-align: left;">分数量子霍尔（$\nu=12/5$）</td>
+<td style="text-align: left;">超导格点</td>
+</tr>
+</tbody>
+</table>
+<p>本方案与 surface code 同为"Clifford + 蒸馏"架构，但阈值高出约一个数量级（§2）且保护机制不同（κ 刚度乘幂压制 vs 系统尺度指数压制）。</p>
+<hr />
+<h1>四、数值验证记录</h1>
+<p>脚本 <code>geo_qec/verify_threshold_anyon.py</code>（numpy，稳定子库 geo_qec/stabilizer.py 复用 10.27 接口）。</p>
+<p><strong>表 1（定理 10.44.2.01，Part A 全枚举）</strong>：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">码</th>
+<th style="text-align: left;">n</th>
+<th style="text-align: left;">权重 2 Pauli 总数</th>
+<th style="text-align: left;">与单比特同 syndrome</th>
+<th style="text-align: left;">误恢复</th>
+<th style="text-align: left;">η</th>
+<th style="text-align: left;">A=η·C(n,2)</th>
+<th style="text-align: left;">p_th=1/A</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">[[5,1,3]]</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">90</td>
+<td style="text-align: left;">90</td>
+<td style="text-align: left;">90</td>
+<td style="text-align: left;">1.000</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">0.100</td>
+</tr>
+<tr>
+<td style="text-align: left;">[[7,1,3]]</td>
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">189</td>
+<td style="text-align: left;">63</td>
+<td style="text-align: left;">63</td>
+<td style="text-align: left;">0.3333</td>
+<td style="text-align: left;">7.0</td>
+<td style="text-align: left;">0.1429</td>
+</tr>
+<tr>
+<td style="text-align: left;">[[15,7,3]]</td>
+<td style="text-align: left;">15</td>
+<td style="text-align: left;">945</td>
+<td style="text-align: left;">315</td>
+<td style="text-align: left;">315</td>
+<td style="text-align: left;">0.3333</td>
+<td style="text-align: left;">35.0</td>
+<td style="text-align: left;">0.0286</td>
+</tr>
+<tr>
+<td style="text-align: left;">[[31,21,3]]</td>
+<td style="text-align: left;">31</td>
+<td style="text-align: left;">4185</td>
+<td style="text-align: left;">1395</td>
+<td style="text-align: left;">1395</td>
+<td style="text-align: left;">0.3333</td>
+<td style="text-align: left;">155.0</td>
+<td style="text-align: left;">0.00645</td>
+</tr>
+<tr>
+<td style="text-align: left;">[[63,51,3]]</td>
+<td style="text-align: left;">63</td>
+<td style="text-align: left;">17577</td>
+<td style="text-align: left;">5859</td>
+<td style="text-align: left;">5859</td>
+<td style="text-align: left;">0.3333</td>
+<td style="text-align: left;">651.0</td>
+<td style="text-align: left;">0.00154</td>
+</tr>
+<tr>
+<td style="text-align: left;">[[127,113,3]]</td>
+<td style="text-align: left;">127</td>
+<td style="text-align: left;">72009</td>
+<td style="text-align: left;">24003</td>
+<td style="text-align: left;">24003</td>
+<td style="text-align: left;">0.3333</td>
+<td style="text-align: left;">2667.0</td>
+<td style="text-align: left;">0.000375</td>
+</tr>
+<tr>
+<td style="text-align: left;">[[255,239,3]]</td>
+<td style="text-align: left;">255</td>
+<td style="text-align: left;">291465</td>
+<td style="text-align: left;">97155</td>
+<td style="text-align: left;">97155</td>
+<td style="text-align: left;">0.3333</td>
+<td style="text-align: left;">10795.0</td>
+<td style="text-align: left;">0.0000926</td>
+</tr>
+</tbody>
+</table>
+<p>注：[[15,7,3]] 的 315/945 与 10.29 §3.3 程序实测完全一致（交叉验证 ✓）。[[5,1,3]] 为循环码（非 CSS、非方向完备），η=1 是特例：15 个单比特 syndrome 覆盖全部 90 个权重 2 错误。$m=7,8$ 由独立脚本 <code>geo_qec/verify_eta_general.py</code> 按定理 10.28.1.02 结构直接构造全枚举（含 $Y$ 算符双部分 syndrome），与闭式精确一致。</p>
+<p><strong>表 2（推论 10.44.2.01，Part B 解析枚举 [7,1,3]，权重 ≤4 全枚举 1155 错误）</strong>：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">p</th>
+<th style="text-align: left;">p_L（解析）</th>
+<th style="text-align: left;">A·p²（A=7）</th>
+<th style="text-align: left;">p_L/(A·p²)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">0.01</td>
+<td style="text-align: left;">6.71e-4</td>
+<td style="text-align: left;">7.00e-4</td>
+<td style="text-align: left;">0.958</td>
+</tr>
+<tr>
+<td style="text-align: left;">0.03</td>
+<td style="text-align: left;">5.54e-3</td>
+<td style="text-align: left;">6.30e-3</td>
+<td style="text-align: left;">0.879</td>
+</tr>
+<tr>
+<td style="text-align: left;">0.05</td>
+<td style="text-align: left;">1.41e-2</td>
+<td style="text-align: left;">1.75e-2</td>
+<td style="text-align: left;">0.805</td>
+</tr>
+<tr>
+<td style="text-align: left;">0.08</td>
+<td style="text-align: left;">3.15e-2</td>
+<td style="text-align: left;">4.48e-2</td>
+<td style="text-align: left;">0.704</td>
+</tr>
+<tr>
+<td style="text-align: left;">0.10</td>
+<td style="text-align: left;">4.49e-2</td>
+<td style="text-align: left;">7.00e-2</td>
+<td style="text-align: left;">0.642</td>
+</tr>
+<tr>
+<td style="text-align: left;">0.14</td>
+<td style="text-align: left;">7.27e-2</td>
+<td style="text-align: left;">1.37e-1</td>
+<td style="text-align: left;">0.530</td>
+</tr>
+</tbody>
+</table>
+<p>小 p 处 $p_L/(A p^2) \to (1-p)^{n-2}$：p=0.01 时 $(0.99)^5 = 0.951$，与 0.958 吻合（残余为权重 3 修正）✓。大 p 偏离来自权重 ≥3 干涉项——主项公式在 $p \lesssim 0.1$ 内精确。</p>
+<p><strong>表 3（定理 10.44.2.02，Part B 拼接序列 $p_{L+1}=7p_L^2$）</strong>：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">p₀</th>
+<th style="text-align: left;">L=0</th>
+<th style="text-align: left;">L=1</th>
+<th style="text-align: left;">L=2</th>
+<th style="text-align: left;">L=3</th>
+<th style="text-align: left;">L=4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">0.001</td>
+<td style="text-align: left;">1.0e-3</td>
+<td style="text-align: left;">7.0e-6</td>
+<td style="text-align: left;">3.4e-10</td>
+<td style="text-align: left;">8.2e-19</td>
+<td style="text-align: left;">4.8e-36</td>
+</tr>
+<tr>
+<td style="text-align: left;">0.01</td>
+<td style="text-align: left;">1.0e-2</td>
+<td style="text-align: left;">7.0e-4</td>
+<td style="text-align: left;">3.4e-6</td>
+<td style="text-align: left;">8.2e-11</td>
+<td style="text-align: left;">4.8e-20</td>
+</tr>
+<tr>
+<td style="text-align: left;">0.05</td>
+<td style="text-align: left;">5.0e-2</td>
+<td style="text-align: left;">1.75e-2</td>
+<td style="text-align: left;">2.1e-3</td>
+<td style="text-align: left;">3.2e-5</td>
+<td style="text-align: left;">7.2e-9</td>
+</tr>
+<tr>
+<td style="text-align: left;">0.10</td>
+<td style="text-align: left;">1.0e-1</td>
+<td style="text-align: left;">7.0e-2</td>
+<td style="text-align: left;">3.4e-2</td>
+<td style="text-align: left;">8.2e-3</td>
+<td style="text-align: left;">4.8e-4</td>
+</tr>
+<tr>
+<td style="text-align: left;">0.142（临界）</td>
+<td style="text-align: left;">1.42e-1</td>
+<td style="text-align: left;">1.41e-1</td>
+<td style="text-align: left;">1.39e-1</td>
+<td style="text-align: left;">1.36e-1</td>
+<td style="text-align: left;">1.30e-1</td>
+</tr>
+</tbody>
+</table>
+<p>p₀ &lt; 1/7 时指数压缩，p₀ = 1/7 时临界不动点 ✓。</p>
+<p><strong>单轮无增益临界（辅助信息，权重 ≤4 枚举）</strong>：p_L(p)=p 的交点——[[5,1,3]] ≈ 0.14、[[15,7,3]] ≈ 0.06；[[7,1,3]] 在权重 ≤4 截断内未出现交点（p_L &lt; p 恒成立，峰值 ~0.2），高阶项（权重 ≥5）行为未枚举——故主打定义取拼接阈值 p_th = 1/A（对高阶项不敏感），单轮临界仅作参考。</p>
+<p><strong>表 4（判定 10.44.3.01，Part C 相位链）</strong>：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">量</th>
+<th style="text-align: left;">值</th>
+<th style="text-align: left;">校验</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">8-循环分解</td>
+<td style="text-align: left;">7 个相邻对换</td>
+<td style="text-align: left;">奇置换 ✓</td>
+</tr>
+<tr>
+<td style="text-align: left;">单对换相位（Ising）</td>
+<td style="text-align: left;">$e^{\pm i\pi/4}$</td>
+<td style="text-align: left;">Ivanov 2001</td>
+</tr>
+<tr>
+<td style="text-align: left;">δ 净相位</td>
+<td style="text-align: left;">$7\pi/4 \equiv -\pi/4$</td>
+<td style="text-align: left;">mod 2π</td>
+</tr>
+<tr>
+<td style="text-align: left;">δ⁸ 净相位</td>
+<td style="text-align: left;">$56\pi/4 = 14\pi \equiv 0$</td>
+<td style="text-align: left;">mod 2π 残余 &lt;1e-15 ✓</td>
+</tr>
+<tr>
+<td style="text-align: left;">定理 0.3.2.01</td>
+<td style="text-align: left;">Berry 相位 $2\pi$</td>
+<td style="text-align: left;">一致 ✓</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1>五、新的开放问题</h1>
+<ul>
+<li><strong>O1（θ⁴ 干涉系数 c 的解析闭式）</strong>：定理 10.44.2.01 的证明显示混合型与单比特 syndrome 完全不相交——恢复干涉（10.29 预言一的 $L=c\,\theta_{\max}^4$）仅来自纯型误恢复（每共线位置对 3 型、残留为权重 3 逻辑算符）。干涉系数 $c$ 由此可望由共线结构解析计算（当前 10.29 为程序拟合：斜率 4.04/4.12/4.14，截距未闭式化）；若 $c$ 闭式成立，10.29 预言一与 10.44 阈值闭式在解析层面合并为单条链路。</li>
+<li><strong>O2（Ising 判定的严格融合规则推导）</strong>：从 Berry 曲率（定理 0.3.2.01 的 Chern–Simons 7-形式构造）直接推导融合矩阵 $N$，验证 $N_{\sigma\sigma}^\sigma = 0$（Ising）而非 $N_{\tau\tau}^\tau = 1$（Fibonacci）——当前为三重证据链（方案级），非严格推导。</li>
+<li><strong>O3（κ 失效时的阈值回退）</strong>：若实验发现 κ 冻结不成立（测量错误率不可忽略），阈值闭式 $p_{\mathrm{th}} = 6/[n(n-1)]$ 退化为上界，需重做含测量错误的标准阈值推导——κ 的物理可测边界（§2.4 预言 C 的判别力）本身是开放问题。</li>
+<li><strong>O4（大码策略）</strong>：方向完备系列阈值随 n 单调下降（表 1），与"码越大保护越强"的直觉相反——最优策略是小码拼接（[7,1,3]）。是否存在保持 η=1/3 但距离增长（d&gt;3）的码族（如 RM CSS 的推广），使"大码 + 高阈值"兼得？这联系 10.30/10.31 仿射完备码的零损失定理。</li>
+<li><strong>O5（Ising 判定的实验判别）</strong>：δ⁸ 回路中间步骤的 Ramsey 干涉是否呈现 $\pm\pi/4$ 台阶（Ising 特征）而非黄金比结构（Fibonacci 特征）？10.43 §6 实验 B 的设计需增加中间步骤测量。</li>
+<li><strong>O6（与 10.43 O5 的衔接）</strong>：七层截断的严格证明仍待完成；本文 Ising 判定使其必要性获独立支持（非通用 → 蒸馏必然），但蒸馏层级上限的代数证明未变。</li>
+</ul>
+<hr />
+<h1>参考</h1>
+<ol>
+<li>0.3 Bott 周期与七层截断（定理 0.3.1.01, 0.3.2.01, 0.3.3.01）</li>
+<li>10.27 量子纠错码的编码轨道几何（定理 10.27.1.04 刚度分离）</li>
+<li>10.28 量子纠错码的扩展结构（命题 10.28.1.03 射影几何线枚举）</li>
+<li>10.29 量子纠错码的 θ⁴ 损失标度律与可实验预言（预言一、预言四；§3.3 程序实测 315/945）</li>
+<li>10.30 仿射完备码（定理 10.30.1.01 零损失定理）</li>
+<li>10.36 四阶标度律的实验判别方案</li>
+<li>10.43 拓扑量子计算的 Cl(8) 方案（§2.1 KO 周期表、§2.2 Kitaev 对应、§3.2 κ、§4.4 δ⁸ 验证、§5 蒸馏、§8 O3/O5）</li>
+<li>Ivanov, D. A. (2001). Non-Abelian statistics of half-quantum vortices in p-wave superconductors. <em>Phys. Rev. Lett.</em>, 86(2), 268.</li>
+<li>Read, N., &amp; Green, D. (2000). Paired states of fermions in two dimensions with breaking of parity and time-reversal symmetries. <em>Phys. Rev. B</em>, 61(15), 10267.</li>
+<li>Freedman, M. H., Kitaev, A., Larsen, M. J., &amp; Wang, Z. (2002). Topological quantum computation. <em>Bull. Amer. Math. Soc.</em>, 40(1), 31–38.</li>
+<li>Kitaev, A. (2003). Fault-tolerant quantum computation by anyons. <em>Ann. Phys.</em>, 303(1), 2–30.</li>
+<li>Bravyi, S., &amp; Kitaev, A. (2005). Universal quantum computation with ideal Clifford gates and noisy ancillas. <em>Phys. Rev. A</em>, 71(2), 022316.</li>
+</ol>
+  </main>
+</div>
+</body>
+</html>
