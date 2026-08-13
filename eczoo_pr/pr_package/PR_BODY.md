@@ -11,7 +11,7 @@ This PR adds to the quantum Reed-Muller entry:
 
 ## Checklist
 
-- [x] `_meta.changelog` updated (user_id: oygb, 2026-08-13)
+- [x] `_meta.changelog` updated (user_id: sdoygb, 2026-08-13)
 - [x] User entry added in `users/users_db.yml`
 - [x] YAML syntax validated locally
 - [ ] Previewed via https://errorcorrectionzoo.org/gitpreview
