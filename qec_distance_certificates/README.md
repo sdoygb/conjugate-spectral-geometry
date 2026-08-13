@@ -1,5 +1,7 @@
 # qec-distance-certificates
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21916476.svg)](https://doi.org/10.5281/zenodo.21916476)
+
 **Certificate-based distance verification for CSS(RM) affine-complete quantum codes — distance-certifying, not distance-finding.**
 
 > When the distance is a theorem, stop computing it — verify it.
