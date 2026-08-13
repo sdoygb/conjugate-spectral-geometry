@@ -1,0 +1,32 @@
+--- quantum_reed_muller.yml	2026-08-13 16:14:10
++++ quantum_reed_muller_modified.yml	2026-08-13 16:18:30
+@@ -20,6 +20,9 @@
+ 
+   Non-CSS codes can be derived from such codes by modifying the \(X\)-type stabilizers \cite{arxiv:quant-ph/9608026}.
+ 
++  CSS codes formed from a single RM code are also possible: CSS\((\text{RM}(r,m), \text{RM}(r,m))\), valid whenever \(2r < m-1\) (so that \(\text{RM}(r,m) \subset \text{RM}(r,m)^{\perp} = \text{RM}(m-r-1,m)\)), has parameters \([[2^m, 2^m - 2\sum_{j=0}^{r} {m \choose j}, 2^{r+1}]]\).
++  Its distance \(2^{r+1}\) follows from the RM minimum-weight theorem \cite[Ch. 13]{preset:MacSlo}: \(X\)-type logicals are cosets of \(C \setminus C^{\perp}\), whose minimum weight is that of \(\text{RM}(m-r-1,m)\), i.e., \(2^{m-(m-r-1)} = 2^{r+1}\); \(Z\)-type logicals follow by symmetry.
++
+ protection: 'Detects errors on \(d-1\) qubits, corrects errors on \(\left\lfloor (d-1)/2 \right\rfloor\) qubits.'
+ 
+ features:
+@@ -33,6 +36,10 @@
+ 
+   rate: 'Dimension is \(k = 2^r - {r \choose t} + 2 \sum_{i=0}^{t-1} {r \choose i}\). CSS codes formed from RM codes achieve channel capacity on erasure channels \cite{doi:10.1109/ISIT.2016.7541599}.'
+ 
++  distance:
++    - 'CSS codes formed from a single RM code, CSS\((\text{RM}(r,m),\text{RM}(r,m))\) with \(2r < m-1\), have distance \(d = 2^{r+1}\) \cite[Ch. 13]{preset:MacSlo}.'
++    - 'The distance of this family admits a certificate that can be checked without enumerating the exponentially many error patterns: for \(r \geq 1\), column-distinctness of the RM check matrix rules out weight-2 logicals; the RM minimum-weight theorem \cite[Ch. 13]{preset:MacSlo} rules out weights \(3,\ldots,2^{r+1}-1\); and indicator vectors of affine \((r+1)\)-flats are weight-\(2^{r+1}\) vectors in \(\text{RM}(m-r-1,m)\setminus\text{RM}(r,m)\), saturating the bound.'
++
+   fault_tolerance:
+     - 'Gate switching protocol for universal computation \cite{arxiv:1403.2734}.'
+     - 'Fault-tolerant universal computation can be achieved via \hyperref[topic:code-switching]{code switching} between the \([[127,1,15]]\) self-dual doubly even punctured quantum RM code and the \([[127,1,7]]\) triply even punctured quantum RM code \cite{arxiv:2410.23263}.'
+@@ -62,6 +69,8 @@
+ _meta:
+   # Change log - most recent first
+   changelog:
++    - user_id: oygb
++      date: '2026-08-13'
+     - user_id: VictorVAlbert
+       date: '2026-06-08'
+     - user_id: VictorVAlbert

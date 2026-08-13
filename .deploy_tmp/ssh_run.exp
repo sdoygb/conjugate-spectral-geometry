@@ -1,0 +1,9 @@
+#!/usr/bin/expect -f
+set timeout 40
+set pass [lindex $argv 0]
+set cmd [lindex $argv 1]
+spawn ssh -o GSSAPIAuthentication=no -o StrictHostKeyChecking=accept-new sdoygb@192.168.1.88 $cmd
+expect {
+    -re "(?i)assword" { send "$pass\r"; exp_continue }
+    eof
+}

@@ -1547,9 +1547,7 @@ def chat_completions():
         if _final_has_image:
             break
     if _final_has_image:
-        # 有图片 -> 切换到视觉模型
-        logger.info(f"[VISION] 检测到图片，切换到视觉模型 {GAI_MODEL_VISION}（原: {_selected_model}）")
-        _selected_model = GAI_MODEL_VISION
+        logger.info(f"[VISION] 检测到图片，使用前端选择的模型 {_selected_model}")
         # system prompt 中注入视觉能力提示
         _vision_note = (
             "\n\n【视觉能力已激活】你同时具有文本和图片处理能力。"
@@ -1557,21 +1555,11 @@ def chat_completions():
             "然后结合共扼谱几何知识回答问题。对于图片中的公式，尝试用 LaTeX 转写；对于手写内容，尽力辨认后给出回答。"
         )
         final_messages[0]["content"] = final_messages[0]["content"] + _vision_note
-        # 重新路由到视觉模型的提供商
-        _vision_base_url, _vision_api_key = get_provider_for_model(_selected_model)
-        base_url, api_key = _vision_base_url, _vision_api_key
-        client = openai.OpenAI(api_key=api_key, base_url=base_url)
-        logger.info(f"[VISION] 路由到: {base_url}, 模型: {_selected_model}")
-        # 更新 api_params 中的模型名称
-        api_params["model"] = _selected_model
-        # 检查切换后的模型是否真正支持 image_url
-        _is_vision_model = get_provider_for_model(_selected_model)[0]  # 获取 base_url
-        # DeepSeek 系列和部分模型不接受 image_url 格式，只接受 text
+        # 检查当前模型是否支持 image_url
         _vision_supports_image = not any(p in _selected_model.lower() for p in ['deepseek', 'qwen', 'glm', 'gemini-1.5', 'claude-3-haiku', 'claude-3-sonnet'])
         if not _vision_supports_image:
-            # 模型不支持 image_url -> 移除图片元素，保留文本，切回原模型
-            logger.warning(f'[VISION] 模型 {_selected_model} 不支持 image_url，将移除图片元素并切回原模型 ' + api_params.get('model', GAI_MODEL))
-            _selected_model = api_params.get("model", GAI_MODEL)
+            # 模型不支持 image_url -> 移除图片元素，保留文本
+            logger.warning(f'[VISION] 模型 {_selected_model} 不支持 image_url，将移除图片元素')
             for _vi_msg in final_messages:
                 _c = _vi_msg.get("content")
                 if isinstance(_c, list):

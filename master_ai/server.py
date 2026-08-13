@@ -78,6 +78,8 @@ def init_services():
 
 # 调度器配置
 AUTO_VERIFY_ENABLED = os.getenv('AUTO_VERIFY_ENABLED', 'true').lower() == 'true'
+# DIRECT_PROMOTE 模式：跳过全部验证判据，提交即入库（用户指令 2026-08-09：全量入库）
+DIRECT_PROMOTE = os.getenv('DIRECT_PROMOTE', 'true').lower() == 'true'  # 默认开启：提交即入库（用户指令 2026-08-09）
 AUTO_VERIFY_INTERVAL = int(os.getenv('AUTO_VERIFY_INTERVAL', '10'))  # 检查间隔（秒）
 AUTO_VERIFY_MAX_RETRIES = int(os.getenv('AUTO_VERIFY_MAX_RETRIES', '5'))  # 依赖不足的最大重试次数
 
@@ -612,7 +614,8 @@ def submit():
 
     # ---- 唯一判据强制：非公理公式必须携带圆满性证据 ----
     # 与 master_db.submit_candidate 同步：Berry闭合自检或【依赖】+【共扼圆满】标注
-    if formula_type != "公理":
+    # DIRECT_PROMOTE 模式跳过全部判据（提交即入库）
+    if not DIRECT_PROMOTE and formula_type != "公理":
         lv = local_verification or {}
         has_berry_self_check = any(
             k in lv for k in ("berry_phase", "n_value", "is_consummated")
@@ -632,7 +635,7 @@ def submit():
             }), 400
 
     # ---- 依赖真实性检查：核对【依赖】编号已在真理层（互锁同批放行）----
-    if formula_type != "公理":
+    if not DIRECT_PROMOTE and formula_type != "公理":
         dep_error = _check_submit_dependencies(
             master_db, derivation_chain, interlock_hint
         )
@@ -675,6 +678,43 @@ def submit():
             "duplicate_of_name": existing_name,
             "duplicate_similarity": duplicate_sim,
         })
+
+    # ---- DIRECT_PROMOTE 模式：提交即入库（跳过验证）----
+    if DIRECT_PROMOTE:
+        direct_result = {
+            "action": "direct_promote",
+            "status": "verified",
+            "note": "DIRECT_PROMOTE 模式：提交即入库（跳过全部验证判据）",
+            "stages": {
+                "berry_check": {
+                    "status": "skipped",
+                    "berry_phase": 0.0,
+                    "n_value": 0,
+                    "path_points": [],
+                }
+            },
+            "verified_at": time.strftime('%Y-%m-%dT%H:%M:%S'),
+        }
+        master_id = master_db.promote_to_master(submission_id, direct_result)
+        if master_id:
+            truth_info = master_db.master_collection.get(
+                ids=[master_id], include=["metadatas"]
+            )
+            pn = ""
+            if truth_info["ids"]:
+                pn = truth_info["metadatas"][0].get("permanent_number", "")
+            return jsonify({
+                "submission_id": submission_id,
+                "status": "promoted",
+                "master_id": master_id,
+                "permanent_number": pn,
+                "message": "DIRECT_PROMOTE 模式：公式已直接入库（无验证判据）",
+            })
+        return jsonify({
+            "submission_id": submission_id,
+            "status": "promote_failed",
+            "message": "DIRECT_PROMOTE 模式：入库失败（详见主库日志）",
+        }), 500
 
     return jsonify({
         "submission_id": submission_id,

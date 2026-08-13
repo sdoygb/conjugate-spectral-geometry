@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10.30 仿射完备码：RM CSS 码族的无枚举验证、零简并结构与距离闭式 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="10.30 仿射完备码：RM CSS 码族的无枚举验证、零简并结构与距离闭式">
+<meta name="generator" content="GeometryAI Build Script">
+
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\(', '\)']],
+    displayMath: [['$$', '$$'], ['\[', '\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/cn/10.30_仿射完备码RM_CSS无枚举验证_CN_260808.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../index.html" class="nav-home">🏠 首页</a>
+    <a href="../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">10.30 仿射完备码：RM CSS 码族的无枚举验证、零简并结构与距离闭式</span>
+  </nav>
+  <main class="article-content">
+<h1>10.30 仿射完备码：RM CSS 码族的无枚举验证、零简并结构与距离闭式</h1>
+<p><strong>编号</strong>：10.30 | <strong>日期</strong>：260808 | <strong>系列</strong>：应用（信息层→编码理论接口） | <strong>语言</strong>：CN</p>
+<p><strong>摘要</strong>：(1) 10.28 的方向完备码（PG 完备，Hamming CSS）距离被射影几何结构锁死在 d=3：任意三点共线给出权重 3 逻辑。本文引入<strong>仿射完备码</strong>（AG 完备，Reed-Muller CSS 码族）：列取 AG(m,2) 全部 2^m 个点（含常数位），距离由 RM 对偶定理解析给出 d = 2^{r+1}，可达 [[1024, 252, 32]]。(2) 无枚举验证方法整体移植：评估列互异 ⟹ 权重 2 全检测（O(n²) 结构判定）；d 由对偶定理保证；权重 d 逻辑算符数 = AG(m,2) 的 (r+1)-平坦数（闭式，小 n 全量枚举验证 1240/10416 精确吻合）。(3) 新结构事实——<strong>零简并</strong>：常数位封锁射影共线，跨权重 syndrome 简并恒为 0（PG 完备码为 1/3）；r ≥ 2 时二次单项式封锁平行四边形，权重 2 层 syndrome 完全唯一（内部简并亦为 0），恢复表无任何冲突。(4) 程序验证：7 个码族成员全部通过，[[1024,252,32]] 全结构核验 8.8 秒、内存 KB 级——距离 32 的千比特码，不再是玩具码。</p>
+<h2>一、引言：为什么必须离开 d=3</h2>
+<p>10.28 的方向完备码（CSS(H,H)，H 列 = PG(m−1,2) 全部点）给出了族级闭式：d=3 结构性证明、权重 2 全检测、1/3 跨权重简并、174,251 个权重 3 逻辑算符。但该族的距离被射影几何锁死：</p>
+<ul>
+<li>任意两列线性无关 ⟹ 权重 2 无逻辑（d ≥ 3）；</li>
+<li>任意三点共线（PG 封闭性：两列异或必为第三列）⟹ 权重 3 逻辑恒存在（d = 3）。</li>
+</ul>
+<p>要 d ≥ 5，需"任意 4 列线性无关"（4-弧）。二元射影空间中 4-弧极小：计数上界 ~2^N/3 但显式构造远小于此（PG(3,2) 最大 5 点），n ≪ 2r ⟹ k &lt; 0。<strong>纯 PG 点集路径不可行</strong>。</p>
+<p>出路：<strong>换列空间</strong>。取列 = AG(m,2) 全部 2^m 个点（向量 v ∈ F₂^m，列为 m+1 位评估向量 (1, v)），行空间 C = RM(r,m)（次数 ≤ r 的单项式评估）。此即经典 Reed-Muller 码的 CSS 构造（量子 RM 码族，码本身传统已知——本文贡献为无枚举验证方法学、零简并结构闭式与逻辑计数闭式）。</p>
+<h2>二、构造与参数闭式</h2>
+<p><strong>定义 10.30.1.01</strong>（仿射完备码）：RM(r,m) = {f : AG(m,2) → F₂，f 为次数 ≤ r 的多项式}，生成矩阵行 = 全部次数 ≤ r 的单项式在 2^m 个点上的评估值。CSS(H,H) 取 C = RM(r,m)，要求自正交 C ⊂ C⊥。</p>
+<p><strong>命题 10.30.1.02</strong>（自正交条件）：RM(r,m) ⊂ RM(r,m)⊥ = RM(m−r−1, m) 当且仅当 2r &lt; m−1。</p>
+<p><strong>命题 10.30.1.03</strong>（参数闭式）：dim RM(r,m) = Σ_{i=0}^{r} C(m,i)；仿射完备码参数</p>
+<p>$$[[\,n,\ k,\ d\,]] = [[\,2^m,\ 2^m - 2\sum_{i=0}^{r}\tbinom{m}{i},\ 2^{r+1}\,]]$$</p>
+<p>其中 d = 2^{r+1} 由 RM 对偶定理：C⊥ = RM(m−r−1,m) 最小权重 2^{m−(m−r−1)} = 2^{r+1}，且严格自正交（2r &lt; m−1 ⟹ m−r &gt; r+1）保证该权重层的向量 ∉ C。</p>
+<p><strong>定理 10.30.1.04</strong>（距离闭式）：仿射完备码 CSS(RM(r,m), RM(r,m)) 的最小距离 d = 2^{r+1}。</p>
+<p>代表成员：</p>
+<table>
+<thead>
+<tr>
+<th>r, m</th>
+<th>码参数</th>
+<th>d</th>
+<th>dim C</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1,5</td>
+<td>[[32, 20, 4]]</td>
+<td>4</td>
+<td>6</td>
+</tr>
+<tr>
+<td>1,6</td>
+<td>[[64, 50, 4]]</td>
+<td>4</td>
+<td>7</td>
+</tr>
+<tr>
+<td>2,6</td>
+<td>[[64, 20, 8]]</td>
+<td>8</td>
+<td>22</td>
+</tr>
+<tr>
+<td>2,7</td>
+<td>[[128, 70, 8]]</td>
+<td>8</td>
+<td>29</td>
+</tr>
+<tr>
+<td>3,8</td>
+<td>[[256, 70, 16]]</td>
+<td>16</td>
+<td>93</td>
+</tr>
+<tr>
+<td>3,9</td>
+<td>[[512, 252, 16]]</td>
+<td>16</td>
+<td>130</td>
+</tr>
+<tr>
+<td>4,10</td>
+<td>[[1024, 252, 32]]</td>
+<td>32</td>
+<td>386</td>
+</tr>
+</tbody>
+</table>
+<h2>三、无枚举验证定理</h2>
+<p><strong>定理 10.30.2.01</strong>（列互异 ⟹ 权重 2 全检测）：RM(r,m) 的评估列在 AG(m,2) 不同点处互异（常数位 + 坐标函数区分任意两点）。对权重 2 错误 (a,b)，X 型 syndrome = 列a ⊕ 列b ≠ 0（PG 完备码的论证逐字移植）；9 种 Pauli 型的 syndrome 非零等价于列 a ⊕ 列 b ≠ 0 且列 a ⊕ 列 b ≠ 0（同式），故<strong>全部 9 型权重 2 错误可检测</strong>，O(n²) 结构判定免枚举。</p>
+<p><strong>定理 10.30.2.02</strong>（跨权重零简并）：对任意单比特错误与权重 2 错误，syndrome 必不同。证明：单比特 X_a 的 syndrome = 列 a（常数位 1）；权重 2 XX 型 syndrome = 列 a ⊕ 列 b（常数位 0）。<strong>常数位封锁</strong>：0 ≠ 1，跨权重 syndrome 简并恒为 0。对比 PG 完备码：无常数位，列 a ⊕ 列 b 仍是列（共线），简并比例 1/3。</p>
+<p><strong>定理 10.30.2.03</strong>（r ≥ 2 时权重 2 层完全唯一）：对 r ≥ 2，任意两对不同权重 2 错误 syndrome 互异。证明：设 {a,b} ≠ {a′,b′} 同 syndrome，则对全部次数 ≤ r 单项式 f：f(a)+f(b) = f(a′)+f(b′)。线性部分给出 a+b = a′+b′（平行四边形构型）；二次部分（f = x_i x_j）给出 s_i δ_j + s_j δ_i = 0 对全部 (i,j)，其中 s = a+b、δ = a+a′。非平凡解仅当 s ∥ δ，二元域上 s = δ 即同一对——矛盾。故<strong>r ≥ 2 的仿射完备码权重 2 层无任何 syndrome 冲突</strong>（跨权重 0 + 内部 0），恢复表完全干净。r = 1 时线性部分不足，出现平行四边形简并（RM(1,5)：496 对落入 63 类）。</p>
+<p><strong>定理 10.30.2.04</strong>（逻辑算符计数闭式）：仿射完备码 CSS(RM(r,m)) 的权重 d = 2^{r+1} 逻辑算符（X 型）数等于 AG(m,2) 中 (r+1)-维仿射平坦数：</p>
+<p>$$N_{\text{logic}} = 2^{\,m-r-1}\cdot\left[\begin{matrix}m\\ r+1\end{matrix}\right]_2 = 2^{\,m-r-1}\prod_{i=0}^{r}\frac{2^{m-i}-1}{2^{r+1-i}-1}$$</p>
+<p>（权重 d 的 C⊥ 向量 = (r+1)-平坦的指标函数；RM(r,m) 最小权重 2^{m−r} &gt; d，故全部为逻辑。）</p>
+<h2>四、程序验证</h2>
+<p>程序 p5_explore_d5.py（纯符号运算，大整数位掩码）：对 7 个码族成员执行 (a) 列互异检查；(b) 权重 2 全量结构判定（O(n²)）；(c) 随机权重 3..d−1 完整 syndrome 抽样（每码 3000 个）；(d) 跨权重简并统计；(e) 内部简并统计；(f) 逻辑算符计数（小 n 全量枚举）。结果：</p>
+<table>
+<thead>
+<tr>
+<th>码</th>
+<th>(a)</th>
+<th>(b) 全量对</th>
+<th>(c) 3000 抽样</th>
+<th>(d) 跨权重简并</th>
+<th>(e) 内部简并</th>
+<th>耗时</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[[32,20,4]]</td>
+<td>✓</td>
+<td>496 ✓</td>
+<td>✓</td>
+<td>0/496</td>
+<td>63 类（r=1 预期）</td>
+<td>0.11s</td>
+</tr>
+<tr>
+<td>[[64,20,8]]</td>
+<td>✓</td>
+<td>2016 ✓</td>
+<td>✓</td>
+<td>0/2016</td>
+<td>0</td>
+<td>0.33s</td>
+</tr>
+<tr>
+<td>[[128,70,8]]</td>
+<td>✓</td>
+<td>8128 ✓</td>
+<td>✓</td>
+<td>0/8128</td>
+<td>0</td>
+<td>0.43s</td>
+</tr>
+<tr>
+<td>[[256,70,16]]</td>
+<td>✓</td>
+<td>32640 ✓</td>
+<td>✓</td>
+<td>0/32640</td>
+<td>0</td>
+<td>1.52s</td>
+</tr>
+<tr>
+<td>[[512,252,16]]</td>
+<td>✓</td>
+<td>130816 ✓</td>
+<td>✓</td>
+<td>0/130816</td>
+<td>0</td>
+<td>2.46s</td>
+</tr>
+<tr>
+<td>[[1024,252,32]]</td>
+<td>✓</td>
+<td>523776 ✓</td>
+<td>✓</td>
+<td>0/523776</td>
+<td>0</td>
+<td>8.78s</td>
+</tr>
+</tbody>
+</table>
+<p>逻辑算符计数闭式（定理 10.30.2.04）全量枚举验证：RM(1,5)：权重 4 逻辑 = <strong>1240</strong> = AG(5,2) 2-平坦数 ✓；RM(1,6)：权重 4 逻辑 = <strong>10416</strong> = AG(6,2) 2-平坦数 ✓（C(64,4) 全量枚举，2.8s）。</p>
+<h2>五、与 PG 完备码的结构对比</h2>
+<table>
+<thead>
+<tr>
+<th>结构量</th>
+<th>PG 完备（10.28）</th>
+<th>AG 完备（本文）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>码族</td>
+<td>[[2^m−1, 2^m−1−2m, 3]]</td>
+<td>[[2^m, 2^m−2·dim RM(r,m), 2^{r+1}]]</td>
+</tr>
+<tr>
+<td>距离</td>
+<td>3（锁死）</td>
+<td>2^{r+1}（任意大）</td>
+</tr>
+<tr>
+<td>权重 2 检测</td>
+<td>列互异（O(n²)）</td>
+<td>列互异（O(n²)）</td>
+</tr>
+<tr>
+<td>跨权重简并</td>
+<td>1/3（共线）</td>
+<td><strong>0</strong>（常数位封锁）</td>
+</tr>
+<tr>
+<td>权重 2 内部简并</td>
+<td>共线结构</td>
+<td><strong>0</strong>（r ≥ 2，二次项封锁）</td>
+</tr>
+<tr>
+<td>权重 d 逻辑数</td>
+<td>PG(m−1,2) 线数 (2^m−1)(2^m−2)/6</td>
+<td>AG(m,2) (r+1)-平坦数</td>
+</tr>
+<tr>
+<td>最大验证规模</td>
+<td>[[1023, 1003, 3]] 3.9s</td>
+<td>[[1024, 252, 32]] 8.8s</td>
+</tr>
+</tbody>
+</table>
+<h2>六、横向逻辑门基础</h2>
+<p>编码轨道几何的量子信息形态（定理 10.28.3.03）已确立 Clifford 逻辑门保持 stabilizer 子流形的一般框架；本节把该框架具体化为仿射完备码族的<strong>横向实现</strong>——逐比特张量积、无辅助比特、无级联。结论：自正交条件（命题 10.30.1.02）同时给出横向 H 与横向 S 的合法性，可容错操作集为 <strong>{横向 Pauli, 横向 CNOT, 横向 H} ∪ {横向相位门} ∪ {逻辑测量}</strong>；T 门经标准蒸馏接口接入（不依赖码的几何）。此即"量子内存 + Clifford 子集操作"的基础，完整容错计算（蒸馏全协议、阈值定理）为接口之外的文献内容。</p>
+<p><strong>命题 10.30.3.01（横向 Clifford 子集）</strong>　仿射完备码 $\mathrm{CSS}(\mathrm{RM}(r,m))$（自正交 $\mathrm{RM}(r,m)\subset\mathrm{RM}(m{-}r{-}1,m)$，$2r<m-1$）支持以下横向逻辑门：</p>
+<p>(i) <strong>横向 Pauli</strong>：逻辑算符 $\bar X_a,\bar Z_a$（支撑 $a\in C^\perp\setminus C$，$C=\mathrm{RM}(r,m)$）在支撑 $a$ 上的张量积实现——逐比特 $X/Z$，无辅助；</p>
+<p>(ii) <strong>横向 CNOT</strong>：$\mathrm{CNOT}^{\otimes n}$ 实现逻辑 CNOT——稳定子映射 $X_v\otimes I\mapsto X_v\otimes X_v$、$I\otimes Z_v\mapsto Z_v\otimes Z_v$（$v\in C$），像为两码块稳定子的乘积（$X_v\otimes X_v=(X_v\otimes I)(I\otimes X_v)$），闭合于稳定子群；</p>
+<p>(iii) <strong>横向 H</strong>：$H^{\otimes n}$ 合法——$H X_v H = Z_v$，而 $X$ 稳定子空间 $=$ $Z$ 稳定子空间 $=C$（CSS(H,H) 对称性），故 $Z_v$ 为 $Z$ 稳定子；逻辑映射 $\bar X_a\leftrightarrow\bar Z_a$。</p>
+<p><em>证明.</em> (i) 逻辑算符 = 陪集代表（定理 10.30.2.04 的框架），支撑张量积即横向。∎ (ii) 单比特 $\mathrm{CNOT}(X\otimes I)\mathrm{CNOT}=X\otimes X$、$\mathrm{CNOT}(I\otimes Z)\mathrm{CNOT}=Z\otimes Z$；$v\in C$ 时 $X_v\otimes X_v$、$Z_v\otimes Z_v$ 均为稳定子群元素（两码块对应稳定子的乘积），故 $\mathrm{CNOT}^{\otimes n}$ 映射稳定子群到自身，码空间到码空间。∎ (iii) $H^{\otimes n}X_vH^{\otimes n}=Z_v$；CSS(H,H) 的 $X$ 稳定子空间与 $Z$ 稳定子空间同为 $C$（$Z$ 稳定子生成空间 $=C_1^\perp=(C^\perp)^\perp=C$），故 $Z_v$（$v\in C$）为 $Z$ 稳定子。∎</p>
+<p><strong>命题 10.30.3.02（横向 S 的相位刻画）</strong>　$S^{\otimes n}$（$S=\mathrm{diag}(1,i)$）保持码空间：$S X_v S^\dagger = Y_v = X_v Z_v$，而 $X_v,Z_v\in$ 稳定子群（$v\in C$）且对易（自正交 $v\cdot w=0$，$|v|$ 偶）——$Y_v$ 为稳定子。诱导逻辑映射为<strong>对角相位门</strong>：逻辑零态保持（$S^{\otimes n}|0_L\rangle=|0_L\rangle$，因 $C$ 的码字权重 $\equiv 0\pmod 4$，$r\le m-3$ 对 $m\ge 4$ 自动成立），逻辑方向 $a$ 的相位因子 $\gamma_a=i^{|a|}$（$a\in C^\perp\setminus C$）——$|a|\equiv 0$ 方向为恒等、$\equiv 2$ 为逻辑 $Z$、$\equiv 1$ 为逻辑 $S$、$\equiv 3$ 为 $-i\cdot$逻辑 $S$。</p>
+<p><em>证明.</em> $S^{\otimes n}|x\rangle=i^{|x|}|x\rangle$；$\langle 1_L^a|S^{\otimes n}|0_L\rangle\propto\sum_{x\in C}i^{|x|}\langle x+a|x\rangle=0$（$a\neq 0$），故诱导映射对角；$\gamma_a=\langle 1_L^a|S^{\otimes n}|1_L^a\rangle=\frac{1}{|C|}\sum_{x\in C}i^{|x+a|}$——$|x+a|\equiv|x|+|a|-2|x\cap a|\pmod 4$，$x\in C$ 权重 $\equiv0\pmod4$ 且 $a\cdot x=|x\cap a|\equiv0\pmod2$（$a\in C^\perp$）——$\gamma_a=i^{|a|}$。∎</p>
+<p><strong>推论 10.30.3.03（可容错操作集）</strong>　仿射完备码的横向操作集为 $\{$横向 Pauli、横向 CNOT、横向 H$\}\cup\{$横向相位门 $\mathrm{diag}(1,i^{|a|})\}\cup\{$逻辑测量$\}$（$\bar Z$：支撑比特 $Z$ 测量 + 经典奇偶；$\bar X$：横向 $H$ 后 $\bar Z$ 测量）。<strong>T 门无横向实现</strong>（Clifford 之外），经标准魔术态蒸馏协议（15-to-1 等）接入——蒸馏只依赖码距 $d\ge 5$，仿射完备码 $d=2^{r+1}\ge 8$（$r\ge 2$）满足，为即插即用接口。</p>
+<p><em>证明.</em> 命题 10.30.3.01、10.30.3.02 的直接汇总；蒸馏协议为文献标准结果。∎</p>
+<p><strong>注（错误传播与解码闭式的衔接）</strong>　横向门的错误传播有界：CNOT 使单比特错误复制为 2（$X$ 控制→目标、$Z$ 目标→控制），H/S/Pauli 保持错误数——错误数每轮至多 2 倍，<strong>无扩散</strong>（非横向门可能指数扩散）。结合定理 10.35.1.08（Pauli 通道普适性）：每轮纠错独立，错误集权重 $\ge w_0$ 的概率仍由 $\varepsilon^{w_0}$ 标度控制，解码闭式对门序列逐轮成立。完整容错阈值分析（含蒸馏资源核算）超出本文框架，为 §八 4 的延续。</p>
+<p><strong>程序验证</strong>（$[[16,6,4]]$ 态向量 + $[[64,20,8]]$ 符号）：<br />
+- 横向 H：$H^{\otimes 16}|0_L\rangle=|+_L\rangle$ 精确（$|\langle+_L|H^{\otimes16}|0_L\rangle|=1.000000000000$；解析式 $H^{\otimes n}|0_L\rangle=\frac{|C|}{2^{n/2}}\sum_{y\in C^\perp}|y\rangle$）；<br />
+- 横向 S：$\alpha=\langle0_L|S^{\otimes16}|0_L\rangle=1.000000$（$C=\mathrm{RM}(1,4)$ 权重全 $\equiv0\pmod4$）；6 个单项式逻辑方向（$|a|=4$）$\gamma=1$、组合方向 $x_1x_2+x_3x_4$（$|a|=6$）$\gamma=-1$——全部与 $i^{|a|}$ 精确吻合；<br />
+- $[[64,20,8]]$：自正交 484 对零违规、22 基向量与 2000 随机组合权重全 $\equiv0\pmod4$、$Y_v$ 与全部稳定子生成元对易——横向 H/S 合法性直接核验。</p>
+<h2>七、意义</h2>
+<ol>
+<li><strong>软肋消除</strong>：10.29 评述中"d=3 不缩放"的短板被直接打掉——[[1024,252,32]] 距离 32，纠错能力随规模增长（d = 2^{r+1}，k ≈ n·(1−2·2^{−r}) 当 m 大），验证成本仍为 O(n²) 级、内存 KB 级。</li>
+<li><strong>码预验证赛道落地</strong>：无枚举验证方法学对整族有效——构造码后 8.8 秒完成千比特级全结构核验（列互异、权重 2 全检测、简并结构、逻辑计数闭式），无需超算，任何高码距候选码可低成本预检。</li>
+<li><strong>零简并层的工程价值</strong>：r ≥ 2 时权重 2 层 syndrome 完全唯一——恢复查表零冲突、解码无歧义，比 PG 完备码（1/3 跨权重简并需处理残留逻辑）更干净。</li>
+<li><strong>统一几何图景</strong>：两个完备家族（PG 点集 / AG 点集）的列互异论证、逻辑计数闭式（射影线数 / 仿射平坦数）呈对偶结构——逻辑算符 = 平坦子空间指标的统一表述。</li>
+</ol>
+<h2>八、开放问题</h2>
+<ol>
+<li>r ≥ 2 的零简并定理（定理 10.30.2.03）在 r = 1 失效（平行四边形简并）——RM(1,m) 的简并类计数闭式（63 类对 496 对的精确结构）未解。</li>
+<li>权重 d−1 层（2^{r+1}−1）的 syndrome 分布与逻辑结构——恢复循环的完整刻画。</li>
+<li>RM CSS 码的 θ⁴ 损失标度律系数（10.29 预言 1 的推广）——零简并是否压低系数 c？需程序验证。</li>
+<li>与容错阈值的衔接：d = 32 的码在刚度分层框架下的阈值解析估计（10.29 长远愿景的下一站）。</li>
+</ol>
+<p><strong>参考</strong>：10.28（方向完备码，PG 完备）；10.29（θ⁴ 损失标度律与可实验预言）。</p>
+  </main>
+</div>
+</body>
+</html>

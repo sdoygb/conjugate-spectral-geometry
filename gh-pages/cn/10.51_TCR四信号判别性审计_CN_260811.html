@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TCR 四信号判别性审计与延迟预言统一 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="TCR 四信号判别性审计与延迟预言统一">
+<meta name="generator" content="GeometryAI Build Script">
+
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\(', '\)']],
+    displayMath: [['$$', '$$'], ['\[', '\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/cn/10.51_TCR四信号判别性审计_CN_260811.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../index.html" class="nav-home">🏠 首页</a>
+    <a href="../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">TCR 四信号判别性审计与延迟预言统一</span>
+  </nav>
+  <main class="article-content">
+<h1>TCR 四信号判别性审计与延迟预言统一</h1>
+<p><strong>编号</strong>：10.51 | <strong>日期</strong>：260811 | <strong>系列</strong>：应用（θ-相干辐射器→实验接口） | <strong>语言</strong>：CN | <strong>性质</strong>：审计/判别性分析</p>
+<p><strong>摘要</strong>：10.16（θ-相干辐射器）预言了四个可实验验证的信号：亚热噪声谱、角度-频率关联、注入-辐射延迟、相干阈值涌现。本文逐一审计其判别性——即对照标准发光机制（热辐射、LED 复合、激光增益、量子光学关联）确认无标准解释。审计结论：(1) 亚热噪声谱与相干阈值<strong>单独不判别</strong>（非热谱是几乎所有人工光源的共性；阈值变窄与激光阈值行为相同），降级为辅助特征；(2) 角度-频率关联的定量检验被开放问题 3（注入效率）与 V₀ 势形式缺失卡住，当前不可检验；(3) 注入-辐射延迟是<strong>唯一可检验的判别信号</strong>，但其可检验形式是受激退激时间 τ_stim = τ_M/N_pixel（参数全部已知），而非 §4.3 的 τ_delay = ρ_inj/(Γ_M·H_MI)（依赖未定量的 ρ_inj）。审计同时发现并修正 10.16 §3.3 的数值错误："1 cm² 集成约 10¹² 像素"与 265 nm 辐射窗口的几何自洽上限（≈1.4×10⁹ cm⁻²）相差 10³ 倍——修正后物理可行的最大集成度给出 τ_stim ≈ 71 μs，仍在 μs 量级，<strong>判别性成立</strong>。判别窗口锁定：装置边长 84 μm–1 cm（N_pixel ∈ [10⁵, 1.4×10⁹]）对应延迟 1 s–71 μs，全部落在标准发光机制（ns 复合时间）无法覆盖的区间。</p>
+<h2>§1 动机与审计范围</h2>
+<p>10.16 基于几何论框架提出 θ-相干辐射（TCR）机制——光子作为 M 场零模边界激发，经 M-C 腰边耦合辐射，绕过电子能级跃迁。§4.3 给出四个可实验验证的信号：</p>
+<ol>
+<li>亚热噪声辐射（CW 模式谱偏离 Planck 分布，峰值比同温黑体更窄）</li>
+<li>角度-频率关联（ℏω = K·sin³θ_M^exc）</li>
+<li>注入-辐射延迟（τ_delay = ρ_inj/(Γ_M·H_MI)，宣称 μs–s 量级）</li>
+<li>相干阈值涌现（注入密度超 ρ_th 时谱突然变窄）</li>
+</ol>
+<p>判别性审计的标准：信号必须是标准物理（热辐射、LED/激光/荧光、量子光学）<strong>不能产生</strong>的，或至少在定量特征上不可解释的。逐信号对照如下。</p>
+<h2>§2 四信号判别性审计</h2>
+<h3>2.1 信号 1（亚热噪声谱）：单独不判别</h3>
+<p>"偏离 Planck 分布"是所有非热光源的共性——LED 的窄带谱、激光的相干谱、气体放电的线谱全部偏离黑体辐射。TCR 的谱窄于同温黑体这一特征本身不构成判别。判别版本需要附加 TCR 独有的定量特征（如谱形由 sin³θ_M 角度分布决定、线宽随 N_pixel 的标度），但 10.16 未给出这些定量形式。判定：<strong>降级为辅助特征</strong>，仅在信号 3/4 同时成立时作佐证。</p>
+<h3>2.2 信号 4（相干阈值涌现）：单独不判别</h3>
+<p>"泵浦超阈值 → 谱突然变窄"是激光的标准行为（粒子数反转阈值以上的受激辐射线宽骤降）。TCR 的阈值（ρ_th = N_info^(-1/2)）与激光阈值机制不同，但可观测现象相同。判别需要阈值标度的数值预言（N_info 未定量）或阈值以下的辐射统计特征（回到信号 1）。判定：<strong>降级为辅助特征</strong>。</p>
+<h3>2.3 信号 2（角度-频率关联）：当前不可检验</h3>
+<p>ℏω = K·sin³θ_M^exc 的定量检验需要两步映射：(i) 注入密度 → 平衡角 θ_M^exc（由 (6)(7) 式：ΔV_eff = H_MI·ρ_inj·sinθ_M，dθ_M/dσ = -Γ_M·∂V_eff/∂θ_M）；(ii) 平衡角 → 频率。两步均受阻：</p>
+<ul>
+<li>(i) 的稳态解需要总势 V₀(θ_M) + V_eff(θ_M) 的显式形式，而 V₀ 未给出（(7) 式仅含 V_eff 的梯度流，其稳态为 θ_M = 0°，与"0–840 keV 连续可调"的声称不自洽——除非 V₀ 的约束势把平衡点钉在 θ_M^exc(ρ_inj) 处）；</li>
+<li>ρ_inj ↔ 外部输入功率的转换效率未定量（开放问题 3）。</li>
+</ul>
+<p>判定：<strong>当前不可检验</strong>；定量预言需先补 V₀ 形式与注入效率模型。</p>
+<h3>2.4 信号 3（注入-辐射延迟）：唯一可检验的判别信号，但需统一公式</h3>
+<p>10.16 给出了两个时间尺度：</p>
+<p><strong>(a)</strong> §4.3：τ_delay = ρ_inj/(Γ_M·H_MI)——Γ_M·H_MI = 4.065×10⁻⁹ × 69.35 = 2.819×10⁻⁷ s⁻¹，故 τ_delay = ρ_inj × 3.5×10⁶ s。ρ_inj 全文未定量（无量纲？归一化？），τ_delay 不可计算。若 ρ_inj ~ 1，τ_delay ~ 3.5×10⁶ s（41 天），与 M 场弛豫时间 τ_M ~ 10⁵ s 同量级——"μs–s 可观测范围"需要 ρ_inj ~ 10⁻⁷–10⁻¹²，无物理依据。<strong>不可检验，降级为辅助公式</strong>（待开放问题 3 定量 ρ_inj）。</p>
+<p><strong>(b)</strong> §3.1：受激退激时间 τ_stim ~ τ_M/N_pixel——参数全部已知（τ_M ~ 10⁵ s，定理 6.5.1.01；N_pixel 由装置尺寸决定）。这是<strong>可检验的延迟预言</strong>：从注入停止到相干光子脉冲释放的延迟应满足 τ_stim = τ_M/N_pixel。</p>
+<p><strong>命题 10.51.3.01（延迟预言统一）</strong>：TCR 的可检验延迟预言是受激退激时间 τ_stim = τ_M/N_pixel，而非 τ_delay = ρ_inj/(Γ_M·H_MI)。后者依赖未定量的 ρ_inj，在注入效率定量（开放问题 3）之前不可检验。</p>
+<h2>§3 数值错误修正与判别窗口</h2>
+<h3>3.1 修正：1 cm² 的物理集成上限</h3>
+<p>10.16 §3.3 声称"1 cm² 面积可集成约 10¹² 像素"。辐射窗口尺寸 d_window = 265 nm（§3.3），紧密排列的物理上限：</p>
+<p>N_max = (1 cm / 265 nm)² = (3.77×10⁴)² ≈ <strong>1.42×10⁹ cm⁻²</strong></p>
+<p>10¹² 需要像素间距 ~10 nm，与 265 nm 窗口几何矛盾——<strong>数值错误，差 10³ 倍</strong>。</p>
+<p><strong>命题 10.51.3.02（集成上限）</strong>：265 nm 辐射窗口的紧密排列上限为 N_max ≈ 1.42×10⁹ cm⁻²。</p>
+<h3>3.2 修正后的判别窗口</h3>
+<p>τ_stim = τ_M/N_pixel 在物理可达的 N_pixel ∈ [1, 1.42×10⁹] 上的取值：</p>
+<table>
+<thead>
+<tr>
+<th>N_pixel</th>
+<th>装置边长（方形）</th>
+<th>τ_stim</th>
+<th>判别性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>265 nm</td>
+<td>~10⁵ s（28 小时）</td>
+<td>判别但实验不可行</td>
+</tr>
+<tr>
+<td>10⁵</td>
+<td>~84 μm</td>
+<td>~1 s</td>
+<td><strong>判别，可行</strong></td>
+</tr>
+<tr>
+<td>10⁸</td>
+<td>~2.7 mm</td>
+<td>~1 ms</td>
+<td><strong>判别，可行</strong></td>
+</tr>
+<tr>
+<td>1.42×10⁹</td>
+<td>~1 cm</td>
+<td><strong>~71 μs</strong></td>
+<td><strong>判别（比 ns 慢 10⁴ 倍）</strong></td>
+</tr>
+<tr>
+<td>10¹²（10.16 声称）</td>
+<td>（物理不可达）</td>
+<td>~100 ns</td>
+<td>判别性消失</td>
+</tr>
+</tbody>
+</table>
+<p><strong>命题 10.51.3.03（判别窗口）</strong>：修正集成上限后，物理可行的 TCR 装置（≤ 1 cm²）给出 τ_stim ∈ [71 μs, 10⁵ s]。装置边长 ≥ 84 μm（N_pixel ≥ 10⁵）时延迟落在 1 s–71 μs 区间——全部比标准发光机制的响应时间（LED 复合 ~ns、激光增益建立 ~ps–ns）慢 10⁴–10⁹ 倍，判别性成立。</p>
+<p><strong>判别性论证</strong>：标准机制中不存在"毫秒–秒级延迟 + 窄带辐射 + 无材料依赖"的组合——磷光有秒级延迟但宽谱且材料特定（稀土掺杂）；LED/激光延迟在 ns 量级。TCR 的延迟与材料无关（仅由 τ_M 与 N_pixel 决定），谱窄（信息场锁相），组合特征为标准物理不可解释。</p>
+<h2>§4 最小可行实验参数锁定</h2>
+<p>10.16 开放问题 5 问最小可行系统是否可从单像素开始。审计结论：</p>
+<ul>
+<li><strong>单像素不可行</strong>：τ_stim ~ 10⁵ s（28 小时），注入-等待-观测周期过长，且稳态辐射弱（单像素）。</li>
+<li><strong>最小可行窗口</strong>：N_pixel ~ 10⁵–10⁸（装置边长 84 μm–2.7 mm），对应延迟 1 s–1 ms。建议以 N_pixel ~ 10⁶（边长 ~265 μm，延迟 ~0.1 s）为起点：</li>
+<li>制造：标准光刻可及（μm 级阵列）；</li>
+<li>观测：注入脉冲停止后，在 0.1 s 量级窗口内探测窄带光子脉冲——时间窗口与 ns 级背景（LED/激光）完全分离，噪声抑制简单；</li>
+<li>判别判据：延迟 = τ_M/N_pixel 的标度律（改变装置尺寸，延迟应反比变化）——<strong>标度律检验</strong>是比单点延迟更强的判别（标准机制无此标度）。</li>
+</ul>
+<p><strong>命题 10.51.4.01（最小可行实验）</strong>：TCR 验证实验应以 N_pixel ~ 10⁶（边长 ~265 μm）为起点，目标信号为注入停止后 ~0.1 s 的窄带光子脉冲，并以 τ_stim ∝ 1/N_pixel 的标度律为判别判据。</p>
+<h2>§5 结论与开放问题</h2>
+<h3>审计结论</h3>
+<ol>
+<li>四信号中<strong>唯一可检验的判别信号是受激延迟 τ_stim = τ_M/N_pixel</strong>（信号 3 的可检验形式）；</li>
+<li>信号 1、4 降级为辅助特征（须与信号 3 联合使用）；</li>
+<li>信号 2 不可检验（V₀ 形式缺失 + 注入效率未定量）；</li>
+<li>10.16 §3.3 的 10¹² 像素/cm² 为数值错误，修正为 1.42×10⁹——修正后最大集成度 τ_stim ≈ 71 μs，判别性不受影响；</li>
+<li>最小可行实验锁定为 N_pixel ~ 10⁶ 的 μm 级阵列，判别判据为 τ_stim ∝ 1/N_pixel 标度律。</li>
+</ol>
+<h3>开放问题（按优先级）</h3>
+<ol>
+<li><strong>注入效率定量（10.16 开放问题 3）</strong>：ρ_inj ↔ 外部输入功率的映射——信号 2 与 τ_delay 公式恢复可检验性的前提；</li>
+<li><strong>V₀ 势形式</strong>：约束势 V₀(θ_M) 的显式形式——稳态平衡角 θ_M^exc(ρ_inj) 可解的前提；</li>
+<li><strong>角度操纵器（10.16 开放问题 1）</strong>：θ_M、θ_C 受控调制的物理实现——整个 TCR 机制的工程前提（猜想：强电磁场梯度局部改变扇区参数空间曲率）。</li>
+</ol>
+<h2>引用</h2>
+<ul>
+<li>10.16 θ-相干辐射器（§3.1 三层结构、§3.3 尺寸锁定、§4.3 关键预言、§5 开放问题）</li>
+<li>定理 5.1.2.01（I 场慢化因子 s = 5.33）</li>
+<li>定理 6.4.1.01（M-I 耦合）、6.2.1.01（约束梯度流）、6.5.1.01（M 场谱分析：Γ_M = 4.065×10⁻⁹ rad²/s、τ_M ~ 10⁵ s）</li>
+<li>8.4.2.01（空间分辨率 Δr_min = λ_C）</li>
+<li>6.3 定理 29.3（跨扇区能量转换上界）</li>
+</ul>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,12 @@
+#!/usr/bin/expect -f
+set timeout 120
+set pass [lindex $argv 0]
+set src [lindex $argv 1]
+set dst [lindex $argv 2]
+spawn scp -o StrictHostKeyChecking=accept-new $src sdoygb@192.168.1.88:$dst
+expect {
+    "password:" { send "$pass\r"; exp_continue }
+    "yes/no" { send "yes\r"; exp_continue }
+    "Permission denied" { puts "AUTH_FAILED"; exit 1 }
+    eof
+}

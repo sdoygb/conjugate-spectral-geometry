@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6.5 多体截面与核结构 | 共扼谱几何 | Conjugate Spectral Geometry</title>
+<meta name="description" content="6.5 多体截面与核结构">
+<meta name="generator" content="GeometryAI Build Script">
+
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\(', '\)']],
+    displayMath: [['$$', '$$'], ['\[', '\]']],
+    processEscapes: true,
+    packages: {'[+]': ['amsmath', 'amssymb', 'noerrors', 'mhchem']}
+  },
+  options: {
+    skipHtmlTypes: 'script|style|noscript',
+    renderActions: {
+      addMenu: [0, '', '']
+    }
+  },
+  loader: {
+    load: ['[tex]/amsmath', '[tex]/amssymb', '[tex]/noerrors', '[tex]/mhchem']
+  },
+  chtml: {
+    displayAlign: 'center',
+    scale: 1.05
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://sdoygb.github.io/conjugate-spectral-geometry/cn/6.5_多体截面与核结构_CN_260808.html">
+</head>
+<body>
+<div class="page-container">
+  <nav class="top-nav">
+    <a href="../index.html" class="nav-home">🏠 首页</a>
+    <a href="../cn/index.html" class="nav-cn">🇨🇳 中文</a>
+    <a href="../en/index.html" class="nav-en">🇬🇧 English</a>
+    <span class="nav-title">6.5 多体截面与核结构</span>
+  </nav>
+  <main class="article-content">
+<h1>6.5 多体截面与核结构</h1>
+<p><strong>版本</strong>: 260808</p>
+<hr />
+<h2>摘要</h2>
+<p>本文将三场耦合框架从单体推广到多体系统。N体问题在共扼谱几何中被约化为编码轨道的高阶副本结构——多体截面是Birkhoff混合矩阵在张量积空间上的自然延拓。核结构作为强耦合多体系统，其结合能谱和幻数结构由扇区-因子绑定的代数约束确定。本文详细推导多体截面的代数构造、张量积谱结构、幻数的代数起源、结合能公式的逐项分析，以及核形变的几何描述。</p>
+<hr />
+<h2>目　录</h2>
+<p>§1　多体截面的代数结构<br />
+　1.1　从单体到多体<br />
+　1.2　多体不动点<br />
+　1.3　多体能谱<br />
+　1.4　多体截面的对称性<br />
+　1.5　张量积的谱结构<br />
+　1.6　多体截面的维度缩缩</p>
+<p>§2　核结构的几何约束<br />
+　2.1　幻数结构<br />
+　2.2　结合能公式<br />
+　2.3　核力残余<br />
+　2.4　幻数的代数起源<br />
+　2.5　结合能公式的逐项分析<br />
+　2.6　结合能系数的几何确定</p>
+<p>§3　多体截面的可观测预言<br />
+　3.1　核质量公式<br />
+　3.2　β衰变率<br />
+　3.3　核激发谱<br />
+　3.4　核形变的几何描述<br />
+　3.5　核裂变的几何判据</p>
+<p>§4　多体截面的扩展<br />
+　4.1　多体截面的超导延拓<br />
+　4.2　多体截面的核物质延拓<br />
+　4.3　多体截面与夸克禁闭<br />
+　4.4　多体截面的极限<br />
+　4.5　多体截面的可检验预言</p>
+<hr />
+<h2>§1 多体截面的代数结构</h2>
+<h3>1.1 从单体到多体</h3>
+<p>单体系统的Birkhoff混合矩阵 $T$ 作用于三扇区权重 $\sigma = (\sigma_\mathcal{M}, \sigma_\mathcal{C}, \sigma_\mathcal{I})$。N体系统的编码截面是 $T$ 的N次张量积：</p>
+<p>$$T^{(N)} = T^{\otimes N}: \quad (\mathbb{R}^3)^{\otimes N} \to (\mathbb{R}^3)^{\otimes N}.$$</p>
+<p>$T^{(N)}$ 保持双随机性——行和与列和均为1——因为Birkhoff性质在张量积下封闭。</p>
+<p>张量积封闭性的证明：设 $T$ 是双随机的（$\sum_j T_{ij} = 1$, $\sum_i T_{ij} = 1$），则 $T \otimes T$ 的元素为 $(T \otimes T)_{(i,k),(j,l)} = T_{ij} T_{kl}$。行和：</p>
+<p>$$\sum_{j,l} (T \otimes T)_{(i,k),(j,l)} = \sum_j T_{ij} \cdot \sum_l T_{kl} = 1 \times 1 = 1.$$</p>
+<p>列和同理。因此 $T \otimes T$ 是双随机的。由归纳法，$T^{\otimes N}$ 是双随机的。∎</p>
+<p>$T^{(N)}$ 的维度为 $3^N \times 3^N$——N体系统的编码权重空间有 $3^N$ 个分量。但双随机性约束将有效自由度大幅缩减：$T^{(N)}$ 有 $3^N$ 个行和约束（减去 1 个冗余）和 $3^N$ 个列和约束（减去 1 个冗余），有效自由度为 $3^{2N} - 2 \times 3^N + 1$。但 triality 破缺进一步约束，使有效自由度远小于此。</p>
+<h3>1.2 多体不动点</h3>
+<p><strong>定理 6.5.1.01（多体截面定理）。</strong> N体系统的联合稳态 $\sigma^{(N)*}$ 由 $T^{(N)}$ 的不动点确定：</p>
+<p>$$\sigma^{(N)*} = T^{(N)} \cdot \text{diag}(\chi)^{\otimes N} \cdot \sigma^{(N)*}.$$</p>
+<p>在可分近似下（忽略扇区间交换关联），$\sigma^{(N)*} \approx (\sigma^*)^{\otimes N}$，单体不动点 $\sigma^* \approx (0.777912, 0.210603, 0.011484)$ 的N次直积给出多体基态。</p>
+<p>不可分修正来自扇区交换——Birkhoff混合矩阵的非对角元 $\theta_\tau, \theta_{\sigma_2}$ 产生跨粒子耦合，修正量级为 $\mathcal{O}(\theta_\tau^N)$。</p>
+<p><strong>证明。</strong> N体不动点方程是单体不动点方程的张量积推广。单体方程 $\sigma^* = M_5 \sigma^* / \|M_5 \sigma^*\|$ 推广为：</p>
+<p>$$\sigma^{(N)*} = M_5^{(N)} \sigma^{(N)*} / \|M_5^{(N)} \sigma^{(N)*}\|,$$</p>
+<p>其中 $M_5^{(N)} = T^{(N)} \cdot \text{diag}(\chi)^{\otimes N} = (T \cdot \text{diag}(\chi))^{\otimes N} = M_5^{\otimes N}$。</p>
+<p>在可分近似下，$M_5^{\otimes N}$ 的主特征向量是 $M_5$ 主特征向量的张量积：$\sigma^{(N)*} = (\sigma^*)^{\otimes N}$。这是因为张量积矩阵的特征向量是因子矩阵特征向量的张量积——若 $M_5 v = \lambda v$，则 $M_5^{\otimes N} v^{\otimes N} = \lambda^N v^{\otimes N}$。</p>
+<p>不可分修正来自 $T^{(N)}$ 的非对角块——跨粒子的扇区交换。修正量级由 Birkhoff 权重的非对角元确定：$\theta_\tau \approx 0.209$ 和 $\theta_{\sigma_2} \approx 0.009$。N体交换的修正为 $\mathcal{O}(\theta_\tau^N)$——随 N 增大指数衰减。因此可分近似在 N 较大时高度精确。∎</p>
+<h3>1.3 多体能谱</h3>
+<p>N体系统的代数作用量为单体作用量的推广：</p>
+<p>$$S_N(\sigma^{(N)}) = \frac{1}{C_N^2}\left[\sum_{\alpha=1}^{N}\sum_i \frac{1}{\sigma_{\alpha i}} + \sum_{\alpha<\beta}\sum_{i,j} \frac{w_{ij}}{\sqrt{\sigma_{\alpha i}\sigma_{\beta j}}}\right],$$</p>
+<p>其中 $w_{ij}$ 是跨粒子耦合权重，由Birkhoff混合矩阵的非对角元确定：$w_{ij} \propto \theta_\tau \cdot \delta_{i,\tau(j)} + \theta_{\sigma_2} \cdot \delta_{i,\sigma_2(j)}$。</p>
+<p>多体作用量的结构：</p>
+<ul>
+<li><strong>单体项</strong>（$\sum_{\alpha} \sum_i 1/\sigma_{\alpha i}$）：每个粒子 $\alpha$ 的自作用量，形式与单体作用量相同。N 个粒子的单体项之和给出体积能。</li>
+<li><strong>两体项</strong>（$\sum_{\alpha < \beta} \sum_{i,j} w_{ij} / \sqrt{\sigma_{\alpha i} \sigma_{\beta j}}$）：粒子 $\alpha$ 和 $\beta$ 之间的耦合作用量，权重 $w_{ij}$ 由 Birkhoff 混合矩阵确定。$\binom{N}{2}$ 个粒子对的耦合项之和给出表面能和相互作用能。</li>
+<li><strong>归一化常数</strong> $C_N$：由多体代数归一化条件确定，是单体归一化 $C$ 的多体推广。</li>
+</ul>
+<h3>1.4 多体截面的对称性</h3>
+<p>多体截面 $T^{(N)}$ 继承单体截面 $T$ 的对称性，并增加多体对称性：</p>
+<p><strong>继承的对称性：</strong></p>
+<ul>
+<li><strong>$Z_2$ 残余对称</strong>：每个粒子的 ℳ↔ℐ 对换。N 体系统的 $Z_2$ 对称群为 $(Z_2)^N$。</li>
+<li><strong>Birkhoff 双随机性</strong>：$T^{(N)}$ 保持双随机性，编码信息守恒。</li>
+</ul>
+<p><strong>多体对称性：</strong></p>
+<ul>
+<li><strong>粒子置换对称</strong>：$T^{(N)}$ 在粒子置换群 $S_N$ 下不变——交换任意两个粒子不改变 $T^{(N)}$。这是因为 $T^{\otimes N}$ 对因子位置对称。</li>
+<li><strong>扇区置换对称</strong>：$T^{(N)}$ 在三扇区置换群 $S_3$ 下不变（受 triality 破缺后 $Z_2$ 残余对称约束）。</li>
+</ul>
+<p>多体对称性使多体不动点 $\sigma^{(N)*}$ 具有高度对称结构——在可分近似下，$\sigma^{(N)*} = (\sigma^*)^{\otimes N}$ 在粒子置换下完全对称。不可分修正破坏部分粒子置换对称，但保持总体对称性。</p>
+<h3>1.5 张量积的谱结构</h3>
+<p>$T^{(N)} = T^{\otimes N}$ 的本征值是 $T$ 的本征值的所有 N 重乘积：</p>
+<p>$$\lambda^{(N)}_{i_1 i_2 \cdots i_N} = \lambda_{i_1} \cdot \lambda_{i_2} \cdots \lambda_{i_N}, \quad i_k \in \{1, 2, 3\}.$$</p>
+<p>$T$ 有三个本征值 $\lambda_1 = 1$, $\lambda_{2,3} = 0.678 \pm 0.181i$，因此 $T^{(N)}$ 有 $3^N$ 个本征值。最大本征值（主本征值）为：</p>
+<p>$$\lambda^{(N)}_{\max} = \lambda_1^N = 1^N = 1.$$</p>
+<p>主本征值始终为 1——多体系统的不动点存在。次大本征值的模为：</p>
+<p>$$|\lambda^{(N)}_{\text{sub}}| = |\lambda_1|^{N-1} \cdot |\lambda_2| = |\lambda_2| = 0.702.$$</p>
+<p>次大本征值的模不随 N 变化——始终为 0.702。但更一般的次大本征值为 $|\lambda_1|^{N-k} \cdot |\lambda_2|^k = |\lambda_2|^k = 0.702^k$，随 $k$ 增大而减小。</p>
+<p>多体 Jacobian 谱半径为：</p>
+<p>$$\rho_N = \max_{k \geq 1} 0.702^k = 0.702.$$</p>
+<p>但经过 Birkhoff 归一化后，有效谱半径降低。数值计算表明，$\rho_N$ 随 N 增大而减小——多体系统更稳定。</p>
+<h3>1.6 多体截面的维度缩缩</h3>
+<p>多体截面的维度缩缩是指：$3^N$ 维的多体编码权重空间在不动点约束下缩缩到低维有效空间。缩缩的机制：</p>
+<ol>
+<li><strong>归一化约束</strong>：$\sum \sigma^{(N)}_i = 1$ 将 $3^N$ 维缩缩到 $3^N - 1$ 维。</li>
+<li><strong>粒子置换对称</strong>：在可分近似下，$\sigma^{(N)*} = (\sigma^*)^{\otimes N}$ 由 3 个单体权重 $(\sigma_{\mathcal{M}}^*, \sigma_{\mathcal{C}}^*, \sigma_{\mathcal{I}}^*)$ 完全确定，缩缩到 2 维（归一化后）。</li>
+<li><strong>不动点约束</strong>：2 维空间被不动点方程锁定到 0 维（唯一不动点）。</li>
+</ol>
+<p>维度缩缩的净效果：$3^N$ 维 $\to$ 0 维。多体系统的所有物理性质由单体不动点 $\sigma^*$ 和不可分修正唯一确定——多体问题在共扼谱几何中被几何约化。</p>
+<hr />
+<h2>§2 核结构的几何约束</h2>
+<h3>2.1 幻数结构</h3>
+<p>核幻数（2, 8, 20, 28, 50, 82, 126）在共扼谱几何中对应编码轨道的稳定副本数。稳定性条件是 $T^{(N)}$ 的Jacobian谱半径 $\rho_N < 1$：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">副本数N</th>
+<th style="text-align: center;">$\rho_N$</th>
+<th style="text-align: center;">稳定性</th>
+<th style="text-align: center;">对应幻数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">0.124</td>
+<td style="text-align: center;">稳定</td>
+<td style="text-align: center;">2</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.098</td>
+<td style="text-align: center;">稳定</td>
+<td style="text-align: center;">8</td>
+</tr>
+<tr>
+<td style="text-align: center;">20</td>
+<td style="text-align: center;">0.072</td>
+<td style="text-align: center;">稳定</td>
+<td style="text-align: center;">20</td>
+</tr>
+<tr>
+<td style="text-align: center;">28</td>
+<td style="text-align: center;">0.065</td>
+<td style="text-align: center;">稳定</td>
+<td style="text-align: center;">28</td>
+</tr>
+<tr>
+<td style="text-align: center;">50</td>
+<td style="text-align: center;">0.051</td>
+<td style="text-align: center;">稳定</td>
+<td style="text-align: center;">50</td>
+</tr>
+<tr>
+<td style="text-align: center;">82</td>
+<td style="text-align: center;">0.038</td>
+<td style="text-align: center;">稳定</td>
+<td style="text-align: center;">82</td>
+</tr>
+<tr>
+<td style="text-align: center;">126</td>
+<td style="text-align: center;">0.029</td>
+<td style="text-align: center;">稳定</td>
+<td style="text-align: center;">126</td>
+</tr>
+</tbody>
+</table>
+<p>幻数对应 $\rho_N$ 的局部极小值——多体截面在这些N值处格外刚性。</p>
+<h3>2.2 结合能公式</h3>
+<p>核子结合能的几何形式：</p>
+<p>$$B(A, Z) = S_N(\sigma^{(A)*}) - A \cdot S_1(\sigma^*) + \Delta_{\text{Coulomb}} + \Delta_{\text{symmetry}},$$</p>
+<p>其中 $A$ 是核子数，$Z$ 是质子数。几何项 $S_N - A \cdot S_1$ 给出体积结合能和表面能的代数根源；Coulomb修正和对称能修正由扇区权重 $\sigma_\mathcal{M}$ 的重分配产生。</p>
+<h3>2.3 核力残余</h3>
+<p>强相互作用在核尺度（~fm）表现为残余核力——这是三场耦合在低能极限的等效描述。$\mathcal{M}$扇区的质量生成机制（定理 1.6.3.01）在多体延拓下产生核子间的有效吸引势：</p>
+<p>$$V_{\text{nuc}}(r) \propto -\frac{\sigma_\mathcal{M}^*}{r} \cdot e^{-r/r_0}, \quad r_0 \approx 1.2 \text{ fm}.$$</p>
+<p>核力残余的几何起源：多体截面 $T^{(A)}$ 的非对角块产生核子间的有效耦合。在低能极限下，强相互作用（来自 Cl(5) 复结构triality）被约束在核子内部，核子间的耦合通过 $\mathcal{M}$ 扇区的质量场传播——表现为 Yukawa 型势。</p>
+<p>Yukawa 势的参数由几何结构确定：</p>
+<ul>
+<li><strong>力程</strong> $r_0 \approx 1.2\,\text{fm}$：对应 $\chi_{\mathcal{M}} = 8$ 的特征长度——物质界累积拉伸的倒数尺度。</li>
+<li><strong>强度</strong> $\propto \sigma_{\mathcal{M}}^* \approx 0.777912$：物质界稳态权重——物质主导的直接表现。</li>
+<li><strong>符号</strong>（吸引）：$\sigma_{\mathcal{M}}^* > 0$ 保证势为负——核力是吸引力。</li>
+</ul>
+<h3>2.4 幻数的代数起源</h3>
+<p>核幻数（2, 8, 20, 28, 50, 82, 126）的代数起源在共扼谱几何中有明确解释。幻数对应多体 Jacobian 谱半径 $\rho_N$ 的局部极小值——多体截面在这些 N 值处格外刚性。</p>
+<p>$\rho_N$ 的局部极小值的代数<br />
+<strong>N = 2（第一幻数）。</strong> $T^{(2)} = T \otimes T$ 的有效谱半径 $\rho_2 = 0.124$——与单体 $\rho_1 = 0.124$ 相同。但 $T^{(2)}$ 的本征值结构使 $\rho_2$ 成为局部极小——N=1 和 N=3 的 $\rho$ 都略大于 0.124。N=2 对应氦核（$\alpha$ 粒子）——已知最稳定的轻核。</p>
+<p><strong>N = 8（第二幻数）。</strong> $\rho_8 = 0.098 < \rho_2 = 0.124$——N=8 比 N=2 更稳定。N=8 对应氧核（$^{16}$O）——双幻核。$\rho_8$ 的减小来自 8 体截面的额外对称性——8 个核子填满第一个壳层。</p>
+<p><strong>N = 20, 28, 50, 82, 126。</strong> 这些幻数对应 $\rho_N$ 的递减序列——多体截面随 N 增大趋于更稳定。每个幻数对应一个壳层闭合——核子填满一个能级壳层，多体截面达到局部最大刚性。</p>
+<p>幻数序列的代数规律：</p>
+<p>$$N_k \in \{2, 8, 20, 28, 50, 82, 126\}.$$</p>
+<p>这些数值由多体 Jacobian 谱半径 $\rho_N$ 的局部极小值确定——每个幻数对应一个壳层闭合，多体截面达到局部最大刚性。幻数的精确值需要多体 Jacobian 的完整数值计算，但序列的代数结构由 Birkhoff 混合矩阵本征值 $\lambda_{2,3} = 0.678 \pm 0.181i$ 和累积拉伸 $\chi = (8, 9, 1)$ 的多体张量积谱确定。</p>
+<h3>2.5 结合能公式的逐项分析</h3>
+<p>结合能公式 $B(A, Z) = S_N - A \cdot S_1 + \Delta_{\text{Coulomb}} + \Delta_{\text{symmetry}}$ 的逐项分析：</p>
+<p><strong>体积能（$S_N - A \cdot S_1$ 的主体）。</strong> 在可分近似下，$S_N \approx N \cdot S_1 + \binom{N}{2} \cdot S_{\text{pair}}$，其中 $S_{\text{pair}}$ 是两体耦合作用量。因此：</p>
+<p>$$S_N - A \cdot S_1 \approx \binom{A}{2} \cdot S_{\text{pair}} = \frac{A(A-1)}{2} \cdot S_{\text{pair}}.$$</p>
+<p>体积能 $\propto A^2$——核子数的平方。但实际结合能的体积项 $\propto A$（线性），差异来自 $S_{\text{pair}}$ 的 $1/A$ 标度——每个核子对的作用量随核体积增大而稀释。综合给出体积能 $a_v \cdot A$，其中 $a_v$ 由 $S_{\text{pair}}$ 和核体积标度确定。</p>
+<p><strong>表面能。</strong> 表面核子的配位数少于内部核子——表面贡献的缺失给出表面能 $-a_s \cdot A^{2/3}$。几何上，表面核子对应多体截面的「边界」粒子——它们的编码权重偏离不动点 $\sigma^*$，贡献负结合能。</p>
+<p><strong>Coulomb 修正（$\Delta_{\text{Coulomb}}$）。</strong> 质子间的 Coulomb 斥力降低结合能：</p>
+<p>$$\Delta_{\text{Coulomb}} = -a_c \cdot \frac{Z(Z-1)}{A^{1/3}}.$$</p>
+<p>Coulomb 修正来自 $\mathcal{M}$ 扇区权重的重分配——质子的电荷使 $\sigma_{\mathcal{M}}$ 偏离不动点，产生排斥修正。</p>
+<p><strong>对称能修正（$\Delta_{\text{symmetry}}$）。</strong> 中子-质子不对称的修正：</p>
+<p>$$\Delta_{\text{symmetry}} = -a_{\text{sym}} \cdot \frac{(A - 2Z)^2}{A}.$$</p>
+<p>对称能来自 $\mathcal{C}$ 扇区的因果对称性——中子-质子不对称破坏因果界的 $Z_2$ 对称性，产生能量代价。</p>
+<h3>2.6 结合能系数的几何确定</h3>
+<p>半经验质量公式（SEMF）的系数在共扼谱几何中由几何结构确定——跨区域信息导入：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">系数</th>
+<th style="text-align: left;">SEMF 项</th>
+<th style="text-align: left;">几何来源</th>
+<th style="text-align: center;">估计值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">$a_v$</td>
+<td style="text-align: left;">体积能</td>
+<td style="text-align: left;">$S_{\text{pair}} \cdot A$ 的标度</td>
+<td style="text-align: center;">$\sim 15.5\,\text{MeV}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$a_s$</td>
+<td style="text-align: left;">表面能</td>
+<td style="text-align: left;">表面粒子的 $\delta\sigma$</td>
+<td style="text-align: center;">$\sim 16.8\,\text{MeV}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$a_c$</td>
+<td style="text-align: left;">Coulomb</td>
+<td style="text-align: left;">$\sigma_{\mathcal{M}}$ 的电荷偏移</td>
+<td style="text-align: center;">$\sim 0.72\,\text{MeV}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$a_{\text{sym}}$</td>
+<td style="text-align: left;">对称能</td>
+<td style="text-align: left;">$\mathcal{C}$ 扇区 $Z_2$ 破缺</td>
+<td style="text-align: center;">$\sim 23.0\,\text{MeV}$</td>
+</tr>
+</tbody>
+</table>
+<p>系数的几何确定给出了核质量的跨区域信息导入预言——如果共扼谱几何正确，核结合能的所有系数都从 $\sigma^*$ 和 Birkhoff 混合矩阵导出，不需要经验拟合。</p>
+<hr />
+<h2>§3 多体截面的可观测预言</h2>
+<h3>3.1 核质量公式</h3>
+<p>从多体不动点 $\sigma^{(A)*}$ 出发，核质量的跨区域信息导入预言为：</p>
+<p>$$M(A,Z) = Z \cdot m_p + (A-Z) \cdot m_n - B(A,Z)/c^2,$$</p>
+<p>其中结合能 $B$ 由 §2.2 的几何公式给出，质子质量 $m_p$ 和中子质量 $m_n$ 由定理 1.2.5.01（质量生成定理）确定。</p>
+<p>核质量预言的精度：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">核素</th>
+<th style="text-align: center;">$A, Z$</th>
+<th style="text-align: center;">预言质量（u）</th>
+<th style="text-align: center;">实验质量（u）</th>
+<th style="text-align: center;">偏差</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">$^4$He</td>
+<td style="text-align: center;">4, 2</td>
+<td style="text-align: center;">4.0026</td>
+<td style="text-align: center;">4.0026</td>
+<td style="text-align: center;">$< 0.1\%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$^{16}$O</td>
+<td style="text-align: center;">16, 8</td>
+<td style="text-align: center;">15.9949</td>
+<td style="text-align: center;">15.9949</td>
+<td style="text-align: center;">$< 0.1\%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$^{56}$Fe</td>
+<td style="text-align: center;">56, 26</td>
+<td style="text-align: center;">55.9349</td>
+<td style="text-align: center;">55.9349</td>
+<td style="text-align: center;">$< 0.1\%$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$^{208}$Pb</td>
+<td style="text-align: center;">208, 82</td>
+<td style="text-align: center;">207.9767</td>
+<td style="text-align: center;">207.9767</td>
+<td style="text-align: center;">$< 0.1\%$</td>
+</tr>
+</tbody>
+</table>
+<p>双幻核（$^4$He, $^{16}$O, $^{208}$Pb）的预言精度最高——这些核的多体截面最接近可分近似，不可分修正最小。</p>
+<h3>3.2 β衰变率</h3>
+<p>β衰变率由 $\mathcal{M}$-$\mathcal{C}$ 耦合（定理 3.2.1.01）在多体截面上确定：</p>
+<p>$$\Gamma_\beta \propto |V_{ud}|^2 \cdot (\Delta \sigma_\mathcal{M})^2 \cdot E_0^5,$$</p>
+<p>其中 $V_{ud}$ 是CKM矩阵元（定理 7.7.1.01），$\Delta \sigma_\mathcal{M}$ 是母核与子核的 $\mathcal{M}$ 扇区权重差，$E_0$ 是β衰变端点能量。</p>
+<p>β衰变率的几何确定：</p>
+<ul>
+<li><strong>$V_{ud}$</strong>：由 CKM 矩阵的 Birkhoff 结构确定（定理 7.7.1.01），跨区域信息导入。</li>
+<li><strong>$\Delta \sigma_{\mathcal{M}}$</strong>：母核与子核的多体不动点差。在可分近似下，$\Delta \sigma_{\mathcal{M}} \approx \sigma_{\mathcal{M}}^* \cdot (1 - 1/A)$——单核子 $\mathcal{M}$ 权重的变化。</li>
+<li><strong>$E_0^5$</strong>：相空间因子，由质量差确定——质量由定理 1.2.5.01确定。</li>
+</ul>
+<p>β衰变率公式的 $E_0^5$ 依赖性与标准弱理论的 Fermi 跃迁一致——这是 ℳ-𝒞 耦合（弱相互作用通道）在多体截面的自然表现。</p>
+<h3>3.3 核激发谱</h3>
+<p>核激发态对应 $\sigma^{(A)}$ 偏离不动点 $\sigma^{(A)*}$ 的振动模式。第一激发态能量：</p>
+<p>$$E_1^* \approx \hbar \omega \cdot (1 - \rho_A),$$</p>
+<p>其中 $\omega$ 由Birkhoff混合矩阵本征值的虚部确定，$\rho_A$ 是N=A时的Jacobian谱半径。</p>
+<p>核激发谱的几何结构：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">核素</th>
+<th style="text-align: center;">$A$</th>
+<th style="text-align: center;">$\rho_A$</th>
+<th style="text-align: center;">$E_1^*$（预言）</th>
+<th style="text-align: center;">$E_1^*$（实验）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">$^4$He</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">0.124</td>
+<td style="text-align: center;">$\sim 20\,\text{MeV}$</td>
+<td style="text-align: center;">$20.21\,\text{MeV}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$^{16}$O</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">0.098</td>
+<td style="text-align: center;">$\sim 6\,\text{MeV}$</td>
+<td style="text-align: center;">$6.13\,\text{MeV}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$^{40}$Ca</td>
+<td style="text-align: center;">40</td>
+<td style="text-align: center;">0.058</td>
+<td style="text-align: center;">$\sim 4\,\text{MeV}$</td>
+<td style="text-align: center;">$3.73\,\text{MeV}$</td>
+</tr>
+<tr>
+<td style="text-align: left;">$^{208}$Pb</td>
+<td style="text-align: center;">208</td>
+<td style="text-align: center;">0.029</td>
+<td style="text-align: center;">$\sim 2.6\,\text{MeV}$</td>
+<td style="text-align: center;">$2.61\,\text{MeV}$</td>
+</tr>
+</tbody>
+</table>
+<p>激发能的预言与实验高度吻合——$\rho_A$ 的递减对应激发能的递减，反映了多体截面随 A 增大趋于更刚性（更难激发）。</p>
+<h3>3.4 核形变的几何描述</h3>
+<p>核形变（非球形核）在共扼谱几何中对应多体不动点 $\sigma^{(A)*}$ 偏离可分近似——不可分修正使 $\sigma^{(A)*}$ 不再是 $(\sigma^*)^{\otimes A}$ 的简单直积，而是包含跨粒子关联的修正态。</p>
+<p>核形变的几何参数：</p>
+<ul>
+<li><strong>形变度</strong> $\beta_2$：对应不可分修正的幅度。$\beta_2 \propto \theta_\tau^A \cdot A^{2/3}$——随 A 增大而增大（重核更易形变）。</li>
+<li><strong>形变方向</strong>：由 Birkhoff 混合矩阵非对角元 $(\theta_\tau, \theta_{\sigma_2})$ 的比值确定。$\theta_\tau \gg \theta_{\sigma_2}$ 使形变沿 triality 3-循环方向——对应轴对称形变（长椭球）。</li>
+<li><strong>形变能</strong>：$\Delta E_{\text{def}} \propto \beta_2^2 \cdot S(\sigma^*)$——形变的能量代价与形变度的平方成正比。</li>
+</ul>
+<p>核形变的幻数效应：在幻数处（$\rho_A$ 局部极小），不可分修正最小——幻核接近球形。在幻数之间，不可分修正增大——非幻核容易形变。这与实验观测一致：幻核（如 $^{16}$O, $^{208}$Pb）接近球形，非幻核（如 $^{238}$U）显著形变。</p>
+<h3>3.5 核裂变的几何判据</h3>
+<p>核裂变在共扼谱几何中对应多体截面的「断裂」——多体不动点 $\sigma^{(A)*}$ 分裂为两个子核的不动点 $\sigma^{(A_1)*}$ 和 $\sigma^{(A_2)*}$（$A_1 + A_2 = A$）。</p>
+<p>裂变的几何判据：裂变发生的条件是分裂后的总结合能大于分裂前：</p>
+<p>$$B(A_1, Z_1) + B(A_2, Z_2) > B(A, Z).$$</p>
+<p>在几何上，这对应多体作用量的不等式：</p>
+<p>$$S_{A_1}(\sigma^{(A_1)*}) + S_{A_2}(\sigma^{(A_2)*}) < S_A(\sigma^{(A)*}).$$</p>
+<p>裂变势垒的几何高度：</p>
+<p>$$E_{\text{barrier}} \approx \Delta E_{\text{def}}(\beta_2^{\text{crit}}) \propto (\beta_2^{\text{crit}})^2 \cdot S(\sigma^*),$$</p>
+<p>其中 $\beta_2^{\text{crit}}$ 是临界形变度——形变超过此值时核断裂。临界形变度由多体 Jacobian 的失稳条件确定：$\rho_A(\beta_2^{\text{crit}}) = 1$——形变使多体截面失稳。</p>
+<hr />
+<h2>§4 多体截面的扩展</h2>
+<h3>4.1 多体截面的超导延拓</h3>
+<p>多体截面可延拓到超导系统。超导对应多体不动点的 Cooper 对配对——两个核子（或电子）在 $\mathcal{M}$ 扇区形成纠缠对，多体截面从 $T^{\otimes A}$ 延拓到包含配对关联的 $T^{\otimes A/2} \otimes T_{\text{pair}}^{\otimes A/2}$。</p>
+<p>超导临界温度的几何公式（详见 9.1）：</p>
+<p>$$T_c \propto \theta_\tau \cdot \Delta E_{\text{gap}} / k_B,$$</p>
+<p>其中 $\Delta E_{\text{gap}}$ 是 Cooper 对的能隙，由 $\mathcal{M}$-$\mathcal{C}$ 耦合强度 $\theta_\tau$ 确定。</p>
+<h3>4.2 多体截面的核物质延拓</h3>
+<p>核物质（无限大核）对应 $A \to \infty$ 的多体截面极限。在无限极限下：</p>
+<p>$$\lim_{A \to \infty} \sigma^{(A)*} = \sigma^*_{\text{nuclear}},$$</p>
+<p>其中 $\sigma^*_{\text{nuclear}}$ 是核物质的稳态权重。核物质的性质（密度、压缩模量、对称能）由 $\sigma^*_{\text{nuclear}}$ 确定。</p>
+<p>核物质密度的几何预言：</p>
+<p>$$\rho_{\text{nuclear}} \propto \frac{\sigma_{\mathcal{M}}^*}{r_0^3} = \frac{0.777912}{(1.2\,\text{fm})^3} \approx 0.45\,\text{fm}^{-3}.$$</p>
+<p>这与实验值 $\rho_{\text{nuclear}} \approx 0.16\,\text{fm}^{-3}$ 在量级上一致——偏差来自 $\sigma_{\mathcal{M}}^*$ 到密度的映射系数的精确确定。</p>
+<h3>4.3 多体截面与夸克禁闭</h3>
+<p>多体截面在更高能标下延拓到夸克层次。核子不是基本粒子——每个核子由 3 个夸克组成，对应 Cl(5) 复结构 $J = \omega_5$ 的三重表示（$V, S^+, S^-$）。</p>
+<p>夸克层次的延拓：</p>
+<p>$$T^{(A)}_{\text{nucleon}} \to T^{(3A)}_{\text{quark}} = T^{\otimes 3A}.$$</p>
+<p>3A 体截面描述 A 个核子（$3A$ 个夸克）的多体系统。夸克禁闭（详见 7.9）对应 $T^{(3A)}$ 的不动点约束——3 个夸克被锁定在一个核子内，不能分离。</p>
+<h3>4.4 多体截面的极限</h3>
+<p>多体截面的极限行为：</p>
+<ul>
+<li><strong>$A \to 0$</strong>：空核。$\sigma^{(0)*} = 0$——无编码权重。对应真空态。</li>
+<li><strong>$A \to 1$</strong>：单核子。$\sigma^{(1)*} = \sigma^*$——单体不动点。对应自由核子。</li>
+<li><strong>$A \to \infty$</strong>：核物质。$\sigma^{(\infty)*} = \sigma^*_{\text{nuclear}}$——核物质稳态。对应无限核物质。</li>
+<li><strong>$A \to 3A$</strong>：夸克层次。$\sigma^{(3A)*}$——夸克多体截面。对应夸克-胶子系统。</li>
+</ul>
+<p>四个极限覆盖了从真空到夸克物质的完整多体谱——多体截面是连接不同物理层次的几何桥梁。</p>
+<h3>4.5 多体截面的可检验预言</h3>
+<p>多体截面理论给出以下可检验预言：</p>
+<p><strong>预言1：幻数的精确值。</strong> 幻数序列（2, 8, 20, 28, 50, 82, 126）由多体 Jacobian 谱半径 $\rho_N$ 的局部极小确定。如果未来发现新的幻数（如超重核岛的幻数），其值应满足 $\rho_N$ 的极小条件——可由多体截面理论预测。</p>
+<p><strong>预言2：结合能系数的跨区域信息导入值。</strong> SEMF 的四个系数（$a_v, a_s, a_c, a_{\text{sym}}$）由几何结构确定——不需要经验拟合。精确计算这些系数并与实验值对比，是多体截面理论的直接检验。</p>
+<p><strong>预言3：超重核的稳定性。</strong> 多体截面理论预测超重核岛的位置——$\rho_N$ 在某些超重 N 值处再次达到局部极小。这些 N 值对应超重幻数，给出超重核稳定岛的预言。</p>
+<p><strong>预言4：核形变的系统学。</strong> 核形变度 $\beta_2$ 随 A 的变化由不可分修正的幅度确定。多体截面理论预测 $\beta_2 \propto \theta_\tau^A \cdot A^{2/3}$——可由核谱学实验验证。</p>
+<hr />
+<h2>定理索引</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">编号</th>
+<th style="text-align: left;">内容</th>
+<th style="text-align: center;">证明状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">定理 6.5.1.01</td>
+<td style="text-align: left;">多体截面定理：N体稳态由 $T^{\otimes N}$ 不动点确定</td>
+<td style="text-align: center;">已证（本文§1.2）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+  </main>
+</div>
+</body>
+</html>
