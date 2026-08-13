@@ -79,3 +79,15 @@ closed-form anchors above. Development follows semantic versioning; the
 package is released under the MIT license.
 
 # References
+
+
+# AI usage disclosure
+
+Generative AI assistance (Claude) was used during the development of this
+package and in drafting portions of this paper: code generation and
+refactoring, test scaffolding, and documentation authoring. All core design
+decisions — the distance-certifying problem framing, the three-step
+certificate structure, the two-path independent verification methodology,
+and the benchmark design — were made and validated by the human author, who
+reviewed, edited, and validated all AI-assisted outputs and takes full
+responsibility for their accuracy.
