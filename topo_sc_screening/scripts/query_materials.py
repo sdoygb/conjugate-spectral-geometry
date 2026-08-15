@@ -1,9 +1,12 @@
 """用 MP API 独立确认关键超导材料的空间群与磁性（Q3）
 用法: python3 query_materials.py <起始> <结束>  # 对 MATERIALS[start:end] 查询
+需要环境变量 MP_API_KEY（https://materialsproject.org/dashboard 获取）
 """
 import requests, json, time, os, sys
 
-KEY = 'dAZ3RHLu70nSi1SFo4a75MPY9Zzkm8Ia'
+KEY = os.environ.get('MP_API_KEY', '')
+if not KEY:
+    sys.exit('错误: 请设置环境变量 MP_API_KEY（https://materialsproject.org/dashboard 获取）')
 HEADERS = {'X-API-KEY': KEY, 'Accept': 'application/json',
            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/126.0.0.0 Safari/537.36'}
 BASE = 'https://api.materialsproject.org/materials/summary/'
