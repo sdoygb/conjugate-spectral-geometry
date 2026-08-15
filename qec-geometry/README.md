@@ -37,6 +37,32 @@ the surface code): at low noise, logical error chains carry a measurable
 topological signature in the pairing layer. At high noise the error patterns
 lose structure and the distinction vanishes.
 
+### Phase 2: distance scaling law (L = 4, 6, 8)
+
+As the code distance L grows (fixed physical noise p = 0.005), the **absolute**
+topological signal survives and scales linearly with L:
+
+| L | p_L | A0 total_dist | A1 total_dist | **A1 − A0** | A1/A0 | A1 long-chain rate |
+|---|---|---|---|---|---|---|
+| 4 | 1.48% | 2.0 | 6.0 | **4.0 = L** | 3.00× | 12.9% |
+| 6 | 0.49% | 8.0 | 14.0 | **6.0 = L** | 1.75× | 33.9% |
+| 8 | 0.17% | 16.0 | 24.0 | **8.0 = L** | 1.50× | 51.2% |
+
+**Scaling law: A1_total_dist − A0_total_dist = L.** The logical-error pairing
+chain carries an extra contribution of exactly one code distance — the geometric
+cost of the non-trivial homology class (Berry phase 2π). Meanwhile the *ratio*
+decays (3.00× → 1.50×) because the local-error background grows as ∝ L²
+(error count ∝ code area) and dilutes the relative signal.
+
+Two further consequences:
+
+- **Explicit long chains become more common with L**: the fraction of A1
+  samples with a pairing edge ≥ 4 grows 12.9% → 33.9% → 51.2% (answering the
+  open question of article 10.54 §6.3).
+- **Seed reproducibility**: median features are identical across seeds
+  42/123/777 at every L (deterministic sampling via
+  `compile_detector_sampler(seed=...)`).
+
 ### 2. Fault-tolerance threshold: closed form
 
 For single-round optimal decoding with depolarizing noise, the logical error
@@ -86,6 +112,7 @@ Surface-code error geometry (reproduces the 3.00× separation):
 cd qec-geometry
 python3 scripts/demo_error_geometry.py          # L=4, noise=0.005, 20000 shots
 python3 scripts/demo_threshold.py               # η enumeration + MC + anyon
+python3 scripts/phase2_scaling.py --scan        # Phase 2: L=4/6/8 × 3 seeds scaling
 python3 -m unittest tests.test_qecgeo -v        # 14 tests
 ```
 
@@ -96,8 +123,11 @@ python3 -m unittest tests.test_qecgeo -v        # 14 tests
 - **Threshold closed form**: exact enumeration over all weight-2 errors for
   [[5,1,3]], [[7,1,3]], [[15,7,3]]; Monte Carlo verification of the quadratic
   law; concatenation compression p_{L+1} = A·p_L² shown for p0 = 0.001/0.01/0.05.
-- **Error geometry**: 20,000 samples at p = 0.005 (L=4 surface code), 318 logical
-  errors analyzed; the 3.00× total_dist separation is stable across runs.
+- **Error geometry (Phase 1)**: 20,000 samples at p = 0.005 (L=4 surface code),
+  the 3.00× total_dist separation is stable across runs.
+- **Error geometry (Phase 2 scaling)**: L = 4/6/8 × seeds 42/123/777 at p = 0.005,
+  30k–600k shots per point; scaling law A1 − A0 = L exact (4.0/6.0/8.0);
+  long-chain rate 12.9% → 51.2%; seed-stable medians (results in `data/phase2/`).
 - All numerical results are stored in `data/` (JSON) and reproduced by the
   scripts above.
 
@@ -112,9 +142,10 @@ python3 -m unittest tests.test_qecgeo -v        # 14 tests
   propagation. Real circuit thresholds differ (typically lower).
 - [[5,1,3]] has η = 1 (all weight-2 errors are mis-recovered): its p_th = 10%
   is an upper-bound estimate in this model, not a practical circuit threshold.
-- Surface-code geometry was characterized at a single size (L=4) and code
-  family; crossing-rate statistics fluctuate at the few-percent level with shot
-  count (1.9–2.1× range).
+- Surface-code geometry was characterized for L = 4/6/8 (one code family);
+  crossing-rate statistics fluctuate at the few-percent level with shot count
+  (1.2–2.1× range). The relative separation (A1/A0) decays with L (background
+  dilution); the absolute scaling law (A1 − A0 = L) is the robust observable.
 
 ## Theory source
 

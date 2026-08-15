@@ -109,6 +109,39 @@ At p = 0.03 (above threshold, p_L = 0.38) all separation vanishes
 structure near random guessing. The A0/A1 geometric distinction is a
 **sub-threshold diagnostic**.
 
+### 2.5 Phase 2: distance scaling law (L = 4, 6, 8 × seeds 42/123/777)
+
+Fixed physical noise p = 0.005 (below threshold), rounds = 3, shots scaled to
+keep ≥ 300 logical errors (30k @ L=4, 300k @ L=6, 600k @ L=8); deterministic
+sampling via `compile_detector_sampler(seed=...)`.
+
+| L | shots | p_L | A0 total_dist | A1 total_dist | **A1−A0** | A1/A0 | A1 long-chain (≥4) | A0 long-chain |
+|---|---|---|---|---|---|---|---|---|
+| 4 | 30k | 1.48% | 2.0 | 6.0 | **4.0 = L** | 3.00× | 12.9% | 5.2% |
+| 6 | 300k | 0.49% | 8.0 | 14.0 | **6.0 = L** | 1.75× | 33.9% | 16.9% |
+| 8 | 600k | 0.17% | 16.0 | 24.0 | **8.0 = L** | 1.50× | 51.2% | 32.6% |
+
+**Scaling law: A1_total_dist − A0_total_dist = L exactly** (4.0 / 6.0 / 8.0,
+medians identical across all seeds tested per L: 42/123/777 at L=4,6; 42/777 at L=8). The logical-error pairing chain
+carries an extra contribution of exactly one code distance — the geometric
+cost of the non-trivial homology class (Berry phase 2π).
+
+Interpretation of the decaying ratio (3.00× → 1.50×): the local-error
+background grows as ∝ L² (error count ∝ code area), diluting the relative
+signal; the *absolute* topological term scales linearly and survives.
+
+Two consequences:
+
+- **Explicit long chains become more common with L**: A1 long-chain rate
+  12.9% → 33.9% → 51.2% (A0: 5.2% → 16.9% → 32.6%) — answers the open
+  question of article 10.54 §6.3 affirmatively.
+- **Seed reproducibility**: medians are identical across seeds per L
+  (42/123/777 at L=4,6; 42/777 at L=8); crossing-rate fluctuations remain
+  at the few-percent level.
+
+Raw per-run results: `data/phase2/L{L}_s{seed}.json`; summary:
+`data/phase2_summary.json`.
+
 ---
 
 ## 3. Anyon typing (Articles 10.43/10.44)
@@ -128,6 +161,7 @@ carries the Ising (Majorana) exchange phase e^{±iπ/4}:
 ```bash
 python3 scripts/demo_threshold.py            # Section 1 + 3
 python3 scripts/demo_error_geometry.py       # Section 2
+python3 scripts/phase2_scaling.py --scan       # Section 2.5 (L = 4/6/8 × 3 seeds)
 python3 -m unittest tests.test_qecgeo -v     # 14 unit tests
 ```
 

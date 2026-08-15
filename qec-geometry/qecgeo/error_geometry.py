@@ -43,7 +43,7 @@ def get_detector_coords(circuit):
         return None
 
 
-def decode_surface(L, rounds, noise, shots):
+def decode_surface(L, rounds, noise, shots, seed=None):
     """surface code 解码全流程：电路 → DEM → 采样 → MWPM 解码 → 逻辑错误标记
 
     返回 dict：circuit/dets/obs/preds/le/coords/matching/n_det/dt
@@ -54,7 +54,7 @@ def decode_surface(L, rounds, noise, shots):
     circuit = build_surface_circuit(L, rounds, noise)
     dem = circuit.detector_error_model(decompose_errors=False)
     matching = pymatching.Matching.from_detector_error_model(dem)
-    sampler = circuit.compile_detector_sampler()
+    sampler = circuit.compile_detector_sampler(seed=seed)
     dets, obs = sampler.sample(shots, separate_observables=True)
     preds = matching.decode_batch(dets)
     le = np.any(preds != obs, axis=1)
@@ -261,6 +261,43 @@ def analyze_edges(dets, matching, coords, le):
         return dict(n=len(grp), **f)
 
     return dict(ok=summ(grp_ok), err=summ(grp_err))
+
+
+def edge_maxdist_distribution(matching, dets, coords, le):
+    """每样本配对边最大距离分布（按 A0/A1 分组）——显式长链型统计
+
+    10.54 §6.3：显式长链型（max_dist >= 4）比例是否随码距 L 增大？
+    返回 dict(ok=[maxd...], err=[maxd...], n_ok, n_err)
+    """
+    nd = matching.num_detectors
+    gx, gy = _global_extent(coords)
+
+    def edge_dist(e):
+        a, b = int(e[0]), int(e[1])
+        if a >= nd and b >= nd:
+            return 0.0
+        if a >= nd:
+            c = coords.get(b)
+            if c is None or len(c) < 3:
+                return 0.0
+            return min(c[0], gx - c[0], c[1], gy - c[1])
+        if b >= nd:
+            c = coords.get(a)
+            if c is None or len(c) < 3:
+                return 0.0
+            return min(c[0], gx - c[0], c[1], gy - c[1])
+        ca, cb = coords.get(a), coords.get(b)
+        if ca is None or cb is None or len(ca) < 3 or len(cb) < 3:
+            return 0.0
+        return abs(ca[0] - cb[0]) + abs(ca[1] - cb[1])
+
+    n = len(dets)
+    ok, err = [], []
+    for s in range(n):
+        edges = matching.decode_to_edges_array(dets[s])
+        mx = max((edge_dist(e) for e in edges), default=0.0)
+        (err if le[s] else ok).append(float(mx))
+    return dict(ok=ok, err=err, n_ok=len(ok), n_err=len(err))
 
 
 def _ratio_line(field, ok, err, threshold=1.5):
