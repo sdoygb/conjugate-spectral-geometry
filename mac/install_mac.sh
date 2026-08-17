@@ -35,7 +35,7 @@ GAI_EMBEDDING_MODEL=deepseek-v4-flash
 # 免费注册: https://cloud.siliconflow.cn/
 # 这是经过调试的最佳方案，不要改为 local 或 api
 GAI_EMBEDDING_MODE=siliconflow
-SILICONFLOW_API_KEY=sk-fgdbxbqxfyztyxdoknxjcgnpdngpbqflwdwdkzqjkrxphdqd
+SILICONFLOW_API_KEY=${SILICONFLOW_API_KEY:-请先设置环境变量 SILICONFLOW_API_KEY（注册 https://cloud.siliconflow.cn/ 获取）}
 EOF
     echo -e "${GREEN}[√] 配置已保存${NC}"
 }

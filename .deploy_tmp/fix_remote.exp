@@ -1,9 +1,0 @@
-#!/usr/bin/expect -f
-set timeout 240
-set pass [lindex $argv 0]
-spawn ssh -t -o StrictHostKeyChecking=accept-new sdoygb@192.168.1.88 "bash /tmp/fix_server.sh"
-expect {
-    -re "(?i)assword" { send "$pass\r"; exp_continue }
-    -re "Permission denied" { puts "AUTH_FAILED"; exit 1 }
-    eof
-}
