@@ -1,12 +1,14 @@
 /**
- * smoke.mjs — 冒烟测试：验证 BM25 检索质量 + 章节定位（不依赖 DSH 运行时）
+ * smoke.mjs — 冒烟测试：验证 BM25 检索质量 + 章节定位 + 数据目录解析（不依赖 DSH 运行时）
  *
  * 用法：cd dsh-geometry-plugin && node test/smoke.mjs
  */
-import { loadIndex } from '../dist/core/loader.js'
+import { loadIndex, resolveDataDir } from '../dist/core/loader.js'
 import { createEngine } from '../dist/core/search.js'
 import { locateSection, sectionEnd, readSectionRaw, safeArticlePath } from '../dist/core/toc.js'
 import path from 'node:path'
+import fs from 'node:fs'
+import os from 'node:os'
 import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -85,3 +87,25 @@ if (first) {
 
 console.log('')
 console.log('[smoke] 完成')
+
+// ── 数据目录解析：工作目录 geo-data 覆盖 ──────────────────────────
+console.log('══════════ 数据目录解析（resolveDataDir） ══════════')
+{
+  // 正例：<cwd>/geo-data/ 存在且含核心文件 → 应命中 'cwd'
+  const tmpWs = fs.mkdtempSync(path.join(os.tmpdir(), 'geo-ws-'))
+  const gd = path.join(tmpWs, 'geo-data')
+  fs.mkdirSync(gd)
+  for (const f of ['articles.jsonl', 'truth.jsonl', 'articles_toc.json', 'dict.json']) {
+    fs.writeFileSync(path.join(gd, f), '')
+  }
+  const oldCwd = process.cwd()
+  process.chdir(tmpWs)
+  const r1 = resolveDataDir()
+  process.chdir(oldCwd)
+  fs.rmSync(tmpWs, { recursive: true, force: true })
+  console.log(`cwd 覆盖: ${r1.source === 'cwd' ? '生效 ✓' : '未生效 ✗'}（${r1.dataDir}）`)
+
+  // 反例：工作目录无 geo-data（或无效副本）→ 应回退 'package'
+  const r2 = resolveDataDir()
+  console.log(`无覆盖回退: ${r2.source === 'package' ? '包内数据 ✓' : '异常 ✗'}（${r2.dataDir}）`)
+}

@@ -1,6 +1,12 @@
 /**
  * loader.ts — 加载离线索引（articles.jsonl / truth.jsonl / articles_toc.json / dict.json / 全文）
- * 零运行时依赖。数据目录可用环境变量 GEO_DATA_DIR 覆盖。
+ * 零运行时依赖。
+ *
+ * 数据目录解析优先级（高 → 低）：
+ *   1. 插件配置 dataDir（cordis.patch.yml 的 config.dataDir）
+ *   2. 环境变量 GEO_DATA_DIR
+ *   3. 工作目录覆盖 <cwd>/geo-data/（须为完整数据副本，自动检测）
+ *   4. 包内内置数据 data/
  */
 import fs from 'node:fs'
 import path from 'node:path'
@@ -48,6 +54,28 @@ export interface LoadedIndex {
   articlesDir: string
 }
 
+export type DataSource = 'config' | 'env' | 'cwd' | 'package'
+
+export interface ResolvedDataDir {
+  dataDir: string
+  articlesDir: string
+  source: DataSource
+}
+
+/** 工作目录覆盖目录名：安装者把完整 data/ 副本放到 <cwd>/geo-data/ 即自动生效 */
+export const CWD_OVERRIDE_DIR = 'geo-data'
+
+/** 判定一个目录是否为完整数据副本（缺任一核心文件则视为无效，回退包内数据） */
+const REQUIRED_FILES = ['articles.jsonl', 'truth.jsonl', 'articles_toc.json', 'dict.json']
+
+function isValidDataDir(dir: string): boolean {
+  try {
+    return REQUIRED_FILES.every((f) => fs.existsSync(path.join(dir, f)))
+  } catch {
+    return false
+  }
+}
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 function loadJsonl<T>(file: string): T[] {
@@ -59,9 +87,20 @@ function loadJsonl<T>(file: string): T[] {
   return out
 }
 
-export function resolveDataDir(dataDir?: string): { dataDir: string; articlesDir: string } {
-  const dir = dataDir ?? process.env.GEO_DATA_DIR ?? path.join(__dirname, '..', '..', 'data')
-  return { dataDir: dir, articlesDir: path.join(dir, 'articles') }
+export function resolveDataDir(dataDir?: string): ResolvedDataDir {
+  // 1) 插件配置 dataDir（最高优先级，显式指定）
+  if (dataDir) return { dataDir, articlesDir: path.join(dataDir, 'articles'), source: 'config' }
+  // 2) 环境变量 GEO_DATA_DIR
+  const env = process.env.GEO_DATA_DIR
+  if (env) return { dataDir: env, articlesDir: path.join(env, 'articles'), source: 'env' }
+  // 3) 工作目录覆盖：<cwd>/geo-data/（安装者把完整 data/ 副本放工作目录即自动生效）
+  const cwdOverride = path.join(process.cwd(), CWD_OVERRIDE_DIR)
+  if (isValidDataDir(cwdOverride)) {
+    return { dataDir: cwdOverride, articlesDir: path.join(cwdOverride, 'articles'), source: 'cwd' }
+  }
+  // 4) 包内内置数据（默认）
+  const dir = path.join(__dirname, '..', '..', 'data')
+  return { dataDir: dir, articlesDir: path.join(dir, 'articles'), source: 'package' }
 }
 
 export function loadIndex(dataDir?: string): LoadedIndex {

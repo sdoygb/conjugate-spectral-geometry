@@ -14,12 +14,21 @@
  */
 import type { Context } from '@deepseek-ai/cordis'
 import { defineTool } from '@deepseek-ai/dsh-tools'
-import { loadIndex, type LoadedIndex } from './core/loader.js'
+import { loadIndex, resolveDataDir, type LoadedIndex } from './core/loader.js'
 import { createEngine, type SearchEngine } from './core/search.js'
 import { locateSection, sectionEnd, readSectionRaw, readArticleRaw, safeArticlePath } from './core/toc.js'
 
 export const name = 'geometry-knowledge'
 export const inject = ['tools']
+
+/**
+ * 插件配置（cordis.patch.yml 的 config 字段）：
+ *   dataDir — 显式指定数据目录（优先级最高；缺省时依次回退 GEO_DATA_DIR、
+ *             工作目录 ./geo-data/ 覆盖、包内内置数据）
+ */
+export interface GeometryKnowledgeConfig {
+  dataDir?: string
+}
 
 const MAX_TEXT = 700 // geo_search 返回块文本截断
 const MAX_SECTION = 6000 // geo_read 单次返回上限
@@ -35,13 +44,13 @@ function textOut(text: string) {
   return [{ type: 'text' as const, text }]
 }
 
-export function apply(ctx: Context): void {
+export function apply(ctx: Context, config: GeometryKnowledgeConfig = {}): void {
   let index: LoadedIndex | null = null
   let engine: SearchEngine | null = null
 
   function lazy(): { index: LoadedIndex; engine: SearchEngine } {
     if (!index || !engine) {
-      index = loadIndex()
+      index = loadIndex(config.dataDir)
       engine = createEngine(index)
     }
     return { index, engine }
@@ -182,5 +191,10 @@ export function apply(ctx: Context): void {
 
   // 预加载索引：插件激活时完成 BM25 构建，首次工具调用零延迟
   const s = lazy().engine.stats()
-  ctx.logger.info(`[geometry-knowledge] 就绪：${s.articles} 分块 / ${s.truth} 真理 / ${s.dictTerms} 词典词，索引构建 ${s.buildMs}ms`)
+  const resolved = resolveDataDir(config.dataDir)
+  const sourceLabel =
+    resolved.source === 'config' ? '配置 dataDir' :
+    resolved.source === 'env' ? '环境变量 GEO_DATA_DIR' :
+    resolved.source === 'cwd' ? '工作目录 geo-data 覆盖' : '包内内置数据'
+  ctx.logger.info(`[geometry-knowledge] 就绪：${s.articles} 分块 / ${s.truth} 真理 / ${s.dictTerms} 词典词，索引构建 ${s.buildMs}ms，数据源：${sourceLabel}（${resolved.dataDir}）`)
 }

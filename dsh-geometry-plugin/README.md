@@ -62,6 +62,25 @@ geo_read "7.5" whole=true     → 读取整篇 7.5 弱混合角
 
 检索提示：先提取文章中的精确术语（如 θ_M、N_dec、η_K、Strouhal、谱刚性、弱混合角、Kolmogorov）效果最佳。
 
+## 工作目录数据覆盖（geo-data，安装者改文章的正道）
+
+安装者想改文章，**不需要改包**：把已装包的 `data/` 完整拷贝到**工作目录**的 `geo-data/` 子目录，插件启动时自动检测并优先使用：
+
+```sh
+# 1. 拷贝一份完整数据副本到工作目录（一次即可）
+cp -r ~/.dsh/profiles/web/node_modules/geometry-knowledge/data  ./geo-data
+
+# 2. 自由编辑副本里的文章（geo_read 立即读到新内容）
+edit ./geo-data/articles/10.8_几何流体力学_CN_260808.md
+
+# 3. 照常启动，插件自动使用 ./geo-data/
+dsh web
+```
+
+- **独立性**：`geo-data/` 是你的副本，升级/重装插件不影响你的修改
+- **数据来源优先级**：插件配置 `dataDir` > 环境变量 `GEO_DATA_DIR` > 工作目录 `./geo-data/` > 包内内置数据（启动日志会打印实际数据源）
+- **限制**：修改 `.md` 只影响 `geo_read`（全文阅读）；`geo_search` 的分块索引（articles.jsonl）是导出时的静态快照，需按上文"数据与构建"流程重新导出才会更新
+
 ## 数据与构建
 
 - `data/` 由 `scripts/export_dsh_index.py` 从几何论主库导出；运行 `pnpm export` 重新生成
