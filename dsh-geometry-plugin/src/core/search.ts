@@ -16,6 +16,8 @@ export interface SearchHit<T> {
 export interface SearchEngine {
   searchArticles(query: string, topK: number): SearchHit<ArticleChunk>[]
   searchTruth(query: string, topK: number): SearchHit<TruthRecord>[]
+  /** 预热：构建文章/真理两套 BM25 索引（插件激活时调用，避免首次工具调用卡顿） */
+  warm(): void
   stats(): { articles: number; truth: number; dictTerms: number; buildMs: number }
 }
 
@@ -44,6 +46,11 @@ export function createEngine(index: LoadedIndex): SearchEngine {
   }
 
   return {
+    warm() {
+      ensureArticles()
+      ensureTruth()
+    },
+
     searchArticles(query: string, topK: number): SearchHit<ArticleChunk>[] {
       const q = tok.tokenize(query)
       if (q.length === 0) return []

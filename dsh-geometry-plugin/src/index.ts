@@ -189,7 +189,8 @@ export function apply(ctx: Context, config: GeometryKnowledgeConfig = {}): void 
     },
   }))
 
-  // 预加载索引：插件激活时完成 BM25 构建，首次工具调用零延迟
+  // 预加载索引 + 预热 BM25：插件激活时完成全部构建，首次工具调用零延迟
+  lazy().engine.warm()
   const s = lazy().engine.stats()
   const resolved = resolveDataDir(config.dataDir)
   const sourceLabel =

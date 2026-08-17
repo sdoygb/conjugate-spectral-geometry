@@ -16,8 +16,14 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const t0 = Date.now()
 const index = loadIndex()
 const engine = createEngine(index)
+const tWarm0 = Date.now()
+engine.warm() // 激活时预热：首次工具调用零延迟
+const buildMs = Date.now() - tWarm0
+const tSearch0 = Date.now()
+engine.searchArticles('Strouhal 数', 3)
+const firstSearchMs = Date.now() - tSearch0
 const s = engine.stats()
-console.log(`[load] 分块 ${s.articles} / 真理 ${s.truth} / 词典 ${s.dictTerms} 词，加载 ${Date.now() - t0}ms，BM25 构建 ${s.buildMs}ms`)
+console.log(`[load] 分块 ${s.articles} / 真理 ${s.truth} / 词典 ${s.dictTerms} 词，加载 ${Date.now() - t0}ms，BM25 预热 ${buildMs}ms，预热后首次搜索 ${firstSearchMs}ms`)
 console.log(`[articles] ${index.articleList.length} 篇，全文目录 ${index.articlesDir}`)
 console.log('')
 

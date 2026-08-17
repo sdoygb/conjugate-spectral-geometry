@@ -32,9 +32,17 @@ const CJK_RUN = /[\u4e00-\u9fff]{2,}/g
 export class Tokenizer {
   /** 术语词典，按长度降序（最长匹配优先） */
   private readonly dict: string[]
+  /** 按首字符分组的词典候选：把每个位置 O(600) 的全表扫描降为 O(该字符候选数) */
+  private readonly byFirst: Map<string, string[]>
 
   constructor(terms: string[]) {
     this.dict = [...new Set(terms)].sort((a, b) => b.length - a.length)
+    this.byFirst = new Map()
+    for (const w of this.dict) {
+      const arr = this.byFirst.get(w[0])
+      if (arr) arr.push(w)
+      else this.byFirst.set(w[0], [w])
+    }
   }
 
   /** 全文/查询共用的入口 */
@@ -59,13 +67,17 @@ export class Tokenizer {
     const n = s.length
     let i = 0
     while (i < n) {
+      const candidates = this.byFirst.get(s[i])
       let matched = false
-      for (const w of this.dict) {
-        if (s.startsWith(w, i)) {
-          out.push(w)
-          i += w.length
-          matched = true
-          break
+      if (candidates) {
+        // 候选组内保持全局长度降序 → 语义与原线性扫描一致（最长匹配优先）
+        for (const w of candidates) {
+          if (s.startsWith(w, i)) {
+            out.push(w)
+            i += w.length
+            matched = true
+            break
+          }
         }
       }
       if (matched) continue
