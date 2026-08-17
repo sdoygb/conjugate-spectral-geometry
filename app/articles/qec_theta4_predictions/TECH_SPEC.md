@@ -39,7 +39,7 @@ log-log 斜率 $=4$。程序预拟合（30 次试验平均，$\theta_{\max}\in\{
 ### 预言二：检测率闭式与漏检无害（§4.2）
 
 单比特 Pauli 型旋转注入 $U(\theta)$：
-- (a) 检测率 $p_{\det}(\theta)=\sin^2(\theta/2)$（闭式，无参数）；
+- (a) 检测率 $p_{\det}(\theta)=\sin^2(\theta/2)$（闭式）；
 - (b) 漏检路径（syndrome=0）条件保真度 $F_{\text{miss}}=1$；
 - (c) 检测路径条件保真度 $F_{\det}=1$。
 
