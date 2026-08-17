@@ -52,7 +52,7 @@ $$U(\theta_i) = \cos(\theta_i/2)\,I + i\sin(\theta_i/2)\,E_i$$
 $$\mathrm{loss}(\theta_{\max}) = C(n,w_0)\,P(w_0)\,\mathrm{fail}(w_0)\,2^{-2w_0}\,\theta_{\max}^{2w_0} + O(\theta_{\max}^{2w_0+2}),$$
 其中 $w_0 = \lceil d/2 \rceil$；前导指数对偶 $d$ 为 $d$，对奇 $d$ 为 $d+1$。失效率的奇偶二分法得到解决：奇 $d$ 迫使跨层伙伴，且在 $|0_L\rangle$ 编码下 PG 完备族有 $\mathrm{fail}(2) = 4/9$（纯 $Z$ 逻辑残差无损失）；偶 $d$ 给出同层伙伴与 $\mathrm{fail} = 1 - \langle 1/v\rangle$。
 
-2. **类大小与失效率闭式（定理 17–18）**。对仿射完备族，重量 $2^r$ 层的类大小为 $v(A) = 1 + \bigl[\begin{smallmatrix}m-s\\ r+1-s\end{smallmatrix}\bigr]_2$，其中 $s = \dim \mathrm{aff}(A)$；由此 $\mathrm{fail}(w_0) = 1 - P(3)/2 - P(\le 2)\,2^{2-m}$（$r=2$），$= 1 - 2^{1-m}$（$r=1$），$\approx 1/2$（$r \ge 3$，含指数小修正）。表 3 全部条目无拟合参数地复现。
+2. **类大小与失效率闭式（定理 17–18）**。对仿射完备族，重量 $2^r$ 层的类大小为 $v(A) = 1 + \bigl[\begin{smallmatrix}m-s\\ r+1-s\end{smallmatrix}\bigr]_2$，其中 $s = \dim \mathrm{aff}(A)$；由此 $\mathrm{fail}(w_0) = 1 - P(3)/2 - P(\le 2)\,2^{2-m}$（$r=2$），$= 1 - 2^{1-m}$（$r=1$），$\approx 1/2$（$r \ge 3$，含指数小修正）。表 3 全部条目由闭式复现。
 
 3. **Pauli 信道普适性（定理 21）**。标度律逐字成立地推广到任意独立每量子比特 Pauli 信道：设 $X$ 侧错误概率为 $\varepsilon$（错误算符含 $X$ 或 $Y$ 的概率），则 $X$ 侧失效率等于 $\sum_{w\ge w_0} C(n,w)\,\varepsilon^w(1-\varepsilon)^{n-w}\,\mathrm{fail}(w)$，其中 $\mathrm{fail}(w)$ 与相干情形下*无条件*相同——译码器是综合征与重量的确定性函数，信道仅通过 $\varepsilon$ 进入。相干倾斜：$\varepsilon = \sin^2(\theta/2)$；去极化：$\varepsilon = 2p/3$；相位阻尼（扭对称化后）：$\varepsilon = 0$；振幅阻尼（扭对称化后）：$\varepsilon = \gamma/2$。未扭对称化的相干非 Pauli 过程超出本框架（综合征响应变为概率性的）；Pauli 扭对称化——标准实验操作 [5, 6]——将其恢复。
 
@@ -712,7 +712,7 @@ $N = 10^6$ 时层级 32 的 $\sigma_d = 0.12$。相邻层级间隔为 $\Delta d 
 
 ### 8.9 科学收益与开放问题
 
-**若通过**。(i) 实验确认四个斜率 $4/8/16/32 \pm 0.3$：相干噪声下 AG 完备码的损失完全由几何决定（逻辑类 + 平坦计数），无自由参数；(ii) 截距给出 $\kappa\,\mathrm{fail}(w_0)$，进而 $\mathrm{fail}(w_0)$ 与类大小 $v$——类大小闭式的间接实验验证；(iii) 窗口阶梯（含空隙）是几何预测的独特、不可拟合签名；(iv) 次前导 $\theta^{d+2}$ 系数的实验检验。
+**若通过**。(i) 实验确认四个斜率 $4/8/16/32 \pm 0.3$：相干噪声下 AG 完备码的损失完全由几何决定（逻辑类 + 平坦计数），无需任何拟合；(ii) 截距给出 $\kappa\,\mathrm{fail}(w_0)$，进而 $\mathrm{fail}(w_0)$ 与类大小 $v$——类大小闭式的间接实验验证；(iii) 窗口阶梯（含空隙）是几何预测的独特、不可拟合签名；(iv) 次前导 $\theta^{d+2}$ 系数的实验检验。
 
 **若失败的方向**。非相干混入（相干/非相干分离的实验入口——$\theta^2$ 对 $\theta^d$ 标度分裂）；有限长度效应（$n = 1024$ 次前导修正）；译码器偏离最小重量译码；平坦计数假设的实验偏差（简并分数 $P(w_0)$）；$\kappa$ 闭式的偏差。
 
