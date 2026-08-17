@@ -2,15 +2,15 @@
 
 **几何论（共扼谱几何 CSG）知识库插件** —— 用于 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)（DSH）。
 
-纯离线 BM25 检索：**166 篇文章全文 + 3224 个分块 + 860 条主库真理层**，不依赖任何外部 API、嵌入模型或网络，安装即用、零运行时依赖。
+纯离线 BM25 检索：**166 篇文章全文 + 3222 个分块 + 860 条主库真理层**，不依赖任何外部 API、嵌入模型或网络，安装即用、零运行时依赖。
 
 ## 几何论是什么
 
-几何论（共扼谱几何，Conjugate Spectral Geometry）是一套从极少数元公理出发、**零自由参数**地推导物理常数的演绎理论体系：
+几何论（共扼谱几何，Conjugate Spectral Geometry）是一套尝试通过**少量而合理的实验数据锚定**，正确描述这个物理世界的几何理论体系。它不宣称能从少量公理和假设必然地推导出整个物理世界。
 
-- **两条公设**：零之动（非平凡自映射 δ 持续产生区分）+ 总作用量为零（S_total = 0）
+- **公理起点**：零之动（非平凡自映射 δ 持续产生区分）+ 总作用量为零（S_total = 0）
 - **推导主干**：δ → Clifford 代数 → Bott 周期（δ⁸ = 2π Berry 相位）→ E₈ 偶幺模格 → 结构常数 {2,3,5} → 乘子序列 → Born 法则代数导出 → M₅ Birkhoff 矩阵不动点 → **α⁻¹ ≈ 137.036** → 三扇区物理（ℳ物质 / 𝒞因果 / ℐ信息）→ 标准模型重建 → 引力与宇宙学 → 预言检验
-- **11 卷 167 篇文章、320 个定理**，覆盖从量子力学数学结构、夸克质量谱、中微子 Majorana 本质，到暗物质替代、黑洞信息悖论、CMB、量子纠错码等主题
+- **11 卷 166 篇文章、320 个定理**，覆盖从量子力学数学结构、夸克质量谱、中微子 Majorana 本质，到暗物质替代、黑洞信息悖论、CMB、量子纠错码等主题
 
 本插件把整套知识库做成 DSH 的原生工具集，让 Agent 在会话中直接检索原文与已验证定理，并强制标注文章编号与章节引用。
 
@@ -19,7 +19,7 @@
 | 工具 | 说明 |
 | --- | --- |
 | `geo_list` | 文章清单（编号、标题、文件名、分块数），可按系列过滤（如 `series="10."` 只看应用篇） |
-| `geo_search` | BM25 语义检索：`scope=articles` 检索 3224 个文章分块；`scope=truth` 检索 860 条主库真理层 |
+| `geo_search` | BM25 语义检索：`scope=articles` 检索 3222 个文章分块；`scope=truth` 检索 860 条主库真理层 |
 | `geo_read` | 按文章编号或文件名读取原文，`section` 关键词定位章节，`whole=true` 返回整篇 |
 | `geo_truth` | 主库真理层检索（860 条已验证定理，含永久编号 #N、公式名、证明摘要） |
 
@@ -38,8 +38,8 @@ dsh web
 ### tarball 安装
 
 ```sh
-pnpm pack            # 生成 geometry-knowledge-0.1.1.tgz
-dsh plugin --profile web add ./geometry-knowledge-0.1.1.tgz
+pnpm pack            # 生成 geometry-knowledge-0.1.4.tgz
+dsh plugin --profile web add ./geometry-knowledge-0.1.4.tgz
 ```
 
 ### Git 安装

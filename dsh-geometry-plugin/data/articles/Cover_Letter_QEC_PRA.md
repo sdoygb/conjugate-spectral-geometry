@@ -16,7 +16,7 @@ The manuscript derives, for the affine-complete family of Reed–Muller CSS code
 
 4. **A complete transversal gate set** (Pauli, CNOT, H, diagonal phase gates, logical measurement), including the exact phase gate induced by transversal S^{⊗n}, made legal by the coincidence of the X- and Z-stabilizer spaces.
 
-5. **A parameter-free experimental discriminator**: at fixed n = 1024, the four distinct leading exponents θ⁴, θ⁸, θ¹⁶, θ³² distinguish the code families by measurement alone, without fitting.
+5. **A closed-form experimental discriminator**: at fixed n = 1024, the four distinct leading exponents θ⁴, θ⁸, θ¹⁶, θ³² distinguish the code families by measurement alone, without fitting.
 
 Every structural claim is verified by an O(n²) syndrome-structure certificate on codes up to [[1024, 252, 32]], and the closed forms are confirmed by exact enumeration and full state-vector simulation.
 
