@@ -1,0 +1,50 @@
+{
+  "name": "geometry-knowledge",
+  "version": "0.1.0",
+  "description": "几何论知识库插件（DeepSeek Harness / Cordis）：纯离线 BM25 检索，166 篇文章全文 + 3224 分块 + 860 条主库真理层",
+  "type": "module",
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "data",
+    "cordis.patch.yml"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepare": "tsc -p tsconfig.json",
+    "export": "python3 scripts/export_dsh_index.py",
+    "smoke": "node test/smoke.mjs"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "keywords": [
+    "deepseek-harness",
+    "cordis",
+    "geometry",
+    "knowledge-base",
+    "bm25"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sdoygb/conjugate-spectral-geometry.git"
+  },
+  "homepage": "https://github.com/sdoygb/conjugate-spectral-geometry#readme",
+  "peerDependencies": {
+    "@deepseek-ai/cordis": ">=0.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "@types/node": "^22.0.0",
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-tools": "^0.1.0-rc.6"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/cordis": {
+      "optional": true
+    }
+  }
+}
