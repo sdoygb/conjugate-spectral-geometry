@@ -581,7 +581,7 @@ The mainstream experimental route to logical qubits is the surface code [27], wh
 
 ## 8. Experimental discrimination of the four-order scaling law
 
-The closed forms of Section 5 are parameter-free predictions: the leading coefficient of the measured logical-$Z$-flip loss, $c_d = \kappa_r(m)\,C(n,w_0)\,P(w_0)\,\mathrm{fail}(w_0)\,2^{-2w_0}$ with $\kappa_r(m)$ the logical-$Z$ flip fraction of Sec. 5.3, contains no fitted parameter, and the integer exponent $d$ is fixed by the geometry of the logical classes. This section converts them into a falsifiable protocol on a 64–1121 qubit superconducting platform: measure the log–log slope of $\mathrm{loss}(\theta)$ for four tiers of the affine-complete family and test that the slopes equal $4, 8, 16, 32$ [35]. The design follows the closed-form framework of Sections 5 and 8; all numbers quoted below are closed-form values, not fits.
+The closed forms of Section 5 yield the predictions directly: the leading coefficient of the measured logical-$Z$-flip loss, $c_d = \kappa_r(m)\,C(n,w_0)\,P(w_0)\,\mathrm{fail}(w_0)\,2^{-2w_0}$ with $\kappa_r(m)$ the logical-$Z$ flip fraction of Sec. 5.3, is fixed entirely by the closed forms, and the integer exponent $d$ is fixed by the geometry of the logical classes. This section converts them into a falsifiable protocol on a 64–1121 qubit superconducting platform: measure the log–log slope of $\mathrm{loss}(\theta)$ for four tiers of the affine-complete family and test that the slopes equal $4, 8, 16, 32$ [35]. The design follows the closed-form framework of Sections 5 and 8; all numbers quoted below are closed-form values, not fits.
 
 ### 8.1 Discriminant objective and logic
 
