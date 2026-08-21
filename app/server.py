@@ -52,10 +52,12 @@ from tools import (ARTICLE_TOOLS, execute_tool_call, parse_and_execute_tools, OP
 from stream import stream_generate
 from admin_routes import admin_bp
 from share_routes import share_bp
+from tools.gap_workbench.service import workbench_bp as _workbench_bp, WorkbenchRegistry as _WorkbenchRegistry
 
 app = Flask(__name__)
 app.register_blueprint(admin_bp)
 app.register_blueprint(share_bp)
+app.register_blueprint(_workbench_bp)  # 工作台常驻服务（全内存）
 CORS(app)
 
 # 全局错误处理器：确保所有错误返回 JSON 格式
@@ -1174,85 +1176,118 @@ def chat_completions():
     articles_content = ""
     loaded_chunks: List[str] = []
     logger.info(f"[VECTOR-DEBUG] vector_kb={vector_kb is not None}, initialized={vector_kb.is_initialized if vector_kb else 'N/A'}, total_docs={vector_kb.total_docs if vector_kb else 'N/A'}")
-    if vector_kb and vector_kb.is_initialized and vector_kb.total_docs > 0:
-        # 智能提取检索关键词：如果clean_query太长，提取核心术语
-        search_query = clean_query
-        if len(clean_query) > 100:
-            # 提取文章编号（如 0.5, 0.2.1）和中文学术术语
+    try:
+        if vector_kb and vector_kb.is_initialized and vector_kb.total_docs > 0:
+            # 智能提取检索关键词：如果clean_query太长，提取核心术语
+            search_query = clean_query
+            if len(clean_query) > 100:
+                # 提取文章编号（如 0.5, 0.2.1）和中文学术术语
+                import re as _re2
+                # 提取文章编号模式
+                ids = _re2.findall(r'\b\d+(?:\.\d+)+\b', clean_query)
+                # 提取中文术语（2-6字）
+                terms = _re2.findall(r'[\u4e00-\u9fff]{2,6}', clean_query)
+                # 组合：编号优先，然后取前5个术语
+                search_parts = list(set(ids)) + list(set(terms))[:5]
+                if search_parts:
+                    search_query = ' '.join(search_parts)
+                else:
+                    search_query = clean_query[:100]
+            # 多轮检索：三角度交叉搜索（原始查询 + 数学工具角度 + 文章编号角度）
             import re as _re2
-            # 提取文章编号模式
-            ids = _re2.findall(r'\b\d+(?:\.\d+)+\b', clean_query)
-            # 提取中文术语（2-6字）
-            terms = _re2.findall(r'[\u4e00-\u9fff]{2,6}', clean_query)
-            # 组合：编号优先，然后取前5个术语
-            search_parts = list(set(ids)) + list(set(terms))[:5]
-            if search_parts:
-                search_query = ' '.join(search_parts)
-            else:
-                search_query = clean_query[:100]
-        # 多轮检索：三角度交叉搜索（原始查询 + 数学工具角度 + 文章编号角度）
-            search_terms = _re2.findall(r'[\u4e00-\u9fff]{2,6}', clean_query) if '_re2' in dir() else []
-            search_numbers = _re2.findall(r'\d+(?:\.\d+)*', clean_query) if '_re2' in dir() else []
+            search_terms = _re2.findall(r'[\u4e00-\u9fff]{2,6}', clean_query)
+            search_numbers = _re2.findall(r'\d+(?:\.\d+)*', clean_query)
             results_main = vector_kb.search(search_query, top_k=8)
-            if search_terms:
+            # 数学角度与跨领域角度仅在主查询召回不足时兜底执行，
+            # 避免冗余 embedding 调用拖慢响应、稀释检索焦点
+            results_math = []
+            if len(results_main or []) < 5 and search_terms:
                 results_math = vector_kb.search(
                     '公理 定理 引理 推导 证明 定义 假设 推论 ' + ' '.join(search_terms[:5]),
                     top_k=8
                 )
-            else:
-                results_math = []
+            results_nums = []
             if search_numbers:
                 results_nums = vector_kb.search(
                     '文章编号 ' + ' '.join(search_numbers[:3]),
                     top_k=6
                 )
-            else:
-                results_nums = []
-            # 新增：跨领域关联搜索（找与问题同主题的前后文和对称概念）
+            # 跨领域关联搜索（找与问题同主题的前后文和对称概念），仅作最后兜底
             results_cross = []
-            if search_terms:
+            if (len(results_main or []) + len(results_math or [])) < 6 and search_terms:
                 cross_query = '对称 对偶 逆 对应 变换 映射 相关 ' + ' '.join(search_terms[:3])
-                results_cross = vector_kb.search(cross_query, top_k=6) or []
-            # 合并去重（按id去重，保留距离最近的）
+                results_cross = vector_kb.search(cross_query, top_k=4) or []
+            # 合并去重（按 chunk_id 去重，保留距离最近的；无 id 的旧格式条目保留以防漏检）
             seen_ids = set()
             merged = []
             for r in (results_main or []) + (results_math or []) + (results_nums or []) + (results_cross or []):
-                rid = r.get('id', '')
+                rid = r.get('id', '') or r.get('metadata', {}).get('chunk_id', '')
                 if rid and rid not in seen_ids:
                     seen_ids.add(rid)
                     merged.append(r)
-            merged.sort(key=lambda x: x.get('distance', 1.0))
+                elif not rid:
+                    merged.append(r)
+            merged.sort(key=lambda x: (1 if x.get('_skeleton') else 0,
+                                       x.get('distance', 1.0)))
+            # 推导类任务：引用图骨架增强（骨架文章 chunk 插到最前）
+            _deriv_pat = re.compile(r'推导|证明|机制|来源|链条|如何|为什么|得出|导出|验证|完整')
+            if _deriv_pat.search(clean_query) and merged:
+                merged, _gchunks = vector_kb.enrich_with_graph(merged, search_query)
+                if _gchunks:
+                    logger.info(f"[VECTOR-GRAPH] 引用图骨架注入: {len(_gchunks)} 块")
             results = merged[:MAX_CHUNKS_PER_QUERY]
             logger.info(
                 f"[VECTOR-MULTI] 四角度检索: main={len(results_main or [])}, "
                 f"math={len(results_math or [])}, nums={len(results_nums or [])}, "
                 f"cross={len(results_cross or [])}, merge={len(results)}"
             )
-        else:
-            results = []
-        article_fnames = set()
-        if results:
-            articles_content, loaded_chunks = vector_kb.get_formatted_results(results)
-            # 提取所有检索到的文件名列表（用于让AI知道哪些文章存在）
-            for r in results:
-                meta = r.get('metadata', {})
-                fname = meta.get('fname', '')
-                if fname:
-                    article_fnames.add(fname)
-            # 在参考资料顶部插入文件名索引
-            if article_fnames:
-                fname_list = '\n'.join(sorted(article_fnames))
-                articles_content = f"【本次检索命中以下文章】\n{fname_list}\n\n{articles_content}"
-        if not articles_content:
-            logger.info(f"[VECTOR] 检索无结果: query='{clean_query[:80]}...', search='{search_query[:80]}', top_k={MAX_CHUNKS_PER_QUERY}, total_docs={vector_kb.total_docs}")
+            article_fnames = set()
+            if results:
+                articles_content, loaded_chunks = vector_kb.get_formatted_results(results)
+                # 提取所有检索到的文件名列表（用于让AI知道哪些文章存在）
+                for r in results:
+                    meta = r.get('metadata', {})
+                    fname = meta.get('fname', '')
+                    if fname:
+                        article_fnames.add(fname)
+                # 在参考资料顶部插入文件名索引（最多8个，节省token）
+                if article_fnames:
+                    fname_list = '\n'.join(sorted(article_fnames)[:8])
+                    articles_content = f"【本次检索命中以下文章】\n{fname_list}\n\n{articles_content}"
+            if not articles_content:
+                logger.info(f"[VECTOR] 检索无结果: query='{clean_query[:80]}...', search='{search_query[:80]}', top_k={MAX_CHUNKS_PER_QUERY}, total_docs={vector_kb.total_docs}")
+                # 防御性重试一次：embedding 偶发故障（限流/零向量）导致空结果时，短暂等待后重试主检索
+                if vector_kb.is_initialized:
+                    time.sleep(0.3)
+                    _retry = vector_kb.search(search_query, top_k=8)
+                    if _retry:
+                        _retry_content, _retry_chunks = vector_kb.get_formatted_results(_retry)
+                        if _retry_content:
+                            articles_content = _retry_content
+                            loaded_chunks = _retry_chunks
+                            logger.info(f"[VECTOR] 重试检索成功: {len(_retry)} 条")
+    except Exception as _vec_err:
+        logger.error(f"[VECTOR] 检索块异常，降级重试: {_vec_err}")
+        articles_content = ""
+        try:
+            _fallback = vector_kb.search(clean_query, top_k=MAX_CHUNKS_PER_QUERY)
+            if _fallback:
+                _content, _chunks = vector_kb.get_formatted_results(_fallback)
+                if _content:
+                    articles_content = _content
+                    loaded_chunks = _chunks
+                    logger.info(f"[VECTOR] 降级检索成功: {len(_fallback)} 条")
+        except Exception as _vec_err2:
+            logger.error(f"[VECTOR] 降级重试失败: {_vec_err2}")
     index_empty = not vector_kb.is_initialized or vector_kb.articles_count == 0
     search_no_result = not articles_content and vector_kb.is_initialized and vector_kb.articles_count > 0
 
     # v10 新增：从 corrections 和 patches 检索相关教学数据
+    # 用 search_query 检索（与主向量检索同文本，命中 embedding 缓存，不产生额外 API 调用）
     teaching_section = ""
     if teaching_system:
         try:
-            teaching_section = teaching_system.build_teaching_prompt_section(clean_query)
+            teaching_section = teaching_system.build_teaching_prompt_section(search_query if search_query else clean_query)
         except Exception as e:
             logger.error(f"[TEACH] 构建教学prompt段落失败: {e}")
 
@@ -1316,6 +1351,10 @@ def chat_completions():
         # 跳过中间层之前注入的文件消息
         if isinstance(content, str) and content.startswith(_FILE_INJECT_MARKER):
             continue
+        # 角色兼容：developer -> system（Open WebUI 特定角色，DeepSeek 不支持）
+        if role == 'developer':
+            role = 'system'
+            m['role'] = role
         # assistant 消息：即使 content 为空/null，如果有 tool_calls 也要保留
         if role == 'assistant' and m.get('tool_calls'):
             clean_messages.append(m)
@@ -1520,9 +1559,10 @@ def chat_completions():
     _requested_model = data.get('model', '')
     _selected_model = GAI_MODEL
     _query_lower = clean_query.lower() if clean_query else ""
-    # 简单问题特征：短查询、无公式、无专业术语
+    # 简单问题特征：短查询、无公式、无专业术语；检索类问题（找文章/查编号）也走轻量模型
+    _is_retrieval_query = any(kw in _query_lower for kw in ['哪篇文章', '哪些文章', '在哪些', '搜一搜', '哪篇', '有没有相关', '相关文章', '查编号'])
     _is_simple = (
-        len(clean_query) < 30 and
+        (len(clean_query) < 60 or _is_retrieval_query) and
         not any(kw in _query_lower for kw in ['定理', '推导', '证明', '公式', '计算', 'theta', 'lambda', '谱', '特征值', '作用量', '公理'])
         and not any(c in clean_query for c in ['∑', '∫', '∂', '∇', 'θ', 'λ'])
     )
@@ -1578,7 +1618,18 @@ def chat_completions():
     _model_lower = _selected_model.lower()
     _supports_tools = any(p in _model_lower for p in ['deepseek', 'gpt', 'qwen', 'glm', 'claude', 'gemini', 'chatglm', 'kimi', 'moonshot'])
     if _supports_tools and not _is_subagent:
-        api_params["tools"] = ARTICLE_TOOLS
+        if _is_simple:
+            # 简单问题（lite 模型）只注入核心工具，节省约 60% 工具定义 token
+            _lite_tool_names = {
+                'get_current_time', 'vector_search', 'view_article',
+                'list_articles', 'personal_read', 'chat_history',
+                'shell_execute', 'file_read', 'file_write', 'file_list'
+            }
+            _lite_tools = [t for t in ARTICLE_TOOLS if t['function']['name'] in _lite_tool_names]
+            api_params["tools"] = _lite_tools or ARTICLE_TOOLS
+            logger.info(f"[ROUTE] 简单问题注入精简工具集: {len(_lite_tools)}/{len(ARTICLE_TOOLS)} 个")
+        else:
+            api_params["tools"] = ARTICLE_TOOLS
     else:
         logger.info(f"[ROUTE] 模型 {_selected_model} 可能不支持 function calling，跳过工具注入")
     if _final_has_image:
@@ -1787,6 +1838,14 @@ if __name__ == '__main__':
     # 初始化 VectorKnowledgeBase 替代 GeometrySemanticField
     vector_kb = VectorKnowledgeBase(CHROMA_DB_DIR)
     if vector_kb.initialize():
+        # 全内存模式：文章全文 + 摘要图 + 引用图一次性载入（之后所有查找都在内存）
+        try:
+            _mem = vector_kb.preload_all(UPLOAD_FOLDER)
+            logger.info(f"[STARTUP] 全内存模式: {_mem['articles_in_memory']} 篇文章全文已载入 "
+                        f"({_mem['mb']} MB) | chunks={_mem['chunks']} | "
+                        f"摘要图={_mem['summary_map']} 引用边={_mem['graph_edges']}")
+        except Exception as _e:
+            logger.warning(f"[STARTUP] 全内存预热失败: {_e}")
         logger.info(f"[STARTUP] DEBUG: articles_count={vector_kb.articles_count}, UPLOAD_FOLDER={UPLOAD_FOLDER}, exists={os.path.exists(UPLOAD_FOLDER)}")
         # 如果 articles 集合为空，自动构建索引
         if vector_kb.articles_count == 0:
@@ -1859,5 +1918,13 @@ if __name__ == '__main__':
                     pass
     except (_sp.CalledProcessError, FileNotFoundError, ProcessLookupError, ValueError):
         pass
+
+    # 工作台常驻服务：全内存载入全部工作台状态（重启电脑 → 打开程序 → 自动载入 → 即用）
+    try:
+        _n_wb = _WorkbenchRegistry.instance().load_all()
+        logger.info(f"[STARTUP] 工作台常驻服务: {_n_wb} 个工作台已载入内存 "
+                    f"| 内存占用 {_WorkbenchRegistry.instance().memory_stats()}")
+    except Exception as _e:
+        logger.warning(f"[STARTUP] 工作台载入失败: {_e}")
 
     app.run(host='0.0.0.0', port=_port, debug=False)
