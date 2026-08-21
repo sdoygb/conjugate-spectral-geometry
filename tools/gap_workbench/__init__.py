@@ -22,3 +22,5 @@ from .templates import suggest_lines
 from .derive import DerivationFlow, suggest_derivation_lines
 
 __version__ = "0.2.0"
+
+from .service import WorkbenchRegistry, workbench_bp  # noqa: E402,F401

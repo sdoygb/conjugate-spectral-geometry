@@ -452,6 +452,7 @@ class VectorKnowledgeBase:
         self._articles_dir = ""  # articles 目录路径
         self._use_workspace = USE_WORKSPACE  # Workspace 中间层开关（转正）
         self._ws = None  # 中间层：emb矩阵/docs/metas/aids/summary_map/graph/sig
+        self._articles_text: Dict[str, str] = {}  # 全内存模式：文章全文缓存（key=文件名，mtime变更自动重载）
 
         # 根据配置选择 embedding function
         # 强制使用 SiliconFlow 1024 维，不允许回退到 ChromaDB 默认 384 维
@@ -705,6 +706,7 @@ class VectorKnowledgeBase:
                 raw = open(f, encoding='utf-8').read()
             except Exception:
                 continue
+            self._articles_text[base] = raw  # 全内存：全文缓存（mtime 变更时 sig 失效自动重载覆盖）
             # 摘要（编号 + 标题 + 摘要首句，去公式）
             title = ''
             _tm = re.search(r'^#\s+(.+)$', raw, re.M)
@@ -752,6 +754,92 @@ class VectorKnowledgeBase:
         ws['summary_map'] = summaries
         ws['graph'] = graph
         ws['sig'] = sig
+
+    # ---------- 全内存模式（中间层） ----------
+    def preload_all(self, articles_dir: str = "") -> dict:
+        """全内存预热：文章全文 + 摘要图 + 引用图一次性载入内存。
+        调用后，向量检索、文章读取、引用查询全部在内存完成。
+        返回统计（供启动日志）。"""
+        if articles_dir:
+            self._articles_dir = articles_dir
+        self.initialize()
+        self._workspace_scan_articles()
+        self._preload_recursive()  # 子目录 + 非编号文章全文也进内存
+        chars = sum(len(t) for t in self._articles_text.values())
+        ws = self._ws or {}
+        return {
+            "articles_in_memory": len(self._articles_text),
+            "chars": chars,
+            "mb": round(chars * 2 / 1e6, 1),  # UTF-8 中文约 2 字节/字符
+            "chunks": self.total_docs,
+            "summary_map": len(ws.get('summary_map', {})),
+            "graph_edges": sum(len(v) for v in ws.get('graph', {}).values()),
+            "articles_text_mb": round(chars * 2 / 1e6, 1),
+        }
+
+    def _preload_recursive(self) -> int:
+        """递归扫描全部子目录 .md，全文缓存进内存（排除归档等目录）。"""
+        base = self._articles_dir or UPLOAD_FOLDER
+        skip = {'.obsidian', 'Attachments', 'Templates', 'copilot', 'archive',
+                '.git', '__pycache__', 'articles_renumber_backup'}
+        n = 0
+        for root, dirs, files in os.walk(base):
+            dirs[:] = [d for d in dirs if d not in skip]
+            for f in files:
+                if not f.endswith('.md'):
+                    continue
+                rel = os.path.relpath(os.path.join(root, f), base)
+                if rel in self._articles_text:
+                    continue
+                try:
+                    raw = open(os.path.join(root, f), encoding='utf-8').read()
+                except Exception:
+                    continue
+                self._articles_text[rel] = raw
+                n += 1
+        return n
+
+    def refresh_article_cache(self, fpath: str, filename: str) -> None:
+        """文章已变更（write/append/edit 工具调用后）：刷新内存缓存。"""
+        key = filename if filename in self._articles_text else os.path.basename(filename)
+        if key not in self._articles_text:
+            key = os.path.relpath(fpath, self._articles_dir or UPLOAD_FOLDER)
+        try:
+            raw = open(fpath, encoding='utf-8').read()
+            self._articles_text[key] = raw
+        except Exception:
+            pass
+
+    def get_article_text(self, filename: str) -> Optional[str]:
+        """内存优先的文章全文读取（全内存模式）。
+        先精确 key，再 basename 兼容；miss 时读盘并缓存。"""
+        if filename in self._articles_text:
+            return self._articles_text[filename]
+        base = os.path.basename(filename)
+        if base in self._articles_text:
+            return self._articles_text[base]
+        # 子目录兼容：遍历 key 找 basename 匹配（子目录文章，全内存）
+        for _k, _v in self._articles_text.items():
+            if os.path.basename(_k) == base:
+                return _v
+        p = os.path.join(self._articles_dir or UPLOAD_FOLDER, filename)
+        if os.path.isfile(p):
+            try:
+                raw = open(p, encoding='utf-8').read()
+                self._articles_text[base] = raw
+                return raw
+            except Exception:
+                return None
+        return None
+
+    def memory_stats(self) -> dict:
+        """全内存数据统计。"""
+        chars = sum(len(t) for t in self._articles_text.values())
+        return {
+            "articles_in_memory": len(self._articles_text),
+            "articles_text_mb": round(chars * 2 / 1e6, 1),
+            "chunks": self.total_docs,
+        }
 
     def _workspace_query_results(self, qvec, n) -> Optional[dict]:
         """暴力检索 top-n，返回 ChromaDB query 兼容格式 {'documents': [[..]], 'metadatas': [[..]], 'distances': [[..]]}。

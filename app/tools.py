@@ -1594,8 +1594,12 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                         mt_str = _time_v.strftime("%m-%d %H:%M", _time_v.localtime(mt))
                         hint += f"  {mt_str}  {rel}\n"
                 return hint
-            with open(fpath, 'r', encoding='utf-8') as f:
-                content = f.read()
+            content = None
+            if vector_kb is not None and vector_kb.is_initialized:
+                content = vector_kb.get_article_text(actual_path)  # 全内存优先
+            if content is None:
+                with open(fpath, 'r', encoding='utf-8') as f:
+                    content = f.read()
             total = len(content)
 
             # 新增参数 section：按章节名跳转（自动扫描 ## 标题）
@@ -1834,9 +1838,10 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
 
                 new_size = len(file_content)
 
-                # 第四步：更新向量索引
+                # 第四步：更新向量索引 + 全内存缓存
                 if vector_kb and vector_kb.is_initialized:
                     vector_kb.index_single_file(fpath)
+                    vector_kb.refresh_article_cache(fpath, actual_path)  # 全内存：刷新缓存
 
                 # 第五步：git commit
                 _git_result = _auto_git_commit(actual_path, file_content)
