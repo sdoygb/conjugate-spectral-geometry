@@ -24,6 +24,7 @@ GAP_TYPES = {
     "CLAIM": "声称验证型",
     "FORMULA": "公式型",
     "CONSISTENCY": "一致性型",
+    "DERIVATION": "推导型",
 }
 
 

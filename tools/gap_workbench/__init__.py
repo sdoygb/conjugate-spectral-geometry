@@ -19,5 +19,6 @@ from .models import (
 )
 from .workbench import Workbench, WorkbenchError
 from .templates import suggest_lines
+from .derive import DerivationFlow, suggest_derivation_lines
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"

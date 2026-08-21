@@ -25,6 +25,7 @@ gap_workbench 命令行：5线程推理工作台 + 反向审计
 """
 from __future__ import annotations
 import argparse
+import json
 import os
 import sys
 
@@ -32,6 +33,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from gap_workbench import Workbench, WorkbenchError, suggest_lines  # noqa: E402
 from gap_workbench.report import build_report  # noqa: E402
+from gap_workbench.derive import DerivationFlow  # noqa: E402
 from gap_workbench.models import EV_VERIFIED, EV_FLAGGED, EV_FAILED, EV_OUTSCOPE  # noqa: E402
 
 STATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "state")
@@ -182,6 +184,63 @@ def cmd_report(args):
     print(md)
 
 
+
+def cmd_derive(args):
+    """一键推导工作流：建台 → 5线 → 验证器自动执行（结果全保留）→ 横向比较 → 收敛 → 审计 → 报告"""
+    anchors = [a.strip() for a in args.anchor.split("|") if a.strip()]
+    flow = DerivationFlow.create_task(args.id, args.title, anchors, args.target,
+                                      gap_type=args.gap_type)
+    verifiers = {}
+    if args.verifiers:
+        with open(args.verifiers, "r", encoding="utf-8") as f:
+            verifiers = json.load(f)
+    vout = flow.run_verifiers(verifiers)
+    cmp = flow.compare()
+    print(f"✅ 工作台 {args.id} 建台 + 5 线（{args.title}）")
+    for lid, info in vout.items():
+        mark = "✅" if info["ok"] else "❌"
+        extra = f"（{info.get('error','')[:40]}）" if not info["ok"] else ""
+        print(f"  {lid} {mark} {info.get('evidence','')}{extra}")
+    print("\n=== 横向比较 ===")
+    for l in cmp["lines"]:
+        note = (l["note"] or "")[:70]
+        print(f"  {l['id']}【{l['hypothesis']}】{l['status']}" + (f"：{note}" if note else ""))
+    if cmp["cross_support"]:
+        print("  交叉印证:", "；".join(
+            f"「{c['conclusion'][:30]}」←{','.join(c['lines'])}" for c in cmp["cross_support"]))
+    if cmp["dead_ends"]:
+        print("  死胡同:", ",".join(cmp["dead_ends"]))
+    if args.conclude:
+        chain = [c.strip() for c in args.chain.split(",") if c.strip()] if args.chain else []
+        support = [s.strip() for s in args.support.split(",") if s.strip()] if args.support else None
+        check = flow.converge(args.conclude, chain, support)
+        print(f"\n收敛：{'✅' if check['ok'] else '❌'} {check['reason']}")
+    if args.audit_now:
+        items, stats = flow.audit()
+        print(f"反向审计：✅{stats['verified']} ｜ ⚠️{stats['flagged']} ｜ ❌{stats['failed']} ｜ 📌{stats['outscope']}")
+    path = flow.save()
+    print(f"状态已保存：{path}")
+    if args.out:
+        flow.report(args.out)
+        print(f"报告已写入：{args.out}")
+
+
+def cmd_compare(args):
+    """横向比较现有工作台各线状态（状态/结论/交叉印证/死胡同）"""
+    wb = load_or_die(args.id)
+    flow = DerivationFlow(wb)
+    cmp = flow.compare()
+    for l in cmp["lines"]:
+        note = (l["note"] or "")[:80]
+        print(f"  {l['id']}【{l['hypothesis']}】{l['status']}" + (f"：{note}" if note else ""))
+        for r in l["results"]:
+            print(f"      {r['id']} {r['status']}：{r['content'][:60]}")
+    if cmp["cross_support"]:
+        print("交叉印证:", "；".join(
+            f"「{c['conclusion'][:30]}」←{','.join(c['lines'])}" for c in cmp["cross_support"]))
+    if cmp["dead_ends"]:
+        print("死胡同:", ",".join(cmp["dead_ends"]))
+
 def main():
     p = argparse.ArgumentParser(description="gap_workbench：5线程推理 + 反向审计")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -266,6 +325,25 @@ def main():
     add_common(sp)
     sp.add_argument("--out", default="")
     sp.set_defaults(func=cmd_report)
+
+    sp = sub.add_parser("derive", help="一键推导：建台→5线→验证器→比较→收敛→审计→报告")
+    sp.add_argument("--id", required=True)
+    sp.add_argument("--title", required=True)
+    sp.add_argument("--anchor", required=True, help="锚点，多个用 | 分隔")
+    sp.add_argument("--target", required=True)
+    sp.add_argument("--type", dest="gap_type", default="DERIVATION",
+                    choices=["DERIVATION", "NUMERIC", "CLAIM", "FORMULA", "CONSISTENCY"])
+    sp.add_argument("--verifiers", default="", help="验证器 JSON 文件（{线id: {code, source, dead_on_fail}}）")
+    sp.add_argument("--conclude", default="", help="收敛结论（提供则执行收敛判据）")
+    sp.add_argument("--chain", default="", help="结论依赖的证据 ID，逗号分隔")
+    sp.add_argument("--support", default="", help="支持结论的线 ID，逗号分隔")
+    sp.add_argument("--audit-now", dest="audit_now", action="store_true", help="执行反向审计")
+    sp.add_argument("--out", default="", help="报告输出路径（默认 state/<id>.md）")
+    sp.set_defaults(func=cmd_derive)
+
+    sp = sub.add_parser("compare", help="横向比较工作台各线状态")
+    add_common(sp)
+    sp.set_defaults(func=cmd_compare)
 
     args = p.parse_args()
     args.func(args)
