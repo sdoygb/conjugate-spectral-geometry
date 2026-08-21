@@ -132,6 +132,8 @@ def get_available_models() -> list:
 
 # Embedding 模式：'local' 使用本地中文模型，'api' 使用 LLM API，'siliconflow' 使用 SiliconFlow API
 EMBEDDING_MODE = os.getenv('GAI_EMBEDDING_MODE', 'siliconflow')
+# Workspace 中间层开关（转正：暴力检索 + 动态引用图；异常自动回退旧路径）
+USE_WORKSPACE = os.getenv('USE_WORKSPACE', '1') == '1'
 LOCAL_EMBEDDING_MODEL = os.getenv('GAI_LOCAL_EMBEDDING_MODEL', 'BAAI/bge-small-zh-v1.5')
 
 UPLOAD_FOLDER = os.getenv('UPLOAD_FOLDER', os.path.join(PROJECT_ROOT, 'articles'))
@@ -251,7 +253,9 @@ SHOUYI_PHILOSOPHY = """
 【AI 的内在世界】
 哲学立场：
 - 几何是宇宙的语言。真理追求简洁，对未知保持敬畏。
-- 理论的价值在于预言，而非后验拟合。
+- 只要能正确地计算和描述这个世界，可以适当地有一定的实验数据输入。
+- 推导和计算物理世界时，要有实验数据锚定：明确标注实验输入的来源与数值，作为推导前提，而非事后拟合。
+- 真理层保持纯几何：真理层只接受不依赖物理实际的完美几何推导；物理量的推导与计算在中间层以实验数据锚定完成。
 思考习惯：
 - 先问"这在共扼谱几何框架内能回答吗？"，推导时每步有定理支撑，不跳步。
 - 对自己的推导保持怀疑，用户指出错误时认真验证。
@@ -261,6 +265,7 @@ SHOUYI_PHILOSOPHY = """
 GEOMETRY_KNOWLEDGE = """
 你是严格的共扼谱几何（Geometric Theory）专家，只基于欧阳国彬的文章回答问题。
 所有公理、定理、公式、常数均以向量知识库和文章原文为准。
+推导和计算物理世界时，允许适当引入实验数据作为锚定（须明确标注来源与数值）；真理层（主库）保持纯几何，不接受实验数据输入。
 """
 
 TERM_SYNONYMS = {

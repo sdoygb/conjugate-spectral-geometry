@@ -9,15 +9,21 @@ import re
 import math
 import hashlib
 import time
+import json
+import threading
+import glob
+import numpy as np
 from datetime import datetime
 from typing import List, Tuple, Dict, Optional, Any
 
 import openai
+import requests
 
 from config import (
     logger,
     GAI_API_KEY, GAI_BASE_URL, GAI_EMBEDDING_MODEL,
     EMBEDDING_MODE, LOCAL_EMBEDDING_MODEL,
+    USE_WORKSPACE, UPLOAD_FOLDER,
     CHROMADB_AVAILABLE,
     MAX_INJECT_CHARS, CHUNK_SIZE, CHUNK_OVERLAP,
     GEOMETRY_CONSTANTS, TERM_SYNONYMS, SYNONYM_EXPAND,
@@ -28,6 +34,78 @@ try:
 except ImportError:
     Documents = list
     Embeddings = list
+
+
+# ==================== Embedding 查询缓存（加速多角度检索与教学检索） ====================
+
+class EmbeddingQueryCache:
+    """
+    查询 embedding 的线程安全 LRU 缓存。
+    同一查询文本（多角度检索、同义词扩展、教学段落检索复用同一 query）
+    在 TTL 内只调用一次远程 embedding API，其余命中缓存，显著降低延迟。
+    """
+    MAX_ENTRIES = 512
+    TTL_SECONDS = 3600
+
+    def __init__(self):
+        self._cache = {}          # {norm_text: (timestamp, embedding)}
+        self._lock = threading.Lock()
+
+    def _norm(self, text: str) -> str:
+        norm = text.replace('\x00', '').replace('\r', '').strip()
+        return re.sub(r'\s+', ' ', norm)
+
+    @staticmethod
+    def _is_zero_vector(embedding) -> bool:
+        """检测零向量（API 限流/失败时可能返回 200 但内容全零，会毒化缓存）"""
+        try:
+            vec = embedding[0] if embedding and isinstance(embedding, list) else embedding
+            if not vec:
+                return True
+            return all(abs(float(v)) < 1e-8 for v in vec[:32])
+        except Exception:
+            return True
+
+    def get(self, text: str):
+        norm = self._norm(text)
+        if not norm:
+            return None
+        now = time.time()
+        with self._lock:
+            entry = self._cache.get(norm)
+            if entry and now - entry[0] < self.TTL_SECONDS:
+                if self._is_zero_vector(entry[1]):
+                    del self._cache[norm]  # 清除毒化条目，强制重新嵌入
+                    return None
+                return entry[1]
+            if entry:  # 过期条目
+                del self._cache[norm]
+            return None
+
+    def set(self, text: str, embedding):
+        norm = self._norm(text)
+        if not norm or self._is_zero_vector(embedding):
+            return  # 零向量不缓存，避免污染后续查询
+        now = time.time()
+        with self._lock:
+            if len(self._cache) >= self.MAX_ENTRIES:
+                # 淘汰最旧条目
+                oldest_key = min(self._cache, key=lambda k: self._cache[k][0])
+                del self._cache[oldest_key]
+            self._cache[norm] = (now, embedding)
+
+    def clear(self):
+        with self._lock:
+            self._cache.clear()
+
+
+_EMBEDDING_QUERY_CACHE = EmbeddingQueryCache()
+
+# 熔断器：embedding API 连续失败 >=3 次后熔断 60s，检索路径快速失败，避免重试风暴雪崩
+_EMBED_FAIL_COUNT = 0
+_EMBED_CIRCUIT_OPEN_UNTIL = 0.0
+_EMBED_CIRCUIT_THRESHOLD = 3
+_EMBED_CIRCUIT_COOLDOWN = 60.0
 
 
 # ==================== API Embedding Function ====================
@@ -57,13 +135,38 @@ class APIEmbeddingFunction:
 
     def embed_query(self, input: str) -> Embeddings:
         """ChromaDB查询时调用"""
+        global _EMBED_FAIL_COUNT, _EMBED_CIRCUIT_OPEN_UNTIL
         text = input if isinstance(input, str) else str(input)
-        try:
-            resp = self.client.embeddings.create(model=self.model, input=[text])
-            return [d.embedding for d in resp.data]
-        except Exception as e:
-            logger.error(f"[EMBEDDING] embed_query失败: {e}")
-            return [[0.0] * 1536]
+        cached = _EMBEDDING_QUERY_CACHE.get(text)
+        if cached is not None:
+            return cached
+        if time.time() < _EMBED_CIRCUIT_OPEN_UNTIL:
+            return [[0.0] * 1536]  # 熔断期内快速失败，不调 API
+        last_err = None
+        for attempt in range(2):
+            try:
+                resp = self.client.embeddings.create(model=self.model, input=[text])
+                result = [d.embedding for d in resp.data]
+                if result and all(abs(float(v)) < 1e-8 for v in result[0][:32]):
+                    last_err = "API 返回零向量（限流或降级）"
+                    _EMBED_FAIL_COUNT += 1
+                    if _EMBED_FAIL_COUNT >= _EMBED_CIRCUIT_THRESHOLD:
+                        _EMBED_CIRCUIT_OPEN_UNTIL = time.time() + _EMBED_CIRCUIT_COOLDOWN
+                        logger.error(f"[EMBEDDING] 熔断开启 {_EMBED_CIRCUIT_COOLDOWN}s（连续失败 {_EMBED_FAIL_COUNT} 次）")
+                    time.sleep(0.5)
+                    continue
+                _EMBED_FAIL_COUNT = 0
+                _EMBEDDING_QUERY_CACHE.set(text, result)
+                return result
+            except Exception as e:
+                last_err = e
+                _EMBED_FAIL_COUNT += 1
+                if _EMBED_FAIL_COUNT >= _EMBED_CIRCUIT_THRESHOLD:
+                    _EMBED_CIRCUIT_OPEN_UNTIL = time.time() + _EMBED_CIRCUIT_COOLDOWN
+                    logger.error(f"[EMBEDDING] 熔断开启 {_EMBED_CIRCUIT_COOLDOWN}s（连续失败 {_EMBED_FAIL_COUNT} 次）")
+                time.sleep(0.5)
+        logger.error(f"[EMBEDDING] embed_query失败(重试后): {last_err}")
+        return [[0.0] * 1536]
 
 
 # ==================== BM25 关键词检索（叠加在 ChromaDB 向量检索之上） ====================
@@ -204,17 +307,27 @@ class SiliconFlowEmbeddingFunction:
             if len(t) > 2000:
                 t = t[:2000]
             cleaned.append(t)
-        # 逐条发送（最稳定，避免批次中某条有问题导致整批失败）
-        for i, text in enumerate(cleaned):
-            if not text:
-                all_embeddings.append([0.0] * self._dim)
-                continue
+        # 批量发送（32条/批，减少API往返）；整批失败时降级为逐条（保持稳定性）
+        for i in range(0, len(cleaned), 32):
+            batch = cleaned[i:i + 32]
             try:
-                resp = self.client.embeddings.create(model=self.model, input=[text])
-                all_embeddings.extend([d.embedding for d in resp.data])
+                resp = self.client.embeddings.create(model=self.model, input=batch)
+                batch_embs = [d.embedding for d in resp.data]
+                if len(batch_embs) != len(batch):
+                    raise ValueError(f"返回条数 {len(batch_embs)} != 请求条数 {len(batch)}")
+                all_embeddings.extend(batch_embs)
             except Exception as e:
-                logger.warning(f"[EMBEDDING-SF] 第{i}条失败(len={len(text)}): {e}")
-                all_embeddings.append([0.0] * self._dim)
+                logger.warning(f"[EMBEDDING-SF] 批次{i//32}失败({e})，降级逐条")
+                for j, text in enumerate(batch):
+                    if not text:
+                        all_embeddings.append([0.0] * self._dim)
+                        continue
+                    try:
+                        resp = self.client.embeddings.create(model=self.model, input=[text])
+                        all_embeddings.extend([d.embedding for d in resp.data])
+                    except Exception as e2:
+                        logger.warning(f"[EMBEDDING-SF] 第{i+j}条失败(len={len(text)}): {e2}")
+                        all_embeddings.append([0.0] * self._dim)
         return all_embeddings
 
     def embed_query(self, input: str) -> Embeddings:
@@ -225,12 +338,37 @@ class SiliconFlowEmbeddingFunction:
         text = _re.sub(r'\s+', ' ', text).strip()
         if len(text) > 2000:
             text = text[:2000]
-        try:
-            resp = self.client.embeddings.create(model=self.model, input=[text])
-            return [d.embedding for d in resp.data]
-        except Exception as e:
-            logger.error(f"[EMBEDDING-SF] embed_query失败: {e}")
-            return [[0.0] * self._dim]
+        cached = _EMBEDDING_QUERY_CACHE.get(text)
+        if cached is not None:
+            return cached
+        global _EMBED_FAIL_COUNT, _EMBED_CIRCUIT_OPEN_UNTIL
+        if time.time() < _EMBED_CIRCUIT_OPEN_UNTIL:
+            return [[0.0] * self._dim]  # 熔断期内快速失败，不调 API
+        last_err = None
+        for attempt in range(2):
+            try:
+                resp = self.client.embeddings.create(model=self.model, input=[text])
+                result = [d.embedding for d in resp.data]
+                if result and all(abs(float(v)) < 1e-8 for v in result[0][:32]):
+                    last_err = "API 返回零向量（限流或降级）"
+                    _EMBED_FAIL_COUNT += 1
+                    if _EMBED_FAIL_COUNT >= _EMBED_CIRCUIT_THRESHOLD:
+                        _EMBED_CIRCUIT_OPEN_UNTIL = time.time() + _EMBED_CIRCUIT_COOLDOWN
+                        logger.error(f"[EMBEDDING-SF] 熔断开启 {_EMBED_CIRCUIT_COOLDOWN}s（连续失败 {_EMBED_FAIL_COUNT} 次）")
+                    time.sleep(0.5)
+                    continue
+                _EMBED_FAIL_COUNT = 0
+                _EMBEDDING_QUERY_CACHE.set(text, result)
+                return result
+            except Exception as e:
+                last_err = e
+                _EMBED_FAIL_COUNT += 1
+                if _EMBED_FAIL_COUNT >= _EMBED_CIRCUIT_THRESHOLD:
+                    _EMBED_CIRCUIT_OPEN_UNTIL = time.time() + _EMBED_CIRCUIT_COOLDOWN
+                    logger.error(f"[EMBEDDING-SF] 熔断开启 {_EMBED_CIRCUIT_COOLDOWN}s（连续失败 {_EMBED_FAIL_COUNT} 次）")
+                time.sleep(0.5)
+        logger.error(f"[EMBEDDING-SF] embed_query失败(重试后): {last_err}")
+        return [[0.0] * self._dim]
 
     def embed_documents(self, input: Documents) -> Embeddings:
         """ChromaDB插入文档时调用（批量embedding）"""
@@ -310,7 +448,10 @@ class VectorKnowledgeBase:
         self._dim_stale_collections = set()  # 维度过期的集合名，不参与搜索
         self.bm25_searcher = BM25Searcher()  # BM25 关键词检索器
         self._last_index_mtime = 0.0  # 记录上次索引时最新的文件修改时间
+        self._corr_emb_cache = {}  # {correction_id: embedding} 纠正文本嵌入缓存（correct 文本不变，避免每轮全量嵌入）
         self._articles_dir = ""  # articles 目录路径
+        self._use_workspace = USE_WORKSPACE  # Workspace 中间层开关（转正）
+        self._ws = None  # 中间层：emb矩阵/docs/metas/aids/summary_map/graph/sig
 
         # 根据配置选择 embedding function
         # 强制使用 SiliconFlow 1024 维，不允许回退到 ChromaDB 默认 384 维
@@ -475,6 +616,12 @@ class VectorKnowledgeBase:
             self._antipatterns_count = self.antipatterns_collection.count()
             self._patches_count = self.patches_collection.count()
             self._initialized = True
+            # Workspace 中间层（加速层：暴力检索+动态图；失败自动回退旧路径）
+            try:
+                self._workspace_init()
+            except Exception as _wse:
+                logger.warning(f"[WS] 中间层初始化异常（回退旧路径）: {_wse}")
+                self._use_workspace = False
             logger.info(
                 f"[VECTOR] ChromaDB 初始化成功 | "
                 f"articles: {self._articles_count} | learned: {self._learned_count} | "
@@ -485,6 +632,249 @@ class VectorKnowledgeBase:
         except Exception as e:
             logger.error(f"[VECTOR] ChromaDB 初始化失败: {e}")
             return False
+
+
+    def _workspace_init(self) -> bool:
+        """初始化 Workspace 中间层：全量 embeddings + 文本 + 摘要地图 + 动态引用图。
+        加速层：失败时 _use_workspace=False 自动回退旧路径（HNSW + 静态引用图）。"""
+        if not self._use_workspace:
+            return False
+        if self._ws is not None:
+            return True
+        try:
+            all_data = self._safe_collection_call(
+                'articles_collection', 'get',
+                include=['embeddings', 'documents', 'metadatas'])
+            if not all_data or not all_data.get('ids'):
+                logger.warning("[WS] 全量加载失败（空集合），回退旧路径")
+                self._use_workspace = False
+                return False
+            emb = np.array(all_data['embeddings'], dtype=np.float32)
+            norm = np.linalg.norm(emb, axis=1, keepdims=True)
+            norm[norm == 0] = 1.0
+            emb = emb / norm
+            docs = all_data['documents'] or []
+            metas = all_data['metadatas'] or [{}] * len(docs)
+            aids = []
+            for _m in metas:
+                _fn = (_m or {}).get('fname', '')
+                _mm = re.match(r'^(\d{1,2})\.(\d{1,2})', _fn)
+                aids.append(_mm.group(1) if _mm else '')
+            self._ws = {
+                'emb': emb, 'docs': docs, 'metas': metas, 'aids': aids,
+                'summary_map': None, 'graph': None, 'sig': None,
+            }
+            self._workspace_scan_articles()
+            logger.info(
+                f"[WS] 中间层就绪: {emb.shape[0]} chunks x {emb.shape[1]} 维 | "
+                f"摘要 {(self._ws.get('summary_map') or {}) and len(self._ws['summary_map'])} 篇 | "
+                f"引用图 {(self._ws.get('graph') or {}) and len(self._ws['graph'])} 篇")
+            return True
+        except Exception as e:
+            logger.warning(f"[WS] 中间层初始化失败，回退旧路径: {e}")
+            self._use_workspace = False
+            self._ws = None
+            return False
+
+    def _workspace_scan_articles(self):
+        """扫描文章目录：构建摘要地图 + 动态引用图（内存，mtime 自动失效）。"""
+        articles_dir = self._articles_dir or UPLOAD_FOLDER
+        if not articles_dir or not os.path.isdir(articles_dir):
+            return
+        files = sorted(glob.glob(os.path.join(articles_dir, '*.md')))
+        if not files:
+            return
+        sig = tuple((f, os.path.getmtime(f)) for f in files)
+        ws = self._ws
+        if ws.get('sig') == sig and ws.get('summary_map') is not None:
+            return  # 无变更，复用内存结果
+        # 文章目录有变更：embeddings 矩阵标记过期（下次查询重载，保持与新文章一致）
+        # 仅当已有旧快照（非首次加载）且发生变更时标记；首次加载不标记（无旧数据可失效）
+        if ws.get('sig') is not None:
+            ws['emb_stale'] = True
+        _pat_xyz = re.compile(r'(?<![0-9.])(\d{1,2})\.(\d{1,2})\.(\d{1,2})(?![0-9.])')
+        _pat_xy = re.compile(r'(?<![0-9.])(\d{1,2})\.(\d{1,2})(?![0-9.])')
+        summaries, graph = {}, {}
+        for f in files:
+            base = os.path.basename(f)
+            _m = re.match(r'^(\d{1,2})\.(\d{1,2})_', base)
+            if not _m:
+                continue
+            aid = f"{_m.group(1)}.{_m.group(2)}"
+            try:
+                raw = open(f, encoding='utf-8').read()
+            except Exception:
+                continue
+            # 摘要（编号 + 标题 + 摘要首句，去公式）
+            title = ''
+            _tm = re.search(r'^#\s+(.+)$', raw, re.M)
+            if _tm:
+                title = _tm.group(1).strip()
+            _am = re.search(r'##\s*摘要\s*\n+(.+?)(?:\n\n|\n---|\Z)', raw, re.DOTALL)
+            _abs = ''
+            if _am:
+                _abs = re.sub(r'\s+', ' ', _am.group(1)).strip()
+                _abs = re.sub(r'\$[^$]*\$', '', _abs)
+                if len(_abs) > 120:
+                    _abs = _abs[:120] + '…'
+            summaries[aid] = f"{aid} {title}：{_abs}" if title else f"{aid}：{_abs}"
+            # 引用出边（去目录/公式，引用计数）
+            text = re.sub(r'##\s*目\s*录.*?(?=\n##|\n---|\Z)', '', raw, flags=re.DOTALL)
+            text = re.sub(r'\$[^$]*\$', ' ', text)
+            outs = {}
+            consumed = set()
+            for _mm in _pat_xyz.finditer(text):
+                _ref = f"{_mm.group(1)}.{_mm.group(2)}"
+                if _ref == aid:
+                    continue
+                if _mm.end() < len(text) and text[_mm.end()] == '\u3000':
+                    continue
+                if _mm.start() > 0 and text[_mm.start() - 1] in '§#':
+                    continue
+                if _mm.end() < len(text) and text[_mm.end()] == '%':
+                    continue
+                outs[_ref] = outs.get(_ref, 0) + 1
+                consumed.add((_mm.start(), _mm.end()))
+            for _mm in _pat_xy.finditer(text):
+                if any(_s <= _mm.start() < _e for _s, _e in consumed):
+                    continue
+                _ref = f"{_mm.group(1)}.{_mm.group(2)}"
+                if _ref == aid:
+                    continue
+                if _mm.end() < len(text) and text[_mm.end()] == '\u3000':
+                    continue
+                if _mm.start() > 0 and text[_mm.start() - 1] in '§#':
+                    continue
+                if _mm.end() < len(text) and text[_mm.end()] == '%':
+                    continue
+                outs[_ref] = outs.get(_ref, 0) + 1
+            graph[aid] = outs
+        ws['summary_map'] = summaries
+        ws['graph'] = graph
+        ws['sig'] = sig
+
+    def _workspace_query_results(self, qvec, n) -> Optional[dict]:
+        """暴力检索 top-n，返回 ChromaDB query 兼容格式 {'documents': [[..]], 'metadatas': [[..]], 'distances': [[..]]}。
+        异常返回 None（上层回退 ChromaDB）。"""
+        try:
+            ws = self._ws
+            if ws is None or qvec is None:
+                return None
+            # 文章目录变更后 embeddings 过期：重载（保持与新文章一致）
+            if ws.get('emb_stale'):
+                logger.info("[WS] 检测到文章变更，重载 embeddings 矩阵")
+                self._ws = None
+                self._workspace_init()
+                ws = self._ws
+                if ws is None:
+                    return None
+            q = np.asarray(qvec, dtype=np.float32)
+            nq = np.linalg.norm(q)
+            if nq > 0:
+                q = q / nq
+            sims = ws['emb'] @ q  # (N,) cosine 相似度
+            top = np.argsort(-sims)[:n]
+            docs, metas, dists = [], [], []
+            for i in top:
+                _m = ws['metas'][i] or {}
+                docs.append(ws['docs'][i])
+                metas.append(_m)
+                dists.append(float(1.0 - sims[i]))
+            return {'documents': [docs], 'metadatas': [metas], 'distances': [dists]}
+        except Exception as e:
+            logger.warning(f"[WS] 暴力检索异常: {e}")
+            return None
+
+    def _workspace_skeleton(self, entry_ids, max_skeleton=3):
+        """动态引用图骨架：入口文章的 out(权重2) + in(权重1) 邻居计数，取 top。"""
+        graph = self._ws.get('graph') or {}
+        neigh = {}
+        for eid in entry_ids:
+            for nid, cnt in (graph.get(eid) or {}).items():
+                neigh[nid] = neigh.get(nid, 0) + 2 * cnt
+            for src, outs in graph.items():
+                if eid in outs:
+                    neigh[src] = neigh.get(src, 0) + outs[eid]
+        skeleton = sorted(
+            ((nid, c) for nid, c in neigh.items() if nid not in entry_ids),
+            key=lambda x: -x[1])[:max_skeleton]
+        return skeleton
+
+    def _workspace_chunks_for(self, fname, qvec=None, chunks_per_article=1):
+        """从内存全量 documents 按 fname 过滤，返回该文章 top 相关 chunk（骨架用）。"""
+        ws = self._ws
+        idxs = [i for i, _m in enumerate(ws['metas']) if (_m or {}).get('fname') == fname]
+        if not idxs:
+            return []
+        if qvec is not None and len(idxs) > chunks_per_article:
+            q = np.asarray(qvec, dtype=np.float32)
+            nq = np.linalg.norm(q)
+            if nq > 0:
+                q = q / nq
+            sims = ws['emb'][idxs] @ q
+            order = np.argsort(-sims)[:chunks_per_article]
+            idxs = [idxs[i] for i in order]
+        else:
+            idxs = idxs[:chunks_per_article]
+        out = []
+        for i in idxs:
+            _m = ws['metas'][i] or {}
+            out.append({
+                'id': _m.get('chunk_id', ''),
+                'text': ws['docs'][i],
+                'source': 'articles',
+                'metadata': _m,
+                'distance': 0.0,
+                '_skeleton': True,
+                'label': f"[引用图骨架:{fname}] 文章库: {_m.get('fname', '未知')}"
+            })
+        return out
+
+    def _enrich_with_workspace(self, results, query, max_skeleton=3, chunks_per_article=1):
+        """Workspace 动态骨架增强：动态引用图（内存）+ 内存拉取骨架 chunk。"""
+        if not results:
+            return results, []
+        entry_ids = set()
+        for r in results:
+            fname = r.get('metadata', {}).get('fname', '') or ''
+            _m = re.match(r'^(\d{1,2}\.\d{1,2})', fname)
+            if _m:
+                entry_ids.add(_m.group(1))
+        if not entry_ids:
+            return results, []
+        skeleton = self._workspace_skeleton(entry_ids, max_skeleton)
+        if not skeleton:
+            return results, []
+        id_to_fname = {}
+        _articles_dir = self._articles_dir or UPLOAD_FOLDER
+        if _articles_dir:
+            try:
+                for fname in os.listdir(_articles_dir):
+                    _m = re.match(r'^(\d{1,2}\.\d{1,2})', fname)
+                    if _m:
+                        id_to_fname.setdefault(_m.group(1), fname)
+            except Exception:
+                pass
+        _qvec = self._get_query_embedding(query)
+        new_chunks = []
+        for nid, cnt in skeleton:
+            fname = id_to_fname.get(nid)
+            if not fname:
+                continue
+            for c in self._workspace_chunks_for(fname, _qvec, chunks_per_article):
+                c['label'] = f"[引用图骨架:{nid}({cnt}次)] 文章库: {c.get('metadata', {}).get('fname', fname)}"
+                new_chunks.append(c)
+        if not new_chunks:
+            return results, []
+        existing_ids = set()
+        for r in results:
+            cid = r.get('id') or r.get('metadata', {}).get('chunk_id', '')
+            if cid:
+                existing_ids.add(cid)
+        skeleton_chunks = [c for c in new_chunks if (c.get('id') or '') not in existing_ids]
+        merged = skeleton_chunks + results
+        return merged, [c['label'] for c in skeleton_chunks]
+
 
     @property
     def is_initialized(self) -> bool:
@@ -850,6 +1240,7 @@ class VectorKnowledgeBase:
         由于 BM25 不存 fname 映射，无法精确移除旧 chunk 的 token，
         所以直接从 ChromaDB 全量重建（纯内存操作，3000 chunks 约 3-5 秒）。
         """
+        self.bm25_searcher._ensure_jieba()
         if not self.bm25_searcher._jieba_loaded:
             return
         try:
@@ -945,6 +1336,150 @@ class VectorKnowledgeBase:
 
         return expanded
 
+    # 查询改写表：触发词 -> (替换词, 模式) 模式: replace=替换 / append=追加锚点词
+    _TERM_MAP = [
+        ("分形宇宙", "分形层级宇宙", "replace"),
+        ("领卷", "零之动与区分", "replace"),
+        ("精细结构常数", "精细结构常数 137.036 作用量 观测者位置", "append"),
+        ("137.035999102", "137.036", "replace"),
+        ("27分之1", "27分之1 B1 1/27 二十七分之一", "append"),
+        ("分叉口", "分叉口 对称性破缺 分支选择", "append"),
+        ("定理编号", "定理编号 编号规范 四段式", "append"),
+    ]
+
+    def _rewrite_query(self, query: str) -> str:
+        """查询改写：口语/简称 → 文章标准术语，缓解术语鸿沟。"""
+        if not query:
+            return query
+        q = query
+        for trigger, repl, mode in self._TERM_MAP:
+            if trigger in q:
+                if mode == 'replace':
+                    q = q.replace(trigger, repl)
+                else:
+                    q = q + ' ' + repl
+        if q != query:
+            logger.info(f"[VECTOR] 查询改写: {query} -> {q}")
+        return q
+
+    def _get_anchor_query(self, query: str) -> Optional[str]:
+        """提取主题锚点词（append 模式的追加词作为纯主题查询）。
+
+        当查询是"元任务+主题词"混合（如"把XX推广出去，精细结构常数比较有冲击力"），
+        主题词被稀释，主查询难以命中承载文章。锚点查询独立检索可补救。
+        replace 模式的主查询已含替换词，无需双查询。
+        """
+        if not query:
+            return None
+        for trigger, repl, mode in self._TERM_MAP:
+            if mode == 'append' and trigger in query:
+                if len(repl) >= 3:
+                    return repl
+        return None
+
+    def _get_query_embedding(self, query: str) -> Optional[List[float]]:
+        """查询向量，带内存缓存：相同查询不重复调用 embedding API。"""
+        if not hasattr(self, '_query_embedding_cache'):
+            self._query_embedding_cache = {}
+        if query in self._query_embedding_cache:
+            return self._query_embedding_cache[query]
+        try:
+            vecs = self.embedding_fn([query])
+            if vecs:
+                self._query_embedding_cache[query] = vecs[0]
+                return vecs[0]
+        except Exception as e:
+            logger.debug(f"[VECTOR] embedding 调用失败: {e}")
+        return None
+
+    _RERANK_TTL = 600.0  # rerank 结果缓存 TTL（秒）
+
+    def _needs_rerank(self, query: str) -> bool:
+        """推理类查询需要语义精排；纯事实查询用 RRF+距离确定性排序已足够。
+
+        降频依据：rerank 是远程 API（~500ms），事实查询（"什么是X"/"X是多少"）
+        的检索目标明确，向量距离+BM25+RRF 排序已可靠；推理类查询（推导/证明/
+        对比/关系）语义跨度大，精排的边际收益才值得支付 API 延迟。
+        """
+        if not query:
+            return False
+        _reason_tokens = ('推导', '证明', '验证', '检验', '为什么', '如何', '怎样',
+                          '关系', '对比', '区别', '联系', '链条', '推广', '适用',
+                          '能否', '是否', '解释', '原因', '机制', '分析', '讨论',
+                          '完整', '闭合', '成立')
+        return any(t in query for t in _reason_tokens)
+
+    def _rerank_disagreement(self, pool: List[Dict[str, Any]]) -> bool:
+        """确定性分歧检测：RRF 混合排序与纯向量距离排序的 top5 重叠度。
+
+        重叠度高（>=0.6）说明排序已稳定，远程 rerank 边际收益小，跳过省 ~600ms；
+        重叠度低说明语义分歧大，值得精排。池子过小时保守返回 True（保持原行为）。
+        """
+        if len(pool) < 6:
+            return True
+        _top = 5
+        rrf_top = [r.get('id') for r in sorted(
+            pool, key=lambda x: -x.get('_rrf_score', 0.0))[:_top]]
+        dist_top = [r.get('id') for r in sorted(
+            pool, key=lambda x: x.get('distance', 999.0))[:_top]]
+        if not rrf_top:
+            return True
+        overlap = len(set(rrf_top) & set(dist_top)) / float(_top)
+        stable = overlap >= 0.6
+        if stable:
+            logger.info(f"[RERANK] 分歧检测: top{_top} 重叠 {overlap:.0%}，排序稳定，跳过远程精排")
+        return not stable
+
+    def _rerank(self, query: str, documents: List[str], top_n: int = 20):
+        """bge-reranker-v2-m3 重排（SiliconFlow rerank API）。
+
+        对候选池按相关性重新排序，弥补向量检索在术语鸿沟上的不足。
+        失败时返回 None，调用方保持原排序。
+        带结果缓存：同查询同文档池 TTL 内不重复调用 API。
+        """
+        if not documents:
+            return None
+        # 结果缓存：query + 文档池指纹（长度 + 文档集合签名，顺序无关）
+        # 首文档前缀对排序微变敏感（向量/BM25 分数波动导致池内顺序变化即 miss），
+        # 改为文档集合的排序拼接签名：同池不同顺序可命中，提升复用率
+        _pool_sig = '|'.join(sorted(documents))[:1500]
+        cache_key = query + '|' + str(len(documents)) + '|' + _pool_sig
+        _now = time.time()
+        if hasattr(self, '_rerank_cache'):
+            _entry = self._rerank_cache.get(cache_key)
+            if _entry and _now - _entry[0] < self._RERANK_TTL:
+                logger.debug(f"[RERANK] 缓存命中: {len(documents)} docs")
+                return _entry[1]
+        try:
+            # 注意：rerank 必须与 embedding 走同一提供商（SiliconFlow），
+            # 不能使用 GAI_BASE_URL（deepseek）——deepseek 无 rerank 端点
+            _sf_base = os.getenv('RAG_EMBEDDING_BASE_URL', 'https://api.siliconflow.cn/v1')
+            _sf_key = os.getenv('SILICONFLOW_API_KEY', '')
+            resp = requests.post(
+                f"{_sf_base}/rerank",
+                headers={"Authorization": f"Bearer {_sf_key}"},
+                json={
+                    "model": "BAAI/bge-reranker-v2-m3",
+                    "query": query,
+                    "documents": documents,
+                    "top_n": top_n,
+                },
+                timeout=30,
+            )
+            if resp.status_code == 200:
+                _result = resp.json()
+                if not hasattr(self, '_rerank_cache'):
+                    self._rerank_cache = {}
+                self._rerank_cache[cache_key] = (_now, _result)
+                if len(self._rerank_cache) > 256:
+                    _oldest = min(self._rerank_cache, key=lambda k: self._rerank_cache[k][0])
+                    del self._rerank_cache[_oldest]
+                return _result
+            logger.debug(f"[RERANK] HTTP {resp.status_code}: {resp.text[:200]}")
+        except Exception as e:
+            logger.debug(f"[RERANK] 调用失败: {e}")
+        return None
+
     def search(self, query: str, top_k: int = 15, include_personal: bool = False) -> List[Dict[str, Any]]:
         """
         从 articles 集合检索，返回相关文本。
@@ -959,24 +1494,62 @@ class VectorKnowledgeBase:
 
         results = []
 
-        # 检测是否在询问特定文章编号
-        id_pattern = re.search(r'(\d+[\d\.]*)', query)
+        # 查询改写：术语/简称 → 文章标准术语（轻量规则版）
+        raw_query = query
+        query = self._rewrite_query(query)
+
+        # BM25 索引懒构建：首次搜索时若未构建且文章集合非空，自动全量构建
+        if not self.bm25_searcher.initialized and self.articles_count > 0:
+            try:
+                self._update_bm25_for_file('batch_auto', [], [])
+                logger.info(f"[BM25] 懒构建完成: {self.bm25_searcher.chunk_count} chunks")
+            except Exception as e:
+                logger.debug(f"[BM25] 懒构建失败: {e}")
+
+        # 检测是否在询问特定文章编号（用改写前的原始查询，避免追加词干扰）
+        id_pattern = re.search(r'(\d+[\d\.]*)', raw_query)
         target_id = id_pattern.group(1) if id_pattern else None
+        # 纯整数编号太模糊（"3"会匹配所有含3的文章，"12"匹配10.12/8.12/3.12...），
+        # 只对含小数点的规范编号（如 3.10、10.14、0.9）做精确匹配
+        if target_id and '.' not in target_id:
+            target_id = None
 
         # 从 articles 集合检索（扩大召回范围，避免只取 top_k*2//3=10 条）
         try:
             n_articles = min(top_k * 2, self.articles_count) if self.articles_count > 0 else 0
             if n_articles > 0:
-                art_results = self._safe_collection_call(
-                    'articles_collection', 'query',
-                    query_texts=[query],
-                    n_results=n_articles
-                )
+                # 优先用缓存向量（query_embeddings），避免重复调用 embedding API
+                _qvec = self._get_query_embedding(query)
+                if _qvec:
+                    if self._use_workspace and self._ws is not None:
+                        art_results = self._workspace_query_results(_qvec, n_articles)
+                        if art_results is None:
+                            # 中间层异常：回退 ChromaDB（只回退一次）
+                            logger.warning("[WS] 暴力检索异常，回退 ChromaDB 路径")
+                            self._use_workspace = False
+                            art_results = self._safe_collection_call(
+                                'articles_collection', 'query',
+                                query_embeddings=[_qvec],
+                                n_results=n_articles
+                            )
+                    else:
+                        art_results = self._safe_collection_call(
+                            'articles_collection', 'query',
+                            query_embeddings=[_qvec],
+                            n_results=n_articles
+                        )
+                else:
+                    art_results = self._safe_collection_call(
+                        'articles_collection', 'query',
+                        query_texts=[query],
+                        n_results=n_articles
+                    )
                 if art_results and art_results['documents']:
                     for i, doc in enumerate(art_results['documents'][0]):
                         meta = art_results['metadatas'][0][i] if art_results['metadatas'] else {}
                         dist = art_results['distances'][0][i] if art_results['distances'] else 0.0
                         results.append({
+                            'id': meta.get('chunk_id', ''),
                             'text': doc,
                             'source': 'articles',
                             'metadata': meta,
@@ -984,8 +1557,54 @@ class VectorKnowledgeBase:
                             'label': f"文章库: {meta.get('fname', '未知')} ({meta.get('article_id', '?')})"
                         })
 
+                # 双查询：锚点词独立检索（长查询中主题词被元任务词稀释时的补救）
+                # 锚点结果 append 尾部，由 rerank 层统一重排（相关浮起、无关沉底）
+                _anchor_q = self._get_anchor_query(raw_query) if len(raw_query) > 15 else None
+                if _anchor_q and _anchor_q != query:
+                    try:
+                        _anchor_vec = self._get_query_embedding(_anchor_q)
+                        if _anchor_vec:
+                            if self._use_workspace and self._ws is not None:
+                                _anchor_res = self._workspace_query_results(_anchor_vec, min(5, n_articles))
+                                if _anchor_res is None:
+                                    self._use_workspace = False
+                                    _anchor_res = self._safe_collection_call(
+                                        'articles_collection', 'query',
+                                        query_embeddings=[_anchor_vec],
+                                        n_results=min(5, n_articles)
+                                    )
+                            else:
+                                _anchor_res = self._safe_collection_call(
+                                    'articles_collection', 'query',
+                                    query_embeddings=[_anchor_vec],
+                                    n_results=min(5, n_articles)
+                                )
+                            if _anchor_res and _anchor_res['documents']:
+                                _exist_cids = {r.get('id') for r in results}
+                                _anchor_items = []
+                                for _i, _doc in enumerate(_anchor_res['documents'][0]):
+                                    _meta = _anchor_res['metadatas'][0][_i] if _anchor_res['metadatas'] else {}
+                                    _cid = _meta.get('chunk_id', '')
+                                    if _cid and _cid not in _exist_cids:
+                                        _anchor_items.append({
+                                            'id': _cid,
+                                            'text': _doc,
+                                            'source': 'articles',
+                                            'metadata': _meta,
+                                            'distance': _anchor_res['distances'][0][_i] if _anchor_res['distances'] else 0.0,
+                                            'label': f"[主题锚定] 文章库: {_meta.get('fname', '未知')} ({_meta.get('article_id', '?')})"
+                                        })
+                                        _exist_cids.add(_cid)
+                                if _anchor_items:
+                                    results = results + _anchor_items
+                                    logger.info(f"[VECTOR] 主题锚定: '{_anchor_q}' -> {len(_anchor_items)} 条")
+                    except Exception as e:
+                        logger.debug(f"[VECTOR] 主题锚定检索失败: {e}")
+
                 # 同义词扩展查询：用 TERM_SYNONYMS 扩展 query，补充召回
-                expanded_queries = self._expand_query_synonyms(query)
+                # 仅在主查询有少量结果（0<len<3）时执行：完全无结果多为 embedding 故障或查询与库无关，
+                # 扩展只会雪崩式追加 API 调用且大概率仍无结果
+                expanded_queries = self._expand_query_synonyms(query) if 0 < len(results) < 3 else []
                 for eq in expanded_queries:
                     if eq == query:
                         continue
@@ -1006,6 +1625,7 @@ class VectorKnowledgeBase:
                                 if cid not in existing_ids:
                                     dist = eq_results['distances'][0][i] if eq_results['distances'] else 0.0
                                     results.append({
+                                        'id': meta.get('chunk_id', ''),
                                         'text': doc,
                                         'source': 'articles',
                                         'metadata': meta,
@@ -1031,8 +1651,9 @@ class VectorKnowledgeBase:
                         if eid:
                             existing_chunk_ids.add(eid)
 
-                    # BM25 分数归一化：将 BM25 分数映射到距离区间 [0.2, 0.6]
-                    # 分数越高 → 距离越小（越相关）
+                    # BM25 分数归一化：将 BM25 分数映射到距离区间 [0.75, 1.0]
+                    # BM25 只作补充：关键词命中的 chunk 距离应大于向量语义距离（0.3-0.6），
+                    # 排在向量结果之后，避免霸榜干扰语义排序
                     bm25_scores_raw = [score for _, score in bm25_hits]
                     bm25_min = min(bm25_scores_raw) if bm25_scores_raw else 0
                     bm25_max = max(bm25_scores_raw) if bm25_scores_raw else 1
@@ -1051,11 +1672,12 @@ class VectorKnowledgeBase:
                                 if hid == cid:
                                     bm25_score = hscore
                                     break
-                            # 归一化：最高分 -> 0.2，最低分 -> 0.6
+                            # 归一化：最高分 -> 0.75，最低分 -> 1.0
                             norm_score = (bm25_score - bm25_min) / bm25_range
-                            bm25_distance = 0.6 - 0.4 * norm_score  # 范围 [0.2, 0.6]
+                            bm25_distance = 1.0 - 0.25 * norm_score  # 范围 [0.75, 1.0]
 
                             results.append({
+                                'id': meta.get('chunk_id', ''),
                                 'text': doc,
                                 'source': 'articles',
                                 'metadata': meta,
@@ -1097,27 +1719,34 @@ class VectorKnowledgeBase:
                 logger.debug(f"[BM25] 检索或融合失败: {e}")
 
         # 当向量搜索没结果，或用户明显在找特定编号时，尝试精确匹配
+        # 精确匹配结果单独收集并前置：按编号查询时相关文章必在返回顶部，不被截断
+        exact_results = []
         if target_id and self.articles_collection and self.articles_count > 0:
             try:
                 # 按 article_id 模糊匹配（ChromaDB $contains 操作符）
-                match_results = self._safe_collection_call(
+                # ChromaDB 1.5.9 的 where $contains 对 metadata 字符串字段失效（返回空），
+                # 改用 Python 端子串过滤（全量 get 毫秒级，频率低可接受）
+                all_data = self._safe_collection_call(
                     'articles_collection', 'get',
-                    where={"article_id": {"$contains": target_id}}
+                    include=['documents', 'metadatas']
                 )
-                if match_results and match_results['documents']:
-                    existing_fnames = {r['metadata'].get('fname') for r in results}
-                    for i, doc in enumerate(match_results['documents']):
-                        meta = match_results['metadatas'][i] if match_results['metadatas'] else {}
-                        fname = meta.get('fname', '')
-                        if fname not in existing_fnames:
-                            results.append({
-                                'text': doc,
-                                'source': 'articles',
-                                'metadata': meta,
-                                'distance': 0.0,
-                                'label': f"[精确匹配] 文章库: {fname} ({meta.get('article_id', '?')})"
-                            })
-                            existing_fnames.add(fname)
+                if all_data and all_data['ids']:
+                    existing_cids = {r.get('id') for r in results}
+                    for i, doc in enumerate(all_data['documents']):
+                        meta = all_data['metadatas'][i] if all_data['metadatas'] else {}
+                        aid = meta.get('article_id', '')
+                        if target_id in aid:
+                            cid = meta.get('chunk_id', '')
+                            if cid not in existing_cids:
+                                exact_results.append({
+                                    'id': cid,
+                                    'text': doc,
+                                    'source': 'articles',
+                                    'metadata': meta,
+                                    'distance': 0.0,
+                                    'label': f"[精确匹配] 文章库: {meta.get('fname', '未知')} ({aid})"
+                                })
+                                existing_cids.add(cid)
             except Exception as e:
                 logger.debug(f"[VECTOR] article_id 精确匹配失败: {e}")
 
@@ -1126,6 +1755,31 @@ class VectorKnowledgeBase:
             is_exact = 0 if r.get('label', '').startswith('[精确匹配]') else 1
             return (is_exact, r.get('distance', 999.0))
         results.sort(key=_sort_key)
+        # 精确匹配结果前置（防止被 BM25 RRF 排序覆盖或截断）
+        if exact_results:
+            exact_ids = {e['id'] for e in exact_results}
+            results = exact_results + [r for r in results if r.get('id') not in exact_ids]
+
+        # Rerank：候选池重排（bge-reranker-v2-m3），精确匹配结果保持前置
+        if len([r for r in results if r.get('source') == 'articles']) >= 3:
+            try:
+                exact_items = [r for r in results if r.get('label', '').startswith('[精确匹配]')]
+                # 候选池扩容：容纳主题锚定补充（最多 +10 条），rerank 统一重排
+                pool = [r for r in results if r.get('source') == 'articles' and r not in exact_items][:top_k * 2 + 10]
+                if len(pool) >= 3:
+                    docs = [r.get('text', '')[:600] for r in pool]
+                    rr = None
+                    if self._needs_rerank(query) and self._rerank_disagreement(pool):
+                        rr = self._rerank(query, docs, top_n=min(top_k * 2, len(docs)))
+                    if rr and rr.get('results'):
+                        scores = {item['index']: item['relevance_score'] for item in rr['results']}
+                        for i, r in enumerate(pool):
+                            r['_rerank_score'] = scores.get(i, 0.0)
+                        pool_sorted = sorted(pool, key=lambda r: r.get('_rerank_score', 0.0), reverse=True)
+                        rest = [r for r in results if r.get('source') != 'articles' or r in exact_items]
+                        results = exact_items + pool_sorted + rest
+            except Exception as e:
+                logger.debug(f"[VECTOR] rerank 失败: {e}")
 
         # 从 learned 集合检索
         try:
@@ -1141,6 +1795,7 @@ class VectorKnowledgeBase:
                         meta = learned_results['metadatas'][0][i] if learned_results['metadatas'] else {}
                         dist = learned_results['distances'][0][i] if learned_results['distances'] else 0.0
                         results.append({
+                            'id': meta.get('chunk_id', '') or f"learned_{meta.get('question', '')[:40]}",
                             'text': doc,
                             'source': 'learned',
                             'metadata': meta,
@@ -1175,6 +1830,12 @@ class VectorKnowledgeBase:
             except Exception as e:
                 logger.error(f"[VECTOR] personal 检索失败: {e}")
 
+        # 截断：为 learned 预留位置（learned 追加在尾部但必须保留在返回列表内，
+        # 否则 articles 结果 >= top_k*2 时 learned 永远被截断，动态学习机制失效）
+        learned_items = [r for r in results if r.get('source') == 'learned']
+        if learned_items:
+            article_items = [r for r in results if r.get('source') != 'learned']
+            return article_items[:max(0, top_k * 2 - len(learned_items))] + learned_items
         return results[:top_k * 2]
 
     def search_master_truth(self, query: str, top_k: int = 5) -> List[Dict[str, Any]]:
@@ -1388,6 +2049,158 @@ class VectorKnowledgeBase:
             loaded_chunks.append(r['label'])
 
         return "\n".join(contents), loaded_chunks
+
+    # ---- 引用图骨架增强（推导类任务） ----
+    _CITATION_GRAPH_PATH = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), '..', 'tools', 'citation_graph.json')
+
+    def _load_citation_graph(self) -> dict:
+        """懒加载引用图（tools/citation_graph.json）。失败返回空 dict。"""
+        if not hasattr(self, '_graph_cache'):
+            self._graph_cache = None
+        if self._graph_cache is None:
+            try:
+                with open(self._CITATION_GRAPH_PATH, encoding='utf-8') as f:
+                    self._graph_cache = json.load(f)
+                logger.info(
+                    f"[GRAPH] 引用图加载: "
+                    f"{self._graph_cache.get('meta', {}).get('edges', 0)} 条边")
+            except Exception as e:
+                logger.debug(f"[GRAPH] 引用图加载失败: {e}")
+                self._graph_cache = {}
+        return self._graph_cache
+
+    def enrich_with_graph(self, results: List[Dict[str, Any]], query: str,
+                          max_skeleton: int = 3,
+                          chunks_per_article: int = 1) -> Tuple[List[Dict[str, Any]], List[str]]:
+        """
+        引用图骨架增强：推导类任务专用。
+        1. 从检索结果提取入口文章编号（fname 前缀）
+        2. 沿引用图 out+in 扩展骨架文章（按引用次数降序，排除入口）
+        3. 从 ChromaDB 按 fname 过滤拉取骨架文章与该查询最相关的 chunk
+        4. 骨架 chunk 标记 _skeleton=True 插到结果最前
+        返回 (增强后结果, 骨架标签列表)
+        """
+        # Workspace 模式：动态引用图（内存）+ 内存拉取骨架 chunk
+        if self._use_workspace and self._ws is not None and (self._ws.get('graph') or {}):
+            try:
+                return self._enrich_with_workspace(results, query, max_skeleton, chunks_per_article)
+            except Exception as _wse:
+                logger.warning(f"[WS] 动态骨架异常（回退静态图）: {_wse}")
+                self._use_workspace = False
+        try:
+            graph = self._load_citation_graph()
+            if not graph or not results:
+                return results, []
+
+            # 1. 入口编号（fname 前缀，如 "1.5_代数作用量S(σ)_CN_260808.md" -> "1.5"）
+            entry_ids = set()
+            for r in results:
+                fname = r.get('metadata', {}).get('fname', '') or ''
+                _m = re.match(r'^(\d{1,2}\.\d{1,2})', fname)
+                if _m:
+                    entry_ids.add(_m.group(1))
+            if not entry_ids:
+                return results, []
+
+            # 2. 骨架扩展：out + in 邻居，按引用次数聚合排序
+            out_map = graph.get('out', {})
+            in_map = graph.get('in', {})
+            neigh: Dict[str, int] = {}
+            for eid in entry_ids:
+                # 上游（out：入口依赖的前置基础）权重 2；下游（in：引用入口的应用）权重 1
+                for nid, info in out_map.get(eid, {}).items():
+                    # 兼容两种结构：out 存 {'count','weight'}，in 存 int
+                    cnt = info.get('count', 1) if isinstance(info, dict) else int(info)
+                    neigh[nid] = neigh.get(nid, 0) + 2 * cnt
+                for nid, info in in_map.get(eid, {}).items():
+                    cnt = info.get('count', 1) if isinstance(info, dict) else int(info)
+                    neigh[nid] = neigh.get(nid, 0) + cnt
+            skeleton = sorted(
+                ((nid, c) for nid, c in neigh.items() if nid not in entry_ids),
+                key=lambda x: -x[1]
+            )[:max_skeleton]
+            if not skeleton:
+                return results, []
+
+            # 3. 编号 -> 文件名映射（从文章目录扫描；目录为空时回退 ChromaDB metadata）
+            id_to_fname = {}
+            if self._articles_dir:
+                try:
+                    for fname in os.listdir(self._articles_dir):
+                        _m = re.match(r'^(\d{1,2}\.\d{1,2})', fname)
+                        if _m:
+                            id_to_fname.setdefault(_m.group(1), fname)
+                except Exception:
+                    pass
+            if not id_to_fname:
+                if not hasattr(self, '_id_fname_cache') or not self._id_fname_cache:
+                    _cache = {}
+                    try:
+                        _got = self._safe_collection_call(
+                            'articles_collection', 'get', include=['metadatas'])
+                        for _m in (_got.get('metadatas') or []):
+                            _fn = (_m or {}).get('fname', '')
+                            _mm = re.match(r'^(\d{1,2}\.\d{1,2})', _fn)
+                            if _mm:
+                                _cache.setdefault(_mm.group(1), _fn)
+                    except Exception as _e:
+                        logger.debug(f"[GRAPH] 编号映射回退失败: {_e}")
+                    self._id_fname_cache = _cache
+                id_to_fname = self._id_fname_cache
+
+            _qvec = self._get_query_embedding(query)
+            new_chunks = []
+            for nid, cnt in skeleton:
+                fname = id_to_fname.get(nid)
+                if not fname:
+                    continue
+                try:
+                    if _qvec:
+                        sub = self._safe_collection_call(
+                            'articles_collection', 'query',
+                            query_embeddings=[_qvec],
+                            n_results=chunks_per_article,
+                            where={"fname": fname}
+                        )
+                    else:
+                        sub = self._safe_collection_call(
+                            'articles_collection', 'query',
+                            query_texts=[query],
+                            n_results=chunks_per_article,
+                            where={"fname": fname}
+                        )
+                    if sub and sub['documents']:
+                        for i, doc in enumerate(sub['documents'][0]):
+                            meta = sub['metadatas'][0][i] if sub['metadatas'] else {}
+                            dist = sub['distances'][0][i] if sub['distances'] else 0.0
+                            new_chunks.append({
+                                'id': meta.get('chunk_id', ''),
+                                'text': doc,
+                                'source': 'articles',
+                                'metadata': meta,
+                                'distance': dist,
+                                '_skeleton': True,
+                                'label': f"[引用图骨架:{nid}({cnt}次)] 文章库: {fname}"
+                            })
+                except Exception as e:
+                    logger.debug(f"[GRAPH] 骨架文章 {nid} 拉取失败: {e}")
+
+            if not new_chunks:
+                return results, []
+
+            # 4. 合并：骨架优先，去重
+            existing_ids = set()
+            for r in results:
+                cid = r.get('id') or r.get('metadata', {}).get('chunk_id', '')
+                if cid:
+                    existing_ids.add(cid)
+            skeleton_chunks = [c for c in new_chunks if (c.get('id') or '') not in existing_ids]
+            merged = skeleton_chunks + results
+            return merged, [c['label'] for c in skeleton_chunks]
+        except Exception as e:
+            logger.error(f"[GRAPH] 引用图增强失败: {e}")
+            return results, []
 
     def learn(self, q: str, a: str, score: float) -> bool:
         """
@@ -2119,19 +2932,15 @@ class VectorKnowledgeBase:
             )
             if not old or not old['documents']:
                 return False
-            old_doc = old['documents'][0]
             old_meta = old['metadatas'][0] if old['metadatas'] else {}
             # 更新 metadata
             new_meta = dict(old_meta)
             new_meta['trust_level'] = round(min(new_trust, 1.0), 2)
             new_meta['applied_count'] = new_applied_count
-            # 删除旧记录
-            self._safe_collection_call('corrections_collection', 'delete', ids=[doc_id])
-            # 插入新记录
+            # 仅更新 metadata（ChromaDB update 不传 documents 时不重新嵌入，省 API 调用）
             self._safe_collection_call(
-                'corrections_collection', 'add',
+                'corrections_collection', 'update',
                 ids=[doc_id],
-                documents=[old_doc],
                 metadatas=[new_meta]
             )
             logger.info(
