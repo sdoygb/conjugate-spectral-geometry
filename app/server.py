@@ -52,7 +52,7 @@ from tools import (ARTICLE_TOOLS, execute_tool_call, parse_and_execute_tools, OP
 from stream import stream_generate
 from admin_routes import admin_bp
 from share_routes import share_bp
-from tools.gap_workbench.service import workbench_bp as _workbench_bp, WorkbenchRegistry as _WorkbenchRegistry
+from gap_workbench.service import workbench_bp as _workbench_bp, WorkbenchRegistry as _WorkbenchRegistry
 
 app = Flask(__name__)
 app.register_blueprint(admin_bp)
