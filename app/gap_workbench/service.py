@@ -14,6 +14,15 @@ API（挂载于 /api/workbench）：
   POST /api/workbench/<id>/audit     反向审计
   GET  /api/workbench/<id>/report    Markdown 报告
   POST /api/workbench/<id>/save     持久化写回磁盘
+
+推导会话（过程数据全内存暂存，finalize 才写盘）：
+  POST /api/workbench/session                 开新推导会话（内存）
+  POST /api/workbench/session/<sid>/round     记录一轮推导产出（文字/数值，可关联线）
+  POST /api/workbench/session/<sid>/artifact  记录定理/公式/表格草稿
+  POST /api/workbench/session/<sid>/link      关联 5 线工作台
+  GET  /api/workbench/session/<sid>           查看完整推导过程（内存）
+  GET  /api/workbench/session                 会话列表
+  POST /api/workbench/session/<sid>/finalize  收敛完成，一次性写盘快照
 """
 from __future__ import annotations
 
@@ -24,6 +33,7 @@ from typing import Dict, List, Optional
 
 from .workbench import Workbench
 from .derive import DerivationFlow
+from .session import DerivationSession, SessionStore, _now
 
 _STATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "state")
 
@@ -128,6 +138,13 @@ class WorkbenchRegistry:
         items, stats = ([], {}) if not audit_now else flow.audit()
         md = flow._build_report_md()
         self.save(gap_id)  # 持久化快照（内存仍为权威）
+        # 自动会话：全流程过程数据已在内存（derive 内嵌记录）；收敛成功才归档写盘
+        session = SessionStore.instance().get(gap_id)
+        if check and check.get("ok"):
+            try:
+                flow.finalize_session()
+            except Exception:
+                pass
         return {
             "id": gap_id,
             "verifiers": vout,
@@ -135,8 +152,11 @@ class WorkbenchRegistry:
             "converge": check,
             "audit_stats": stats,
             "report_md": md,
+            "session": session.summary() if session else None,
             "state_path": os.path.join(self._state_dir, f"{gap_id}.json"),
         }
+
+
 
 
 def _make_blueprint():
@@ -188,10 +208,16 @@ def _make_blueprint():
         if wb is None:
             return jsonify({"error": "不在内存"}), 404
         data = request.get_json(force=True, silent=True) or {}
-        check = DerivationFlow(wb).converge(data.get("conclusion", ""),
-                                            data.get("chain", []),
-                                            data.get("support"))
+        flow = DerivationFlow(wb)
+        check = flow.converge(data.get("conclusion", ""),
+                              data.get("chain", []),
+                              data.get("support"))
         reg.save(gid)
+        if check.get("ok"):
+            try:
+                flow.finalize_session()
+            except Exception:
+                pass
         return jsonify({"ok": True, "converge": check})
 
     @bp.post("/<gid>/audit")
@@ -220,6 +246,76 @@ def _make_blueprint():
             return jsonify({"ok": True, "path": p})
         except KeyError:
             return jsonify({"error": "不在内存"}), 404
+
+
+    # ---------- 推导会话（过程数据全内存暂存） ----------
+    store = SessionStore.instance()
+
+    @bp.post("/session")
+    def api_session_create():
+        data = request.get_json(force=True, silent=True) or {}
+        sid = data.get("id", "")
+        if not sid:
+            return jsonify({"error": "缺少 id"}), 400
+        if store.get(sid) is not None:
+            return jsonify({"ok": True, "session": store.get(sid).summary()})
+        s = store.create(sid, data.get("title", sid), data.get("target", ""),
+                         data.get("anchors"))
+        return jsonify({"ok": True, "session": s.summary()})
+
+    @bp.get("/session")
+    def api_session_list():
+        return jsonify({"ok": True, "sessions": store.list(),
+                        "memory": store.memory_stats()})
+
+    @bp.post("/session/<sid>/round")
+    def api_session_round(sid):
+        s = store.get(sid)
+        if s is None:
+            return jsonify({"error": f"会话 {sid} 不在内存"}), 404
+        data = request.get_json(force=True, silent=True) or {}
+        if not data.get("content"):
+            return jsonify({"error": "缺少 content"}), 400
+        r = s.add_round(data["content"], data.get("line_id", ""), data.get("kind", "推导"))
+        return jsonify({"ok": True, "round": r})
+
+    @bp.post("/session/<sid>/artifact")
+    def api_session_artifact(sid):
+        s = store.get(sid)
+        if s is None:
+            return jsonify({"error": f"会话 {sid} 不在内存"}), 404
+        data = request.get_json(force=True, silent=True) or {}
+        if not data.get("name") or not data.get("content"):
+            return jsonify({"error": "缺少 name/content"}), 400
+        a = s.add_artifact(data["name"], data["content"])
+        return jsonify({"ok": True, "artifact": a})
+
+    @bp.post("/session/<sid>/link")
+    def api_session_link(sid):
+        s = store.get(sid)
+        if s is None:
+            return jsonify({"error": f"会话 {sid} 不在内存"}), 404
+        data = request.get_json(force=True, silent=True) or {}
+        wid = data.get("workbench_id", "")
+        if wid and reg.get(wid) is None:
+            return jsonify({"error": f"工作台 {wid} 不在内存"}), 404
+        s.link(wid)
+        return jsonify({"ok": True, "session": s.summary()})
+
+    @bp.get("/session/<sid>")
+    def api_session_get(sid):
+        s = store.get(sid)
+        if s is None:
+            return jsonify({"error": f"会话 {sid} 不在内存"}), 404
+        return jsonify({"ok": True, "session": s.to_dict()})
+
+    @bp.post("/session/<sid>/finalize")
+    def api_session_finalize(sid):
+        try:
+            p = store.finalize(sid)
+            return jsonify({"ok": True, "path": p})
+        except KeyError:
+            return jsonify({"error": f"会话 {sid} 不在内存"}), 404
 
     return bp
 

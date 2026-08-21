@@ -25,6 +25,7 @@ from .models import (
     EV_VERIFIED, EV_FLAGGED, EV_FAILED, EV_OUTSCOPE,
 )
 from .workbench import Workbench
+from .session import SessionStore
 from .templates import DERIVATION_LINES as DERIVATION_STRATEGIES
 
 
@@ -36,8 +37,38 @@ def suggest_derivation_lines() -> List[Tuple[str, str, str]]:
 class DerivationFlow:
     """推导工作流：在 Workbench 之上叠加 自动验证器 + 横向比较"""
 
-    def __init__(self, wb: Workbench):
+    def __init__(self, wb: Workbench, auto_session: bool = True):
         self.wb = wb
+        self.auto_session = auto_session
+        self._session_id = wb.gap.id  # 推导会话与工作台同 id：多轮推导自动累积
+
+    # ---------- 推导会话（过程数据全内存自动记录） ----------
+    def _sess(self) -> Optional[object]:
+        """自动获取/创建推导会话（内存）。推导过程数据自动进会话，无需手动调用。"""
+        if not self.auto_session:
+            return None
+        store = SessionStore.instance()
+        s = store.get(self._session_id)
+        if s is None:
+            s = store.create(self._session_id, self.wb.gap.title,
+                             self.wb.gap.target, self.wb.gap.anchors)
+            s.link(self.wb.gap.id)
+        return s
+
+    def _log(self, content: str, line_id: str = "", kind: str = "推导") -> None:
+        """自动记录一轮推导产出（文字/数值，可关联线）。全内存，finalize 才写盘。"""
+        s = self._sess()
+        if s is not None:
+            s.add_round(content, line_id, kind)
+
+    def finalize_session(self) -> Optional[str]:
+        """收敛完成：自动归档推导会话快照（重启可恢复）。"""
+        if not self.auto_session:
+            return None
+        s = self._sess()
+        if s is None:
+            return None
+        return SessionStore.instance().finalize(s.id)
 
     # ---------- 创建 ----------
 
@@ -49,7 +80,9 @@ class DerivationFlow:
         wb = Workbench.create(gap_id, title, anchors, target, gap_type)
         if use_template:
             wb.add_lines_from_template(suggest_derivation_lines())
-        return cls(wb)
+        flow = cls(wb)
+        flow._log("建台：5 线模板就绪（闭式/微分/几何/最优参数/结构）", kind="建台")
+        return flow
 
     # ---------- 验证器自动执行（结果全保留） ----------
 
@@ -73,10 +106,13 @@ class DerivationFlow:
                 vstr = "；".join(f"{k}={v}" for k, v in values.items())
                 conclusion = result.get("conclusion", "验证器执行成功")
                 if result.get("dead"):
-                    self.wb.mark_dead_end(lid, result.get("reason", "验证器判定死胡同"))
+                    reason = result.get("reason", "验证器判定死胡同")
+                    self.wb.mark_dead_end(lid, reason)
                     status = EV_OUTSCOPE
+                    self._log(f"死胡同：{reason}", line_id=lid, kind="死胡同")
                 else:
                     status = EV_VERIFIED
+                    self._log(f"验证通过：{conclusion}（{vstr}）", line_id=lid, kind="验证")
                 ev = self.wb.push_result(
                     lid, f"{conclusion}" + (f"（{vstr}）" if vstr else ""), source, status)
                 if spec.get("auto_close", True) and not result.get("dead"):
@@ -85,6 +121,7 @@ class DerivationFlow:
                             "dead": bool(result.get("dead"))}
             except Exception as ex:
                 tb = traceback.format_exc(limit=3)
+                self._log(f"验证器失败：{ex}", line_id=lid, kind="失败")
                 ev = self.wb.push_result(lid, f"验证器失败：{ex}", source, EV_FAILED, tb[-500:])
                 out[lid] = {"ok": False, "evidence": ev.id, "error": str(ex),
                             "dead": False}
@@ -109,20 +146,37 @@ class DerivationFlow:
                 clusters.setdefault(key, []).append(l.id)
         cross = [{"conclusion": k, "lines": v} for k, v in clusters.items() if len(v) >= 2]
         dead = [l.id for l in self.wb.gap.lines if l.status == LINE_DEAD]
-        return {"lines": lines, "cross_support": cross, "dead_ends": dead,
-                "n_closed": sum(1 for l in self.wb.gap.lines if l.status == LINE_CLOSED),
-                "n_dead": len(dead)}
+        cmp = {"lines": lines, "cross_support": cross, "dead_ends": dead,
+               "n_closed": sum(1 for l in self.wb.gap.lines if l.status == LINE_CLOSED),
+               "n_dead": len(dead)}
+        self._log(f"横向比较：闭合 {cmp['n_closed']} 线、死胡同 {cmp['n_dead']} 条、"
+                  f"交叉印证 {len(cmp['cross_support'])} 组", kind="比较")
+        return cmp
 
     # ---------- 收敛 / 审计 ----------
 
     def converge(self, conclusion: str, chain: List[str],
                  support: Optional[List[str]] = None) -> Dict:
-        """设置收敛结论与依赖链，执行收敛判据 v2（复用 Workbench）"""
-        return self.wb.converge(conclusion, chain, support)
+        """设置收敛结论与依赖链，执行收敛判据 v2（复用 Workbench）。
+        收敛成功自动归档定理草稿到推导会话（内存）。"""
+        check = self.wb.converge(conclusion, chain, support)
+        self._log(f"收敛判据：{check.get('reason', '')}", kind="收敛")
+        if check.get("ok"):
+            s = self._sess()
+            if s is not None:
+                s.add_artifact(f"收敛结论·{self.wb.gap.id}",
+                               f"{conclusion}\n依赖链：{' → '.join(chain)}")
+            try:
+                self.finalize_session()  # 收敛成功：自动归档会话快照（重启可恢复）
+            except Exception:
+                pass
+        return check
 
     def audit(self) -> Tuple[List, Dict]:
         """反向审计结论链（复用 Workbench，全内存）"""
-        return self.wb.audit()
+        items, stats = self.wb.audit()
+        self._log(f"反向审计：{stats}", kind="审计")
+        return items, stats
 
     # ---------- 报告 ----------
 
