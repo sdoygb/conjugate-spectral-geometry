@@ -26,6 +26,7 @@ from datetime import datetime
 from typing import List, Dict, Any, Optional
 
 import openai
+import httpx as _httpx
 from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
@@ -49,10 +50,11 @@ from prompts import TeachingSystem, build_system_prompt, check_response_quality,
 from tools import (ARTICLE_TOOLS, execute_tool_call, parse_and_execute_tools, OPENAPI_SPEC,
                    vector_kb as _tools_vector_kb, teaching_system as _tools_teaching,
                    living_field as _tools_living)
+from citation_check import load_real_article_ids, verify_citations, format_bad_citations
 from stream import stream_generate
 from admin_routes import admin_bp
 from share_routes import share_bp
-from gap_workbench.service import workbench_bp as _workbench_bp, WorkbenchRegistry as _WorkbenchRegistry
+from gap_workbench.service import workbench_bp as _workbench_bp, WorkbenchRegistry as _WorkbenchRegistry, SessionStore as _SessionStore
 
 app = Flask(__name__)
 app.register_blueprint(admin_bp)
@@ -77,6 +79,249 @@ def _handle_exception(e):
 # 简单 rate limiting：每分钟最多 60 次请求（per IP）
 _rate_limit_store = {}  # {ip: [(timestamp, count), ...]}
 _RATE_LIMIT_PER_MIN = 60
+
+# 真实文章编号集合（引用硬校验的权威真相源），启动时从 articles 目录加载
+_REAL_ARTICLE_IDS = set()
+
+# 推导工作台 · 五线并行缓存（同目标不重复跑 5 次 LLM）
+_WB_SUMMARY_CACHE = {}   # {gap_id: {"summary": str, "ts": str}}
+_WB_RUNNING = set()      # 正在跑的 gap_id（防止并发重跑）
+_WB_LOCK = threading.Lock()
+
+# 推导意图 / 硬推导信号词（用于判断是否触发五线并行推导）
+_WB_INTENT = ['推导', '证明', '如何得出', '为什么', '怎么来', '机制', '导出',
+              '验证', '来源', '求出', '算出', '论证',
+              '计算', '统计', '估算', '求值', '分析', '算算', '推演']
+_WB_HARD = ['定理', '公式', '计算', '谱', '特征值', '作用量', '不变量', '守恒量',
+            '曲率', 'θ', 'θσ', 'λ', 'α', 'κ', 'Λ']
+
+
+def _workbench_gate(clean_query: str, has_results: bool, diag: bool = True) -> bool:
+    """是否触发五线并行推导：仅对真正的硬推导题启用。
+
+    diag=True 时，把未触发的原因逐条打到日志（[WB-GATE]），用于排查
+    "自动五线为何几乎不生效"。每道闸都留下明确记录。
+    """
+    q = (clean_query or "").strip()
+    # 命中/未命中原因收集，仅当 diag=True 且未通过时输出，避免噪声日志
+    def _reject(reason: str) -> bool:
+        if diag:
+            logger.info(f"[WB-GATE] 不触发五线：{reason} | query={q[:40]}")
+        return False
+
+    if len(q) < 20:
+        return _reject(f"query 过短(<20字, len={len(q)})")
+    if not any(k in q for k in _WB_INTENT):
+        return _reject(f"无推导意图词(_WB_INTENT): {q[:40]}")
+    if not any(k in q for k in _WB_HARD):
+        return _reject(f"无硬推导信号词(_WB_HARD): {q[:40]}")
+    # 排除检索定位型 / 闲聊 / 自动请求
+    if any(k in q for k in ['哪篇文章', '哪些文章', '搜一搜', '哪篇', '查编号',
+                            '你好', '谢谢', '再见']):
+        return _reject("命中排除词(检索/闲聊)")
+    if os.getenv('GAP_WORKBENCH_AUTO', '1') == '0':
+        return _reject("GAP_WORKBENCH_AUTO=0 已禁用")
+    if not has_results:
+        return _reject("无检索结果(has_results=False)")
+    return True
+
+
+def _workbench_anchors(results: list) -> List[str]:
+    """从检索结果里提取文章编号作为工作台锚点（去重、保序，最多 8 个）。"""
+    out: List[str] = []
+    seen = set()
+    for r in results or []:
+        fn = (r.get('metadata') or {}).get('fname', '') or (r.get('fname') or '')
+        # 兼容真实命名 `10.61_标题_CN..md`（下划线是 \w，\b 不会触发，
+        # 故用能匹配数字后的 '._' 分隔的显式边界）
+        m = re.search(r'(?<!\d)(\d+(?:\.\d+)+)(?=[_\W]|$)', fn)
+        if m and m.group(1) not in seen:
+            seen.add(m.group(1))
+            out.append(m.group(1))
+        if len(out) >= 8:
+            break
+    return out
+
+
+def _format_workbench_summary(wb: dict) -> str:
+    """把五线并行推导结果折叠成注入 prompt 的紧凑摘要。"""
+    if not wb:
+        return ""
+    L = [f"\n\n【五线并行推导工作台 · {wb['id']}】",
+         f"目标：{wb.get('target', '')}",
+         f"五线状态：{', '.join(f'{lid}={st}' for lid, st in (wb.get('lines') or {}).items())}"]
+    cross = wb.get('cross_support') or []
+    if cross:
+        L.append("交叉印证（≥2 条线独立收敛到同一结论，单线程往往推不出）：")
+        for c in cross:
+            L.append(f"- 「{c['conclusion']}」← {','.join(c['lines'])}")
+    if wb.get('dead'):
+        L.append(f"死胡同（排除性证据）：{','.join(wb['dead'])}")
+    if wb.get('converged'):
+        L.append(f"收敛结论：{wb.get('conclusion', '')}")
+    L.append("请结合上方多线交叉印证结果，给出最终完整推导，并在回答末尾标注工作台编号。")
+    return "\n".join(L)
+
+
+def _run_auto_workbench(clean_query: str, results: list, req_model: str,
+                        system_prompt: str, session_id: str,
+                        vector_kb=None) -> str:
+    """真正执行五线并行推导，返回注入摘要（失败/重名则返回空串）。"""
+    import hashlib as _hl
+    anchors = _workbench_anchors(results)
+    if not anchors:
+        logger.info(f"[WB] 无任何可作锚点的文章编号，跳过五线（webhook 已命中 gate 但锚点抽取为空）："
+                    f"query={clean_query[:40]}")
+        return ""
+    gap_id = "auto_" + _hl.sha1((clean_query or "").strip().encode("utf-8")).hexdigest()[:10]
+    logger.info(f"[WB] 五线推导启动 {gap_id} | 模型={req_model or GAI_MODEL} "
+                f"| 锚点={anchors}({len(anchors)}个) | query={clean_query[:40]}")
+    cached = _WB_SUMMARY_CACHE.get(gap_id)
+    if cached:
+        logger.info(f"[WB] 命中缓存，复用工作台 {gap_id}")
+        return cached["summary"]
+    with _WB_LOCK:
+        if gap_id in _WB_RUNNING:
+            logger.info(f"[WB] {gap_id} 正在后台推导中，跳过重复触发")
+            return ""
+        _WB_RUNNING.add(gap_id)
+    _wb_model = req_model or GAI_MODEL
+    try:
+        _burl, _akey = get_provider_for_model(_wb_model)
+    except Exception as ex:
+        logger.error(f"[WB] 获取 provider 失败: {ex}")
+        with _WB_LOCK:
+            _WB_RUNNING.discard(gap_id)
+        return ""
+    _client = openai.OpenAI(api_key=_akey, base_url=_burl, http_client=_httpx.Client(trust_env=False), timeout=180.0, max_retries=1)
+    from gap_workbench.llm_derive import run_llm_five_line
+    try:
+        wb = run_llm_five_line(
+            gap_id=gap_id,
+            title=clean_query[:60],
+            anchors=anchors,
+            target=clean_query,
+            base_system_prompt=system_prompt,
+            client=_client,
+            model=_wb_model,
+            tools=ARTICLE_TOOLS,
+            execute_tool=lambda n, a: execute_tool_call(n, a, vector_kb=vector_kb),
+            max_tool_chain=6,
+            logger=logger.info,
+            embed_fn=(vector_kb.embedding_fn.embed_query
+                      if getattr(vector_kb, 'embedding_fn', None) is not None else None),
+            semantic_threshold=0.80,
+        )
+    except Exception as ex:
+        logger.error(f"[WB] 五线推导异常: {ex}")
+        import traceback
+        logger.error(traceback.format_exc(limit=4))
+        with _WB_LOCK:
+            _WB_RUNNING.discard(gap_id)
+        return ""
+    with _WB_LOCK:
+        _WB_RUNNING.discard(gap_id)
+    summary = _format_workbench_summary(wb)
+    if summary:
+        _WB_SUMMARY_CACHE[gap_id] = {"summary": summary,
+                                     "ts": datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+        logger.info(f"[WB] 五线推导完成 {gap_id}：闭合 {wb.get('closed')} "
+                    f"死胡同 {wb.get('dead')} 交叉 {len(wb.get('cross_support') or [])} 条")
+    return summary
+
+
+# ================= 子AI 自动圆满判定（主库 LLM 退役后的入库判据执行者） =================
+_JUDGE_PROMPT = (
+    "你是共扼谱几何子AI的「圆满判定」执行者。主库的 LLM 已退役（2026-08-05），"
+    "入库判据移交给你。请对下方候选定理给出入库判定。\n\n"
+    "圆满判据：\n"
+    "- A0（局部代数命题）：推导链【逐步骤自洽】+【依赖全部闭合】→ promote（圆满）\n"
+    "- A1（整体拓扑命题）：Berry 相位 2π 闭环（closure_error≈0）+ 依赖闭合 → promote\n"
+    "- 存在缺失依赖 → dependency_gap（reason 里列出缺失定理编号）\n"
+    "- 推导链存在实质错误 / 不自洽 / 数值不成立 → reject\n"
+    "- 材料不足或你不确定 → keep_pending（该条暂不判定，留待人工）\n\n"
+    "纪律（必须遵守）：\n"
+    "- 一切数值、相位、闭式误差用 calculate_math 精确计算，严禁心算。\n"
+    "- 用 view_article / vector_search / list_articles 核对依赖定理是否真实存在、是否闭合，禁止编造编号。\n"
+    "- 只依据材料与主库真实文章，不得臆造。\n\n"
+    "最终另起一行，仅输出一行合法 JSON，格式：\n"
+    '{"verdict":"promote|reject|dependency_gap|keep_pending","level":"初圆满|中圆满|上圆满|","reason":"一句话判定理由"}'
+)
+
+
+def _parse_judge_json(text: str) -> dict:
+    import re as _re
+    d: dict = {"verdict": "keep_pending", "level": "", "reason": ""}
+    _vm = _re.search(r'"verdict"\s*:\s*"([^"]+)"', text)
+    if _vm:
+        d["verdict"] = _vm.group(1)
+    _lm = _re.search(r'"level"\s*:\s*"([^"]*)"', text)
+    if _lm:
+        d["level"] = _lm.group(1)
+    _rm = _re.search(r'"reason"\s*:\s*"?([^"}\n]+)"?', text)
+    if _rm:
+        d["reason"] = _rm.group(1).strip()
+    return d
+
+
+def _run_child_judgement_llm(material: str) -> dict:
+    """子AI对单条候选公式做出圆满语义判定（带工具核对依赖/精确计算）。"""
+    if not material or not material.strip():
+        return {"verdict": "keep_pending", "reason": "材料为空"}
+    if os.getenv('CHILD_JUDGE_DRY_LLM') == '1':
+        return {"verdict": "keep_pending", "reason": "dry-run 跳过 LLM"}
+    try:
+        _burl, _akey = get_provider_for_model(GAI_MODEL)
+        _client = openai.OpenAI(api_key=_akey, base_url=_burl, http_client=_httpx.Client(trust_env=False), timeout=180.0, max_retries=1)
+    except Exception as ex:
+        logger.error(f"[CHILD-JUDGE] 获取 provider 失败: {ex}")
+        return {"verdict": "keep_pending", "reason": "provider 不可用"}
+    messages = [
+        {"role": "system", "content": _JUDGE_PROMPT},
+        {"role": "user", "content": "候选定理完整判定材料：\n\n" + material},
+    ]
+    api_params: dict = {"model": GAI_MODEL, "messages": messages, "tools": ARTICLE_TOOLS}
+    try:
+        for _r in range(1, 8):
+            resp = _client.chat.completions.create(**api_params)
+            content = resp.choices[0].message.content or ""
+            tcs = getattr(resp.choices[0].message, "tool_calls", None)
+            if (not content.strip()) and tcs:
+                asst_m = {"role": "assistant", "content": None, "tool_calls": []}
+                for tc in tcs:
+                    asst_m["tool_calls"].append({"id": tc.id, "type": "function",
+                                                 "function": {"name": tc.function.name,
+                                                              "arguments": tc.function.arguments}})
+                messages.append(asst_m)
+                for tc in tcs:
+                    try:
+                        _a = json.loads(tc.function.arguments or "{}")
+                    except Exception:
+                        _a = {}
+                    try:
+                        _r_ = execute_tool_call(tc.function.name, _a, vector_kb=vector_kb)
+                    except Exception as _e:
+                        _r_ = f"工具执行异常: {_e}"
+                    messages.append({"role": "tool", "tool_call_id": tc.id,
+                                     "content": str(_r_)[:3000]})
+                api_params["messages"] = messages
+                logger.info(f"[CHILD-JUDGE] 判定工具链 #{_r}: {len(tcs)} 个调用")
+                continue
+            return _parse_judge_json(content)
+        return {"verdict": "keep_pending", "reason": "判定未产出"}
+    except Exception as ex:
+        logger.error(f"[CHILD-JUDGE] LLM 判定失败: {ex}")
+        return {"verdict": "keep_pending", "reason": f"异常: {ex}"}
+
+def _refresh_real_article_ids():
+    """刷新真实文章编号集合（引用硬校验真相源）。"""
+    global _REAL_ARTICLE_IDS
+    try:
+        _REAL_ARTICLE_IDS = load_real_article_ids(UPLOAD_FOLDER)
+        logger.info(f"[CITE-GATE] 真实文章编号集合已加载: {len(_REAL_ARTICLE_IDS)} 篇")
+    except Exception as e:
+        logger.error(f"[CITE-GATE] 加载真实文章编号失败: {e}")
+    return _REAL_ARTICLE_IDS
 
 @app.before_request
 def _rate_limit():
@@ -1230,11 +1475,15 @@ def chat_completions():
             merged.sort(key=lambda x: (1 if x.get('_skeleton') else 0,
                                        x.get('distance', 1.0)))
             # 推导类任务：引用图骨架增强（骨架文章 chunk 插到最前）
-            _deriv_pat = re.compile(r'推导|证明|机制|来源|链条|如何|为什么|得出|导出|验证|完整')
+            _deriv_pat = re.compile(r'推导|证明|机制|来源|链条|如何|为什么|得出|导出|验证|完整|计算|统计|估算|求值|分析|推演')
             if _deriv_pat.search(clean_query) and merged:
+                setattr(vector_kb, '_graph_max_hops', 2)  # 多跳推理：沿引用图向外扩展2层
+                logger.info(f"[GRAPH-DIAG] 推导门控命中(clean_query含推导词) merged={len(merged)} -> enrich_with_graph")
                 merged, _gchunks = vector_kb.enrich_with_graph(merged, search_query)
                 if _gchunks:
                     logger.info(f"[VECTOR-GRAPH] 引用图骨架注入: {len(_gchunks)} 块")
+                elif _deriv_pat.search(clean_query):
+                    logger.info("[GRAPH-DIAG] enrich 返回空骨架，未注入")
             results = merged[:MAX_CHUNKS_PER_QUERY]
             logger.info(
                 f"[VECTOR-MULTI] 四角度检索: main={len(results_main or [])}, "
@@ -1338,6 +1587,25 @@ def chat_completions():
         loaded_chunks, articles_content, pre_metrics,
         index_empty, search_no_result, "", teaching_section, msg_count, recent_chats_summary
     )
+
+    # ============ 推导工作台 · 五线并行（接入对话主流程） ============
+    # 硬推导题触发五线分头推 → 结果全保留 → 横向比较找交叉印证（单线程推不出）
+    # 非流式同步执行并注入推导上下文；流式后台预热（结果进缓存，供下轮/重试复用），
+    # 保障首字即时；失败一律静默降级为普通回答。
+    if _workbench_gate(clean_query, bool(results)):
+        # 闭环：流式与非流式都同步跑五线并行 → 注入 system_prompt，保证交叉印证真进入回答。
+        # 代价：硬推导请求首字需等五线完成（推导题本身需要先分头推再下结论，可接受）。
+        try:
+            if stream:
+                logger.info("[WB-GATE] 流式硬推导：同步等五线并行完成后再流式输出（保证交叉印证闭环）")
+            _wb_inject = _run_auto_workbench(clean_query, results,
+                                             data.get('model') or '', system_prompt,
+                                             session_id, vector_kb=vector_kb)
+            if _wb_inject:
+                system_prompt = system_prompt + _wb_inject
+                logger.info(f"[WB-GATE] 五线并行已注入推导上下文 (len={len(_wb_inject)})")
+        except Exception as _wbe:
+            logger.error(f"[WB-GATE] 自动五线推导失败，降级普通回答: {_wbe}")
 
     # 过滤掉空消息和中间层注入的文件消息（避免历史中残留的文件内容被重复处理）
     _FILE_INJECT_MARKER = "【新文件 ·"
@@ -1623,7 +1891,8 @@ def chat_completions():
             _lite_tool_names = {
                 'get_current_time', 'vector_search', 'view_article',
                 'list_articles', 'personal_read', 'chat_history',
-                'shell_execute', 'file_read', 'file_write', 'file_list'
+                'shell_execute', 'file_read', 'file_write', 'file_list',
+                'calculate_math'
             }
             _lite_tools = [t for t in ARTICLE_TOOLS if t['function']['name'] in _lite_tool_names]
             api_params["tools"] = _lite_tools or ARTICLE_TOOLS
@@ -1731,7 +2000,9 @@ def chat_completions():
         # 多模型路由
         req_model = data.get('model') or GAI_MODEL
         base_url, api_key = get_provider_for_model(req_model)
-        client = openai.OpenAI(api_key=api_key, base_url=base_url)
+        # 禁代理直连（避免 sandbox 注入的 http_proxy=127.0.0.1:7897 导致可连接失败的场景）
+        _no_proxy_client = _httpx.Client(trust_env=False)
+        client = openai.OpenAI(api_key=api_key, base_url=base_url, http_client=_no_proxy_client, timeout=180.0, max_retries=1)
         try:
             # 质量门控 - 如果AI回复偏离共扼谱几何，自动重试
             # v10 增强：反模式检测触发重试时，在prompt中注入反模式警告
@@ -1764,10 +2035,14 @@ def chat_completions():
                     response_text = _tc_content
                     break
             response_text = ""
+            _bad_cite_hint_prev = ""
             for attempt in range(1 + MAX_QUALITY_RETRIES):
                 if attempt > 0:
                     logger.info(f"[QUALITY-GATE] 第{attempt+1}次重试（检测到低质量回复）")
                     retry_prompt = system_prompt + "\n\n【紧急指令 - 上次回复质量不合格】\n你必须基于共扼谱几何框架给出实质性回答。禁止说'未找到引用'、'无法访问'、'我是AI'等偏离共扼谱几何的话。直接用公理、定理、命题来回答。"
+                    # 引用硬校验失败时，把具体不存在编号注入重试提示
+                    if _bad_cite_hint_prev:
+                        retry_prompt += _bad_cite_hint_prev
 
                     # v10 新增：如果是因为反模式触发，额外注入反模式警告
                     if teaching_system:
@@ -1815,10 +2090,27 @@ def chat_completions():
 
                 # v10 增强：传入 teaching_system 进行反模式检测
                 is_good, reason = check_response_quality(response_text, teaching_system=teaching_system)
+                # 引用来源硬校验：检查还原引用不存在的文章编号
+                _cite = None
+                if is_good:
+                    try:
+                        _cite = verify_citations(response_text, _REAL_ARTICLE_IDS)
+                        if not _cite["ok"]:
+                            is_good = False
+                            reason = f"幻觉引用: 引用了不存在的文章编号 {[b[0] for b in _cite['bad']]}"
+                            logger.warning(f"[CITE-GATE] {reason}")
+                    except Exception as e:
+                        logger.error(f"[CITE-GATE] 引用校验失败: {e}")
                 if is_good:
                     break
                 else:
                     logger.warning(f"[QUALITY-GATE] 回复质量不合格: {reason}")
+                    # 引用校验失败时，把具体幻觉编号注入重试提示，引导模型修正
+                    try:
+                        if _cite and not _cite["ok"]:
+                            _bad_cite_hint_prev = "\n\n【引用硬校验失败】" + format_bad_citations(_cite["bad"])
+                    except Exception as e:
+                        logger.error(f"[CITE-GATE] 重写提示生成失败: {e}")
                     if attempt == MAX_QUALITY_RETRIES:
                         logger.warning(f"[QUALITY-GATE] 已达最大重试次数，使用最后一次回复")
         except Exception as e:
@@ -1828,9 +2120,245 @@ def chat_completions():
         return jsonify(result)
 
 
+# ==================== Responses API 兼容层 (Codex++/新版客户端 wire_api=responses) ====================
+def _responses_input_to_messages(src) -> List[Dict[str, Any]]:
+    """把 Responses API 的 input/instructions 翻译成 chat messages"""
+    msgs: List[Dict[str, Any]] = []
+    if isinstance(src, str):
+        if src.strip():
+            msgs.append({"role": "user", "content": src})
+    elif isinstance(src, list):
+        for item in src:
+            if isinstance(item, str):
+                if item.strip():
+                    msgs.append({"role": "user", "content": item})
+            elif isinstance(item, dict):
+                # {role, content} 或 {type:message, role, content}
+                role = item.get('role', 'user')
+                content = item.get('content', '')
+                if isinstance(content, list):
+                    texts = [c.get('text', '') for c in content if isinstance(c, dict) and c.get('type') in ('input_text', 'text', 'output_text')]
+                    content = "\n".join(t for t in texts if t)
+                if isinstance(content, str) and content.strip():
+                    msgs.append({"role": role, "content": content})
+    return msgs
+
+
+def _chat_resp_to_responses(chat_body: dict, req_model: str) -> dict:
+    """把 chat.completion JSON 翻译成 Responses API JSON (非流式)"""
+    choice = (chat_body.get('choices') or [{}])[0]
+    text = (choice.get('message') or {}).get('content', '') or ''
+    finish = choice.get('finish_reason', 'stop')
+    usage = chat_body.get('usage') or {}
+    created = chat_body.get('created', int(time.time()))
+    resp_id = f"resp_{uuid.uuid4().hex[:24]}"
+    return {
+        "id": resp_id,
+        "object": "response",
+        "created_at": created,
+        "status": "completed",
+        "model": req_model,
+        "output": [{
+            "id": f"msg_{uuid.uuid4().hex[:24]}",
+            "type": "message",
+            "status": "completed",
+            "role": "assistant",
+            "content": [{
+                "type": "output_text",
+                "text": text,
+                "annotations": []
+            }]
+        }],
+        "parallel_tool_calls": True,
+        "tool_choice": "auto",
+        "usage": {
+            "input_tokens": usage.get('prompt_tokens', 0),
+            "output_tokens": usage.get('completion_tokens', 0),
+            "total_tokens": usage.get('total_tokens', 0)
+        },
+        "error": None,
+        "finish_reason": finish,
+    }
+
+
+def _loop_back_chat(chat_payload: dict, auth_header: str = '', timeout: float = 300.0):
+    """内部回环调用本服务 /v1/chat/completions，复用全部中间层逻辑"""
+    import os as _os
+    _port = _os.getenv('PORT', '5000')
+    url = f"http://127.0.0.1:{_port}/v1/chat/completions"
+    _headers = {'Content-Type': 'application/json'}
+    if auth_header:
+        _headers['Authorization'] = auth_header
+    with _httpx.Client(trust_env=False, timeout=timeout) as _c:
+        return _c.post(url, headers=_headers, json=chat_payload)
+
+
+@app.route('/v1/responses', methods=['POST'])
+def responses_completions():
+    """Codex++ 等新版客户端 wire_api=responses 的兼容端点"""
+    _auth = request.headers.get('Authorization', '')
+    _api_keys = os.getenv('GAI_API_KEYS', '')
+    if _api_keys:
+        _allowed_keys = [k.strip() for k in _api_keys.split(',') if k.strip()]
+        _provided_key = _auth.replace('Bearer ', '').strip() if _auth.startswith('Bearer ') else ''
+        if _provided_key and _allowed_keys and _provided_key not in _allowed_keys:
+            return openai_error("Invalid API key", "invalid_request_error", 401)
+
+    data = request.get_json(force=True, silent=True)
+    if not data or not isinstance(data, dict):
+        return openai_error("Invalid request body", err_type="invalid_request_error", status=400)
+
+    req_model = data.get('model') or GAI_MODEL
+    stream = data.get('stream', False)
+    # 缓存 auth header，供流式生成器(线程外)使用 request context 无法访问
+    _auth_header = _auth
+
+    # 组装 chat messages：instructions 作为 system，input 作为对话
+    messages: List[Dict[str, Any]] = []
+    _inst = data.get('instructions')
+    if isinstance(_inst, str) and _inst.strip():
+        messages.append({"role": "system", "content": _inst})
+    messages.extend(_responses_input_to_messages(data.get('input')))
+    if not messages:
+        messages.append({"role": "user", "content": "请继续"})
+
+    # 透传工具与参数
+    chat_payload: Dict[str, Any] = {
+        "model": req_model,
+        "messages": messages,
+        "stream": stream,
+    }
+    if data.get('max_output_tokens'):
+        chat_payload['max_tokens'] = data['max_output_tokens']
+    if data.get('temperature') is not None:
+        chat_payload['temperature'] = data['temperature']
+    if data.get('top_p') is not None:
+        chat_payload['top_p'] = data['top_p']
+    if data.get('reasoning'):
+        r = data['reasoning']
+        if isinstance(r, dict) and r.get('effort'):
+            chat_payload['reasoning_effort'] = r['effort']
+    if data.get('tools'):
+        chat_payload['tools'] = data['tools']
+    if data.get('tool_choice'):
+        chat_payload['tool_choice'] = data['tool_choice']
+    if data.get('session_id'):
+        chat_payload['session_id'] = data['session_id']
+
+    if not stream:
+        # 非流式：内部回环调用，拿 chat JSON，转 responses JSON
+        try:
+            _resp = _loop_back_chat(chat_payload, auth_header=_auth_header)
+            if _resp.status_code != 200:
+                try:
+                    _err = _resp.json()
+                except Exception:
+                    _err = {"error": {"message": _resp.text[:500], "type": "server_error"}}
+                return jsonify(_err), _resp.status_code
+            _body = _resp.json()
+            return jsonify(_chat_resp_to_responses(_body, req_model))
+        except Exception as e:
+            logger.error(f"[RESPONSES] 非流式生成错误: {e}")
+            return openai_error(str(e), status=502)
+
+    # 流式：回环到 chat 流，逐事件翻译为 Responses SSE
+    def _gen():
+        # 预先生成创建事件
+        created = int(time.time())
+        resp_id = f"resp_{uuid.uuid4().hex[:24]}"
+        msg_id = f"msg_{uuid.uuid4().hex[:24]}"
+        _send = lambda ev, payload: f"event: {ev}\ndata: {json.dumps(payload, ensure_ascii=False)}\n\n"
+
+        yield _send("response.created", {
+            "type": "response.created",
+            "response": {"id": resp_id, "object": "response", "created_at": created,
+                         "status": "in_progress", "model": req_model, "output": [],
+                         "error": None},
+        })
+        yield _send("response.output_item.added", {
+            "type": "response.output_item.added", "output_index": 0,
+            "item": {"id": msg_id, "type": "message", "status": "in_progress",
+                     "role": "assistant", "content": []},
+        })
+        yield _send("response.content_part.added", {
+            "type": "response.content_part.added", "item_id": msg_id, "output_index": 0,
+            "content_index": 0, "part": {"type": "output_text", "text": "", "annotations": []},
+        })
+
+        collected = []
+        try:
+            _up = _loop_back_chat(chat_payload, auth_header=_auth_header)
+            if _up.status_code != 200:
+                _txt = _up.text[:400]
+                err = {"type": "server_error", "message": f"upstream {_up.status_code}: {_txt}"}
+                yield _send("response.failed", {"type": "response.failed", "response": {"error": err}})
+                yield "data: [DONE]\n\n"
+                return
+            for line in _up.iter_lines():
+                if not line:
+                    continue
+                if not line.startswith('data:'):
+                    continue
+                payload = line[5:].strip()
+                if not payload or payload == '[DONE]':
+                    continue
+                try:
+                    chunk = json.loads(payload)
+                except Exception:
+                    continue
+                choice = (chunk.get('choices') or [{}])[0]
+                delta = choice.get('delta') or {}
+                _txt = delta.get('content') or ''
+                if _txt:
+                    collected.append(_txt)
+                    yield _send("response.output_text.delta", {
+                        "type": "response.output_text.delta", "item_id": msg_id,
+                        "output_index": 0, "content_index": 0, "delta": _txt,
+                    })
+        except Exception as e:
+            logger.error(f"[RESPONSES] 流式生成错误: {e}")
+            yield _send("response.failed", {"type": "response.failed", "response": {"error": {"type": "server_error", "message": str(e)}}})
+            yield "data: [DONE]\n\n"
+            return
+
+        full_text = ''.join(collected)
+        yield _send("response.output_text.done", {
+            "type": "response.output_text.done", "item_id": msg_id, "output_index": 0,
+            "content_index": 0, "text": full_text,
+        })
+        yield _send("response.content_part.done", {
+            "type": "response.content_part.done", "item_id": msg_id, "output_index": 0,
+            "content_index": 0, "part": {"type": "output_text", "text": full_text, "annotations": []},
+        })
+        yield _send("response.output_item.done", {
+            "type": "response.output_item.done", "output_index": 0,
+            "item": {"id": msg_id, "type": "message", "status": "completed",
+                     "role": "assistant", "content": [{"type": "output_text", "text": full_text, "annotations": []}]},
+        })
+        yield _send("response.completed", {
+            "type": "response.completed",
+            "response": {"id": resp_id, "object": "response",
+                         "created_at": created, "status": "completed", "model": req_model,
+                         "output": [{"id": msg_id, "type": "message", "status": "completed",
+                                     "role": "assistant", "content": [{"type": "output_text", "text": full_text, "annotations": []}]}],
+                         "error": None,
+                         "usage": {"input_tokens": 0, "output_tokens": len(full_text), "total_tokens": len(full_text)}},
+        })
+        yield "data: [DONE]\n\n"
+
+    return Response(
+        _gen(),
+        mimetype='text/event-stream',
+        headers={'Cache-Control': 'no-cache, no-transform', 'X-Accel-Buffering': 'no', 'Connection': 'keep-alive'},
+    )
+
+
 # ==================== 启动 ====================
 
 if __name__ == '__main__':
+
+    # 引用硬校验真相源：启动时加载真实文章编号集合
+    _refresh_real_article_ids()
 
     # 初始化活体信息场（纯内存，不依赖外部数据库）
     living_field = LivingInfoField()
@@ -1922,9 +2450,22 @@ if __name__ == '__main__':
     # 工作台常驻服务：全内存载入全部工作台状态（重启电脑 → 打开程序 → 自动载入 → 即用）
     try:
         _n_wb = _WorkbenchRegistry.instance().load_all()
+        _n_ss = _SessionStore.instance().load_all()
         logger.info(f"[STARTUP] 工作台常驻服务: {_n_wb} 个工作台已载入内存 "
                     f"| 内存占用 {_WorkbenchRegistry.instance().memory_stats()}")
+        logger.info(f"[STARTUP] 推导会话暂存区: {_n_ss} 个会话快照已载入内存 "
+                    f"| 内存占用 {_SessionStore.instance().memory_stats()}")
     except Exception as _e:
         logger.warning(f"[STARTUP] 工作台载入失败: {_e}")
+
+    # 子AI 自动圆满判定 worker（主库 LLM 退役后入库判据执行者；子进程回写 master_ai）
+    from child_judge_worker import start_worker as _start_cj_worker
+    try:
+        _cj_t = _start_cj_worker(_run_child_judgement_llm)
+        if _cj_t is not None:
+            logger.info(f"[STARTUP] 子AI自动圆满判定 worker 已启动 "
+                        f"(dry_run={os.environ.get('CHILD_AUTO_JUDGE_REAL', '0') != '1'})")
+    except Exception as _cj_e:
+        logger.error(f"[STARTUP] 子AI自动圆满判定 worker 启动失败: {_cj_e}")
 
     app.run(host='0.0.0.0', port=_port, debug=False)

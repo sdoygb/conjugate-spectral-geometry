@@ -167,12 +167,12 @@ class TeachingSystem:
         """
         sections = []
 
-        # 1. 已学到的纠正（按 trust_level 降序，最近10条）
-        recent_corrections = self.vector_kb.get_recent_corrections(
-            limit=TEACH_MAX_RECENT_CORRECTIONS
+        # 1. 已学到的纠正（检索与当前查询最相关的，最多3条，避免无关纠正占用上下文）
+        recent_corrections = self.vector_kb.search_corrections(
+            query, top_k=min(3, TEACH_MAX_RECENT_CORRECTIONS)
         )
         if recent_corrections:
-            corr_lines = [f"【已学到的纠正（教学反馈，共{len(recent_corrections)}条）】"]
+            corr_lines = [f"【已学到的纠正（教学反馈，共{len(recent_corrections)}条，与当前问题相关）】"]
             for i, corr in enumerate(recent_corrections, 1):
                 meta = corr['metadata']
                 trust = meta.get('trust_level', 0.5)
@@ -185,8 +185,8 @@ class TeachingSystem:
                 corr_lines.append(line)
             sections.append("\n".join(corr_lines))
 
-        # 2. 反模式警告
-        antipatterns = self.vector_kb.get_all_antipatterns()
+        # 2. 反模式警告（检索与当前查询相关的，最多2条）
+        antipatterns = self.vector_kb.search_antipatterns(query, top_k=2)
         if antipatterns:
             anti_lines = ["【反模式警告】"]
             severity_map = {"high": "高", "medium": "中", "low": "低"}
@@ -197,8 +197,8 @@ class TeachingSystem:
                 anti_lines.append(f"- [{sev}] 禁止回复\"{pattern}\"")
             sections.append("\n".join(anti_lines))
 
-        # 3. 教学知识补丁（检索与当前查询相关的补丁，top_k=10 平衡覆盖率和速度）
-        patches = self.vector_kb.search_patches(query, top_k=5)
+        # 3. 教学知识补丁（检索与当前查询相关的补丁，top_k=3 保持聚焦）
+        patches = self.vector_kb.search_patches(query, top_k=3)
         if patches:
             patch_lines = ["【教学知识补丁】"]
             for p in patches:
@@ -265,16 +265,38 @@ class TeachingSystem:
         if not all_corrections:
             return applied
 
-        for corr in all_corrections:
+        # 批量嵌入：response_text 一次 + 全部 correct_text 一次批量调用
+        # （correct 文本按 id 缓存，仅首次全量嵌入；后续每轮只嵌入 response_text）
+        try:
+            resp_text = response_text[:2000]
+            vkb = self.vector_kb
+            resp_emb = vkb._get_embeddings([resp_text])[0]
+            uncached = [c for c in all_corrections
+                        if c.get('id') not in vkb._corr_emb_cache]
+            if uncached:
+                c_texts = [c['metadata'].get('correct', '') or '' for c in uncached]
+                c_embs = vkb._get_embeddings(c_texts)
+                for c, emb in zip(uncached, c_embs):
+                    if emb and any(abs(float(v)) > 1e-8 for v in emb[:32]):
+                        vkb._corr_emb_cache[c['id']] = emb
+            embeddings = [resp_emb] + [vkb._corr_emb_cache.get(c.get('id')) for c in all_corrections]
+            if not embeddings or len(embeddings) != len(all_corrections) + 1:
+                return applied
+        except Exception as e:
+            logger.error(f"[TEACH-CORRECT] 批量嵌入失败: {e}")
+            return applied
+
+        resp_emb = embeddings[0]
+        for corr, correct_emb in zip(all_corrections, embeddings[1:]):
+            if correct_emb is None:
+                continue
             meta = corr['metadata']
             correct_text = meta.get('correct', '')
             if not correct_text:
                 continue
 
             # 用向量相似度检查回复是否包含纠正内容的核心观点
-            similarity = self.vector_kb._cosine_similarity_texts(
-                response_text, correct_text
-            )
+            similarity = self.vector_kb._cosine_similarity(resp_emb, correct_emb)
 
             if similarity > TEACH_CORRECTION_SIMILARITY_THRESHOLD:
                 # 纠正被应用，更新信任等级
@@ -469,6 +491,35 @@ def build_system_prompt(
 对复杂问题，在回答中自然融入上述分析过程的关键洞见，不必列出步骤编号。
 """
 
+    calc_discipline = """
+【计算纪律——数值必须精确，禁止心算】
+推导中凡涉及数值计算、公式求值、方程求解、符号推导，一律调用 calculate_math 工具完成，禁止自行心算得出数值。
+必须遵守：
+1. 需要计算数值（哪怕是简单的 2+3、根号、分数、阶乘、求和）时，必须调用 calculate_math，由工具返回精确结果；绝不凭心算或模型直觉填写数值。
+2. 需要精确分数时，在表达式中使用 Rational(a,b)、sqrt、pi、E 等 sympy 符号，工具会返回数值近似（10位）并附「精确值(精简)」短形式；用这个精简值核对精确分数，不要只按近似值写结论。
+3. 符号推导（求导、积分、化简、展开、解方程）也交给 calculate_math（如 diff、integrate、solve、expand、simplify），不靠印象写公式结果。
+4. 把计算得到的每个数值写入回答前，回看一眼是不是工具返回的值；不记得就重算，绝不凭感觉改写。
+"""
+
+    cite_discipline = """
+【引用纪律——引用必须真实存在，禁止幻觉引用】
+当你引用文章/定理支撑推导时，必须遵守：
+1. **只引用真实存在的文章编号**。文章编号形如"文章 X.Y"（例如"文章 5.6"、"文章 0.8"）。写进回答的每个"文章 X.Y"式引用，都必须是你在【参考资料】中看到、或通过 vector_search / list_articles 核实的确切编号。
+2. **引用前先核实**：不确定某编号是否真实存在时，用 list_articles 查看全部文章概览，或用编号前缀搜索确认。禁止凭印象编造编号。
+3. **编号要精确**：不要写"文章 7.15"这类你可能记错的编号。如果找不到对应编号，就改用描述性表述（如"相关工作"），或者明确说"在当前文章库中未找到直接对应内容"，不要编一个编号硬塞进去。
+4. 系统会对每个回答做【引用硬校验】：任何不存在的文章编号会被自动拦截并触发重写。与其被拦截重写，不如一开始就引用真实编号。
+"""
+
+    multi_hop_discipline = """
+【多跳推理——相关定理逐层查，禁止浅尝辄止】
+推导时必须一层一层地把相关定理/文章找全，不要只查一层、查不到就直接说"无法推导/没有相关内容"。
+必须遵守：
+1. **先觉醒再下结论**：第一轮检索没命中核心定理时，不代表文章库中没有。用 vector_search 换不同关键词、或按已找到文章里引用的编号继续追查，通常多查两三轮就能打通。
+2. **沿依赖链条走**：当你引用了某篇文章 A，而 A 的推导又依赖前置文章 B 时，继续用 vector_search 查 B 的内容，把链条完整拉起来（系统已在推导类问题时自动注入 A 的多跳引用图骨架，优先利用）。
+3. **反查与扩展**：不仅查"这篇文章依赖谁"，还要查"谁依赖这篇文章"，往往能发现同族的对称结论，辅助建立完整推导。
+4. **确认充分才动手**：只有当你确信已经找到闭环所需的全部关键定理，才开始组装推导；若仍有缺口，先用 list_articles 看清全库再定位，而不是凭印象补一个不存在的编号。
+"""
+
 
     from datetime import datetime
     _today = datetime.now().strftime("%Y年%m月%d日")
@@ -476,6 +527,9 @@ def build_system_prompt(
 {SHOUYI_PHILOSOPHY}
 {GEOMETRY_KNOWLEDGE}{teaching_prompt}
 {thinking_instruction}
+{calc_discipline}
+{cite_discipline}
+{multi_hop_discipline}
 【工具使用规则】
 - get_current_time：在需要确定版本号日期、判断文件新旧、或任何需要知道当前时间时，调用 get_current_time 获取实时日期时间。不要猜测日期，务必调用工具确认。虽然系统提示中包含了今天日期，但工具返回的更精确（含时分秒），且适用于跨天对话场景。
 - write_article：用户要求写入文章时，必须调用 write_article 工具实际写入。调用成功后才能说"已写入"。禁止在没有调用工具的情况下声称"已写入""已生成""已保存"。写入成功后，在回复中告诉用户文章已保存，并提供工具返回的预览链接（Markdown格式[点击预览](URL)）。
@@ -491,6 +545,7 @@ def build_system_prompt(
 - list_articles：轻量列出所有文章的编号、标题和摘要（每篇约1行）。**当你需要了解文章全貌、查找某主题属于哪篇文章、确认文章编号时，优先用此工具**。一次调用就能看到全部文章概览，不要用 view_article 逐篇查看。
 - view_article：读取文章片段（默认5000字符/次）。**首次读取时会自动显示章节目录，之后可用 section 参数按章节名直接跳转**（如 section="公理3"），比 offset 更高效。只在已经确定要查看哪篇文章的具体内容时才使用。日常对话中每次对话不宜超过5次，但抽查/审核时不受此限制。
 - personal_write：重要信息可以写入个人数据库。
+- calculate_math：任何数值计算、公式求值、方程求解、符号推导（求导/积分/化简/展开）都必须调用本工具。传入 expression 表达式即可，用 Rational(a,b) 得精确分数，需要小数时传 digits。涉及数值结果一律以本工具返回值为准，严禁心算。
 - 参考资料已通过向量语义检索自动注入下方【参考资料】区域（基于当前问题的被动检索）。**日常对话中优先使用这些参考资料回答，不要重复用 view_article 去看已经在参考资料中出现的内容**。只有在参考资料明确不够时，才用 vector_search 换角度搜索，或 view_article 查看具体段落。
 - 禁止幻觉：不确定的答案直接说"我不确定"，不要编造。**不要声称某篇文章不存在**——先用 vector_search 或编号前缀搜索确认。
 

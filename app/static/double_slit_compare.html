@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>双缝干涉：几何论计算 vs 实验/标准结果</title>
+<style>
+  body { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; max-width: 1000px; margin: 40px auto; padding: 0 20px; background: #fafafa; color: #222; line-height: 1.7; }
+  h1 { border-bottom: 3px solid #2c5aa0; padding-bottom: 10px; }
+  h2 { color: #2c5aa0; margin-top: 40px; }
+  .row { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+  .card { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 16px; flex: 1; min-width: 300px; }
+  .card img { max-width: 100%; border-radius: 4px; display: block; margin: 0 auto; }
+  .caption { font-size: 13px; color: #666; margin-top: 8px; text-align: center; }
+  table { border-collapse: collapse; width: 100%; margin: 16px 0; }
+  th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; font-size: 14px; }
+  th { background: #eef3fb; }
+  .eq { background: #f5f7fa; border-left: 4px solid #2c5aa0; padding: 12px 16px; font-family: "Cambria Math", Georgia, serif; font-size: 16px; margin: 16px 0; }
+  .note { background: #fff8e6; border: 1px solid #e6c86a; border-radius: 6px; padding: 10px 14px; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<h1>双缝干涉：几何论计算 vs 标准结果/实验照片</h1>
+
+<p><b>几何论推导</b>（10.60.4.01 Born 法则 + #3 投影强度 + #257 归一化 + 光程差锚定）：</p>
+<div class="eq">
+I(x) = I₀·cos²(π·d·x/(λ·D))，&nbsp; 条纹间距 Δx = λD/d = <b>1.2656 mm</b><br>
+参数：λ = 632.8 nm（He-Ne），d = 0.5 mm，D = 1 m
+</div>
+
+<div class="row">
+  <div class="card">
+    <img src="/static/figures/gt_fringe_calc_v2.png" alt="几何论计算的条纹强度">
+    <div class="caption"><b>① 几何论计算</b>：I(x)/I₀ = cos²(πdx/λD)，Δx = 1.2656 mm（本文绘制）</div>
+  </div>
+  <div class="card">
+    <img src="/static/figures/double_slit_intensity.png" alt="Wikipedia 双缝强度分布">
+    <div class="caption"><b>② Wikipedia 双缝强度分布图</b>（Wikimedia Commons, public domain）</div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="card">
+    <img src="/static/figures/double_slit_interference.png" alt="双缝干涉条纹模拟">
+    <div class="caption"><b>③ 双缝干涉条纹模拟</b>（Wikimedia Commons, public domain）</div>
+  </div>
+  <div class="card">
+    <img src="/static/figures/tonomura_double_slit.jpg" alt="Tonomura 电子双缝实验">
+    <div class="caption"><b>④ Tonomura 电子双缝实验真实照片</b>（Wikimedia Commons; 电子逐个到达，累积成干涉条纹）</div>
+  </div>
+</div>
+
+<h2>数值对照</h2>
+<table>
+<tr><th>量</th><th>几何论计算</th><th>标准光学</th><th>一致？</th></tr>
+<tr><td>条纹间距 Δx = λD/d</td><td>1.2656 mm</td><td>λD/d = 1.2656 mm</td><td>✅ 完全一致</td></tr>
+<tr><td>强度分布形式</td><td>I₀cos²(πdx/λD)</td><td>I₀cos²(πdx/λD)</td><td>✅ 完全一致</td></tr>
+<tr><td>对比度 V = (I_max−I_min)/(I_max+I_min)</td><td>1（等幅理想）</td><td>1（等幅理想）</td><td>✅</td></tr>
+<tr><td>I(Δx/8)/I₀</td><td>cos²(π/8) = 0.8536</td><td>同左</td><td>✅</td></tr>
+</table>
+
+<h2>结论</h2>
+<p>几何论通过 <b>Born 法则涌现定理（10.60.4.01）</b> + 投影强度线性（#3）+ 归一化（#257）+ 光程差锚定，推出的条纹分布与标准光学公式、实验照片完全一致。
+<b>条纹的形状（cos²）是几何论定理的直接推论</b>（概率 = |振幅|² 已从商结构推导）；条纹的间距（λD/d）依赖实验锚定的光程差公式。</p>
+
+<div class="note">
+<b>诚实标注</b>：① 几何论推导的部分 = 条纹形状（cos² 来自 Born 法则）；② 实验锚定的部分 = 相位差 φ = kd·x/D（标准几何光学，10.52 作为已知引用）；③ 图 ②③④ 来自 Wikimedia Commons（public domain），仅作对照，非几何论产出。
+</div>
+
+</body>
+</html>

@@ -660,11 +660,23 @@ class VectorKnowledgeBase:
             for _m in metas:
                 _fn = (_m or {}).get('fname', '')
                 _mm = re.match(r'^(\d{1,2})\.(\d{1,2})', _fn)
-                aids.append(_mm.group(1) if _mm else '')
+                # 完整 X.Y 编号（此前误用 group(1) 只取首位，导致 id_fname 键与图节点 X.Y 不一致）
+                aids.append(f"{_mm.group(1)}.{_mm.group(2)}" if _mm else '')
             self._ws = {
                 'emb': emb, 'docs': docs, 'metas': metas, 'aids': aids,
                 'summary_map': None, 'graph': None, 'sig': None,
             }
+            # ===== CPU 优化：一次性建立两类常用索引，查询 O(1)，避免每次全表扫 metas =====
+            _fname_idx, _id_fname = {}, {}
+            for _i, _m in enumerate(metas):
+                _fn = (_m or {}).get('fname', '') or ''
+                if _fn:
+                    _fname_idx.setdefault(_fn, []).append(_i)
+                _aid = aids[_i]
+                if _aid and _aid not in _id_fname:
+                    _id_fname[_aid] = _fn
+            self._ws['fname_idx'] = _fname_idx
+            self._ws['id_fname'] = _id_fname
             self._workspace_scan_articles()
             logger.info(
                 f"[WS] 中间层就绪: {emb.shape[0]} chunks x {emb.shape[1]} 维 | "
@@ -754,6 +766,64 @@ class VectorKnowledgeBase:
         ws['summary_map'] = summaries
         ws['graph'] = graph
         ws['sig'] = sig
+        # ===== 关系运算预计算（CPU 优化：启动一次，查询常驻，避免每次重建） =====
+        try:
+            # 反索引 in_idx[article] -> set(依赖它的文章)，供多跳骨架 O(1) 反查
+            in_idx = {}
+            for src, outs_items in graph.items():
+                for tgt in outs_items:
+                    in_idx.setdefault(tgt, set()).add(src)
+            # 双向互引（A⇄B 互证闭环）
+            bidir_pairs = set()
+            bidir_map = {}
+            for a in graph:
+                for b in graph[a]:
+                    if b in graph and a in graph[b] and a < b:
+                        bidir_pairs.add((a, b))
+            bidir_map = {}
+            for a, b in bidir_pairs:
+                bidir_map.setdefault(a, []).append(b)
+                bidir_map.setdefault(b, []).append(a)
+            # 跳跃闭包：每个入口的 1/2/3 跳可达集（含中间层权重衰减结果）
+            def _reachable_set(start, hops):
+                seen = {start}
+                frontier = {start}
+                for _ in range(hops):
+                    nxt = set()
+                    for a in frontier:
+                        nxt |= {b for b in graph.get(a, {}) if b not in seen}
+                    if not nxt:
+                        break
+                    seen |= nxt
+                    frontier = nxt
+                seen.discard(start)
+                return seen
+            hop_closure = {a: {1: _reachable_set(a, 1),
+                                2: _reachable_set(a, 2),
+                                3: _reachable_set(a, 3)}
+                           for a in graph}
+            # 引用共现簇：两篇文章被同一批文章共同引用（同族联动），预计算 Top 对
+            co = {}
+            for src, outs_items in graph.items():
+                refs = sorted(outs_items)
+                for i in range(len(refs)):
+                    for j in range(i + 1, len(refs)):
+                        a, b = refs[i], refs[j]
+                        if a == b:
+                            continue
+                        key = (a, b) if a < b else (b, a)
+                        co[key] = co.get(key, 0) + 1
+            top_co = sorted(co.items(), key=lambda x: -x[1])[:40]
+            ws['_rel'] = {
+                'in_idx': in_idx,
+                'bidir': bidir_map,
+                'bidir_pairs': len(bidir_pairs),
+                'hops': hop_closure,
+                'co': {f"{k[0]}↔{k[1]}": v for k, v in top_co},
+            }
+        except Exception as e:
+            logger.error(f"[WS] 关系预计算失败: {e}")
+            ws['_rel'] = None
 
     # ---------- 全内存模式（中间层） ----------
     def preload_all(self, articles_dir: str = "") -> dict:
@@ -873,25 +943,94 @@ class VectorKnowledgeBase:
             logger.warning(f"[WS] 暴力检索异常: {e}")
             return None
 
-    def _workspace_skeleton(self, entry_ids, max_skeleton=3):
-        """动态引用图骨架：入口文章的 out(权重2) + in(权重1) 邻居计数，取 top。"""
+    def _workspace_skeleton(self, entry_ids, max_skeleton=3, max_hops=2):
+        """
+        多跳引用图骨架：从入口文章出发，沿 out/in 依赖图逐层向外扩展 max_hops 跳。
+        权重沿跳数衰减（out 2->1.4->1，in 1->0.7->0.5），每跳距离越远权重越低，
+        从而"一层一层"拉取相关定理，而不再只停在直接邻居。
+        返回 [(文章编号, 累积权重)]，已按权重降序截断为 max_skeleton 个。
+        """
         graph = self._ws.get('graph') or {}
-        neigh = {}
-        for eid in entry_ids:
-            for nid, cnt in (graph.get(eid) or {}).items():
-                neigh[nid] = neigh.get(nid, 0) + 2 * cnt
-            for src, outs in graph.items():
-                if eid in outs:
-                    neigh[src] = neigh.get(src, 0) + outs[eid]
+        # 反索引：启动时已预计算并常驻缓存（_rel.in_idx），O(1) 反查，避免每次重建
+        _rel = self._ws.get('_rel') or {}
+        in_idx = _rel.get('in_idx')
+        if in_idx is None:
+            # 兜底：缓存缺失时再现场构建
+            in_idx = {}
+            for src, outs_items in graph.items():
+                for tgt in outs_items:
+                    in_idx.setdefault(tgt, set()).add(src)
+        _hops = getattr(self, '_graph_max_hops', 2)
+        neigh: Dict[str, float] = {}
+        frontier = set(entry_ids)
+        visited = set(entry_ids)
+        out_decay = 2.0 ** -0.5  # 1, 0.71, 0.5 ...
+        in_decay = 1.0 ** -0.5   # 1, 1, 1 （in 已较轻，衰减放缓）
+        cur_out_w, cur_in_w = 2.0, 1.0
+        for hop in range(_hops):
+            if not frontier:
+                break
+            next_frontier = set()
+            for nid in frontier:
+                # out 邻居：nid 依赖的文章（nid→tgt）
+                for tgt, cnt in (graph.get(nid) or {}).items():
+                    if tgt in visited:
+                        continue
+                    neigh[tgt] = neigh.get(tgt, 0) + cur_out_w * cnt
+                    next_frontier.add(tgt)
+                # in 邻居：依赖 nid 的文章（src→nid）
+                for src in (in_idx.get(nid) or set()):
+                    if src in visited:
+                        continue
+                    cnt = (graph.get(src) or {}).get(nid, 1)
+                    neigh[src] = neigh.get(src, 0) + cur_in_w * cnt
+                    next_frontier.add(src)
+            visited |= next_frontier
+            frontier = next_frontier
+            cur_out_w *= out_decay
+            cur_in_w *= in_decay
         skeleton = sorted(
             ((nid, c) for nid, c in neigh.items() if nid not in entry_ids),
             key=lambda x: -x[1])[:max_skeleton]
         return skeleton
 
+    def get_relation_context(self, entry_ids, top=6) -> str:
+        """把【启动时已预计算】的关系结构（入向/出向邻接、双向互引闭环、高共引关联）
+        转成紧凑提示文本，供多跳推导注入 LLM 作为关系上下文——各文章引用千丝万缕，
+        直接给出可用编号，模型照追即可，无需沿途反复 vector_search。"""
+        if not entry_ids or self._ws is None:
+            return ""
+        _ws = self._ws
+        _rel = _ws.get('_rel') or {}
+        in_idx = _rel.get('in_idx') or {}
+        graph = _ws.get('graph') or {}
+        entry = set(entry_ids)
+        lines = []
+        in_srcs, out_tgts = set(), set()
+        for e in entry:
+            in_srcs |= (in_idx.get(e) or set())
+            out_tgts |= (graph.get(e, {}) or {}).keys()
+        in_srcs -= entry
+        out_tgts -= entry
+        if out_tgts:
+            lines.append("这些入口文章依赖(出向): " + "、".join(sorted(out_tgts)[:top]))
+        if in_srcs:
+            lines.append("依赖这些入口文章(入向): " + "、".join(sorted(in_srcs)[:top]))
+        bidir = _rel.get('bidir') or {}
+        strict = [b for e in entry for b in bidir.get(e, [])]
+        if strict:
+            lines.append("双向互引闭环(互为前置): " + "、".join(sorted(set(strict))[:top]))
+        co = _rel.get('co') or {}
+        if co:
+            lines.append("高共引关联(常被同批文章引用): " + "、".join(list(co.keys())[:top]))
+        if not lines:
+            return ""
+        return "[引用关系图-预计算]" + " | ".join(lines)
+
     def _workspace_chunks_for(self, fname, qvec=None, chunks_per_article=1):
         """从内存全量 documents 按 fname 过滤，返回该文章 top 相关 chunk（骨架用）。"""
         ws = self._ws
-        idxs = [i for i, _m in enumerate(ws['metas']) if (_m or {}).get('fname') == fname]
+        idxs = list((ws.get('fname_idx') or {}).get(fname) or [])
         if not idxs:
             return []
         if qvec is not None and len(idxs) > chunks_per_article:
@@ -929,30 +1068,28 @@ class VectorKnowledgeBase:
             if _m:
                 entry_ids.add(_m.group(1))
         if not entry_ids:
+            logger.info(f"[GRAPH-DIAG] 无入口编号(结果fname无可匹配 X.Y 前缀): n_results={len(results)}")
             return results, []
         skeleton = self._workspace_skeleton(entry_ids, max_skeleton)
         if not skeleton:
+            logger.info(f"[GRAPH-DIAG] 骨架为空: 入口={sorted(entry_ids)} (引用图节点 {len(self._ws.get('graph') or {})})")
             return results, []
-        id_to_fname = {}
-        _articles_dir = self._articles_dir or UPLOAD_FOLDER
-        if _articles_dir:
-            try:
-                for fname in os.listdir(_articles_dir):
-                    _m = re.match(r'^(\d{1,2}\.\d{1,2})', fname)
-                    if _m:
-                        id_to_fname.setdefault(_m.group(1), fname)
-            except Exception:
-                pass
+        id_to_fname = (self._ws.get('id_fname') or {})  # 启动时已预计算，免每查询 os.listdir
         _qvec = self._get_query_embedding(query)
+        # 预计算关系上下文(入向/出向/双向互引/高共引)注入，帮模型照图追文
+        _relctx = self.get_relation_context(entry_ids)
+        logger.info(f"[GRAPH-DIAG] 入口={sorted(entry_ids)} 骨架={[n for n,_ in skeleton]} relctx_len={len(_relctx)}")
         new_chunks = []
         for nid, cnt in skeleton:
             fname = id_to_fname.get(nid)
             if not fname:
+                logger.info(f"[GRAPH-DIAG] 骨架 {nid} 无 id_fname 映射")
                 continue
             for c in self._workspace_chunks_for(fname, _qvec, chunks_per_article):
                 c['label'] = f"[引用图骨架:{nid}({cnt}次)] 文章库: {c.get('metadata', {}).get('fname', fname)}"
                 new_chunks.append(c)
         if not new_chunks:
+            logger.info(f"[GRAPH-DIAG] 骨架chunk解析为空: 骨架={[n for n,_ in skeleton]} id_fname数={len(id_to_fname)}")
             return results, []
         existing_ids = set()
         for r in results:
@@ -960,6 +1097,12 @@ class VectorKnowledgeBase:
             if cid:
                 existing_ids.add(cid)
         skeleton_chunks = [c for c in new_chunks if (c.get('id') or '') not in existing_ids]
+        if _relctx:
+            skeleton_chunks.insert(0, {
+                'id': '', 'text': _relctx, 'source': 'logic_graph',
+                'metadata': {'fname': ''}, 'distance': 0.0, '_skeleton': True,
+                'label': '[引用关系图] 预计算关系上下文',
+            })
         merged = skeleton_chunks + results
         return merged, [c['label'] for c in skeleton_chunks]
 
@@ -2191,23 +2334,43 @@ class VectorKnowledgeBase:
             if not entry_ids:
                 return results, []
 
-            # 2. 骨架扩展：out + in 邻居，按引用次数聚合排序
-            out_map = graph.get('out', {})
-            in_map = graph.get('in', {})
-            neigh: Dict[str, int] = {}
-            for eid in entry_ids:
-                # 上游（out：入口依赖的前置基础）权重 2；下游（in：引用入口的应用）权重 1
-                for nid, info in out_map.get(eid, {}).items():
-                    # 兼容两种结构：out 存 {'count','weight'}，in 存 int
-                    cnt = info.get('count', 1) if isinstance(info, dict) else int(info)
-                    neigh[nid] = neigh.get(nid, 0) + 2 * cnt
-                for nid, info in in_map.get(eid, {}).items():
-                    cnt = info.get('count', 1) if isinstance(info, dict) else int(info)
-                    neigh[nid] = neigh.get(nid, 0) + cnt
-            skeleton = sorted(
-                ((nid, c) for nid, c in neigh.items() if nid not in entry_ids),
-                key=lambda x: -x[1]
-            )[:max_skeleton]
+            # 2. 骨架扩展：多跳 BFS（out + in），按引用次数聚合排序，权重沿跳数衰减
+            def _multi_hop_skeleton(out_map, in_map, entry_ids, hops):
+                # in_map 是 {to: {from: count}}，先转成 src->[(tgt,cnt)] 便于BFS
+                in_out = {}
+                for tgt, srcs in in_map.items():
+                    for src, cnt in srcs.items():
+                        in_out.setdefault(src, []).append((tgt, cnt))
+                neigh: Dict[str, float] = {}
+                frontier = set(entry_ids)
+                visited = set(entry_ids)
+                cur_w = 2.0
+                for _h in range(hops):
+                    if not frontier:
+                        break
+                    nxt = set()
+                    for eid in frontier:
+                        for nid, info in out_map.get(eid, {}).items():
+                            if nid in visited:
+                                continue
+                            cnt = info.get('count', 1) if isinstance(info, dict) else int(info)
+                            neigh[nid] = neigh.get(nid, 0) + cur_w * cnt
+                            nxt.add(nid)
+                        for nid, cnt in in_out.get(eid, []):
+                            if nid in visited:
+                                continue
+                            neigh[nid] = neigh.get(nid, 0) + cur_w * 0.5 * cnt
+                            nxt.add(nid)
+                    visited |= nxt
+                    frontier = nxt
+                    cur_w *= 0.7  # 每跳衰减
+                return sorted(
+                    ((nid, c) for nid, c in neigh.items() if nid not in entry_ids),
+                    key=lambda x: -x[1])
+
+            _hops = getattr(self, '_graph_max_hops', 2)
+            _all_skeleton = _multi_hop_skeleton(out_map, in_map, entry_ids, _hops)
+            skeleton = _all_skeleton[:max_skeleton]
             if not skeleton:
                 return results, []
 

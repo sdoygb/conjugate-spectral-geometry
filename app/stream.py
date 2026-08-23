@@ -110,7 +110,9 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
     # 多模型路由：根据请求中的 model 字段选择提供商
     request_model = api_params.get("model", GAI_MODEL)
     base_url, api_key = get_provider_for_model(request_model)
-    client = openai.OpenAI(api_key=api_key, base_url=base_url)
+    # 禁代理直连 + 加长超时（避免沙箱代理/牛来慢响应导致 Request timed out）
+    import httpx as _httpx
+    client = openai.OpenAI(api_key=api_key, base_url=base_url, http_client=_httpx.Client(trust_env=False), timeout=300.0, max_retries=1)
     max_tool_rounds = 25
     seen_calls = set()  # 防止重复调用
     _total_tool_calls = {}  # 全局累计工具调用次数（跨轮次）
@@ -631,7 +633,7 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                 m = _re_vc.search(r'共(\d+)字符', result)
                 if m:
                     _total_view_chars += int(m.group(1))
-            logger.info(f"[TOOL] 结果: {result[:150]}... (累计工具结果约 {_total_tool_input_tokens} token, view_article累计 {_total_view_chars} 字符)")
+            logger.info(f"[TOOL] 结果: {result[:150].replace(chr(10), chr(92)+chr(110))}... (累计工具结果约 {_total_tool_input_tokens} token, view_article累计 {_total_view_chars} 字符)")
             final_messages.append({
                 "role": "tool",
                 "tool_call_id": tc_info["id"],

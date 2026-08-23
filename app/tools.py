@@ -238,7 +238,7 @@ ARTICLE_TOOLS = [
         "type": "function",
         "function": {
             "name": "view_article",
-            "description": "查看文章原文内容（精确内容，非向量近似）。每次默认读取5000字符。如果用户要求阅读大文章全文，请分多次调用：先读前5000字符（offset=0,limit=5000），再读下一段（offset=5000,limit=5000），依此类推，直到读完。日常对话中向量检索已自动注入相关片段到【参考资料】区域，通常无需调用；但审核/抽查时必须用此工具读取原文核实，不可仅依赖向量库结果。",
+            "description": "查看文章内容（B2 片段式注入）。【默认返回结构摘要视图】= 头部元信息（版本/依赖/摘要/核心结果）+ 带 offset 和字数的章节目录，约1800字符，绝不全文。需要某章节细节时用 section='章节关键词' 精确拉取该章节片段（推荐），或用 offset/limit 按偏移分页。需读完整正文才设 full=true，并分批 offset 读取。审核/抽查引用是否真实、核对依赖闭合时必须调用本工具，不可仅依赖向量检索。",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -258,7 +258,12 @@ ARTICLE_TOOLS = [
                     },
                     "section": {
                         "type": "string",
-                        "description": "按章节名跳转（推荐方式）。传入章节关键词，如 section='公理3' 会自动定位到包含'公理3'的 ## 或 ### 标题处读取。比用 offset 更精确，不需要知道字符位置。首次读取时会自动显示章节目录和各章节的 offset。"
+                        "description": "按章节名精确跳转（B2 推荐方式）。传入章节关键词，如 section='公理' 会自动定位到包含'公理'的 ## 或 ### 标题处，只返回该章节片段（默认5000字符内）。默认摘要视图会列出每章节的 offset 和字数供参考。"
+                    },
+                    "full": {
+                        "type": "boolean",
+                        "description": "是否读取完整正文。默认(False)返回结构摘要；true 时从 offset 开始按 limit 读取正文，用于确需全文的场景。",
+                        "default": False
                     }
                 },
                 "required": ["filename"]
@@ -822,6 +827,33 @@ ARTICLE_TOOLS = [
                 "required": ["pattern"]
             }
         }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "calculate_math",
+            "description": "精确数学/数值计算工具。用 sympy 安全求值，返回精确结果（分数、符号表达式、数值、化简结果）。适用于：任何涉及数值计算、公式求值、符号推导、方程求解、积分/微分/级数、矩阵运算的场景。严禁自行心算数值——凡涉及算数一律调用本工具。支持标准运算符 (+ - * / **)、数学函数 (sin cos tan exp log sqrt ...)、符号变量 (x y z)、以及 sympy 表达式。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "expression": {
+                        "type": "string",
+                        "description": "要计算的数学表达式或 Python 语句。例如：'2**64 / 3'、'sqrt(125)'、'sin(pi/6)'、'Rational(1,3)+Rational(1,6)'、'expand((x+1)**2)'、'diff(sin(x),x)'、'integrate(exp(-x), (x,0,oo))'、'solve(x**2-5*x+6,x)'、'factorial(20)'。"
+                    },
+                    "digits": {
+                        "type": "integer",
+                        "description": "可选的数值结果小数位数（默认不设置时，纯数值量自动给 10 位近似，无需设此参数）",
+                        "default": None
+                    },
+                    "symbolic": {
+                        "type": "boolean",
+                        "description": "是否强制返回完整精确符号结果。默认(False)：含自由符号的结果返回符号形式，纯数值量只返回数值近似；当需要核对精确分数/恒等式/长符号时才设 true。",
+                        "default": False
+                    }
+                },
+                "required": ["expression"]
+            }
+        }
     }
 ]
 
@@ -1329,6 +1361,69 @@ def _extract_toc(content: str, filename: str, total: int) -> str:
     return "\n".join(toc_lines)
 
 
+def _build_summary_view(content: str, actual_path: str, total: int) -> str:
+    """
+    B2 片段式注入：view_article 默认返回「结构摘要视图」而非正文。
+    摘要视图 = 头部元信息块（版本/依赖/摘要/核心定位/关键依赖/核心结果）
+            + 带「字符偏移 offset + 预估字数」的增强章节目录。
+    返回控制在 ~1800 字符以内，正文细节由模型用 section/offset 精准小片段拉取。
+    """
+    import re as _re_sv
+    lines = content.split('\n')
+    # 定位头部块：从文件开头到第一个 '## ' 章节标题之间的内容（即元信息+摘要）
+    head_end = 0
+    for i, line in enumerate(lines):
+        if line.startswith('## ') and i > 0:
+            head_end = sum(len(lines[j]) + 1 for j in range(i))
+            first_sec_title = line.strip()
+            # 若首个章节是「摘要」，把摘要正文也并入头部块（核心结论），到下一个 '## ' 前
+            _t = first_sec_title.strip().lstrip('#').strip()
+            if _t in ('摘要', 'Abstract', 'overview', '总览'):
+                for j in range(i + 1, len(lines)):
+                    if lines[j].startswith('## '):
+                        head_end = sum(len(lines[k]) + 1 for k in range(j))
+                        break
+                else:
+                    head_end = total
+            break
+    if head_end == 0 or head_end > total:
+        head_end = min(head_end, total) if head_end else 0
+    head_block = content[:head_end].strip() if head_end else content[:1200]
+    if not head_block:
+        # 找不到 '## ' 章节头，退化为开头片段
+        head_block = content[:1200]
+
+    # 增强目录：每个 ## 章节带 offset + 预估字数（到下一个 ## 的跨度）
+    toc_lines = ["【章节目录】"]
+    sec_offsets = []
+    for i, line in enumerate(lines):
+        if line.startswith('## '):
+            off = sum(len(lines[j]) + 1 for j in range(i))
+            sec_offsets.append((off, line.strip()))
+    if sec_offsets:
+        for idx, (off, title) in enumerate(sec_offsets[:40]):
+            end = sec_offsets[idx + 1][0] if idx + 1 < len(sec_offsets) else total
+            est = max(end - off, 0)
+            toc_lines.append(f"- {title}  (offset={off}, ~{est}字)")
+        if len(sec_offsets) > 40:
+            toc_lines.append(f"  ...共 {len(sec_offsets)} 个章节")
+    else:
+        toc_lines.append("  (无 ## 章节标题)")
+
+    head_trim = head_block
+    if len(head_trim) > 1300:
+        head_trim = head_trim[:1300] + "...[头部截断，见章节]"
+
+    return (
+        f"文件: {actual_path} (共{total}字符)\n"
+        f"===== 结构摘要（B2 默认，节省 token）=====\n"
+        f"{head_trim}\n\n"
+        + "\n".join(toc_lines) +
+        f"\n\n【引导】以上是结构摘要。需要某章节正文时，用 section='章节关键词'（如 section='公理'）精确拉取片段；"
+        f"或 offset/limit 分页按偏移读取。全文一次性读取会消耗大量 token，请只看需要的章节。"
+    )
+
+
 def _list_articles(arguments: Dict[str, Any]) -> str:
     """
     轻量列出文章编号+标题+摘要。每篇约1行，总消耗约50行。
@@ -1602,8 +1697,14 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                     content = f.read()
             total = len(content)
 
-            # 新增参数 section：按章节名跳转（自动扫描 ## 标题）
+            # B2 片段式注入：默认返回结构摘要视图（头部元信息+增强目录），
+            # 正文细节须用 section / offset / full=true 精准拉取
+            full_req = arguments.get("full", False) in (True, 'true', 'True', '1', 1)
             section_name = arguments.get("section", "").strip()
+            if not full_req and not section_name and not (offset and offset > 0):
+                return _build_summary_view(content, actual_path, total)
+
+            # 章节跳转（自动扫描 ## 标题）
             if section_name:
                 import re as _re_sec
                 # 找包含 section_name 的 ## 或 ### 标题行
@@ -1617,7 +1718,11 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                             section_content = section_content[:limit] + "\n...[截断]"
                         # 找下一章节标题位置，提示剩余内容
                         next_section_pos = content.find('\n## ', offset + 10)
-                        return f"文件: {actual_path} (共{total}字符) | 章节: {line.strip()}\n位置: {offset}-{offset+len(section_content)}\n{section_content}"
+                        next_pos_title = ""
+                        if next_section_pos != -1:
+                            next_line = content[next_section_pos:].split('\n', 1)[0]
+                            next_pos_title = f"\n下一篇: {next_line.strip()} (offset={next_section_pos})"
+                        return f"文件: {actual_path} (共{total}字符) | 章节: {line.strip()}\n位置: {offset}-{offset+len(section_content)}{next_pos_title}\n{section_content}"
                 return f"未找到包含 '{section_name}' 的章节。\n可用章节：\n" + _extract_toc(content, actual_path, total)
 
             # 当 limit=0 且 offset=0 时（首次打开），自动附加章节目录
@@ -1648,11 +1753,14 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                 return f"错误：{e}"
 
             if mode == "append":
-                # 追加模式：不归档，直接追加
-                with open(fpath, 'a', encoding='utf-8') as f:
-                    f.write(content)
-                total_chars = os.path.getsize(fpath)
-                return f"已追加到 {filename}（当前共 {total_chars} 字符）。如还有剩余内容，请继续用 mode=append 调用。全部写完后，向量索引和 git 提交将自动完成。"
+                    # 追加模式：不归档，直接追加
+                    with open(fpath, 'a', encoding='utf-8') as f:
+                        f.write(content)
+                    total_chars = os.path.getsize(fpath)
+                    # 追加也是写盘，同步刷新内存正文缓存，避免内存仍旧文
+                    if vector_kb and vector_kb.is_initialized:
+                        vector_kb.refresh_article_cache(fpath, filename)
+                    return f"已追加到 {filename}（当前共 {total_chars} 字符）。如还有剩余内容，请继续用 mode=append 调用。全部写完后，向量索引和 git 提交将自动完成。"
             else:
                 # 覆盖写入模式（默认）
                 # 截断检测：如果原文件 > 100KB，新内容不到原文件的 50%，警告并拒绝
@@ -1694,6 +1802,8 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                     # 清理向量库中同 article_id 的旧版本文件 chunk
                     # （当新文件名和旧文件名不同时，index_single_file 不会清理旧的）
                     _cleanup_stale_article(vector_kb, filename)
+                    # 与 edit_article 对齐：写盘后同步刷新内存正文缓存（_articles_text），避免内存旧文
+                    vector_kb.refresh_article_cache(fpath, filename)
                 # 自动 git commit（版本管理）
                 # 用 fpath 的相对路径确保 git add 正确文件
                 _git_result = _auto_git_commit(os.path.relpath(fpath, UPLOAD_FOLDER), content)
@@ -2886,6 +2996,103 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                 return "\n".join(result_parts)
             except Exception as e:
                 return f"文件列表查询失败: {e}"
+
+        elif name == "calculate_math":
+            expression = arguments.get("expression", "")
+            if not expression:
+                return "错误：缺少 expression 参数"
+            digits = arguments.get("digits")
+            digits = int(digits) if digits else None
+            try:
+                import sympy
+                from sympy import (Rational, Symbol, symbols, sqrt, sin, cos, tan, exp, log,
+                                   pi, E, oo, Integer, Float, I, factorial, nsimplify, N,
+                                   diff, integrate, limit, series, solve, expand, simplify,
+                                   factor, expand_trig, trigsimp, Matrix, conjugate, Abs,
+                                   re, im, gcd, lcm, isprime, prime, MatrixSymbol, eye,
+                                   zeros, ones, Eq, sympify, residue, apart, together,
+                                   asin, acos, atan, atan2, asec, acsc, asinh, acosh,
+                                   atanh, sec, csc, cot, deg, rad)
+                # 建立白名单命名空间；用 print 捕获 sympy 的 pretty 输出避免非常规 repr
+                ns = {
+                    'Rational': Rational, 'Symbol': Symbol, 'symbols': symbols,
+                    'sqrt': sqrt, 'sin': sin, 'cos': cos, 'tan': tan, 'exp': exp,
+                    'log': log, 'pi': pi, 'E': E, 'oo': oo, 'I': I,
+                    'factorial': factorial, 'nsimplify': nsimplify, 'N': N,
+                    'diff': diff, 'integrate': integrate, 'limit': limit,
+                    'series': series, 'solve': solve, 'expand': expand,
+                    'simplify': simplify, 'factor': factor, 'expand_trig': expand_trig,
+                    'trigsimp': trigsimp, 'Matrix': Matrix, 'conjugate': conjugate,
+                    'Abs': Abs, 're': re, 'im': im, 'gcd': gcd, 'lcm': lcm,
+                    'isprime': isprime, 'prime': prime, 'eye': eye, 'zeros': zeros,
+                    'ones': ones, 'Eq': Eq, 'residue': residue, 'apart': apart,
+                    'together': together, 'Integer': Integer, 'Float': Float,
+                    # 反三角/双曲/正割等：LLM 常写 asin/atan/arcsin，缺了会一直 NameError
+                    'asin': asin, 'acos': acos, 'atan': atan, 'atan2': atan2,
+                    'arcsin': asin, 'arccos': acos, 'arctan': atan, 'arctan2': atan2,
+                    'asec': asec, 'acsc': acsc, 'asinh': asinh, 'acosh': acosh,
+                    'atanh': atanh, 'sec': sec, 'csc': csc, 'cot': cot,
+                    'degrees': deg, 'radians': rad, 'deg': deg, 'rad': rad,
+                    # 预置常用符号，使 solve/integrate/diff 等可直接使用裸 x,y,z
+                    'x': Symbol('x'), 'y': Symbol('y'), 'z': Symbol('z'),
+                }
+                # 支持同时给出的多个赋值/表达式（分号/换行分隔），返回最后一行的结果
+                exec_lines = [ln.strip() for ln in expression.replace('\n', ';').split(';') if ln.strip()]
+                if not exec_lines:
+                    return "错误：空表达式"
+                for ln in exec_lines:
+                    if any(tok in ln for tok in ('__', 'import', 'open(', 'exec(', 'eval(', 'compile', 'globals', 'locals')):
+                        return f"错误：表达式包含不允许的操作: {ln}"
+                # 逐行执行（赋值可用），记录最后一行
+                for ln in exec_lines:
+                    try:
+                        exec(compile(ln, '<calc>', 'exec'), ns)
+                    except SyntaxError:
+                        # 纯表达式（无赋值）用 eval 计算
+                        exec(compile(f"_r = ({ln})", '<calc>', 'exec'), ns)
+                last_expr = exec_lines[-1]
+                # 取值：如果最后一行是赋值，取被赋值符号；否则取表达式值
+                try:
+                    last_res = eval(compile(last_expr, '<calc>', 'eval'), ns)
+                except Exception:
+                    last_res = ns.get('result', None) or ns.get('_r')
+                if last_res is None:
+                    last_res = ns.get('_r', None)
+                if last_res is None:
+                    return "计算完成（无最终结果值）。"
+                # B1 省 token 化：纯数值量默认给紧凑数值，符号形式仅在显式请求 symbolic 时完整输出；
+                # 含自由符号的结果保留简化符号形式（供四轨信号中的「符号碰撞」轨道使用，不截断）
+                symbolic_req = (arguments.get("symbolic", False) in (True, 'true', 'True', '1', 1))
+                result_line = f"输入: {last_expr}\n"
+                if isinstance(last_res, (list, tuple, set)):
+                    _parts = []
+                    _nums = []
+                    for _it in last_res:
+                        _it_e = nsimplify(_it) if not isinstance(_it, (int, float)) else _it
+                        try:
+                            _nums.append(str(N(_it_e, digits or 8)))
+                        except Exception:
+                            _nums.append(str(_it_e))
+                        _parts.append(sympy.sstr(_it_e) if hasattr(_it_e, 'free_symbols') else str(_it_e))
+                    result_line += f"结果: [{', '.join(_parts)}]\n数值: [{', '.join(_nums)}]"
+                else:
+                    exact = nsimplify(last_res) if not isinstance(last_res, (int, float)) else last_res
+                    has_syms = bool(getattr(exact, 'free_symbols', ()))
+                    if symbolic_req:
+                        _s = sympy.sstr(exact) if hasattr(exact, 'free_symbols') else str(exact)
+                        result_line += f"精确结果: {_s}"
+                        if not has_syms:
+                            result_line += f"\n数值: {N(exact, digits or 10)}"
+                    elif has_syms:
+                        # 含自由符号：保留符号形式（符号碰撞轨道依赖），不强行展开成数值
+                        result_line += f"精确结果: {sympy.sstr(exact) if hasattr(exact, 'free_symbols') else str(exact)}"
+                    else:
+                        # 纯数值量（B1 主收益点）：默认给数值近似，避免 sympy 把 sin(pi/40) 等展开成超长根式串
+                        result_line += f"数值结果: {N(exact, digits or 10)}"
+                        result_line += f"\n精确值(精简): {sympy.sstr(exact) if hasattr(exact, 'free_symbols') else str(exact)}"
+                return result_line
+            except Exception as e:
+                return f"数学计算失败: {e}"
 
         else:
             return f"未知工具: {name}"

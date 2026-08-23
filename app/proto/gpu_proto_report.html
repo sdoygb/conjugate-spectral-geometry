@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RX 570 GPU 原型验证报告</title>
+<style>
+  :root { --bg:#0f1115; --card:#1a1d24; --line:#2a2e38; --txt:#e8eaf0; --sub:#9aa2b1; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif; background:var(--bg); color:var(--txt); padding:32px; line-height:1.7; }
+  .wrap { max-width:880px; margin:0 auto; }
+  h1 { font-size:24px; font-weight:700; margin-bottom:6px; }
+  .meta { color:var(--sub); font-size:13px; margin-bottom:24px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:20px; margin-bottom:20px; }
+  h2 { font-size:16px; font-weight:700; margin-bottom:12px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th,td { padding:8px 10px; text-align:left; border-bottom:1px solid var(--line); }
+  th { color:var(--sub); font-weight:600; }
+  .hl { color:#7ee787; font-weight:600; }
+  .bad { color:#ff7b72; font-weight:600; }
+  .mid { color:#ffa657; }
+  .tag { display:inline-block; font-size:11px; padding:2px 8px; border-radius:6px; margin-right:6px; }
+  .tag.g { background:#12261b; color:#7ee787; }
+  .tag.w { background:#2b1d11; color:#ffa657; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media(max-width:640px){ .grid2{grid-template-columns:1fr;} }
+  ul { padding-left:20px; }
+  li { margin-bottom:6px; font-size:14px; }
+  .metric { font-size:30px; font-weight:700; }
+  .metric small { font-size:13px; color:var(--sub); font-weight:400; }
+  .foot { color:var(--sub); font-size:12px; margin-top:20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Radeon RX 570 8G — GPU 辅助中间层可行性原型验证</h1>
+  <div class="meta">设备 AMD Radeon RX 570 Compute Engine · 8.6 GB 显存 · 32 CU · Metal/OpenCL · 2026-08-21</div>
+
+  <div class="card">
+    <h2>结论先行</h2>
+    <p style="font-size:14px">
+      用 OpenCL（Apple 驱动直抵 570）编写了标准 GPU <b>分块共享内存矩阵乘内核</b>，与 CPU numpy（MKL 优化）做全对全相似度矩阵（A·Aᵀ，即「多对多交叉验证」的核心计算）的逐规模实测。
+      结论：<b class="mid">你当前的数据规模（全库 3444 段 × 1024 维）刚好处在 GPU 收益的临界点之下</b> —— GPU 与 CPU 基本打平。预计跨过约 4096×1024 的量级后，GPU 纯算力开始稳定反超。
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>实测加速比（全对全相似度矩阵 N×N，维 1024）</h2>
+    <table>
+      <tr><th>规模 N</th><th>CPU (s)</th><th>GPU 含传输 (s)</th><th>GPU 纯内核 (s)</th><th>加速比（含传输 / 纯算力）</th><th>最大误差</th></tr>
+      <tr><td>256</td><td>0.0009</td><td>0.0016</td><td>0.0009</td><td>0.6 / 0.9×</td><td>5.8e-04</td></tr>
+      <tr><td>1024</td><td>0.0060</td><td>0.0112</td><td>0.0074</td><td>0.5 / 0.8×</td><td>5.8e-04</td></tr>
+      <tr><td>2048</td><td>0.0334</td><td>0.0364</td><td>0.0272</td><td>0.9 / 1.2×</td><td>6.7e-04</td></tr>
+      <tr><td><b>3444（你当前规模）</b></td><td>0.0904</td><td>0.1005</td><td>0.0754</td><td class="mid">0.9 / 1.2×</td><td>6.4e-04</td></tr>
+      <tr><td>4096</td><td>0.1386</td><td>0.1437</td><td>0.1070</td><td class="hl">1.0 / 1.3×</td><td>6.7e-04</td></tr>
+    </table>
+    <p style="font-size:12px;color:var(--sub);margin-top:10px">
+      注：含传输 = 每次调用都把数据从 CPU 拷到显存再回读（最保守场景）；纯内核 = 数据常驻显存只计计算（理想场景，需要把整块任务驻留 GPU）。误差 ~1e-3 为浮点尾差，属可接受范围。
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>两种解读</h2>
+    <div class="grid2">
+      <div>
+        <span class="tag w">别急着改造</span>
+        <p style="font-size:13px">
+          你现在的中间层只需一次全对全 = CPU 0.09 秒，GPU 没便宜可占。为集成 GPU 增加的复杂度（数据搬移、同步、显存管理）反而会拖慢小规模任务。当前规模下，<b>升级检索算法（多跳/超图）比升级硬件收益大得多</b>。
+        </p>
+      </div>
+      <div>
+        <span class="tag g">何时该上 GPU</span>
+        <p style="font-size:13px">
+          当你的交叉验证规模突破几千×几千、且<b>把整块任务一次性驻留显存</b>（反复复用 embedding 矩阵，避免每次搬移）时，GPU 开始稳定领先。典型场景：全库段与段的全对全、多目标 × 全库的大批量 pairwise。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>关于你的核心诉求「关系多对多、错综复杂的推理」</h2>
+    <p style="font-size:14px">
+      实验进一步印证了最初的判断：<b>「让 GPU 去遍历/承载那幅多对多关系网」是用错了对象。</b> 关系网的稀疏遍历、逐段判断是 CPU 的天职，GPU 派不上用场，反而更慢。
+      GPU 真正、唯一值得吃的，是<b>把「N×M 对候选关系」一次性铺开成矩阵做批量相似度/冲突检测</b> —— 这才是 GPU 的果实，也才是把现有多对多交叉验证从「LLM 逐句问」升级为「一次算完、整网铺开」的可行路径。Radeon 内核已跑通可用于此。
+    </p>
+  </div>
+
+  <div class="foot">
+    原型代码：app/proto/gpu_similarity_bench.py · 依赖 pyopencl（已安装，可通过 pip uninstall pyopencl 回滚）
+  </div>
+</div>
+</body>
+</html>

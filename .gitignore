@@ -161,3 +161,43 @@ master_ai/master_db.sqlite
 # 独立发布项目（各有独立 GitHub 仓库，不由主仓库跟踪）
 qec_distance_certificates/
 qec-geometry/
+
+# 虚拟环境补充匹配（覆盖 .venv-qutip/、.venv311/ 等）
+.venv*/
+venv*/
+
+# 第三方库本地副本（各有独立上游，不入库）
+qutip/
+class_public/
+
+# 研究数据集（大文件，不入库）
+research/unifoil/
+
+# 观测数据与原始数据集（不入库；probe 脚本/报告照常入库）
+gpu_spectra/society/*.csv
+gpu_spectra/society/*.pdf
+gpu_spectra/society/*.xlsx
+gpu_spectra/society/*.npy
+gpu_spectra/society/*_tmp/
+
+# Obsidian 本地配置（含工作区状态，不入库）
+.obsidian/
+
+# 主库备份（可能含私人数据）
+backup_master_324.json
+
+# 独立 git 仓库（各有独立上游，不入主库，避免 gitlink 悬空）
+geoopt/
+graph_ricci/
+hf-space/
+workspace/geomstats/
+workspace/pymanopt/
+workspace/qLDPC/
+workspace/toqito/
+workspace/tqec/
+
+# 竞赛官方数据（可重新下载，不入库）
+wl_challenge/data/
+
+# 原始数据文件（Fortran 固定宽度格式）
+gpu_spectra/society/lists.txt
