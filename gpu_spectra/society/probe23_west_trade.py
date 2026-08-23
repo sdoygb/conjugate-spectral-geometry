@@ -146,6 +146,6 @@ out = {
     'scan': scan,
     'r_points': r_pts,
 }
-with open('gpu_spectra/society/probe23_results.json', 'w') as f:
+with open('probe23_results.json', 'w') as f:
     json.dump(out, f, indent=2, ensure_ascii=False)
 print("\n已保存 probe23_results.json")
