@@ -79,7 +79,14 @@ def export_collection(client, name: str, out_base: str):
     n = col.count()
     print(f"[export] {name}: {n} 条")
     if n == 0:
-        return n
+        # 集合为空时不覆盖旧 jsonl（保留历史导出数据），但返回实际行数供 manifest 使用
+        out_path = os.path.join(OUT_DIR, f'{out_base}.jsonl')
+        if os.path.exists(out_path):
+            with open(out_path, encoding='utf-8') as f:
+                old_n = sum(1 for line in f if line.strip())
+            print(f"[export] {name} 集合为空，保留旧文件 {old_n} 条")
+            return old_n
+        return 0
     got = col.get(include=['metadatas', 'documents'])
     rows, metas, docs = got['ids'], got['metadatas'], got['documents']
     lines = []

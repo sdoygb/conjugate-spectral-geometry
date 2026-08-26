@@ -1,7 +1,7 @@
 {
   "name": "geometry-knowledge",
-  "version": "0.1.4",
-  "description": "几何论（共扼谱几何 CSG）知识库插件：纯离线 BM25 检索 166 篇文章全文 + 3222 分块 + 860 条主库真理层，零运行时依赖。Conjugate Spectral Geometry knowledge base for DeepSeek Harness: fully offline BM25 retrieval over 166 articles, 3222 chunks and 860 verified truths.",
+  "version": "0.1.9",
+  "description": "几何论（共扼谱几何 CSG）知识库插件：纯离线 BM25 检索 208 篇文章全文 + 3833 分块 + 871 条主库真理层，零运行时依赖。Conjugate Spectral Geometry knowledge base for DeepSeek Harness: fully offline BM25 retrieval over 208 articles, 3833 chunks and 871 verified truths.",
   "type": "module",
   "main": "dist/index.js",
   "files": [
@@ -17,13 +17,17 @@
     "email": "sdoygb@gmail.com"
   },
   "bugs": {
-    "url": "https://github.com/sdoygb/conjugate-spectral-geometry/issues"
+    "url": "https://github.com/sdoygb/geometry-knowledge/issues"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "prepare": "tsc -p tsconfig.json",
     "export": "python3 scripts/export_dsh_index.py",
-    "smoke": "node test/smoke.mjs"
+    "smoke": "node test/smoke.mjs",
+    "test": "npm run build && node --test tests/unit/*.test.mjs",
+    "check": "npm run build && node --test tests/unit/*.test.mjs && npm run smoke",
+    "sync": "bash scripts/sync-workspace.sh",
+    "release": "npm run check && npm publish"
   },
   "dsh": {
     "bundle": {
@@ -40,9 +44,9 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sdoygb/conjugate-spectral-geometry.git"
+    "url": "git+https://github.com/sdoygb/geometry-knowledge.git"
   },
-  "homepage": "https://github.com/sdoygb/conjugate-spectral-geometry#readme",
+  "homepage": "https://github.com/sdoygb/geometry-knowledge#readme",
   "peerDependencies": {
     "@deepseek-ai/cordis": ">=0.1.0"
   },

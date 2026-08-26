@@ -26,6 +26,8 @@ export interface TruthRecord {
   chunk_id: string
   permanent_number?: string
   formula_name?: string
+  verified_at?: string
+  source?: string
   text: string
   [k: string]: unknown
 }
@@ -50,6 +52,7 @@ export interface LoadedIndex {
   toc: Record<string, TocEntry[]>
   dictTerms: string[]
   articleList: ArticleMeta[]
+  articleSize: Record<string, number>
   dataDir: string
   articlesDir: string
 }
@@ -124,8 +127,10 @@ export function loadIndex(dataDir?: string): LoadedIndex {
     }
   }
   const articleList = [...byId.values()].sort((a, b) => a.id.localeCompare(b.id, 'zh-Hans-CN', { numeric: true }))
+  const articleSize: Record<string, number> = {}
+  for (const a of articleList) articleSize[a.fname] = a.size
 
-  return { chunks, truth, toc, dictTerms: dict.terms ?? [], articleList, dataDir: dir, articlesDir }
+  return { chunks, truth, toc, dictTerms: dict.terms ?? [], articleList, articleSize, dataDir: dir, articlesDir }
 }
 
 function firstHeading(text: string): string {
