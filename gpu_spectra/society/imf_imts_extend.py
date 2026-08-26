@@ -91,13 +91,13 @@ for y in years:
     share = cn_tw / (cn_tw + us_tw) * 100 if (cn_tw + us_tw) > 0 else float('nan')
     print(f'{y}: CN-TW={cn_tw:.1f}  US-TW={us_tw:.1f}  CN份额={share:.1f}%')
 
-# 拼接历史 + 输出
+# 拼接历史 + 输出（全序列以 probe30_imts_2025.json 为准：1948-2023 DOT + 2024-2025 IMTS）
 old = json.load(open(OLD))
-yrs = old['years'] + [2024, 2025]
-out = {'nodes': old['nodes'], 'years': yrs,
+newj = json.load(open('probe30_imts_2025.json'))
+out = {'nodes': old['nodes'], 'years': newj['years'],
        'edges': old['edges'],
-       'lam2_6': old['lam2_6'] + [res['2024']['lam2_6_norm'] * 0, res['2025']['lam2_6_norm'] * 0],  # 占位
-       'br_6': old['br_6'], 'br_24': old['br_24'],
+       'lam2_6': newj['lam2_6'], 'br_6': newj['br_6'],
+       'lam2_24': newj['lam2_24'], 'br_24': newj['br_24'],
        'imts_2022_2025': res, 'key_edges_2022_2025': edges,
        'tw_share': {y: None for y in years},
        'source_note': '1948-2023: IMF DOT (WB mirror); 2024-2025: IMF IMTS API v2.1'}
@@ -109,21 +109,8 @@ for y in years:
 json.dump(out, open(OUT, 'w'), indent=1)
 print(f'\n已保存 {OUT}')
 
-# 24 节点轨迹 csv（2022-2025 用新数据 + 历史 json 前段）
-rows = []
-for i, y in enumerate(old['years']):
-    rows.append(dict(year=y, lam2_24=old['lam2_24'][i], br_24=old['br_24'][i]))
-for y in years:
-    rows.append(dict(year=int(y), lam2_24=res[y]['lam2_24_norm'] * 0 + 0, br_24=0.0))  # 占位，不输出
-# 只用非归一化口径输出（与历史一致）
-rows = []
-for i, y in enumerate(old['years']):
-    rows.append((y, old['lam2_24'][i], old['br_24'][i]))
-# 新年份的非归一化值从之前 json 读
-newj = json.load(open('probe30_imts_2025.json'))
-for y in years:
-    idx = newj['years'].index(int(y))
-    rows.append((int(y), newj['lam2_24'][idx], newj['br_24'][idx]))
+# 24 节点轨迹 csv（全序列 1948-2025，从 probe30_imts_2025.json 直接输出）
+rows = [(newj['years'][i], newj['lam2_24'][i], newj['br_24'][i]) for i in range(len(newj['years']))]
 with open(CSV, 'w') as f:
     f.write('year,lam2_24,br_24\n')
     for y, l, b in rows:

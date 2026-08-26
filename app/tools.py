@@ -19,6 +19,168 @@ from datetime import datetime
 _read_cache: Dict[str, Tuple[str, float]] = {}
 _READ_CACHE_TTL = 10  # 秒
 
+# 同一请求内 view_article 按文件名调用次数（每轮请求开始时重置）
+_view_article_count: Dict[str, int] = {}
+
+def reset_view_article_count():
+    _view_article_count.clear()
+
+# ============ 会话级工具状态（token 节省整改 2026-08-25） ============
+# 按 session_id 隔离的 calculate_math 命名空间（中间变量跨调用保留）
+_calc_ns_cache: Dict[str, Dict[str, Any]] = {}
+# 按 (session_id, expression) 去重的计算结果缓存
+_calc_result_cache: Dict[str, str] = {}
+# 会话级 shell 调用预算（每次推导限 N 次，防探索性命令堆积）
+_shell_budget: Dict[str, int] = {}
+# 会话级任务模式：'derive'(默认,推导类) / 'coding'(编程类) —— 决定 shell 探索预算
+_session_mode: Dict[str, str] = {}
+# 会话级 view_article 已读区间：session_id -> filename -> [(start, end), ...]
+_view_ranges: Dict[str, Dict[str, list]] = {}
+# 会话级单文章累计读取字符数：session_id -> filename -> int
+_view_chars: Dict[str, Dict[str, int]] = {}
+# 会话级已检索主题记忆：session_id -> [query, ...]（token 节省整改 A）
+_search_history: Dict[str, list] = {}
+
+
+def _query_similar(a: str, b: str, threshold: float = 0.5) -> bool:
+    """判断两个检索 query 是否近似。两层判定：
+    1. 共享「领域概念词」匹配（三界/物质界/层级/嵌套/亚层等知识库核心概念）
+    2. 兜底：CJK 双字 bigram Jaccard
+    概念词匹配对"同主题不同问法"鲁棒（实测 bigram 对长句词序敏感，Jaccard 仅 0.08）。"""
+    if not a or not b:
+        return False
+    try:
+        import re as _re_s
+        _a_l, _b_l = a.lower(), b.lower()
+        # 领域概念词表：知识库高频主题词（可扩展）
+        _concepts = [
+            '三界', '物质界', '因果界', '信息界', '层级', '嵌套', '递归', '亚层',
+            '递推', '分割', '厚度', '演化', '动力学', '震荡', '中微子', '宇宙',
+            '轮回', '收缩', '膨胀', '相变', '尺度', '标度', '乘子', '谱', '定理',
+            '推导', '质量', '呼吸', '几何', '量子', '场', '时间', '外时间',
+            '八相变', '层级交错', '本体论', '圆满', '闭合',
+        ]
+        _ca = [c for c in _concepts if c in _a_l]
+        _cb = [c for c in _concepts if c in _b_l]
+        if _ca and _cb:
+            _shared = set(_ca) & set(_cb)
+            # 共享 ≥2 个核心概念即判同主题（三界+层级 / 物质界+亚层 / 层级+嵌套 等）
+            if len(_shared) >= 2:
+                return True
+        # 兜底：bigram Jaccard
+        def _tokens(s: str) -> set:
+            _s = s.lower()
+            _t = set(re.findall(r'[a-z0-9_]{2,}', _s))
+            _zh = re.sub(r'[^\u4e00-\u9fff]', '', _s)
+            _t |= set(_zh[i:i + 2] for i in range(len(_zh) - 1) if _zh[i] != _zh[i + 1])
+            return _t
+        _ta, _tb = _tokens(a), _tokens(b)
+        if not _ta or not _tb:
+            return False
+        _jac = len(_ta & _tb) / len(_ta | _tb)
+        _need = 0.28 if min(len(_ta), len(_tb)) >= 12 else 0.45
+        return _jac >= _need
+    except Exception:
+        return False
+
+# 默认预算
+_CALC_NS_MAX = 200        # 单会话命名空间最多保留的键（防无限膨胀）
+_SHELL_BUDGET_PER_SESSION = 5   # 推导类会话的 shell 探索预算
+_SHELL_BUDGET_CODING = 20       # 编程类会话的 shell 探索预算
+_VIEW_CHAR_LIMIT_PER_ARTICLE = 25000  # 单文章累计读取上限
+_CALC_RESULT_CACHE_MAX = 300    # 每会话结果缓存条目上限
+
+# 编程类任务关键词（查询级初判 A）
+_CODING_KEYWORDS = [
+    '升级', '安装', 'git', 'npm', 'pip', '编译', '部署', '修复', '调试',
+    '写代码', '编写', '运行测试', '跑测试', '构建', 'build', 'install',
+    'upgrade', 'upgrade', 'deploy', 'debug', 'refactor', '重构', 'dsh',
+    'harness', '提交', 'commit', 'push', '拉取', 'pull', '启动', '重启服务',
+]
+
+# shell 命令细分类 C：执行验证类命令（编程/部署/运行）不占探索预算
+_EXEC_CMD_PAT = _re.compile(
+    r'^(git|npm|pip|pip3|python|python3|make|go|cargo|node|npx|yarn|pnpm|'
+    r'brew|swift|xcodebuild|cmake|docker|kubectl|curl|wget|ruby|perl|php|'
+    r'java|javac|rustc|deno|bun)\b'
+    r'|(编译|运行|测试|执行|安装|部署|install|upgrade|update|build|test|run|'
+    r'deploy|compile|make )',
+    _re.IGNORECASE,
+)
+
+
+def init_session_mode(session_id, mode: str):
+    """A 层初判：仅当会话尚无模式时设置（避免每个请求的初判反复重置预算）。"""
+    _sid = _sid_of(session_id)
+    if _sid not in _session_mode:
+        set_session_mode(session_id, mode)
+
+
+def set_session_mode(session_id, mode: str):
+    """设置会话任务模式：'coding'（编程类，放宽 shell 预算）/'derive'（推导类，默认）。
+    模式变化时重置探索预算（已消耗计数清零），让新模式的完整预算生效。"""
+    _sid = _sid_of(session_id)
+    _prev = _session_mode.get(_sid)
+    if mode == 'coding':
+        _session_mode[_sid] = 'coding'
+    else:
+        _session_mode[_sid] = 'derive'
+    # 仅真实切换（且非首次设置）时重置预算并打日志，避免 WB 每线首调误报
+    if _prev is not None and _prev != _session_mode[_sid]:
+        _shell_budget.pop(_sid, None)  # 模式切换 → 重置预算
+        logger.info(f"[SHELL-BUDGET] 会话 {_sid[:16]} 模式 {_prev}→{_session_mode[_sid]}，探索预算已重置")
+
+
+def get_session_mode(session_id) -> str:
+    return _session_mode.get(_sid_of(session_id), 'derive')
+
+
+def _sid_of(session_id):
+    """规范化 session 键：None/空 -> 'default'，并限制长度防内存膨胀。"""
+    return (session_id or "default")[:64]
+
+
+def reset_tool_session(session_id):
+    """清理某个会话的全部工具状态（推导结束或请求结束时调用）。
+    支持前缀匹配：传入 'wb:xxx' 会同时清理 'wb:xxx:line1' 等子会话。"""
+    _sid = _sid_of(session_id)
+    _all = [_sid]
+    if not _sid.endswith(":"):
+        _all += [k for k in list(_calc_ns_cache.keys()) if k.startswith(_sid + ":")]
+    for _k in _all:
+        _calc_ns_cache.pop(_k, None)
+        _calc_result_cache.pop(_k, None)
+        _shell_budget.pop(_k, None)
+        _view_ranges.pop(_k, None)
+        _view_chars.pop(_k, None)
+        _session_mode.pop(_k, None)
+        _search_history.pop(_k, None)
+
+
+def get_shell_budget_left(session_id) -> int:
+    _sid = _sid_of(session_id)
+    _mode = _session_mode.get(_sid, 'derive')
+    _cap = _SHELL_BUDGET_CODING if _mode == 'coding' else _SHELL_BUDGET_PER_SESSION
+    return _shell_budget.get(_sid, _cap)
+
+
+def _shell_budget_cap(session_id) -> int:
+    """当前会话的 shell 探索预算上限（按任务模式区分）。"""
+    _sid = _sid_of(session_id)
+    _mode = _session_mode.get(_sid, 'derive')
+    return _SHELL_BUDGET_CODING if _mode == 'coding' else _SHELL_BUDGET_PER_SESSION
+
+
+def _consume_shell_budget(session_id) -> bool:
+    """消耗一次探索预算。返回 False 表示预算已用完。执行验证类命令由调用方判断不消耗。"""
+    _sid = _sid_of(session_id)
+    _cap = _shell_budget_cap(session_id)
+    _left = _shell_budget.get(_sid, _cap)
+    if _left <= 0:
+        return False
+    _shell_budget[_sid] = _left - 1
+    return True
+
 from config import GAI_API_KEY, GAI_BASE_URL, GAI_MODEL, UPLOAD_FOLDER, OPENWEBUI_DB_PATH, PROJECT_ROOT, logger
 from models import personal_db, _save_personal_db
 
@@ -238,7 +400,7 @@ ARTICLE_TOOLS = [
         "type": "function",
         "function": {
             "name": "view_article",
-            "description": "查看文章内容（B2 片段式注入）。【默认返回结构摘要视图】= 头部元信息（版本/依赖/摘要/核心结果）+ 带 offset 和字数的章节目录，约1800字符，绝不全文。需要某章节细节时用 section='章节关键词' 精确拉取该章节片段（推荐），或用 offset/limit 按偏移分页。需读完整正文才设 full=true，并分批 offset 读取。审核/抽查引用是否真实、核对依赖闭合时必须调用本工具，不可仅依赖向量检索。",
+            "description": "查看文章内容（B2 片段式注入）。【默认返回结构摘要视图】= 头部元信息（版本/依赖/摘要/核心结果）+ 带 offset 和字数的章节目录，约1800字符，绝不全文。需要某章节细节时用 section='章节关键词' 精确拉取该章节片段（推荐），或用 offset/limit 按偏移分页。需读完整正文才设 full=true，并分批 offset 读取。审核/抽查引用是否真实、核对依赖闭合时必须调用本工具，不可仅依赖向量检索。决策提示：如果需要阅读同一篇文章的3个或以上章节，建议直接用 full=true 一次性获取全文，比逐章读取更省 token 和 API 往返。【token 节省纪律】系统会检测顺序翻页读取（相邻 offset 连续读取）并给出警告，单篇文章累计读取超 25000 字符将被拒绝。请优先用默认摘要视图 + section 精准跳转，避免无目的地翻页读全文。",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -248,8 +410,8 @@ ARTICLE_TOOLS = [
                     },
                     "limit": {
                         "type": "integer",
-                        "description": "每次读取的字符数，默认5000。大文章请分批读取，每批5000字符。",
-                        "default": 5000
+                        "description": "每次读取的字符数，默认15000。大文章请分批读取，每批15000字符。",
+                        "default": 15000
                     },
                     "offset": {
                         "type": "integer",
@@ -258,7 +420,7 @@ ARTICLE_TOOLS = [
                     },
                     "section": {
                         "type": "string",
-                        "description": "按章节名精确跳转（B2 推荐方式）。传入章节关键词，如 section='公理' 会自动定位到包含'公理'的 ## 或 ### 标题处，只返回该章节片段（默认5000字符内）。默认摘要视图会列出每章节的 offset 和字数供参考。"
+                        "description": "按章节名精确跳转（B2 推荐方式）。传入章节关键词，如 section='公理' 会自动定位到包含'公理'的 ## 或 ### 标题处，只返回该章节片段（默认15000字符内）。默认摘要视图会列出每章节的 offset 和字数供参考。"
                     },
                     "full": {
                         "type": "boolean",
@@ -730,7 +892,7 @@ ARTICLE_TOOLS = [
         "type": "function",
         "function": {
             "name": "shell_execute",
-            "description": "执行 shell 命令。在项目根目录下运行命令，返回 stdout 和 stderr。适用于：编译代码、运行测试、安装依赖、git 操作、查看文件系统状态等。注意：高危命令（rm -rf /、sudo、格式化等）被禁止。每次执行超时 60 秒。",
+            "description": "执行 shell 命令。在项目根目录下运行命令，返回 stdout 和 stderr。适用于：编译代码、运行测试、安装依赖、git 操作、执行验证脚本、部署等编程/部署操作。【token 节省纪律】执行验证类命令（git/npm/pip/python/编译/测试/部署等）不占预算；纯探索类命令（ls/find/du/查看目录等）受预算限制：推导类任务限 5 次、编程类任务限 20 次，用完即拒绝。查看文件/目录/文章请用 list_articles / file_list / file_read / view_article 等专用工具，不要把 shell 当作探索工具。",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -757,7 +919,7 @@ ARTICLE_TOOLS = [
         "type": "function",
         "function": {
             "name": "file_read",
-            "description": "读取项目目录中的文件内容。支持任意文本文件（.py, .md, .json, .toml, .yaml, .txt, .sh, .html, .css, .js 等）。返回文件内容，最多 100000 字符。适用于：查看代码文件、配置文件、文章内容、日志等。",
+            "description": "读取项目目录中的文件内容。支持任意文本文件（.py, .json, .toml, .yaml, .txt, .sh, .html, .css, .js 等）。返回文件内容，最多 100000 字符。适用于：查看代码文件、配置文件、日志等。【注意】读取知识库文章（articles 目录下的 .md）请用 view_article 工具（支持摘要视图/section 跳转/已读区间追踪），file_read 读取文章会被拦截。",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -832,7 +994,7 @@ ARTICLE_TOOLS = [
         "type": "function",
         "function": {
             "name": "calculate_math",
-            "description": "精确数学/数值计算工具。用 sympy 安全求值，返回精确结果（分数、符号表达式、数值、化简结果）。适用于：任何涉及数值计算、公式求值、符号推导、方程求解、积分/微分/级数、矩阵运算的场景。严禁自行心算数值——凡涉及算数一律调用本工具。支持标准运算符 (+ - * / **)、数学函数 (sin cos tan exp log sqrt ...)、符号变量 (x y z)、以及 sympy 表达式。",
+            "description": "精确数学/数值计算工具。用 sympy 安全求值，返回精确结果（分数、符号表达式、数值、化简结果）。适用于：任何涉及数值计算、公式求值、符号推导、方程求解、积分/微分/级数、矩阵运算的场景。严禁自行心算数值——凡涉及算数一律调用本工具。支持标准运算符 (+ - * / **)、数学函数 (sin cos tan exp log sqrt ...)、符号变量 (x y z)、以及 sympy 表达式。【token 节省纪律】① 本会话内中间变量会保留，可用分号在一行内做多步赋值（如 'D=Rational(10,7821); D.evalf(12)'），后续可直接引用 D，不要重复定义同一变量；② 同一表达式如已计算过，直接复用之前结果，不要重复调用。",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -1323,6 +1485,25 @@ def _article_sort_key(filename: str):
     return (1, [], filename)
 
 
+def _check_number_conflict(new_filename: str) -> str:
+    """检查同编号但不同文件名的文章是否已存在，返回冲突文件名或空字符串。"""
+    import re
+    m = re.match(r'^((?:\d+(?:\.\d+)*))_', new_filename)
+    if not m:
+        return ""
+    prefix = m.group(1)
+    for root, dirs, files in os.walk(UPLOAD_FOLDER):
+        skip_dirs = {'.obsidian', 'Attachments', 'Templates', 'copilot', 'archive', '.git', '__pycache__'}
+        dirs[:] = [d for d in dirs if d not in skip_dirs]
+        for f in files:
+            if f == new_filename:
+                continue
+            m2 = re.match(r'^((?:\d+(?:\.\d+)*))_', f)
+            if m2 and m2.group(1) == prefix:
+                return f
+    return ""
+
+
 def _git_push() -> str:
     """尝试 git push"""
     repo = _find_git_repo()
@@ -1414,11 +1595,30 @@ def _build_summary_view(content: str, actual_path: str, total: int) -> str:
     if len(head_trim) > 1300:
         head_trim = head_trim[:1300] + "...[头部截断，见章节]"
 
+    # token 节省整改 C：自动提炼「核心结论」——从头部块抓含关键数字/结论词的短句，
+    # 让模型直接看到本文结论，减少为找结论而读正文
+    _core_lines = []
+    import re as _re_core
+    for _ln in head_block.split('\n'):
+        _t = _ln.strip()
+        if not _t or _t.startswith('#'):
+            continue
+        # 含数字或结论词，且长度适中（20-200 字符）
+        if (_re.search(r'\d+\.\d+|\d+[%％]|=|≈|定理|命题|结论|核心|关键', _t)
+                and 20 <= len(_t) <= 200):
+            _core_lines.append(_t)
+        if len(_core_lines) >= 5:
+            break
+    _core_hint = ""
+    if _core_lines:
+        _core_hint = "\n\n【核心结论速览】\n" + "\n".join(f"- {c}" for c in _core_lines)
+
     return (
         f"文件: {actual_path} (共{total}字符)\n"
         f"===== 结构摘要（B2 默认，节省 token）=====\n"
         f"{head_trim}\n\n"
         + "\n".join(toc_lines) +
+        _core_hint +
         f"\n\n【引导】以上是结构摘要。需要某章节正文时，用 section='章节关键词'（如 section='公理'）精确拉取片段；"
         f"或 offset/limit 分页按偏移读取。全文一次性读取会消耗大量 token，请只看需要的章节。"
     )
@@ -1551,9 +1751,19 @@ def _list_articles(arguments: Dict[str, Any]) -> str:
     return result
 
 
-def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> str:
+def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None, session_id: str = None) -> str:
     """执行工具调用并返回结果文本。"""
     try:
+        # token 节省整改 B：会话行为复核 —— 写文件/编辑=编程类（放宽 shell），读知识库=推导类
+        if session_id:
+            _sid = _sid_of(session_id)
+            _cur_mode = _session_mode.get(_sid, 'derive')
+            if name in ('edit_article', 'write_article', 'file_write', 'apply_patch', 'file_list', 'git_history'):
+                if _cur_mode != 'coding':
+                    set_session_mode(session_id, 'coding')
+                    logger.info(f"[SHELL-BUDGET] 会话 {_sid[:16]} 检测到编程操作({name})，切换为 coding 模式（shell 探索预算 {_SHELL_BUDGET_CODING}）")
+            elif name in ('view_article', 'vector_search', 'search_master_truth') and _cur_mode == 'derive':
+                pass  # 保持默认推导模式
         if name == "list_articles":
             return _list_articles(arguments)
         if name == "vector_search":
@@ -1561,10 +1771,29 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
             top_k = min(arguments.get("top_k", 8), 20)
             if not vector_kb or not vector_kb.is_initialized:
                 return "向量知识库未初始化，无法搜索"
+            # token 节省整改 A：会话级检索记忆 —— 已检索过的相似主题直接提示复用，不重复搜索
+            _sid = _sid_of(session_id)
+            _search_mem = _search_history.setdefault(_sid, [])
+            _dup_hit = None
+            for _prev_q in _search_mem:
+                if _query_similar(_prev_q, query):
+                    _dup_hit = _prev_q
+                    break
+            if _dup_hit:
+                logger.info(f"[SEARCH-MEM] 会话内重复检索拦截: '{query[:50]}' ≈ 之前 '…{_dup_hit[:50]}'")
+                return (
+                    f"⚠️ 你已在本会话中检索过相似主题：「{_dup_hit[:80]}」。"
+                    "请直接基于之前检索到的文章和已读内容推进推导，不要重复搜索同一主题。"
+                    "如确需新信息，请用更具体的新关键词搜索，或用 view_article 读取已找到的文章。"
+                )
             results = vector_kb.search(query, top_k=top_k)
             if not results:
                 return f"未找到与 '{query}' 相关的内容"
-            # 格式化结果
+            # 记录本次检索主题（供后续重复拦截）
+            _search_mem.append(query)
+            if len(_search_mem) > 12:
+                _search_mem.pop(0)
+            # 格式化结果（token 节省：片段从 500 → 300 字符，仅保留关键信息）
             output_parts = [f"向量搜索 '{query}' 返回 {len(results)} 条结果:\n"]
             for r in results:
                 meta = r.get('metadata', {})
@@ -1573,7 +1802,7 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                 start = meta.get('start', '?')
                 end = meta.get('end', '?')
                 dist = r.get('distance', 0)
-                content = r.get('document', '')[:500]
+                content = r.get('document', '')[:300]
                 output_parts.append(f"[{aid}] {fname} 位置:{start}-{end} 距离:{dist:.4f}\n{content}\n")
             return "\n".join(output_parts)
 
@@ -1587,7 +1816,7 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
 
         elif name == "view_article":
             filename = arguments.get("filename", "")
-            limit = int(arguments.get("limit", 5000) or 5000)
+            limit = int(arguments.get("limit", 15000) or 15000)
             offset = int(arguments.get("offset", 0) or 0)
             actual_path = filename  # 记录实际找到的路径
             
@@ -1697,10 +1926,60 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                     content = f.read()
             total = len(content)
 
-            # B2 片段式注入：默认返回结构摘要视图（头部元信息+增强目录），
-            # 正文细节须用 section / offset / full=true 精准拉取
+            # 追踪同一文章调用次数，第2次起追加效率提示
+            _key = actual_path
+            _view_article_count[_key] = _view_article_count.get(_key, 0) + 1
+            _repeat_hint = ""
+            if _view_article_count[_key] >= 2:
+                _repeat_hint = f"\n\n⚠️ 你已第{_view_article_count[_key]}次读取本文。如还需阅读其他章节，建议改用 full=true 一次获取全文，避免多次调用浪费 token。"
+
+            # ===== token 节省整改：会话级已读区间追踪（防顺序翻页读全文 + 单文章累计上限）=====
+            _sid = _sid_of(session_id)
             full_req = arguments.get("full", False) in (True, 'true', 'True', '1', 1)
             section_name = arguments.get("section", "").strip()
+            _paging_hint = ""
+            _chars_this_call = 0
+            _ranges = _view_ranges.setdefault(_sid, {})
+            _file_ranges = _ranges.setdefault(_key, [])
+            # 只有真正读取正文的调用才计入区间（显式传 offset（含 0，即翻页第一页）或 full=true，或 section 跳转）
+            _has_explicit_offset = ('offset' in arguments and str(arguments.get('offset', '')).strip() not in ('', 'None'))
+            _explicit_read = _has_explicit_offset or full_req or bool(section_name)
+            if _explicit_read:
+                _offset_used = int(arguments.get("offset", 0) or 0)
+                _limit_used = int(arguments.get("limit", 15000) or 15000)
+                _end_used = min(_offset_used + _limit_used, total) if _limit_used > 0 else total
+                _chars_this_call = max(_end_used - _offset_used, 0) if _limit_used > 0 else max(total - _offset_used, 0)
+                # 累计读取字符（token 节省整改：单文章累计上限）
+                _chars_map = _view_chars.setdefault(_sid, {})
+                _prev_chars = _chars_map.get(_key, 0)
+                _new_chars = _prev_chars + _chars_this_call
+                _chars_map[_key] = _new_chars
+                if _new_chars > _VIEW_CHAR_LIMIT_PER_ARTICLE:
+                    logger.info(f"[VIEW-GUARD] 单文章累计读取超限: {_key} 累计 {_new_chars} 字符 (上限 {_VIEW_CHAR_LIMIT_PER_ARTICLE})")
+                    return (
+                        f"⚠️ 你已累计读取本文 {_new_chars} 字符，超过单篇文章上限 {_VIEW_CHAR_LIMIT_PER_ARTICLE} 字符。"
+                        "请停止继续翻页读取全文。基于已读内容直接推进推导；如确需特定章节，用 section='章节关键词' 精准跳转；"
+                        "或用 vector_search 搜索相关段落。不要再无目的地顺序翻页。"
+                    )
+                # 记录本次区间（含 offset=0 的第一页）
+                _file_ranges.append((_offset_used, _end_used))
+                # 顺序翻页检测：存在与本次区间相邻/重叠的已读区间，且累计读取≥2段 → 判定翻页
+                if len(_file_ranges) >= 2:
+                    _adjacent = any(
+                        (s <= _offset_used <= e + 2000) or (s <= _end_used <= e + 2000) or
+                        (_offset_used <= s <= _end_used + 2000)
+                        for (s, e) in _file_ranges[:-1]
+                    )
+                    if _adjacent:
+                        _paging_hint = (
+                            f"\n\n⚠️ 检测到你正在顺序翻页读取本文（已读 {len(_file_ranges)} 段，累计 {_new_chars} 字符）。"
+                            "如需读完整篇请直接设 full=true 一次获取，比逐段翻页省 token 和往返；"
+                            "如果只是找特定内容，请先用默认摘要视图或 section='章节关键词' 精准定位，不要顺序翻页。"
+                        )
+            # ===== end 已读区间追踪 =====
+
+            # B2 片段式注入：默认返回结构摘要视图（头部元信息+增强目录），
+            # 正文细节须用 section / offset / full=true 精准拉取
             if not full_req and not section_name and not (offset and offset > 0):
                 return _build_summary_view(content, actual_path, total)
 
@@ -1713,7 +1992,7 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                         # 计算该标题的字符偏移
                         offset = content.index(line)
                         # 从该位置开始读 limit 字符
-                        section_content = content[offset:offset + (limit or 5000)]
+                        section_content = content[offset:offset + (limit or 15000)]
                         if limit and len(section_content) > limit:
                             section_content = section_content[:limit] + "\n...[截断]"
                         # 找下一章节标题位置，提示剩余内容
@@ -1722,7 +2001,7 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                         if next_section_pos != -1:
                             next_line = content[next_section_pos:].split('\n', 1)[0]
                             next_pos_title = f"\n下一篇: {next_line.strip()} (offset={next_section_pos})"
-                        return f"文件: {actual_path} (共{total}字符) | 章节: {line.strip()}\n位置: {offset}-{offset+len(section_content)}{next_pos_title}\n{section_content}"
+                        return f"文件: {actual_path} (共{total}字符) | 章节: {line.strip()}\n位置: {offset}-{offset+len(section_content)}{next_pos_title}\n{section_content}{_repeat_hint}"
                 return f"未找到包含 '{section_name}' 的章节。\n可用章节：\n" + _extract_toc(content, actual_path, total)
 
             # 当 limit=0 且 offset=0 时（首次打开），自动附加章节目录
@@ -1738,7 +2017,7 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                 content = content[:limit] + f"\n...[截断]"
             pos_info = f"位置: {offset}-{min(offset + (limit or total), total)}"
             path_hint = f" [实际路径: {actual_path}]" if actual_path != filename else ""
-            return f"文件: {actual_path} (共{total}字符, {pos_info}){path_hint}\n{toc}\n{content}"
+            return f"文件: {actual_path} (共{total}字符, {pos_info}){path_hint}\n{toc}\n{content}{_repeat_hint}{_paging_hint}"
 
         elif name == "write_article":
             filename = arguments.get("filename", "")
@@ -1776,6 +2055,7 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
 
                 # 自动归档旧版（如果同名文件已存在）
                 archive_msg = ""
+                _was_overwrite = os.path.exists(fpath)
                 if os.path.exists(fpath):
                     import shutil as _shutil
                     import time as _time2
@@ -1799,9 +2079,15 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                 # 只索引新写入的文件（增量索引，不重建全部）
                 if vector_kb and vector_kb.is_initialized:
                     vector_kb.index_single_file(fpath)
-                    # 清理向量库中同 article_id 的旧版本文件 chunk
-                    # （当新文件名和旧文件名不同时，index_single_file 不会清理旧的）
-                    _cleanup_stale_article(vector_kb, filename)
+                    # 仅当同名文件被覆盖时才清理旧版本 chunk
+                    # 不同文件名同编号属于不同文章，不清理
+                    if _was_overwrite:
+                        _cleanup_stale_article(vector_kb, filename)
+                    else:
+                        # 检测同编号冲突，提示但不清理
+                        _conflict = _check_number_conflict(filename)
+                        if _conflict:
+                            archive_msg += f"\n⚠️ 编号冲突：已存在同编号文章 {_conflict}。如果这是不同文章，请使用不同编号。"
                     # 与 edit_article 对齐：写盘后同步刷新内存正文缓存（_articles_text），避免内存旧文
                     vector_kb.refresh_article_cache(fpath, filename)
                 # 自动 git commit（版本管理）
@@ -1823,6 +2109,13 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
             replacements = arguments.get("replacements", [])
             if not filename:
                 return "错误：缺少文件名"
+            if isinstance(replacements, str):
+                try:
+                    replacements = json.loads(replacements)
+                except json.JSONDecodeError:
+                    return "错误：replacements 参数为字符串但无法解析为JSON（需要数组）"
+            if isinstance(replacements, dict):
+                replacements = [replacements]
             if not replacements or not isinstance(replacements, list):
                 return "错误：缺少 replacements 参数，或格式不正确（需要数组）"
             os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -2827,11 +3120,43 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
             workdir = arguments.get("workdir", "") or ""
             if not command:
                 return "错误：缺少 command 参数"
+            # token 节省整改：会话级 shell 预算 —— 按任务模式区分 + 命令细分类
+            # 推导类会话：探索预算 5 次；编程类会话：20 次；执行验证类命令不消耗探索预算
+            _sid = _sid_of(session_id)
+            _cmd_lower = (command or "").lower()
+            _is_exec_cmd = bool(_EXEC_CMD_PAT.search(_cmd_lower))
+            _mode = _session_mode.get(_sid, 'derive')
+            _cap = _SHELL_BUDGET_CODING if _mode == 'coding' else _SHELL_BUDGET_PER_SESSION
+            if _is_exec_cmd:
+                # 执行验证类命令（git/npm/pip/python/编译/测试等）：不消耗探索预算
+                logger.info(f"[SHELL-BUDGET] 执行类命令不占预算: {command[:80]} (mode={_mode})")
+            else:
+                if not _consume_shell_budget(session_id):
+                    return (
+                        f"❌ shell 探索预算已用完（当前任务模式={_mode}，探索类命令限 {_cap} 次）。"
+                        "请改用 list_articles / file_list / vector_search / file_read 等专用工具获取信息；"
+                        "如确实需要执行编程/部署类命令（git/npm/python/编译/测试等），这类命令不占探索预算，可直接调用。"
+                    )
             # 黑名单检查
-            cmd_lower = command.lower()
+            cmd_lower = _cmd_lower
             for black in SHELL_BLACKLIST:
                 if black in cmd_lower:
                     return f"错误：命令 '{command}' 被禁止（匹配黑名单: {black}）"
+            # 文章读取拦截：防止用 grep/sed/cat/head/tail/awk 绕过 view_article 读文章
+            # 检测模式：命令包含 articles 路径 或 .md 文件名 + 文件读取命令
+            _article_read_patterns = ['grep', 'sed', 'cat ', 'head ', 'tail ', 'awk', 'rg ']
+            _article_path_patterns = ['articles/', 'articles\\', '.md', '_CN_']
+            _is_article_read = (
+                any(p in cmd_lower for p in _article_read_patterns) and
+                any(p in cmd_lower for p in _article_path_patterns)
+            )
+            if _is_article_read:
+                logger.info(f"[SHELL-INTERCEPT] 拦截文章读取命令: {command[:100]}")
+                return (
+                    "⚠️ 检测到通过 shell 命令读取文章内容。请改用 view_article 工具读取文章"
+                    "（支持 section 精确跳转、full=true 全文读取），或用 vector_search 搜索关键词。"
+                    "直接用 grep/sed/cat 读文章会绕过 token 追踪，导致上下文膨胀。"
+                )
             import subprocess
             import shlex
             try:
@@ -2854,21 +3179,30 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                 )
                 output = ""
                 if result.stdout:
-                    output += f"[stdout]\n{result.stdout[:50000]}"
+                    output += f"[stdout]\n{result.stdout[:30000]}"
                 if result.stderr:
                     if output:
                         output += "\n"
-                    output += f"[stderr]\n{result.stderr[:20000]}"
+                    output += f"[stderr]\n{result.stderr[:12000]}"
                 if not output:
                     output = "(命令执行完毕，无输出)"
-                # 截断过长输出
-                if len(output) > 70000:
-                    output = output[:70000] + "\n...(输出过长，已截断)"
+                # token 节省整改：shell 输出硬截断（原来 70000 字符过大，探索性命令易堆积）
+                if len(output) > 12000:
+                    output = output[:12000] + "\n...(输出过长，已截断。请用更精确的命令（如加过滤条件）避免大输出)"
                 exit_info = f"退出码: {result.returncode}"
                 if result.returncode == 0:
                     return f"✅ {exit_info}\n{output}"
                 else:
-                    return f"❌ {exit_info}\n{output}"
+                    # 失败命令提示：告知模型命令不可用或失败，避免反复尝试同类命令
+                    _fail_hint = ""
+                    if "command not found" in output or "not found" in output:
+                        _fail_hint = (
+                            "\n\n提示：命令不存在或不可用。请检查命令名，或用文件系统专用工具"
+                            "（list_articles / file_list / file_read）代替 shell 探索。"
+                        )
+                    elif "No such file" in output or "No such directory" in output:
+                        _fail_hint = "\n\n提示：路径不存在。请先用 list_articles / file_list 确认实际路径。"
+                    return f"❌ {exit_info}\n{output}{_fail_hint}"
             except subprocess.TimeoutExpired:
                 return f"错误：命令执行超时（{timeout}秒）"
             except Exception as e:
@@ -2900,6 +3234,20 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                 file_size = os.path.getsize(abs_path)
                 if file_size > 500000:  # 500KB
                     return f"错误：文件 '{path}' 过大（{file_size//1024}KB），最大支持 500KB。请缩小 offset/limit 范围。"
+                # token 节省整改：拦截用 file_read 读取文章（绕过 view_article 的翻页/累计防护）
+                # 文章 = articles 目录下的 .md 文件
+                _abs_base = os.path.abspath(os.path.join(CODE_WORK_DIR, 'app', 'articles'))
+                _is_article_md = (
+                    path.lower().endswith('.md') and
+                    os.path.abspath(abs_path).startswith(os.path.abspath(UPLOAD_FOLDER))
+                )
+                if _is_article_md:
+                    logger.info(f"[READ-INTERCEPT] 拦截 file_read 读文章: {path[:120]}")
+                    return (
+                        "⚠️ 检测到通过 file_read 读取文章（.md）。请改用 view_article 工具读取文章："
+                        "它支持结构摘要视图（省 token）、section='章节关键词' 精准跳转、full=true 全文，"
+                        "并会跟踪已读区间防止重复翻页。用 file_read 读文章会绕过这些防护，导致上下文膨胀。"
+                    )
                 with open(abs_path, 'r', encoding='utf-8', errors='replace') as f:
                     if offset > 0:
                         f.seek(offset)
@@ -3003,6 +3351,14 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                 return "错误：缺少 expression 参数"
             digits = arguments.get("digits")
             digits = int(digits) if digits else None
+            symbolic_req = (arguments.get("symbolic", False) in (True, 'true', 'True', '1', 1))
+            # token 节省整改：同会话内相同表达式直接复用上次结果（不重复调用模型/计算）
+            _sid = _sid_of(session_id)
+            _cache_key = f"{expression}|d={digits}|s={symbolic_req}"
+            _prev = _calc_result_cache.get(_sid, {}).get(_cache_key)
+            if _prev is not None:
+                logger.info(f"[CALC-CACHE] 会话内重复表达式命中缓存: {expression[:80]}")
+                return _prev + "\n\n（注：此表达式在本会话中已计算过，直接复用上次结果，未重新计算）"
             try:
                 import sympy
                 from sympy import (Rational, Symbol, symbols, sqrt, sin, cos, tan, exp, log,
@@ -3013,29 +3369,36 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                                    zeros, ones, Eq, sympify, residue, apart, together,
                                    asin, acos, atan, atan2, asec, acsc, asinh, acosh,
                                    atanh, sec, csc, cot, deg, rad)
-                # 建立白名单命名空间；用 print 捕获 sympy 的 pretty 输出避免非常规 repr
-                ns = {
-                    'Rational': Rational, 'Symbol': Symbol, 'symbols': symbols,
-                    'sqrt': sqrt, 'sin': sin, 'cos': cos, 'tan': tan, 'exp': exp,
-                    'log': log, 'pi': pi, 'E': E, 'oo': oo, 'I': I,
-                    'factorial': factorial, 'nsimplify': nsimplify, 'N': N,
-                    'diff': diff, 'integrate': integrate, 'limit': limit,
-                    'series': series, 'solve': solve, 'expand': expand,
-                    'simplify': simplify, 'factor': factor, 'expand_trig': expand_trig,
-                    'trigsimp': trigsimp, 'Matrix': Matrix, 'conjugate': conjugate,
-                    'Abs': Abs, 're': re, 'im': im, 'gcd': gcd, 'lcm': lcm,
-                    'isprime': isprime, 'prime': prime, 'eye': eye, 'zeros': zeros,
-                    'ones': ones, 'Eq': Eq, 'residue': residue, 'apart': apart,
-                    'together': together, 'Integer': Integer, 'Float': Float,
-                    # 反三角/双曲/正割等：LLM 常写 asin/atan/arcsin，缺了会一直 NameError
-                    'asin': asin, 'acos': acos, 'atan': atan, 'atan2': atan2,
-                    'arcsin': asin, 'arccos': acos, 'arctan': atan, 'arctan2': atan2,
-                    'asec': asec, 'acsc': acsc, 'asinh': asinh, 'acosh': acosh,
-                    'atanh': atanh, 'sec': sec, 'csc': csc, 'cot': cot,
-                    'degrees': deg, 'radians': rad, 'deg': deg, 'rad': rad,
-                    # 预置常用符号，使 solve/integrate/diff 等可直接使用裸 x,y,z
-                    'x': Symbol('x'), 'y': Symbol('y'), 'z': Symbol('z'),
-                }
+                # token 节省整改：会话级命名空间持久化，中间变量跨调用保留
+                ns = _calc_ns_cache.get(_sid)
+                if ns is None:
+                    ns = {
+                        'Rational': Rational, 'Symbol': Symbol, 'symbols': symbols,
+                        'sqrt': sqrt, 'sin': sin, 'cos': cos, 'tan': tan, 'exp': exp,
+                        'log': log, 'pi': pi, 'E': E, 'oo': oo, 'I': I,
+                        'factorial': factorial, 'nsimplify': nsimplify, 'N': N,
+                        'diff': diff, 'integrate': integrate, 'limit': limit,
+                        'series': series, 'solve': solve, 'expand': expand,
+                        'simplify': simplify, 'factor': factor, 'expand_trig': expand_trig,
+                        'trigsimp': trigsimp, 'Matrix': Matrix, 'conjugate': conjugate,
+                        'Abs': Abs, 're': re, 'im': im, 'gcd': gcd, 'lcm': lcm,
+                        'isprime': isprime, 'prime': prime, 'eye': eye, 'zeros': zeros,
+                        'ones': ones, 'Eq': Eq, 'residue': residue, 'apart': apart,
+                        'together': together, 'Integer': Integer, 'Float': Float,
+                        # 反三角/双曲/正割等：LLM 常写 asin/atan/arcsin，缺了会一直 NameError
+                        'asin': asin, 'acos': acos, 'atan': atan, 'atan2': atan2,
+                        'arcsin': asin, 'arccos': acos, 'arctan': atan, 'arctan2': atan2,
+                        'asec': asec, 'acsc': acsc, 'asinh': asinh, 'acosh': acosh,
+                        'atanh': atanh, 'sec': sec, 'csc': csc, 'cot': cot,
+                        'degrees': deg, 'radians': rad, 'deg': deg, 'rad': rad,
+                        # ln / log10 / log2 别名：LLM 常写 ln(x) 表示自然对数，sympy.log 默认即自然对数
+                        'ln': log, 'log10': lambda x: log(x, 10), 'log2': lambda x: log(x, 2),
+                        'lg': lambda x: log(x, 10),
+                        # 预置常用符号，使 solve/integrate/diff 等可直接使用裸 x,y,z
+                        'x': Symbol('x'), 'y': Symbol('y'), 'z': Symbol('z'),
+                        'n': Symbol('n'), 'k': Symbol('k'), 't': Symbol('t'), 's': Symbol('s'),
+                    }
+                    _calc_ns_cache[_sid] = ns
                 # 支持同时给出的多个赋值/表达式（分号/换行分隔），返回最后一行的结果
                 exec_lines = [ln.strip() for ln in expression.replace('\n', ';').split(';') if ln.strip()]
                 if not exec_lines:
@@ -3050,6 +3413,22 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                     except SyntaxError:
                         # 纯表达式（无赋值）用 eval 计算
                         exec(compile(f"_r = ({ln})", '<calc>', 'exec'), ns)
+                # 命名空间膨胀保护：清理超过上限时最旧的键（保留内置名）
+                if len(ns) > _CALC_NS_MAX:
+                    _builtin_keys = {'Rational', 'Symbol', 'symbols', 'sqrt', 'sin', 'cos', 'tan',
+                                     'exp', 'log', 'pi', 'E', 'oo', 'I', 'factorial', 'nsimplify',
+                                     'N', 'diff', 'integrate', 'limit', 'series', 'solve', 'expand',
+                                     'simplify', 'factor', 'expand_trig', 'trigsimp', 'Matrix',
+                                     'conjugate', 'Abs', 're', 'im', 'gcd', 'lcm', 'isprime',
+                                     'prime', 'eye', 'zeros', 'ones', 'Eq', 'residue', 'apart',
+                                     'together', 'Integer', 'Float', 'asin', 'acos', 'atan',
+                                     'atan2', 'arcsin', 'arccos', 'arctan', 'arctan2', 'asec',
+                                     'acsc', 'asinh', 'acosh', 'atanh', 'sec', 'csc', 'cot',
+                                     'degrees', 'radians', 'deg', 'rad', 'ln', 'log10', 'log2',
+                                     'lg', 'x', 'y', 'z', 'n', 'k', 't', 's'}
+                    _user_keys = [k for k in ns if k not in _builtin_keys]
+                    for _k in _user_keys[:len(_user_keys) - (_CALC_NS_MAX - len(_builtin_keys))]:
+                        del ns[_k]
                 last_expr = exec_lines[-1]
                 # 取值：如果最后一行是赋值，取被赋值符号；否则取表达式值
                 try:
@@ -3090,12 +3469,20 @@ def execute_tool_call(name: str, arguments: Dict[str, Any], vector_kb=None) -> s
                         # 纯数值量（B1 主收益点）：默认给数值近似，避免 sympy 把 sin(pi/40) 等展开成超长根式串
                         result_line += f"数值结果: {N(exact, digits or 10)}"
                         result_line += f"\n精确值(精简): {sympy.sstr(exact) if hasattr(exact, 'free_symbols') else str(exact)}"
+                _result_summary = result_line.splitlines()[1] if len(result_line.splitlines()) > 1 else result_line.splitlines()[0]
+                logger.info(f"[TOOL] calculate_math: {expression[:200]} => {_result_summary}")
+                # 会话级结果缓存（token 节省）：同表达式下次直接复用
+                _sid_cache = _calc_result_cache.setdefault(_sid, {})
+                if len(_sid_cache) < _CALC_RESULT_CACHE_MAX:
+                    _sid_cache[_cache_key] = result_line
                 return result_line
             except Exception as e:
+                logger.error(f"[TOOL] calculate_math 失败: {expression[:200]} => {e}")
                 return f"数学计算失败: {e}"
 
         else:
-            return f"未知工具: {name}"
+            _known = ['view_article', 'vector_search', 'list_articles', 'calculate_math', 'edit_article']
+            return f"未知工具: {name}。可用工具: {', '.join(_known)}。请仅使用上述工具。"
     except Exception as e:
         logger.error(f"[TOOL] 执行 {name} 失败: {e}")
         return f"工具执行错误: {e}"

@@ -118,14 +118,35 @@ def _maybe_compact_line_history(messages: List[dict], threshold_chars: int = 300
 
     base: List[dict] = []
     parts: List[str] = []
+    read_manifest: List[str] = []  # token 节省整改：已读文章清单（防压缩后重复读）
+    sys_compacted = False          # token 节省整改：system 参考资料块已骨架化
     i = 0
     while i < cut:
         m = messages[i]
         r = m.get("role")
         if r in ("system", "user"):
-            base.append(m)          # system/user 永远保留
+            # token 节省整改：system 的【参考资料】注入块骨架化（保留身份指令，压缩文章正文）
+            _c = str(m.get("content") or "")
+            if r == "system" and not sys_compacted and "【参考资料" in _c:
+                _head, _, _tail = _c.partition("【参考资料")
+                _ref_block = _tail.split("【当前状态】")[0] if "【当前状态】" in _tail else _tail[:20000]
+                _ref_lines = [ln.strip() for ln in _ref_block.splitlines()
+                              if ln.strip() and len(ln.strip()) > 5][:40]
+                _ref_titles = [ln[:100] for ln in _ref_lines[:25]]
+                _sys_c = _head + "【参考资料（已压缩，仅保留文章标题索引；如需原文请用 view_article 按文件名读取）】\n" + "\n".join(_ref_titles)
+                if "【当前状态】" in _tail:
+                    _sys_c += "\n【当前状态】" + _tail.split("【当前状态】", 1)[1]
+                base.append({"role": "system", "content": _sys_c})
+                sys_compacted = True
+            else:
+                base.append(m)
         elif r == "tool":
             c = str(m.get("content") or "")
+            # 提取 view_article 已读文章信息（形如 "文件: xxx (共N字符, 位置: a-b)"）
+            _mf = re.search(r'文件: ([^\s(]+)', c)
+            _mp = re.search(r'位置: (\d+)-(\d+)', c)
+            if _mf:
+                read_manifest.append(f"{_mf.group(1)}[{_mp.group(1)}-{_mp.group(2)}]" if _mp else _mf.group(1))
             first = c.split("\n")[0][:80]
             if first:
                 parts.append(first)
@@ -135,7 +156,20 @@ def _maybe_compact_line_history(messages: List[dict], threshold_chars: int = 300
     if parts:
         base.append({"role": "assistant",
                      "content": "[上下文压缩：前述工具链关键产出] " + "; ".join(parts)})
-    return base + messages[cut:]
+    # token 节省整改：注入已读文章清单
+    if read_manifest:
+        base.append({
+            "role": "user",
+            "content": "【已读文章清单（压缩保留）】本线已读取过以下文章片段，不要重复读取相同内容：\n- "
+                       + "\n- ".join(read_manifest[:20])
+        })
+    result = base + messages[cut:]
+    # 压缩后给所有 assistant 消息补空 reasoning_content
+    # DeepSeek 思考模式要求所有 assistant 消息都带 reasoning_content
+    for m in result:
+        if m.get("role") == "assistant" and "reasoning_content" not in m:
+            m["reasoning_content"] = ""
+    return result
 
 
 def run_llm_five_line(
@@ -154,6 +188,7 @@ def run_llm_five_line(
     semantic_threshold: float = 0.80,
     line_compact_threshold: int = 30000,
     line_compact_keep_recent: int = 2,
+    session_mode: str = 'derive',
 ) -> Dict:
     """跑完五线并行推导，横向比较，判收敛，持久化，返回汇总。"""
     log = logger or (lambda *a, **k: None)
@@ -189,7 +224,7 @@ def run_llm_five_line(
                 content = resp.choices[0].message.content or ""
                 tcs = getattr(resp.choices[0].message, "tool_calls", None)
                 if (not content or content.strip() == "") and tcs:
-                    asst = {"role": "assistant", "content": None, "tool_calls": []}
+                    asst = {"role": "assistant", "content": None, "tool_calls": [], "reasoning_content": ""}
                     for tc in tcs:
                         asst["tool_calls"].append({"id": tc.id, "type": "function",
                                                    "function": {"name": tc.function.name,
@@ -200,7 +235,17 @@ def run_llm_five_line(
                             _args = json.loads(tc.function.arguments or "{}")
                         except Exception:
                             _args = {}
-                        result = execute_tool(tc.function.name, _args)
+                        # token 节省整改：按线传独立 session_id（线间 calculate_math 变量互不污染）
+                        _line_sid = f"wb:{gap_id}:line{line_id}"
+                        try:
+                            from tools import set_session_mode
+                            set_session_mode(_line_sid, session_mode)
+                        except Exception:
+                            pass
+                        try:
+                            result = execute_tool(tc.function.name, _args, session_id=_line_sid)
+                        except TypeError:
+                            result = execute_tool(tc.function.name, _args)
                         messages.append({"role": "tool", "tool_call_id": tc.id,
                                          "content": str(result)})
                     # C 类：工具链历史超过阈值时压缩早期轮次（保留最近 keep_recent 轮完整）

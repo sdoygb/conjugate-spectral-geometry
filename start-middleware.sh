@@ -58,7 +58,7 @@ do_start() {
     echo "错误: 未找到 ${APP_DIR}/server.py"
     return 1
   fi
-  ( cd "${APP_DIR}" && nohup "${PY}" server.py >>"${LOG_FILE}" 2>&1 & )
+  ( cd "${APP_DIR}" && nohup "${PY}" server.py 2>>"${LOG_FILE}" >/dev/null & )
   # 等待端口就绪（最多 90 秒；首次需加载向量库/模型）
   for i in $(seq 1 90); do
     if _is_running; then break; fi

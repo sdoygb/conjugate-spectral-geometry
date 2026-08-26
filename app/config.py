@@ -37,17 +37,16 @@ except ImportError:
 # ------------------------------------------------------------------
 # 日志
 # ------------------------------------------------------------------
-_LOG_DIR = os.getenv('LOG_DIR', os.path.join(PROJECT_ROOT, 'logs'))
+_LOG_DIR = os.getenv('LOG_DIR', os.path.dirname(PROJECT_ROOT))
 os.makedirs(_LOG_DIR, exist_ok=True)
 
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s',
     handlers=[
-        logging.StreamHandler(sys.stdout),
-        # 按天轮转，保留最近 7 天
+        # 统一写到项目根的 middleware.log，无论进程由谁启动都落同一文件
         logging.handlers.TimedRotatingFileHandler(
-            os.path.join(_LOG_DIR, 'geometry_ai.log'),
+            os.path.join(_LOG_DIR, 'middleware.log'),
             when='midnight', backupCount=7, encoding='utf-8'
         )
     ]
@@ -63,7 +62,7 @@ CHROMA_DB_DIR = os.getenv('CHROMA_DB_DIR', os.path.join(PROJECT_ROOT, 'chroma_db
 
 GAI_API_KEY = os.getenv('GAI_API_KEY', '')
 GAI_BASE_URL = os.getenv('GAI_BASE_URL', 'https://api.deepseek.com/v1')
-GAI_MODEL = os.getenv('GAI_MODEL', 'deepseek-v4-pro')
+GAI_MODEL = os.getenv('GAI_MODEL', 'deepseek-v4-flash')
 GAI_MODEL_LITE = os.getenv('GAI_MODEL_LITE', 'deepseek-v4-flash')  # 轻量模型，用于简单问题
 GAI_MODEL_VISION = os.getenv('GAI_MODEL_VISION', 'deepseek-v4-flash')  # 视觉模型，用于图片输入
 GAI_EMBEDDING_MODEL = os.getenv('GAI_EMBEDDING_MODEL', 'deepseek-v4-flash')

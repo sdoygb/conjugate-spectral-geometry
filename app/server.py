@@ -49,9 +49,11 @@ from models import (personal_db, _save_personal_db, _get_personal_db_summary, Li
 from prompts import TeachingSystem, build_system_prompt, check_response_quality, check_correction_applied
 from tools import (ARTICLE_TOOLS, execute_tool_call, parse_and_execute_tools, OPENAPI_SPEC,
                    vector_kb as _tools_vector_kb, teaching_system as _tools_teaching,
-                   living_field as _tools_living)
+                   living_field as _tools_living, reset_tool_session, set_session_mode,
+                   init_session_mode, _CODING_KEYWORDS)
 from citation_check import load_real_article_ids, verify_citations, format_bad_citations
 from stream import stream_generate
+from guardian import generate_opening_advice, extract_article_numbers, is_derivation_query
 from admin_routes import admin_bp
 from share_routes import share_bp
 from gap_workbench.service import workbench_bp as _workbench_bp, WorkbenchRegistry as _WorkbenchRegistry, SessionStore as _SessionStore
@@ -143,6 +145,180 @@ def _workbench_anchors(results: list) -> List[str]:
     return out
 
 
+# ==================== 对话历史渐进压缩（token 节省整改 2026-08-26） ====================
+# 超过阈值时，把早期历史用 LLM 压缩成「进度快照」，保留尾部原文。
+# 参照 dsh-compaction-basic 的比例制设计（2026-08-26 升级）：
+#   thresholdTokens = contextWindow × thresholdRatio（触发阈值）
+#   retainTokens    = contextWindow × retainRatio   （保留尾部）
+# 与现有 TRIM（粗暴删除）互补：TRIM 管条数上限，本机制管字符数超限且保留推导链。
+# 各模型上下文窗口（token 数）；未知模型回退 default
+_MODEL_CONTEXT_WINDOWS = {
+    'deepseek-v4-flash': 131072,   # 128K
+    'deepseek-v4-pro': 131072,
+    'deepseek-chat': 131072,
+    'deepseek-reasoner': 131072,
+    'qwen3.7-flash': 65536,        # 64K 小窗口 → 更早压缩
+    'qwen3-flash': 65536,
+    'doubao-seed-2-1-pro-260628': 65536,
+    'doubao-seed-2-1-turbo-260628': 65536,
+    'glm-4.7-flash': 65536,
+    'default': 131072,
+}
+_HISTORY_THRESHOLD_RATIO = 0.8    # 触发阈值 = 窗口 × 80%
+_HISTORY_RETAIN_RATIO = 0.16      # 保留尾部 = 窗口 × 16%
+_HISTORY_CHARS_PER_TOKEN = 2.0    # token→字符估算系数（中文约 1 token≈1.5-2 字符，取 2 偏保守）
+_HISTORY_SNAPSHOT_MAX_CHARS = 8000  # 快照自身长度上限（防止快照无限膨胀）
+_HISTORY_SNAPSHOT_MARK = "【对话进度快照（自动压缩）】"
+
+
+def _model_context_window(model: str = None) -> int:
+    """按模型返回上下文窗口 token 数（未知模型回退 default）。"""
+    _m = (model or GAI_MODEL or '').lower()
+    for _k, _w in _MODEL_CONTEXT_WINDOWS.items():
+        if _k.lower() in _m:
+            return _w
+    return _MODEL_CONTEXT_WINDOWS['default']
+
+
+def _history_threshold_chars(model: str = None) -> int:
+    """比例制触发阈值（字符）= 窗口 × 80% × 2 字符/token。"""
+    return int(_model_context_window(model) * _HISTORY_THRESHOLD_RATIO * _HISTORY_CHARS_PER_TOKEN)
+
+
+def _history_retain_chars(model: str = None) -> int:
+    """比例制保留尾部（字符）= 窗口 × 16% × 2 字符/token。"""
+    return int(_model_context_window(model) * _HISTORY_RETAIN_RATIO * _HISTORY_CHARS_PER_TOKEN)
+
+
+def _history_messages_chars(msgs: List[Dict]) -> int:
+    """估算消息列表总字符数（与 TRIM 一致的口径）。"""
+    return sum(len(json.dumps(m, ensure_ascii=False)) for m in msgs)
+
+
+def _find_snapshot_idx(msgs: List[Dict]) -> int:
+    """查找已有进度快照消息的索引（渐进压缩：存在则跳过已压缩部分）。"""
+    for i, m in enumerate(msgs):
+        if isinstance(m.get("content"), str) and _HISTORY_SNAPSHOT_MARK in m["content"]:
+            return i
+    return -1
+
+
+def _llm_summarize_history(messages: List[Dict], model: str = None) -> str:
+    """用 LLM 把一段对话历史压缩成进度快照。失败返回空串（由调用方降级）。"""
+    try:
+        _sum_model = model or GAI_MODEL
+        _burl, _akey = get_provider_for_model(_sum_model)
+        _client = openai.OpenAI(api_key=_akey, base_url=_burl,
+                                http_client=_httpx.Client(trust_env=False),
+                                timeout=60.0, max_retries=1)
+        _text = ""
+        for m in messages:
+            _c = m.get("content")
+            if isinstance(_c, str):
+                _text += f"[{m.get('role')}] {_c[:600]}\n"
+            elif isinstance(_c, list):
+                _text += f"[{m.get('role')}] (多模态)\n"
+        if not _text.strip():
+            return ""
+        _sys = (
+            "你是对话历史的压缩器。把用户提供的多轮对话（含工具调用）压缩成一份「进度快照」，"
+            "供另一个 LLM 继续推导时快速恢复上下文。必须保留：\n"
+            "1. 已确认的推导结论/关键数值（含 calculate_math 算出的数）\n"
+            "2. 已读取过的文章文件名和大致区间\n"
+            "3. 已排除的方案/死胡同\n"
+            "4. 当前卡点与下一步待办\n"
+            "丢弃：重复内容、失败尝试、过长引用原文。输出用中文，简洁条目式，总长控制在 3000 字以内。"
+        )
+        _resp = _client.chat.completions.create(
+            model=_sum_model,
+            messages=[{"role": "system", "content": _sys},
+                      {"role": "user", "content": _text[:100000]}],  # 防超长输入
+            max_tokens=4000,
+        )
+        _sum_text = (_resp.choices[0].message.content or "").strip()
+        if not _sum_text:
+            return ""
+        # 强制加标记前缀，供渐进压缩的 _find_snapshot_idx 识别
+        return _HISTORY_SNAPSHOT_MARK + "\n" + _sum_text
+    except Exception as _e:
+        logger.warning(f"[HISTORY-COMPACT] LLM 摘要失败，降级规则式: {_e}")
+        return ""
+
+
+def _rule_summarize_history(messages: List[Dict]) -> str:
+    """规则式兜底摘要（不调模型）：提取每条消息首行关键信息。"""
+    parts = []
+    for m in messages:
+        _c = m.get("content")
+        if isinstance(_c, str) and _c.strip():
+            parts.append(f"[{m.get('role')}] {_c[:200].replace(chr(10), ' ')}")
+    return _HISTORY_SNAPSHOT_MARK + "\n（规则式摘要）\n" + "\n".join(parts[:30])
+
+
+def compact_history_messages(messages: List[Dict], model: str = None,
+                             threshold: int = None) -> List[Dict]:
+    """渐进压缩对话历史（比例制，参照 dsh-compaction-basic 2026-08-26）：
+    - 触发阈值 = 模型窗口 × 80%（threshold），字符超限即压缩
+    - 保留尾部 = 模型窗口 × 16%（retain），从尾部逐轮回溯直到达保留预算
+    - 早期消息用 LLM 压缩成进度快照（失败降级规则式）
+
+    渐进性：已有快照时只压缩「快照之后、保留区之前」的部分；快照自身超长则重新摘要。
+    返回新的消息列表（未超限时原样返回）。
+    """
+    # 比例制：阈值/保留随模型窗口缩放
+    _model = model or GAI_MODEL
+    _thr = threshold or _history_threshold_chars(_model)
+    _retain_chars = _history_retain_chars(_model)
+    _total = _history_messages_chars(messages)
+    if _total <= _thr:
+        return messages
+
+    # 比例制保留区：保留尾部 retain 预算内的内容（从尾部累积，到预算即停）
+    # 参照 dsh：retainTokens = contextWindow × retainRatio —— 尾部固定保留这么多，其余压缩
+    _keep_from = 1
+    _acc = 0
+    for _i in range(len(messages) - 1, 0, -1):  # 从尾部往前（不含 system）
+        _sz = len(json.dumps(messages[_i], ensure_ascii=False))
+        _acc += _sz
+        if _acc >= _retain_chars or _i <= 1:
+            _keep_from = _i
+            break
+        _keep_from = _i
+
+    # 要压缩的部分：保留区之前（若已有快照，则从快照之后开始）
+    _snap_idx = _find_snapshot_idx(messages)
+    _compress_from = (_snap_idx + 1) if _snap_idx >= 0 else 1
+    if _compress_from >= _keep_from:
+        # 无可压缩部分（保留区已覆盖一切）→ 仍超限则强压保留区前 6 条
+        _compress_from = max(1, _keep_from - 6)
+
+    _old_part = messages[_compress_from:_keep_from]
+    if not _old_part:
+        return messages
+
+    # 1) 尝试 LLM 摘要
+    _snapshot_text = _llm_summarize_history(_old_part, model=model)
+    if not _snapshot_text:
+        _snapshot_text = _rule_summarize_history(_old_part)
+    # 2) 快照长度封顶
+    if len(_snapshot_text) > _HISTORY_SNAPSHOT_MAX_CHARS:
+        _snapshot_text = _snapshot_text[:_HISTORY_SNAPSHOT_MAX_CHARS] + "\n...(快照超长截断)"
+
+    _snap_msg = {"role": "system", "content": _snapshot_text}
+    _new = messages[:_compress_from] + [_snap_msg] + messages[_keep_from:]
+    # ④ 阴影 token 记账：记录本次压缩省掉的估算 token（dsh shadowedTokenCount 风格）
+    _shadowed_tokens = int(sum(len(json.dumps(m, ensure_ascii=False)) for m in _old_part) / _HISTORY_CHARS_PER_TOKEN)
+    _new_total = _history_messages_chars(_new)
+    _saved = _total - _new_total
+    logger.info(
+        f"[HISTORY-COMPACT] 比例制压缩(model={_model or 'default'}): "
+        f"{len(messages)}条/{_total}字符 → {len(_new)}条/{_new_total}字符 "
+        f"| 省 {_saved}字符 ≈ {_shadowed_tokens} token | "
+        f"保留尾部 {_acc}字符(窗口×{_HISTORY_RETAIN_RATIO}) | 快照 {len(_snapshot_text)}字符"
+    )
+    return _new
+
+
 def _format_workbench_summary(wb: dict) -> str:
     """把五线并行推导结果折叠成注入 prompt 的紧凑摘要。"""
     if not wb:
@@ -205,7 +381,11 @@ def _run_auto_workbench(clean_query: str, results: list, req_model: str,
             client=_client,
             model=_wb_model,
             tools=ARTICLE_TOOLS,
-            execute_tool=lambda n, a: execute_tool_call(n, a, vector_kb=vector_kb),
+            # token 节省整改：session 按线隔离（wb:{gap_id}:line{N}），防止五条线 calculate_math 变量互串
+            execute_tool=lambda n, a, **kw: execute_tool_call(
+                n, a, vector_kb=vector_kb,
+                session_id=kw.get("session_id") or f"wb:{gap_id}"),
+            session_mode='derive',  # 五线推导强制推导类（shell 探索预算 5 次）
             max_tool_chain=6,
             logger=logger.info,
             embed_fn=(vector_kb.embedding_fn.embed_query
@@ -218,9 +398,17 @@ def _run_auto_workbench(clean_query: str, results: list, req_model: str,
         logger.error(traceback.format_exc(limit=4))
         with _WB_LOCK:
             _WB_RUNNING.discard(gap_id)
+        try:
+            reset_tool_session(f"wb:{gap_id}")  # token 节省整改：清理五线工具会话状态
+        except Exception:
+            pass
         return ""
     with _WB_LOCK:
         _WB_RUNNING.discard(gap_id)
+    try:
+        reset_tool_session(f"wb:{gap_id}")  # token 节省整改：清理五线工具会话状态
+    except Exception:
+        pass
     summary = _format_workbench_summary(wb)
     if summary:
         _WB_SUMMARY_CACHE[gap_id] = {"summary": summary,
@@ -299,7 +487,8 @@ def _run_child_judgement_llm(material: str) -> dict:
                     except Exception:
                         _a = {}
                     try:
-                        _r_ = execute_tool_call(tc.function.name, _a, vector_kb=vector_kb)
+                        _r_ = execute_tool_call(tc.function.name, _a, vector_kb=vector_kb,
+                                                session_id="child_judge")
                     except Exception as _e:
                         _r_ = f"工具执行异常: {_e}"
                     messages.append({"role": "tool", "tool_call_id": tc.id,
@@ -564,6 +753,15 @@ def _finalize_turn(
 
     # 添加到历史记录
     living_field.add_to_history(session_id, user_input, response_text)
+
+    # 记录 DeepSeek prompt cache 命中率
+    if usage:
+        _pt = usage.get('prompt_tokens', 0)
+        _ch = usage.get('prompt_cache_hit_tokens', 0)
+        _cm = usage.get('prompt_cache_miss_tokens', 0)
+        if _pt > 0:
+            _rate = _ch / _pt * 100
+            logger.info(f"[CACHE] prompt={_pt} hit={_ch} miss={_cm} rate={_rate:.1f}% model={request_model or GAI_MODEL}")
 
     # 保存对话记录到内存列表（服务重启后丢失，learned 集合在 ChromaDB 中持久化）
     save_conversation(
@@ -1403,6 +1601,16 @@ def chat_completions():
 
     session_id = data.get('session_id', '') or _derive_session_id(data)
 
+    # token 节省整改 A：按查询内容初判任务模式（编程类放宽 shell 探索预算，仅首次生效）
+    try:
+        if any(k in clean_query.lower() for k in _CODING_KEYWORDS):
+            init_session_mode(session_id, 'coding')
+            logger.info(f"[SHELL-BUDGET] 查询命中编程关键词，会话 {session_id[:16]} → coding 模式")
+        else:
+            init_session_mode(session_id, 'derive')
+    except Exception:
+        pass
+
     # 从 LivingInfoField 获取 eta，而非 get_eta_state()
     # 如果是新 session（LivingInfoField 中不存在），用输入文本的软模共振公式初始化
     session_info = living_field.get_session_info(session_id)
@@ -1588,6 +1796,26 @@ def chat_completions():
         index_empty, search_no_result, "", teaching_section, msg_count, recent_chats_summary
     )
 
+    # ============ 几何护法 · 开局注入 ============
+    # 推导类问题：注入开局建议（策略推荐 + 定理导航）
+    if is_derivation_query(clean_query) and results:
+        try:
+            article_nums = extract_article_numbers(results)
+            guardian_advice = generate_opening_advice(
+                query=clean_query,
+                retrieved_articles=article_nums,
+                vector_kb=vector_kb,
+            )
+            if guardian_advice:
+                system_prompt = system_prompt + "\n\n" + guardian_advice
+                logger.info(
+                    f"[GUARDIAN] 开局建议已注入: "
+                    f"类型={len(guardian_advice)}字符, "
+                    f"涉及文章={len(article_nums)}篇"
+                )
+        except Exception as _ge:
+            logger.error(f"[GUARDIAN] 开局建议生成失败，跳过: {_ge}")
+
     # ============ 推导工作台 · 五线并行（接入对话主流程） ============
     # 硬推导题触发五线分头推 → 结果全保留 → 横向比较找交叉印证（单线程推不出）
     # 非流式同步执行并注入推导上下文；流式后台预热（结果进缓存，供下轮/重试复用），
@@ -1770,19 +1998,15 @@ def chat_completions():
             final_messages = [final_messages[0]] + final_messages[-(MAX_HISTORY_MESSAGES):]
         logger.info(f"[TRIM] 历史消息从 {len(clean_messages)} 条截断到 {MAX_HISTORY_MESSAGES} 条（含摘要）")
 
-    # 字符数截断：从最早的消息开始删除，直到总字符数低于上限
-    # 保护最后一条用户消息（当前输入）不被删除
-    total_chars = sum(len(json.dumps(m, ensure_ascii=False)) for m in final_messages)
-    while total_chars > MAX_HISTORY_CHARS and len(final_messages) > 3:  # 至少保留 system + 1轮
-        # 找到最早可删除的消息（不删除 system 和最后两条消息）
-        # 最后两条通常是 user(当前输入) 和可能的 assistant(上一轮回复)
-        delete_idx = 1  # system 之后最早的消息
-        if delete_idx >= len(final_messages) - 2:  # 保护最后两条
-            break
-        removed = final_messages.pop(delete_idx)
-        total_chars -= len(json.dumps(removed, ensure_ascii=False))
-    if len(final_messages) < len(clean_messages) + 1:
-        logger.info(f"[TRIM] 历史消息字符截断: {total_chars} 字符, {len(final_messages)-1} 条")
+    # 字符数超限处理（token 节省整改 2026-08-26 升级：比例制阈值，按模型窗口 × 80%）
+    _req_model_hc = data.get('model') or None
+    _hist_threshold = _history_threshold_chars(_req_model_hc)
+    _hist_chars = sum(len(json.dumps(m, ensure_ascii=False)) for m in final_messages)
+    if _hist_chars > _hist_threshold:
+        final_messages = compact_history_messages(
+            final_messages,
+            model=_req_model_hc,
+        )
 
     # ---- 修复 tool_calls 完整性（截断后可能导致tool_calls和tool响应不匹配）----
     # 1. assistant有tool_calls但后面缺tool响应 → 移除tool_calls
@@ -1823,11 +2047,10 @@ def chat_completions():
                 continue
         _fixed.append(_msg)
     final_messages = _fixed
-    # 模型路由：简单问题用轻量模型节省 token
+    # 模型路由：全部统一使用 qwen3.7-flash
     _requested_model = data.get('model', '')
     _selected_model = GAI_MODEL
     _query_lower = clean_query.lower() if clean_query else ""
-    # 简单问题特征：短查询、无公式、无专业术语；检索类问题（找文章/查编号）也走轻量模型
     _is_retrieval_query = any(kw in _query_lower for kw in ['哪篇文章', '哪些文章', '在哪些', '搜一搜', '哪篇', '有没有相关', '相关文章', '查编号'])
     _is_simple = (
         (len(clean_query) < 60 or _is_retrieval_query) and
@@ -1837,9 +2060,13 @@ def chat_completions():
     # 如果 Open WebUI 指定了模型，优先使用
     if _requested_model:
         _selected_model = _requested_model
-    elif _is_simple:
-        _selected_model = GAI_MODEL_LITE
-        logger.info(f"[ROUTE] 简单问题，使用轻量模型: {GAI_MODEL_LITE}")
+        _known_models = {GAI_MODEL, GAI_MODEL_LITE, GAI_MODEL_VISION}
+        _known_models.update(EXTRA_MODELS)
+        _known_models_lower = {m.lower() for m in _known_models}
+        if _selected_model.lower() not in _known_models_lower:
+            logger.info(f"[ROUTE] 未知模型 {_selected_model}，替换为默认模型 {GAI_MODEL}")
+            _selected_model = GAI_MODEL
+    logger.info(f"[MODEL-ROUTE] 使用模型: {_selected_model}")
 
     api_params = {"model": _selected_model, "messages": final_messages}
     # ---------- 图片 / 视觉模型智能路由 ----------
@@ -1864,7 +2091,7 @@ def chat_completions():
         )
         final_messages[0]["content"] = final_messages[0]["content"] + _vision_note
         # 检查当前模型是否支持 image_url
-        _vision_supports_image = not any(p in _selected_model.lower() for p in ['deepseek', 'qwen', 'glm', 'gemini-1.5', 'claude-3-haiku', 'claude-3-sonnet'])
+        _vision_supports_image = not any(p in _selected_model.lower() for p in ['deepseek', 'gemini-1.5', 'claude-3-haiku', 'claude-3-sonnet'])
         if not _vision_supports_image:
             # 模型不支持 image_url -> 移除图片元素，保留文本
             logger.warning(f'[VISION] 模型 {_selected_model} 不支持 image_url，将移除图片元素')
@@ -1884,7 +2111,7 @@ def chat_completions():
     # 仅当模型支持 function calling 时才注入工具定义
     # DeepSeek、OpenAI、Qwen、GLM 等主流模型均支持
     _model_lower = _selected_model.lower()
-    _supports_tools = any(p in _model_lower for p in ['deepseek', 'gpt', 'qwen', 'glm', 'claude', 'gemini', 'chatglm', 'kimi', 'moonshot'])
+    _supports_tools = any(p in _model_lower for p in ['deepseek', 'gpt', 'qwen', 'glm', 'claude', 'gemini', 'chatglm', 'kimi', 'moonshot', 'doubao'])
     if _supports_tools and not _is_subagent:
         if _is_simple:
             # 简单问题（lite 模型）只注入核心工具，节省约 60% 工具定义 token
@@ -1904,10 +2131,9 @@ def chat_completions():
     if _final_has_image:
         logger.info(f"[VISION] 视觉模型 {_selected_model}，保留 tools 参数")
 
-    # DeepSeek 兼容：仅在 DeepSeek 模型时处理 reasoning_content
-    # 其他模型（OpenAI/Anthropic/Qwen/GLM）不使用此字段
-    _is_deepseek = 'deepseek' in _selected_model.lower()
-    if _is_deepseek:
+    # 思考模式兼容：DeepSeek 和 Qwen 都使用 reasoning_content
+    _supports_thinking = any(p in _selected_model.lower() for p in ['deepseek', 'qwen', 'doubao'])
+    if _supports_thinking:
         for msg in final_messages:
             if msg.get("role") == "assistant" and "reasoning_content" in msg:
                 rc = msg.get("reasoning_content", "")
@@ -1919,7 +2145,7 @@ def chat_completions():
                         msg["content"] = f"[思考过程]\n{rc}\n[/思考过程]"
                 del msg["reasoning_content"]
     else:
-        # 非 DeepSeek 模型：直接删除 reasoning_content 字段（不合并到 content）
+        # 非思考模式模型：直接删除 reasoning_content 字段
         for msg in final_messages:
             if "reasoning_content" in msg:
                 del msg["reasoning_content"]
@@ -1938,13 +2164,22 @@ def chat_completions():
     # 中间层使用自有工具定义（ARTICLE_TOOLS），不透传 Open WebUI 的 tools 参数
     # 原因：中间层代理模式下，工具调用在中间层内部完成，Open WebUI 不需要感知
     # 透传 Open WebUI 的标准参数
-    # 默认启用深度思考（仅 DeepSeek 模型需要 reasoning_effort 参数）
-    _is_deepseek_model = 'deepseek' in _selected_model.lower() if '_selected_model' in dir() else 'deepseek' in os.getenv('GAI_MODEL', '').lower()
+    # 默认启用深度思考
+    _model_lower_check = _selected_model.lower() if '_selected_model' in dir() else os.getenv('GAI_MODEL', '').lower()
+    _is_deepseek_model = 'deepseek' in _model_lower_check
+    _is_qwen_model = 'qwen' in _model_lower_check
+    _is_doubao_model = 'doubao' in _model_lower_check
     if _is_deepseek_model:
         if 'reasoning_effort' not in data:
             api_params['reasoning_effort'] = 'high'
         elif data['reasoning_effort']:
             api_params['reasoning_effort'] = data['reasoning_effort']
+    elif _is_qwen_model:
+        # Qwen 思考模式：通过 extra_body 启用 enable_thinking
+        api_params['extra_body'] = {'enable_thinking': True}
+    elif _is_doubao_model:
+        # Doubao 2.1 思考模式：通过 extra_body 启用 thinking
+        api_params['extra_body'] = {'thinking': {'type': 'enabled'}}
     for key in ('temperature', 'max_tokens', 'top_p', 'stop', 'frequency_penalty', 'presence_penalty', 'tool_choice', 'stream_options', 'response_format', 'user'):
         if key in data:
             api_params[key] = data[key]
@@ -1963,6 +2198,8 @@ def chat_completions():
         def gen():
             try:
                 collected = []
+                _ctx_usage = None
+                _ctx_finish_reason = "stop"
                 for ev in stream_generate(data, eta_before, final_messages, api_params, vector_kb=vector_kb):
                     yield ev
                     try:
@@ -1973,14 +2210,17 @@ def chat_completions():
                                 c = d['choices'][0]['delta'].get('content', '')
                                 if c:
                                     collected.append(c)
+                                if 'usage' in d and d['usage']:
+                                    _ctx_usage = d['usage']
+                                fr = d['choices'][0].get('finish_reason') if d.get('choices') else None
+                                if fr:
+                                    _ctx_finish_reason = fr
                     except Exception as e:
                         logger.debug(f"[SSE] chunk JSON解析失败: {e}")
                 response_text = ''.join(collected)
                 # 在后台线程执行 finalize，不阻塞 SSE 响应
                 import threading
-                _ctx_usage = None
-                _ctx_finish_reason = "stop"
-                _ctx = (session_id, clean_query, response_text, eta_before, articles_content, loaded_chunks, _ctx_usage, data.get('model', None) if isinstance(data, dict) else None, _ctx_finish_reason)
+                _ctx = (session_id, clean_query, response_text, eta_before, articles_content, loaded_chunks, _ctx_usage, _selected_model, _ctx_finish_reason)
                 threading.Thread(target=_finalize_turn, args=_ctx, daemon=True).start()
             except Exception as e:
                 logger.error(f"[CHAT-STREAM] 生成器异常: {e}")
@@ -1997,9 +2237,8 @@ def chat_completions():
             }
         )
     else:
-        # 多模型路由
-        req_model = data.get('model') or GAI_MODEL
-        base_url, api_key = get_provider_for_model(req_model)
+        # 非流式：使用已路由的 _selected_model 确定提供商
+        base_url, api_key = get_provider_for_model(_selected_model)
         # 禁代理直连（避免 sandbox 注入的 http_proxy=127.0.0.1:7897 导致可连接失败的场景）
         _no_proxy_client = _httpx.Client(trust_env=False)
         client = openai.OpenAI(api_key=api_key, base_url=base_url, http_client=_no_proxy_client, timeout=180.0, max_retries=1)
@@ -2007,7 +2246,7 @@ def chat_completions():
             # 质量门控 - 如果AI回复偏离共扼谱几何，自动重试
             # v10 增强：反模式检测触发重试时，在prompt中注入反模式警告
             # 工具调用链（非流式）——处理 KIMI 等模型的 function calling
-            MAX_TOOL_CHAIN = 8
+            MAX_TOOL_CHAIN = 15
             for _tc_round in range(MAX_TOOL_CHAIN):
                 resp = client.chat.completions.create(**api_params)
                 _tc_content = resp.choices[0].message.content or ""
@@ -2026,8 +2265,16 @@ def chat_completions():
                             _args = json.loads(_tc.function.arguments)
                         except Exception:
                             _args = {}
-                        _result = execute_tool_call(_tc.function.name, _args, vector_kb=vector_kb)
-                        clean_messages.append({"role": "tool", "tool_call_id": _tc.id, "content": str(_result)})
+                        _result = execute_tool_call(_tc.function.name, _args, vector_kb=vector_kb, session_id=session_id)
+                        _result_str = str(_result)
+                        # 单个工具结果超长修剪（与 stream.py 一致：dsh pruner 风格，保头尾+中间标记）
+                        if len(_result_str) > 8192:
+                            _rlen = len(_result_str)
+                            _result_str = (_result_str[:3000]
+                                           + f"\n\n[... 工具结果中部已修剪，原始长度 {_rlen} 字符。如需中间内容请用 offset/limit 或 section 精确读取 ...]\n\n"
+                                           + _result_str[-2000:])
+                            logger.info(f"[TOOL] 非流式工具结果超长，头/尾修剪至 3000+2000 (原始 {_rlen} 字符)")
+                        clean_messages.append({"role": "tool", "tool_call_id": _tc.id, "content": _result_str})
                     # 更新 messages 重新请求
                     api_params["messages"] = [{"role": "system", "content": system_prompt}] + clean_messages
                 else:
@@ -2068,7 +2315,9 @@ def chat_completions():
                     _usage = {
                         "prompt_tokens": resp.usage.prompt_tokens or 0,
                         "completion_tokens": resp.usage.completion_tokens or 0,
-                        "total_tokens": resp.usage.total_tokens or 0
+                        "total_tokens": resp.usage.total_tokens or 0,
+                        "prompt_cache_hit_tokens": getattr(resp.usage, 'prompt_cache_hit_tokens', 0) or 0,
+                        "prompt_cache_miss_tokens": getattr(resp.usage, 'prompt_cache_miss_tokens', 0) or 0
                     }
 
                 if not QUALITY_GATE_ENABLED:
@@ -2116,7 +2365,12 @@ def chat_completions():
         except Exception as e:
             logger.error(f"[CHAT] 生成错误: {e}")
             return openai_error(str(e), status=502)
-        result = _finalize_turn(session_id, clean_query, response_text, eta_before, articles_content, loaded_chunks, usage=_usage, request_model=data.get('model'), finish_reason=getattr(resp.choices[0], 'finish_reason', None) or "stop")
+        # token 节省整改：请求结束清理会话级工具状态（calculate_math 命名空间等）
+        try:
+            reset_tool_session(session_id)
+        except Exception:
+            pass
+        result = _finalize_turn(session_id, clean_query, response_text, eta_before, articles_content, loaded_chunks, usage=_usage, request_model=_selected_model, finish_reason=getattr(resp.choices[0], 'finish_reason', None) or "stop")
         return jsonify(result)
 
 
@@ -2174,7 +2428,9 @@ def _chat_resp_to_responses(chat_body: dict, req_model: str) -> dict:
         "usage": {
             "input_tokens": usage.get('prompt_tokens', 0),
             "output_tokens": usage.get('completion_tokens', 0),
-            "total_tokens": usage.get('total_tokens', 0)
+            "total_tokens": usage.get('total_tokens', 0),
+            "prompt_cache_hit_tokens": usage.get('prompt_cache_hit_tokens', 0),
+            "prompt_cache_miss_tokens": usage.get('prompt_cache_miss_tokens', 0)
         },
         "error": None,
         "finish_reason": finish,
@@ -2191,6 +2447,26 @@ def _loop_back_chat(chat_payload: dict, auth_header: str = '', timeout: float = 
         _headers['Authorization'] = auth_header
     with _httpx.Client(trust_env=False, timeout=timeout) as _c:
         return _c.post(url, headers=_headers, json=chat_payload)
+
+def _loop_back_chat_stream(chat_payload: dict, auth_header: str = '', timeout: float = 600.0):
+    """流式回环：逐行 yield SSE 数据，避免工具链执行期间客户端 idle timeout"""
+    import os as _os
+    _port = _os.getenv('PORT', '5000')
+    url = f"http://127.0.0.1:{_port}/v1/chat/completions"
+    _headers = {'Content-Type': 'application/json'}
+    if auth_header:
+        _headers['Authorization'] = auth_header
+    _c = _httpx.Client(trust_env=False, timeout=timeout)
+    try:
+        with _c.stream('POST', url, headers=_headers, json=chat_payload) as _resp:
+            if _resp.status_code != 200:
+                _body = _resp.read()
+                yield ('__error__', _resp.status_code, _body)
+                return
+            for line in _resp.iter_lines():
+                yield line
+    finally:
+        _c.close()
 
 
 @app.route('/v1/responses', methods=['POST'])
@@ -2209,6 +2485,15 @@ def responses_completions():
         return openai_error("Invalid request body", err_type="invalid_request_error", status=400)
 
     req_model = data.get('model') or GAI_MODEL
+    # 未知模型拦截：Codex++ 内部任务（标题生成等）可能发送未配置的模型（如 gpt-5.6-luna），
+    # 标记后走自动路由，避免路由到不支持该模型的提供商
+    _known_models = {GAI_MODEL, GAI_MODEL_LITE, GAI_MODEL_VISION}
+    _known_models.update(EXTRA_MODELS)
+    _known_models_lower = {m.lower() for m in _known_models}
+    _model_was_unknown = False
+    if req_model.lower() not in _known_models_lower:
+        logger.info(f"[RESPONSES] 未知模型 {req_model}，将进行自动路由")
+        _model_was_unknown = True
     stream = data.get('stream', False)
     # 缓存 auth header，供流式生成器(线程外)使用 request context 无法访问
     _auth_header = _auth
@@ -2221,6 +2506,31 @@ def responses_completions():
     messages.extend(_responses_input_to_messages(data.get('input')))
     if not messages:
         messages.append({"role": "user", "content": "请继续"})
+
+    # token 节省整改：responses 入口同样做渐进历史压缩（Codex++ 主路径，比例制阈值）
+    try:
+        _r_model_hc = data.get('model') or None
+        _r_threshold = _history_threshold_chars(_r_model_hc)
+        _r_hist_chars = sum(len(json.dumps(m, ensure_ascii=False)) for m in messages)
+        if _r_hist_chars > _r_threshold:
+            messages = compact_history_messages(
+                messages,
+                model=_r_model_hc,
+            )
+    except Exception as _ce:
+        logger.warning(f"[HISTORY-COMPACT] responses 压缩异常，跳过: {_ce}")
+
+    # 统一使用 qwen3.7-flash（全部请求类型）
+    _is_codex_internal = False
+    _inst_str = data.get('instructions', '') or ''
+    if isinstance(_inst_str, str) and 'provide a short title' in _inst_str.lower():
+        _is_codex_internal = True
+    if not data.get('model') or _model_was_unknown or (req_model != GAI_MODEL and not _is_codex_internal):
+        req_model = GAI_MODEL
+        logger.info(f"[MODEL-ROUTE] /responses 使用模型: {GAI_MODEL}")
+    elif _model_was_unknown:
+        req_model = GAI_MODEL
+        logger.info(f"[MODEL-ROUTE] /responses 未知模型替换为: {GAI_MODEL}")
 
     # 透传工具与参数
     chat_payload: Dict[str, Any] = {
@@ -2286,16 +2596,47 @@ def responses_completions():
         })
 
         collected = []
+        _resp_usage = None
+        import queue as _queue
+        import threading as _threading
+
+        _q = _queue.Queue()
+        _upstream_done = False
+
+        def _upstream_worker():
+            nonlocal _upstream_done
+            try:
+                _up = _loop_back_chat_stream(chat_payload, auth_header=_auth_header)
+                for _line in _up:
+                    _q.put(('data', _line))
+            except Exception as e:
+                _q.put(('error', e))
+            finally:
+                _upstream_done = True
+                _q.put(('done', None))
+
+        _threading.Thread(target=_upstream_worker, daemon=True).start()
+
         try:
-            _up = _loop_back_chat(chat_payload, auth_header=_auth_header)
-            if _up.status_code != 200:
-                _txt = _up.text[:400]
-                err = {"type": "server_error", "message": f"upstream {_up.status_code}: {_txt}"}
-                yield _send("response.failed", {"type": "response.failed", "response": {"error": err}})
-                yield "data: [DONE]\n\n"
-                return
-            for line in _up.iter_lines():
+            while True:
+                try:
+                    _item = _q.get(timeout=5)
+                except _queue.Empty:
+                    yield ": keepalive\n\n"
+                    continue
+
+                _tag, _val = _item
+                if _tag == 'done':
+                    break
+                if _tag == 'error':
+                    logger.error(f"[RESPONSES] 流式生成错误: {_val}")
+                    yield _send("response.failed", {"type": "response.failed", "response": {"error": {"type": "server_error", "message": str(_val)}}})
+                    yield "data: [DONE]\n\n"
+                    return
+                line = _val
                 if not line:
+                    continue
+                if line.startswith(':'):
                     continue
                 if not line.startswith('data:'):
                     continue
@@ -2315,6 +2656,8 @@ def responses_completions():
                         "type": "response.output_text.delta", "item_id": msg_id,
                         "output_index": 0, "content_index": 0, "delta": _txt,
                     })
+                if 'usage' in chunk and chunk['usage']:
+                    _resp_usage = chunk['usage']
         except Exception as e:
             logger.error(f"[RESPONSES] 流式生成错误: {e}")
             yield _send("response.failed", {"type": "response.failed", "response": {"error": {"type": "server_error", "message": str(e)}}})
@@ -2335,6 +2678,22 @@ def responses_completions():
             "item": {"id": msg_id, "type": "message", "status": "completed",
                      "role": "assistant", "content": [{"type": "output_text", "text": full_text, "annotations": []}]},
         })
+        _final_usage = {"input_tokens": 0, "output_tokens": len(full_text), "total_tokens": len(full_text)}
+        if _resp_usage:
+            _pt = _resp_usage.get('prompt_tokens', 0)
+            _ct = _resp_usage.get('completion_tokens', 0)
+            _ch = _resp_usage.get('prompt_cache_hit_tokens', 0)
+            _cm = _resp_usage.get('prompt_cache_miss_tokens', 0)
+            _final_usage = {
+                "input_tokens": _pt,
+                "output_tokens": _ct,
+                "total_tokens": _pt + _ct,
+                "prompt_cache_hit_tokens": _ch,
+                "prompt_cache_miss_tokens": _cm,
+            }
+            if _pt > 0:
+                logger.info(f"[CACHE] prompt={_pt} hit={_ch} miss={_cm} rate={_ch/_pt*100:.1f}% model={req_model}")
+
         yield _send("response.completed", {
             "type": "response.completed",
             "response": {"id": resp_id, "object": "response",
@@ -2342,7 +2701,7 @@ def responses_completions():
                          "output": [{"id": msg_id, "type": "message", "status": "completed",
                                      "role": "assistant", "content": [{"type": "output_text", "text": full_text, "annotations": []}]}],
                          "error": None,
-                         "usage": {"input_tokens": 0, "output_tokens": len(full_text), "total_tokens": len(full_text)}},
+                         "usage": _final_usage},
         })
         yield "data: [DONE]\n\n"
 
@@ -2355,18 +2714,15 @@ def responses_completions():
 
 # ==================== 启动 ====================
 
-if __name__ == '__main__':
+def init_server():
+    global living_field, vector_kb, teaching_system
 
-    # 引用硬校验真相源：启动时加载真实文章编号集合
     _refresh_real_article_ids()
 
-    # 初始化活体信息场（纯内存，不依赖外部数据库）
     living_field = LivingInfoField()
 
-    # 初始化 VectorKnowledgeBase 替代 GeometrySemanticField
     vector_kb = VectorKnowledgeBase(CHROMA_DB_DIR)
     if vector_kb.initialize():
-        # 全内存模式：文章全文 + 摘要图 + 引用图一次性载入（之后所有查找都在内存）
         try:
             _mem = vector_kb.preload_all(UPLOAD_FOLDER)
             logger.info(f"[STARTUP] 全内存模式: {_mem['articles_in_memory']} 篇文章全文已载入 "
@@ -2375,7 +2731,6 @@ if __name__ == '__main__':
         except Exception as _e:
             logger.warning(f"[STARTUP] 全内存预热失败: {_e}")
         logger.info(f"[STARTUP] DEBUG: articles_count={vector_kb.articles_count}, UPLOAD_FOLDER={UPLOAD_FOLDER}, exists={os.path.exists(UPLOAD_FOLDER)}")
-        # 如果 articles 集合为空，自动构建索引
         if vector_kb.articles_count == 0:
             diag = vector_kb.build_index(UPLOAD_FOLDER)
             if vector_kb.articles_count > 0:
@@ -2387,7 +2742,6 @@ if __name__ == '__main__':
     else:
         logger.warning("[STARTUP] ChromaDB 初始化失败，向量检索不可用")
 
-    # v10 新增：初始化教学系统
     if vector_kb and vector_kb.is_initialized:
         teaching_system = TeachingSystem(vector_kb)
     else:
@@ -2405,7 +2759,6 @@ if __name__ == '__main__':
     logger.info(f"[STARTUP] 质量门控: {'开启' if QUALITY_GATE_ENABLED else '关闭'}, 最大重试: {MAX_QUALITY_RETRIES}")
     logger.info(f"[STARTUP] 学习闭环: coherence > {LEARN_COHERENCE_THRESHOLD}, 长度 > {LEARN_MIN_LENGTH}")
     logger.info(f"[STARTUP] 自指反馈环: 已启用（回复共扼谱几何术语密度 -> eta 自指增强 + 论断提取）")
-    # v10 新增：打印教学系统状态
     if teaching_system:
         stats = teaching_system.get_stats()
         logger.info(
@@ -2423,13 +2776,11 @@ if __name__ == '__main__':
         except Exception as e:
             logger.debug(f"[STARTUP] 列出上传目录失败: {e}")
 
-    # 同步全局单例到 tools 模块
     import tools as _tools_mod
     _tools_mod.vector_kb = vector_kb
     _tools_mod.teaching_system = teaching_system
     _tools_mod.living_field = living_field
 
-    # 自动清理占用同端口的旧进程
     import subprocess as _sp
     _port = 5000
     try:
@@ -2447,7 +2798,6 @@ if __name__ == '__main__':
     except (_sp.CalledProcessError, FileNotFoundError, ProcessLookupError, ValueError):
         pass
 
-    # 工作台常驻服务：全内存载入全部工作台状态（重启电脑 → 打开程序 → 自动载入 → 即用）
     try:
         _n_wb = _WorkbenchRegistry.instance().load_all()
         _n_ss = _SessionStore.instance().load_all()
@@ -2458,7 +2808,6 @@ if __name__ == '__main__':
     except Exception as _e:
         logger.warning(f"[STARTUP] 工作台载入失败: {_e}")
 
-    # 子AI 自动圆满判定 worker（主库 LLM 退役后入库判据执行者；子进程回写 master_ai）
     from child_judge_worker import start_worker as _start_cj_worker
     try:
         _cj_t = _start_cj_worker(_run_child_judgement_llm)
@@ -2468,4 +2817,7 @@ if __name__ == '__main__':
     except Exception as _cj_e:
         logger.error(f"[STARTUP] 子AI自动圆满判定 worker 启动失败: {_cj_e}")
 
-    app.run(host='0.0.0.0', port=_port, debug=False)
+
+if __name__ == '__main__':
+    init_server()
+    app.run(host='0.0.0.0', port=5000, debug=False)

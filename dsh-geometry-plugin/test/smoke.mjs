@@ -6,6 +6,9 @@
 import { loadIndex, resolveDataDir } from '../dist/core/loader.js'
 import { createEngine } from '../dist/core/search.js'
 import { locateSection, sectionEnd, readSectionRaw, safeArticlePath } from '../dist/core/toc.js'
+import { buildSummaryView, readSectionWithHint } from '../dist/core/summary.js'
+import { calcResult, getNs, resetNs } from '../dist/core/calc.js'
+import { recordRead, resetReadState, VIEW_CHAR_LIMIT } from '../dist/core/guard.js'
 import path from 'node:path'
 import fs from 'node:fs'
 import os from 'node:os'
@@ -93,6 +96,82 @@ if (first) {
 
 console.log('')
 console.log('[smoke] 完成')
+
+// ── 新功能：geo_calc（纯 JS 安全求值） ─────────────────────────
+console.log('══════════ geo_calc 数学计算 ══════════')
+{
+  const ns = getNs('smoke-test')
+  const cases = [
+    ['57.93+26.16+5.91', '三角和 → 90'],
+    ['sin(pi/4)', 'sin(π/4) → 0.707'],
+    ['a=2; a**10', '赋值+幂 → 1024'],
+    ['sqrt(2)', '√2 → 1.414'],
+    ['27.16/4', '除法'],
+    ['5.91/2', '除法'],
+    ['ln(exp(1))', 'ln(e) → 1'],
+  ]
+  for (const [expr, note] of cases) {
+    const r = calcResult(expr, ns)
+    console.log(`  ${expr}  =>  ${r.text.split('\n').pop()}  （${note}）`)
+    if (!r.ok) console.log('    ❌ 计算失败！')
+  }
+  // 会话变量保留
+  calcResult('D=10/7821', ns)
+  const r2 = calcResult('D*2', ns)
+  console.log(`  会话变量 D 跨调用: D=10/7821; D*2 => ${r2.text.split('\n').pop()}  （应为 20/7821≈0.00256）`)
+  resetNs('smoke-test')
+  const r3 = calcResult('D*2', getNs('smoke-test'))
+  console.log(`  重置后 D: ${r3.text.split('\n').pop()}  （应为未知符号错误）`)
+  // 安全：禁止 eval 类
+  const bad = calcResult('process.exit(1)', getNs('smoke-test'))
+  console.log(`  恶意输入拦截: ${bad.ok ? '❌ 未拦截！' : '✅ 已拦截 ' + bad.text.split('\n').pop()}`)
+}
+
+// ── 新功能：结构摘要视图（buildSummaryView） ─────────────────────
+console.log('══════════ geo_read 结构摘要视图 ══════════')
+{
+  const fname = '7.5_弱混合角_CN_260808.md'
+  const p = safeArticlePath(index.articlesDir, fname)
+  if (p) {
+    const toc = index.toc[fname] ?? []
+    const size = fs.statSync(p).size
+    const sv = buildSummaryView(p, toc, size)
+    console.log(`  摘要视图 ${sv.length} 字符（文章 ${size} 字符）`)
+    console.log('  ' + sv.split('\n').slice(0, 3).join('\n  '))
+    console.log('  ...')
+    const hasToc = sv.includes('【章节目录】')
+    const hasCore = sv.includes('【核心结论速览】')
+    const hasGuide = sv.includes('【引导】')
+    console.log(`  章节目录: ${hasToc ? '✅' : '❌'} | 核心结论: ${hasCore ? '✅' : '❌'} | 引导: ${hasGuide ? '✅' : '❌'}`)
+    // section 跳转
+    const r = readSectionWithHint(p, toc, '弱混合角', 800)
+    console.log(`  section 跳转 "弱混合角": ${r.found ? '✅ 命中 ' + r.text.slice(0, 40) + '…' : '❌ ' + r.text.slice(0, 60)}`)
+  } else {
+    console.log('  （7.5 文章缺失，跳过）')
+  }
+}
+
+// ── 新功能：翻页防护（guard） ─────────────────────────────────
+console.log('══════════ geo_read 翻页防护 ══════════')
+{
+  resetReadState('smoke-guard')
+  const g1 = recordRead('smoke-guard', 'f1.md', 0, 5000)
+  const g2 = recordRead('smoke-guard', 'f1.md', 5000, 10000)
+  const g3 = recordRead('smoke-guard', 'f1.md', 10000, 15000)
+  console.log(`  第1段: ${g1 || '正常'}`)
+  console.log(`  第2段(翻页): ${g2.includes('顺序翻页') ? '✅ 翻页检测' : '❌ 未检测'}`)
+  console.log(`  第3段: ${g3.includes('顺序翻页') ? '✅ 翻页检测' : '❌ 未检测'}`)
+  // 超限
+  resetReadState('smoke-guard2')
+  let last = ''
+  for (let i = 0; i < 6; i++) {
+    last = recordRead('smoke-guard2', 'big.md', i * 5000, i * 5000 + 5000)
+  }
+  console.log(`  累计 ${6 * 5000} 字符: ${last.includes(`上限 ${VIEW_CHAR_LIMIT}`) ? '✅ 超限拦截' : '❌ 未拦截 ' + last.slice(0, 40)}`)
+}
+
+console.log('')
+console.log('[smoke] 新功能测试完成')
 
 // ── 数据目录解析：工作目录 geo-data 覆盖 ──────────────────────────
 console.log('══════════ 数据目录解析（resolveDataDir） ══════════')

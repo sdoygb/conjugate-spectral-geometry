@@ -14,7 +14,8 @@ from typing import List, Dict, Any
 import openai
 
 from config import GAI_API_KEY, GAI_BASE_URL, GAI_MODEL, logger, get_provider_for_model
-from tools import execute_tool_call
+from tools import execute_tool_call, reset_view_article_count, reset_tool_session, set_session_mode, init_session_mode, _CODING_KEYWORDS
+from guardian import ReadTracker
 
 # API 调用重试配置
 API_MAX_RETRIES = 3
@@ -38,6 +39,43 @@ def _is_retryable_error(e: Exception) -> bool:
     if hasattr(e, 'status_code') and e.status_code in (429, 500, 502, 503, 504):
         return True
     return False
+
+
+def _extract_derivation_state(messages: List[Dict], max_items: int = 6) -> str:
+    """token 节省整改 B：从对话消息里提取「推导状态」（已确认结论/已读文章/待办）。
+    规则式免费提取（不调模型）：
+    - assistant 纯文本消息：取含结论性词（确认/得到/发现/因此/结论/=）的短句
+    - 已读文章：从 tool 结果里的「文件: xxx」提取
+    返回注入用的 system 文本；无内容返回空串。"""
+    import re as _re_ds
+    _concl_pat = _re_ds.compile(r'([^。\n]{6,80}(?:确认|得到|发现|因此|结论|已|成立|等于|推出|验证)[^。\n]{0,60})')
+    _finds = []
+    _read_files = []
+    for _m in messages[-12:]:  # 只看最近 12 条（避免稀释）
+        _r = _m.get("role")
+        _c = str(_m.get("content") or "")
+        if _r == "assistant" and _c.strip():
+            for _mt in _concl_pat.finditer(_c):
+                _s = _mt.group(1).strip()
+                if len(_s) >= 6 and _s not in _finds:
+                    _finds.append(_s)
+                    if len(_finds) >= max_items:
+                        break
+        elif _r == "tool":
+            _mf = _re_ds.search(r'文件: ([^\s(]+\.md)', _c)
+            if _mf and _mf.group(1) not in _read_files:
+                _read_files.append(_mf.group(1))
+    if not _finds and not _read_files:
+        return ""
+    _lines = ["【推导状态（自动提取，供续推参考）】"]
+    if _finds:
+        _lines.append("已确认/得出：")
+        _lines += [f"- {_f}" for _f in _finds]
+    if _read_files:
+        _lines.append("已读取文章：")
+        _lines += [f"- {_f}" for _f in _read_files[:5]]
+    _lines.append("请基于以上已确认内容继续推进推导，不要重复检索或重读已确认的部分。")
+    return "\n".join(_lines)
 
 
 def parse_dsml_tool_calls(text: str) -> list:
@@ -109,19 +147,56 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                     api_params: Dict[str, Any], vector_kb=None) -> Any:
     # 多模型路由：根据请求中的 model 字段选择提供商
     request_model = api_params.get("model", GAI_MODEL)
+    _supports_thinking = any(p in request_model.lower() for p in ['deepseek', 'qwen', 'doubao'])
     base_url, api_key = get_provider_for_model(request_model)
     # 禁代理直连 + 加长超时（避免沙箱代理/牛来慢响应导致 Request timed out）
     import httpx as _httpx
     client = openai.OpenAI(api_key=api_key, base_url=base_url, http_client=_httpx.Client(trust_env=False), timeout=300.0, max_retries=1)
     max_tool_rounds = 25
     seen_calls = set()  # 防止重复调用
+    _compact_done = False  # 标记是否发生过上下文压缩
     _total_tool_calls = {}  # 全局累计工具调用次数（跨轮次）
     _total_tool_input_tokens = 0  # 全局累计工具结果 token 数（估算）
     _total_view_chars = 0  # 全局累计 view_article 读取的原始文章字符数
+    _read_tracker = ReadTracker(repeat_threshold=3)  # 护法：重复读取追踪器
+    reset_view_article_count()  # 每次请求重置 view_article 调用计数
     _resp_id = f"chatcmpl-{hashlib.md5(str(time.time()).encode()).hexdigest()[:12]}"
+    # token 节省整改：会话级工具状态（calculate_math 命名空间 / shell 预算 / 已读区间）
+    # 优先用请求携带的 session_id（与 server.py 的 _derive_session_id 同源），退化为请求级唯一键
+    _tool_sid = ""
+    for _k in ('session_id', 'chat_id', 'conversation_id'):
+        _v = data.get(_k)
+        if _v and isinstance(_v, str) and len(_v) > 4:
+            _tool_sid = _v
+            break
+    if not _tool_sid:
+        _meta = data.get('metadata', {}) or data.get('meta', {}) or {}
+        for _k in ('session_id', 'chat_id', 'conversation_id'):
+            _v = _meta.get(_k)
+            if _v and isinstance(_v, str) and len(_v) > 4:
+                _tool_sid = _v
+                break
+    if not _tool_sid:
+        _tool_sid = f"stream:{_resp_id}"
+    # token 节省整改 A：按查询内容初判任务模式（编程类放宽 shell 探索预算，仅首次生效）
+    try:
+        _query_txt = ""
+        for _m in (data.get('messages') or []):
+            if isinstance(_m, dict) and _m.get('role') == 'user':
+                _c = _m.get('content') or ''
+                if isinstance(_c, str):
+                    _query_txt += _c + ' '
+        if any(k in _query_txt.lower() for k in _CODING_KEYWORDS):
+            init_session_mode(_tool_sid, 'coding')
+        else:
+            init_session_mode(_tool_sid, 'derive')
+    except Exception:
+        pass
     _created = int(time.time())
     _model = data.get('model', GAI_MODEL)
     _usage_info = {}
+    _cache_accum = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0,
+                    "prompt_cache_hit_tokens": 0, "prompt_cache_miss_tokens": 0}
 
     def _sse_chunk(delta: dict, finish_reason: str = None, usage: dict = None):
         """生成符合 OpenAI 规范的 SSE chunk"""
@@ -222,8 +297,15 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                         _usage_info = {
                             "prompt_tokens": chunk.usage.prompt_tokens or 0,
                             "completion_tokens": chunk.usage.completion_tokens or 0,
-                            "total_tokens": chunk.usage.total_tokens or 0
+                            "total_tokens": chunk.usage.total_tokens or 0,
+                            "prompt_cache_hit_tokens": getattr(chunk.usage, 'prompt_cache_hit_tokens', 0) or 0,
+                            "prompt_cache_miss_tokens": getattr(chunk.usage, 'prompt_cache_miss_tokens', 0) or 0
                         }
+                        _cache_accum["prompt_tokens"] += _usage_info["prompt_tokens"]
+                        _cache_accum["completion_tokens"] += _usage_info["completion_tokens"]
+                        _cache_accum["total_tokens"] += _usage_info["total_tokens"]
+                        _cache_accum["prompt_cache_hit_tokens"] += _usage_info["prompt_cache_hit_tokens"]
+                        _cache_accum["prompt_cache_miss_tokens"] += _usage_info["prompt_cache_miss_tokens"]
                 # 透传剩余的安全缓冲区（非 DSML 内容）
                 if dsml_buffer and dsml_depth <= 0:
                     # 最终检查：移除任何残留的 DSML 片段
@@ -245,8 +327,12 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                         if after_dsml.strip():
                             yield _sse_chunk({"content": after_dsml})
                     logger.warning(f"[DSML-FILTER] text_buf 中 DSML 已清理，原始len={len(text_buf)}")
-                yield _sse_chunk({}, fr, usage=_usage_info if _usage_info else None)
+                yield _sse_chunk({}, fr, usage=_cache_accum if _cache_accum["prompt_tokens"] > 0 else None)
                 yield "data: [DONE]\n\n"
+                try:
+                    reset_tool_session(_tool_sid)  # token 节省整改：清理会话级工具状态
+                except Exception:
+                    pass
                 return  # 成功完成，退出重试循环
             except Exception as e:
                 last_error = e
@@ -263,7 +349,82 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
         yield "data: [DONE]\n\n"
 
     for _round in range(max_tool_rounds):
-        # 每轮调用前彻底清洗消息（DeepSeek 兼容）
+        # ---- 上下文压缩：工具链消息累积超过阈值时，浓缩早期轮次 ----
+        _COMPACT_THRESHOLD = 18000  # 字符数（token 节省整改：阈值 20000→18000，更早触发）
+        _COMPACT_KEEP_RECENT = 2    # 保留最近 2 轮完整历史（token 节省整改：3→2，压缩更彻底）
+        _total_chars = sum(len(str(m.get("content") or "")) + len(str(m.get("tool_calls") or "")) for m in final_messages)
+        if _total_chars > _COMPACT_THRESHOLD:
+            _asst_tc_idx = [i for i, m in enumerate(final_messages)
+                           if m.get("role") == "assistant" and m.get("tool_calls")]
+            if len(_asst_tc_idx) > _COMPACT_KEEP_RECENT:
+                _cut = _asst_tc_idx[-_COMPACT_KEEP_RECENT]
+                _base = []
+                _parts = []
+                _read_manifest = []  # token 节省整改：已读文章清单（防压缩后模型"失忆"重复读）
+                _sys_compacted = False  # token 节省整改：system 参考资料块已骨架化
+                for _i in range(_cut):
+                    _m = final_messages[_i]
+                    _r = _m.get("role")
+                    if _r in ("system", "user"):
+                        # token 节省整改 2a：system 里的【参考资料】注入块是上下文大头
+                        # （实测 system 16747-20751 字符 vs user 仅 47-64），压缩时骨架化：
+                        # 保留系统身份/纪律指令，参考资料压缩为文章名清单（仅首条 system 完整保留）
+                        _c = str(_m.get("content") or "")
+                        if _r == "system" and not _sys_compacted and "【参考资料" in _c:
+                            _head, _sep, _tail = _c.partition("【参考资料")
+                            # 提取参考资料块里的文章标题行，只保留每行开头 100 字符（文章名/编号）
+                            _ref_block = _tail.split("【当前状态】")[0] if "【当前状态】" in _tail else _tail[:20000]
+                            _ref_lines = [ln.strip() for ln in _ref_block.splitlines()
+                                          if ln.strip() and len(ln.strip()) > 5][:40]
+                            _ref_titles = [ln[:100] for ln in _ref_lines[:25]]
+                            _sys_c = _head + "【参考资料（已压缩，仅保留文章标题索引；如需原文请用 view_article 按文件名读取）】\n" + "\n".join(_ref_titles)
+                            # 保留【当前状态】及之后的部分（状态/语气/索引警告等）
+                            if "【当前状态】" in _tail:
+                                _sys_c += "\n【当前状态】" + _tail.split("【当前状态】", 1)[1]
+                            _base.append({"role": "system", "content": _sys_c})
+                            _sys_compacted = True
+                            logger.info(f"[TOOL-COMPACT] system 参考资料骨架化: {len(_c)}→{len(_sys_c)} 字符")
+                        else:
+                            _base.append(_m)
+                    elif _r == "tool":
+                        _c = str(_m.get("content") or "")
+                        # 提取已读文章信息（view_article 结果形如 "文件: xxx (共N字符, 位置: a-b)"）
+                        _m_file = re.search(r'文件: ([^\s(]+)', _c)
+                        _m_pos = re.search(r'位置: (\d+)-(\d+)', _c)
+                        if _m_file:
+                            _read_manifest.append(
+                                f"{_m_file.group(1)}[{_m_pos.group(1)}-{_m_pos.group(2)}]" if _m_pos else _m_file.group(1)
+                            )
+                        _first = _c.split("\n")[0][:200]
+                        if _first:
+                            _parts.append(_first)
+                    elif _r == "assistant" and (_m.get("content") or "").strip():
+                        _parts.append("asst:" + str(_m.get("content"))[:200])
+                if _parts:
+                    _base.append({"role": "assistant",
+                                 "content": "[上下文压缩：前述工具链关键产出] " + "; ".join(_parts)})
+                # token 节省整改：注入已读文章清单，防止模型压缩后重复读取已读内容
+                if _read_manifest:
+                    _base.append({
+                        "role": "user",
+                        "content": "【已读文章清单（压缩保留）】本会话已读取过以下文章片段，"
+                                   "不要重复读取相同内容：\n- " + "\n- ".join(_read_manifest[:30])
+                    })
+                final_messages[:] = _base + final_messages[_cut:]
+                # 压缩后处理 reasoning_content：
+                # 思考模式模型（DeepSeek/Qwen）要求所有 assistant 消息都带 reasoning_content，
+                # 非思考模式模型则删除该字段避免 API 报错
+                _compact_done = True
+                api_params.pop("reasoning_effort", None)
+                for _m in final_messages:
+                    if _m.get("role") == "assistant":
+                        if _supports_thinking and "reasoning_content" not in _m:
+                            _m["reasoning_content"] = ""
+                        elif not _supports_thinking and "reasoning_content" in _m:
+                            del _m["reasoning_content"]
+                logger.info(f"[TOOL-COMPACT] 第{_round+1}轮: 消息 {_total_chars}→{sum(len(str(m.get('content') or '')) for m in final_messages)} 字符，压缩 {len(_asst_tc_idx)-_COMPACT_KEEP_RECENT} 轮早期历史，已读清单 {len(_read_manifest)} 项")
+
+        # 每轮调用前彻底清洗消息（DeepSeek/Qwen 兼容）
         # 策略：JSON 序列化/反序列化，只保留 OpenAI 标准字段
         _clean_msgs = []
         for msg in final_messages:
@@ -285,8 +446,8 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                         _text_parts.append(_item)
                 _content = "\n".join(_text_parts) if _text_parts else ""
             _clean["content"] = _content
-            # reasoning_content: DeepSeek 思考模式必须传回
-            if "reasoning_content" in msg:
+            # reasoning_content: 仅思考模式模型（DeepSeek/Qwen）需要传回
+            if _supports_thinking and "reasoning_content" in msg:
                 _clean["reasoning_content"] = msg["reasoning_content"]
             # tool_calls: 只保留标准字段
             if "tool_calls" in msg:
@@ -360,6 +521,10 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
         final_messages.clear()
         final_messages.extend(_fixed_msgs)
 
+        # SSE keepalive：每轮 API 调用前发送，防止客户端在模型响应等待期间 idle timeout
+        if _round > 0:
+            yield ": keepalive\n\n"
+
         # 第一轮用流式调用，逐 token 透传（创建副本避免修改原始参数）
         round_params = {**api_params, "stream": True}
         stream = None
@@ -376,11 +541,15 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                     logger.error(f"[STREAM] 生成错误: {e}")
                     yield _sse_error(f"生成错误: {e}")
                     yield "data: [DONE]\n\n"
+                    try:
+                        reset_tool_session(_tool_sid)
+                    except Exception:
+                        pass
                     return
 
         # 收集流式响应（含流式读取重试）
         collected_content = ""
-        collected_reasoning = ""  # DeepSeek 思考模式
+        collected_reasoning = ""  # DeepSeek/Qwen 思考模式
         collected_tool_calls = {}  # {index: {id, type, function: {name, arguments}}}
         finish_reason = None
 
@@ -427,8 +596,15 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                     _usage_info = {
                         "prompt_tokens": chunk.usage.prompt_tokens or 0,
                         "completion_tokens": chunk.usage.completion_tokens or 0,
-                        "total_tokens": chunk.usage.total_tokens or 0
+                        "total_tokens": chunk.usage.total_tokens or 0,
+                        "prompt_cache_hit_tokens": getattr(chunk.usage, 'prompt_cache_hit_tokens', 0) or 0,
+                        "prompt_cache_miss_tokens": getattr(chunk.usage, 'prompt_cache_miss_tokens', 0) or 0
                     }
+                    _cache_accum["prompt_tokens"] += _usage_info["prompt_tokens"]
+                    _cache_accum["completion_tokens"] += _usage_info["completion_tokens"]
+                    _cache_accum["total_tokens"] += _usage_info["total_tokens"]
+                    _cache_accum["prompt_cache_hit_tokens"] += _usage_info["prompt_cache_hit_tokens"]
+                    _cache_accum["prompt_cache_miss_tokens"] += _usage_info["prompt_cache_miss_tokens"]
         except Exception as e:
             logger.warning(f"[STREAM-RETRY] 工具轮流式读取中断: {e}")
             # 流式读取中断时，如果已有 tool_calls 但不完整，丢弃本轮结果
@@ -470,8 +646,15 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                             _usage_info = {
                                 "prompt_tokens": chunk.usage.prompt_tokens or 0,
                                 "completion_tokens": chunk.usage.completion_tokens or 0,
-                                "total_tokens": chunk.usage.total_tokens or 0
+                                "total_tokens": chunk.usage.total_tokens or 0,
+                                "prompt_cache_hit_tokens": getattr(chunk.usage, 'prompt_cache_hit_tokens', 0) or 0,
+                                "prompt_cache_miss_tokens": getattr(chunk.usage, 'prompt_cache_miss_tokens', 0) or 0
                             }
+                            _cache_accum["prompt_tokens"] += _usage_info["prompt_tokens"]
+                            _cache_accum["completion_tokens"] += _usage_info["completion_tokens"]
+                            _cache_accum["total_tokens"] += _usage_info["total_tokens"]
+                            _cache_accum["prompt_cache_hit_tokens"] += _usage_info["prompt_cache_hit_tokens"]
+                            _cache_accum["prompt_cache_miss_tokens"] += _usage_info["prompt_cache_miss_tokens"]
                 except Exception as e2:
                     logger.error(f"[STREAM-RETRY] 重试也失败: {e2}")
             else:
@@ -514,12 +697,20 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
             # 纯文本回复，现在一次性透传所有内容
             if collected_content:
                 yield _sse_chunk({"content": collected_content})
-            yield _sse_chunk({}, finish_reason or "stop", usage=_usage_info if _usage_info else None)
+            yield _sse_chunk({}, finish_reason or "stop", usage=_cache_accum if _cache_accum["prompt_tokens"] > 0 else None)
             yield "data: [DONE]\n\n"
+            try:
+                reset_tool_session(_tool_sid)
+            except Exception:
+                pass
             return
 
-        # 有 tool_calls，不透传文本（工具调用过程对用户透明）
-        logger.info(f"[TOOL] 第{_round+1}轮: 检测到 {len(collected_tool_calls)} 个工具调用，文本不透传")
+        # 有 tool_calls，但如果有文本也透传给客户端（避免丢失中间回答）
+        if collected_content:
+            yield _sse_chunk({"content": collected_content})
+            logger.info(f"[TOOL] 第{_round+1}轮: 检测到 {len(collected_tool_calls)} 个工具调用，已透传 {len(collected_content)} 字符文本")
+        else:
+            logger.info(f"[TOOL] 第{_round+1}轮: 检测到 {len(collected_tool_calls)} 个工具调用")
 
         # 构建 tool_calls 列表
         tool_calls_list = [collected_tool_calls[i] for i in sorted(collected_tool_calls.keys())]
@@ -540,13 +731,28 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
             "content": collected_content or "",
             "tool_calls": tool_calls_list
         }
-        # DeepSeek 思考模式：必须传回 reasoning_content
-        if collected_reasoning:
-            assistant_msg["reasoning_content"] = collected_reasoning
+        # 思考模式模型（DeepSeek/Qwen）：必须传回 reasoning_content
+        if _supports_thinking:
+            if collected_reasoning:
+                assistant_msg["reasoning_content"] = collected_reasoning
+            elif _compact_done:
+                assistant_msg["reasoning_content"] = ""
         final_messages.append(assistant_msg)
 
         # 防止模型疯狂调用工具：每轮最多执行 5 个 tool_calls
         max_calls_per_round = 5
+        # token 节省整改 B：每轮注入「推导状态」（已确认结论 + 待办），引导模型续推而非重搜
+        # 先移除上一轮注入的状态消息（用标记匹配，防重复累积）
+        final_messages[:] = [m for m in final_messages if "__DERIV_STATE__" not in str(m.get("content") or "")]
+        _deriv_state = _extract_derivation_state(final_messages)
+        if _deriv_state:
+            _state_msg = {
+                "role": "system",
+                "content": _deriv_state + "\n__DERIV_STATE__",
+            }
+            # 注入到 system 之后（final_messages[0] 是主 system），避免污染原始 system
+            final_messages.insert(1, _state_msg)
+            logger.info(f"[DERIV-STATE] 注入推导状态: {_deriv_state[:80]}... (len={len(_deriv_state)})")
         # 统计同一工具的累计调用次数，超过阈值后只返回摘要
         _tool_call_counts = {}
         for tc_info in tool_calls_list:
@@ -587,6 +793,8 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                 })
             logger.warning(f"[TOOL] 每轮限制 {max_calls_per_round} 个调用，跳过 {len(skipped)} 个")
 
+        yield ": keepalive\n\n"  # SSE keepalive：工具执行期间防止客户端 idle timeout
+
         _inject_budget_warning = False  # Token 预算保护标志（延迟到所有 tool 响应后插入）
         for tc_info in tool_calls_list:
             func_name = tc_info["function"]["name"]
@@ -608,11 +816,22 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
             seen_calls.add(call_sig)
 
             logger.info(f"[TOOL] 执行: {func_name}({list(func_args.keys())})")
+            # 护法：记录文件读取，检测重复读取
+            _guardian_advice = ""
+            if func_name in ("view_article", "file_read"):
+                _fname = func_args.get("filename", "") or func_args.get("file", "")
+                if _fname and _read_tracker.record_read(_fname):
+                    _guardian_advice = _read_tracker.get_repeat_advice(_fname)
+                    logger.warning(
+                        f"[GUARDIAN] 重复读取触发: {_fname} "
+                        f"(已读 {_read_tracker.read_count[_fname]} 次)，"
+                        f"将注入护法建议"
+                    )
             # 工具执行失败重试（最多2次）
             result = None
             for _retry in range(2):
                 try:
-                    result = execute_tool_call(func_name, func_args, vector_kb=vector_kb)
+                    result = execute_tool_call(func_name, func_args, vector_kb=vector_kb, session_id=_tool_sid)
                     if result and not result.startswith("工具执行错误"):
                         break
                     logger.warning(f"[TOOL] 第{_retry+1}次执行失败: {result[:100]}")
@@ -621,10 +840,11 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                     result = None
             if not result:
                 result = f"工具 {func_name} 执行失败，请尝试其他方式获取信息。"
-            # 如果结果包含"不存在"或"错误"或"失败"，允许 AI 用相同参数重试
-            if result and ("不存在" in result or result.startswith("错误") or "执行失败" in result):
+            # 仅在工具执行异常（非"文件不存在"类错误）时允许重试
+            # "文件不存在"不重试：文件不会凭空出现，重试只会浪费轮次
+            if result and result.startswith("错误") and "不存在" not in result:
                 seen_calls.discard(call_sig)
-                logger.info(f"[TOOL] 工具返回错误，已从去重集合移除，允许重试: {func_name}")
+                logger.info(f"[TOOL] 工具执行异常，已从去重集合移除，允许重试: {func_name}")
             # Token 节省：工具结果累计估算
             _total_tool_input_tokens += int(len(result) * 1.5)
             # 追踪 view_article 读取的原始文章大小（从返回文本中提取）
@@ -633,18 +853,34 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
                 m = _re_vc.search(r'共(\d+)字符', result)
                 if m:
                     _total_view_chars += int(m.group(1))
+            # 单个工具结果超长修剪（token 节省整改 2026-08-26 升级：dsh pruner 风格）
+            # 保头部 3000 + 尾部 2000 + 中间标记 —— 尾部常含关键结论（数值/结论行）
+            _MAX_TOOL_RESULT_CHARS = 8192
+            _TOOL_HEAD_CHARS = 3000
+            _TOOL_TAIL_CHARS = 2000
+            _TOOL_PRUNE_MARKER = "\n\n[... 工具结果中部已修剪，原始长度 {orig} 字符。如需中间内容请用 offset/limit 或 section 精确读取 ...]\n\n"
+            if len(result) > _MAX_TOOL_RESULT_CHARS:
+                _orig_len = len(result)
+                result = (result[:_TOOL_HEAD_CHARS]
+                          + _TOOL_PRUNE_MARKER.format(orig=_orig_len)
+                          + result[-_TOOL_TAIL_CHARS:])
+                logger.info(f"[TOOL] 工具结果超长，头/尾修剪至 {_TOOL_HEAD_CHARS}+{_TOOL_TAIL_CHARS} (原始 {_orig_len} 字符)")
             logger.info(f"[TOOL] 结果: {result[:150].replace(chr(10), chr(92)+chr(110))}... (累计工具结果约 {_total_tool_input_tokens} token, view_article累计 {_total_view_chars} 字符)")
+            # 护法：如果有重复读取建议，追加到工具结果中
+            if _guardian_advice:
+                result = _guardian_advice + "\n\n--- 文章内容 ---\n\n" + result
+                logger.info(f"[GUARDIAN] 已将护法建议追加到工具结果 ({len(_guardian_advice)} 字符)")
             final_messages.append({
                 "role": "tool",
                 "tool_call_id": tc_info["id"],
                 "content": result
             })
 
-            # Token 预算保护：如果工具结果累计超过 80000 token，
+            # Token 预算保护：如果工具结果累计超过 35000 token，
             # 标记需要注入停止提示（延迟到所有 tool 响应之后插入，避免破坏 tool_calls 连续性）
-            if _total_tool_input_tokens > 80000 and _total_tool_calls.get(func_name, 0) <= 1:
+            if _total_tool_input_tokens > 35000:
                 _inject_budget_warning = True
-                logger.warning(f"[TOOL] Token 预算 {_total_tool_input_tokens} 已超 80000，标记注入停止提示")
+                logger.warning(f"[TOOL] Token 预算 {_total_tool_input_tokens} 已超 35000，标记注入停止提示")
 
     # 延迟注入 Token 预算保护消息（确保不破坏 tool_calls → tool 响应的连续性）
     if _inject_budget_warning:
@@ -653,6 +889,29 @@ def stream_generate(data: Dict[str, Any], eta_before: float, final_messages: Lis
             "content": "【系统提示】工具调用已消耗大量上下文，请基于已有信息直接回答用户，不要再调用工具。"
         })
         logger.info(f"[TOOL] 延迟注入 Token 预算保护消息（所有 tool 响应之后）")
+
+    # token 节省整改（硬约束）：工具结果累计超过硬上限时，不等 25 轮，直接强制文本收尾
+    # 之前的 35000 只是"建议提示"，模型可无视（实测 23:14 会话跑到 139K token 仍在读文章）
+    _TOOL_TOKEN_HARD_CAP = 60000
+    if _total_tool_input_tokens > _TOOL_TOKEN_HARD_CAP:
+        logger.warning(f"[TOOL] 工具结果累计 {_total_tool_input_tokens} token 超过硬上限 {_TOOL_TOKEN_HARD_CAP}，强制文本收尾")
+        final_messages.append({
+            "role": "user",
+            "content": "【系统指令】工具调用已消耗过多上下文（远超预算）。请立即停止调用任何工具，"
+                       "基于已有信息直接用纯文本给出你的推导/结论。不要输出任何工具调用格式（不要输出 <｜｜DSML｜｜ 等标签）。"
+        })
+        # 最终回复前也清洗 reasoning_content
+        for msg in final_messages:
+            if "reasoning_content" in msg:
+                del msg["reasoning_content"]
+        final_api_params = {k: v for k, v in api_params.items() if k != "tools"}
+        try:
+            yield from _stream_text(final_api_params)
+        except Exception as e:
+            logger.error(f"[STREAM] 最终流式生成错误: {e}")
+            yield _sse_error(f"生成错误: {e}")
+            yield "data: [DONE]\n\n"
+        return
 
     # 超过轮数限制，强制要求模型直接回答 -- 真正流式
     logger.warning(f"[TOOL] 超过 {max_tool_rounds} 轮，强制生成文本回复")

@@ -1456,7 +1456,14 @@ class _SiliconFlowEmbedding:
 
     def __init__(self, api_key: str, model: str = "BAAI/bge-m3"):
         import openai
-        self.client = openai.OpenAI(api_key=api_key, base_url="https://api.siliconflow.cn/v1")
+        import httpx
+        self.client = openai.OpenAI(
+            api_key=api_key,
+            base_url="https://api.siliconflow.cn/v1",
+            http_client=httpx.Client(trust_env=False),
+            timeout=30.0,
+            max_retries=2,
+        )
         self.model = model
         self._dim = EMBEDDING_DIM
 
