@@ -11,12 +11,12 @@
 import type { ArticleChunk, LoadedIndex } from './loader.js'
 import { sectionAt } from './toc.js'
 
-/** 文章编号模式：命题/定理/引理/推论/定义/公理/性质/注 + 形如 0.2.1.02 的编号 */
-const REF_RE = /(命题|定理|引理|推论|定义|公理|性质|注)[ ]?(\d+\.\d+(?:\.\d+)*)/g
+/** 文章编号模式：命题/定理/引理/推论/定义/公理/性质/注(记) + 形如 0.2.1.02 的编号 */
+const REF_RE = /(命题|定理|引理|推论|定义|公理|性质|注记?)[ ]?(\d+\.\d+(?:\.\d+)*)/g
 /** 从文本中提取"文章编号"（纯编号形式，如 0.2.1.02） */
 const NUM_ONLY_RE = /\d+\.\d+(?:\.\d+)*/g
-/** 行首定义：行以"命题/定理/… X.Y.Z"开头（含 markdown 列表符号）；全局版供 matchAll */
-const LINE_HEAD_RE = /^[#>*\-\s]*(命题|定理|引理|推论|定义|公理|性质|注)[ ]?(\d+\.\d+(?:\.\d+)*)/gm
+/** 行首定义：行以"命题/定理/… X.Y.Z"开头（含 markdown 列表/加粗符号）；全局版供 matchAll */
+const LINE_HEAD_RE = /^[#>*\-\s]*(命题|定理|引理|推论|定义|公理|性质|注记?)[ ]?(\d+\.\d+(?:\.\d+)*)/gm
 
 /** 定义处优先级：章节标题 > 行首定义 > 正文引用（0/1/2） */
 const ORIGIN_PRIORITY = { heading: 0, lineHead: 1, body: 2 } as const

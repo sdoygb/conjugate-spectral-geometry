@@ -13,7 +13,7 @@ function fakeIndex() {
       text: '见定理 0.2.1.02 与引理 1.3.2.01（正文引用）。' },
     // 10.2 行首定义 0.2.1.02
     { chunk_id: 'c2', fname: '0.2_b.md', article_id: '0.2', start: 0, end: 100,
-      text: '**命题 0.2.1.02（体积元的平方）**：ω² = (-1)^n。\n推论 0.2.1.03 直接成立。' },
+      text: '**命题 0.2.1.02（体积元的平方）**：ω² = (-1)^n。\n推论 0.2.1.03 直接成立。\n**注记 0.4.5.01（子回路圆满性）**：结构预览。' },
     // 10.3 章节标题含 1.3.2.01（heading 定义）
     { chunk_id: 'c3', fname: '1.3_c.md', article_id: '1.3', start: 500, end: 800,
       text: '## 引理 1.3.2.01（投影强度恒等式）\n\n设 L 为左乘表示。' },
@@ -53,6 +53,11 @@ test('优先级：章节标题(heading) > 行首定义(lineHead) > 正文引用(
   // 0.2.1.03：仅行首定义（0.2）
   const r3 = rc.lookup('0.2.1.03')
   assert.equal(r3.fname, '0.2_b.md')
+  // 注记 0.4.5.01：行首'**注记 X.Y.Z**'也能被 lineHead 抓到（修复回归）
+  const r4 = rc.lookup('0.4.5.01')
+  assert.ok(r4, '注记编号应有出处')
+  assert.equal(r4.kind, 'lineHead')
+  assert.equal(r4.fname, '0.2_b.md')
   // 不存在的编号
   assert.equal(rc.lookup('9.9.9.99'), undefined)
 })

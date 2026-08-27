@@ -14,11 +14,14 @@ ARTICLES_DIR = os.path.join(PROJECT_ROOT, 'app', 'articles')
 CHUNK_SIZE = 1000
 CHUNK_OVERLAP = 200
 
-# 待补录：app/articles 中有、chroma 中没有的 3 篇
-TARGETS = [
+# 待补录：自动扫描 app/articles 中有、chroma 中没有的文章
+TARGETS = None  # None = 自动检测
+# 历史手动目标（保留作回退）
+_MANUAL = [
     '10.70_几何POVM与Zeno冻结_CN_260822.md',
     '3.13_几何量子势与非线性演化_Madelung分解_CN_260825.md',
     '3.14_呼吸模式的含时方程_CN_260825.md',
+    '8.20_银河系棒的联合截面锁定_CN_260827.md',
 ]
 
 def smart_chunk(content: str, article_id: str, fname: str):
@@ -65,6 +68,20 @@ def main():
     model = TextEmbedding('BAAI/bge-small-zh-v1.5')
 
     total_added = 0
+    global TARGETS
+    if TARGETS is None:
+        # 自动检测：app/articles 中有、chroma 中没有的
+        import os
+        art_dir = os.path.join(PROJECT_ROOT, 'app', 'articles')
+        all_arts = [f for f in os.listdir(art_dir) if f.endswith('.md')]
+        known = set()
+        try:
+            existing = collection.get(include=[])['ids']
+            known = set(fname.split('_chunk')[0] for fname in existing)
+        except Exception:
+            pass
+        TARGETS = [f for f in all_arts if f not in known]
+        print(f"[backfill] 自动检测缺失: {len(TARGETS)} 篇")
     for fname in TARGETS:
         fpath = os.path.join(ARTICLES_DIR, fname)
         if not os.path.exists(fpath):
