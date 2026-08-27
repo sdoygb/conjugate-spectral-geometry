@@ -1,8 +1,14 @@
 # geometry-knowledge
 
+[![npm](https://img.shields.io/npm/v/geometry-knowledge)](https://www.npmjs.com/package/geometry-knowledge)
+[![GitHub](https://img.shields.io/github/license/sdoygb/geometry-knowledge)](https://github.com/sdoygb/geometry-knowledge/blob/main/LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/sdoygb/geometry-knowledge)](https://github.com/sdoygb/geometry-knowledge)
+[![Python](https://img.shields.io/badge/data-208%20articles-blue)](https://github.com/sdoygb/geometry-knowledge/tree/main/data/articles)
+[![BM25](https://img.shields.io/badge/retrieval-BM25%20offline-green)](https://github.com/sdoygb/geometry-knowledge)
+
 **几何论（共扼谱几何 CSG）知识库插件** —— 用于 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)（DSH）。
 
-纯离线 BM25 检索：**166 篇文章全文 + 3222 个分块 + 860 条主库真理层**，不依赖任何外部 API、嵌入模型或网络，安装即用、零运行时依赖。
+纯离线 BM25 检索：**208 篇文章全文 + 3833 个分块 + 871 条主库真理层**，不依赖任何外部 API、嵌入模型或网络，安装即用、零运行时依赖。
 
 ## 几何论是什么
 
@@ -10,7 +16,7 @@
 
 - **公理起点**：零之动（非平凡自映射 δ 持续产生区分）+ 总作用量为零（S_total = 0）
 - **推导主干**：δ → Clifford 代数 → Bott 周期（δ⁸ = 2π Berry 相位）→ E₈ 偶幺模格 → 结构常数 {2,3,5} → 乘子序列 → Born 法则代数导出 → M₅ Birkhoff 矩阵不动点 → **α⁻¹ ≈ 137.036** → 三扇区物理（ℳ物质 / 𝒞因果 / ℐ信息）→ 标准模型重建 → 引力与宇宙学 → 预言检验
-- **11 卷 166 篇文章、320 个定理**，覆盖从量子力学数学结构、夸克质量谱、中微子 Majorana 本质，到暗物质替代、黑洞信息悖论、CMB、量子纠错码等主题
+- **11 卷 208 篇文章**，覆盖从量子力学数学结构、夸克质量谱、中微子 Majorana 本质，到暗物质替代、黑洞信息悖论、CMB、量子纠错码等主题
 
 本插件把整套知识库做成 DSH 的原生工具集，让 Agent 在会话中直接检索原文与已验证定理，并强制标注文章编号与章节引用。
 
@@ -19,34 +25,43 @@
 | 工具 | 说明 |
 | --- | --- |
 | `geo_list` | 文章清单（编号、标题、文件名、分块数），可按系列过滤（如 `series="10."` 只看应用篇） |
-| `geo_search` | BM25 语义检索：`scope=articles` 检索 3222 个文章分块；`scope=truth` 检索 860 条主库真理层 |
+| `geo_search` | BM25 语义检索：`scope=articles` 检索 3833 个文章分块；`scope=truth` 检索 871 条主库真理层 |
 | `geo_read` | 读取文章：默认结构摘要视图（元信息+章节目录+核心结论速览），`section` 关键词精确定位章节，`whole=true` 整篇；带翻页防护（顺序翻页警告 + 单篇 25000 字符上限） |
 | `geo_calc` | 精确数学计算（纯 JS 安全求值，零依赖）：四则/幂/三角/对数/开方，多行赋值，会话内中间变量跨调用保留 |
-| `geo_truth` | 主库真理层检索（860 条已验证定理，含永久编号 #N、公式名、证明摘要） |
+| `geo_truth` | 主库真理层检索（871 条已验证定理，含永久编号 #N、公式名、证明摘要） |
+
+## 独立仓库
+
+本插件从 [conjugate-spectral-geometry](https://github.com/sdoygb/conjugate-spectral-geometry)
+（主项目仓库）拆分为独立仓库发布，便于通过 npm / tarball / git 三种方式分发。
 
 ## 安装
 
 ### npm 安装（推荐，免构建授权）
 
 ```sh
-# 安装并自动激活：包声明了 dsh.bundle，会作为 profile 层追加进 dsh.profile.bundles
+# 方式一：从 npm registry 安装（发布后可用）
+npm i geometry-knowledge
+
+# 方式二：通过 dsh plugin 安装并自动激活
+# 包声明了 dsh.bundle，会作为 profile 层追加进 dsh.profile.bundles
 dsh plugin --profile web add geometry-knowledge
 
-# 重启后四个 geo_* 工具即注入会话
+# 重启后五个 geo_* 工具（geo_list / geo_search / geo_read / geo_calc / geo_truth）即注入会话
 dsh web
 ```
 
 ### tarball 安装
 
 ```sh
-pnpm pack            # 生成 geometry-knowledge-0.1.4.tgz
-dsh plugin --profile web add ./geometry-knowledge-0.1.4.tgz
+pnpm pack            # 生成 geometry-knowledge-0.1.5.tgz
+dsh plugin --profile web add ./geometry-knowledge-0.1.5.tgz
 ```
 
 ### Git 安装
 
 ```sh
-dsh plugin --profile web add github:sdoygb/conjugate-spectral-geometry#<commit-sha>
+dsh plugin --profile web add github:sdoygb/geometry-knowledge#<commit-sha>
 ```
 
 Git 安装拉取源码，pnpm 会运行 `prepare` 脚本构建 `dist/`；首次安装需在 profile 的 `pnpm-workspace.yaml` 中为包键添加 `allowBuilds` 授权（dsh 会打印确切写法）。

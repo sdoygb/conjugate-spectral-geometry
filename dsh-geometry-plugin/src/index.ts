@@ -9,7 +9,7 @@
  *   geo_search  — BM25 语义检索（文章分块，scope=articles|truth）
  *   geo_read    — 读取文章（默认结构摘要视图 + section 跳转 + whole 整篇 + 翻页防护）
  *   geo_calc    — 精确数学计算（纯 JS 安全求值，会话内中间变量保留）
- *   geo_truth   — 主库真理层检索（860 条已验证定理）
+ *   geo_truth   — 主库真理层检索（871 条已验证定理）
  *
  * 引用规范：所有检索结果必须标注文章编号（article_id/fname）与章节。
  */
