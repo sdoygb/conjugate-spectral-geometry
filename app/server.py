@@ -162,6 +162,7 @@ _MODEL_CONTEXT_WINDOWS = {
     'doubao-seed-2-1-pro-260628': 65536,
     'doubao-seed-2-1-turbo-260628': 65536,
     'glm-4.7-flash': 65536,
+    'Qwen/Qwen2.5-7B-Instruct': 32768,   # 硅基流动免费模型 32K
     'default': 131072,
 }
 _HISTORY_THRESHOLD_RATIO = 0.8    # 触发阈值 = 窗口 × 80%
