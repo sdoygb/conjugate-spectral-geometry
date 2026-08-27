@@ -64,7 +64,7 @@ export function apply(ctx: Context, config: GeometryKnowledgeConfig = {}): void 
     return { index, engine, refChain }
   }
 
-  // 预取计数（描述动态化，A2：避免硬编码 3224/860 过期）
+  // 预取计数（描述动态化，A2：避免硬编码 3833/871 过期）
   const pre = lazy()
   const COUNTS = pre.engine.stats()
 
