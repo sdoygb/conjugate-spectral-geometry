@@ -623,7 +623,7 @@ class VectorKnowledgeBase:
             if current_dim > 0 and stored_dim > 0 and stored_dim != current_dim:
                 logger.warning(
                     f"[VECTOR] 集合 '{collection_name}' 维度不匹配 "
-                    f"(存储={stored_dim}, 当前={current_dim})，删除旧数据重建（统一1024维）"
+                    f"(存储={stored_dim}, 当前={current_dim})，删除旧数据重建（统一当前嵌入维度）"
                 )
                 self.client.delete_collection(collection_name)
                 col_kwargs = {}
@@ -634,6 +634,26 @@ class VectorKnowledgeBase:
                     metadata={"description": description, "embedding_dim": current_dim},
                     **col_kwargs
                 )
+            # 维度一致但持久化嵌入配置与当前不一致（如被外部重建为 Chroma 默认嵌入）：
+            # 用当前维度探测一次查询，失败说明配置损坏，必须删除重建，否则启动会抛
+            # "Embedding function conflict" 导致整个向量库初始化失败。
+            if current_dim > 0 and count > 0 and stored_dim > 0 and stored_dim == current_dim:
+                try:
+                    existing.query(query_embeddings=[test_emb[0]], n_results=1)
+                except Exception as _qe:
+                    logger.warning(
+                        f"[VECTOR] 集合 '{collection_name}' 维度一致({stored_dim})但持久化嵌入配置异常，"
+                        f"查询探测失败({_qe})，删除重建（统一当前嵌入）"
+                    )
+                    self.client.delete_collection(collection_name)
+                    col_kwargs = {}
+                    if self.embedding_fn is not None:
+                        col_kwargs["embedding_function"] = self.embedding_fn
+                    return self.client.get_or_create_collection(
+                        name=collection_name,
+                        metadata={"description": description, "embedding_dim": current_dim},
+                        **col_kwargs
+                    )
         except Exception as e:
             logger.debug(f"[VECTOR] 检查集合 '{collection_name}' 维度时出错: {e}")
         return None
@@ -683,12 +703,30 @@ class VectorKnowledgeBase:
                 if rebuilt is not None:
                     setattr(self, f"{col_name}_collection" if col_name != "personal" else "personal_collection", rebuilt)
                 else:
-                    # 正常获取或创建
-                    col = self.client.get_or_create_collection(
-                        name=col_name,
-                        metadata={"description": col_desc},
-                        **col_kwargs
-                    )
+                    # 正常获取或创建；若持久化嵌入配置与当前不一致（如被外部重建为
+                    # Chroma 默认嵌入），get_or_create 会抛冲突 → 删除重建，避免整个初始化失败
+                    try:
+                        col = self.client.get_or_create_collection(
+                            name=col_name,
+                            metadata={"description": col_desc},
+                            **col_kwargs
+                        )
+                    except Exception as _ce:
+                        _msg = str(_ce)
+                        if ('embedding function' in _msg.lower()
+                                or 'conflict' in _msg.lower()
+                                or 'ambiguous' in _msg.lower()):
+                            logger.warning(
+                                f"[VECTOR] 集合 '{col_name}' 嵌入配置冲突，删除重建: {_ce}"
+                            )
+                            self.client.delete_collection(col_name)
+                            col = self.client.get_or_create_collection(
+                                name=col_name,
+                                metadata={"description": col_desc},
+                                **col_kwargs
+                            )
+                        else:
+                            raise
                     attr_name = f"{col_name}_collection"
                     setattr(self, attr_name, col)
 

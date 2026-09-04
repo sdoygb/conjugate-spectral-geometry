@@ -1629,6 +1629,9 @@ def chat_completions():
     # 向量语义检索（从 articles + learned 两个集合获取结果）
     articles_content = ""
     loaded_chunks: List[str] = []
+    # 向量库未初始化/为空时会跳过检索分支，results 不会被赋值；若不用列表占位，
+    # 后续 _workbench_gate(..., bool(results)) 会抛 UnboundLocalError 导致整请求 500。
+    results: list = []
     logger.info(f"[VECTOR-DEBUG] vector_kb={vector_kb is not None}, initialized={vector_kb.is_initialized if vector_kb else 'N/A'}, total_docs={vector_kb.total_docs if vector_kb else 'N/A'}")
     try:
         if vector_kb and vector_kb.is_initialized and vector_kb.total_docs > 0:
